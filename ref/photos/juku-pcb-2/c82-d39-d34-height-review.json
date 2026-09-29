@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "review_state": "upper bodies identified and excluded by height; C82 body absent in May/July views; landing pair unproved",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+  "owner_component_images": [
+    "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260519_202100511.jpg"
+  ],
+  "coordinate_system": "original source-image pixels",
+  "assembly_crop_xyxy": [
+    1450,
+    900,
+    2350,
+    1800
+  ],
+  "owner_detail_crop_xyxy": [
+    2950,
+    1900,
+    3280,
+    2800
+  ],
+  "source_context": "The .009 assembly puts vertical C82 immediately left of vertical C5 between D39 and D34. Both capacitor outlines occupy the packages' vertical span; R33 is a separate horizontal outline above the package row, and C94 is drawn farther above/right. Sheet-1 groups C82 with the +5 V-to-ground C82-C93 bypasses.",
+  "owner_observation": "Two overlapping owner photographs show a yellow molded body and a red horizontal axial body above the D39/D34 upper edges. At the assembly-relative height of C82 beside the marked D39 and D34 packages, the inter-package strip exposes traces, individual bare joints, and open annuli but no separate fitted capacitor body.",
+  "decision": "Exclude the upper yellow and red bodies as C82 candidates by package-relative height. Cross-checks now identify the yellow three-lead Б/8901 body as VT2 and the red horizontal body by the assembly R33 position; see docs/analog-cluster-photo-placement.md and r33-c5-population-review.json. Their physical values are separate questions. Keep C82's population history, intended value, and actual +5 V/GND pad pair open; absence of a visible body on two dates does not prove factory DNP.",
+  "next_inspection": "Use the corrected D34/D39 contact fits to bound the strip, exclude the D39.10 crystal-input annulus, then compare the May bare-feature columns and meter each plausible C82 pair to known +5 V and ground contacts before creating a footprint.",
+  "may_cross_date_check": "May 19 oblique close-up PXL_20260519_202100511.jpg original crop (0,1250)-(1500,2900) shows the same bare D34/D39 inter-package strip. Mixed filled/open features in two columns are search regions for C5/C82; neither column has a unique same-hole solder registration or measured rail identity. See r33-c5-population-review.json.",
+  "solder_registration_boundary": "July solder close-up PXL_20260710_200522685.jpg crop (850,1550)-(1700,2650) covers the reflected D34/D39 region, but existing endpoints.csv D34 seeds are registration-only and miss a coherent package row. No C82 same-hole pair is promoted from that crop; see r33-c5-population-review.json.",
+  "d34_registered_contact_fit": "D34 contact rows and the adjacent mounting hole now provide a roughly 15-px local two-face fit; see d34-cross-face-contact-fit.json. D39 and distinct C82/C5 holes are still unregistered.",
+  "d39_registered_contact_fit": "D39 contact rows are now registered across the same July faces and agree with the D34 local map and earlier D39.7 ground location. The two packages bound the C5/C82 search strip but do not identify either capacitor pair; see d39-cross-face-contact-fit.json.",
+  "excluded_xtal_annulus": "The front annulus near (3040,2375) matches solder hole (1167,2034) and visibly routes to D39.10/XTAL16M. It is a false candidate for the +5 V/GND C82 branch; see c5-c82-d39-annulus-exclusion.json.",
+  "r33_left_rc_candidate_boundary": "RETRACTED as a C5.2 candidate: the R33-left run through front gap joint (3098,2345) appears to continue to D34.6, contrary to the drawn C5/R33 split. This remains a probe target and is not a C82 +5/GND assignment; see r33-d34-pin6-source-conflict.json."
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard both A10/W10_QA_SEL surface joints through two-sided photo fits."""
+"""Guard the fitted A10A/D50 landing and hold the unlocated A10B/D41 end."""
 from __future__ import annotations
 
 import json
@@ -25,7 +25,7 @@ fits_document = json.loads(LOCAL_REPORT.read_text(encoding="utf-8"))
 fits = {
     (fit["refdes"], fit["side"]): fit
     for fit in fits_document["fits"]
-    if fit["refdes"] in {"D41", "D50"}
+    if fit["refdes"] == "D50"
 }
 errors: list[str] = []
 w10 = board.FindFootprintByReference("W10")
@@ -52,16 +52,6 @@ def project(transform: np.ndarray, pixel: list[int]) -> np.ndarray:
 
 expected = {
     "A10A": {
-        "refdes": "D41",
-        "pin": "13",
-        "net": "W10_QA_SEL",
-        "component_joint": [2148, 2174],
-        "component_pin": [2148, 2124],
-        "solder_joint": [1506, 1834],
-        "solder_pin": [1506, 1785],
-        "copper_span": (2.2, 2.4),
-    },
-    "A10B": {
         "refdes": "D50",
         "pin": "1",
         "net": "W10_QA_SEL_D50",
@@ -131,44 +121,37 @@ for terminal, specification in expected.items():
     if not isinstance(uncertainty, (int, float)) or not 0.2 <= uncertainty <= 0.5:
         errors.append(f"{terminal}: invalid fitted uncertainty")
 
-wire_chord = float(
-    np.linalg.norm(projected_terminals["A10A"] - projected_terminals["A10B"])
-)
-if not 131.0 <= wire_chord <= 132.0:
-    errors.append(f"A10: terminal chord {wire_chord:.3f} mm is implausible")
-if wire_chord > 135.0:
-    errors.append("A10: terminal chord exceeds corrected 13.5 cm conductor length")
-if point.get("status") != "board-fitted":
-    errors.append("A10: point status is not board-fitted")
-if "13.5 cm" not in point.get("observation", ""):
-    errors.append("A10: corrected duplicate-sheet length is not guarded")
-
+# W10.1 remains a provisional D41-side PCB placeholder. Guard its net, but do
+# not promote its coordinate or the retired D41 photo candidate as a landing.
 if w10 is None:
     errors.append("A10: W10 assembly-wire footprint is missing")
 else:
-    for pin, terminal in (("1", "A10A"), ("2", "A10B")):
+    for pin, net in (("1", "W10_QA_SEL"), ("2", "W10_QA_SEL_D50")):
         pad = w10.FindPadByNumber(pin)
-        expected_net = "W10_QA_SEL" if pin == "1" else "W10_QA_SEL_D50"
         if pad is None:
             errors.append(f"A10: W10.{pin} landing is missing")
             continue
-        position = np.array([pcbnew.ToMM(pad.GetPosition().x), pcbnew.ToMM(pad.GetPosition().y)])
-        if float(np.linalg.norm(position - projected_terminals[terminal])) > MAX_RECORDED_ERROR_MM:
-            errors.append(f"A10: W10.{pin} coordinate drifted")
-        if pad.GetNetname() != expected_net:
-            errors.append(f"A10: W10.{pin} is on {pad.GetNetname()}, expected {expected_net}")
+        if pad.GetNetname() != net:
+            errors.append(f"A10: W10.{pin} is on {pad.GetNetname()}, expected {net}")
         layers = pad.GetLayerSet()
         if pad.GetAttribute() != pcbnew.PAD_ATTRIB_SMD or not layers.Contains(pcbnew.F_Cu) or layers.Contains(pcbnew.B_Cu):
             errors.append(f"A10: W10.{pin} must remain a top-side surface landing")
+    a10a_pad = w10.FindPadByNumber("2")
+    if a10a_pad is not None:
+        position = np.array([pcbnew.ToMM(a10a_pad.GetPosition().x), pcbnew.ToMM(a10a_pad.GetPosition().y)])
+        if float(np.linalg.norm(position - projected_terminals["A10A"])) > MAX_RECORDED_ERROR_MM:
+            errors.append("A10: W10.2/A10A coordinate drifted")
 
 d51_pad1 = board.FindFootprintByReference("D51").FindPadByNumber("1")
 if d51_pad1.GetNetname() != "W10_QA_SEL_D50":
-    errors.append("D51.1 is missing from the shared A10B copper island")
+    errors.append("D51.1 is missing from the shared A10A copper island")
+if point.get("status") != "image-registered/board-fit-pending":
+    errors.append("A10: point status no longer records the open A10B end")
+if "13.5 cm" not in point.get("observation", ""):
+    errors.append("A10: corrected duplicate-sheet length is not guarded")
 
 if errors:
     raise SystemExit("A10 FACTORY LANDINGS: FAIL\n- " + "\n- ".join(errors))
-print(
-    "A10 FACTORY LANDINGS: PASS — two surface islands modeled through W10; "
-    f"D41/D50 cross-side fits; terminal chord {wire_chord:.3f} mm; "
-    "corrected factory length 13.5 cm"
-)
+if endpoints["A10B"].get("board_mm") is None:
+    raise SystemExit("A10 FACTORY LANDINGS: HOLD — A10A/D50 fit passes; factory-right A10B/D41 joint remains unlocated")
+raise SystemExit("A10 FACTORY LANDINGS: HOLD — A10B has new coordinates; add measured two-face guards before promotion")

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "status": "physical D27.7 ground route not photo-closed",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+  "component_pin7_px_approx": [1882, 1305],
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+  "solder_pin7_px_approx": [3091, 1195],
+  "pin_identification": "D27's independently fitted right-notched 2x20 DIP rows place physical pin7 at these registered owner-photo joints; the 8255 pin contract defines pin7 as GND.",
+  "component_observation": "The exposed lead sits at the D27 body edge. Adjacent bright front traces pass above it, but no continuous outward branch from this pin can be followed before the package obscures the landing.",
+  "solder_observation": "At full resolution the pin7 solder joint has no visible solder-side trace connecting it to the three bright lines immediately above or the broad rail below. The neighboring pins and open annulus have distinct copper features. A front-side connection beneath the package remains possible.",
+  "decision": "Do not assign a photographed ground route by proximity. Measure physical D27.7 against an independently marked GND landing and inspect both faces locally if the result conflicts with the 8255 pin contract."
+}

@@ -182,12 +182,15 @@ def main() -> int:
             "`CAS` includes D36.1/R57.2/R58.1 plus DRAM pin-15 fanout",
         ),
         (
-            "PHI2TTL timing gate fanout is cross-sheet source-closed",
+            "PHI2TTL trunk and post-R35 RC node remain separate",
             set(nodes(board, "PHI2TTL"))
-            == {("D35", "13"), ("D39", "1"), ("D53", "4"), ("D30", "3")}
+            == {("D39", "1"), ("D53", "4"), ("D30", "3"), ("D29", "1"), ("R35", "1")}
+            and set(nodes(board, "PHI2_POST_R35"))
+            == {("R35", "2"), ("D35", "13"), ("R106", "1"), ("C29", "1")}
+            and set(nodes(board, "PHI2TTL")).isdisjoint(set(nodes(board, "PHI2_POST_R35")))
             and board["nets"]["PHI2TTL"].get("source_risk") is False
             and "unique labeled cross-sheet pair" in board["nets"]["PHI2TTL"].get("risk_disposition", ""),
-            "sheet-2 Ф2TTL (1) export -> sheet-1 (2) Ф2 TTL/D30.3",
+            "sheet-2 Ф2TTL trunk -> D30.3/D29.1/R35.1; R35.2 -> D35.13/R106.1/C29.1",
         ),
         (
             "D92 triple-NOR RAM read/write combiner is source-closed",
@@ -251,15 +254,15 @@ def main() -> int:
             "sheet-2 direct junctions: D39.10 -> local rail3/XTAL16M; D39.2 -> grounded rail1",
         ),
         (
-            "D38 load gate is source-closed except for the remote origin of rail 2",
-            has_nodes(board, "D39_MEMCYC", {("D39", "3"), ("D39", "4"), ("D38", "5")})
-            and has_nodes(board, "TIMING_TAG2", {("D38", "4")})
-            and set(nodes(board, "D34_A1_TAG2")) == {("D34", "4")}
-            and set(nodes(board, "TIMING_TAG2")).isdisjoint(set(nodes(board, "D34_A1_TAG2")))
-            and "automatic same-number chase exhausted" in board["nets"]["TIMING_TAG2"]["src"]
+            "D38.4 and D34.4 share photographed timing rail 2; remote driver remains open",
+            has_nodes(board, "D39_MEMCYC", {("D39", "3"), ("D39", "4")})
+            and has_nodes(board, "LATCH_SIG", {("D33", "12"), ("D39", "9"), ("D38", "5")})
+            and has_nodes(board, "TIMING_TAG2", {("D38", "4"), ("D34", "4")})
+            and "D34_A1_TAG2" not in board["nets"]
+            and "uninterrupted B.Cu" in board["nets"]["TIMING_TAG2"]["src"]
             and has_nodes(board, "GND", {("D38", "2")})
             and has_nodes(board, "CAS", {("D38", "1")}),
-            "D38 pins5/4/2/1 <- rails4/2/1/15; D38 rail2 explicitly distinct from D34 top-edge tag2",
+            "D38 pin5 <- LATCH; pins4/2/1 <- rails2/1/15; D39.3/.4 join separate rail4; owner solder copper directly joins D38.4 rail2 to D34.4 top-edge tag2",
         ),
         (
             "D42/D43 serializer packages retain their source-proved unused parallel outputs",
@@ -296,15 +299,17 @@ def main() -> int:
         (
             "D35 frame-interrupt inverter path is source-closed",
             all(d35.get("pins", {}).get(pin) == role for pin, role in hex_contract.items())
-            and has_nodes(board, "POF", {("D26", "10"), ("D35", "3")})
-            and has_nodes(board, "VID_MIX2", {("D35", "4"), ("R39", "1")})
+            and has_nodes(board, "POF", {("D26", "10"), ("D35", "3"), ("D35", "5"), ("R39", "1")})
+            and has_nodes(board, "VID_MIX1", {("D35", "4"), ("D37", "11")})
+            and has_nodes(board, "SHIFT_G", {("D35", "6"), ("R38", "1"), ("D42", "8"), ("D43", "8")})
+            and has_nodes(board, "P5V", {("R38", "2"), ("R39", "2")})
             and set(nodes(board, "VERT_RTR")) == {
                 ("D55", "13"), ("D35", "9"), ("D57", "18")
             }
             and set(nodes(board, "FRAME_INT")) == {("D35", "8"), ("D10", "23"), ("R60", "1")}
-            and all(["D35", pin] in board.get("no_connects", []) for pin in ("1", "2", "5", "6"))
-            and all(["D35", pin] not in board.get("no_connects", []) for pin in ("8", "9")),
-            "exact .009 E3: D55.13 active-low VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23 and D57.18/CLK2; D35.3/.4 remains POF/VID_MIX2",
+            and all(["D35", pin] in board.get("no_connects", []) for pin in ("1", "2"))
+            and all(["D35", pin] not in board.get("no_connects", []) for pin in ("3", "4", "5", "6", "8", "9")),
+            "exact .009 E3: D55.13 active-low VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23 and D57.18/CLK2; POF drives D35.3/.5 and R39.1, D35.4 goes to D37.11, and D35.6/R38.1 drive SHIFT_G",
         ),
         (
             "D30 common asynchronous-control conductor uses the native D38-side status strobe",
@@ -348,7 +353,7 @@ def main() -> int:
     lines = [
         "# Memory timing boundary",
         "",
-        "Status date: 2026-07-22.",
+        "Status date: 2026-09-27.",
         "",
         f"Status: **{status}**",
         "",
@@ -412,8 +417,8 @@ def main() -> int:
         "CAS",
         "D36_CAS_IN",
         "TIMING_TAG2",
-        "D34_A1_TAG2",
         "D39_MEMCYC",
+        "LATCH_SIG",
         "MEMR",
         "D33_O4",
         "RAM_OUT_EN",
@@ -422,6 +427,7 @@ def main() -> int:
         "D92_WR_NOR",
         "D92_NOACC",
         "PHI2TTL",
+        "PHI2_POST_R35",
         "XTAL16M",
         "D39_O8",
         "D39Y",
@@ -445,6 +451,17 @@ def main() -> int:
 
     lines.extend(
         [
+            "",
+            "The exact `.009` sheet-2 detail places D58.11 on timing tag 5,",
+            "separate from D38.5 and D39.12. In the same tile D33.12 `LATCH`",
+            "branches into D38.5, while D39.3 and D39.4 join numbered rail 4;",
+            "D38.4 follows rail 2. The connectivity JSON reflects this source",
+            "correction. All three PCB variants assign D38.5 to LATCH; the",
+            "routed variants remove its obsolete rail-4 branch and route it to",
+            "D39.9 LATCH with no new KiCad DRC violations or unconnected items.",
+            "A registered solder close-up also shows no visible B.Cu departure",
+            "from D58.11 and no join to the broad +5 V strip below it; its",
+            "component-side trace and remote driver remain unresolved.",
             "",
             "## Interpretation",
             "",
@@ -496,10 +513,10 @@ def main() -> int:
             "  D59 oscillator, but the native sheet does not draw a continuous source-side",
             "  path through the intervening bundle. `OSC` and `XTAL16M` therefore remain",
             "  separate until continuity or stronger artwork proves the PCB merge.",
-            "- D38.4's left-side timing rail 2 and D34.4's top-edge tag 2 are distinct",
-            "  boundary domains. The native vertical strip shows each terminating at its",
-            "  own gate input with no continuous conductor between them; matching numerals",
-            "  alone do not justify a merge.",
+            "- D38.4's left-side timing rail 2 and D34.4's top-edge tag 2 share one",
+            "  uninterrupted owner-board solder trace, visible from registered pin to",
+            "  registered pin in the July native crop (850,1980)-(2350,2270). The local",
+            "  join is modeled; the remote timing driver still requires tracing.",
             "- Do not replace these boundaries with a behavioral timing guess from the",
             "  runnable twin. They need stronger sheet-2 imagery, macro photo,",
             "  continuity check, or scope trace before being removed from the",

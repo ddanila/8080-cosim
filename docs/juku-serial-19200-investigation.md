@@ -130,6 +130,12 @@ The first experiment should be one repeatable BAUDTEST run at 9600 followed by
    trace their actual board connections rather than inferring them from the
    generic datasheet.
 
+Before applying power, resolve the D104.16 rail by continuity to a known X8
++12 V landing. The exact `.009` sheet-1 power table leaves the К170УП2 +12 V
+cell blank even though the preserved device pinout identifies pin 16 as its
++12 V supply; the owner component photo does not expose the contact's full
+route. See `ref/schematics/d104-pin16-rail-conflict.json`.
+
 The result gives a direct decision tree:
 
 - X3.4 stops or loses valid bipolar levels: external driver, grounding, or

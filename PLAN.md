@@ -1,12 +1,141 @@
 # PLAN — working physical Juku recreation
 
-Status date: **2026-08-22**.
+Status date: **2026-09-26**.
 
-Release status: **DESIGN HOLD / PACKAGE VERIFIED**. The promoted zero-open
-main-board route and deterministic Gerber/drill ZIP pass the machine package
-gates, but this is not fabrication authorization. Complete D2/D30 READY-cycle
-timing through `H`/`-BLOCK`, D94 shared-enable/D0 closure, remaining FDC-support
-pin closure, source-risk nets, and sourcing decisions still hold release.
+Release status: **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**. The source and
+routed PCBs carry the accepted D57.18 correction; the earlier routed local
+zero-open and electrical DRC results predate the D42/D43 orientation correction.
+The tracked Gerber report verifies an
+older board hash; the ignored `fab/gerbers` tree and upload ZIP are absent in
+this checkout. Regenerate and review the exact package after all source
+changes. Complete D2/D30 READY-cycle timing through `H`/`-BLOCK`, D94
+D0 hidden-branch closure (the `.009` CS7 enable path is closed), remaining FDC-support pin closure, source-risk nets,
+and sourcing decisions before fabrication authorization.
+
+The D42/D43 owner-photo notch audit now puts both source footprints at 270°
+(right-facing notch), correcting their earlier 90° placement. Both routed
+boards still carry the former physical pin positions and require a copper-aware
+refresh and reroute before their local zero-open result is meaningful. See
+`ref/photos/juku-pcb-2/d42-d43-orientation-audit.json` and
+`ref/routing/d42-d43-orientation-copper-impact.json`: all 28 D42/D43 physical
+pad sites change net, and a footprint-only routed trial creates 38 shorts and
+25 additional unconnected items.
+The registered owner solder fields show D42.7 and D43.7 sharing the same upper
+strip as D58.10; overlapping photos follow that strip to the terminal engraved
+GND. D42.14 and D43.14 share a different lower strip with D58.20. That strip
+continues left through the screw-area detour to registered D26.26, already
+photo-traced to the terminal engraved +5 V. The separate right-hand +5 V
+departure is not the joining route; see
+`ref/photos/juku-pcb-2/d26-d58-plus5-strip-review.json`. Owner meter checks
+remain optional independent confirmation of these photographed rail paths.
+
+The adjacent photographed D58 КР580ИР82 also has a right-facing notch. Its
+source footprint is now rotated 270° with unchanged center and unchanged source
+DRC. Both owner close-ups place its body approximately level with D43, whereas
+the model puts it 16.4 mm higher. A counted owner solder 2×10 field, projected
+relative to registered D26, independently estimates D58 near (181.4,260.0) mm,
+within about 0.5 mm of D43's source y259.5. The same photo projects the
+mixed X9-band solder row near board x213..248.5/y266.4 mm, to D58's right and
+below it.
+A same-row source trial collides with the provisional modeled X9 landings
+A56-A58 because their current x192..224.5/y262.0 placement is inconsistent
+with this relative photo fit. D58's four component/solder corner contacts now
+match at approximately unit reflected scale, but that geometric fit does not
+replace a meter measurement of the rail paths. The individual X9 A-number/wire
+order remains open
+before moving or rerouting numbered pads. An exact current-board pad-site
+comparison finds that all 20 D58 nets differ between the corrected source
+orientation and both routed variants, including the opposing GND and +5 V
+sites; see `ref/routing/d58-orientation-copper-impact.json`. The estimated
+owner D58 center is still search-grade, so the X9 landing fit remains a
+prerequisite to moving it.
+See `ref/photos/juku-pcb-2/d58-x9-solder-relative-fit.json` and
+`ref/photos/juku-pcb-2/d58-orientation-placement-review.json`. The wider
+owner view places the X9 termination band under D26 and right of D58, while
+the modeled A56-A58 pads intrude into the photo-aligned D58 body. The local
+row evidence and its numbering limit are in
+`ref/photos/juku-pcb-2/x9-d58-local-row-review.json`. The mirrored solder
+view locates a 15-site regular solder band beneath D26; its pitch matches
+D26's DIP lead pitch within 1%. The leftmost site near (1835,2375) projects
+onto a visible component joint beside the ribbon sheath. Full-band site 10
+near (2385,2375) has a B.Cu route to an intermediate via near (2385,2240),
+separated from the nearby D26 lower pin crown. The earlier direct
+D26.28/DB6 assertion is retracted. A fresh front pin count favors
+D26.27/DB7 through that via, but the across-face hole match and cable
+membership need continuity proof; see
+`ref/photos/juku-pcb-2/x9-site10-via-review.json`. Excluding site 10
+leaves fourteen sites only provisionally (`ref/photos/juku-pcb-2/x9-fifteen-site-band-review.json`,
+`ref/photos/juku-pcb-2/x9-solder-row-registration.json`). Two
+solder sites near (2325,2375) and (2505,2375), full-band sites 9 and 12,
+join the same uninterrupted broad copper as registered D26.26, already traced
+to the marked +5 V landing. They are plausible A53/A54 power landings, but
+cable membership and individual A-number identity remain open
+(`ref/photos/juku-pcb-2/x9-plus5-rail-site-review.json`).
+The two rail-site indexes cannot establish or reject monotonic A-number order
+for the actual cable holes; individual cable-wire mapping is required.
+The X9 checker now guards the factory harness net mapping only; it no longer
+treats the provisional A45-A58 coordinates as measured placements.
+
+The D6 and D9 source PCB photo corrections are now reflected in the board
+generator (`D6` center 57.66/113.165 mm, `D9` center 107.88/113.205 mm,
+both right-notched). `python3 kicad/check_source_chip_placement_parity.py`
+checks all 106 modeled chip centers and rotations against the saved source
+board; a fresh generator trial also reproduces those six recently corrected
+D6/D9/D42/D43/D58/D59 placements.
+The broader `python3 kicad/check_source_generator_pad_parity.py` regenerates
+to a temporary file and compares all 2,440 pads on 324 footprints, including
+their nets and geometry; it passes. VT2's offset lap-solder pads match exactly
+despite its footprint bounding-box center differing from the body-center seed.
+
+Top-edge owner photos independently confirm three КР580ВА87 devices
+D25/D23/D24 followed by marked КР580ВА86 D29. D23/D24/D29 left-facing
+notches match their source footprints; D25's molded pin-one end is not
+decisive in the archived front views. The .009 assembly drawing explicitly
+draws D25 and D23 with left-facing notches, separated by C74. The corresponding
+D25 lower-left solder pair joins the same uninterrupted broad strip as
+clear-left-notched D23's pin10/pin9 ground pair. That copper supports D25's
+modeled left orientation on the owner board; independent owner rail continuity
+remains useful. At the D23/D25 upper seam, D23.20 and a separate gap site join
+the broad upper strip; D25.11 has its own narrow trace. A corrected two-package
+fit matches the gap spur near solder (2705,1390) to a distinct front annulus
+near (1012,1255), making it a photo-supported +5 V-side C74 search feature.
+A lower drilled spur near solder (2705,1647) on the D23/D25 common ground
+strip geometrically matches the lower front hole near (1005,1517). The
+second lower front feature near y1465 projects onto the same spur where copper
+obscures its drill. C74's upper-to-y1465 spacing matches the adjacent C75
+bypass candidate spacing (about 210 versus 215 px), making y1465 the stronger
+assembly-geometric lower candidate; the exact lower pad choice and population
+remain unproved. See
+`ref/photos/juku-pcb-2/top-bus-buffer-population-audit.json` and
+`ref/photos/juku-pcb-2/d25-ground-strip-orientation-review.json` and
+`ref/photos/juku-pcb-2/c74-d25-d23-gap-review.json`.
+
+The marked D59 КР531ЛН1 at the left of this row also has a right-facing
+owner-photo notch. Its source footprint is corrected to 270° with unchanged
+source DRC, while both routed boards retain the old end assignment. A
+footprint-only routed trial creates 20 shorts and 14 additional unconnected
+items. A four-corner front/solder fit places its pin7 near (2910,2260) and
+pin14 near (2530,2450) in the July solder tile; neither supply route is
+photo-closed. See `ref/photos/juku-pcb-2/d59-orientation-audit.json`.
+The exact current-board site map in
+`ref/routing/d59-orientation-copper-impact.json` shows 12 of 14 nets differ
+between source and routed variants, including opposing GND and +5 V sites;
+only the two duplicate OSC_PRE sites remain on the same net.
+An enlarged front crop and second owner angle also show physical D59.14
+joining the right lead of red R32=1K3 and the left lead of a pale 1K0
+resistor. A native .009 assembly panel labels that pale D59-right position
+R38, matching the drawn 1 kΩ value. Counting the seven upper D59 contacts places R32's left lead on
+physical D59.4. The exact .009 drawing places R32 between D59.9/OSC_FB and
+D59.4/PST_CLK, with neither end at D59.14/P5V. This source-to-owner conflict
+is held for direct continuity and cut/repair inspection before any netlist
+change; see
+`ref/photos/juku-pcb-2/d59-orientation-audit.json`.
+The separate D50/C95 assembly resistor label is R58, not R38. Its D51-right
+owner body reads 5K1 and one lead photo-joins D51.8/GND, matching R58's
+5.1 kΩ value and grounded rail-E terminal; the other lead still needs a CAS
+continuity check. The existing R38 source/routed footprint is already beside
+D59, while R58's modeled footprint is far from the owner candidate. See
+`ref/photos/juku-pcb-2/c95-d50-r58-placement-review.json`.
 
 This is the sole living project plan for the `ДГШ5.109.009` FDC-era processor
 module. Owner photographs of the exact `ДГШ5.109.009 Э3` are the primary
@@ -104,7 +233,7 @@ whether it expires after the first article.
 | --- | --- | --- |
 | Digital twin | `cosim` and `juku_top` boot the adopted ROM, match framebuffer and keyboard behavior, reach EKDOS and disk BASIC prompts, and pass the CPU, bus, FDC, and peripheral guards | Physical shared-DRAM timing, controller behavior outside the guarded media subset, cartridge BASIC loading, and analog behavior |
 | Connectivity | `sync/check.sh` reports no mismatch in the mapped KiCad/HDL scope; adopted PROM, timing, peripheral, and photo/wire endpoints are source-modeled and LVS-visible | Routed-snapshot parity, omitted remote endpoints, behavior, analog waveforms, and historical correctness of assumed nets |
-| PCB package | The promoted route has exact live-source identity and passes the package checks. See `docs/replica-manufacturing-readiness.md` and the machine-readable records under `ref/routing/` for current details | The package remains under design hold until the named connectivity, sourcing, and construction gates close; any source or route change requires regeneration and review |
+| PCB package | The corrected route has exact live-source identity and zero local electrical DRC blockers; the previously verified ZIP belongs to the pre-D57 board. See `docs/replica-manufacturing-readiness.md` and `ref/routing/d57-clock-correction.json` | Regenerate and independently review the package after the remaining source changes, then close connectivity, sourcing, and construction gates before release |
 | Sources/media | Factory drawings, 16 Baltijets PDFs, ROMs, EKDOS source, raw disks, system binaries, 50 owner photographs, cross-machine validated physical D2 `.037`/D6 `.038`/D8 `.039`/D94 `.092` dumps, the adopted third-source archival D15/D16 pair, 26 photographs of `ДГШ5.109.009 СБ` sheet 1, the ДУБЛИКАТ scan of its sheets 2-6 (таблица соединений, transcribed), and owner RE3 scans are local and checksum-guarded | Remaining continuity reads and the cartridge BASIC loading procedure; Baltijets programming-disk payloads are optional preservation provenance |
 
 A preserved salvage against the pre-owner-timing-refresh
@@ -693,6 +822,21 @@ physical placement remains approximate. The raw frame also relocates vertical
 200-ohm R46 from an overlapping seed into the photographed D33/D103 gap at
 `(266.6,184.0)` mm. Separate D37 and D39 guards preserve the corrected
 identities, notches, evidence hashes, and placement limits.
+A broader upper-to-lower cross-face check exposed a common roughly 500-pixel
+horizontal misassignment in the D41/D38/D92/D39 solder package fields.
+Corrected complete joint rows match upper FDC anchors: normalized D102–D41
+separation is `62.07/61.90` mm on component/solder faces and D38–D92 is
+`24.08/23.86` mm. D92's normalized D38-to-D39 fraction is `0.619/0.609`.
+Corrected D92.1/D92.13 solder coordinates are `(1719,1951)` and
+`(1552.167,2007)`; the A11/A13 guards use them. Re-evaluate all previously
+promoted D38/D41 solder-side copper paths and C29 pad candidates against
+the corrected fields before accepting their continuity or population.
+For A9B, the visible component-side candidate annulus `(2288,2298)` projects
+through the corrected D38 pin field to solder `(1907,1982)`. A wider
+D38/D41/D92/D39 fit puts it near `(1914,1964)`, about 14 px from an open
+solder annulus `(1916,1950)`. That annulus may be the through counterpart,
+but no continuous route to corrected D38.12 `(2076,2064)` is visible. Keep A9B unassigned pending
+physical continuity (`a9b-corrected-trace-review.json`).
 
 Native-sheet value extraction now also retires 23 formerly blank resistor
 values (`docs/native-resistor-values.md`). Checksum-guarded sheet 1 closes the
@@ -708,11 +852,12 @@ sheet's 2 kΩ value without inferring its still-open `.009` pin-2 continuation.
 The matching native-capacitor audit now source-closes C7=`560 pF`, C8=`15 nF`,
 and C99=`160 pF` from their retained electrical-sheet circuits
 (`docs/native-capacitor-values.md`). C7/C8 are the two already traced D56
-one-shot timing capacitors; C99's value closes independently of its still-open
-far plate. The guard deliberately leaves C9-C12/C15 at their target-revision
+one-shot timing capacitors. A later exact-sheet symbol comparison closes C99's
+far plate to GND; its physical pad identity and population remain open. The
+guard deliberately leaves C9-C12/C15 at their target-revision
 holds, C16/C19 at their incomplete bare-body markings, and unlabelled C34
 unvalued rather than importing superseded `.006` RF assignments or guessing
-units. Connectivity is unchanged.
+units. C99.2 is the one connectivity correction from the later source reread.
 
 The native-semiconductor audit now also restores the reset diode omitted from
 the former board model and closes the beeper clamp's exact fitted part
@@ -725,7 +870,7 @@ May view corroborates its grade-В reverse face. The source PCB carries both phy
 diodes with their sheet-proved polarities. This target-body evidence supersedes
 the older `.006` group list's КД522А allocation without changing VD3/VD5.
 
-The machine-verified upload ZIP SHA256 is
+The historical, pre-D57 machine-verified upload ZIP SHA256 is
 `90308b962433648cf52d0de44046367380e79f3e653151da75fc08bd9d949a46`.
 Do not send this package to a fabricator while the design hold remains. After
 the blockers below are closed, regenerate every fabrication file and gate
@@ -821,23 +966,29 @@ remaining connectivity is measurement-gated.
    workbench Phase 2, which routes its decode through the same physical D6 РТ4
    chip (`spinoffs/minimal-vga/docs/workbench-plan.md`).
 2. **Preserve the promoted route until the functional netlist freezes.** The
-   deterministic rip-up/recovery workflow has now promoted an exact-source
-   route with zero opens, zero electrical-category DRC findings, and zero
-   dangling copper (`ref/routing/zero-open-promoted-topology.json`). Its
-   stable-KiCad fabrication package is checksum-verified, but remains under
-   design hold; any source-net change requires a complete reroute/package
-   regeneration rather than carrying this checksum forward. A:7, A:8, A:10,
-   A:11, A:14, A:19, and A:20 remain historically faithful splits: registered
-   landings on separate PHI1, STSTB, W10_QA_SEL, MEMR, PHI2, MEMW, and S_TTL
-   islands joined only by W7/W8/W10/W11/W14/W19/W20.
-   All twenty endpoints are now registered
-   in original drawing pixels. Both A8/A10/A11/A19/A20 terminals and the
-   D38-side A9 terminal are now fitted to their physical joints and copper
-   islands; both A7/A14 remote-joint pairs and the C96-side A12 joint are now
-   fitted too, leaving four PCB coordinates/island assignments pending. A14B,
-   A7B, and D41.1 now share one raw solder image and calibrated frame: A14B is
-   58.911 mm from D41.1, clearing the former 0.784 mm collision. The source now
-   preserves separate PHI2 landing islands joined only by W14. Both
+   deterministic rip-up/recovery workflow produced the historical zero-open
+   route (`ref/routing/zero-open-promoted-topology.json`), and the D57
+   correction preserved exact source parity, zero local electrical DRC
+   findings, and zero dangling copper
+   (`ref/routing/d57-clock-correction.json`). The historical package checksum
+   does not apply to the corrected board; regenerate and review the fabrication
+   package after source changes. A:7, A:8, A:10,
+   A:11, A:14, A:19, and A:20 have modeled split islands joined by
+   W7/W8/W10/W11/W14/W19/W20. W7.1 and W14.1 still sit at stale backside
+   through-hole positions; owner component photos prove their actual
+   D1-side white-wire starts at surface joints `(14.597,184.485)` and
+   `(23.621,184.440)` mm. Relocate these two pads and their copper before
+   counting A:7/A:14 as construction-faithful.
+   All twenty endpoints are registered in original drawing pixels. The
+   corrected D41/D38/D92/D39 solder group invalidates former A8B, A9B,
+   A10A, A7B, and A14B metric projections and the A8/A10 terminal chords;
+   their source registration is now explicitly held. A8A, A10B, both A11
+   ends, A19, and A20 retain their independent fits; A7/A14 D1-side starts
+   remain fitted. The W8.2/W10.1 source-PCB coordinates are provisional
+   placeholders and cannot be fabricated until the physical landings and
+   copper islands are retraced. Neither A12 end is proved by a visible
+   wire termination. The source preserves separate PHI2 landing islands
+   joined only by W14, pending confirmation of the physical joints. Both
    A13 ends have now been exhausted across registered component/solder
    panoramas: D13.1/D92.1 are bare at both faces, the C95-side and post-D38
    remote corridors lie under the factory-wire bundle/mastic junctions, and no
@@ -847,7 +998,8 @@ remaining connectivity is measurement-gated.
    faces, and legacy endpoint seeds that mislabeled the visibly marked
    КР531ИЕ17 as D35 have been withdrawn. The marked D1 CPU and its complete
    2x20 pad field are likewise fitted on both faces, isolating the separately
-   printed D1-side A7/A14 joints below the package. The remaining D51-side A9
+   visible D1-side A7/A14 surface wire joints below the package. The former
+   backside through-hole attributions were retracted. The remaining D51-side A9
    joint has been chased across six overlapping
    component tiles and is consistently hidden beneath the factory-wire bundle
    and mastic, so its visible wire approach is not promoted as a landing.
@@ -882,6 +1034,17 @@ R67.2 remains a direct-continuity ask rather than inheriting the superseded
 
 ## Release blockers
 
+The accepted D57 channel-2 correction is now in both PCBs: D57.18 joins
+`VERT_RTR` with D55.13/D35.9, while `CLK_123M` remains on D57.9. The exact
+`.009` sheet and CS00015 `D57S` v2 physical positive control support this
+assignment. The local routed-candidate gate reports 2,436 matching pad nets,
+zero moved pads, zero opens, and zero electrical blockers; the generated
+bring-up report matches all 2,298 modeled PCB endpoints. The current copper
+and provenance are recorded in `ref/routing/d57-clock-correction.json` and
+`docs/cs00024-t36-diagnosis.md`. The earlier package snapshot is stale for
+these boards, so independent package regeneration/review remains a release
+blocker.
+
 ### P0: physical connectivity (measurement-gated)
 
 Every ask below is queued with exact deliverables in
@@ -909,11 +1072,11 @@ Every ask below is queued with exact deliverables in
    WREQ_N drives /CLR and /PRE, /Q feeds D, D28.8 clocks it, and Q drives
    D93.26 RCLK. A full-resolution reread restores section 2 in the local
    DRQ/INTRQ conditioner: wired D28.10/.12 feeds D96.10/.12 through R95,
-   R93 pulls the INTRQ input high, D96.9/.11 continue to sheet 1, D96.13 is
-   drawn unused, and pin8 retains its isolated test landing. The primary
-   SN74LS74A truth table now exposes that exact section-2 wiring as set-only:
-   its shared `/PRE2`/D2 node can set Q2 but cannot clear it, and the only clear
-   pin is the sheet-omitted pin13. Primary truth also corrects section 1: WREQ
+   R93 pulls the INTRQ input high, D96.9 feeds D101 A0–A3 in the full overview, while D96.11 joins D94.2 in the full overview, D96.13
+   joins D99.10 and another sheet-1 continuation, and pin8 retains its
+   isolated test landing. The primary SN74LS74A truth table makes the shared
+   `/PRE2`/D2 node set-only while `/CLR2` is inactive; the D96.13/D99.10
+   remote source must be found to verify the clear event. Primary truth also corrects section 1: WREQ
    asserts `/CLR1` and `/PRE1` simultaneously, so both outputs go high and the
    release phase is not deterministic, though `/Q` feedback divides after the
    first recovered-clock edge. D96 remains LVS-mapped; both sections' async
@@ -980,8 +1143,10 @@ Every ask below is queued with exact deliverables in
    constraint audit now proves its grounded-clear section 1 holds Q/pin13 low
    and `/Q`/pin4 high, proves physical D94 D1 drives section-2 A_N low on either
    selected read or write, and derives the nominal R97/C17 2.538 s pulse plus
-   26.4 ms retrigger-inhibit window. D99 pins4/5/10/11/12 remain the physical
-   remote-path targets (`docs/d99-reconstruction-constraints.md`). The former
+   26.4 ms retrigger-inhibit window. D99 pins4/10 remain remote-path
+   targets; pin5 is source-joined to D100.7, pin12 to D100.9, and pin11 to
+   D26.16 MOTOR EN. Each source-closed path still needs
+   original-board continuity (`docs/d99-reconstruction-constraints.md`). The former
    D93 EARLY/LATE, precomp-output, D97.13, and D102.4 probes are source-closed.
    An automatic handoff audit now also removes stale continuity requests for
    D93.15-.18/.26-.32/.34-.36 and D100.6: those step, direction, precomp,
@@ -1001,11 +1166,12 @@ Every ask below is queued with exact deliverables in
    A further full-resolution sheet-3 read restores C17/C18/R97/R103 and both
    D99 RC networks, grounds D99.1, and marks the explicitly omitted D99.13
    unused. Cross-checking the sheet's continuation notation keeps D99.10 and
-   the joined D100.9/.11 conductor as distinct sheet-1 boundaries rather than
+   D100.11 T as a separate sheet-1 boundary from D99.10 rather than
    incorrectly treating each `(1)` marker as logic high. The same read restores
+   D100.9 OE_N on D99.12 Q2_N; the former modeled D100.9/.11 join is rejected.
    D28 sections 5/6, D96 section 2, and R93/R95 as the local D93 DRQ/INTRQ
-   path. Device-truth analysis exposes D96 section 2 as set-only unless its
-   drawn-NC clear pin13 has an unrecorded source; D96.9/.11/.13 and the
+   path. Device-truth analysis exposes D96 section 2 as set-only while its
+   D99.10-joined clear source is inactive; D96.9-to-D101 continuity, D96.11-to-D94.2 continuity, D96.13, and the
    PIC-side destinations therefore remain functional verification asks.
    A separate automatic firmware audit still proves two incompatible VG93
    software profiles (`docs/fdc-bus-polarity.md`). EktaSoft 2.4 and Monitor 3.3
@@ -1071,9 +1237,10 @@ Every ask below is queued with exact deliverables in
    these constraints sharpen continuity work without treating behavior as copper evidence. The
    former BA11..BA15 assignment was an unproved scaffold analogy and is retired;
    all five actual D94 inputs are now owner-mapped
-   (`docs/d94-reconstruction-constraints.md`). A reflected D104 photo fit proves
-   that pin 10 has no B.Cu departure in two backside views; owner continuity on
-   2026-07-21 and the exact `.009 E3` drawing now close that output as NC.
+   (`docs/d94-reconstruction-constraints.md`). The former reflected D104
+   solder fit was retired because its anchors did not land on package joints.
+   Owner continuity on 2026-07-21 and the exact `.009 E3` drawing close
+   D104.10 as NC independently of that retired photo claim.
 3. **Close the remaining D6-area netlist asks.** Chip-removed continuity now
    proves D6.12->D8.15, D6.11-/->D8.15, and D6.11-/->D6.12, invalidating the
    earlier installed-PROM joined reading; D6.11 instead reaches D2.15/-WREQ.
@@ -1127,21 +1294,92 @@ Every ask below is queued with exact deliverables in
    locality inside the same scraped/reworked two-row field, while the component
    views hide the immediate dogleg under the body; D14.2/.7 are therefore
    photo-exhausted direct-continuity asks. At D11,
-   two component views now register the L trace and four position-159 solder
-   locations and exclude the previously cited pins-4–6 solder scar as a
-   different feature;
-   held-out-validated component and reflected package fits now project the field
-   into four overlapping solder photos. The upper point is rail-obscured and the
-   lower three do not form a unique four-hole match, so imagery is exhausted and
-   direct continuity of the bridge, D11 pin/net, and remote endpoints remains
-   the P0 hold
+   two component views register the L trace and four position-159 solder
+   locations. D11/D27 cross-side alignment corrected the D11 solder package
+   fit four joint rows south in `PXL_20260710_200506061.jpg`; the former
+   pins-4–6 scar and upper-rail projections were artifacts of the old fit.
+   The corrected upper projection lies beside an open via and the lower three
+   still have no unique four-hole match in that tile. A second complete
+   overlap reproduces the ambiguity after D11-corner alignment; two further
+   partial views put the upper projection at their top edges and likewise
+   cannot identify a four-hole field. The archived four-view set is now
+   reviewed at corrected coordinates. Continuity-test the bridge, D11
+   pin/net, and remote endpoints; this remains the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   43 source-risk nets and 3 official FDC devices with untraced functional
-   pins remain (`docs/replica-bringup-verification-points.md`,
+   48 source-risk nets and 62 chip-level fidelity gaps remain, including 4
+   official FDC devices with untraced functional pins. X2's PA1/PA5
+   contact digits are closed from native `.009` sheet 1 (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
    direction, interrupts, or video timing must be source-proven, measured, or
    explicitly redesigned before release.
+   Exact `.009` sheet 1 and assembly photos now identify R15/R16 as 12 kΩ
+   parts on the D26 PC0/PC1-to-D3 inputs. Their logical nets are modeled,
+   but `pcb_placement_pending` leaves them without footprints in all three
+   PCBs. Their drawn ground returns conflict with the owner's +5 V
+   resistor-path report. Measure both physical returns and isolated values,
+   then place and route the proven parts before release
+   (`docs/d6-input-continuity.md`).
+   The exact-source passive census still finds the eight populated R21–R28
+   D8 output pull-ups and C4 absent from the logical model. Sheet 1 prints
+   R21…R28 only as one bank label: it proves eight 1 kΩ branches from D8
+   outputs to rail A, but does not assign individual R numbers to output
+   pins. Owner photos identify the physical body order, while the blue
+   socket hides the lower copper; resolve the pin mapping before adding
+   per-ref nets (`ref/photos/juku-pcb-2/r21-r28-bank-pin-order-review.json`).
+   R35–R37,
+   C29/R106, C74–C78, C82–C84, C86–C92, C95–C97, C100, and R2/R7 are
+   logically modeled but await physical placement. R101 is placed in all
+   three PCBs. R109/R110 are assembly outlines without proved electrical
+   endpoints or population, so they remain unmodeled pending owner evidence.
+   R9/R10 are photo-registered and placed in the source PCB; their
+   copper connections still need owner continuity. They remain absent from
+   both routed PCBs because inserting those footprints at their source
+   positions adds 65 DRC violations against the existing dense local copper.
+   Both routed variants also retain D12 at its old left-of-D3 position,
+   while the photo-registered source PCB places D12 above D3; that local
+   placement and copper must be refreshed together
+   (`docs/r9-r10-routed-collision-audit.md`).
+   D11-local component and solder photos now register D104's actual owner
+   solder footprint and D104.16's joint near `(2710,1480)` in `200506061`;
+   its +12 V rail remains unproved. A global panorama cross-check retracts
+   the earlier `(181.88,31.90)` mm D104 placement estimate and puts D104
+   near its current PCB centre. It instead finds a large D11 photo/model
+   placement discrepancy. Two component views agree on D11's top corners
+   within about 0.66 mm; the four-corner panorama position centres it near
+   `(201.012,71.486)` mm; the source PCB now matches, while both routed
+   boards keep `(185.500,65.700)` mm. Treat routed D11 placement as a
+   copper-aware P0 hold before release
+   (`ref/photos/juku-pcb-2/d11-placement-crossview-audit.json`;
+   `docs/d104-solder-registration-audit.md`).
+   The source move leaves that PCB free of tracks in D11's broad box but
+   brings it nearly against R18's current broad box. Four D11-image resistor
+   joint centers agree within roughly 1 mm with the independent D3-local
+   R18/R104 placement, so the broad-box proximity is not a disproved
+   package position. Source KiCad error-only DRC improves 168→165 with
+   499 unconnected items unchanged. Both routed variants put stale D12 and dense copper
+   inside the trial box; check exact clearance and repair those placements
+   and routes before release.
+   Sheet-1 power detail groups C74–C78, C82–C93, C94–C98, and C100 on a
+   +5 V-to-ground bypass branch, closing those omitted capacitors' schematic
+   rails while their individual bodies, pads, and values remain to register.
+   Exact sheet-2 detail and its power table now prove R37=360 Ω from
+   +12 V (`B`) to D35.10/Ф1 and R36=360 Ω from +12 V to D35.12/Ф2;
+   these are separate phase-output pull-ups. Factory placement and two owner
+   photos identify both populated bodies beside D1; their physical pads
+   remain to register before the clock-output circuitry can be reproduced.
+   Sheet 1 additionally names C98 in its `C94...C98` supply-capacitor group;
+   C98 is logically modeled on that collective +5 V/GND branch, with its
+   footprint placement, individual value, and owner-board population open.
+   The same grouped source calls C96 a +5 V-to-ground bypass. The former
+   assignment of a nearby solder joint to A12B on D37.4 `RAM_OUT_EN` is
+   retracted: the solder photo shows no wire termination at that joint, and
+   the component face is obscured. Treat C96 ref/pad identity and both A12
+   endpoints as open until continuity and direct photo evidence close them.
+   `docs/omitted-resistor-census.md` records source evidence and remaining
+   number gaps without promoting retired RF parts by number alone. The generated
+   `docs/board-fidelity-gap-ledger.md` now lists its 43 source-proved missing
+   passive refs separately from modeled-chip and net gaps.
    The D10 interrupt audit narrows one non-critical exception without inventing
    copper: exact `.009` sheet 1 retains `IR4=(3) TAPE RUN INT`, while the
    complete replacement FDC sheet 3 contains no matching continuation. The
@@ -1150,17 +1388,154 @@ Every ask below is queued with exact deliverables in
    outside the critical path; owner continuity remains Tier-3 historical
    evidence rather than a Tier-1/2 boot blocker.
 
-Source-model state feeding this work: the authoritative board JSON defines all 2297/2297
-PCB-scoped board-JSON endpoints, with 75 non-PCB or placement-held
+Source-model state feeding this work: the authoritative board JSON defines all 2320/2320
+PCB-scoped board-JSON endpoints, with 137 non-PCB or placement-held
 endpoints intentionally excluded. The controlled D54/D55/D56 owner-timing
 refresh is now applied to both source and promoted routed PCBs; the generated
-coverage report proves 2297/2297 endpoint-name matches on each artifact, including
+coverage report checks 2320 source endpoints. D2.8/GND, D2.16/+5 V,
+D8.8/GND, D8.16/+5 V, D92.7/GND, D92.14/+5 V, D34.7/GND,
+D34.14/+5 V, D41.7/GND, D41.14/+5 V, D52.8/GND, and D52.16/+5 V
+pad names are corrected in all three PCB variants, but no power track
+touches any of these twelve pads. The source PCB C32/C33 pad names now match the exact .009 rail branches;
+the two routed variants still have old pad names and touching old-rail
+copper that require rerouting. The routed snapshot also predates the
+R9/R10 placements. The modeled source endpoints include
 the source-proved D59.5/D59.6 complementary mux-enable endpoints, and
 the routed-candidate gate preserves zero opens and exact source-pad identity.
+The D54/D55/D57/X9 component-side photo now exposes a separate placement risk:
+the broad projection of the modeled D54 position lands on the neighboring
+КР580ВВ55А body rather than any of the three marked КР580ВИ53 timers. All
+three timer packages now have local component and solder pin fits. Validate
+absolute board placement before treating current PCB coordinates, C84
+position, or nearby inferred pads as fabrication evidence;
+the endpoint-name check does not test this geometry.
+The .009 C84 outline sits below D54. May and July owner component views
+show no capacitor body there; a two-annulus candidate in July cross-pairs
+to two solder holes through the D54 fit. The left annulus has a visible
+front trace to fitted D54.10/OUT0, so that pair is rejected as the
+source-drawn +5 V/GND bypass C84. The holes also lead into separate narrow
+traces around X9 rather than visibly joining the adjacent wide power rail.
+The wider component tile shows a third annulus at `(2988,2475)` whose front
+trace rises directly to fitted D54.4/D4; pairing it with the D54.10 annulus
+also cannot form C84.
+The actual C84 pad pair remains unassigned.
+See `ref/photos/juku-pcb-2/c84-region-review.json`;
+do not infer DNP or reuse the rejected pair.
+The owner component tile shows about a 2 mm body gap between D26 and D54.
+After accounting for KiCad's pad-1 footprint origins, their model pad-array
+centers are 42.695 mm apart, consistent with the photo's roughly 42 mm.
+The earlier apparent 10 mm relative mismatch came from comparing pad-1
+origins as package centers. Absolute photo-to-board placement still needs
+a shared board-landmark fit; D54's package-local pin fit does not supply it.
+Broad photo-to-board registration puts D26 and all three timers about
+20–23 mm east of their current routed pad-array centers, with roughly
+matched relative pitch. A direct owner-photo board-edge/pin-pitch check
+places D54 around x278 mm, close to the routed x274.7 mm and inconsistent
+with the broad panorama's x297 mm. Treat the broad cluster shift as photo-fit
+bias; combine the local pin-center fits with shared board landmarks before
+accepting exact placement.
+An independent same-tile board-edge check using the three fitted pin-12
+centers and the visibly sloped right edge leaves only about +2.6 to
++3.4 mm x residual relative to the routed timer pads, versus the broad
+panorama's +20 to +23 mm. Its perspective and edge-datum uncertainty
+keeps absolute timer placement on hold; do not translate the footprints
+by the measured residual without shared fiducials or mechanical dimensions.
+The owner component and opposing solder tiles both show D54's lower pin row
+roughly 23 mm above the physical bottom board edge. The routed D54 pin-1 row
+is only 7.38 mm above the 266 mm Edge.Cuts bottom. This roughly 15–16 mm
+vertical conflict overrides the broad panorama's misleading near-zero y
+residual; it is a concrete timer/PPI placement hold. Refit the bottom edge,
+mounting holes, and package rows mechanically before any replica release.
+The same owner and opposing solder photos show a lower-right mounting hole
+near the board corner, distinct from X9's clamp screws. Its approximate
+edge-derived center is `(300.3,250.7)` mm, but the routed Edge.Cuts contains
+only the lower hole at `(199.0,251.2)` mm. Dimension and restore this missing
+mechanical feature before fabrication; keep the estimated drill position held.
+The earlier May owner component photo `PXL_20260519_201907078.jpg` also
+shows this lower-right hole near raw `(3250,2625)`, with both nearby board
+edges visible. That third view confirms the feature predates the July images;
+its approximate right/bottom edge offsets are 185/290 pixels, versus
+229/363 pixels in the July tile (offset ratios `0.638` and `0.631`).
+It does not supply a drill diameter or precise center.
+In the July component tile, the existing lower-middle hole and missing
+lower-right hole have approximate visible apertures of 88 and 90 pixels
+at nearly the same image y. Their size ratio is 1.023, supporting the
+same nominal 3.5 mm drill already used for the modeled hole, but a drill
+gauge or dimensioned drawing is still needed before fabrication.
+The modeled lower-middle hole and the photographed right/bottom edges give
+complementary D54.1 candidate coordinates near x `262–263`, y `243–244` mm;
+the routed pin is `(260.73,258.62)` mm. Method spreads of about 0.8 mm
+do not bound camera perspective or lead-center error. Use the candidate
+region to organize a full mechanical refit, not to move the footprint yet.
+D26 supplies an independent adjacent-package check: its lower owner row is
+23.029 mm above the component-photo bottom edge and 23.066 mm above the
+solder-photo edge, placing it near y243 mm, while the routed lower row is
+y258.62 mm. The roughly 15.7 mm discrepancy is therefore a bottom-cluster
+placement problem, not an isolated D54 package fit artifact.
+Propagating D54's bottom-edge datum through the three timer pin-row fits
+gives D55 pin-1 y around `219.7–219.8` mm and D57 around `197.0–197.4`
+mm on the two photo faces. Their routed rows are y `236.82` and `214.22`
+mm, so the complete timer column shows about 16–17 mm of vertical bias.
+The per-face estimates are in `docs/photo-registration/timer-bottom-edge-placement.json`;
+use a full mechanical fit before correcting coordinates.
+The reflected solder edge gives a second x check for D57/D55/D54:
+pin-12 x estimates near `290.5/290.2/290.0` mm versus component-edge
+estimates `292.1/291.7/291.2` mm. Their 1.1–1.6 mm face spread and
+routed x `288.9/288.9/288.7` mm leave a modest eastward candidate
+offset, still mechanically held. The broad +20–23 mm panorama residual
+is contradicted by both local edge checks.
+The factory assembly drawing and owner photo both put D26's package notch
+on the right, opposite the left-notched D54/D55/D57 timers. The replica
+currently gives D26 the same 90° DIP orientation as those timers, so its
+notch and physical pad numbering need an independent orientation/net audit
+before a fabrication claim.
+On the present routed footprint, pad 1 is lower left and pad 21 is upper
+right; preserving its holes but rotating D26 to the factory notch direction
+would exchange physical pins by 20 positions. The two-face local package
+fits establish pin identity; the net comparison below disproves current
+D26 copper equivalence.
+The generated `docs/ppi-physical-pin-mapping.json` now checks the full
+20-position physical rotation against the routed PCB: D26 and D27 each
+have 40/40 net mismatches at the photographed physical pin locations.
+Physical pin 7/GND maps onto routed pad 27/DB7 and pin 26/+5 V onto
+routed pad 6/CS_D26 or CS_D27. Treat both current PPI footprints and their
+copper as non-equivalent to the owner board until corrected and revalidated.
+An enlarged owner two-face review of D26.7 finds no uniquely traceable
+outward copper branch at the registered joint. A route under the package
+cannot be excluded; ground must be checked by direct continuity to a known
+ground landing, not by assigning the neighboring solder traces.
+The same factory assembly archive puts D27's notch on the right beside X2;
+the replica also gives D27 a left-notched 90° DIP-40 footprint. Extend the
+pin-orientation/net audit and fabrication hold to both 8255 PPIs.
+The horizontal, right-notched КР580ВВ55А under X2 in owner tile
+`PXL_20260710_200358952.jpg` is D27; the vertical, top-notched
+КР580ВВ51А in the overlapping tiles is D11. This retracts the former
+D27 placement/revision conflict, which came from misidentifying D11.
+The actual D27 body center projects to about `(162.7,38.4)` mm, close
+to its routed center `(151.705,35.700)` mm at broad-photo accuracy.
+The exposed top edge in D27's owner tile gives a direct y check:
+photographed upper row `27.221` mm versus routed `28.080` mm, only
+about `−0.86` mm at local photo scale. The opposing solder image
+independently estimates upper-row y
+`27.539` mm, about `−0.66` mm versus routed and within `0.32` mm of
+the component-face estimate. The overlapping top-left owner
+tile also shows the physical left edge and all 20 D27 upper-row leads;
+their same-photo pitch puts the left array end at x `126.940` mm versus
+routed x `127.575` mm, about `−0.64` mm. This rejects gross x/y D27
+displacement; exact placement and its pin-net orientation remain held.
+The 180° pin-map audit above now proves all 40 current net mismatches on
+each PPI; owner and factory notches face right while the 90° KiCad
+footprints face left. Both footprints and their copper still need correction.
+Both PPIs' 2×20 pad centers are now fitted on both owner faces in
+`ref/photos/juku-pcb-2/local-package-registration.json`. The owner
+solder photos also trace D26.26 through its broad rail to the board
+landing marked `+5V`; D26 ground and D27 power paths remain open.
 Bracket-mounted S1/X3/X4/X6/X8/X9 use their
-physical A-point cable landings. The photo-proven bare `.009` C63 callout is
-kept distinct from the inherited C63 DRAM-grid verification landing: the full
-4x8 common-artwork grid is fabricated and C63 remains assembly DNP. C51-C53/C70-C72 retain their
+physical A-point cable landings. The bare `.009` C83 callout between D41/D40 is
+distinct from the inherited C63 DRAM model slot. The former 4x8 photo pattern
+matches DRAM package contacts rather than independent capacitor holes, so the
+28 optional modeled footprints remain provisional; C63 is assembly DNP.
+C51-C53/C70-C72 retain their
 schematic rail-bypass intent but have no current source-PCB footprint: their
 former near-chip coordinates were fit-to-space assumptions and remain held
 until target placement/population evidence is registered
@@ -1171,8 +1546,8 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 Neither source nor routed PCB has an endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-639 observations have dispositions, 42 rows are accepted evidence, six rows
-are rejected (including the former R94 assignment), and the other 591 remain
+641 observations have dispositions, 47 rows are accepted evidence, eight rows
+are rejected (including the former R94 assignment and two D30 solder projections), and the other 586 remain
 measurement requests
 (`docs/photo-registration.md`).
 
@@ -1183,10 +1558,10 @@ design-release reports contain no P0 blocker.
 Active generated boundary/gate documents — each names its own pending hold,
 and `docs/owner-measurement-shortlist.md` queues them for the next hardware
 session: `replica-bringup-verification-points.md` (endpoint coverage),
-`unmodeled-footprint-inventory.md` (3 FDC devices),
+`unmodeled-footprint-inventory.md` (4 FDC devices),
 `factory-modification-disposition.md` (Вид В pad mapping),
 `assembly-drawing-extraction.md` (wire-table pin mapping),
-`d30-section-b-scan-chase.md` (D30 section B continuity),
+`d30-section-b-scan-chase.md` (closed D30 section B continuity and older-scan ambiguity),
 `routed-refresh-audit.md` (routed-board convergence),
 `io-decode-boundary.md`, `memory-timing-boundary.md`,
 `d41-timing-boundary.md`, `s4-interrupt-boundary.md`,
@@ -1507,9 +1882,11 @@ any duplicate set.
 
 - Use `docs/replica-dual-config-bom.csv` as a planning BOM, not a shopping
   cart. Programming, circuit-review, and mechanical-review rows remain gated.
-- The 27 photo-proven bare DRAM-grid footprints remain fabricated but carry
-  native KiCad DNP and position-file exclusion metadata; the schematic and
-  generated populate-now BOM guard the same assembly disposition.
+- The 28 optional inherited DRAM-grid footprints remain in the modeled PCB
+  provisionally while native images are checked for distinct capacitor holes.
+  They carry KiCad DNP and position-file exclusion metadata; the schematic
+  and generated populate-now BOM guard their assembly disposition. The 4x8
+  panorama pattern is a DRAM package-contact lattice, not footprint proof.
 - Candidate static compatibility is now guarded in
   `docs/replica-candidate-parts-readiness.md`: Western Digital FD1793B-01
   plastic DIP matches D93's complete pin contract, +5/+12 V rails, 1 MHz
@@ -1527,12 +1904,12 @@ any duplicate set.
 The twin is already sufficient as a boot/FDC/BASIC oracle. Further work should
 serve physical bring-up or historical fidelity:
 
-The sample-domain X7 receiver and CRT-display work is specified separately in
+The sample-domain VIDEO_OUT receiver and CRT-display work is specified separately in
 [`docs/crt-cvbs-simulation-plan.md`](docs/crt-cvbs-simulation-plan.md). That
 plan records the `ddanila/famicom-rf-hackrf-decoder` fork, keeps the Juku
 waveform truth in this repository, and separates electrical waveform, receiver
 lock, active-image, and CRT-presentation claims. Its first WP4 checkpoint now
-guards the traced R62-R65/VT2/X7 DC topology, both 75-ohm and unterminated
+guards the traced R62-R65/VT2/VIDEO_OUT DC topology, both 75-ohm and unterminated
 loads, and a declared tolerance sweep. That result is deliberately provisional:
 exact-device sheets now guard the К555ЛП5 voltage/fanout envelope and the
 old-package КТ315Б pinout, gain endpoints, saturation, current, voltage, and
@@ -1546,7 +1923,7 @@ and 1.818 V across the four input states, while high-state current still
 crosses the exact-device fanout-derived envelope. TI typical behavior is not
 К555ЛП5 equivalence evidence; the exact device sheet still has no nonlinear
 I/V curve. D34 loaded-drive behavior and physical calibration therefore remain
-open before the model can claim physical X7 levels. The separate
+open before the model can claim physical VIDEO_OUT levels. The separate
 decoder fork point is also clean-checkout reproduced on Linux: all three
 targets build, CTest passes 1/1, and `synth_ntsc` decodes 29 frames with 7/7 bars; the
 fork now records its upstream/fork authority and deterministic-fixture policy,
@@ -1558,7 +1935,7 @@ auto or fixed AGC, and produces deterministic headless output. An independent
 temporary six-field grayscale fixture matches all five output bars exactly;
 Linux CI run `29886015187` passes the full build, all three CTests, and the
 unchanged direct RF/IQ regression. This proves only the generic NTSC-rate
-baseband boundary, not Juku timing, physical X7 voltage, or receiver lock.
+baseband boundary, not Juku timing, physical VIDEO_OUT voltage, or receiver lock.
 CVBS-plan WP2 is now complete at decoder fork commit
 `10bfa4b9ae6c1ce071633459170b067fe3e2d91f`: explicit timing profiles drive
 line/sync/frame/active-window acquisition, monochrome bypasses NTSC chroma,
@@ -1574,18 +1951,18 @@ export. Controlled stimulus verifies the modeled D56 pulse widths and traced
 D34 sync XOR, while every event machine-marks the shared-DRAM slot schedule as
 unknown and deliberately omits the unresolved D34 signal input. It therefore
 does not claim a Juku raster, framebuffer reconstruction, composite voltage, or
-X7 samples. The following guarded checkpoint now executes the exact `ekta37`
+VIDEO_OUT samples. The following guarded checkpoint now executes the exact `ekta37`
 D54/D55 control/count bytes through `juku_top` with 8253 BCD and modes 1/2:
 the autonomous physical chain measures 15.625 kHz horizontal timing,
 313-line/49.920128 Hz frames, 320x241 active geometry, and the modeled D56 sync
 pulses. This closes digital raster timing only; shared-DRAM video slots,
-D34_SIG, fetched pixels, and X7 voltage remain open. Decoder fork commit
+D34_SIG, fetched pixels, and VIDEO_OUT voltage remain open. Decoder fork commit
 `b1d62c085e416c80cff35d8a77a8fbc397eead51`, pinned to this repository's
 `eb4d6ab6777db3f97306c9111e9c723c97dcf750` timing evidence, now exercises an
 explicitly synthetic five-bar Juku-timing waveform. Linux CI run `29888769589`
 passes the full application build, all six CTests, and the unchanged NTSC
 regression. This closes only the planned known-good receiver fixture: it is not
-a built-in Juku preset and makes no physical shared-DRAM, D34_SIG, X7-voltage,
+a built-in Juku preset and makes no physical shared-DRAM, D34_SIG, VIDEO_OUT-voltage,
 or framebuffer-agreement claim. The physical pixel-chain audit also corrects
 the shared D41/D42/D43 ИР16 primitive against the SN74LS295B contract: LD/SH
 high loads on the falling clock edge, LD/SH low shifts right, and pin 8 is an
@@ -2028,7 +2405,7 @@ Once a released board and programmed parts exist:
 - [x] Runnable boot executes from all four physical PROM tables. The D6
   memory-map oracle and the raw-strobe behavioral FDC bypass are retired;
   default FDC accesses consume D94's physical `.092` `/RE` and `/WE` outputs.
-  D94's decoded enable/A4 functional fits and the behavioral ВГ93 device core
+  D94's A4 runtime fit and the behavioral ВГ93 device core
   remain explicitly separate connectivity/model-fidelity holds.
 - [ ] Main-board design release passes; board is ordered.
 - [ ] Functional parts kit is received and tested.

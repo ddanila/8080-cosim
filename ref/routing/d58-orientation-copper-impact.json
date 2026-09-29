@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "reference": "D58",
+  "evidence": "The owner photos and registration in ref/photos/juku-pcb-2/d58-orientation-placement-review.json support a right-facing notch and a body near (181.4,260.0) mm. The current KiCad source and both routed boards were inspected with pcbnew for the pad-site comparison.",
+  "source_board": "kicad/juku.kicad_pcb",
+  "routed_boards": ["kicad/juku_routed.kicad_pcb", "kicad/juku_routed_candidate.kicad_pcb"],
+  "source_orientation_degrees": -90,
+  "routed_orientation_degrees": 90,
+  "current_source_body_center_mm": [183.0, 243.1],
+  "owner_photo_estimated_body_center_mm": [181.4, 260.0],
+  "position_note": "KiCad stores the footprint anchor at pad 1. Source pad 1 is (194.43,239.295) mm; routed pad 1 is (171.57,246.905) mm. Rows differ by 0.010 mm in y, so nominal sites below are matched by nearest position. The owner-photo center is an estimate, not a released fabrication coordinate.",
+  "site_mapping_source_pad_to_routed_pad": {
+    "1": 11, "2": 12, "3": 13, "4": 14, "5": 15,
+    "6": 16, "7": 17, "8": 18, "9": 19, "10": 20,
+    "11": 1, "12": 2, "13": 3, "14": 4, "15": 5,
+    "16": 6, "17": 7, "18": 8, "19": 9, "20": 10
+  },
+  "different_net_site_count": 20,
+  "critical_reversals": [
+    "At source physical pin 10/GND, routed copper occupies old pin 20/P5V site.",
+    "At source physical pin 20/P5V, routed copper occupies old pin 10/GND site."
+  ],
+  "disposition": "All 20 nominal pad sites differ in net between corrected source and existing routed boards. The owner-photo body is also about 16.9 mm below the current source center. Resolve the D58 and X9 landing geometry together, then reroute both board variants by physical pin and run DRC; a footprint-only correction is unsafe."
+}

@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "status": "right-facing D58 notch resolved; vertical placement conflicts with modeled X9 landing pads",
+  "reference": "D58",
+  "marking": "КР580ИР82",
+  "photos": [
+    {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200452717.MP.jpg",
+      "sha256": "b4e4124c1eaf701f6acdf30f041c7a93cd3ab5ca182853c6f0654f1af28c0408",
+      "crop_xyxy_original_pixels": [
+        1850,
+        1850,
+        3450,
+        2700
+      ]
+    },
+    {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200443117.jpg",
+      "sha256": "2645a1266ef788331123d190391dea3924982bcf3d928a1dbfad982a1246991c",
+      "crop_xyxy_original_pixels": [
+        1850,
+        2150,
+        3550,
+        3072
+      ]
+    }
+  ],
+  "observation": "Both views show the 20-contact marked КР580ИР82 D58 immediately right of D43 with a clear right-end notch. Their package center lines are approximately level; no 16 mm vertical offset is visible.",
+  "source_before": {
+    "body_center_mm": [
+      183.0,
+      243.1
+    ],
+    "rotation_deg": 90
+  },
+  "source_after": {
+    "body_center_mm": [
+      183.0,
+      243.1
+    ],
+    "rotation_deg": 270,
+    "pin1_mm": [
+      194.43,
+      239.295
+    ],
+    "pin10_mm": [
+      171.57,
+      239.295
+    ],
+    "pin11_mm": [
+      171.57,
+      246.915
+    ],
+    "pin20_mm": [
+      194.43,
+      246.915
+    ]
+  },
+  "placement_inference": "Relative to D43, D58 appears on approximately the same y center line, whereas the model puts it 16.4 mm higher. The wider component view also places D26 about 8.5 mm above both, matching D26-to-D43 model spacing; see x9-d58-local-row-review.json. A newly counted 2x10 D58 solder field in 200530933, projected from the registered D26 40-pin field, estimates its centre near (181.4,260.0) mm and independently confirms the same-row relation. This is a relative single-photo fit, not fabrication-grade absolute placement; see d58-x9-solder-relative-fit.json.",
+  "trial_result": "Rotating D58 at its current center leaves source DRC at 165 violations and 499 unconnected items. A temporary move to (183.0,259.5) mm makes D58 pads 20/19 collide electrically with modeled X9 landings A57/A58 and overlaps A56-A58 courtyards; that trial has 180 violations and 499 unconnected items. The source board retains the old center until the D58 and X9 physical holes can be registered together.",
+  "routed_disposition": "Both routed variants still have the previous 90-degree footprint and previous center. Their D58 copper is a design hold; orientation and placement require a joint reroute.",
+  "next_evidence": "A regular 15-site band is located in x9-fifteen-site-band-review.json, but the prior full-site10 D26.28/DB6 direct route is retracted after native inspection of an intermediate via; see x9-site10-via-review.json. The D26-relative fit locates D58 and projects the mixed band near board x213..248.5/y266.4 mm, clear of D58. A four-corner component/solder fit matches D58 right-facing pins at approximately unit reflected scale; see d58-x9-solder-relative-fit.json. Meter site10 to D26.27/.28, verify actual X9 cable-hole membership and A45-A58 mapping, and independently meter D58 rails before moving source pads or rerouting."
+}

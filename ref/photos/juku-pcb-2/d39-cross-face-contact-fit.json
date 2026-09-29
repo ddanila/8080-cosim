@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "review_state": "D39 package contact rows registered across July faces; C5/C82 inter-package holes still unassigned",
+  "images": [
+    {"path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg", "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a", "crop_xyxy_px": [2670, 2050, 3230, 2800]},
+    {"path": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg", "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215", "crop_xyxy_px": [1080, 1800, 1530, 2450]}
+  ],
+  "coordinate_system": "original source-image pixels; approximate visual centers",
+  "identity_basis": "The component body directly reads КР1533ЛА3 in the D39 assembly position left of marked D34. Both seven-contact rows are visible, with the notch at the upper end in the July orientation. The reflected solder rows lie at matching pitch and order to the right of D34's independently registered pair.",
+  "component_rows_px_approx": {"pins_1_to_7_left_x": 2820, "pins_14_to_8_right_x": 2990, "pin_1_or_14_y": 2290, "pin_7_or_8_y": 2630, "row_pitch_y": 57},
+  "solder_rows_px_approx": {"pins_1_to_7_reflected_right_x": 1385, "pins_14_to_8_reflected_left_x": 1220, "pin_1_or_14_y": 1950, "pin_7_or_8_y": 2285, "row_pitch_y": 56},
+  "d34_map_cross_check": "The separate D34 local map x_s=4084-0.960*x_c and y_s=-251+0.963*y_c predicts D39 row x about 1377/1214 and y about 1954/2282, within roughly 8 px of the visible D39 endpoints. This is a neighboring-package check, not a new fit to D39 alone.",
+  "independent_contact_check": "Earlier c29-landing-pair-review.json registered grounded D39.7 at solder about (1390,2284). The visible D39 pin-7 row end here is about (1385,2285), a roughly 5 px agreement independent of the new D34 fit.",
+  "bounded_gap_px_approx": {"component_between_D39_right_and_D34_left_x": [2990, 3155], "solder_between_D34_right_and_D39_left_x": [1055, 1220], "package_row_y_component": [2280, 2630], "package_row_y_solder": [1945, 2285]},
+  "decision": "D39 and D34 package rows now bound the C5/C82 photo search region on both July faces. Individual capacitor holes remain unassigned; several nearby filled joints and open annuli belong to routed IC traces, and proximity alone cannot distinguish the two optional capacitor sites.",
+  "next_inspection": "Correlate individual front annuli within the bounded gap to solder drills using trace geometry and at least one held-out same-hole match, then test C5 candidates to D34.6/D34.2 and C82 candidates to +5 V/GND."
+}

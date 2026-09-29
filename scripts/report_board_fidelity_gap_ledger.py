@@ -12,9 +12,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad" / "juku.board.json"
 REPORT = ROOT / "docs" / "board-fidelity-gap-ledger.md"
+OMISSION_CENSUS = ROOT / "docs" / "omitted-resistor-census.md"
 
 RISK_RE = re.compile(
-    r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|not readable|cannot be uniquely followed|pending|unread|await|owner-verify|mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
+    r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|not readable|cannot be uniquely followed|pending|unread|unresolved|uncertain|await|owner-verify|mame|approx|refine|dump[- /]dependent|dump required|source confirmation|requires? (?:source|continuity)",
     re.I,
 )
 FDC_SUPPORT_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
@@ -45,6 +46,14 @@ def chip_prov_text(chip: dict) -> str:
     return " ".join(parts)
 
 
+def chip_has_source_risk(chip: dict, text: str) -> bool:
+    # D6's former A7 boundary is explicitly retired by owner continuity. Keep
+    # the history in provenance without reporting it as an open chip gap.
+    if str(chip.get("ref", "")) == "D6":
+        text = text.replace("retired D6 A7 boundary", "")
+    return bool(RISK_RE.search(text))
+
+
 def category_for_chip(chip: dict, text: str) -> str:
     ref = str(chip.get("ref", ""))
     ctype = str(chip.get("type", ""))
@@ -73,7 +82,7 @@ def category_for_chip(chip: dict, text: str) -> str:
     return "logic/source"
 
 
-PROM_DECODE_NETS = {"CS_FDC", "D7_IOM_STATUS_RECHECK"}
+PROM_DECODE_NETS = {"D7_IOM_STATUS_RECHECK"}
 VIDEO_ANALOG_NETS = {
     "D34_SYNC",
     "D34_SIG",
@@ -140,6 +149,53 @@ def no_connect_pins_by_ref(board: dict) -> dict[str, set[str]]:
     return no_connects
 
 
+def source_proved_omissions(board: dict) -> list[tuple[str, str]]:
+    """Read only proved rows, never infer target components from number gaps."""
+    source = OMISSION_CENSUS.read_text(encoding="utf-8")
+    section = source.split("## Confirmed source components requiring model or placement work\n", 1)
+    if len(section) != 2:
+        raise SystemExit("passive omission census has no proved-components section")
+    section = section[1].split("\n## ", 1)[0]
+    modeled = {str(chip["ref"]): chip for chip in board["chips"]}
+    rows: list[tuple[str, str]] = []
+    seen: set[str] = set()
+    for line in section.splitlines():
+        if not line.startswith("| ") or line.startswith("| Ref ") or line.startswith("| --- "):
+            continue
+        cells = [cell.strip() for cell in line.strip("| ").split("|")]
+        if len(cells) != 3:
+            raise SystemExit(f"malformed proved-omission row: {line}")
+        names = []
+        for token in re.split(r"[, ]+", cells[0]):
+            if not token:
+                continue
+            match = re.fullmatch(r"([RC])(\d+)[–-]([RC]?)(\d+)", token)
+            if match:
+                prefix, start, repeated_prefix, end = match.groups()
+                if repeated_prefix and repeated_prefix != prefix:
+                    raise SystemExit(f"mixed-prefix omission range: {token}")
+                if int(end) < int(start):
+                    raise SystemExit(f"reversed omission range: {token}")
+                names.extend(f"{prefix}{number}" for number in range(int(start), int(end) + 1))
+            elif re.fullmatch(r"[RC]\d+", token):
+                names.append(token)
+            else:
+                raise SystemExit(f"unrecognized omission ref: {token}")
+        for ref in names:
+            if ref in seen:
+                raise SystemExit(f"duplicate proved omission: {ref}")
+            if ref in modeled:
+                if not modeled[ref].get("pcb_placement_pending"):
+                    raise SystemExit(f"proved omission {ref} is now placed; reconcile the census")
+                seen.add(ref)
+                continue
+            seen.add(ref)
+            rows.append((ref, cells[1]))
+    if not rows:
+        raise SystemExit("passive omission census has no proved rows")
+    return rows
+
+
 def unnetted_functional_pins(
     chip: dict,
     netted: dict[str, set[str]],
@@ -162,6 +218,7 @@ def unnetted_functional_pins(
 
 def main() -> int:
     board = json.loads(BOARD.read_text(encoding="utf-8"))
+    omission_rows = source_proved_omissions(board)
     netted = netted_pins_by_ref(board)
     no_connects = no_connect_pins_by_ref(board)
     chip_prov_counts = Counter(str(chip.get("prov", {}).get("type", "missing")) for chip in board["chips"])
@@ -169,7 +226,7 @@ def main() -> int:
     for chip in board["chips"]:
         text = chip_prov_text(chip)
         prov_type = str(chip.get("prov", {}).get("type", "missing"))
-        if prov_type != "missing" and not RISK_RE.search(text):
+        if prov_type != "missing" and not chip_has_source_risk(chip, text):
             continue
         chip_gap_rows.append(
             {
@@ -240,12 +297,16 @@ def main() -> int:
         "",
         f"Status: **{status}**",
         "",
-        "This generated ledger records the remaining board-fidelity surfaces that",
-        "are explicit in `kicad/juku.board.json`: chip-level provenance that is",
+        "This generated ledger records the remaining board-fidelity surfaces",
+        "from `kicad/juku.board.json` and the exact-source passive omission census:",
+        "chip-level provenance that is",
         "still assumed, boundary-only, deferred, untraced, or dump-dependent, and",
-        "net-level source risks already carried into the bring-up checklist. It",
+        "net-level source risks already carried into the bring-up checklist, and",
+        "drawing-proved passive refs absent from the model. It",
         "is not a release decision by itself; its P0 rows feed `PLAN.md` and",
         "prevent current gaps from hiding behind a green endpoint-coverage gate.",
+        "Validated physical PROM dumps are established evidence, not gap markers;",
+        "their unresolved board wiring remains listed under net-level risks.",
         "",
         "## Command",
         "",
@@ -259,6 +320,7 @@ def main() -> int:
         f"- Chips modeled: `{len(board['chips'])}`",
         f"- Nets modeled: `{len(board['nets'])}`",
         f"- Chip-level fidelity gaps: `{len(chip_gap_rows)}`",
+        f"- Source-proved passive refs absent from model: `{len(omission_rows)}`",
         f"- Net-level source-risk gaps: `{len(net_gap_rows)}`",
         f"- Explicitly dispositioned closed net risks: `{len(closed_risk_overrides)}`",
         f"- Documented intentional no-connect pins: `{sum(map(len, no_connects.values()))}`",
@@ -291,6 +353,23 @@ def main() -> int:
         lines.extend(["", f"### {category}", "", "| Ref | Type | Provenance | Note |", "| --- | --- | --- | --- |"])
         for row in sorted(rows, key=lambda item: str(item["ref"])):
             lines.append(table_row([f"`{row['ref']}`", f"`{row['type']}`", row["prov_type"], short(str(row["note"]))]))
+
+    lines.extend(
+        [
+            "",
+            "## Source-Proved Passive Refs Absent From Model",
+            "",
+            "These exact `.009` drawing or owner-photo refs are listed in",
+            "`docs/omitted-resistor-census.md` but have no component in the board JSON.",
+            "They are separate from chip-level and net-level gaps, which can only",
+            "inspect components and endpoints already modeled.",
+            "",
+            "| Ref | Source evidence |",
+            "| --- | --- |",
+        ]
+    )
+    for ref, evidence in sorted(omission_rows, key=lambda item: (item[0][0], int(item[0][1:]))):
+        lines.append(table_row([f"`{ref}`", short(evidence)]))
 
     pin_gap_rows = [
         row

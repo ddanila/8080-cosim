@@ -36,10 +36,17 @@ TARGET_ENDPOINTS = {
     ("D51", "15"),
 }
 PHI2TTL_ENDPOINTS = {
-    ("D35", "13"),
     ("D39", "1"),
     ("D53", "4"),
     ("D30", "3"),
+    ("D29", "1"),
+    ("R35", "1"),
+}
+POST_R35_ENDPOINTS = {
+    ("D35", "13"),
+    ("R35", "2"),
+    ("R106", "1"),
+    ("C29", "1"),
 }
 
 
@@ -68,11 +75,15 @@ def check_board(path: Path) -> tuple[int, int]:
             raise SystemExit(
                 f"{path}: {endpoint[0]}.{endpoint[1]} is not on {TARGET_NET}"
             )
-    for endpoint in PHI2TTL_ENDPOINTS:
+    for endpoint in PHI2TTL_ENDPOINTS - {("R35", "1")}:
         if pads[endpoint].GetNetname() != "PHI2TTL":
             raise SystemExit(
                 f"{path}: {endpoint[0]}.{endpoint[1]} is not on PHI2TTL"
             )
+    if ("R35", "1") in pads and pads[("R35", "1")].GetNetname() != "PHI2TTL":
+        raise SystemExit(f"{path}: R35.1 is not on PHI2TTL")
+    if pads[("D35", "13")].GetNetname() != "PHI2_POST_R35":
+        raise SystemExit(f"{path}: D35.13 is not on PHI2_POST_R35")
     if pads[("D96", "6")].GetNetname() == TARGET_NET:
         raise SystemExit(f"{path}: forbidden D96.6 active-output merge")
     if any(pad.GetNetname() == RETIRED_NET for pad in pads.values()):
@@ -125,6 +136,8 @@ def main() -> None:
         raise SystemExit("board JSON 1 MHz endpoint set changed")
     if endpoints(spec, "PHI2TTL") != PHI2TTL_ENDPOINTS:
         raise SystemExit("board JSON PHI2TTL endpoint set changed")
+    if endpoints(spec, "PHI2_POST_R35") != POST_R35_ENDPOINTS:
+        raise SystemExit("board JSON PHI2_POST_R35 endpoint set changed")
     if "D40.11" not in spec["nets"][TARGET_NET].get("src", ""):
         raise SystemExit("board JSON 1 MHz provenance is missing D40.11")
 

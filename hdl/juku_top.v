@@ -58,7 +58,7 @@ module juku_top #(
     // READY section A is represented by D30 below; native sheet-2 D38.8 exports
     // active-low STB to sheet-1 -SSTB/D30.1 on the D38 side of factory wire W8.
     // STSTB(8238) comes from D38.8 over factory wire 8.
-    wire        phi1, phi2, phi1_d35, phi2_d35, phi2ttl, ready, reset_sys, fdc_reset_n, ststb_n;
+    wire        phi1, phi2, phi1_d35, phi2_d35, phi2ttl, phi2ttl_post_r35, ready, reset_sys, fdc_reset_n, ststb_n;
     wire        stb_d38;
     wire        sclk_i;   // shared sim sampling clock (CPU + DRAM + intr): external `osc`, or self-clocked
 
@@ -185,10 +185,23 @@ module juku_top #(
                      .a2(cas_n), .b2(d36_b2_tag17), .y2(d36_y2),       // 1,2->3 -> D33.11; pin 2 <- rail 17 boundary
                      .a3(memw_n), .b3(d33_o10), .y3(),         // 9,10->8: W-strobe NAND(WR, CAS-delay) -> rail 16 (y3 on the board side of the W16 boundary)
                      .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
-    wire vert_rtr, frame_int, pof_released;
-    clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1_d35), .phi2(phi2_d35), .phi2ttl(phi2ttl),
-                     .i1(1'bz), .o2(), .i3(ppi0_pc[7]), .o4(pof_released), .i5(1'bz), .o6(),
+    wire vert_rtr, frame_int, pof_released, d35_o4;
+    clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1_d35), .phi2(phi2_d35), .phi2ttl(phi2ttl_post_r35),
+                     .i1(1'bz), .o2(), .i3(ppi0_pc[7]), .o4(d35_o4), .i5(ppi0_pc[7]),
+`ifdef YOSYS
+                     .o6(shift_g),
+`else
+                     .o6(),
+`endif
                      .i9(vert_rtr), .o8(frame_int));
+    assign pof_released = d35_o4;
+    // Source R35 separates D35.13's RC node from the PHI2TTL trunk feeding D29.1/D30.3.
+    // The functional phase oracle passes through this structural boundary.
+    net_boundary U_R35 (.a(phi2ttl_post_r35), .b(phi2ttl));
+`ifdef YOSYS
+    // The native sheet joins the open-collector D35.4 output to D37.11.
+    assign d37_out = d35_o4;
+`endif
     net_boundary U_W7  (.a(phi1_d35), .b(phi1));
     net_boundary U_W14 (.a(phi2_d35), .b(phi2));
     wire d30_q, d30_qn, d30_q2, d30_q2n, d13_o4, iorc_n;
@@ -265,16 +278,13 @@ module juku_top #(
     // ============ expansion/backplane interface (Phase B, sheet 1 -- bus-interface.md) ============
     // D29 (ВА86) = the full bus-command transceiver, 8 signals (B0..B7 per owner's scan read):
     //   B0 -INHIB, B1 -CCLCK, B2 -IO/M, B3 -MWC, B4 -MRC, B5 -AMWC, B6 -IORC, B7 -IOWC.
-    // A-side reads the four direct strobes plus D7.3 -> A5 -> -AMWC and the
-    // shared D7.5/D29.3 status boundary -> A0 -> -INHIB. Owner continuity puts
-    // physical D29.4/A2 on IORD; the older D7.8->D29.4 IOM_STATUS reading is
-    // retained only as a recheck boundary. The remaining CCLCK
-    // source stays an inactive boundary. One-way (never drives the
-    // strobe nets -> boot-safe).
+    // A-side source rows: D7.5 -> -INHIB; PHI2TTL -> CCLCK; D7.3 -> -IO/M;
+    // D30.8 -> -MWC; MEMR -> -MRC; MEMW -> -AMWC; IORD -> -IORC;
+    // qualified IOWR -> -IOWC. Owner continuity confirms D29.5 IOWR.
     wire inhib_n, cclck, iom_n, mwc_n, mrc_n, amwc_n, iowc_n;
-    wire d7_y2_amw_n;  // D7.3 destination remains a boundary; former D29.5 assignment was disproved
+    wire d7_y2_amw_n;  // exact .009 joins D7.3 to D29.2; owner continuity pending
     wire d7_b3_inhib_status;  // D7.5 shares semantic command A0 on physical D29 A2/pin3; physical B2/pin17 is -INHIB
-    va86_out U_D29 (.Ain ({d30_q2n, iord_n, iowr_n, memr_n, memw_n, iord_n, 1'b1, d7_b3_inhib_status}),
+    va86_out U_D29 (.Ain ({iowr_n, iord_n, memw_n, memr_n, d30_q2n, d7_y2_amw_n, phi2ttl, d7_b3_inhib_status}),
                     .Aout({iowc_n, iorc_n, amwc_n, mrc_n,  mwc_n,  iom_n, cclck, inhib_n}),
                     .oe_n(1'b0), .t(1'b1));
     // Address/data backplane transceivers (ВА87; refdes confirmed by owner from scan):
@@ -533,7 +543,7 @@ module juku_top #(
     // Driven by the sim `dotclk`. The RUNNABLE demo uses the abstracted 8-bit ir16_sr
     // (U_IR16) -> lp5_xor (U_D34V); the REAL chips D42/D43 (ИР16) are instantiated below for the LVS
     // structure (traced sheet-2 top-right; see board JSON provenance). The 2x4-bit +
-    // analog node-"A" byte->pixel scheme + the КП14 µP/video arbitration remain physical boundaries.
+    // D35.4/D37.11 output-tie behavior + the КП14 µP/video arbitration remain physical boundaries.
     wire vpixel, vpixel_enabled, vshl_n;
     video_raster U_VRAS (.dotclk(dotclk), .vid_addr(vid_addr), .shl_n(vshl_n));  // raster scan (unmapped)
     ir16_sr U_IR16 (.clk(dotclk), .clk_inh(1'b0), .shl_n(vshl_n), .clr_n(1'b1), .si(1'b0),
@@ -545,8 +555,9 @@ module juku_top #(
     assign vid_out = pof_released ? vpixel_enabled : 1'b0;
     // Real pixel serializers (LVS structure): D42 = high nibble, D43 = low nibble. Parallel data
     // reads the REAL system data bus DB (the bit-sliced РУ5 drives the byte there during a video
-    // read); CK joins the dot-clock net; DS = GND; shared load VID_LD; Q -> node "A" (analog mix =
-    // boundary). The video-read SLOT timing (КП14 µP/video arbitration + РЕ3/АГ3) stays a boundary.
+    // read); CK joins the dot-clock net; DS = GND; shared load VID_LD; Q feeds D37,
+    // whose output shares the D35.4 conductor. The video-read SLOT timing
+    // (КП14 µP/video arbitration + РЕ3/АГ3) stays a boundary.
     wire d42_q, d43_q;
     // D42/D43 = the PIXEL SHIFT REGISTERS (array read, 3rd and geometry-anchored reading of this
     // zone -- supersedes both the "bank-select latch" and "VA-state latch" [finding-24 registry]
@@ -555,13 +566,18 @@ module juku_top #(
     // (dot clock), LD = ctrl-rail 6 = D59.12 (the INVERTED load strobe: D38.6 -> D59.13, and
     // 13->12 feeds rail 6 -- one-inversion correction of the earlier array read; net LOAD_VID).
     // OC <- ctrl-rail 8, shared with D41.CLK. Q -> D37 inverter -> analog video mix.
+`ifndef YOSYS
+    // Keep the existing runnable pixel oracle independent of the newly
+    // source-closed D35.6 control driver until its analog behavior is modeled.
     net_boundary U_SHIFTGLNK (.a(1'b1), .b(shift_g));
+`endif
     ir16 U_D42 (.d(rdo[7]), .c(rdo[6]), .b(rdo[5]), .a(rdo[4]),
                 .ld_sh(load_vid), .oc(shift_g), .clk(xtal16m_w), .ser(d43_q), .qd(d42_q), .qa(), .qb(), .qc());
     ir16 U_D43 (.d(rdo[3]), .c(rdo[2]), .b(rdo[1]), .a(rdo[0]),
                 .ld_sh(load_vid), .oc(shift_g), .clk(xtal16m_w), .ser(1'b0), .qd(d43_q), .qa(), .qb(), .qc());
-    // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10) before the analog
-    // node-"A" summing mix; its output (pin 11) enters that resistor mix (R38 1k) -> boundary.
+    // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10).
+    // Its output pin 11 shares the source-drawn conductor with D35.4; R38
+    // is the separate D35.6/SHIFT_G pull-up to +5 V.
     wire d37_out;
     la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre),
                     .a3(d33_o4), .b3(ram_out_en), .y3(d37_y3), .a4(1'bz), .b4(1'bz), .y4());  // sect3 = RAM-read gate: 5<-~MRD, 4<-RAM OUT EN [WIRE 12], 6 -> D58.OE [sheet-2]; sect4 undrawn/NC
@@ -615,8 +631,7 @@ module juku_top #(
     // toggle: /Q feeds D, Q drives VG93 RCLK, and WREQ_N holds both
     // asynchronous controls inactive except during writes.
     wire d96_separator_clk, d96_q1_n, d96_q2n_test;
-    wire d96_irq_conditioned_boundary, d96_irq_clock_boundary;
-    wire d96_irq_q_sheet1_boundary;
+    wire d96_irq_conditioned_boundary;
 `ifdef YOSYS
     // Exact sheet 3 draws all six D28 open-collector inverters and five of
     // D98's six enabled buffer channels. Structural cells make the drive
@@ -644,18 +659,23 @@ module juku_top #(
 `else
     assign d96_separator_clk = ~d106_q[3];
 `endif
+    // Exact .009 sheet 3 joins D96 /CLR2 to D99 B2 and a sheet-1 continuation.
+    wire d99_b2_sheet1_boundary;
+    wire d101_d02_r92_r99;
     tm2_dff #(.FUNCTIONAL(1)) U_D96 (
         .clr1_n(wreq_n), .d1(d96_q1_n), .clk1(d96_separator_clk), .pre1_n(wreq_n),
         .q1(fdc_rclk), .q1_n(d96_q1_n),
-        .clr2_n(1'bz), .d2(d96_irq_conditioned_boundary),
-        .clk2(d96_irq_clock_boundary), .pre2_n(d96_irq_conditioned_boundary),
-        .q2(d96_irq_q_sheet1_boundary), .q2_n(d96_q2n_test));
+        .clr2_n(d99_b2_sheet1_boundary), .d2(d96_irq_conditioned_boundary),
+        .clk2(d94_d1_d99_a2n), .pre2_n(d96_irq_conditioned_boundary),
+        .q2(d101_d02_r92_r99), .q2_n(d96_q2n_test));
+    // Exact .009 CS7 is D9.7 -> D94.15 and D93.3.
+    wire fdc_prom_cs_n = cs_fdc_n;
 `ifdef YOSYS
-    wire fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
+    wire fdc_prom_re_n, fdc_prom_we_n;
 `else
     // The physical RE3 outputs are open collector. The board pull-ups are not
     // yet identified, but their logic function is required by the runnable path.
-    tri1 fdc_prom_re_n, fdc_prom_cs_n, fdc_prom_we_n;
+    tri1 fdc_prom_re_n, fdc_prom_we_n;
 `endif
     // D94 РЕ3 .092 outputs. D94.5 is NC; the visible short open PCB stub
     // belongs to the separate D93.1 boundary.
@@ -674,13 +694,14 @@ module juku_top #(
     tri1 d94_d1_d99_a2n;
 `endif
     wire d93_1_open_stub;
-    wire d99_b_test_landing, d99_q1n_boundary, d99_q2_boundary;
-    wire d99_clr2_boundary, d99_q2n_boundary, d99_q1_nc;
+    wire d99_q1n_boundary, d99_q2_boundary;
+    wire d99_q2n_boundary, d99_q1_nc;
     wire d100_control_sheet1_boundary, d100_wrdata_in_boundary;
+    wire [7:0] kbd_pa;                 // -> X9 (SC0-3, STB), AUDC, and IMDRG/D101 OE0_N
 `ifdef YOSYS
     wire d94_a4_d101_q0;
 `else
-    // D101's first-half inputs and enable remain physical boundaries. Keep the
+    // D101's section-A input joins and IMDRG enable remain physical checks. Keep the
     // established pulled-high runnable fit separate from the structural-only
     // precompensation chain below.
     supply1 d94_a4_d101_q0;
@@ -691,7 +712,7 @@ module juku_top #(
                        .mr_n(fdc_reset_n), .clk(fdc_clk), .dden(ppi0_pc[4]), .dal(DB),
                        .vss_gnd(1'b0), .vcc_5v(1'b1), .vdd_12v(1'b1),
                        .step(fdc_step), .dirc(fdc_dir), .early(fdc_early_boundary), .late(fdc_late_boundary),
-                       .test(fdc_test_wf_vfoe), .hlt(fdc_ready), .rg(fdc_rg_nc),
+                       .test(fdc_test_wf_vfoe), .hlt(d99_q1n_boundary), .rg(fdc_rg_nc),
                        .rclk(fdc_rclk), .raw_read(fdc_raw_read), .hld(fdc_hld), .tg43(fdc_tg43),
                        .wg(fdc_wg), .wdata(fdc_wdata), .ready(fdc_ready),
                        .wf_vfoe(fdc_test_wf_vfoe), .tr00(fdc_tr00), .index(fdc_index), .wprt(fdc_wprt),
@@ -704,8 +725,6 @@ module juku_top #(
     // substituting guessed analog timing into the runnable FDC.
     wire precomp_tap_1, precomp_tap_2, precomp_tap_3;
     wire precomp_cascade_1, precomp_cascade_2;
-    wire d101_oe0_boundary, d101_d03_boundary;
-    wire d101_d02_r92_r99, d101_d01_boundary, d101_d00_boundary;
     ag3_oneshot U_D97 (
         .a_n(1'b0), .b(d98_y3_s1_2), .clr_n(wreq_n),
         .q(), .q_n(fdc_raw_read),
@@ -718,20 +737,18 @@ module juku_top #(
         .q2(precomp_tap_2), .q2_n(precomp_cascade_2));
     kp12_mux U_D101 (
         .a0(fdc_late_boundary), .a1(fdc_early_boundary),
-        .oe0_n(d101_oe0_boundary), .oe1_n(1'b0),
-        .d0({d101_d03_boundary, d101_d02_r92_r99,
-             d101_d01_boundary, d101_d00_boundary}),
+        .oe0_n(kbd_pa[6]), .oe1_n(1'b0),
+        .d0({4{d101_d02_r92_r99}}),
         .d1({1'b0, precomp_tap_3, precomp_tap_2, precomp_tap_1}),
         .q0(d94_a4_d101_q0), .q1(d100_wrdata_in_boundary));
 `endif
     // Exact sheet 3 grounds D99 A1/CLR1 and omits Q1. B2 and the four
     // remaining signal outputs/clear leave through distinct remote paths;
     // the `(1)` beside B2 denotes a continuation to sheet 1, not logic high.
-    wire d99_b2_sheet1_boundary;
-    ag3_oneshot U_D99 (.a_n(1'b0), .b(d99_b_test_landing), .clr_n(1'b0),
+    ag3_oneshot U_D99 (.a_n(1'b0), .b(fdc_hld), .clr_n(1'b0),
                        .q(d99_q1_nc), .q_n(d99_q1n_boundary),
                        .a2_n(d94_d1_d99_a2n), .b2(d99_b2_sheet1_boundary),
-                       .clr2_n(d99_clr2_boundary), .q2(d99_q2_boundary),
+                       .clr2_n(ppi0_pc[2]), .q2(d99_q2_boundary),
                        .q2_n(d99_q2n_boundary));
 `ifndef YOSYS
     // Runnable fallback only: the three remote sheet-1 sources are not yet
@@ -740,10 +757,10 @@ module juku_top #(
     assign d100_control_sheet1_boundary = 1'b1;
 `endif
     wire [7:0] d100_drive_in, d100_drive_out;
-    assign d100_drive_in = {ppi0_pc[6], ppi0_pc[2], d100_wrdata_in_boundary,
+    assign d100_drive_in = {ppi0_pc[6], d99_q2_boundary, d100_wrdata_in_boundary,
                             fdc_wg, fdc_tg43, fdc_hld, fdc_step, fdc_dir};
     buf_8287 U_D100 (.a(d100_drive_in), .b(d100_drive_out),
-                     .oe_n(d100_control_sheet1_boundary), .t(d100_control_sheet1_boundary),
+                     .oe_n(d99_q2n_boundary), .t(d100_control_sheet1_boundary),
                      .vss_gnd(1'b0), .vcc_5v(1'b1));
 `ifdef YOSYS
     net_boundary U_D99B2LNK (.a(1'b1), .b(d99_b2_sheet1_boundary));
@@ -781,14 +798,6 @@ module juku_top #(
     // A2=IORD (D27.5 and D29.4), A3=D105.3 qualified peripheral /WR,
     // A4=D101.Q0. D104.7 is separate (~84 kohm to A3). The former scaffold is retired.
 `ifdef YOSYS
-    // Preserve the unresolved physical enable source in the LVS netlist.
-    net_boundary U_D94CSLNK (.a(1'b1), .b(fdc_prom_cs_n));
-`else
-    // Simulation-only upstream fallback: the functional port decoder supplies
-    // the shared D94.E_N/D93.CS_N level until its physical source is measured.
-    net_boundary U_D94CSLNK (.a(cs_fdc_n), .b(fdc_prom_cs_n));
-`endif
-`ifdef YOSYS
     net_boundary U_D94D0LNK (.a(1'b1), .b(d94_d0_boundary));
 `endif
     re3_prom_092 U_D94 (.a({d94_a4_d101_q0, iowr_n, iord_n, BA[1], BA[0]}), .e_n(fdc_prom_cs_n),
@@ -797,7 +806,6 @@ module juku_top #(
                             d94_d1_d99_a2n, d94_d0_boundary}));
 
     // ============ peripherals (on the buffered buses) ============
-    wire [7:0] kbd_pa;                 // -> X9 (SC0-3, STB) + AUDC/PREN boundaries
     ppi_8255 #(.S21_CONFIG(S21_CONFIG)) U_PPI0 (.A(BA[1:0]), .D(DB), .cs_n(cs_ppi0_n), .rd_n(iord_n), .wr_n(iowr_n),
                       .pa(kbd_pa), .pb(8'hFF),
                       .reset(reset_sys), .pc(ppi0_pc),
@@ -852,12 +860,14 @@ module juku_top #(
     // S4 selects PIC IR6 between buffered -INT6 and USART SYNDET. The photographed
     // build defaults to the external-interrupt throw for simulation.
     spdt_switch U_S4 (.syndet_throw(ser_syndet), .int6_throw(ir6_buf), .ir6_common(ir6_sig));
-    la18_oc U_D12 (.i1(ser_txd_inv), .i2(ser_txd_inv), .o3(s_oc));
-    wire d104_x4_in_boundary;
+    wire int4_raw;
+    net_boundary U_INT4_RAW (.a(1'b1), .b(int4_raw)); // X1.114C physical input remains a continuity boundary
+    la18_oc U_D12 (.i1(ser_txd_inv), .i2(ser_txd_inv), .o3(s_oc),
+                   .i6(int4_raw), .i7(int4_raw), .o5(x2_irq0));
     up2_rcv U_D104(.sin_in(s_sin), .sin_out(ser_rxd),
                    .cts_in(s_cts), .cts_out(ser_cts_n),
                    .dsr_in(s_dsr), .dsr_out(ser_dsr_n),
-                   .x4_in(d104_x4_in_boundary), .x4_out());  // owner continuity + exact .009 drawing: pin 10 NC
+                   .x4_in(1'b0), .x4_out());  // photo: pin 7 -> R30 lower; source assigns GND; pin 10 NC
     serial_conn U_X3 (.pullup_io(), .aux2(s_oc), .ttl_sout(s_ttl), .sin(s_sin),
                       .cts(s_cts), .dsr(s_dsr), .aux7(), .aux8(),
                       .sout(s_sout), .rts(s_rts), .dtp(s_dtp), .oc_sout(s_oc));
@@ -894,7 +904,6 @@ module juku_top #(
 `ifndef YOSYS
     // The physical inputs are externally driven at X2 and pulled low by
     // R105/R107. Use their idle level when no testbench drives the connector.
-    assign x2_irq0 = 1'b0;
     assign x2_pb7_irq1 = 1'b0;
 `endif
     pic_8259  U_PIC  (.A(BA[0]),   .D(DB), .cs_n(cs_pic_n),  .rd_n(iord_n), .wr_n(iowr_n),

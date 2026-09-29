@@ -15,7 +15,13 @@ DRAM_DECAP_ASSEMBLY_DNP = {
     "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59",
     "C60", "C61", "C62", "C63", "C64", "C65", "C66", "C67", "C68", "C69",
 }
-PCB_PLACEMENT_PENDING = {"C51", "C52", "C53", "C70", "C71", "C72"}
+PCB_PLACEMENT_PENDING = {
+    "C29", "C51", "C52", "C53", "C70", "C71", "C72",
+    "C74", "C75", "C76", "C77", "C78",
+    "C82", "C83", "C84", "C85", "C86", "C87", "C88", "C89", "C90", "C91", "C92", "C93",
+    "C95", "C96", "C97", "C98", "C100",
+    "R2", "R7", "R15", "R16", "R35", "R36", "R37", "R106",
+}
 
 
 AUTHENTIC_MARK = {
@@ -84,8 +90,7 @@ AUTHENTIC_MARK = {
     "POWER_CONN": "СНО51-30/56х9В-23 power connector",
     "KBD_CONN": "keyboard connector",
     "PAR_CONN": "СНП59-30-23-В / parallel connector",
-    "VIDEO_CONN": "BNC/composite video connector",
-    "RF_CONN": "RF connector",
+    "DISPLAY_CONN": "bracket display connector X6; exact mechanical fit pending",
     "JUMPER2": "wire/link",
     "JUMPER3": "wire/link",
     "JUMPER4": "wire/link",
@@ -133,7 +138,7 @@ FUNCTIONAL_SUBSTITUTE = {
     "IR16": "SN74LS295B-class falling-edge shift register with active-high OC",
     "TL2": "74LS14-class hex Schmitt inverter",
     "LA18": "open-collector NAND/driver; verify output topology",
-    "LE4": "74LS02 NOR-class gate",
+    "LE4": "74LS27-class triple 3-input NOR gate",
     "LP5_XOR": "74LS86 XOR-class gate",
     "AP2": "RS-232/line-driver substitute required; verify +/-12 V interface",
     "UP2": "RS-232/line-receiver substitute required; verify +/-12 V interface",
@@ -171,8 +176,7 @@ MECHANICAL_TYPES = {
     "POWER_CONN",
     "KBD_CONN",
     "PAR_CONN",
-    "VIDEO_CONN",
-    "RF_CONN",
+    "DISPLAY_CONN",
     "SW",
     "SW_DIP6",
     "JUMPER2",

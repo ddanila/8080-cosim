@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "review_state": "D34.4 to D38.4 local solder-face copper photo-closed; upstream tag-2 driver open",
+  "source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101911242.jpg",
+  "source_crop_xyxy_original_pixels": [260, 500, 650, 950],
+  "overlap_source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101908284.jpg",
+  "overlap_source_crop_xyxy_original_pixels": [950, 3200, 2350, 4000],
+  "source_observation": "The exact .009 sheet-2 D34 gate-1 input pin 4 runs upward to the top conductor marked 2. The overlapping exact .009 frame independently shows numbered left rail 2 entering D38 second ЛА1 input pin 4, with the rail-1 and rail-15 strokes separate below it. Neither electrical photo alone carries a continuous conductor between the two marked-2 domains; the owner solder photo supplies that local target-board join.",
+  "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "owner_solder_crop_xyxy_original_pixels": [700, 1800, 1450, 2500],
+  "package_registration": "ref/photos/juku-pcb-2/d34-cross-face-contact-fit.json",
+  "d34_pin4_solder_px_approx": [1055, 2113],
+  "first_open_annulus_solder_px_approx": [970, 2114],
+  "solder_observation": "Counting down the independently registered seven-contact left row from physical D34.2 at about (1055,2001) places D34.4 at about (1055,2113). A short uninterrupted B.Cu run from that joint ends west at a distinct open annulus near (970,2114); the adjacent horizontal runs and package joints are separated by substrate in the native July crop.",
+  "d38_pin4_solder_connection": "The independently registered D38 solder field in local-package-registration.json places physical pin 4 near (2245,2119) in the same July image. Native corridor crop (850,1980)-(2350,2270) shows one uninterrupted B.Cu route east from D34.4 near (1055,2113): it bends down from that joint, runs through the middle of the parallel-track corridor, and rises into D38.4 near (2245,2119). Enlarged crops (850,2030)-(1430,2210), (1280,2030)-(2000,2190), and (1300,2000)-(2320,2190) resolve the successive bends. The neighboring brighter parallel run that initially looked like D38.4's departure is a distinct trace. The route requires no assumed through-board connection between the registered package joints.",
+  "front_projection": "The D34/D39 local cross-face map x_s=4084-0.960*x_c, y_s=-251+0.963*y_c projects the solder annulus near component (3244,2456), beneath the fitted D34 package. Owner component PXL_20260710_200418174.jpg crop (3060,2240)-(3450,2680) shows the package covering that point, so a front-side continuation cannot be read without moving the part or a continuity probe. This is a geometric candidate for the same hole, not a measured via identity.",
+  "decision": "Merge D34.4 and D38.4 into one target-board TIMING_TAG2 net. Their local owner-board B.Cu join is photo-closed despite the apparent separation of numeral-2 conductor domains in the older scan. The upstream driver and any further loads of this net remain open.",
+  "next_inspection": "With power off, corroborate physical D34.4 to D38.4 continuity and D34.4 to the open annulus near (970,2114), then trace the joined net's upstream driver. The direct meter result is a useful independent check on the photographic pin registrations, not a prerequisite for modeling the visible B.Cu join."
+}

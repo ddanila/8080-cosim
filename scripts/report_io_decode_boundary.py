@@ -93,12 +93,11 @@ def main() -> int:
         ),
         (
             "D7 second-gate provenance preserves the owner-disproved D29.5 split",
-            "singleton AMW_N boundary at pin3" in d7.get("prov", {}).get("pins", "")
-            and "disproves the former D7.3-to-D29.5 interpretation" in d7.get("prov", {}).get("pins", "")
+            "disproves the former D7.3-to-D29.5 interpretation" in d7.get("prov", {}).get("pins", "")
             and "AMW_N/D29.5" not in d7.get("prov", {}).get("pins", "")
-            and set(nodes(board, "AMW_N")) == {("D7", "3")}
+            and set(nodes(board, "AMW_N")) == {("D7", "3"), ("D29", "2")}
             and has_nodes(board, "IOWR", {("D29", "5"), ("D105", "3")}),
-            "owner continuity 2026-07-19: D7.3 remains AMW_N-only; D29.5 is qualified IOWR",
+            "exact .009 joins D7.3 to D29.2; owner continuity separates D29.5 on qualified IOWR",
         ),
         (
             "D9 region-enable inputs are tied to REV",
@@ -128,12 +127,12 @@ def main() -> int:
             and has_nodes(board, "CS_D54", {("D9", "11"), ("D54", "21")})
             and has_nodes(board, "CS_D55", {("D9", "10"), ("D55", "21")})
             and has_nodes(board, "CS_D57", {("D9", "9"), ("D57", "21")})
-            and has_nodes(board, "CS_FDC", {("D9", "7")})
+            and has_nodes(board, "FDC_CS_N", {("D9", "7"), ("D94", "15"), ("D93", "3")})
             and has_nodes(board, "FDC_RE_N", {("D94", "3"), ("D93", "4")})
             and has_nodes(board, "FDC_CS_N", {("D94", "15"), ("D93", "3")})
             and has_nodes(board, "D94_D1_D99_A2N", {("D94", "2"), ("D99", "9"), ("R89", "1")})
             and has_nodes(board, "FDC_WE_N", {("D94", "4"), ("D93", "2")}),
-            "`CS_D10`..`CS_FDC`; measured D94.15/.3/.4 controls and corrected D94.2-D99.9/R89 node",
+            "`CS_D10`..`FDC_CS_N`; exact .009 CS7 path D9.7→D94.15/D93.3, owner-confirmed D94.15-D93.3, and corrected D94.2-D99.9/R89 node",
         ),
         (
             "D25 bus turnaround handoff is guarded",
@@ -152,19 +151,20 @@ def main() -> int:
             "IORD_N/IOWR_N are on D7.9/D7.10; raw D5.27 is distinct from qualified D105.3",
         ),
         (
-            "C99 far physical pad is preserved without assuming ground",
+            "C99 far plate uses the exact-sheet ground symbol",
             has_nodes(board, "V3_RC", {("C99", "1")})
-            and set(nodes(board, "C99_FAR")) == {("C99", "2")}
+            and has_nodes(board, "GND", {("C99", "2")})
+            and "C99_FAR" not in board["nets"]
             and not any(ref == "C99" and pin == "2" for ref, pin in nodes(board, "V3_RC")),
-            "C99.1 is on V3_RC; native scan shows C99.2 as a conductor-less plate on singleton C99_FAR",
+            "C99.1 is on V3_RC; C99.2 ground bar matches R16's ground symbol in the exact .009 sheet",
         ),
         (
             "D25_T MEMW input is source-proven without crossing-rail overmerge",
             has_nodes(board, "D25_T", {("D7", "6"), ("D25", "11")})
-            and has_nodes(board, "MEMW", {("D7", "4"), ("D29", "1")})
+            and has_nodes(board, "MEMW", {("D7", "4"), ("D29", "8")})
             and "terminates as a T" in board["nets"]["D25_T"]["src"]
             and "without a junction" in board["nets"]["D25_T"]["src"],
-            "Native sheet proves D7.4 -> MEMW/D29.1; D7.5 remains on the distinct -INHIB junction",
+            "Native sheet proves D7.4 -> MEMW/D29.8; D7.5 remains on the distinct -INHIB junction",
         ),
         (
             "D7.8 I/O-cycle qualifier and D105.3 qualified /WR are owner-closed",
@@ -226,7 +226,6 @@ def main() -> int:
         "PROM_EN",
         "SYNC",
         "V3_RC",
-        "C99_FAR",
         "REV",
         "BA10",
         "BA11",
@@ -241,7 +240,7 @@ def main() -> int:
         "CS_D54",
         "CS_D55",
         "CS_D57",
-        "CS_FDC",
+        "FDC_CS_N",
     ):
         net = board["nets"].get(name, {})
         lines.append(row([f"`{name}`", f"`{endpoint_text(board, name)}`", net.get("src", "-")]))
@@ -255,10 +254,30 @@ def main() -> int:
             "  board model; this report guards that D2-as-I/O-decode is not revived.",
             "- The I/O decoder enable is the traced D7.11 -> R17/C99 -> D9.6 path,",
             "  with REV on D9.4/D9.5 and BA10..BA12 selecting the eight I/O groups.",
-            "- Remaining work is now narrow: read or continuity-check C99.2 and",
+            "- The exact `.009` assembly view `PXL_20260711_114556899.jpg` places a",
+            "  horizontal C99 immediately below D9 and left of upright R17. Both",
+            "  May close-up `201933909` and overlapping July component views",
+            "  (`200411500` and `200415237`) show no fitted C99 body. A plausible",
+            "  bare horizontal pair repeats below D9 and left of R17: May joints near",
+            "  `(1440,1990)`/`(1600,1990)`, July joints near `(2508,1782)`/",
+            "  `(2680,1782)`. The right joint visibly links to R17's lower physical",
+            "  lead; the upper lead runs under D9 without a visible numbered pin",
+            "  junction. Corrected native D9 package anchors project the July C99",
+            "  left/right candidates near `(3038,1497)`/`(2868,1497)` in solder tile",
+            "  `200525009`, within about 5–7 px of separate joints `(3040,1492)`/",
+            "  `(2875,1495)`. A third joint near `(2818,1515)` matches R17 lower",
+            "  and has a short visible B.Cu link to the right C99 candidate. The",
+            "  older 40–55 px mismatch came from retired D9 component anchors.",
+            "  The left solder candidate has an uninterrupted B.Cu route to the",
+            "  third contact of D2's reflected left row, pin14, grounded by exact",
+            "  `.009` sheet 1. Three-feature geometry strongly favors the pair, but",
+            "  front-to-back same-hole identity and population need confirmation;",
+            "  owner ground continuity has not been metered.",
+            "  See `ref/photos/juku-pcb-2/c99-assembly-photo-review.json`.",
+            "- Remaining work is now narrow: identify the C99 physical landing and",
             "  identify the upstream source shared by D7.5/D29.3. Native 5150x3603",
             "  geometry closes D7.12 onto SYNC, D7.13 onto its pin11 feedback node, and D7.4",
-            "  onto MEMW/D29.1 without merging the crossed D29.3 rail. None of the",
+            "  onto MEMW/D29.8 without merging the crossed D29.3 rail. None of the",
             "  remaining boundaries should be replaced by a simulator-only guess.",
             "",
         ]

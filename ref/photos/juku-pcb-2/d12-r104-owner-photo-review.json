@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "status": "R104-TO-D12 LOCAL COPPER PHOTO-CLOSED; REMOTE INT4 AND IRQ0 ROUTES OPEN",
+  "owner_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+  "owner_crop_xyxy_original_pixels": [1100, 250, 1950, 1150],
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+  "assembly_crop_xyxy_original_pixels": [2150, 1700, 3000, 2700],
+  "observation": "The registered eight-pin D12 body is directly above D3; its rotated body legend reads К155ЛА18. An upright red resistor immediately west of D12 occupies the position labeled R104 on the exact .009 assembly drawing. Its printed value is not readable in this owner crop. The body position is a strong R104 placement candidate, not a measured net assignment.",
+  "body_marking_recheck": "Native 200418174 crop (1050,365)-(1350,800), with the R104 body isolated near x1210 and rotated for reading, shows dark strokes but glare and the curved red surface prevent an unambiguous 470R reading. Contrast enhancement does not recover a complete code. The exact .009 sheet-1 470-ohm value remains source-only; use an isolated resistance measurement for owner-value confirmation.",
+  "may_cross_date_check": "Independent May 19 owner overview PXL_20260519_201900001.jpg crop (2250,800)–(2400,1070) shows the same upright red body immediately west of the same eight-pin D12-over-D3 package pair. Its lower joint remains adjacent to D12's left lower corner and the white cable again crosses above the body, supporting a persistent fitted R104 position across dates. Native rotated crop (2290,840)–(2360,1020) is too blurred for a numerical value; the apparent dark strokes cannot independently confirm 470 ohms. The May view does not resolve the remote INT4/IRQ0 routes.",
+  "local_copper_observation": "In the native owner image, a broad tinned front-face branch visibly joins the lower joint of the upright resistor (approximately 1240,685) to D12.8, the bottom-left lead (approximately 1297,638). This supports the resistor candidate's local supply-side connection. D12.8 is the +5 V supply pin in the replica package assignment; the photo alone does not independently meter-confirm the rail.",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "solder_crop_xyxy_original_pixels": [2640, 50, 3100, 430],
+  "solder_pad_review": {
+    "registration": "The D12 component pin-one dot is at its bottom-right corner; the mirrored solder field has four joints in each of the x~2723 and x~2890 columns directly above the independently registered D3 field (D3.5 near 2723,530). The right solder column is D12.5 through D12.8 from top to bottom. The cross-face affine in r15-r16-actual-pad-review.json predicts the same two-column field with tens-of-pixels drift, so visible joint geometry selects the actual centers.",
+    "d12_5_solder_xy_approx": [2890, 150],
+    "r104_upper_solder_xy_approx": [2950, 150],
+    "d12_6_solder_xy_approx": [2890, 200],
+    "d12_7_solder_xy_approx": [2890, 250],
+    "observation": "The top joint in D12's right solder column has an uninterrupted short B.Cu bridge eastward to the resistor upper joint. The next two joints are enclosed by one continuous tinned vertical copper bar. This photo-closes R104 upper to D12.5 and D12.6 to D12.7 locally; no insulated wire or remote connector contact is identified by this crop.",
+    "adjacent_pad_separation": "At higher magnification of native crop (2840,120)–(3030,340), the R104/D12.5 short link is separated by brown substrate from the D12.6/.7 common bar. D12.8 lies immediately below the bar; the available pixels do not justify treating the bar's apparent lower edge as a D12.8 join. Keep the +5 V supply and -INT4 inputs separate until physical continuity is tested.",
+    "note": "Coordinates are hand-read to approximately one pad pitch; confirm the top-to-bottom pin labels against the complete D12 four-by-two field when using them as continuity probes."
+  },
+  "d12_registration": "ref/photos/juku-pcb-2/d12-d3-local-placement.json",
+  "candidate_geometry": {
+    "upper_joint_owner_xy_approx": [1240, 470],
+    "lower_joint_owner_xy_approx": [1240, 685],
+    "upper_joint_board_mm_approx": [213.94, 59.31],
+    "lower_joint_board_mm_approx": [213.94, 69.55],
+    "body_centre_board_mm_approx": [213.94, 64.43],
+    "suggested_source_pin_orientation": "R104.2 at the lower D12.8-linked joint; R104.1 at the upper D12.5-linked joint, matching the exact-sheet R104.1 signal / R104.2 +5 V model. The remote X2.214 link is not owner-photo proved.",
+    "method": "Apply the neighboring D3 four-anchor photo-to-board fit in d12-d3-local-placement.json to hand-read joint centers; placement grade only, not independent pad-net proof.",
+    "uncertainty": "Several owner-image pixels at each joint plus registration error; the PCB now uses this placement, but verify the resistor hole centers before fabrication."
+  },
+  "source_assignment": "Exact .009 sheet 1 prints R104=470 ohms from +5 V to D12.5 / X2.214 / D10 IR0. D12.6 and D12.7 join X1.114C -INT4.",
+  "limits": "The two-face photos identify R104's local links to D12.5 and D12.8 and the D12.6/.7 common bar, but do not prove D12.5 to X2.214/D10.18 or D12.6/.7 to X1.114C. The apparent +5 V rail follows D12.8's package assignment but has not been independently measured on the owner board. The resistor value remains unreadable and unmeasured.",
+  "power_off_checks": [
+    "Locate the upright resistor immediately west of registered D12, measure its isolated resistance, and record both end joints.",
+    "Corroborate R104 lower to D12.8 and a known +5 V point; corroborate its upper to D12.5, then trace D12.5 to X2.214 and D10.18.",
+    "Corroborate the photographed D12.6/.7 tie and trace it to X1.114C."
+  ]
+}

@@ -15,10 +15,10 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 
 ## Summary
 
-- Board JSON SHA-256: `5497bc881f0a0ee821ae0081e08192596a493231cf043c9429d07fb209301d87`
-- Source PCB SHA-256: `6ecd888b64ddf4f51e373abe6af508f4b4da4f631a2a9721c37fe2c782779b4e`
-- Routed PCB SHA-256: `3a1f83c8277624f2c04633761de5703550420443839fb3d5e49eea2c8a99e266`
-- DSN SHA-256: `1749c96384dbadd8518ac6137bb47bdc186c0e38bca798c75aeabd094658f501`
+- Board JSON SHA-256: `d8f13f0637783fc69b2b256f4d6e134e7675a14312ec71b447578eede6fe0c33`
+- Source PCB SHA-256: `8bf322d4790e5fd9cc115eac56243c2c7e3b4e3d0fe4d5212f4549859185b34c`
+- Routed PCB SHA-256: `40ecf0550c44bb205ebb8cfb547d34613b698dc6ba14323a5560348ccfc42c3c`
+- DSN SHA-256: `28dc905fb0afdacaa39314f7a2c9dd1292da47a9ea3e7ea735d96fcedbd0fc25`
 - Modeled board-JSON `D*` ICs: `106`
 - Source PCB IC footprints: `106`
 - Routed PCB IC footprints: `106`
@@ -29,7 +29,7 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 ## Design-Release Consequence
 
 There are `0` IC footprints with no board-JSON representation
-and `3` promoted FDC devices with functional pins still
+and `4` promoted FDC devices with functional pins still
 untraced or carried only by explicit boundary nets. KiCad's zero-unconnected
 result cannot establish remote continuity for those endpoints. They block
 design release until measured or explicitly dispositioned.
@@ -91,7 +91,8 @@ design release until measured or explicitly dispositioned.
 - `D28` is now typed as the К155ЛН3 six-inverter open-collector family.
   Factory `.009` sheet 3 closes all six sections through drive-select, READY,
   separator-clock, and DRQ/INTRQ conditioner paths. The drawing instead omits
-  D96.13, D98.9/.10, and complementary outputs D97.13/D102.4.
+  D98.9/.10 and complementary outputs D97.13/D102.4. The exact sheet-3
+  D96.13-D99.10 junction is now retained as a sheet-1 source boundary.
   All six D28 sections are now structural-only HDL and LVS-visible.
 
 ## Footprint-Only ICs
@@ -108,9 +109,10 @@ documented intentional no-connects are excluded.
 
 | Ref | Untraced functional pins |
 | --- | --- |
-| `D96` | 9:Q2, 11:CLK2 |
-| `D99` | 4:Q_N, 5:Q2, 10:B2, 11:CLR2_N, 12:Q2_N |
-| `D101` | 1:OE0_N, 3:D03, 5:D01, 6:D00 |
+| `D96` | 9:Q2, 13:CLR2_N |
+| `D99` | 2:B, 4:Q_N, 5:Q2, 10:B2, 11:CLR2_N, 12:Q2_N |
+| `D100` | 3:A2, 7:A6, 9:OE_N, 11:T |
+| `D101` | 1:OE0_N, 3:D03, 4:D02, 5:D01, 6:D00 |
 
 ## Closure Rule
 

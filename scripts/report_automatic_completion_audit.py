@@ -60,10 +60,10 @@ GROUPS = {
     ),
     "release": Group(
         "Main-board release and order",
-        "The verified zero-open package is intentionally held by physical-connectivity and sourcing gates",
-        "closed P0 evidence, explicit release, vendor upload, and payment",
+        "The current routed board has open connections and needs copper repair plus a regenerated package; physical-connectivity and sourcing gates remain held",
+        "closed P0 evidence, regenerated and reviewed package, explicit release, vendor upload, and payment",
         (
-            Evidence("docs/replica-manufacturing-readiness.md", "Status: **DESIGN HOLD / PACKAGE VERIFIED**", "package verified under design hold"),
+            Evidence("docs/replica-manufacturing-readiness.md", "Status: **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**", "current package regeneration held"),
         ),
     ),
     "parts": Group(
@@ -79,7 +79,7 @@ GROUPS = {
         "These milestones require a fabricated and assembled physical replica",
         "board, parts, instruments, staged power-up, and surviving-machine comparison",
         (
-            Evidence("docs/replica-manufacturing-readiness.md", "Status: **DESIGN HOLD / PACKAGE VERIFIED**", "no released fabrication package"),
+            Evidence("docs/replica-manufacturing-readiness.md", "Status: **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**", "no released fabrication package"),
         ),
     ),
     "framebuffer": Group(
@@ -176,7 +176,13 @@ def validate(
     for group_name in grouped:
         for item in GROUPS[group_name].evidence:
             path = ROOT / item.path
-            if not path.exists() or item.marker not in path.read_text(encoding="utf-8", errors="replace"):
+            content = path.read_text(encoding="utf-8", errors="replace") if path.exists() else ""
+            held_shortlist = (
+                item.path == "docs/owner-measurement-shortlist.md"
+                and item.marker == "Status: **READY**"
+                and "Status: **EVIDENCE HOLD**" in content
+            )
+            if item.marker not in content and not held_shortlist:
                 failures.append(f"{group_name}: missing {item.marker!r} in {item.path}")
 
     template_count = 0
@@ -199,10 +205,12 @@ def validate(
 
 def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]]], template_count: int) -> str:
     task_counts = Counter(path for path, _ in tasks)
+    desk_review_open = "Status: **EVIDENCE HOLD**" in (ROOT / "docs/owner-measurement-shortlist.md").read_text(encoding="utf-8")
     lines = [
         "# Automatic completion audit",
         "",
-        "Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**",
+        ("Status: **DESK REVIEW REOPENED / D56 REGISTRATION HOLD**" if desk_review_open else
+         "Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**"),
         "",
         "This generated audit answers a narrow question: whether any tracked project",
         "Markdown outside vendored `external/` material and operator templates contains",
@@ -218,8 +226,10 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         "## Active unchecked work",
         "",
         f"There are {len(tasks)} unchecked items across {len(task_counts)} tracked project-plan",
-        "documents. Every one now requires evidence, hardware, purchasing, fabrication,",
-        "or owner authorization.",
+        ("documents. The corrected D56 fit reopens a photo-registration task;" if desk_review_open else
+         "documents. Every one now requires evidence, hardware, purchasing, fabrication,"),
+        "Other items still require evidence, hardware, purchasing, fabrication," if desk_review_open else "",
+        "or owner authorization." if desk_review_open else "or owner authorization.",
         "",
         "| Plan | Unchecked tasks |",
         "| --- | ---: |",
@@ -259,9 +269,9 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         "",
         "## Automatically closed scope",
         "",
-        "- Source/routed PCB identity, zero-open copper, fabrication-package integrity,",
+        "- Source/routed PCB identity, historical zero-open package integrity,",
         "  adopted PROM/EPROM content, and runnable HDL/cosim behavior have dedicated",
-        "  generated reports and CI guards.",
+        "  generated reports and CI guards. The current routed board still has opens.",
         "- Cross-machine reads close the four small PROM tables, and the independent",
         "  archival D15/D16 pair is adopted as exact EktaSoft 3.7 content. Missing",
         "  programming-drawing filename linkage remains optional provenance nuance.",
@@ -276,8 +286,10 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         "fails closed. `scripts/check_documentation_consistency.py` runs this writer in",
         "`--check` mode, and `scripts/regen_all.sh` regenerates the committed report.",
         "",
-        "The practical next action is therefore the owner/bench shortlist—not another",
-        "inference pass over the same files.",
+        ("The practical next action is to register the marked D56 solder pads from" if desk_review_open else
+         "The practical next action is therefore the owner/bench shortlist—not another"),
+        ("the archived owner views, then use the owner/bench shortlist for remaining continuity." if desk_review_open else
+         "inference pass over the same files."),
         "",
     ]
     return "\n".join(lines)

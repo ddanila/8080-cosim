@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "basis": "KiCad DRC after exact .009 D29 output/input and D35.13 pad-net correction",
+  "initial_main_routed_drc": {
+    "shorting_items": 30,
+    "clearance": 3,
+    "tracks_crossing": 0,
+    "unconnected": 33
+  },
+  "removed_old_copper_items": [
+    {
+      "uuid": "188c0973-5ab9-4301-aaff-8633909ad58e",
+      "description": "Track [IORC_N] on F.Cu, length 0.7071 mm"
+    },
+    {
+      "uuid": "1b0aa623-569a-4d9f-81aa-df51c5bc6257",
+      "description": "Track [PHI2TTL] on F.Cu, length 3.4330 mm"
+    },
+    {
+      "uuid": "1b32cf96-dca5-4e27-af36-19e49416fc3d",
+      "description": "Track [IOM_N] on F.Cu, length 0.3536 mm"
+    },
+    {
+      "uuid": "2a02ec25-df75-4319-ad00-96057f24ce58",
+      "description": "Track [CCLCK] on F.Cu, length 0.8968 mm"
+    },
+    {
+      "uuid": "353f7d34-09cc-4235-9919-06ad44aed6a8",
+      "description": "Track [MWC_N] on F.Cu, length 0.3617 mm"
+    },
+    {
+      "uuid": "5317c2a7-dd23-447e-874e-2e22338dd90e",
+      "description": "Track [IORD] on F.Cu, length 2.1213 mm"
+    },
+    {
+      "uuid": "54adad4b-6231-4df4-bcb2-2b81d9ae6afd",
+      "description": "Track [IOM_N] on F.Cu, length 0.2500 mm"
+    },
+    {
+      "uuid": "563a1f21-5875-451d-8aca-2cce4b2aef88",
+      "description": "Track [IORD] on F.Cu, length 2.1213 mm"
+    },
+    {
+      "uuid": "5befbc03-d6e5-468c-be6f-5d34e47eb1d8",
+      "description": "Track [MEMW] on B.Cu, length 0.5000 mm"
+    },
+    {
+      "uuid": "625db6aa-55ad-4f05-a73e-c003b9c36cda",
+      "description": "Track [AMWC_N] on F.Cu, length 0.2723 mm"
+    },
+    {
+      "uuid": "630a72c8-509e-428b-83ff-d4669490055f",
+      "description": "Track [MWC_N] on F.Cu, length 0.3536 mm"
+    },
+    {
+      "uuid": "6365a42a-1a93-452a-9d2f-cb3e1fc3a8ee",
+      "description": "Track [IOWC_N] on B.Cu, length 0.3536 mm"
+    },
+    {
+      "uuid": "63944ed2-bab8-483c-bcb8-c6345a9e1dbd",
+      "description": "Track [MEMW] on B.Cu, length 4.9497 mm"
+    },
+    {
+      "uuid": "66ecbc08-bc4a-4a4c-a71f-49161c55a7f6",
+      "description": "Track [IOWC_N] on B.Cu, length 0.3517 mm"
+    },
+    {
+      "uuid": "69260a23-a714-4c5d-8675-c8ab8ae7d2b6",
+      "description": "Track [MWC_N] on F.Cu, length 0.3536 mm"
+    },
+    {
+      "uuid": "6e21452f-5c19-4fd0-a32f-1d7f6845f684",
+      "description": "Track [CCLCK] on B.Cu, length 0.3536 mm"
+    },
+    {
+      "uuid": "6f254dc2-894b-4746-bfa6-2d58ac219dff",
+      "description": "Track [IORD] on F.Cu, length 0.3627 mm"
+    },
+    {
+      "uuid": "70528917-f83d-48a0-aedc-05c6351d177d",
+      "description": "Via [CCLCK] on F.Cu - B.Cu"
+    },
+    {
+      "uuid": "7551b28c-2120-4f3e-9eb1-30df53009620",
+      "description": "Track [AMWC_N] on F.Cu, length 0.2500 mm"
+    },
+    {
+      "uuid": "7616622d-d8d7-4915-a639-29e32a090cb9",
+      "description": "Track [AMWC_N] on F.Cu, length 0.3536 mm"
+    },
+    {
+      "uuid": "78c440dc-edb4-48d7-8257-9eb6a6e53707",
+      "description": "Track [PHI2TTL] on F.Cu, length 3.3350 mm"
+    },
+    {
+      "uuid": "82f48a4c-9a61-40f0-8197-bca4d4e9df3b",
+      "description": "Track [AMWC_N] on F.Cu, length 0.3536 mm"
+    },
+    {
+      "uuid": "90c7e1b0-c6e9-429e-ba98-0e4016fd00c4",
+      "description": "Track [CCLCK] on B.Cu, length 0.2500 mm"
+    },
+    {
+      "uuid": "a919c8a0-844e-4cd5-9a67-199608a1b07d",
+      "description": "Track [CCLCK] on F.Cu, length 0.0278 mm"
+    },
+    {
+      "uuid": "ba46fae7-bdda-4d6d-a6b7-23a77b803be0",
+      "description": "Track [IORD] on F.Cu, length 0.6569 mm"
+    },
+    {
+      "uuid": "be4bc849-ffbf-4792-81b5-219c8ba24e5f",
+      "description": "Track [IOM_N] on F.Cu, length 0.3536 mm"
+    },
+    {
+      "uuid": "c96039d4-e5e9-40f5-b409-b5bdbc7e15fc",
+      "description": "Track [IOM_N] on F.Cu, length 0.2326 mm"
+    },
+    {
+      "uuid": "dca80a1f-1f02-48d2-a8bb-c2127bc20e6e",
+      "description": "Track [IORC_N] on F.Cu, length 0.4453 mm"
+    },
+    {
+      "uuid": "eb509570-3e3b-420f-b508-926bcda5f06f",
+      "description": "Track [IOWC_N] on B.Cu, length 0.3536 mm"
+    },
+    {
+      "uuid": "f0487a1a-ff96-413c-b719-22d923352e1f",
+      "description": "Track [MEMW] on B.Cu, length 0.7341 mm"
+    },
+    {
+      "uuid": "f26628fb-5591-4fa4-80c0-aaa45da4d136",
+      "description": "Track [MWC_N] on F.Cu, length 0.2500 mm"
+    },
+    {
+      "uuid": "fba68a05-4a8f-47e3-85fe-85ad919c01d8",
+      "description": "Track [IOWC_N] on B.Cu, length 0.2500 mm"
+    }
+  ],
+  "method": "Removed only DRC-identified old-net track/via items touching corrected D29/D35 pads from both routed snapshots; retained all other copper. Follow-up DRC and routed-net audit required.",
+  "source_review": "ref/schematics/d29-exact-009-pinmap-review.json",
+  "post_removal_drc_both_routed": {
+    "shorting_items": 0,
+    "clearance": 0,
+    "tracks_crossing": 0,
+    "unconnected": 35
+  },
+  "remaining_routing_hold": "D29 command outputs and D29.1/D29.2/D29.8 plus D35.13 RC branch need fresh routes; three source-schematic-only RC footprints R35/R106/C29 have placement pending and are not represented by PCB pads."
+}

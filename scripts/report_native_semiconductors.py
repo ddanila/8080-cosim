@@ -69,7 +69,7 @@ def footprint_map(path: Path) -> dict[str, dict]:
         pads = {}
         for pad in forms("\n\t" + block, "\n\t\t(pad "):
             number = re.match(r'\(pad "([^"]+)"', pad)
-            net = re.search(r'\(net \d+ "([^"]+)"\)', pad)
+            net = re.search(r'\(net (?:\d+ )?"([^"]+)"\)', pad)
             if number:
                 pads[number.group(1)] = net.group(1) if net else ""
         result[ref.group(1)] = {"value": value.group(1), "footprint": name.group(1), "pads": pads}
@@ -83,6 +83,11 @@ if not source.is_file() or sha256(source) != evidence["source"]["sha256"]:
 reset_source = ROOT / evidence["reset_source"]["path"]
 if not reset_source.is_file() or sha256(reset_source) != evidence["reset_source"]["sha256"]:
     fail("native sheet-1 reset source hash drifted")
+vd3_source = ROOT / evidence["exact_target_vd3_source"]["path"]
+if not vd3_source.is_file() or sha256(vd3_source) != evidence["exact_target_vd3_source"]["sha256"]:
+    fail("exact .009 VD3 source hash drifted")
+if "cathode at R66.2/R67.1 SOUND_CLAMP" not in evidence["exact_target_vd3_source"]["observation"]:
+    fail("exact .009 VD3 polarity reading drifted")
 photo_refs = {}
 for item in evidence["target_body_sources"]:
     image_path = ROOT / item["path"]
@@ -112,15 +117,16 @@ if (physical_evidence.get("schema_version") != 2 or
 board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
 chips = {chip["ref"]: chip for chip in board["chips"]}
 closed = {item["ref"]: item for item in evidence["closed"]}
-if set(closed) != {"VD1", "VT1", "VT2", "VD3", "VD4", "VD5"}:
+held = {item["ref"]: item for item in evidence["held"]}
+if set(closed) != {"VD1", "VT1", "VT2", "VD4", "VD5"}:
     fail(f"closed set drifted: {sorted(closed)}")
-for ref, expected in closed.items():
+if set(held) != {"VD3"} or "cathode at SOUND_CLAMP" not in held["VD3"]["reason"]:
+    fail(f"VD3 polarity hold drifted: {sorted(held)}")
+for ref, expected in (closed | held).items():
     actual = chips.get(ref, {})
     for field in ("type", "value", "pins"):
         if actual.get(field) != expected[field]:
             fail(f"{ref} {field} is {actual.get(field)!r}, expected {expected[field]!r}")
-if evidence.get("held"):
-    fail(f"unexpected held native semiconductors: {evidence['held']}")
 
 expected_nets = {
     "VD1": {"1": "P5V", "2": "RES_RC"},
@@ -139,7 +145,7 @@ if nodes != expected_nets:
     fail(f"board pin/net map drifted: {nodes}")
 
 physical = footprint_map(PCB)
-for ref, expected in closed.items():
+for ref, expected in (closed | held).items():
     actual = physical.get(ref, {})
     if actual.get("value") != expected["value"]:
         fail(f"{ref} source-PCB value drifted: {actual.get('value')!r}")
@@ -150,21 +156,29 @@ for ref, expected in closed.items():
 
 lines = [
     "# Native semiconductor designations and pinouts", "",
-    "Status: **6 DESIGNATIONS + 2 TRANSISTOR PINOUTS SOURCE-CLOSED**", "",
+    "Status: **6 DESIGNATIONS / 5 PIN-NET MAPS GUARDED / VD3 POLARITY HOLD**", "",
     "The native sheets and registered target bodies name the retained reset, power,",
     "video, and beeper semiconductors. This guard",
     "keeps those markings, the physical E-C-B transistor lead order, the KT-27/KT-13",
-    "package choices, and every generated PCB pad/net assignment synchronized.", "",
+    "package choices, and the current generated PCB pad/net assignments synchronized.",
+    "VD3's current pad numbering conflicts with the source-drawn diode polarity and",
+    "is guarded as a hold rather than claimed source-closed. The older `.006`",
+    "sheet supports designations; exact `.009 Э3` sheet 2 controls the VD3",
+    "polarity reading and is separately hash-checked.", "",
     "## Command", "", "```sh", "python3 scripts/report_native_semiconductors.py", "```", "",
     "## Closed devices", "", "| Ref | Device | Package | Physical pins | PCB nets by pin |",
     "| --- | --- | --- | --- | --- |",
 ]
-for ref in ("VD1", "VT1", "VT2", "VD3", "VD4", "VD5"):
+for ref in ("VD1", "VT1", "VT2", "VD4", "VD5"):
     item = closed[ref]
     pins = ", ".join(f"{pin}={name}" for pin, name in item["pins"].items())
     nets = ", ".join(f"{pin}={name}" for pin, name in expected_nets[ref].items())
     lines.append(f"| `{ref}` | `{item['value']}` | `{item['footprint']}` | {pins} | {nets} |")
 lines += [
+    "", "## Held polarity", "",
+    "| Ref | Device | Current model pins | Current PCB nets | Source conflict |",
+    "| --- | --- | --- | --- | --- |",
+    "| `VD3` | `КС147Г` | 1=K, 2=A | 1=GND, 2=SOUND_CLAMP | Exact `.009 Э3` sheet 2 draws K at SOUND_CLAMP and A at GND; owner photos do not close physical pad polarity. |",
     "", "## Evidence boundary", "",
     "- VT1 uses the stock horizontal TO-126 footprint because the КТ972 datasheet",
     "  identifies the КТ-27 case and the factory mounting detail lays that body flat.",
@@ -179,4 +193,4 @@ lines += [
     "- VD5 retains the sheet-1 `КС147` designation and derived -5 V clamp polarity.", "",
 ]
 REPORT.write_text("\n".join(lines), encoding="utf-8")
-print("NATIVE SEMICONDUCTORS: PASS — markings, packages, E-C-B pinouts, and PCB nets agree")
+print("NATIVE SEMICONDUCTORS: HOLD — VD3 source/model polarity conflicts; other markings and pin maps guarded")

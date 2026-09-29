@@ -180,6 +180,10 @@ def validate_artwork_grid_photo_fit(
     image_path = ROOT / str(fit.get("rectified_solder_image", ""))
     if not image_path.is_file() or sha256(image_path) != fit.get("sha256"):
         diagnostics.append("rectified solder-grid image/hash mismatch")
+    if "DRAM package top-contact rows" not in str(fit.get("registered_feature_identity", "")):
+        diagnostics.append("historical lattice is not identified as DRAM package contacts")
+    if fit.get("capacitor_pad_identity_verified") is not False:
+        diagnostics.append("historical lattice must not certify capacitor-pad identity")
 
     columns = [float(value) for value in fit.get("board_columns_mm", [])]
     rows = [float(value) for value in fit.get("board_rows_mm", [])]
@@ -215,7 +219,7 @@ def validate_artwork_grid_photo_fit(
         if ref in set(REGISTERED_DRAM_REFS) | OPTIONAL_GRID_DNP_REFS
     }
     if actual_grid != expected_grid:
-        diagnostics.append("generator does not retain the full registered 4x8 grid")
+        diagnostics.append("generator does not retain the historical 4x8 model lattice")
 
     special = fit.get("special_sites", {})
     for ref, expected in {
@@ -224,12 +228,12 @@ def validate_artwork_grid_photo_fit(
     }.items():
         item = special.get(ref, {})
         if item.get("board_pad_midpoint_mm") != expected[0]:
-            diagnostics.append(f"{ref}: registered midpoint changed")
+            diagnostics.append(f"{ref}: historical model midpoint changed")
         if item.get("grid_index") != expected[1]:
             diagnostics.append(f"{ref}: registered grid index changed")
         position = generated.get(ref)
         if position is None or math.dist(position[:2], expected[0]) > MAX_POSITION_ERROR_MM:
-            diagnostics.append(f"{ref}: generator placement differs from target photo fit")
+            diagnostics.append(f"{ref}: generator placement differs from historical grid slot")
     return not diagnostics, diagnostics
 
 
@@ -269,8 +273,8 @@ def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
             diagnostics.append(f"{ref}: invalid factory-drawing label box")
         if not valid_bbox(site.get("site_bbox_px"), owner.get("dimensions_px")):
             diagnostics.append(f"{ref}: invalid owner-board site box")
-        if "removed" not in str(site.get("population_state", "")):
-            diagnostics.append(f"{ref}: owner removal state is not explicit")
+        if "unresolved component identity" not in str(site.get("population_state", "")):
+            diagnostics.append(f"{ref}: owner pad/remnant uncertainty is not explicit")
 
         expected = tuple(float(value) for value in target.get("board_pad_midpoint_mm", []))
         generated_position = generated.get(ref)
@@ -302,8 +306,8 @@ def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
         diagnostics.append("optional-grid DNP set is not the guarded 27 refs")
     if not valid_bbox(owner.get("optional_grid_bbox_px"), owner.get("dimensions_px")):
         diagnostics.append("owner optional-grid box is invalid")
-    if "fabricated two-pad footprint" not in str(optional.get("population_state", "")):
-        diagnostics.append("optional-grid footprint-retention disposition is missing")
+    if "footprints are provisional" not in str(optional.get("population_state", "")):
+        diagnostics.append("optional-grid physical footprint hold is missing")
     for ref in sorted(OPTIONAL_GRID_DNP_REFS):
         chip = cap_chip(board, ref)
         if chip.get("assembly_dnp") is not True or chip.get("pcb_dnp"):
@@ -320,7 +324,7 @@ def validate_registered_dram_placements(board: dict) -> tuple[bool, list[str]]:
         elif math.dist(generated_position[:2], pcb_footprint_pad_midpoint(ref)) > MAX_POSITION_ERROR_MM:
             diagnostics.append(f"{ref}: retained source-PCB footprint differs from generator")
         note = str(chip.get("prov", {}).get("pins", ""))
-        if "assembly DNP with the fabricated footprint retained" not in note:
+        if "assembly dnp with the modeled footprint retained provisionally" not in note.lower():
             diagnostics.append(f"{ref}: board provenance lost assembly-DNP disposition")
     placement_hold = evidence.get("non_field_placement_hold", {})
     if {str(ref) for ref in placement_hold.get("refs", [])} != UNRESOLVED_PLACEMENT_REFS:
@@ -398,21 +402,27 @@ def main() -> int:
     grid_fit_ok, grid_fit_diagnostics = validate_artwork_grid_photo_fit(
         evidence, generated
     )
+    owner_removal_verified = evidence["owner_board"].get("owner_removal_verified") is True
+    optional_pad_identity_verified = evidence["artwork_grid_photo_fit"].get(
+        "capacitor_pad_identity_verified"
+    ) is True
 
     lines = [
         "# Decoupling capacitor value fidelity",
         "",
-        "Status date: 2026-07-16.",
+        "Status date: 2026-09-28.",
         "",
-        "Status: **DRAM-FIELD ARTWORK/POPULATION CLOSED / VALUES AND NON-FIELD PLACEMENTS PENDING**",
+        "Status: **DRAM OPTIONAL FOOTPRINT ARTWORK REOPENED / VALUES AND NON-FIELD PLACEMENTS PENDING**",
         "",
         "This generated report isolates the C35-C72 decoupling-capacitor",
         "authenticity issue. The board model and routed PCB preserve the two",
         "array-power bypass rail groups as schematic intent. The `.009` factory",
-        "drawing and owner-board morphology close the 4x8 DRAM-field artwork and population:",
-        "fit C38/C42/C46/C50 and leave the other 28 inherited footprints empty.",
-        "The older C63 grid landing remains bare common artwork, distinct from the absent",
-        "`.009` C63 callout between D41/D40. Six non-field placement/population",
+        "drawing identifies C38/C42/C46/C50 for factory population and omits",
+        "the other 28 older grid refdes. The former claim that all 32 independent",
+        "capacitor pad pairs remain fabricated is reopened: a proposed C35 pair",
+        "coincides with adjacent D67.16/D66.1 package contacts. The older C63",
+        "grid slot is distinct from the absent",
+        "`.009` C83 callout between D41/D40. Six non-field placement/population",
         "dispositions and all factory capacitance values remain open.",
         "",
         "## Checks",
@@ -422,11 +432,13 @@ def main() -> int:
         table_row(["All C35-C72 refs exist in board JSON", "PASS", f"{len(rows)}/38 rows"]),
         table_row(["Rail-group connectivity matches model expectation", "PASS" if group_ok else "FAIL", ", ".join(f"{k}: {v}" for k, v in sorted(group_counts.items()))]),
         table_row(["Current model value is uniform 0,047", "PASS" if value_ok else "FAIL", ", ".join(f"{k or '-'}: {v}" for k, v in sorted(model_values.items()))]),
-        table_row(["Target DRAM-bank C38/C42/C46/C50 placements are registered", "PASS" if dram_placement_ok else "FAIL", "factory drawing + owner landing/remnant sites + generator/source PCB" if dram_placement_ok else "; ".join(dram_placement_diagnostics)]),
-        table_row(["Full inherited 4x8 DRAM-grid artwork is photo-registered", "PASS" if grid_fit_ok else "FAIL", "32 target landing pairs; C63 restored; C69 eighth-column placement" if grid_fit_ok else "; ".join(grid_fit_diagnostics)]),
-        table_row(["Other 28 inherited DRAM-grid sites are assembly DNP", "PASS" if dram_placement_ok and grid_fit_ok else "FAIL", "bare tinned target footprints retained in PCB; native KiCad DNP/position metadata and populate-now BOM are guarded"]),
+        table_row(["Factory C38/C42/C46/C50 callouts are registered", "PASS" if dram_placement_ok else "FAIL", "exact .009 assembly labels + current model positions; owner pad identities remain open" if dram_placement_ok else "; ".join(dram_placement_diagnostics)]),
+        table_row(["Owner-board removal of the four fitted capacitors is proved", "PASS" if owner_removal_verified else "HOLD", "no bodies visible; bright marks at all four sites lead to DRAM pin1/RAIL_H and pin16/GND, not the modeled capacitor pairs"]),
+        table_row(["Historical 4x8 measurements fit the model lattice", "PASS" if grid_fit_ok else "FAIL", "registered features are DRAM package contacts, not capacitor pads" if grid_fit_ok else "; ".join(grid_fit_diagnostics)]),
+        table_row(["Independent optional capacitor pad pairs are proved", "PASS" if optional_pad_identity_verified else "HOLD", "first C35 midpoint matches D67.16/D66.1 package contacts; two-sided D67-local projection of modeled C35 pads has no holes; audit all 28 optional sites"]),
+        table_row(["Other 28 inherited DRAM-grid refs are assembly DNP", "PASS" if dram_placement_ok else "FAIL", ".009 drawing omits them; modeled PCB footprints remain provisional pending hole identity"]),
         table_row(["Six non-field positions are held from fabrication", "PASS" if dram_placement_ok else "FAIL", "retired fit-to-space coordinates are absent from generator/source PCB; schematic intent and circuit-review gate remain"]),
-        table_row(["C63 target-board population is DNP", "PASS" if c63_dnp and grid_fit_ok else "FAIL", "bare .009 callout; inherited grid verification footprint retained"]),
+        table_row(["C63 target-board population is DNP", "PASS" if c63_dnp else "FAIL", ".009 omits C63; independent inherited pad pair remains unverified; D41/D40 callout is C83"]),
         table_row(["Historical value census is reconciled per position", "FAIL", "raw notes report mixed values but no per-position mapping"]),
         "",
         "## Current Board Model",
@@ -441,35 +453,40 @@ def main() -> int:
             "",
             "## Evidence Reconciliation",
             "",
-            "- The native sheet-2 ground symbol directly identifies rail E as GND.",
-            "  Board JSON retains C35-C53 between `RAIL_G` and `GND`, and C54-C72",
-            "  between `GND` and `RAIL_H` as schematic intent. The source PCB does",
+            "- The native .009 sheet-2 power corner in",
+            "  `ref/photos/dgsh5-109-009-e3/PXL_20260718_101901243.jpg` draws",
+            "  C35-C53 between E4-selected rail G and E/GND, and C54-C72 between",
+            "  rail H/-5 V and E/GND. Board JSON preserves these two branch groups.",
+            "  The source PCB does",
             "  not fabricate C51-C53/C70-C72 until their target positions are proved.",
             "- C34 is separately source-closed across rail E/GND and rail F/+5 V;",
             "  the former `RAIL_H`-to-GND assignment was a scan-reading error.",
             "- The current BOM/model value for these 38 positions is uniform",
             "  `0,047`, which is suitable for the functional replica's modeled",
-            "  bypass role. C63 is not populated at its `.009` callout; its inherited",
-            "  DRAM-grid landing pair remains fabricated as common artwork.",
+            "  bypass role. C63 is not populated in the .009 assembly; its modeled",
+            "  inherited pad pair remains physically unverified. The separate D41/D40 callout is C83.",
             "- The `.009` drawing directly labels C38, C42, C46, and C50 above",
             "  D91, D89, D87, and D85 respectively. The owner component photo",
-            "  shows a matching landing pair with solder and clipped lead remnants",
-            "  at each site but no body. Those four parts are therefore populated",
-            "  in the factory replica; the photographed board records later removal.",
+            "  has no visible capacitor bodies at those four regions, but the bright",
+            "  marks at all four sites lead to DRAM pin1/RAIL_H and",
+            "  pin16/GND rather than the modeled RAIL_G/GND capacitor pairs.",
+            "  Populate the four in",
+            "  the factory replica as drawn; owner-board removal remains unproved.",
             "- The same complete target view omits the other 28 positions in the",
-            "  older `.006` 4x8 zigzag. The owner view shows those inherited sites",
-            "  as clean bare tinned landings, including the four alternate bottom-row",
-            "  sites. They remain fabricated verification footprints but are marked",
-            "  assembly DNP and excluded from the populate-now BOM.",
+            "  older `.006` 4x8 zigzag. The owner view shows no optional bodies,",
+            "  but regular hole pairs are confounded by adjacent DRAM package contacts.",
+            "  The 28 modeled PCB footprints are provisional, assembly DNP, and",
+            "  excluded from the populate-now BOM until their holes are proved.",
             "- The retained factory and owner-photo evidence includes aggregate",
             "  mixed-value capacitor counts, but no defensible mapping from those",
             "  counts to individual C35-C72 positions.",
             "- C51-C53 and C70-C72 still require target-revision placement/population",
             "  disposition. Their former near-chip coordinates were early fit-to-space",
             "  assumptions and are now retired from the generator and source PCB. Exact",
-            "  target-artwork placement of those six remains unresolved. The full",
-            "  inherited 4x8 grid is now photogrammetrically registered from the",
-            "  target board, including C63 and the corrected C69 column.",
+            "  target-artwork placement of those six remains unresolved. The apparent",
+            "  4x8 measurements have valid internal spacing, but the registered",
+            "  features are DRAM package contacts. They establish no independent",
+            "  capacitor-pad identity for C63, C69, or the other optional sites.",
             "",
             "## Boundary",
             "",

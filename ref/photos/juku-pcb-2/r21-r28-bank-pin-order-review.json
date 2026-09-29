@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "review_state": "individual resistor-to-output joins unresolved",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114607591.jpg",
+  "electrical_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg",
+  "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
+  "owner_overlap_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+  "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+  "assembly_body_order_left_to_right": [
+    "R28",
+    "R27",
+    "R26",
+    "R25",
+    "R24",
+    "R23",
+    "R22",
+    "R21"
+  ],
+  "owner_component_crop_xyxy_original_pixels": [
+    240,
+    1030,
+    800,
+    1460
+  ],
+  "owner_observation": "All eight positions are populated immediately above the right-notched К155РЕ3 D8 socket. Six pale and two red bodies are visible; their markings are compatible with 1K0, supporting the sheet-1 collective 1 kOhm value without proving isolated resistance. Each lower joint lies near a socket contact, but the copper can offset or cross under the socket.",
+  "d8_pin_geometry": "The registered right-facing notch makes D8 top component row run pin 8 at the left to pin 1 at the right; the mirrored solder row runs pin 1 at the left to pin 8 at the right. The next solder row contains pin 9 at its right end. Exact sheet 1 names D8 output pins 1,2,3,4,5,6,7,9, not pin 8. The tracked К155РЕ3 pinout in docs/prom-dump-procedure.md assigns pin 8 to GND and pin 9 to output O8; that pinout is recorded there as confirmed by the board power table.",
+  "r28_local_front_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
+    "crop_xyxy_original_pixels": [
+      230,
+      1170,
+      440,
+      1400
+    ],
+    "observation": "The leftmost R28 lower solder pool has a bright front-copper spur running southwest toward the leftmost top socket lug. The blue socket edge obscures the final joint. By the registered right-facing D8 notch, that lug is physical pin 8. This is stronger than mere body proximity but does not photo-close an electrical join across the socket edge.",
+    "source_conflict_if_joined": "Exact sheet 1 assigns the eighth pull-up to D8 output pin 9, while the tracked device pinout assigns D8.8 to GND. If meter continuity confirms R28 lower→D8.8, record a source-to-owner discrepancy and measure the other resistor lead before modeling a possible +5-to-ground load."
+  },
+  "overlap_socket_edge_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "crop_xyxy_original_pixels": [
+      1850,
+      800,
+      2550,
+      1560
+    ],
+    "observation": "This independent angle shows eight lower resistor joints aligned one-for-one with the eight top socket-contact positions. The R28 lower tail reaches the blue socket edge at the leftmost top contact position, registered as D8.8; no exposed branch toward the opposite-row D8.9 is visible. Plastic obscures the actual socket-leg join for R28 and the other seven, so alignment does not yet prove electrical continuity.",
+    "assessment": "The repeated view strengthens D8.8 as the first continuity probe and makes a simple nearest-contact assignment plausible for the other seven. It does not reconcile the exact sheet's D8.9 output label."
+  },
+  "r28_solder_separation_review": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "component_landmarks_px_approx": {
+      "R28_lower_joint": [
+        2058,
+        1220
+      ],
+      "D8_pin8_socket_contact": [
+        2058,
+        1320
+      ]
+    },
+    "solder_search_px_approx": {
+      "R28_lower_candidate": [
+        3505,
+        945
+      ],
+      "D8_pin8": [
+        3505,
+        1030
+      ],
+      "D8_pin9": [
+        3505,
+        1193
+      ]
+    },
+    "observation": "The component-side resistor joint is about 100 pixels above the registered socket-contact row. A new direct D8 solder fit in local-package-registration.json fixes pin 8 at (3505,1030) and pin 9 at (3505,1193), with zero rounded-pixel held-out errors for pins 6 and 9. In the mirrored solder tile, a separate soldered feature appears near the extrapolated resistor position around (3505,945). No local B.Cu bridge from that upper feature to either registered package joint is visible at native resolution. The resistor-side projection remains outside the D8 package anchors and is a search match, not a proved same-hole registration.",
+    "decision": "Retire any same-through-hole interpretation. Any R28-to-D8.8 or R28-to-D8.9 route would need hidden F.Cu or a more remote B.Cu continuation; meter both separately."
+  },
+  "upper_common_bar_review": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "component_crop_xyxy_original_pixels": [
+      1980,
+      930,
+      2490,
+      1260
+    ],
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "solder_crop_xyxy_original_pixels": [
+      3070,
+      680,
+      3580,
+      790
+    ],
+    "observation": "Eight upper axial lead joints in the component crop share the D8-bank pitch. Their reflected positions at about x3120 through x3505 and y730 align with eight solder joints buried in one continuous horizontal soldered copper bar. The bar has no visible break between the eight sites. This supports physical commoning of the upper leads of R21–R28 on the photographed owner board.",
+    "nearby_trace_separation": "In the wider solder crop (2700,430)-(3900,900), the two open annuli immediately below the bar have short vertical stubs from a thin horizontal B.Cu track. Native enlargement shows a brown clearance between that track and the soldered bar. Neither annulus is a proved bar-to-rail departure.",
+    "wide_sweep_limit": "Native solder crop (2600,250)-(4050,1350) shows the full eight-joint bar and both its rounded ends. Neither end has a visible B.Cu continuation to the D8 socket power contact or the nearby long horizontal conductors; brown clearance separates the bar from those conductors. The component-face crop (1680,650)-(2750,1370) shows individual upper lead joints with upward front traces, so a rail connection could run on F.Cu or through remote holes. This sweep supports commoning but does not identify the owner's rail.",
+    "limit": "The bar's continuation to an independently identified +5 V pin is not visible in this crop. The exact .009 electrical drawing assigns the common end to rail A (+5 V), but the photographed rail identity still needs continuity confirmation. Do not use the adjacent isolated via track as a +5 V proof.",
+    "next_inspection": "Meter any upper resistor lead to all seven others and to a known +5 V pin with power off; separately test the bar's endpoints if a lead is inaccessible."
+  },
+  "mapping_hazard": "A one-body-to-nearest-top-contact assignment would put the leftmost R28 near D8.8, which is not in the drawn eight-output list. The visible R28 spur makes this a priority test, but R28 may still route to the opposite row's D8.9 or another nonlocal conductor. Do not assign R28 to D8.8 or infer the other seven mappings from order alone.",
+  "next_inspection": "With the socketed PROM removed and power off, first meter R28 lower separately to D8.8, D8.9, and an independently marked ground pin; then meter each resistor lower joint to D8 pins 1 through 7 and 9 and each upper joint to a known +5 V pin.",
+  "electrical_refdes_boundary": "Original-resolution .009 sheet-1 PXL_20260718_101805510.jpg draws eight separate 1 kOhm pull-ups from D8 outputs 1,2,3,4,5,6,7,9 to rail A, but labels them collectively R21...R28 only. The D7 output branch is explicitly printed as package pin 9; package pin 8 does not occur in this resistor bank. No individual R number is printed beside any branch. The assembly fixes left-to-right physical R28...R21, not the electrical pin order; the photo cannot yet supply the missing permutation.",
+  "source_output_probe_map": {
+    "basis": "Exact .009 sheet-1 detail PXL_20260718_101805510.jpg, native crop (1600,350)-(3072,1850); output tags are printed at the eight D8 branches in package-pin order. Independently reread at original pixels after this map was entered. This map identifies probe targets only and does not assign an R reference to any branch.",
+    "D8.1": "D0 output tag 5",
+    "D8.2": "D1 output tag 6",
+    "D8.3": "D2 output tag 7",
+    "D8.4": "D3 output tag 8",
+    "D8.5": "D4 output tag 1",
+    "D8.6": "D5 output tag 2",
+    "D8.7": "D6 output tag 3",
+    "D8.9": "D7 output tag 4",
+    "D8.8": "ground, excluded from the eight source-drawn output branches"
+  },
+  "owner_marking_review": "Original-resolution July crop (240,1030)-(800,1460) of 200415237 shows all eight upright bodies, with several pale bodies visibly reading 1K0; glare leaves the two red bodies less certain there. Independent May 19 close-up PXL_20260519_201933909.jpg, native crop (850,1120)-(1430,1670) rotated 270 degrees only for reading, exposes all eight body codes in factory left-to-right order R28,R27,R26,R25,R24,R23,R22,R21. Each body directly reads 1K0, including both red R27/R26 bodies. The nominal 1 kOhm value is therefore owner-body corroborated for the complete fitted bank as well as source-drawn collectively. Isolated resistance and individual D8 output joins remain unmeasured.",
+  "full_bank_solder_separation_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "crop_xyxy_original_pixels": [
+      3000,
+      680,
+      3580,
+      1230
+    ],
+    "registered_D8_top_row": "pin1 near (3120,1030) through pin8 near (3505,1030); pin16 near (3120,1193), per local-package-registration.json",
+    "observation": "The eight resistor lower-joint solder features lie in a separate row above the D8 top socket row. Their visible B.Cu traces depart upward or sideways; no exposed straight local B.Cu join descends from a resistor lower joint to its nearest socket pad. D8.8 at the right end of the socket row has its own short lateral copper exit, distinct from the nearest resistor-side joint above it.",
+    "limit": "The front copper runs into and under the blue socket. The photo cannot exclude a front-side same-net path, a remote B.Cu route, or a hidden plated hole. This is a negative local B.Cu observation, not proof of isolation.",
+    "next_test": "With PROM removed and power off, check R28 lower separately to D8.8 and D8.9, then all eight lower joints to D8.1-.7/.9. Do not assign individual R numbers from row alignment."
+  },
+  "lower_joint_probe_row": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "crop_xyxy_original_pixels": [
+      3050,
+      880,
+      3600,
+      1100
+    ],
+    "basis": "Eight separate resistor lower joints appear around y945 above the D8 socket row around y1030. Reflection reverses the assembly's left-to-right R28..R21 order, giving R21..R28 from left to right on this solder face. Approximate solder crown centers are probe locations, not verified drill centers or electrical pin assignments.",
+    "approximate_solder_centers_by_ref": {
+      "R21": [
+        3120,
+        945
+      ],
+      "R22": [
+        3175,
+        945
+      ],
+      "R23": [
+        3230,
+        945
+      ],
+      "R24": [
+        3285,
+        945
+      ],
+      "R25": [
+        3340,
+        945
+      ],
+      "R26": [
+        3395,
+        945
+      ],
+      "R27": [
+        3450,
+        945
+      ],
+      "R28": [
+        3505,
+        945
+      ]
+    },
+    "same_column_warning": "The lower-joint columns nearly coincide with the eight D8 top socket-contact columns, but the native crop shows brown clearance between the rows on B.Cu. Test each resistor joint against D8.1–.7/.9 and D8.8 independently; do not equate same-column joints."
+  },
+  "may_socket_edge_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260519_201933909.jpg",
+    "crop_xyxy_original_pixels": [
+      650,
+      900,
+      1550,
+      1800
+    ],
+    "observation": "The independent May owner close-up exposes all eight 1K0 bodies and their lower front traces descending individually toward the blue D8 socket. The leftmost body in the assembly R28 position again heads toward the leftmost top socket lug, registered as physical D8.8. The blue plastic lip covers the final copper-to-lug junction; the image does not establish continuity. None of the eight lower lead routes can be assigned a D8 pin solely from this view.",
+    "decision": "Keep R28→D8.8 as the first owner continuity test and preserve the exact source D8.9 eighth-output branch as a separate hypothesis. Do not add per-ref R21–R28 nets from apparent row alignment.",
+    "left_edge_close_crop_xyxy_original_pixels": [
+      830,
+      1200,
+      1270,
+      1850
+    ],
+    "left_edge_detail": "At native close range the leftmost R28 lower joint has a short exposed F.Cu jog west before descending under the blue socket lip; it is not a straight same-column solder-to-socket contact. The bottom-row D8.9 leg is visible below the package but no uninterrupted exposed path from the resistor to that leg is present. Both D8.8 and D8.9 remain separate meter targets."
+  }
+}

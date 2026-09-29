@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "review_state": "one D39-side open annulus excluded from C5/C82 candidate holes by two-face match and front trace to D39.10",
+  "images": [
+    {"path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg", "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a", "crop_xyxy_px": [2950, 2220, 3200, 2670]},
+    {"path": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg", "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215", "crop_xyxy_px": [1020, 1880, 1270, 2330]}
+  ],
+  "coordinate_system": "original source-image pixels",
+  "front_open_annulus_px_approx": [3040, 2375],
+  "solder_open_annulus_px_approx": [1167, 2034],
+  "cross_face_check": "The independently registered D34 local map x_s=4084-0.960*x_c and y_s=-251+0.963*y_c predicts about (1166,2036), within roughly 2 px of the visible solder open annulus. D39's separately fitted rows agree with the same local map within about 8 px.",
+  "front_trace": "A continuous exposed F.Cu run descends from the front open annulus and turns left into D39's right-side pin-10 contact. The notch-up D39 row registration places pin 10 at this contact; no other branch or soldered capacitor body is visible at the annulus.",
+  "source_model_context": "Board JSON names D39.10 XTAL16M. Exact .009 D34 pulse-shaper C5 belongs between D34.6 and D34.2/R33.1; exact .009 sheet-1 collective C82 branch belongs between +5 V and ground. Neither intended capacitor terminal is the D39.10 crystal-input node.",
+  "decision": "Exclude this same-hole open annulus from both the C5 RC and C82 bypass pad searches. This excludes one attractive bare feature; it does not identify either capacitor's actual two-hole pair or prove why their bodies are absent.",
+  "next_inspection": "Check the remaining distinct gap features against the registered D34/D39 contacts and solder drills. Meter the proposed C5 pair to D34.6 and D34.2/R33.1, and the C82 pair to +5 V and ground."
+}

@@ -78,8 +78,11 @@ for source in evidence["sources"]:
         fail(f"source hash drifted: {source['path']}")
 
 closed = {item["ref"]: item for item in evidence["closed"]}
-if set(closed) != {"C7", "C8", "C99"}:
+if set(closed) != {"C5", "C6", "C7", "C8", "C99"}:
     fail(f"closed set drifted: {sorted(closed)}")
+source_only = {item["ref"]: item for item in evidence["source_nominal_without_footprint"]}
+if set(source_only) != {"C29"}:
+    fail(f"source-only set drifted: {sorted(source_only)}")
 
 board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
 chips = {chip["ref"]: chip for chip in board["chips"]}
@@ -89,14 +92,20 @@ for refdes, item in closed.items():
         fail(f"{refdes} is missing or is not C_KM in board JSON")
     if chip.get("value") != item["value"]:
         fail(f"{refdes} board value is {chip.get('value')!r}, expected {item['value']!r}")
+for refdes, item in source_only.items():
+    chip = chips.get(refdes)
+    if chip is None or chip.get("type") != "C_KM":
+        fail(f"{refdes} is missing or is not C_KM in board JSON")
+    if chip.get("value") != item["value"] or not chip.get("pcb_placement_pending"):
+        fail(f"{refdes} source nominal or footprint hold drifted")
 
 held = {item["ref"] for item in evidence["held"]}
 unvalued = {
     chip["ref"] for chip in board["chips"]
     if chip.get("type") == "C_KM" and not chip.get("value")
 }
-if unvalued != held:
-    fail(f"unvalued C_KM set drifted: found {sorted(unvalued)}, expected {sorted(held)}")
+if not held <= unvalued:
+    fail(f"registered holds unexpectedly valued: {sorted(held - unvalued)}")
 
 physical_values = pcb_values(PCB)
 for refdes, item in closed.items():
@@ -105,15 +114,21 @@ for refdes, item in closed.items():
             f"{refdes} source-PCB value is {physical_values.get(refdes)!r}, "
             f"expected {item['value']!r}"
         )
+for refdes in source_only:
+    if refdes in physical_values:
+        fail(f"{refdes} unexpectedly has a source-PCB footprint")
 
 lines = [
     "# Native schematic capacitor values",
     "",
-    "Status: **3 VALUES SOURCE-CLOSED / 9 TARGET HOLDS**",
+    "Status: **5 PLACED VALUES SOURCE-CLOSED / 1 SOURCE NOMINAL HELD OFF PCB / 9 REGISTERED TARGET HOLDS**",
     "",
-    "The retained native circuits print three capacitor values that were blank in",
-    "the machine-readable board model. This report checksum-guards the source scans",
-    "and requires the board JSON and generated source PCB to preserve those literals.",
+    "The retained native circuits print five registered capacitor values.",
+    "This report checksum-guards the source scans and requires the board JSON",
+    "and source PCB to preserve those literals.",
+    "C29 has a source nominal but no registered footprint or owner-board value.",
+    "Its hold list covers only the registered cases below; other unvalued capacitors",
+    "in the expanded board model are tracked in the board-fidelity ledger.",
     "",
     "## Command",
     "",
@@ -135,6 +150,19 @@ for refdes in sorted(closed, key=lambda item: int(item[1:])):
 
 lines += [
     "",
+    "## Source nominal awaiting physical registration",
+    "",
+    "| Ref | Board literal | Normalized source nominal | Why the footprint is held |",
+    "| --- | ---: | ---: | --- |",
+]
+for refdes, item in source_only.items():
+    lines.append(
+        f"| `{refdes}` | `{item['value']}` | {item['normalized']} | "
+        "Owner-board population, pad pair, and physical value unproved |"
+    )
+
+lines += [
+    "",
     "## Deliberate holds",
     "",
     "| Ref | Why it remains unvalued |",
@@ -147,17 +175,20 @@ lines += [
     "",
     "## Evidence boundary",
     "",
+    "- Exact `.009` sheet 2 prints bare `560` beside C5 and bare `56` beside C6;",
+    "  the native-sheet convention interprets these as pF values.",
     "- C7 and C8 are the already traced D56 one-shot timing capacitors; this",
     "  closes their sourcing metadata without changing their endpoints.",
-    "- C99's `160` label is independent of its unresolved far plate. The value",
-    "  is promoted while `C99_FAR` remains a continuity ask.",
-    "- The nine holds are target-revision, obscured-body, or incomplete-marking cases. Values",
+    "- C99's `160` label and grounded far plate are both shown on exact `.009`",
+    "  sheet 1. Its physical population and pad identity still need inspection.",
+    "- The nine registered holds are target-revision, obscured-body, or incomplete-marking cases. Values",
     "  from the superseded `.006` RF option are deliberately not copied into them.",
     "",
 ]
 
 REPORT.write_text("\n".join(lines), encoding="utf-8")
 print(
-    "NATIVE CAPACITOR VALUES: PASS — 3 literal scan values agree across "
-    "evidence, board JSON, and source PCB; 9 target values remain held"
+    "NATIVE CAPACITOR VALUES: PASS — 5 literal scan values agree across "
+    "evidence, board JSON, and source PCB; C29 nominal is held off PCB; "
+    "9 registered target values remain held"
 )

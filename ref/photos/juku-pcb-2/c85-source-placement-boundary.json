@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "review_state": "schematic-listed bypass; individual assembly placement unregistered",
+  "electrical_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101827714.jpg",
+  "source_fact": "Exact .009 sheet 1 prints the collective C82...C93 label beside a +5 V/GND bypass symbol; C85 is included in that range but no individual value or pad location is given there. The same detail separately draws C92 to -12 V and C93 to +12 V, so the collective text alone must not be applied mechanically to every numbered part.",
+  "assembly_search": {
+    "images": [
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114553710.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114607591.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114615300.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114617677.jpg",
+      "ref/photos/dgsh5-109-009-sb/PXL_20260711_114620466.jpg"
+    ],
+    "observation": "A visual sweep of upright broad-panel views finds the neighboring C84 near D54, C86 in the D6/D8 slot, and C93 in the X8 power corner, but no securely readable individual C85 callout. These reduced broad views and failed English OCR are search limits, not proof that the original-resolution assembly lacks C85.",
+    "full_resolution_ocr": "Tesseract English sparse-text (--psm 11) on all nine original-resolution panels, grayscale at 2x contrast, at 0/90/180/270 degrees produced no lines containing 85. A second original-resolution pass on all nine panels with 1% autocontrast, 2x contrast, and a C/c/0-9 character whitelist also produced no 85 hit. This is a negative OCR result only: the installed engine has eng and osd, not Cyrillic, and dense faint labels remain outside reliable OCR. Visual source review or a clearer scan is still needed.",
+    "neighbor_original_resolution_review": "Original-resolution 114604420 visibly labels C87 left of D6 and C86 between D6 and D8 in the PROM strip; 114611058 visibly labels C84 under D54 above X9. Neither adjacent labeled region supplies a C85 callout or a reliable one-step placement interpolation. The broad sheet overlaps and OCR do not establish a C85 landing.",
+    "archive_scope": "The .009-SB directory contains 26 JPEGs. Nine are overlapping broad assembly placement panels listed above. A contact-sheet check of the other 17 finds connector installation/detail views, notes/title blocks, and edge/profile details rather than an additional board-wide refdes field; these do not supply a readable C85 location."
+  },
+  "decision": "Keep C85 as a source-listed member of the C82...C93 bypass range with unknown individual rails, physical placement, value, population, and pad pair. The current +5 V/GND logical assignment follows the collective symbol provisionally; the same source separately draws C92 and C93 on other rails. Do not assign C85 to a nearby unlabelled owner hole or treat it as a DNP site.",
+  "next_inspection": "Search the original-resolution assembly overlaps for a C85 refdes or obtain a native bill of materials/PCB overlay; only then register the owner-board landing pair and test both rails."
+}

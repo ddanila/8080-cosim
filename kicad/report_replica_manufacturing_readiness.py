@@ -16,6 +16,8 @@ DEFAULT_REPORT = ROOT / "docs" / "replica-manufacturing-readiness.md"
 
 REQUIRED_REPORTS = [
     ("Main-board ERC/parity", "docs/main-board-erc-parity.md", "# Main-board ERC and schematic/PCB parity"),
+    ("PPI orientation", "docs/ppi-orientation-audit.md", "# PPI physical orientation audit"),
+    ("X8 electrolytic footprints", "docs/x8-electrolytic-footprint-audit.md", "# X8 C31–C33 footprint audit"),
     ("Order readiness", "fab/gerbers/order-readiness.md", "# Main board order readiness"),
     ("Upload runbook", "docs/replica-order-upload-runbook.md", "Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**"),
     ("Package geometry", "docs/replica-package-geometry-readiness.md", "Status: **READY**"),
@@ -35,6 +37,8 @@ REQUIRED_REPORTS = [
 # Package-only reports intentionally keep the marker-presence PASS semantics.
 RELEASE_MARKERS = {
     "docs/main-board-erc-parity.md": "Status: **READY**",
+    "docs/ppi-orientation-audit.md": "Status: **READY**",
+    "docs/x8-electrolytic-footprint-audit.md": "Status: **READY**",
     "fab/gerbers/order-readiness.md": "Status: **RELEASED FOR ORDER**",
     "docs/replica-bringup-verification-points.md": "Status: **DESIGN RELEASE RISKS CLOSED**",
     "docs/replica-sourcing-readiness.md": "Status: **SOURCING READY**",
@@ -145,6 +149,10 @@ def toolchain_rows(fab_dir):
 
 def build_report(fab_dir):
     failures = []
+    source_stamp = fab_dir / "source-board.sha256"
+    current_board_sha = sha256(ROOT / "kicad" / "juku_routed.kicad_pcb")
+    if not source_stamp.exists() or source_stamp.read_text().strip() != current_board_sha:
+        failures.append("fabrication source-board.sha256 is absent or differs from the current routed PCB")
     order_result = run_order_readiness(fab_dir)
     # report_order_readiness returns 3 after successfully writing a coherent
     # NOT READY / DESIGN HOLD report.  Only other nonzero codes mean its
@@ -250,11 +258,38 @@ def build_report(fab_dir):
         f"Fabrication package: `{repo_relative(fab_dir)}`",
         f"Final upload ZIP: `{repo_relative(upload_zip)}`",
         f"Final upload ZIP SHA256: `{zip_digest or '-'}`",
+        f"Routed PCB SHA256: `{current_board_sha}`",
+        f"Fabrication source stamp: `{source_stamp.read_text().strip() if source_stamp.exists() else '-'}`",
         "",
         "This is the tracked top-level manufacturing packet for the replica main",
         "board. It separates reproducible package integrity from functional design",
         "release. A verified package must not be uploaded while the status is",
         "DESIGN HOLD.",
+        "",
+        "Archive review adds a physical-layout hold: `docs/ppi-orientation-audit.md`",
+        "records D26 and D27 PPI orientations on the owner board that disagree",
+        "with their current 90° routed footprints. D26 is horizontal with its",
+        "notch at the right, as does D27 under X2 in both factory and owner",
+        "evidence. The current 90° KiCad footprints are left-notched. The",
+        "package-geometry gate below checks outline, layers, and drill export;",
+        "it does not validate IC orientation or physical pin-to-net mapping.",
+        "Release requires a local pin-center fit, corrected PPI footprints and",
+        "routing, and renewed electrical and visual review.",
+        "The current routed PCB has 40/40 net mismatches at the photographed physical",
+        "pin positions on each PPI; see `docs/ppi-physical-pin-mapping.json`.",
+        "The X8 power corner has a separate footprint hold: C31–C33 remain on",
+        "2 mm radial footprints in all PCB variants, while the .009 assembly and",
+        "owner photos show axial cans with about 25–26 mm lead spacing. See",
+        "`docs/x8-electrolytic-footprint-audit.md`; register the six original",
+        "joints and replace/reroute the footprints before fabrication.",
+        "The timer cluster has a separate placement hold: owner component and solder",
+        "photos place D54's lower pin row about 23 mm above the physical bottom edge,",
+        "while the routed row is only 7.38 mm above Edge.Cuts. See",
+        "`docs/photo-registration.md`; D54/D55/D57 and adjacent D26 need a mechanical",
+        "fit before fabrication, regardless of the package-geometry gate below.",
+        "The lower-right mounting hole seen on both board faces is also absent from",
+        "the routed Edge.Cuts; its approximate photo coordinate needs a dimensioned",
+        "fit before adding the drill.",
         "",
         "## Gate Summary",
         "",

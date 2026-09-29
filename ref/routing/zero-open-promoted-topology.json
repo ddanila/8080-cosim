@@ -4,6 +4,7 @@
   "parent_board_sha256": "7dbce0e8dea3498f85b38829796dec7d5ad14aa28daf967e711345cc05b12b6a",
   "source_board_sha256": "6ecd888b64ddf4f51e373abe6af508f4b4da4f631a2a9721c37fe2c782779b4e",
   "board_sha256": "3a1f83c8277624f2c04633761de5703550420443839fb3d5e49eea2c8a99e266",
+  "superseded_by": "ref/routing/d57-clock-correction.json",
   "board_size": 11888907,
   "drc_sha256": "a6538620cb839334aa1aed48150972be1ac40ba913a6f074c633eede70eb6285",
   "footprints": 322,
@@ -205,7 +206,7 @@
     "kicad/check_routed_candidate.py": "7d143bc0fd7cbca919b7be066fffb90eaea7a02d17cfcdd22ba5b8d2eb4b5d3a",
     "scripts/close_d30_status_strobe.py": "0bd48a80397a32f03cedee8bd2934c05a7396eb4dbe0e5755e97bdace7b1e529",
     "kicad/apply_d40_1mhz_route.py": "1b7b8c038473358f10f97304bf8f0a64debbf7ac70eb1c08664df130d9063aba",
-    "kicad/check_d40_1mhz_route.py": "ddcb0db0375ca16d3ff667cff6b62ae799d448a9b9227335d76627a9c8058d7e",
+    "ref/routing/tool-snapshots/check_d40_1mhz_route_zero_open.py": "ddcb0db0375ca16d3ff667cff6b62ae799d448a9b9227335d76627a9c8058d7e",
     "ref/routing/d40-1mhz-dangling-prune.json": "fc9e8923d9f4b7ac5b91361fa47840df97a9cc738a41b79dfc1d696e9cb516d7"
   },
   "disposition": "This is the promoted source-parity routed board after adopting the exact-sheet and owner-measured D40.11/D59.5/D92.2/.3/D95.5/.6 1 MHz slot conductor. Independent KiCad DRC, the dedicated endpoint/tie guard, and the routed-candidate identity gate report zero opens, zero electrical blockers, zero dangling items, identical 322-footprint/2436-pad source identity, and zero pad-coordinate delta."

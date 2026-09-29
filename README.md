@@ -126,11 +126,15 @@ with the machine-readable board model.
   scope.
 - The promoted routed main-board artifact exactly matches the live source.
   Stable KiCad reports no opens, electrical blockers, or dangling tracks or
-  vias. Its Gerber/drill package is machine-verified,
-  but remains under the functional design hold and must not be uploaded or
-  ordered. Exact topology evidence is retained in
-  `ref/routing/zero-open-promoted-topology.json`; the exact package snapshot is
-  `ref/routing/zero-open-fabrication-package.json`, and fabrication/release
+  vias. The accepted D57.18 `VERT_RTR` correction is now routed in both PCBs;
+  full board-model endpoint coverage and source/routed pad parity pass. The
+  tracked Gerber/drill report verifies the older board hash, and the ignored
+  `fab/gerbers` tree and upload ZIP are absent in this checkout. The corrected
+  PCB needs a fresh package and independent review before release. The current
+  route correction is recorded in `ref/routing/d57-clock-correction.json`;
+  earlier topology and package snapshots remain in
+  `ref/routing/zero-open-promoted-topology.json` and
+  `ref/routing/zero-open-fabrication-package.json`. Fabrication/release
   gates are summarized in `docs/replica-manufacturing-readiness.md`.
   The separately preserved candidate is audit history, not the promoted board.
 - The main board is **not released for fabrication**. Validated physical D2
@@ -142,7 +146,7 @@ with the machine-readable board model.
   no-connects. The remaining D94 boundaries are the upstream source beyond the
   local pin15/D93.3 enable conductor and whether D0/pin1 has a hidden load
   beyond R8; the former BA11-BA15 input assignment was an unproved scaffold
-  analogy and is retired. There are 3 official FDC-support ICs whose
+  analogy and is retired. There are 4 official FDC-support ICs whose
   functional pin closure is still incomplete.
   Recovered sheet 3 closes D106 completely: its R78 preset pull-up, RAW READ
   load, D95 recovery clock, grounded clear, Q3 output, and five no-connects are
@@ -151,11 +155,15 @@ with the machine-readable board model.
   device truth shows that WREQ asserts `/CLR1` and `/PRE1` together, producing
   Q1=/Q1=high and leaving restart phase undefined; `/Q` feedback still divides
   after release. A full-resolution reread restores D96 section 2 plus D28
-  sections 5/6 and R93/R95 as the local DRQ/INTRQ path; D96.13 is drawn unused
-  and the separately proved pin-8 test landing is retained. Primary SN74LS74A
-  truth exposes the shared `/PRE2`/D2 wiring as set-only without a real pin13
-  clear source. The copper is structural and LVS-visible, while D96.9/.11 and
-  the functionally contradictory pin13 disposition remain verification gates.
+  sections 5/6 and R93/R95 as the local DRQ/INTRQ path. A closer sheet-3
+  re-read joins D96.13 `/CLR2` to D99.10 `B2` and a sheet-1 continuation;
+  overlapping sheet-3 details also join D99.11 `/CLR2` to `MOTOR EN`.
+  D99.5 Q2 drives D100.7 A7 and its `-MOTOR ON` X4 output, while D99.12
+  Q2_N separately controls D100.9 OE_N; the former direct D26-to-D100.7
+  path was removed from the replica model.
+  the separately proved pin-8 test landing is retained. Primary SN74LS74A
+  truth makes the shared `/PRE2`/D2 wiring set-only while `/CLR2` is inactive.
+  D96.9-to-D101 A0–A3 continuity, D96.11-to-D94.2 continuity, and the shared D96.13/D99.10 remote source remain verification gates.
   The source-closed D97/D102 delay cascade and D101 write-precompensation mux
   are also now structural and LVS-visible. Their recovered digital conductors
   are proved without assigning analog timing to the still-incomplete C16/C19
@@ -164,7 +172,7 @@ with the machine-readable board model.
   all six D28 open-collector inverters, the five used D98 buffers, and the
   exact-revision omission of D98 buffer pair 4.
   The exact-revision sheet makes D97.13, D98.9/.10, and D102.4 intentional
-  no-connects, leaving D96, D99, and D101 with open support-device functional pins.
+  no-connects, leaving D96, D99, D100, and D101 with open support-device functional pins.
   The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;
   D6's validated physical table drives runnable memory selection directly and
   its chip-removed separate ROM/RAM outputs stay LVS-visible; the old functional
@@ -181,7 +189,7 @@ with the machine-readable board model.
   the `.009` drawing and owner photo now close `H` as X1.107B/-BLOCK with its
   R1 2 kΩ pull-up. D7's physical SYNC/feedback strobe is
   preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 43 modeled nets retain source-risk annotations requiring
+  In total, 48 modeled nets retain source-risk annotations requiring
   evidence or explicit redesign.
   See [PLAN.md](PLAN.md).
 

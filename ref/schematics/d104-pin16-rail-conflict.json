@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "review_state": "D104 solder footprint photo-registered from D11-local cross-face fit; exact .009 power table omits pin16 +12 V and owner physical rail unresolved",
+  "source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101827714.jpg",
+  "source_crop_xyxy_original_pixels": [
+    0,
+    2050,
+    2350,
+    3150
+  ],
+  "source_observation": "The sheet-1 'Подключение питания к выводам ИС' table has a separate 170УП2 column. It prints pin15 in +5В A and pin8 in Земля. The +12В B and -12В C cells for that column are blank. This is an exact-revision omission or nonstandard use; the table itself does not authorize assigning D104.16 to +12 V.",
+  "device_contract": "ref/datasheets/k170up2-pinout.txt, based on ref/datasheets/k170up2.pdf, names pin15 as +5 V supply, pin8 as common/GND, and pin16 as +12 V supply. The device contract conflicts with a literal completeness reading of the .009 table's blank +12 V cell.",
+  "owner_photo": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg shows the marked К170УП2 with bottom-facing notch. The bottom-left pin16 contact is near/under the crossing white insulated lead in crop (630,1220)-(1260,1920), so no continuous front-copper route to a known +12 V landing is photo-closed.",
+  "alternate_front_photo_review": "Independent overlapping owner component tile ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg, native crop (2200,850)-(2800,1800), shows the same marked notch-down К170УП2 and bottom-left pin16 position. A white insulated lead again crosses that contact and its immediate departure. The alternate angle therefore does not expose a continuous pin16-to-rail front trace or justify an NC assignment.",
+  "solder_photo_limit": "docs/d104-solder-registration-audit.md retires the former D104 solder fit in PXL_20260710_200506061.jpg: its old x≈2212/2350 anchors do not form two eight-contact package rows. The separate x≈2565/2710 two-column field is now photo-registered to the marked D104 via a D11-local front-to-solder transform; pin16's electrical rail remains unproved.",
+  "replica_state": "D104.8=GND and D104.15=P5V are assigned in board JSON and all three PCBs. D104.16 remains netless at (191.885,47.790) mm in all three PCB variants. No source-backed physical +12 V route has been promoted.",
+  "next_inspection": "With power removed, continuity-check photo-registered D104.16 solder joint near (912,1620) in 200509593 / (2710,1480) in 200506061 against independently marked X8 +12 V, D104.15/+5 V, and known ground. Optionally touch the front lead to corroborate the geometric same-hole fit. Do not use the retired x≈2212/2350 solder coordinates. Resolve the rail before assigning D104.16 and routing the replica. If the owner pin is unconnected, record that nonstandard condition and assess serial receiver behavior.",
+  "power_table_column_disambiguation": "Original-pixel reread of sheet-1 image PXL_20260718_101827714.jpg crop (0,2050)-(2350,3150): the leftmost 170АП2 column does print +12 V pin8, -12 V pin5, and ground pin4, but that column is a different 170-series device. The separate 1ТД/УП2 column near the right prints +5 V pin15 and ground pin8, with both ±12 V cells genuinely blank. Do not transfer the 170АП2 ±12 V entries to D104 К170УП2.",
+  "replacement_solder_field_candidate": {
+    "primary_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "primary_crop_xyxy_px": [
+      2450,
+      1030,
+      2900,
+      1580
+    ],
+    "overlap_image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
+    "overlap_crop_xyxy_px": [
+      500,
+      1150,
+      1050,
+      1800
+    ],
+    "observation": "Two vertical columns of eight soldered joints repeat in the overlap. In 200509593 they lie near x≈767 and x≈912, y≈1280..1620 with about 48 px row pitch; the corresponding 200506061 field is near x≈2565/2710, y≈1140..1480. This lies immediately above the independently registered D11 solder field, whose x≈2705 column starts at y≈1610 in 200506061. The owner front photo 200358952 shows the marked D104 directly above D11 with their left contact columns nearly aligned. D11's two-face package fit projects the four D104 corner leads onto the field within about 21 px, independently of replica placement. The old x≈2212/2350 fit remains rejected.",
+    "pin16_solder_px_approx": {
+      "primary": [
+        2710,
+        1480
+      ],
+      "overlap": [
+        912,
+        1620
+      ]
+    },
+    "limit": "The notch-down orientation and D11-local fit identify the lower joint of the mirrored right column as the photo-registered D104.16 landing. This does not identify its rail: that joint has no exposed local B.Cu departure in the crop, and its F.Cu route is covered by the white cable. The source D11 position now agrees with panorama registration, while both routed boards retain old coordinates. The local pixel fit alone does not identify D104's rail."
+  },
+  "front_neighborhood_corroboration": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+    "observation": "The marked vertical К170УП2 D104 is immediately above the separately marked vertical КР580ВВ51А D11. Their left contact columns are nearly aligned in this single owner image. The two solder rows near x≈2710 and registered D11 x≈2705 likewise align in 200506061, with a roughly 130 px inter-package row gap. The former source PCB placement offset their comparable columns by roughly 14 mm; the panorama registration identified D11 as the larger absolute-position discrepancy, and its source footprint has since been corrected. This historical mismatch did not prove D104 was misplaced.",
+    "decision": "Adopt the x≈2565/2710 pair as the photo-registered D104 solder footprint and the lower mirrored-right joint as D104.16. The source D11 position is now corrected; retain D104.16 as an unresolved rail."
+  },
+  "d11_local_cross_face_fit": {
+    "front_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "source": "D11 front corners (2280,1777)/(2600,1777)/(2283,2452) and solder corners (2705,1610)/(2425,1610)/(2705,2211) from ref/photos/juku-pcb-2/local-package-registration.json",
+    "approximate_transform": "x_s=4700-0.875*x_front; y_s=1610+(601/675)*(y_front-1777)",
+    "d104_front_corners_px_approx": {
+      "left_top": [
+        2283,
+        1240
+      ],
+      "right_top": [
+        2445,
+        1240
+      ],
+      "left_bottom_pin16": [
+        2283,
+        1607
+      ],
+      "right_bottom_pin1": [
+        2445,
+        1607
+      ]
+    },
+    "projected_solder_corners_px_approx": {
+      "left_top": [
+        2702,
+        1132
+      ],
+      "right_top": [
+        2561,
+        1132
+      ],
+      "left_bottom_pin16": [
+        2702,
+        1459
+      ],
+      "right_bottom_pin1": [
+        2561,
+        1459
+      ]
+    },
+    "observed_solder_corners_px_approx": {
+      "left_top": [
+        2710,
+        1140
+      ],
+      "right_top": [
+        2565,
+        1140
+      ],
+      "left_bottom_pin16": [
+        2710,
+        1480
+      ],
+      "right_bottom_pin1": [
+        2565,
+        1480
+      ]
+    },
+    "max_corner_residual_px_approx": 21,
+    "conclusion": "The separate two-column solder field matches all four front package corners at the D11-local image scale, with an approximately 21 px maximum corner residual (less than half the 48 px row pitch). The left front contact column reflects to the right solder column, so the notch-down bottom-left pin16 lands near (2710,1480). This is geometric pad registration, not electrical rail proof."
+  },
+  "placement_coordinate_audit": {
+    "method": "Apply docs/photo-registration/panorama-registration.json original-to-panorama and docs/photo-registration/board-registration.json inverse board homography to original component pixels; compare with current source PCB centres. This is independent of the D11-local front-to-solder pixel fit.",
+    "d104_first_view": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "owner_centre_px": [
+        939.762,
+        1580.854
+      ],
+      "panorama_board_mm_approx": [
+        195.7,
+        38.9
+      ]
+    },
+    "d104_second_view": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+      "owner_centre_px_approx": [
+        2364,
+        1423.5
+      ],
+      "panorama_board_mm_approx": [
+        197.333,
+        37.226
+      ]
+    },
+    "d104_current_pcb_centre_mm": [
+      195.695,
+      38.9
+    ],
+    "d11_same_second_view": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+      "owner_centre_px_approx": [
+        2440,
+        2114.5
+      ],
+      "panorama_board_mm_approx": [
+        201.012,
+        71.486
+      ]
+    },
+    "retracted_inference": "Mapping D104 pixels through D11's former (185.500,65.700) mm PCB pad coordinates yielded (181.88,31.90) mm and a false 13.8 mm/7.0 mm D104 placement error. The source D11 footprint now follows its independently photo-registered position; both routed boards retain the old position. Keep the D11-local cross-face pixel fit for D104 solder joints, but reject the historical board-mm conversion.",
+    "decision": "Do not move D104 from the retracted estimate. The source D11 position has been corrected and both routed positions still require copper-aware correction; D104 pin16 rail remains a separate electrical hold.",
+    "d11_previous_all_pcb_centre_mm": [
+      185.5,
+      65.7
+    ],
+    "d11_current_source_pcb_centre_mm": [
+      201.012,
+      71.486
+    ],
+    "d11_current_routed_pcb_centres_mm": [
+      185.5,
+      65.7
+    ]
+  },
+  "supply_pin_local_solder_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "crop_xyxy_px": [
+      2350,
+      1050,
+      2900,
+      1900
+    ],
+    "pin8_source_ground_joint_px_approx": [
+      2565,
+      1140
+    ],
+    "pin15_source_p5v_joint_px_approx": [
+      2710,
+      1430
+    ],
+    "pin16_open_rail_joint_px_approx": [
+      2710,
+      1480
+    ],
+    "observation": "At pin8 the upper left-column solder joint sits on a short bright B.Cu bar reaching an open hole to its west around (2500,1140). At pin15 the second-from-bottom right-column joint has a short B.Cu link east to an open annulus near (2755,1430). The bottom right-column pin16 crown near (2710,1480) is separate and has no visible B.Cu departure. Native crop (2600,1370)-(2820,1560) shows the broad horizontal strip about 35 px below it, with brown clearance rather than a local neck; that strip cannot be used as pin16 rail evidence. These are local copper observations only: neither remote +5 V nor ground anchor is reached in this crop, and pin16's F.Cu route remains cable-covered.",
+    "decision": "Use the independently source-assigned pin8/GND and pin15/+5 V as separate meter controls when testing pin16. Do not infer pin16's rail from the neighboring pin15 stub or the parallel horizontal traces."
+  },
+  "overlap_pin16_solder_crosscheck": "In independent overlapping solder image PXL_20260710_200509593.jpg native crop (760,1470)-(1050,1780), the registered bottom-right pin16 joint around (912,1620) has no visible B.Cu neck to the broad horizontal strip below. The separate pin15 joint just above has a short eastward departure. This corroborates the 200506061 local exclusion but leaves the cable-covered F.Cu route and actual rail unresolved.",
+  "may_front_photo_review": "Earlier owner image ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg, native crop (0,700)-(1500,2300), shows the same marked К170УП2 D104 directly above D11. Its bottom-facing notch confirms the lower-left physical pin16 corner, while the long white insulated lead still crosses that corner and continues below the package. The May angle does not uncover a continuous pin16 front-copper departure to a marked +12 V rail. This corroborates the July occlusion, not a rail or no-connect assignment."
+}

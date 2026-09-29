@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "review_state": "exact .009 and owner-body values agree; older .006 values differ",
+  "exact_source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101908284.jpg",
+  "older_source_image": "ref/schematics/p2_sheet2.png",
+  "owner_overlap_image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+  "owner_close_image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
+  "r31": {
+    "exact_source_crop_xyxy": [550, 800, 1550, 1800],
+    "exact_source_print": "1к",
+    "older_source_crop_xyxy": [250, 150, 1600, 900],
+    "older_source_print": "820",
+    "owner_body_read": "1K0 on the vertical fitted body at the assembly R31 position, between Z1 and D59",
+    "decision": "Use 1 kOhm for the exact .009 target; the 820-ohm print is a .006 revision difference."
+  },
+  "r32": {
+    "exact_source_crop_xyxy": [1850, 550, 3000, 1450],
+    "exact_source_print": "1,3к",
+    "older_source_crop_xyxy": [250, 150, 1600, 900],
+    "older_source_print": "1,2K",
+    "owner_overlap_crop_xyxy": [2500, 2250, 3550, 2900],
+    "owner_body_crop_xyxy": [2850, 1950, 3500, 2350],
+    "owner_body_read": "1K3 on the horizontal red body directly above the fitted КР531ЛН1 oscillator package; the independent owner overlap image is the clearer read",
+    "decision": "Use 1.3 kOhm for the exact .009 target and all replica PCB value fields; the former 1.2 kOhm model value came from the .006 revision."
+  },
+  "scope": "Value and assembly/body identity are closed by exact drawing and owner print. These images do not independently prove resistance with an ohmmeter or the two physical copper endpoints."
+}

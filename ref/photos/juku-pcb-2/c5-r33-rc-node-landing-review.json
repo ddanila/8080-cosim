@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "review_state": "superseded RC-node assignment: R33-left gap joint photo-routes to D34.6, conflicting with source C5/R33 topology; same-hole gap registration retained",
+  "images": [
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "crop_xyxy_px": [
+        2900,
+        1980,
+        3420,
+        2630
+      ]
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+      "crop_xyxy_px": [
+        1020,
+        1880,
+        1270,
+        2330
+      ]
+    }
+  ],
+  "coordinate_system": "original source-image pixels",
+  "r33_left_lead_joint_px_approx": [
+    2980,
+    2145
+  ],
+  "front_gap_joint_px_approx": [
+    3098,
+    2345
+  ],
+  "solder_gap_joint_px_approx": [
+    1110,
+    2007
+  ],
+  "front_trace": "R33 left lead visibly routes through the filled gap joint near (3098,2345) and continues on exposed F.Cu to the sixth pin down D34 notch-up left row, physical D34.6 near (3155,2570). The earlier interpretation stopped at the gap joint and missed this continuation.",
+  "cross_face_check": "The independently registered D34/D39 local map predicts solder about (1110,2007) from front (3098,2345). A distinct filled solder joint lies in that search position. This is a candidate same-hole match, with local map search tolerance about 15 px; the solder-side trace beyond it has not been assigned.",
+  "source_context": "Exact .009 sheet 2 separates R33.1/C5.2/D34.2 from D34.6/C5.1. The owner front trace appears to join R33 left directly to D34.6; see r33-d34-pin6-source-conflict.json. No direct continuity reading or C5 pad pair exists yet.",
+  "decision": "Retire the candidate C5.2/D34.2 label for this R33-left joint. Keep the two-face same-hole match (front 3098,2345; solder 1110,2007) as a probe target for the R33-left-to-D34.6 source conflict. Do not merge source nets or assign C5 pads from the photo alone.",
+  "next_inspection": "Power off: meter the R33-left gap joint to D34.6 and D34.2 separately, and R33 right to ground/+5 V; inspect the C5 site for removal, cut, or jumper. See r33-d34-pin6-source-conflict.json."
+}

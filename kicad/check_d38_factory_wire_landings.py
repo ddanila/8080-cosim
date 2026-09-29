@@ -1,105 +1,56 @@
 #!/usr/bin/env python3
-"""Guard the two D38-side factory-wire surface joints and local projection."""
+"""Hold A8B/A9B until corrected D38-side wire landings are proved.
+
+The former D38 cross-face fit associated a D92.1/ROE white-wire joint with
+A9B/SYNC. This guard must not pass that withdrawn candidate as a landing.
+"""
 from __future__ import annotations
 
-import cmath
 import json
-import math
 from pathlib import Path
 
 import pcbnew
 
 
 ROOT = Path(__file__).resolve().parents[1]
+LANDINGS = ROOT / "ref/photos/dgsh5-109-009-sb/factory-wire-landing-registration.json"
+REVIEW = ROOT / "ref/photos/juku-pcb-2/a9b-corrected-trace-review.json"
 BOARD = ROOT / "kicad/juku.kicad_pcb"
-LANDINGS = (
-    ROOT / "ref/photos/dgsh5-109-009-sb/factory-wire-landing-registration.json"
-)
-LOCAL_REPORT = ROOT / "docs/photo-registration/local-packages/report.json"
-MAX_COORDINATE_ERROR_MM = 0.002
 
-
-def pad_centre(board: pcbnew.BOARD, refdes: str) -> complex:
-    footprint = board.FindFootprintByReference(refdes)
-    if footprint is None:
-        raise SystemExit(f"D38 FACTORY LANDINGS: missing {refdes}")
-    pads = list(footprint.Pads())
-    return complex(
-        sum(pcbnew.ToMM(pad.GetPosition().x) for pad in pads) / len(pads),
-        sum(pcbnew.ToMM(pad.GetPosition().y) for pad in pads) / len(pads),
-    )
-
-
-landing_document = json.loads(LANDINGS.read_text(encoding="utf-8"))
-point_records = {record["point"]: record for record in landing_document["points"]}
-local_document = json.loads(LOCAL_REPORT.read_text(encoding="utf-8"))
-d38_fit = next(
-    fit
-    for fit in local_document["fits"]
-    if fit["refdes"] == "D38" and fit["side"] == "component"
-)
-image_points = list(d38_fit["projected_pins"].values())
-image_centre = complex(
-    sum(point[0] for point in image_points) / len(image_points),
-    sum(point[1] for point in image_points) / len(image_points),
-)
-factor = cmath.rect(
-    float(d38_fit["scale_px_per_mm"]),
-    math.radians(float(d38_fit["rotation_deg"])),
-)
-board = pcbnew.LoadBoard(str(BOARD))
-d38_centre = pad_centre(board, "D38")
-
-expected = {
-    8: ("A8B", "D38.8", "STSTB"),
-    9: ("A9B", "D38.12", "SYNC"),
+records = {item["point"]: item for item in json.loads(LANDINGS.read_text())["points"]}
+endpoints = {
+    terminal: next(item for item in records[point]["endpoints"] if item["terminal"] == terminal)
+    for point, terminal in ((8, "A8B"), (9, "A9B"))
 }
+review = json.loads(REVIEW.read_text())
+board = pcbnew.LoadBoard(str(BOARD))
 errors: list[str] = []
-for point, (terminal, pin, net) in expected.items():
-    endpoint = next(
-        item for item in point_records[point]["endpoints"] if item["terminal"] == terminal
-    )
-    evidence = endpoint.get("board_fit_evidence", {})
-    if evidence.get("source_image") != d38_fit["image"]:
-        errors.append(f"{terminal}: board-fit image does not match D38 component fit")
-        continue
-    joint = evidence.get("joint_px")
-    if not isinstance(joint, list) or len(joint) != 2:
-        errors.append(f"{terminal}: missing raw joint coordinate")
-        continue
-    projected = d38_centre + (complex(*map(float, joint)) - image_centre) / factor
-    recorded = complex(*map(float, endpoint["board_mm"]))
-    error = abs(projected - recorded)
-    if error > MAX_COORDINATE_ERROR_MM:
-        errors.append(f"{terminal}: projected-coordinate error {error:.4f} mm")
-    island = endpoint.get("island_assignment", "")
-    if pin not in island or net not in island:
-        errors.append(f"{terminal}: island assignment lacks {pin}/{net}")
-    uncertainty = evidence.get("uncertainty_mm")
-    if not isinstance(uncertainty, (int, float)) or not 0.5 <= uncertainty <= 1.0:
-        errors.append(f"{terminal}: invalid local-fit uncertainty")
+for number, net in (("8", "STSTB_D38"), ("12", "SYNC")):
+    footprint = board.FindFootprintByReference("D38")
+    pad = footprint.FindPadByNumber(number) if footprint else None
+    if pad is None or pad.GetNetname() != net:
+        errors.append(f"D38.{number} must remain on {net}")
 
-a9_evidence = next(
-    item
-    for item in point_records[9]["endpoints"]
-    if item["terminal"] == "A9B"
-)["board_fit_evidence"]
-if a9_evidence.get("via_px") != [2288, 2298]:
-    errors.append("A9B: component-side via coordinate is not guarded")
-if a9_evidence.get("solder_via_px") != [1374, 1984]:
-    errors.append("A9B: cross-side solder-via coordinate is not guarded")
-a9a = next(
-    item for item in point_records[9]["endpoints"] if item["terminal"] == "A9A"
-)
-if a9a.get("board_mm") is not None or a9a.get("island_assignment") is not None:
-    errors.append("A9A: obscured D51-side landing was promoted without evidence")
-a9_observation = point_records[9].get("observation", "")
-if "six overlapping component photos" not in a9_observation or "mastic" not in a9_observation:
-    errors.append("A9A: overlapping-view mastic obstruction is not guarded")
+old_a9 = endpoints["A9B"].get("board_fit_evidence", {})
+if old_a9.get("joint_px") == [2286, 2450] or old_a9.get("via_px") == [2288, 2298]:
+    errors.append("withdrawn D92.1/ROE white-wire joint is still fitted as A9B")
+observation = endpoints["A9B"].get("candidate_owner_observation", "")
+if "D92.1/ROE" not in observation or "(2025,2063)" not in observation:
+    errors.append("A9B registry lost corrected ROE/SYNC distinction")
+if "D92.1/ROE" not in review.get("decision", ""):
+    errors.append("A9B review lost the D92.1/ROE retraction")
 
 if errors:
     raise SystemExit("D38 FACTORY LANDINGS: FAIL\n- " + "\n- ".join(errors))
-print(
-    "D38 FACTORY LANDINGS: PASS — A8B/D38.8 and A9B/D38.12; "
-    "both D38-side factory terminals board-fitted"
+
+pending = [terminal for terminal, item in endpoints.items() if item.get("board_mm") is None]
+if pending:
+    raise SystemExit(
+        "D38 FACTORY LANDINGS: HOLD — " + ", ".join(pending)
+        + " lack proved D38-side wire landings; former A9B white joint favors A13B/ROE"
+    )
+
+raise SystemExit(
+    "D38 FACTORY LANDINGS: FAIL — new A8B/A9B coordinates require a fresh "
+    "same-hole, copper, and wire-continuity guard before release"
 )

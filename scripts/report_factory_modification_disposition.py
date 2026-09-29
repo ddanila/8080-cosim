@@ -13,13 +13,14 @@ BODGE = ROOT / "ref/photos/juku-pcb-2/BODGE-TRIAGE.md"
 PHOTO_DIR = ROOT / "ref/photos/dgsh5-109-009-sb"
 REPORT = ROOT / "docs/factory-modification-disposition.md"
 MOD_REGISTRATION = PHOTO_DIR / "factory-modification-registration.json"
+D14_CROSS_FACE = ROOT / "ref/photos/juku-pcb-2/d14-cross-face-contact-fit.json"
 PANORAMA_REGISTRATION = ROOT / "docs/photo-registration/panorama-registration.json"
 BOARD_REGISTRATION = ROOT / "docs/photo-registration/board-registration.json"
 LOCAL_PACKAGE_REPORT = ROOT / "docs/photo-registration/local-packages/report.json"
 AFFECTED = {
-    "D56": "АГ3 timing area: trigger pins D56.1/D56.9 are photo-closed to ground and the D56.5/D56.12 functional nets are owner-closed; the separate position-150 tubing and position-159 material/auxiliary-annulus disposition remain held",
+    "D56": "АГ3 timing area: corrected marked-package component fit cross-checks the independently registered solder pads; D56.1/D56.9 are photo-closed to ground and D56.5/D56.12 functional nets are owner-closed; position-159 material remains held",
     "D15": "EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail",
-    "D14": "АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes the D32.4/GND-to-D14.1 link and the fifth auxiliary landing is geometry-registered, while its conductor and remaining traces stay held",
+    "D14": "АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes D32.4/GND-to-D14.1 and D14.4-to-fifth auxiliary annulus, while the latter's remote conductor and remaining traces stay held",
     "D11": "8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four component-side position-159 solder locations are photo-registered, while package-local cross-side review finds no unique matching four-hole field",
 }
 
@@ -99,6 +100,7 @@ def main() -> int:
     chips = {chip["ref"]: chip for chip in board["chips"]}
     bodge = BODGE.read_text(encoding="utf-8")
     modification = json.loads(MOD_REGISTRATION.read_text(encoding="utf-8"))
+    d14_cross_face = json.loads(D14_CROSS_FACE.read_text(encoding="utf-8"))
     panorama = json.loads(PANORAMA_REGISTRATION.read_text(encoding="utf-8"))
     board_registration = json.loads(BOARD_REGISTRATION.read_text(encoding="utf-8"))
     local_packages = json.loads(LOCAL_PACKAGE_REPORT.read_text(encoding="utf-8"))
@@ -117,7 +119,7 @@ def main() -> int:
     }
     d56_ok = True
     d56_ok &= set(d56_fits) == {"component", "solder"}
-    d56_ok &= d56_fits.get("component", {}).get("model") == "similarity"
+    d56_ok &= d56_fits.get("component", {}).get("model") == "affine"
     d56_ok &= d56_fits.get("solder", {}).get("model") == "similarity_reflected"
     d56_ok &= all(
         check["error_px"] <= 8.0
@@ -125,6 +127,18 @@ def main() -> int:
         for check in fit["checks"]
         if check["use"] == "check"
     )
+    if set(d56_fits) == {"component", "solder"}:
+        corrected_corners = {
+            "1": ((3415, 1380), (807, 536)),
+            "8": ((3415, 940), (807, 89)),
+            "9": ((3215, 940), (990, 89)),
+            "16": ((3215, 1380), (990, 536)),
+        }
+        d56_ok &= all(
+            math.dist(d56_fits["component"]["projected_pins"][pin], component) <= 8
+            and math.dist(d56_fits["solder"]["projected_pins"][pin], solder) <= 8
+            for pin, (component, solder) in corrected_corners.items()
+        )
     d56_observations = d56["callout_field"]["solder_observations"]
     d56_ok &= len(d56_observations) == 2
     d56_rows = []
@@ -162,6 +176,7 @@ def main() -> int:
     d56_ground = d56["trigger_ground_rail"]
     d56_ground_observations = d56_ground["solder_observations"]
     d56_ground_rows = []
+    d56_ok &= d56_ground.get("review_state") == "accepted"
     d56_ok &= (
         d56_ground["source_net"] == "GND"
         and d56_ground["package_ground_pin"] == "8"
@@ -269,7 +284,10 @@ def main() -> int:
         length_error = abs(observed_length - expected_length)
         d14_ok &= length_error <= 0.15
         d14_rows.append((observation, endpoint_rows, length_error))
-    d14_ok &= {("D32", "4"), ("D14", "1")} <= gnd_nodes
+    d14_ok &= {("D32", "4"), ("D14", "1"), ("D14", "4"), ("D29", "10")} <= gnd_nodes
+    d14_ground_pin = d14_cross_face["fifth_auxiliary_landing"]["overlap_registration"]["registered_ground_pin"]
+    d14_ok &= (d14_ground_pin["refdes"], d14_ground_pin["pin"]) == ("D29", "10")
+    d14_ok &= d14_ground_pin["source_net"] == "GND"
     d14_aux_points = [
         image_to_board(
             observation["image"],
@@ -309,17 +327,6 @@ def main() -> int:
         spread = max(math.dist(centre, point) for point in points)
         d11_ok &= spread <= 0.15
         d11_rows.append((name, centre, spread))
-    d11_pin4_6 = [(177.88, 56.81), (177.88, 59.35), (177.88, 61.89)]
-    d11_scar_separation = min(
-        math.dist(centre, pin_point)
-        for _, centre, _ in d11_rows
-        for pin_point in d11_pin4_6
-    )
-    component_fit_ceiling = (
-        board_registration["groups"]["component_grid"]["max_held_out_error_px"]
-        / board_registration["pixels_per_mm"]
-    )
-    d11_ok &= d11_scar_separation > 2 * component_fit_ceiling
     d11_fits = {
         item["side"]: item
         for item in local_packages["fits"]
@@ -387,17 +394,17 @@ def main() -> int:
         "| --- | --- | --- | --- |",
     ]
     for ref, detail in AFFECTED.items():
-        disposition = "PARTIAL OWNER-CLOSE — D56.1/D56.9 are grounded; D56.5/D56.12 functional nets are closed; item-159 material and auxiliary-annulus disposition remain held"
-        closure = "two solder views show uninterrupted perimeter copper through pins 1/8/9; exact .009 E3 plus owner continuity close D56.5->D34.9 and D56.12->D55.15/.18; the distinct left annulus and item-159 material remain unresolved"
+        disposition = "PARTIAL OWNER-CLOSE — corrected D56 component fit retains D56.1/D56.9 ground and D56.5/D56.12 functional nets; item-159 material remains held"
+        closure = "four marked-AG3 component corners cross-align with the solder package; two solder views show uninterrupted ground copper through pins 1/8/9; exact .009 E3 plus owner continuity close D56.5->D34.9 and D56.12->D55.15/.18"
         if ref == "D15":
             disposition = "PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches"
             closure = "two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held"
         elif ref == "D14":
-            disposition = "PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1 and the fifth landing is registered; its conductor and remaining drawn traces are held"
-            closure = "two independent component views plus notch-oriented factory row registration; map the fifth landing conductor, three long traces, and right-row dogleg before full release"
+            disposition = "PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1 and D14.4-to-fifth annulus; remote conductor and remaining drawn traces are held"
+            closure = "two independent component views plus notch-oriented factory row registration; map the fifth landing's opposite face and remote conductor, three long traces, and right-row dogleg before full release"
         elif ref == "D11":
             disposition = "GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured"
-            closure = "two component views register the L trace and four-landmark topology; validated two-sided package fits exhaust four solder views, so direct continuity is required to assign any D11 pin/net"
+            closure = "two component views register the L trace and four-landmark topology; corrected D11 solder registration shifts the projected field, and review of two complete plus two partial solder views finds no unique four-hole match; direct continuity is required"
         lines.append(row([
             ref,
             detail,
@@ -411,8 +418,13 @@ def main() -> int:
         "Three overlapping component photographs identify the same notch-down",
         "`К155АГ3 8901` package beside the right board edge. Held-out-validated",
         "component and reflected local-package fits replace the displaced global",
-        "endpoint seeds. The drawing's three leaders register as the separate left",
-        "annulus, D56.5, and D56.12 at one physical level. Assembly note 11 says",
+        "endpoint seeds.",
+        "The corrected component fit sits on the marked AG3 at x3215..3415;",
+        "the former x2865..3050 component anchors were on neighboring D103.",
+        "All four outer AG3 contacts align with the independent solder columns",
+        "x807/990 and rows y89/536; see `d56-fit-correction.json`.",
+        "The drawing's three leaders register as the separate left annulus,",
+        "D56.5, and D56.12 at one physical level. Assembly note 11 says",
         "tubing positions 157 and 150 are fitted at solder locations. Position 150",
         "is therefore not a cut",
         "instruction, and the nearby visible wide-rail gap cannot be promoted as",
@@ -502,8 +514,11 @@ def main() -> int:
         "a guarded `GND` pin. The clean source model therefore assigns D14.1 to",
         "`GND` and preserves the executed factory topology without adding an",
         "unmeasured auxiliary drill.",
+        "The fit coordinates below are witnesses on that strip beside the",
+        "landings, not the physical D32.4 or D14.1 lead centres. Their small",
+        "errors check the strip's local scale; they do not measure pin placement.",
         "",
-        "| Component view | D32.4 fit error | D14.1 fit error | Link-length error | Result |",
+        "| Component view | Upper witness fit error | Lower witness fit error | Witness-span error | Result |",
         "| --- | ---: | ---: | ---: | --- |",
     ]
     for observation, endpoint_rows, length_error in d14_rows:
@@ -516,8 +531,11 @@ def main() -> int:
         ]))
     lines += [
         "",
-        "The open fifth left-field annulus below D14.4 is also reproducible in",
-        "both component views.",
+        "The open fifth left-field annulus below D14.4 is reproducible in",
+        "both component views at corrected native coordinates. Its visible short",
+        "front-copper stem joins the bottom left-row contact, D14.4. The",
+        "exact `.009` sheet-1 IC power table assigns D14.4 to `GND`, so the",
+        "annulus is a source-ground candidate; owner rail continuity is unmeasured.",
         "",
         "| Landing | Provisional board centre (mm) | Component-view agreement | Disposition |",
         "| --- | --- | ---: | --- |",
@@ -525,17 +543,30 @@ def main() -> int:
             "fifth auxiliary landing",
             f"({d14_aux_centre[0]:.3f}, {d14_aux_centre[1]:.3f})",
             f"{d14_aux_spread:.3f} mm",
-            "geometry registered; conductor and fabrication drill held",
+            "D14.4 local stem, fifth same-hole, and strip to D29.10 photo-registered; owner continuity held",
         ]),
         "",
-        "The landing's conductor, the three long drawn traces, and the right-row",
-        "dogleg are not electrically closed by these views. Reflected registration",
-        "into `200506061` and `200509593` places the same locality inside a heavily",
-        "scraped/reworked two-row solder field; the component face hides the immediate",
-        "dogleg under the package body. The available photographs are therefore",
-        "exhausted for D14.7 rather than evidence for a guessed path. D14.2 and D14.7",
-        "require direct continuity, and no remote net or fabrication geometry is",
-        "inferred from the drawing alone.",
+        "A D11-local cross-face fit puts all eight D14 contacts on the visible",
+        "2×4 solder field in `200506061`: D14.2 near `(2426,1376)` and D14.7",
+        "near `(2288,1376)`. It also maps the fifth component hole to the",
+        "distinct solder drill near `(2424,1513)`. The older broad projection",
+        "near `(2050,1565)` and geometry-only pin seeds near `(2279,1708)`/",
+        "`(2141,1711)` are retired. See `d14-cross-face-contact-fit.json`.",
+        "On that solder face, a bare-board gap separates the long tinned strip",
+        "holding the fifth drill from D14.4's solder cap. Their observed local",
+        "join is the component-face stem. The strip runs west to an exposed",
+        "drilled terminal near `(2074,1521)` in the same native photo, a second",
+        "probe site for its visible copper. Four native patch matches register",
+        "that terminal near `(241,1656)` and the fifth drill near `(604,1644)`",
+        "in overlapping `200509593`. There the strip has an uninterrupted",
+        "neck to registered D29.10 near `(2057,1588)`, named `GND` by the",
+        "exact sheet-1 power table. This closes a visible photo path from the",
+        "fifth hole to a source-ground pin, not owner electrical continuity.",
+        "Any other fifth-landing conductor, three long drawn traces, and",
+        "right-row dogleg remain open. Confirm the same-hole pairs and meter",
+        "D14.2 and D14.7 to remote endpoints before assigning nets. Their",
+        "local solder caps have no readable back-face departures; adjacent",
+        "east-west traces pass with visible gaps and cannot name those pins.",
         "",
         "## D11 position-159 field registration",
         "",
@@ -544,8 +575,17 @@ def main() -> int:
         "auxiliary drilled/copper field beside D11, not a drawn 14-pad package",
         "column. The four-landmark subfield is reproducible in two independent",
         "component views: a long vertical trace joins the upper landing to the",
-        "position-159 junction, a left landing approaches that junction through",
-        "the obscured bridge, and a lower landing departs on a separate trace.",
+        "position-159 junction, the drawing joins a left landing horizontally,",
+        "and a lower landing departs on a separate trace. Native owner crops show",
+        "bare substrate across the local left-to-junction front gap in both",
+        "views, so that drawn bridge is not visible F.Cu there; B.Cu or a fitted",
+        "conductor remains possible pending continuity. The earlier May owner",
+        "photo `201922448` independently shows the same bare front gap. In",
+        "`200506061`, the",
+        "D11-local solder projections of bridge_left and position159_junction",
+        "fall near two separate annuli with matching pair geometry, but no local",
+        "B.Cu strip joins those annuli. The cross-face hole identities and any",
+        "remote or fitted connection still require direct verification.",
         "",
         "| Landing | Provisional board centre (mm) | Component-view agreement | Disposition |",
         "| --- | --- | ---: | --- |",
@@ -561,22 +601,28 @@ def main() -> int:
         "",
         "These board centres use the panorama's coarse component-grid fit and are",
         "topology locators, not pin- or fabrication-grade coordinates. In",
-        "particular, the validated D11 solder overlay localizes a conspicuous scar",
-        "beside pins 4 through 6, but cross-registration shows that scar is a",
-        "different feature and cannot identify the factory position-159 bridge.",
-        f"The nearest provisional field centre is {d11_scar_separation:.3f} mm",
-        f"from the nominal D11.4-.6 column, more than twice the component-grid",
-        f"held-out error ceiling ({component_fit_ceiling:.3f} mm); the exclusion",
-        "therefore survives the coarse global-fit uncertainty.",
-        "A newly validated D11 component package fit now pairs with that reflected",
-        "solder fit. Their package-local transform projects the upper landing under",
-        "the wide tinned rail and the lower three landmarks among repeated joints",
-        "and parallel traces without a unique four-hole match. All four overlapping",
-        "solder photos repeat the lower-field ambiguity; the second complete view",
-        "also repeats the upper rail obstruction. The available photographs are",
-        "therefore exhausted for through-hole identity rather than evidence for a",
-        "guessed snap. D11 pin/net and both remote endpoints require direct",
-        "continuity, and no source net or auxiliary drill is changed.",
+        "particular, D27 and D11 two-face landmarks expose a four-joint error in",
+        "the old D11 solder registration. The corrected 14-row D11 field starts",
+        "near y=1610 rather than y=1425 in owner tile 200506061. The conspicuous",
+        "scar is beside its upper rows and is not the factory position-159 bridge.",
+        "The undimensioned `.009` detail draws lower_exit as an annulus on a",
+        "separate downward trace below the position-159 junction, matching the",
+        "corrected front-side topology rather than the retired bare-board point.",
+        "The lower_exit front coordinate was corrected to its drilled annulus",
+        "in both views, shifting its D11-local solder projection to about",
+        "`(2771,2078)` in `200506061`. An open hole near `(2776,2094)` maps",
+        "through the solder-tile overlap to `(973,2237)` and is observed near",
+        "`(978,2234)` in `200509593`. The two solder views identify the same",
+        "hole to about 6 px; its ≈17 px D11-local projection offset and missing",
+        "front-to-solder shared-hole",
+        "calibration leave it a candidate, not a same-hole match. The upper",
+        "projection sits beside an isolated open via, and bridge/junction lie",
+        "among several vias without a unique four-hole pattern. Two more partial",
+        "views place the upper projection near their",
+        "top boundaries and show no unique lower four-hole match. All four listed",
+        "views have now been checked against shifted projections. The old upper-rail",
+        "claim is retracted. D11 pin/net and both remote endpoints remain on",
+        "hold for direct continuity; no source net or auxiliary drill is changed.",
     ]
     lines += [
         "",
@@ -600,6 +646,34 @@ def main() -> int:
         "held only for an original-artwork replica.",
         "",
     ]
+    if d56_ground.get("review_state") == "rejected":
+        start = lines.index("## D56 callout-field registration")
+        end = lines.index("## D15 cut registration")
+        lines[start:end] = [
+            "## D56 callout-field registration",
+            "",
+            "The corrected owner component fit now lands on the marked К155АГ3",
+            "at x3215..3415, rather than adjacent D103 К555ИЕ10 at the former",
+            "x2865..3050 anchors. The old solder fit, D56.1/D56.9 ground",
+            "promotion, and D56.5/D56.12 photo landing identities are withdrawn.",
+            "Exact .009 sheet 2 and direct owner continuity still establish the",
+            "D56.5/D34.9 and D56.12/D55.15/D55.18 functional nets. Register the",
+            "actual D56 solder footprint before interpreting the position-159",
+            "landings. Position 150 remains drawing-proved tubing.",
+            "See `ref/photos/juku-pcb-2/d56-fit-correction.json`.",
+            "",
+        ]
+        preface = lines.index("The `ДГШ5.109.009 СБ` Вид В detail marks local assembly work around")
+        table = lines.index("| Ref | Factory operation locality | Current disposition | Closure evidence |")
+        lines[preface:table] = [
+            "The `ДГШ5.109.009 СБ` Вид В detail marks local assembly work around",
+            "D56, D15, D14, and D11. The corrected marked-package D56 fit",
+            "invalidates its former solder and trigger-ground photo promotions.",
+            "Exact-sheet and owner-continuity D56 functional nets remain closed.",
+            "D15's cut and D14's local ground link remain photo-closed; D11's",
+            "bridge endpoints and the remaining D14 paths stay held.",
+            "",
+        ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
     print(f"Status: {status}")

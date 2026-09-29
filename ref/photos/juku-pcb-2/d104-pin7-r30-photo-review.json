@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "status": "D104.7 to R30 lower pad photo-proved; lower pad ground polarity source-expected but owner-physical continuity unproved",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+  "crop_xyxy_original_pixels": [
+    990,
+    1360,
+    1220,
+    1770
+  ],
+  "package_registration": "D104 marked К170УП2, notch down; top-view DIP16 numbering puts pin 8 at the upper-right contact and pin 7 at the second right contact down, approximately (1045,1415)",
+  "observation": "A continuous exposed F.Cu trace leaves that second right contact, turns right, runs down along the left of the adjacent upright R30 body, and joins the lower R30 joint near (1106,1698). The trace remains visibly separate from the upper R30 joint and the long vertical conductor to its right.",
+  "source_assignment": "Exact .009 sheet-1 R30 is printed 33к with its left terminal at a ground symbol and its right terminal at D12.3/OC SOUT. The source model assigns the upright owner R30 lower pad to ground and upper pad to S_OC, but the source drawing does not label installed body lead polarity.",
+  "decision": "Join physical D104.7 to R30 lower pad in the evidence record. Keep D104.7 on GND in the exact-source replica model because that is the modeled R30 lower endpoint, but do not claim the owner board ground rail is photo-proved.",
+  "remaining_physical_check": "With power removed, verify D104.7↔R30 lower continuity, R30 lower↔independently marked GND, R30 upper↔OC SOUT/D12.3, and lower↔upper resistance near 33 kOhm. Record both resistance polarities before claiming owner-board rail closure.",
+  "schematic_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101820818.MP.jpg",
+  "schematic_crop_xyxy_original_pixels": [
+    2040,
+    1120,
+    2900,
+    1740
+  ],
+  "upper_lead_chase": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+    "crop_xyxy_original_pixels": [
+      1010,
+      1280,
+      1190,
+      1540
+    ],
+    "observation": "R30 upper joint near (1105,1445) joins a short rightward spur onto a distinct vertical F.Cu trace near x=1125. That trace passes through an open annulus near (1125,1360) and continues north beneath the X3 white-wire bundle. The available view does not expose a labeled OC SOUT connector landing beyond the bundle. The lower joint remains on the separate D104.7 U-shaped trace.",
+    "decision": "The two R30 lead conductors are distinct, but the upper conductor cannot be assigned to OC SOUT from this component photograph alone."
+  },
+  "overlap_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+  "overlap_registration": {
+    "method": "compose the archived component-grid original-to-panorama homographies for 200402344 and 200358952",
+    "upper_r30_projection_px_approx": [
+      2492,
+      1325
+    ],
+    "lower_r30_projection_px_approx": [
+      2494,
+      1571
+    ],
+    "inspected_crop_xyxy_original_pixels": [
+      2300,
+      950,
+      2730,
+      1700
+    ],
+    "observation": "The overlapping component tile independently shows the marked notch-down D104, upright red R30, upper joint departing toward the X3 wire bundle, and the separate lower U-shaped D104-side copper. The wire sleeves still hide the upper trace endpoint; the overlap does not prove OC SOUT or ground polarity."
+  },
+  "body_marking_review": {
+    "component_crops": [
+      {
+        "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+        "crop_xyxy_original_pixels": [
+          1070,
+          1450,
+          1140,
+          1695
+        ]
+      },
+      {
+        "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+        "crop_xyxy_original_pixels": [
+          2460,
+          1370,
+          2525,
+          1580
+        ]
+      }
+    ],
+    "observation": "Both rotated views show dark characters on the red axial body, but a bright specular line crosses the central glyphs. Neither exposure securely distinguishes a complete resistance code.",
+    "decision": "Preserve 33 kOhm as the exact .009 schematic nominal value; do not report it as an independently read owner-body value. Measure the installed resistor between isolated leads if physical fidelity matters."
+  }
+}

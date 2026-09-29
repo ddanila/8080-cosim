@@ -11,12 +11,18 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+import pcbnew
+
 ROOT = Path(__file__).resolve().parents[1]
 BOARD_JSON = ROOT / "kicad/juku.board.json"
 SCHEMATIC = ROOT / "kicad/juku.kicad_sch"
 # Parity must use the source PCB with the same basename as juku.kicad_sch.
 # juku_routed is a derived routed artifact and has no sibling schematic.
 PCB = ROOT / "kicad/juku.kicad_pcb"
+ROUTED_PCBS = (
+    ROOT / "kicad/juku_routed.kicad_pcb",
+    ROOT / "kicad/juku_routed_candidate.kicad_pcb",
+)
 OUT = ROOT / "fab/audit"
 REPORT = ROOT / "docs/main-board-erc-parity.md"
 ENDPOINTS = ROOT / "docs/main-board-unresolved-endpoints.csv"
@@ -27,8 +33,8 @@ P0_MEMORY_REFS = {"D6", "D7", "D25", "D36", "D39", "D53"}
 OFF_BOARD_REFS = {"S1", "S4", "X3", "X4", "X6", "X8", "X9"}
 RISK_RE = re.compile(
     r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|"
-    r"not readable|cannot be uniquely followed|pending|unread|await|owner-verify|"
-    r"mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
+    r"not readable|cannot be uniquely followed|pending|unread|unresolved|uncertain|await|owner-verify|"
+    r"mame|approx|refine|dump[- /]dependent|dump required|source confirmation|requires? (?:source|continuity)",
     re.I,
 )
 
@@ -145,6 +151,37 @@ def main() -> int:
     duplicate_owners = {
         endpoint: owners for endpoint, owners in endpoint_owners.items() if len(owners) > 1
     }
+    pcb_board = pcbnew.LoadBoard(str(PCB))
+    pcb_pads = {
+        (footprint.GetReference(), pad.GetNumber()): pad.GetNetname()
+        for footprint in pcb_board.GetFootprints()
+        for pad in footprint.Pads()
+    }
+    pcb_refs = {footprint.GetReference() for footprint in pcb_board.GetFootprints()}
+    source_pcb_mismatches = [
+        (ref, pin, owners[0], pcb_pads.get((ref, pin), "<missing pad>"))
+        for (ref, pin), owners in sorted(endpoint_owners.items())
+        if ref in pcb_refs and pcb_pads.get((ref, pin)) != owners[0]
+    ]
+    source_pcb_endpoints = set(endpoint_owners) & set(pcb_pads)
+    routed_pcb_mismatches = {}
+    routed_pcb_missing_endpoints = {}
+    for routed_path in ROUTED_PCBS:
+        routed_board = pcbnew.LoadBoard(str(routed_path))
+        routed_pads = {
+            (footprint.GetReference(), pad.GetNumber()): pad.GetNetname()
+            for footprint in routed_board.GetFootprints()
+            for pad in footprint.Pads()
+        }
+        routed_refs = {footprint.GetReference() for footprint in routed_board.GetFootprints()}
+        routed_pcb_mismatches[routed_path.name] = [
+            (ref, pin, owners[0], routed_pads.get((ref, pin), "<missing pad>"))
+            for (ref, pin), owners in sorted(endpoint_owners.items())
+            if ref in routed_refs and routed_pads.get((ref, pin)) != owners[0]
+        ]
+        routed_pcb_missing_endpoints[routed_path.name] = sorted(
+            source_pcb_endpoints - set(routed_pads)
+        )
     # gen_kicad_sch uses the union of pin numbers for every instance of a given
     # symbol type. Account against that same physical-symbol surface, not only
     # the role subset written on an individual chip record.
@@ -203,7 +240,7 @@ def main() -> int:
         )
     )
     with ENDPOINTS.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=("priority", "ref", "pin", "type", "role", "reason"))
+        writer = csv.DictWriter(handle, fieldnames=("priority", "ref", "pin", "type", "role", "reason"), lineterminator="\n")
         writer.writeheader(); writer.writerows(endpoint_rows)
     schematic_text = SCHEMATIC.read_text(errors="replace")
     schematic_nc = len(re.findall(r"\(no_connect\s+\(at\s", schematic_text))
@@ -211,7 +248,9 @@ def main() -> int:
     parity_ok = not parity_issues
     status = (
         "READY"
-        if singleton_erc_ok and parity_ok and nc_ok and not unowned
+        if singleton_erc_ok and parity_ok and nc_ok and not source_pcb_mismatches
+        and not any(routed_pcb_mismatches.values())
+        and not any(routed_pcb_missing_endpoints.values()) and not unowned
         and not duplicate_owners and not source_risk_nets
         else "DESIGN HOLD"
     )
@@ -222,8 +261,11 @@ def main() -> int:
         "ERC uses a generated include-power schematic under `fab/audit`; the normal",
         "LVS schematic deliberately omits power nets. Parity uses `juku.kicad_sch`",
         "and the same-basename source `juku.kicad_pcb`. The routed PCB is a derived",
-        "artifact; KiCad cannot run",
-        "schematic parity against it without a matching routed schematic/project.", "",
+        "artifact; KiCad cannot run schematic parity against it without a matching",
+        "routed schematic/project. Direct board-JSON pad-net checks cover each",
+        "modeled endpoint whose reference has a footprint on the source PCB or",
+        "either routed variant. A separate check catches modeled source-PCB pads",
+        "missing from a routed variant; off-board connectors are outside both checks.", "",
         "## Summary", "", "| Check | Count | Result |", "| --- | ---: | --- |",
         f"| Raw ERC error violations | {len(violations)} | {'GUARDED' if singleton_erc_ok else 'BLOCK'} |",
         f"| Unexpected ERC/mapping findings | {unexpected_erc_count} | {'PASS' if singleton_erc_ok else 'BLOCK'} |",
@@ -231,6 +273,15 @@ def main() -> int:
         f"| Source-risk singleton nets | {len(source_risk_singletons)} | {'PASS' if not source_risk_singletons else 'BLOCK'} |",
         f"| Other source-risk nets | {len(source_risk_nets) - len(source_risk_singletons)} | {'PASS' if len(source_risk_nets) == len(source_risk_singletons) else 'BLOCK'} |",
         f"| PCB/schematic parity issues | {len(parity_issues)} | {'PASS' if parity_ok else 'BLOCK'} |",
+        f"| Board-JSON/source-PCB pad-net mismatches | {len(source_pcb_mismatches)} | {'PASS' if not source_pcb_mismatches else 'BLOCK'} |",
+        *[
+            f"| Board-JSON/{name} pad-net mismatches | {len(rows)} | {'PASS' if not rows else 'BLOCK'} |"
+            for name, rows in routed_pcb_mismatches.items()
+        ],
+        *[
+            f"| Source-PCB modeled endpoints missing from {name} | {len(rows)} | {'PASS' if not rows else 'BLOCK'} |"
+            for name, rows in routed_pcb_missing_endpoints.items()
+        ],
         f"| Explicit board-JSON no-connects | {len(explicit)} | {'PASS' if nc_ok else 'FAIL'} |",
         f"| KiCad schematic no-connect markers | {schematic_nc} | {'PASS' if schematic_nc == len(explicit) else 'FAIL'} |",
         f"| Functional pins without net or explicit NC | {len(unowned)} | {'PASS' if not unowned else 'BLOCK'} |",
@@ -260,12 +311,33 @@ def main() -> int:
             for (ref, pin), owners in sorted(duplicate_owners.items())
         ]
         lines += [""]
+    if source_pcb_mismatches:
+        lines += ["Board-JSON/source-PCB pad-net mismatches:", ""]
+        lines += [
+            f"- `{ref}.{pin}`: model `{model_net}`, PCB `{pcb_net}`"
+            for ref, pin, model_net, pcb_net in source_pcb_mismatches
+        ]
+        lines += [""]
+    for name, rows in routed_pcb_mismatches.items():
+        if rows:
+            lines += [f"Board-JSON/{name} pad-net mismatches:", ""]
+            lines += [
+                f"- `{ref}.{pin}`: model `{model_net}`, PCB `{pcb_net}`"
+                for ref, pin, model_net, pcb_net in rows
+            ]
+            lines += [""]
+    for name, rows in routed_pcb_missing_endpoints.items():
+        if rows:
+            lines += [f"Source-PCB modeled endpoints missing from {name}:", ""]
+            lines += [f"- `{ref}.{pin}`" for ref, pin in rows]
+            lines += [""]
     if status == "READY":
         lines += ["ERC structure, parity, source-risk closure, endpoint ownership, and explicit no-connect accounting all pass."]
     else:
         lines += [
             f"Singleton-label ERC reporting is in the exact `{singleton_reporting_mode}` mode, and",
-            "parity plus endpoint ownership pass. Source-risk nets remain release blockers.",
+            "source-PCB parity and endpoint ownership pass. Routed pad-net mismatches,",
+            "missing routed endpoints, and source-risk nets remain release blockers.",
             "They must be traced, redesigned, or individually given an evidence-backed",
             "disposition. This gate does not suppress the singleton labels or convert them",
             "to no-connects merely to obtain a zero-error ERC count.",

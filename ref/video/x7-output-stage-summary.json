@@ -16,7 +16,7 @@
       "pass": true
     },
     {
-      "evidence": "R65.1, VT2.1, X7.1",
+      "evidence": "R65.1, VT2.1",
       "name": "VIDEO_OUT endpoint contract",
       "pass": true
     },
@@ -71,7 +71,7 @@
       "pass": true
     },
     {
-      "evidence": "base: 00 < sync-only < signal-only < 11; X7 may remain off below VBE",
+      "evidence": "base: 00 < sync-only < signal-only < 11; VIDEO_OUT may remain off below VBE",
       "name": "Nominal base drive is ordered and emitter output is nondecreasing",
       "pass": true
     },
@@ -111,7 +111,7 @@
       "vol_max_v": 0.5
     },
     "independent_current_corroboration_device": "Texas Instruments SN74LS86A",
-    "interpretation": "The supply-dependent TI SN74LS86A comparison driver self-consistently droops under the traced load, but still sources more current than the exact \u041a555\u041b\u041f5 sheet's fanout-derived high-state envelope in at least one nominal state. TI labels the model typical 25 C behavior, not \u041a555\u041b\u041f5 equivalence evidence; physical X7 voltages still require an exact-device curve or measurement.",
+    "interpretation": "The supply-dependent TI SN74LS86A comparison driver self-consistently droops under the traced load, but still sources more current than the exact \u041a555\u041b\u041f5 sheet's fanout-derived high-state envelope in at least one nominal state. TI labels the model typical 25 C behavior, not \u041a555\u041b\u041f5 equivalence evidence; physical VIDEO_OUT voltages still require an exact-device curve or measurement.",
     "loaded_driver": {
       "comparison_only_not_equivalence_evidence": true,
       "device": "Texas Instruments SN74LS86A",

@@ -28,26 +28,31 @@ useful validation, but no further D30 continuity measurement is requested.
 
 ## Remaining P0 connectivity (batch in the same session)
 
-1. **D94 `.092` shared-enable/D0 closure and live steering:** owner continuity on 2026-07-21 closes
+1. **D94 `.092` D0 closure and live steering:** owner continuity on 2026-07-21 closes
    D94 D5-D7/pins 6, 7, and 9 plus D104.10 as NC, matching the exact-revision
-   drawing. Trace the upstream source beyond the local D94.15/D93.3 join. With
-   D94 removed, repeat-check D94.1 against D101.1 and nearby support pins;
-   either identify a hidden load or confirm R8 2 kΩ is its only branch.
+   drawing. Exact `.009` sheets 1 and 3 close D9.7 `CS7` to D94.15/D93.3. With
+   D94 removed, repeat-check D94.1 against D101.1, physical D2.15, and an
+   independently identified `-WREQ` point. Exact sheet 3 draws D94.1 to
+   `WREQ (1)` and sheet 1 draws R8=2 kΩ on that node, while the owner check
+   found only its local R8 branch. Identify the remote owner path or confirm
+   its absence before merging the boundary into `WREQ_N`.
    During port `1F` data-register
    transfers, also capture D101.7/A4, D94.1/D0, D93.4 `/RE`, and D93.2 `/WE`:
    A4 low must steer to D0 with both D93 strobes released, while A4 high restores
    the direction-appropriate D93 strobe. This runtime capture corroborates the
-   physical table but does not replace the two continuity checks
+   physical table but does not replace the D0 continuity check
    (`docs/d94-reconstruction-constraints.md`).
 2. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
    first isolate the tentative D96.6 observation from the newly closed 1 MHz
    slot route. Measure resistance from D96.6 to D40.11 in both probe
    polarities, preferably with D96 removed; sheet 3 requires D96.6 to remain
    local to D96.2 and not join the D40.11/D59.5/D92.2/.3/D95.5/.6 net.
-   D96.1/.4 WREQ_N with Q1/.5 and Q1_N/.6 for post-release phase; D96.9 Q2,
-   D96.11 CLK2, and the functionally contradictory drawn-NC
-   D96.13 `/CLR2`; D99.4/.5/.10/.11/.12; and
-   D101.1 `/OE0` plus data inputs D101.3/.5/.6. D101's shared EARLY/LATE
+   D96.1/.4 WREQ_N with Q1/.5 and Q1_N/.6 for post-release phase; D96.9 Q2↔D101.4/R92.1,
+   D96.11 CLK2↔D94.2/D99.9/R89.1 and D96.11↔D96.10 isolation at their
+   unmarked drawing crossing; then D96.13↔D99.10 and D99.10↔D100.11 T
+   separately before tracing their quoted sheet-1 continuations;
+   D99.4/.5/.11/.12; and
+   D101.1 `/OE0` against D26.38 IMDRG, then D101.3/.5/.6 each against D101.4/R92.1/R99.2. D101's shared EARLY/LATE
    select pins 2/14 and its complete Q1 write-precomp half are already
    source-closed and must not be re-probed as missing paths
    (`docs/fdc-hardware-handoff.md`).
@@ -55,19 +60,42 @@ useful validation, but no further D30 continuity measurement is requested.
    owner-closed. D56's three physical callout locations are fixed as the
    separate left annulus plus D56.5/D56.12; identify the installed item-159
    material and the remaining auxiliary-annulus/adjacent-rail disposition.
-   Position 150 is tubing, not a cut. Also continuity-test D14's registered fifth-landing conductor, three long traces, and
-   right-row dogleg/D14.7; the available photos are exhausted there. At D11,
+   Position 150 is tubing, not a cut. The D11-local photo fit locates D14.2,
+   D14.7, and its fifth landing on the solder face; confirm those same-hole
+   matches, then test the fifth hole to D29.10/GND along its photo-traced
+   strip and continuity-test D14.2/.7 remote conductors, three long traces,
+   and the right-row dogleg. At D11,
    continuity-test the registered four-landmark bridge and its remote endpoints;
    two-sided package-local projection has exhausted the solder photos, and the
    old pins-4–6 scar is a different feature. D15's A2/A1 cut and D14's
    local D32.4/GND-to-D14.1 link are photo-closed (`docs/factory-modification-disposition.md`).
+4. **P0 D7.3 singleton endpoint absent from the grouped asks above:** with power
+   removed, trace D7.3 (`AMW_N`) to its remote load or prove it has none;
+   specifically keep it separate from D29.5, which the 2026-07-19 owner
+   continuity assigned to qualified peripheral `/WR`. The fourth D104 receiver
+   input is photo-traced to R30 lower; the source model assigns that lead to
+   GND, but the owner rail polarity is not photo-proved. With power removed,
+   confirm D104.7 to R30 lower, lower to known GND, and upper to D12.3/OC SOUT;
+   D104.10 is owner-closed NC. Record tested endpoints and resistance in both probe polarities
+   for any resistive path. See `docs/io-decode-boundary.md`,
+   `docs/serial-handoff.md`, and `docs/main-board-unresolved-endpoints.csv`.
+
+The generated `docs/owner-measurement-shortlist.md` carries the lower-priority
+timing, control, passive, and value reads with exact starting pins. Take those
+after the P0 set if the board remains available; record unresolved results
+instead of treating a silent meter or an unread photo as proof of no-connect.
+Its P1 analog capture now names D34.8/R62.1, D34.11/R63.1, and the common
+R62.2/R63.2/R64.1/VT2.3 node on the original .009 board, with X6 A:3 (after continuity to VT2.1/R65.1 is confirmed) as the
+output comparison. The former P1 X2 PA1/PA5 contact-digit check is retired:
+native `.009` sheet-1 detail `PXL_20260718_101824181.MP.jpg` clearly shows
+D27.3→X2.206 and D27.39→X2.203, matching the board netlist.
 
 ## Programmable-parts corroboration (optional, Tier-3)
 
-4. Independent re-reads of the D2/D6/D8/D94 PROMs, and dumps of the D15/D16
+5. Independent re-reads of the D2/D6/D8/D94 PROMs, and dumps of the D15/D16
    EPROMs, only as corroboration of the validated captures
    (`docs/community-prom-media-request.md`).
 
 The D6 output-order and D94 static-output blockers are closed; the highest-value
-remaining D94 bench items are the shared-enable and chip-removed D0 continuity
-checks above. The port-`1F` steering capture is secondary corroboration.
+remaining D94 bench item is the chip-removed D0 continuity check above. The
+port-`1F` steering capture is secondary corroboration.

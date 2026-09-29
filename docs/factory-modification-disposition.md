@@ -20,18 +20,23 @@ the remaining D14 auxiliary paths stay held.
 
 | Ref | Factory operation locality | Current disposition | Closure evidence |
 | --- | --- | --- | --- |
-| D56 | АГ3 timing area: trigger pins D56.1/D56.9 are photo-closed to ground and the D56.5/D56.12 functional nets are owner-closed; the separate position-150 tubing and position-159 material/auxiliary-annulus disposition remain held | PARTIAL OWNER-CLOSE — D56.1/D56.9 are grounded; D56.5/D56.12 functional nets are closed; item-159 material and auxiliary-annulus disposition remain held | two solder views show uninterrupted perimeter copper through pins 1/8/9; exact .009 E3 plus owner continuity close D56.5->D34.9 and D56.12->D55.15/.18; the distinct left annulus and item-159 material remain unresolved |
+| D56 | АГ3 timing area: corrected marked-package component fit cross-checks the independently registered solder pads; D56.1/D56.9 are photo-closed to ground and D56.5/D56.12 functional nets are owner-closed; position-159 material remains held | PARTIAL OWNER-CLOSE — corrected D56 component fit retains D56.1/D56.9 ground and D56.5/D56.12 functional nets; item-159 material remains held | four marked-AG3 component corners cross-align with the solder package; two solder views show uninterrupted ground copper through pins 1/8/9; exact .009 E3 plus owner continuity close D56.5->D34.9 and D56.12->D55.15/.18 |
 | D15 | EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail | PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches | two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held |
-| D14 | АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes the D32.4/GND-to-D14.1 link and the fifth auxiliary landing is geometry-registered, while its conductor and remaining traces stay held | PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1 and the fifth landing is registered; its conductor and remaining drawn traces are held | two independent component views plus notch-oriented factory row registration; map the fifth landing conductor, three long traces, and right-row dogleg before full release |
-| D11 | 8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four component-side position-159 solder locations are photo-registered, while package-local cross-side review finds no unique matching four-hole field | GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured | two component views register the L trace and four-landmark topology; validated two-sided package fits exhaust four solder views, so direct continuity is required to assign any D11 pin/net |
+| D14 | АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes D32.4/GND-to-D14.1 and D14.4-to-fifth auxiliary annulus, while the latter's remote conductor and remaining traces stay held | PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1 and D14.4-to-fifth annulus; remote conductor and remaining drawn traces are held | two independent component views plus notch-oriented factory row registration; map the fifth landing's opposite face and remote conductor, three long traces, and right-row dogleg before full release |
+| D11 | 8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four component-side position-159 solder locations are photo-registered, while package-local cross-side review finds no unique matching four-hole field | GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured | two component views register the L trace and four-landmark topology; corrected D11 solder registration shifts the projected field, and review of two complete plus two partial solder views finds no unique four-hole match; direct continuity is required |
 
 ## D56 callout-field registration
 
 Three overlapping component photographs identify the same notch-down
 `К155АГ3 8901` package beside the right board edge. Held-out-validated
 component and reflected local-package fits replace the displaced global
-endpoint seeds. The drawing's three leaders register as the separate left
-annulus, D56.5, and D56.12 at one physical level. Assembly note 11 says
+endpoint seeds.
+The corrected component fit sits on the marked AG3 at x3215..3415;
+the former x2865..3050 component anchors were on neighboring D103.
+All four outer AG3 contacts align with the independent solder columns
+x807/990 and rows y89/536; see `d56-fit-correction.json`.
+The drawing's three leaders register as the separate left annulus,
+D56.5, and D56.12 at one physical level. Assembly note 11 says
 tubing positions 157 and 150 are fitted at solder locations. Position 150
 is therefore not a cut
 instruction, and the nearby visible wide-rail gap cannot be promoted as
@@ -97,27 +102,46 @@ uninterrupted copper strip joins that landing directly to D32.4, already
 a guarded `GND` pin. The clean source model therefore assigns D14.1 to
 `GND` and preserves the executed factory topology without adding an
 unmeasured auxiliary drill.
+The fit coordinates below are witnesses on that strip beside the
+landings, not the physical D32.4 or D14.1 lead centres. Their small
+errors check the strip's local scale; they do not measure pin placement.
 
-| Component view | D32.4 fit error | D14.1 fit error | Link-length error | Result |
+| Component view | Upper witness fit error | Lower witness fit error | Witness-span error | Result |
 | --- | ---: | ---: | ---: | --- |
 | PXL_20260710_200358952.jpg | 0.002 mm | 0.002 mm | 0.003 mm | continuous D32.4/GND-to-D14.1 copper |
 | PXL_20260710_200402344.jpg | 0.010 mm | 0.001 mm | 0.010 mm | continuous D32.4/GND-to-D14.1 copper |
 
-The open fifth left-field annulus below D14.4 is also reproducible in
-both component views.
+The open fifth left-field annulus below D14.4 is reproducible in
+both component views at corrected native coordinates. Its visible short
+front-copper stem joins the bottom left-row contact, D14.4. The
+exact `.009` sheet-1 IC power table assigns D14.4 to `GND`, so the
+annulus is a source-ground candidate; owner rail continuity is unmeasured.
 
 | Landing | Provisional board centre (mm) | Component-view agreement | Disposition |
 | --- | --- | ---: | --- |
-| fifth auxiliary landing | (207.887, 49.900) | 0.011 mm | geometry registered; conductor and fabrication drill held |
+| fifth auxiliary landing | (209.095, 49.491) | 0.025 mm | D14.4 local stem, fifth same-hole, and strip to D29.10 photo-registered; owner continuity held |
 
-The landing's conductor, the three long drawn traces, and the right-row
-dogleg are not electrically closed by these views. Reflected registration
-into `200506061` and `200509593` places the same locality inside a heavily
-scraped/reworked two-row solder field; the component face hides the immediate
-dogleg under the package body. The available photographs are therefore
-exhausted for D14.7 rather than evidence for a guessed path. D14.2 and D14.7
-require direct continuity, and no remote net or fabrication geometry is
-inferred from the drawing alone.
+A D11-local cross-face fit puts all eight D14 contacts on the visible
+2×4 solder field in `200506061`: D14.2 near `(2426,1376)` and D14.7
+near `(2288,1376)`. It also maps the fifth component hole to the
+distinct solder drill near `(2424,1513)`. The older broad projection
+near `(2050,1565)` and geometry-only pin seeds near `(2279,1708)`/
+`(2141,1711)` are retired. See `d14-cross-face-contact-fit.json`.
+On that solder face, a bare-board gap separates the long tinned strip
+holding the fifth drill from D14.4's solder cap. Their observed local
+join is the component-face stem. The strip runs west to an exposed
+drilled terminal near `(2074,1521)` in the same native photo, a second
+probe site for its visible copper. Four native patch matches register
+that terminal near `(241,1656)` and the fifth drill near `(604,1644)`
+in overlapping `200509593`. There the strip has an uninterrupted
+neck to registered D29.10 near `(2057,1588)`, named `GND` by the
+exact sheet-1 power table. This closes a visible photo path from the
+fifth hole to a source-ground pin, not owner electrical continuity.
+Any other fifth-landing conductor, three long drawn traces, and
+right-row dogleg remain open. Confirm the same-hole pairs and meter
+D14.2 and D14.7 to remote endpoints before assigning nets. Their
+local solder caps have no readable back-face departures; adjacent
+east-west traces pass with visible gaps and cannot name those pins.
 
 ## D11 position-159 field registration
 
@@ -126,34 +150,49 @@ factory detail. Its long hole column and unique L-shaped trace are the
 auxiliary drilled/copper field beside D11, not a drawn 14-pad package
 column. The four-landmark subfield is reproducible in two independent
 component views: a long vertical trace joins the upper landing to the
-position-159 junction, a left landing approaches that junction through
-the obscured bridge, and a lower landing departs on a separate trace.
+position-159 junction, the drawing joins a left landing horizontally,
+and a lower landing departs on a separate trace. Native owner crops show
+bare substrate across the local left-to-junction front gap in both
+views, so that drawn bridge is not visible F.Cu there; B.Cu or a fitted
+conductor remains possible pending continuity. The earlier May owner
+photo `201922448` independently shows the same bare front gap. In
+`200506061`, the
+D11-local solder projections of bridge_left and position159_junction
+fall near two separate annuli with matching pair geometry, but no local
+B.Cu strip joins those annuli. The cross-face hole identities and any
+remote or fitted connection still require direct verification.
 
 | Landing | Provisional board centre (mm) | Component-view agreement | Disposition |
 | --- | --- | ---: | --- |
 | upper_rail | (190.816, 59.870) | 0.001 mm | registered topology; fabrication drill held |
 | bridge_left | (188.358, 74.323) | 0.001 mm | registered topology; fabrication drill held |
 | position159_junction | (190.863, 73.201) | 0.001 mm | registered topology; fabrication drill held |
-| lower_exit | (189.622, 76.661) | 0.000 mm | registered topology; fabrication drill held |
+| lower_exit | (189.606, 80.814) | 0.084 mm | registered topology; fabrication drill held |
 
 These board centres use the panorama's coarse component-grid fit and are
 topology locators, not pin- or fabrication-grade coordinates. In
-particular, the validated D11 solder overlay localizes a conspicuous scar
-beside pins 4 through 6, but cross-registration shows that scar is a
-different feature and cannot identify the factory position-159 bridge.
-The nearest provisional field centre is 12.946 mm
-from the nominal D11.4-.6 column, more than twice the component-grid
-held-out error ceiling (5.464 mm); the exclusion
-therefore survives the coarse global-fit uncertainty.
-A newly validated D11 component package fit now pairs with that reflected
-solder fit. Their package-local transform projects the upper landing under
-the wide tinned rail and the lower three landmarks among repeated joints
-and parallel traces without a unique four-hole match. All four overlapping
-solder photos repeat the lower-field ambiguity; the second complete view
-also repeats the upper rail obstruction. The available photographs are
-therefore exhausted for through-hole identity rather than evidence for a
-guessed snap. D11 pin/net and both remote endpoints require direct
-continuity, and no source net or auxiliary drill is changed.
+particular, D27 and D11 two-face landmarks expose a four-joint error in
+the old D11 solder registration. The corrected 14-row D11 field starts
+near y=1610 rather than y=1425 in owner tile 200506061. The conspicuous
+scar is beside its upper rows and is not the factory position-159 bridge.
+The undimensioned `.009` detail draws lower_exit as an annulus on a
+separate downward trace below the position-159 junction, matching the
+corrected front-side topology rather than the retired bare-board point.
+The lower_exit front coordinate was corrected to its drilled annulus
+in both views, shifting its D11-local solder projection to about
+`(2771,2078)` in `200506061`. An open hole near `(2776,2094)` maps
+through the solder-tile overlap to `(973,2237)` and is observed near
+`(978,2234)` in `200509593`. The two solder views identify the same
+hole to about 6 px; its ≈17 px D11-local projection offset and missing
+front-to-solder shared-hole
+calibration leave it a candidate, not a same-hole match. The upper
+projection sits beside an isolated open via, and bridge/junction lie
+among several vias without a unique four-hole pattern. Two more partial
+views place the upper projection near their
+top boundaries and show no unique lower four-hole match. All four listed
+views have now been checked against shifted projections. The old upper-rail
+claim is retracted. D11 pin/net and both remote endpoints remain on
+hold for direct continuity; no source net or auxiliary drill is changed.
 
 ## Guarded evidence
 

@@ -32,22 +32,24 @@
   "points": [
     {
       "point": 7,
-      "status": "board-fitted",
-      "observation": "the lower of the two close parallel lines leaves the left 7 mark beside D1 in 114604420 and arrives at the right 7 mark below D37 in 114600417; the upper neighboring line is A:14; both printed backside 7 joints are fitted and their corrected 226.473 mm chord fits within the approximate 24 cm table entry, while exact fabrication cut length remains held for direct measurement",
+      "status": "image-registered/board-fit-pending",
+      "observation": "the lower of the two close parallel lines leaves the left 7 mark beside D1 in 114604420 and arrives at the right 7 mark below D37 in 114600417; the upper neighboring line is A:14. Owner component views 200411500 and 200439607 prove the actual white-wire surface start beside printed 7 below D1, retracting the former left backside through-hole attribution. At the right end, a backside joint is printed 7 but its component face lies under mastic, so no wire termination is directly visible; retain the raw printed-joint coordinate only; the D41-based metric projection is withdrawn and the approximate 24 cm cut length remains open",
       "endpoints": [
         {
           "terminal": "A7A",
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
           "drawing_px": [1161, 1845],
           "uncertainty_px": 6,
-        "board_mm": [1.697, 179.35],
-        "island_assignment": "D1.22-side PHI1 island; backside through joint printed 7",
+        "board_mm": [14.597, 184.485],
+        "island_assignment": "D1.22-side PHI1 island per factory wire table; visible component-side white-wire surface joint printed 7",
         "board_fit_evidence": {
-          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
-          "joint_px": [3151, 2671],
-          "local_fit": "D1/solder + solder-grid global registration",
-          "uncertainty_mm": 1.8,
-          "proof": "the assembly drawing terminates A:7 at the left-hand 7 mark; the owner backside shows one distinct through joint immediately beside the printed 7 below the independently fitted D1 2x20 field, and the held-out-validated solder-grid transform supplies its board coordinate"
+          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+          "joint_px": [607, 2898],
+          "cross_view_image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+          "cross_view_joint_px": [640, 967],
+          "local_fit": "D1/component affine fit",
+          "uncertainty_mm": 0.6,
+          "proof": "both component views show an insulated white lead soldered to the same surface joint next to printed 7; the fitted D1 2x20 contact field supplies its board coordinate. The previously recorded backside through-hole has no matching wire termination"
         }
         },
       {
@@ -55,22 +57,22 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
           "drawing_px": [1761, 4062],
           "uncertainty_px": 6,
-        "board_mm": [227.668, 194.422],
-        "island_assignment": "D35.10-side PHI1 island; backside through joint printed 7",
-        "board_fit_evidence": {
+        "board_mm": null,
+        "island_assignment": null,
+        "candidate_joint_evidence": {
           "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
           "joint_px": [1757, 2854],
-          "local_fit": "D41.1-rebased solder-grid common image",
-          "uncertainty_mm": 1.5,
-          "proof": "the assembly drawing terminates A:7 at the right-hand 7 mark; one raw solder image directly resolves the black through joint below the printed 7 beside the silver A14B joint and the independently fitted D41.1 pad, removing the displaced D40-local board projection"
+          "local_fit": "displaced D41-rebased projection withdrawn",
+          "projected_board_mm": null,
+          "observation": "the raw solder image resolves a through joint printed 7, but the matching component region is under the wire bundle and mastic; no insulated-wire termination is directly visible"
         }
       }
       ]
     },
     {
       "point": 8,
-      "status": "board-fitted",
-      "observation": "overlapping top-edge views show the line leaving the plain left 8 mark beside D5/R13 in 114604420 and arriving from the left at the plain right 8 mark near D95/R16 in 114611058; the circled 8 after R13 is a separate drawing callout; the fitted 196 mm terminal chord remains longer than the duplicate's 19 cm entry and holds the final cut length for review",
+      "status": "image-registered/board-fit-pending",
+      "observation": "overlapping top-edge views show the line leaving the plain left 8 mark beside D5/R13 in 114604420 and arriving from the left at the plain right 8 mark near D95/R16 in 114611058; the circled 8 after R13 is a separate drawing callout; a 300 dpi re-read of duplicate PDF page 2 confirms the length cell has 20 crossed out and 19 written below. The former D38-area A8B assignment relied on the displaced D38 solder fit and is withdrawn pending a new copper trace.",
       "endpoints": [
         {
           "terminal": "A8A",
@@ -93,15 +95,9 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
           "drawing_px": [1105, 443],
           "uncertainty_px": 6,
-          "board_mm": [223.601, 170.724],
-          "island_assignment": "D38.8-side STSTB island; component-side surface wire joint",
-          "board_fit_evidence": {
-            "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
-            "joint_px": [1810, 2696],
-            "local_fit": "D38/component",
-            "uncertainty_mm": 0.65,
-            "proof": "the only other D38-area factory-wire joint is continuously traced through its adjacent via to D38.12/A9; the remaining joint is therefore the wire-table D38.8/A8 endpoint"
-          }
+          "board_mm": null,
+          "island_assignment": null,
+          "candidate_owner_observation": "The former candidate white joint at (1810,2696) in PXL_20260710_200418174.jpg remains visible, but its A8/D38.8 identity depended on the withdrawn A9/D38.12 solder trace. A corrected D38 pin-based cross-face projection puts this component point near solder (2403,2363), approximately 335 px from corrected D38.8 (2077,2288) and in the region with a printed 9 in PXL_20260710_200522685.jpg. An independent four-package D38/D41/D92/D39 fit puts it near (2397,2379), 17 px away. The projection extrapolates outside the D38 pin field, and nearby joints are not uniquely matched; do not assign it to A8 or A9 without a through-hole and continuity check. Numerical evidence: ref/photos/juku-pcb-2/a8b-corrected-trace-review.json."
         }
       ]
     },
@@ -123,48 +119,21 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
           "drawing_px": [1159, 3623],
           "uncertainty_px": 6,
-          "board_mm": [245.695, 160.293],
-          "island_assignment": "D38.12-side SYNC island; component-side surface wire joint",
-          "board_fit_evidence": {
-            "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
-            "joint_px": [2286, 2450],
-            "local_fit": "D38/component",
-            "uncertainty_mm": 0.65,
-            "via_px": [2288, 2298],
-            "solder_via_px": [1374, 1984],
-            "proof": "short component copper reaches the adjacent via; the D41 cross-side transform identifies that via in the solder view, where one uninterrupted trace reaches fitted D38.12"
-          }
+          "board_mm": null,
+          "island_assignment": null,
+          "candidate_owner_observation": "Withdraw the former white-wire joint (2286,2450)/annulus (2288,2298) as the preferred A9B landing: a D92-local cross-face fit matches its annulus within about 9.5 px to solder annulus (1916,1950), whose uninterrupted copper runs to D92.1/ROE rather than D38.12/SYNC. Corrected D38.12 near (2078,2063) has a short solder spur west to open annulus (2025,2063); a possible front counterpart near (2176,2404) carries no visible wire. This is a better SYNC search anchor, not a proved A9B landing. The old solder via (1374,1984) came from the displaced D41/D38 frame. See ref/photos/juku-pcb-2/a9b-corrected-trace-review.json."
         }
       ]
     },
     {
       "point": 10,
-      "status": "board-fitted",
+      "status": "image-registered/board-fit-pending",
       "observation": "one uninterrupted shallow diagonal line is fully visible in 114556899 between its two handwritten 10 marks; duplicate sheet 3 gives the final corrected conductor length as 13.5 cm",
       "endpoints": [
         {
           "terminal": "A10A",
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
           "drawing_px": [821, 3778],
-          "uncertainty_px": 6,
-          "board_mm": [240.091, 146.982],
-          "island_assignment": "D41.13-side W10_QA_SEL island; component-side surface wire joint",
-          "board_fit_evidence": {
-            "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
-            "joint_px": [2148, 2174],
-            "pin_px": [2148, 2124],
-            "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
-            "solder_joint_px": [1506, 1834],
-            "solder_pin_px": [1506, 1785],
-            "local_fit": "D41 component/solder affine pair",
-            "uncertainty_mm": 0.4,
-            "proof": "component and reflected solder fits agree within 0.024 mm; the dedicated landing has a 2.267 mm uninterrupted copper spur to D41.13"
-          }
-        },
-        {
-          "terminal": "A10B",
-          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
-          "drawing_px": [3016, 3702],
           "uncertainty_px": 6,
           "board_mm": [108.865, 152.813],
           "island_assignment": "D50.1-side W10_QA_SEL island; component-side surface wire joint",
@@ -177,8 +146,17 @@
             "solder_pin_px": [1010, 2000],
             "local_fit": "D50 component/solder affine pair",
             "uncertainty_mm": 0.4,
-            "proof": "component and reflected solder fits agree within 0.012 mm; the dedicated landing has a 4.370 mm uninterrupted copper spur to D50.1"
+            "proof": "component and reflected solder fits agree within 0.012 mm; the dedicated landing has a 4.370 mm uninterrupted copper spur to D50.1; factory-left terminal assignment checked against the 114556899 assembly panel"
           }
+        },
+        {
+          "terminal": "A10B",
+          "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+          "drawing_px": [3016, 3702],
+          "uncertainty_px": 6,
+          "board_mm": null,
+          "island_assignment": null,
+          "candidate_owner_observation": "This is the factory-right end of wire 10, continuing toward the D41 region across overlapping panels 114556899 and 114600417. The previous A10B assignment to the fitted D50.1 joint was reversed; that joint belongs to factory-left A10A. The former D41-local candidate at component (2148,2174) in PXL_20260710_200418174.jpg is an uninterrupted trace 50 px from D41.13, with no visible wire termination; the former solder point (1506,1834) came from a displaced D41 field. Corrected D41.13 solder contact near (2054,1790) has an uninterrupted backside run to solder endpoint (2415,2090). A close component crop shows the white cable's exposed metal tip near (1825,2435) apparently over bare trace field, without discernible solder pool or pad. The cross-face projection of the solder endpoint is near (1777,2424), about 50 px west beneath cable insulation. This tip is not a proved A10B landing; meter the cable and D41.13 endpoint before assigning a coordinate."
         }
       ]
     },
@@ -222,7 +200,7 @@
     {
       "point": 12,
       "status": "image-registered/board-fit-pending",
-      "observation": "the line leaves the left 12 mark beside D13/R20 in 114604420 and the adjacent 114611058 view shows it arriving from the left at the other 12 mark immediately after C96 near D35; the mirrored owner backside shows the two isolated C96 lead joints beside printed 12, and the drawing-right/board-right lead fixes A12B while its component face is hidden by the wire bundle and mastic; direct D13 fits still reject both owner pads and the nearby loose tinned wire end, so A12A remains unidentified",
+      "observation": "the line leaves the left 12 mark beside D13/R20 in 114604420 and the adjacent 114611058 view shows it arriving from the left at the other 12 mark immediately after C96 near D35; the mirrored owner backside shows two through-hole joints beside printed 12, but neither has a visible insulated-wire termination, so drawing proximity does not identify A12B; direct D13 fits still reject both owner pads and the nearby loose tinned wire end, so A12A remains unidentified",
       "endpoints": [
         {
           "terminal": "A12A",
@@ -237,15 +215,15 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
           "drawing_px": [1349, 2148],
           "uncertainty_px": 6,
-        "board_mm": [235.083, 187.641],
-        "island_assignment": "D37.4-side RAM_OUT_EN island; C96 drawing-right through joint printed 12",
-        "board_fit_evidence": {
+        "board_mm": null,
+        "island_assignment": null,
+        "candidate_joint_evidence": {
           "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
           "joint_px": [2075, 600],
           "local_fit": "solder-grid global registration; D40/solder-alt region anchor",
           "uncertainty_mm": 1.8,
-          "other_c96_lead_px": [2170, 605],
-          "proof": "the placement drawing ends A:12 immediately after C96; the solder photo is mirrored, so the left raw-image joint is the board-right C96 lead, and it is the joint immediately following the printed 12 while both component-side leads are hidden beneath the registered wire-bundle/mastic region"
+          "other_candidate_joint_px": [2170, 605],
+          "observation": "the two joints are 4.100 mm apart in the global solder-grid projection; raw-left is board-right, but neither has a visible wire termination, and the global-fit 1.8 mm uncertainty plus hidden component face do not establish either joint as C96 or A12B"
         }
       }
       ]
@@ -253,7 +231,7 @@
     {
       "point": 13,
       "status": "image-registered/board-fit-pending",
-      "observation": "overlapping views show the line leaving the left 13 mark immediately before C95 in 114556899, crossing the D38 region, and arriving at the right 13 mark immediately after D38 and before R35 in 114600417; direct two-face fits place owner pins D13.1 and D92.1 precisely and neither pad face carries the wire; registered component panoramas put the C95-side corridor beneath the horizontal factory-wire bundle and put the post-D38 corridor among the tied bundle/mastic junctions, while the matching solder panoramas expose no printed 13 or isolated third joint, so both remote landings remain pending rather than being guessed from nearby A8/A9 joints",
+      "observation": "overlapping views show the line leaving the left 13 mark immediately before C95 in 114556899, crossing the D38 region, and arriving at the right 13 mark immediately after D38 and before R35 in 114600417. The C95-side lower white wire is a positional A13A candidate with unproved ROE net and cable destination. At the D38 side, the front white-wire joint (2286,2450) runs to annulus (2288,2298), whose likely solder counterpart (1916,1950) visibly traces to registered D92.1/ROE. This strongly favors A13B over the former A9B attribution, but the through-hole pairing and physical cable continuity remain to be verified before either board landing is promoted.",
       "endpoints": [
         {
           "terminal": "A13A",
@@ -264,16 +242,17 @@
           "island_assignment": null,
           "occlusion_evidence": {
             "component_images": [
-              "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
-              "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg"
+              "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg"
             ],
-            "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
+            "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
             "owner_pin": "D13.1",
+            "owner_pin_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+            "owner_pin_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
             "owner_pin_px": {
               "component": [1426, 906],
               "solder": [3051, 1193.5]
             },
-            "proof": "the drawing endpoint is immediately before C95 below D30; cross-registered component views cover that corridor with the horizontal factory-wire bundle and its tied mastic region, while the solder view has no printed 13 or uniquely corresponding remote joint; D13.1 itself has only its ordinary etched departure"
+            "proof": "the drawing endpoint is immediately before C95 below D50. In the corrected D50 owner tile, a white wire has a visible component-side joint near (2400,2330) and short front copper to open annulus (2430,2377). The D50-local projection of the wire joint near solder (1334,2065) falls on a bare horizontal trace. D50/D51-local fits place the front annulus near solder (1303,2111)/(1306,2136); the nearest plausible solder hole (1294,2149) is 39/18 px away respectively, so the counterpart and ROE continuity remain unproved. A wider native crop separates this lower cable from the upper A10A/D50.1 cable. The former D30/D13 tiles did not register this C95 corridor; D13.1 has only its ordinary etched departure. See ref/photos/juku-pcb-2/a13a-c95-d50-candidate-review.json"
           }
         },
         {
@@ -289,32 +268,34 @@
             "owner_pin": "D92.1",
             "owner_pin_px": {
               "component": [2484, 2290],
-              "solder": [1382, 1949]
+              "solder": [1719, 1951]
             },
-            "proof": "the drawing endpoint is immediately after D38 and before R35; the registered component corridor is crossed by the tied factory-wire bundle and mastic junctions, and the solder panorama shows printed 10, 9, 14, 7, and 12 but no 13; the exposed nearby joints already belong to A8/A9 and D92.1 itself has no insulated-wire termination"
+            "proof": "the drawing endpoint is immediately after D38 and before R35; the solder panorama has no printed 13. A white-wire joint near component (2286,2450) runs on front copper to open annulus (2288,2298). The D92-local cross-face projection places that annulus about 9.5 px from solder annulus (1916,1950), which has uninterrupted copper to registered D92.1/ROE (1719,1951). This strongly favors A13B over the former A9B candidate identity; exact through-hole pairing and continuity remain unproved, so board_mm and island assignment stay null. See ref/photos/juku-pcb-2/a13a-c95-d50-candidate-review.json"
           }
         }
       ]
     },
     {
       "point": 14,
-      "status": "board-fitted",
-      "observation": "the upper of the two close parallel lines leaves the left 14 mark beside R36/D1 in 114604420 and arrives at the right 14 mark beside D37 in 114600417; the lower neighboring line is A:7; a single raw solder image directly resolves A14B, A7B, and fitted D41.1, correcting the A14 chord to 214.476 mm within the approximate 23 cm table entry and proving A14B is 58.911 mm from D41.1; exact fabrication cut length remains held for direct measurement",
-      "fabrication_resolution": "A14B and D41.1 are directly cross-registered in PXL_20260710_200522685.jpg at 1263.6 px / 58.911 mm centre separation; the former 0.784 mm collision was a displaced D40-local projection",
+      "status": "image-registered/board-fit-pending",
+      "observation": "the upper of the two close parallel lines leaves the left 14 mark beside R36/D1 in 114604420 and arrives at the right 14 mark beside D37 in 114600417; the lower neighboring line is A:7. Owner component views 200411500 and 200439607 prove the second D1-side white-wire surface start, retracting the former left backside through-hole attribution. At the right end, a backside joint is printed 14 but its component face lies under mastic, so no wire termination is directly visible; retain the raw printed-joint coordinate only; the D41-based metric projection is withdrawn and the approximate 23 cm cut length remains open",
+      "fabrication_resolution": "The former D41-rebased A14B candidate coordinate is withdrawn because the D41 solder package field was shifted about 500 pixels. Retain only the visible printed 14 joint and measure its board coordinate from a corrected frame.",
       "endpoints": [
         {
           "terminal": "A14A",
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
           "drawing_px": [1277, 1832],
           "uncertainty_px": 6,
-        "board_mm": [10.449, 179.305],
-        "island_assignment": "D1.15-side PHI2 island; backside through joint printed 14",
+        "board_mm": [23.621, 184.44],
+        "island_assignment": "D1.15-side PHI2 island per factory wire table; visible second component-side white-wire surface joint beside A7A",
         "board_fit_evidence": {
-          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
-          "joint_px": [2961, 2672],
-          "local_fit": "D1/solder + solder-grid global registration",
-          "uncertainty_mm": 1.8,
-          "proof": "the assembly drawing terminates A:14 at the left-hand 14 mark; the owner backside shows one distinct through joint immediately beside the printed 14 below the independently fitted D1 2x20 field, and the held-out-validated solder-grid transform supplies its board coordinate"
+          "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+          "joint_px": [803, 2897],
+          "cross_view_image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+          "cross_view_joint_px": [848, 965],
+          "local_fit": "D1/component affine fit",
+          "uncertainty_mm": 0.6,
+          "proof": "both component views show the second of two parallel insulated white leads soldered to this surface joint; its separate copper spur rises along the D1 left contact field. The factory A:7/A:14 parallel-wire drawing and D1.15 PHI2 endpoint distinguish it from printed-7 A7A; the previously recorded backside through-hole has no matching wire termination"
         }
         },
       {
@@ -322,14 +303,14 @@
           "source_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
           "drawing_px": [1700, 4044],
           "uncertainty_px": 6,
-        "board_mm": [224.478, 193.144],
-        "island_assignment": "D35.12-side PHI2 island; backside through joint printed 14",
-        "board_fit_evidence": {
+        "board_mm": null,
+        "island_assignment": null,
+        "candidate_joint_evidence": {
           "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
           "joint_px": [1825, 2827],
-          "local_fit": "D41.1-rebased solder-grid common image",
-          "uncertainty_mm": 1.5,
-          "proof": "the assembly drawing terminates A:14 at the right-hand 14 mark; one raw solder image directly resolves the silver through joint below the printed 14, the adjacent black A7B joint, and independently fitted D41.1, proving the former collision was a frame error"
+          "local_fit": "displaced D41-rebased projection withdrawn",
+          "projected_board_mm": null,
+          "observation": "the raw solder image resolves a through joint printed 14, but the matching component region is under the wire bundle and mastic; no insulated-wire termination is directly visible"
         }
       }
       ]

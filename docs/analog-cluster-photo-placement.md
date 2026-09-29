@@ -23,6 +23,14 @@ lower obscured/passive positions. `R65`, the visibly marked red `4К7` R67, glas
 `VD3`, and rightmost `R66` are now placed at their observed centres. The
 factory drawing fixes the left-to-right identity of the right-hand group, so
 the photo centres no longer depend on colour or circuit-role inference.
+Rotated native crops of the independent May 19 and July 10 owner views read
+`К43` on the fitted R65 body (0.43 kΩ, or 430 Ω) and `1K0` on R66. Both match
+the exact `.009` sheet-2 video detail in
+`ref/photos/dgsh5-109-009-e3/PXL_20260718_101927794.jpg`. The same detail
+prints R67 as 2 kΩ, while both owner views read `4К7` on the fitted R67;
+the source-versus-population difference remains recorded in
+`ref/schematics/native-resistor-value-registration.json`. These photo reads
+establish body markings, not isolated electrical measurements.
 The former C94 identification of the yellow body is retracted. Full-resolution
 review resolves three leads and the marking `Б / 8901`, the grade/date marking
 of the factory-drawn КТ315 `VT2`. The raw July tile registers its E-C-B lap
@@ -35,15 +43,26 @@ component-side construction shown by the factory mounting detail.
 
 The assembly drawing separately labels a two-terminal C94 immediately right of
 VT2. Its locally projected centre, corrected by the stronger owner-photo VT2
-fit, is `(289.870,130.321)` mm. Owner views do not uniquely expose that body
-through VT2, so its population, value, and both continuations remain explicit
+fit, is `(289.870,130.321)` mm. Exact `.009` sheet-1 supply detail
+`PXL_20260718_101827714.jpg` groups C94 with the +5 V-to-ground bypasses.
+May and July owner views expose bare board at C94's locally projected centre
+between VT2 and the right-hand passive group. Its actual pad pair, population,
+value, and individual physical pin-to-rail assignments remain explicit
 boundaries; neither the former `680` value nor the former C94.2/VIDEO_OUT join is
-retained. The remaining
-parts stay unchanged until their bodies can be paired unambiguously. X6 is no
-longer among those asks: the factory 12 cm cable table and two component-photo
-angles prove that the connector is bracket-mounted. Printed point A:3 is
-coincident with VD3.2/`SOUND_CLAMP`, while the separately insulated A:4/X6.2
-return reaches the wide ground strip. The generated PCB therefore carries
+retained. The remaining parts stay unchanged until their bodies can be paired
+unambiguously.
+
+The routed replica's two C94 through-hole pad centres `(289.87,132.821)` and
+`(289.87,127.821)` mm project through the registered local affine to about
+`(3252,2011)` and `(3250,1901)` in the July owner tile. Original-resolution
+inspection shows bare substrate at both positions. That footprint is a
+provisional placement, not a photo-registered copy of original drilling.
+
+The factory 12 cm cable table and two component-photo angles prove that X6 is bracket-mounted.
+An original-resolution reread places printed point A:3 beside VT2/R65, physically
+separate from VD3; its former `SOUND_CLAMP` promotion is retracted. A:3/X6.1 is
+an electrical boundary, while the separately insulated A:4/X6.2 return reaches
+the wide ground strip. The generated PCB therefore carries
 surface lap-joint footprints `AX603`/`AX604`, not an invented X6 body. The
 generated vertical axial/diode coordinates
 compensate for the KiCad footprint-anchor offset; the guarded body centres are
@@ -62,8 +81,8 @@ show only VT1/VT2 and no RF-option cluster.
 Those fifteen legacy-only references are therefore DNP on the `.009` target.
 The `.009` drawing reuses C9/C10/C11/C12/C15 around D93-D102, so those physical
 capacitors remain at their factory positions with both leads left as explicit
-target-continuity boundaries. R67.2 remains such a boundary; X6 is instead
-closed through the target cable independently of the superseded RF nets. The
+target-continuity boundaries. R67.2 and X6 A:3 remain such boundaries; the
+factory table still closes A:3/A:4 to X6 independently of the superseded RF nets. The
 yellow `Б / 8901` part is the retained VT2; C94 remains separately bounded.
 
 R67.2 has now been chased to the limit of the owner imagery. The registered

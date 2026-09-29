@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "status": "A8B candidate identity unresolved after corrected D38 registration",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "component_candidate_white_joint_px": [1810.0, 2696.0],
+  "cross_face_projection": {
+    "method": "affine map through corrected D38 pins 1, 7, and 14 on both faces; extrapolated outside package field",
+    "projected_candidate_solder_px": [2402.911, 2363.356],
+    "corrected_d38_pin8_solder_px": [2077.0, 2287.5],
+    "candidate_to_pin8_solder_distance_px": 334.630,
+    "observation": "Projected candidate lies near the region bearing a printed 9, but no exact counterpart joint or uninterrupted copper path to D38.8 has been established. The long extrapolation does not prove A8 versus A9 wire identity."
+  },
+  "independent_cross_package_check": {
+    "package_centers": ["D38", "D41", "D92", "D39"],
+    "method": "least-squares affine fit between component and solder package pin-field centers",
+    "projected_candidate_solder_px": [2396.721, 2379.332],
+    "anchor_rms_px": 3.652,
+    "difference_from_d38_local_projection_px": 17.133,
+    "limit": "The wider fit supports the same solder search area, but package-center registration cannot identify a wire joint or copper continuity."
+  },
+  "decision": "Retain A8B board coordinate and D38.8 copper assignment as unknown pending direct trace or continuity."
+}

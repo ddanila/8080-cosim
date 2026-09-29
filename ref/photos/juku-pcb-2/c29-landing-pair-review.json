@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "C29 56 pF source nominal and priority upper/middle physical pair identified; same-hole and owner population unresolved",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+  "assembly_observation": "C29 is the left vertical two-lead footprint of the C29/R106 pair below R35, between D38 and D92. Its two lead stubs are separated along the package-column direction.",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+  "earlier_component_image": "ref/photos/juku-pcb-2/PXL_20260519_201907078.jpg",
+  "earlier_component_observation": {
+    "upper_filled_looking_site_px_approx": [2155, 453],
+    "middle_filled_looking_site_px_approx": [2155, 510],
+    "lower_open_annulus_px_approx": [2155, 670],
+    "note": "May photo independently shows the same three-site arrangement and middle-to-lower front trace; no capacitor body spans the upper/middle sites."
+  },
+  "component_candidate_px": {
+    "upper_solder_filled_looking_site": [2258, 2517],
+    "middle_solder_filled_looking_site": [2258, 2576],
+    "lower_open_annulus": [2264, 2745],
+    "visible_front_copper": "The middle filled-looking site has an uninterrupted narrow front trace to the lower open annulus. The upper filled-looking site is separate from that trace in the visible front view."
+  },
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "projection": {
+    "method": "D38 pin 1/7/14 affine cross-face fit and independent D38/D41/D92/D39 package-center fit",
+    "upper_d38_local_px": [1945.861, 2201.047],
+    "middle_d38_local_px": [1948.167, 2260.317],
+    "lower_d38_local_px": [1948.745, 2430.327],
+    "upper_four_package_px": [1946.813, 2188.994],
+    "r35_lower_lead_component_px_approx": [2375, 2567],
+    "r35_lower_lead_four_package_px": [1830.567, 2238.389],
+    "r106_upper_lead_component_px_approx": [2316, 2517],
+    "r106_upper_lead_four_package_px": [1888.866, 2188.090],
+    "middle_four_package_px": [1947.577, 2249.431],
+    "lower_four_package_px": [1943.769, 2422.453],
+    "nearby_solder_candidate_px_approx": {
+      "upper_narrow_route_joint": [1940, 2175],
+      "r106_upper_lead_joint": [1880, 2175],
+      "middle_isolated_joint": [1940, 2225],
+      "lower_wide_rail_hole": [1940, 2397]
+    },
+    "middle_to_lower_relative_geometry": {
+      "projected_solder_vector_px": [-3.808, 173.022],
+      "visible_solder_vector_px_approx": [0, 172],
+      "vector_disagreement_px_approx": 3.943,
+      "assessment": "The middle-to-lower spacing and direction agree across faces despite a roughly 25 px absolute image offset. Together with the uninterrupted front trace, this strongly supports the lower open annulus as the through connection from the middle candidate to the wide solder rail."
+    }
+  },
+  "solder_copper_observation": "An uninterrupted L-shaped solder copper run joins R35's lower lead near (1830,2225), R106's upper lead near (1880,2175), and the upper C29 candidate near (1940,2175). The four-package fit projects their front contacts near (1831,2238), (1889,2188), and (1947,2189), preserving the L geometry and common photo offset. This supports a shared post-R35 node at all three physical sites. The middle C29 candidate is separate on the inspected solder face. The physical continuation from this node to D35.13 has not been traced in the photos.",
+  "wide_rail_chase": {
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "corridor_px_approx": "horizontal wide rail near y2397 from the board-edge vertical copper near x550 to its open-ended hole near x2216",
+    "nearby_known_dip_ground_joints_px": {
+      "D39.7": [1390, 2284],
+      "D92.7": [1720, 2287],
+      "D38.7": [2245, 2287]
+    },
+    "ground_anchor": {
+      "source": "ref/photos/dgsh5-109-009-sb/factory-modification-registration.json trigger_ground_rail",
+      "pin": "D56.8",
+      "pin_solder_px": [878.965, 2425.305],
+      "source_net": "GND",
+      "same_rail_observation": "The July solder panorama shows an uninterrupted wide conductor from the C29-area hole near (1940,2397) leftward through the D56.8 contact near (879,2425), then to the left-edge return. The small y change reflects the raw photo orientation and local pin-stub height; the copper itself is visibly continuous."
+    },
+    "observation": "The wide rail is separate from the nearby D39.7/D92.7/D38.7 joints, but the farther D56.8 pin provides an independently registered GND anchor on the same uninterrupted conductor."
+  },
+  "assessment": "The adjacent upper and middle filled-looking sites are the strongest C29 pad-pair candidates. The upper site is photo-traced through a common solder run to R106 upper and R35 lower, exactly the source-drawn post-R35 RC node. The lower open annulus is visibly joined to the middle site by front copper, and its corresponding solder hole has a relative displacement match within about 4 px. The continuous wide rail reaches independently grounded D56.8, supporting a GND assignment for the middle candidate. May and July owner photos show no fitted capacitor body. The exact .009 sheet 2 prints C29 as bare 56; the native drawing convention makes its source nominal 56 pF (see ref/schematics/native-capacitor-value-registration.json). The node's physical continuation to D35.13, exact component-pad identity, actual owner population/value, and intended factory population remain open.",
+  "decision": "Use the upper/middle pair as the priority C29 site, with photo-supported upper-to-R35-lower/R106-upper and middle-to-GND routes. Retain C29's known 56 pF source nominal, but do not assign a physical PCB footprint until D35.13 continuity, same-hole identity, and target population are checked."
+}

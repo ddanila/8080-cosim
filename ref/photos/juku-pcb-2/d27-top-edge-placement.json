@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "status": "vertical photo placement check only",
+  "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+  "refdes": "D27",
+  "row_spacing_mm": 15.24,
+  "physical_pin1_upper_row_px": [2180.0, 1305.0],
+  "physical_pin40_lower_row_px": [2180.0, 1623.0],
+  "top_board_edge_at_same_x_px": [2180.0, 737.0],
+  "independent_solder_face": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "physical_pin1_upper_row_px": [2806.0, 1195.0],
+    "physical_pin40_lower_row_px": [2806.0, 1480.0],
+    "top_board_edge_at_same_x_px": [2806.0, 680.0],
+    "note": "The board/background boundary is visible just below X2 at x2806. The reflected D27 solder rows are registered independently. Edge selection is approximate because X2 covers part of the edge; this is a millimetre-scale cross-check only."
+  },
+  "note": "The substrate/background transition is exposed in the gap between the blue X2 connector and black connector hardware. The top edge is visible across the X2 strip near y737; board x is not established by this check.",
+  "decision": "Both owner faces independently show no gross D27 vertical placement conflict at photo accuracy; orientation/net correction remains required"
+}

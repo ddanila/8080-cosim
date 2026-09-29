@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "scope": "correct the former yellow-body C94 misidentification and preserve the separate factory C94 position as an electrical boundary",
+  "scope": "correct the former yellow-body C94 misidentification; preserve physical C94 pad boundaries while recording its source-proved +5 V/GND bypass pair",
   "factory_source": {
     "source": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
     "sha256": "43343d7de0fe671fbe73db933755de1acf6c23c297a741085e05cf94b9c8a53d",
@@ -60,9 +60,22 @@
   "c94_disposition": {
     "value": null,
     "joined_endpoints": [],
+    "schematic_pair": {"source": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101827714.jpg", "rails": ["P5V", "GND"], "observation": "exact sheet-1 supply detail groups C94...C98 on the +5 V-to-ground bypass branch without identifying individual physical pad polarity"},
     "board_center_mm": [289.870, 130.321],
     "placement_method": "three-point local factory-drawing affine through registered R65/R67/R66, translated by the residual between its VT2 projection and the stronger owner-photo VT2 body fit",
-    "unresolved": ["owner-board C94 body visibility/population", "C94 value", "C94.1 remote destination", "C94.2 remote destination"],
+    "unresolved": ["owner-board C94 population and actual landing pads", "C94 value", "C94.1 physical rail assignment", "C94.2 physical rail assignment"],
     "retraction": "the former 680 pF value and C94.2/R65.1 VIDEO_OUT join came from treating the three-lead Б/8901 КТ315 body as a two-lead capacitor; those promotions are invalid"
+  },
+  "c94_cross_date_bare_position_review": "The local factory-drawing C94 centre (289.870,130.321) mm projects to approximately (3251,1956) in July component photo PXL_20260710_200418174.jpg. Its open board area is visible between the yellow VT2 body and the right-hand R67/VD3/R66 group. The same relative gap is bare in May photo PXL_20260519_201927098.jpg, approximately (3255,1000), using the VT2 body as a local anchor. Neither view shows a C94 body at the projected centre. This is negative photo evidence at an approximate centre, not a registered two-hole footprint, proof of DNP, or proof that a removed part was never present.",
+  "current_replica_pad_projection": {
+    "board": "kicad/juku_routed.kicad_pcb",
+    "footprint_centre_mm": [289.87, 132.821],
+    "pad1_board_mm": [289.87, 132.821],
+    "pad2_board_mm": [289.87, 127.821],
+    "owner_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "method": "inverse of the D102-local component-to-board affine recorded above",
+    "pad1_owner_px_approx": [3252, 2011],
+    "pad2_owner_px_approx": [3250, 1901],
+    "observation": "Native crop (3110,1780)-(3460,2130) shows bare substrate at both projected through-hole centres. The current replica C94 footprint is therefore not photo-backed as original owner-board drilling at these coordinates. The local drawing projection can drift and no alternate two-hole pair has been registered; this does not establish owner DNP."
   }
 }

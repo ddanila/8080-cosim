@@ -61,7 +61,6 @@ PASSIVE_FP = {
     'Q_KT13':  ('Package_TO_SOT_THT.pretty', 'TO-92_Inline'),                  # КТ315 flat KT-13; stock inline pad-row stand-in
     'Q_KT27':  ('Package_TO_SOT_THT.pretty', 'TO-126-3_Horizontal_TabDown'),    # КТ972 KT-27 / TO-126, mounted flat per factory detail
     'L_TAPPED':('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x03_P2.54mm_Vertical'), # legacy .006-only footprint support
-    'VIDEO_CONN': ('Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x02_P2.54mm_Vertical'),  # X7 video socket stand-in (601/602)
     'WIRE_PAD':   ('TestPoint.pretty', 'TestPoint_THTPad_D2.0mm_Drill1.0mm'),  # factory numbered flying-wire landings
 }
 PASSIVE_FP_REF = {
@@ -69,6 +68,8 @@ PASSIVE_FP_REF = {
     'C19': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
     'C20': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
     'C22': ('Capacitor_THT.pretty', 'C_Axial_L5.1mm_D3.1mm_P10.00mm_Horizontal'),
+    'R9': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
+    'R10': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'RUNK1': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R87': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R88': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
@@ -81,7 +82,8 @@ PASSIVE_FP_REF = {
     **{ref: ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal')
        for ref in ('R49', 'R50', 'R51', 'R52', 'R53', 'R54', 'R55', 'R56')},
     'R57': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
-    'R104': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
+    'R101': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
+    'R104': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R18': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R1': ('Resistor_THT.pretty', 'R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal'),
     'R30': ('Resistor_THT.pretty', 'R_Axial_DIN0411_L9.9mm_D3.6mm_P12.70mm_Horizontal'),
@@ -106,16 +108,16 @@ FACTORY_WIRE_PLACE = {
         'pad_diameter': 2.0,
         'drill_diameter': 1.0,
     },
-    # Board point A:8 / conductor position 4. Both ends are photographed
-    # component-side surface joints, not drilled test points. The pad diameter
-    # is conservative provisional fabrication geometry; coordinates and island
-    # identities are evidence-backed independently of that diameter.
+    # Board point A:8 / conductor position 4. W8.1 is photographed; W8.2
+    # retains an obsolete coordinate solely as a provisional model placeholder.
+    # Its D38-side landing and island must be retraced before fabrication.
     'W8': {
         'pads': {'1': (40.811, 99.989), '2': (223.601, 170.724)},
         'value': 'A:8 ~19cm insulated wire',
         'pad_diameter': 2.0,
     },
     'W10': {
+        # W10.1 retains the retracted D41-side coordinate as a model placeholder.
         'pads': {'1': (240.091, 146.982), '2': (108.865, 152.813)},
         'value': 'A:10 13.5cm insulated wire',
         'pad_diameter': 2.0,
@@ -163,14 +165,19 @@ PASSIVE_PLACE = {
     'A21':(173.70,15.2,0),'A22':(176.24,15.2,0),'A23':(178.78,15.2,0),'A24':(181.32,15.2,0),
     'A25':(183.86,15.2,0),'A26':(186.40,15.2,0),'A27':(188.94,15.2,0),'A28':(191.48,15.2,0),
     'A29':(194.02,15.2,0),'A30':(196.56,15.2,0),'A31':(199.10,15.2,0),'A32':(201.64,15.2,0),
-    'R104':(194.34,25.87,0), # registered photo terminals; 12.7 mm pitch, A21 side at left
+    'R101':(194.34,25.87,0), # registered photo terminals; 12.7 mm pitch, A21 side at left
     # Exact .009 sheet 1 identifies the D10 IR0/IR1 12k pull-downs. Factory
     # refdes order and D10-local owner-photo joints place the vertical pair.
     'R105':(164.670,108.170,90),'R107':(167.560,109.270,90),
-    'R30':(203.74,38.37,270), # registered photo terminals; S_OC at top, ground at bottom
-    'R18':(215.20,64.59,278), # registered photo terminals; S_OC at top, SER_TXD at bottom
-    # X9 is bracket-mounted. These are its reversed-ribbon PCB landings:
-    # A45->X9.14 through A58->X9.1 (factory sheets 4-5).
+    'R30':(203.74,38.37,270), # photo placement; upper=S_OC/lower=GND is provisional pending owner continuity
+    'R104':(213.935,64.389,270), # D12-left owner joints; X2_IRQ0 upper, P5V lower
+    'R18':(211.476,76.022,272), # distinct D3-left owner joints; S_OC upper, SER_TXD lower
+    # X9 is bracket-mounted. These are provisional PCB pad positions for its
+    # factory-traced reversed-ribbon nets A45->X9.14 through A58->X9.1.
+    # Owner two-side photos place the real candidate 14-pad row farther right,
+    # beneath D26. A photographed +5V site conditionally contradicts either
+    # simple monotonic A-number order; exact order/coordinates remain open. See
+    # ref/photos/juku-pcb-2/x9-solder-row-registration.json.
     'A45':(224.5,262.0,0),'A46':(222.0,262.0,0),'A47':(219.5,262.0,0),'A48':(217.0,262.0,0),
     'A49':(214.5,262.0,0),'A50':(212.0,262.0,0),'A51':(209.5,262.0,0),'A52':(207.0,262.0,0),
     'A53':(204.5,262.0,0),'A54':(202.0,262.0,0),'A55':(199.5,262.0,0),'A56':(197.0,262.0,0),
@@ -178,10 +185,11 @@ PASSIVE_PLACE = {
     # X8 is bracket-mounted; these four points terminate its six-conductor
     # power cable (A61 +5 V and A62 GND each take two conductors).
     'A59':(34.0,252.6,0),'A60':(29.0,252.6,0),'A61':(24.0,252.6,0),'A62':(19.0,252.6,0),
-    # X6 is bracket-mounted. Registered point A:3 is conductor 1's lap joint
-    # on VD3.2/SOUND_CLAMP; A:4 is the separately insulated marked-return
-    # conductor on the wide ground strip. Neither is drilled.
-    'AX603':(299.551,124.391,0),'AX604':(305.182,123.141,0),
+    # X6 is bracket-mounted. Point A:3 is conductor 1's lap joint beside
+    # VT2/R65; its electrical net remains a boundary after the rejected
+    # VD3/SOUND_CLAMP photo attribution. A:4 is the separate ground return.
+    # Neither landing is drilled.
+    'AX603':(280.233,123.791,0),'AX604':(285.606,122.617,0),
     # X4 is bracket-mounted. The 23-conductor bundle is visible above the
     # D93/D28 quadrant; sheets 4-5 map board points A X4:1..23 in order to
     # the remote connector. Row pitch and span are registered from the owner
@@ -195,6 +203,9 @@ PASSIVE_PLACE = {
     # The registered 220-ohm body below-left of D98 is real but not R94.
     # Preserve its photographed placement under an explicitly non-historical
     # evidence placeholder until continuity identifies the original refdes.
+    # D3-local four-anchor owner photo fit: outer R10 and inner R9 upright
+    # 2k bodies; upper pad2 is the source-drawn +5 V return.
+    'R10':(211.204,88.498,90),'R9':(214.319,89.801,90),
     'RUNK1':(297.6,56.4,270),
     # .009 labels the three vertical bodies left of D94 as R87/R88/R89.
     # D94-local component/solder fits place pad 1 on the three signal traces;
@@ -213,7 +224,7 @@ PASSIVE_PLACE = {
     'S3':(63.5,182.4,0),   # video-config DIP-6 [emaplaat 'S3' box]
     'E13':(104,188,0),     # video strap posts [emaplaat E13 zone]
     'E14':(95,170,0),      # video-mux G strap [emaplaat E11/E12 post block zone]
-    'E4':(39.9,226.5,0),'E5':(50.5,224.0,0),'C34':(47,242,0),   # E4/E5 СБ-true (poz pads read); C34 not yet located on the СБ [approx]
+    'E4':(39.9,226.5,0),'E5':(50.5,224.0,0),'C34':(47,242,0),   # E4 approximate: three owner holes not registered; E5 assembly-derived; C34 provisional and conflicts with exact .009 D51-adjacent assembly locality (c34-d51-locality-review.json)
     # ---- .009 analog/FDC corner. The .006 VT3/VT4 dashed RF option is DNP on
     # the target; only the retained VT2/R62-R67/VD3/C94 path is placed here. ----
     # VT2's yellow Б/8901 KT-13 body is photo-fitted independently of its
@@ -257,7 +268,6 @@ PASSIVE_PLACE = {
     'C20':(303.997,110.024,90),'C22':(306.537,110.024,90),
     'VT1':(247.8,213.8,0),  # КТ972 KT-27 beeper driver; factory mounting detail shows the body laid flat
     'S4':(245.0,80.2,0),    # ВДМ1-2 SPDT microswitch (СБ position, .100; 3-pad electrical stand-in)
-    'X7':(258.5,6,0),   # video socket (СБ top edge; contact 601/602)
     'E1':(113,207,0),      # MA7/DRAM-size strap [emaplaat E1 post]
     # Target-board component photos and the .006 assembly drawing close the
     # RAS ladder as one vertical column: R56/R52, R55/R51, R54/R50,
@@ -273,7 +283,7 @@ PASSIVE_PLACE = {
     'R57':(236.7,177.6,90),'R58':(204.1,220.5,0),
     'R40':(74,176,90),'R41':(77,176,90),'R42':(80,176,90),'R43':(83,176,90),'R44':(86,176,90),'R45':(89,176,90),   # S3 pullup row [drawn; position approx]
     'C73':(58,241.5,0),
-    'E2':(65.5,215.5,0),'E3':(49.5,215.5,0),   # beside D52's body (x52-62), not inside it   # СБ-true posts beside D52 (old 217.5 was a mis-entered routing guess)    # 4/20 pF trimmer (sheet-2: Z1+C73+R32 osc group; '8811' disc on the photos)
+    'E2':(65.5,215.5,0),'E3':(49.5,215.5,0),   # beside D52's body (x52-62), not inside it   # СБ-true posts beside D52 (old 217.5 was a mis-entered routing guess); C73's older .006 range is 4/20 pF, exact .009 range unprinted
     'R17':(111.4,119.0,90),'C99':(105.1,119.8,0),   # D9.G1 RC deglitch -- SB-true spots (crop sb_decode)
     'R90':(251.6,216.1,90),'VD4':(254.1,216.1,90),'R91':(256.4,216.1,90),'R48':(245.1,207.4,0),'R60':(253.9,202.7,0),   # beeper cluster SB-true (crop sb_beeper); R60 = FRAME INT pullup between wire posts 2/1
     # D56 AG3 RCs СБ-true (crops sb_d56rc/sb_westpair): R59+C8 pair WEST of D56 (between D103 and D56),
@@ -352,13 +362,16 @@ PLACE = {
     # NOTE: KiCad DIP footprints stand VERTICAL at rot 0 (pins down both sides). So rot 90 =
     # horizontal package. ROM/DRAM sockets are drawn vertical -> rot 0; logic rows -> rot 90.
     # transceiver/driver row (horizontal), just below the top-edge X1/X2 connectors
-    # D27 (wide PPI 8255) sits at the right end of the top transceiver band @ (162,57). The bus
+    # D27 (wide PPI 8255): factory and owner show a horizontal,
+    # right-notched package under X2. A 270-degree KiCad rotation makes
+    # the horizontal footprint right-notched. See
+    # docs/ppi-orientation-audit.md. The bus
     # transceivers D25/D23/D24/D29 in this row are NOT net-modeled (not in board.json) -> they're
     # placement outlines below, not PLACE entries (PLACE entries for non-board.json refs no-op).
-    'D27':(151.7,35.7,90),
+    'D27':(151.7,35.7,270),
     # ROM row (vertical 28-pin sockets; D15/D16 populated, D17-D22 empty) + the USART D11 at the
-    # right end. Exact drawing coords (verified frame): sockets at y≈105, ~32 mm pitch.
-    'D15':(23.5,70.8,0), 'D16':(42.3,70.8,0), 'D11':(185.5,65.7,0),   # ROM sockets y86, ~21mm pitch; D11 (USART) at its real spot right of the sockets
+    # right end. D11 uses the two-view July owner-photo panorama registration.
+    'D15':(23.5,70.8,0), 'D16':(42.3,70.8,0), 'D11':(201.012,71.486,0),   # ROM sockets y86, ~21mm pitch; D11 photographed beside the serial cluster
     # DRAM bank (565РУ3Г, vertical 16-pin): the top array row D67..D60, read precisely off the
     # drawing -- x 127..238, ~16 mm pitch (was 102..235/pitch-19, ~25 mm too far left at D67). The
     # left column (unmodeled D50 @ ~112) lines up with the D48/D49 muxes below it.
@@ -367,14 +380,14 @@ PLACE = {
     # I/O block (PIT 8253 + PPI 8255) -- the drawing puts these on the RIGHT/bottom-right, NOT the
     # top: PITs D57/D55/D54 stack down the right edge (x~292, pulled in from the ~296 read to fit
     # the 310 cut), and PPI D26 sits bottom-right just left of D54. (Was a fictional top I/O row.)
-    'D57':(274.9,206.6,90),'D55':(274.9,229.2,90),'D54':(274.7,251,90),'D26':(232,251,90),   # stack -7mm: edge-relative re-measure on the 9.50 y-scale (pitch 24 confirmed; absolute y was inflated)
+    'D57':(274.9,206.6,90),'D55':(274.9,229.2,90),'D54':(274.7,251,90),'D26':(232,251,270),  # right-edge notch per .009 assembly and owner photos
     # CPU is a tall VERTICAL chip in the lower-left (per emaplaat: D1 + D4/D2/D107 stand there).
     # Exact verified-frame read: D1 center ≈ (35,176); D4/D2 vertical just right of it (≈y158).
     # D2 input compensates the stock footprint anchor offset so the saved
     # photo-corrected KiCad position remains (70.010,129.905), notch upward.
     'D1':(32.3,157,0),'D4':(51.1,142.4,0),'D2':(73.815,138.795,0),
     'D8':(83.332,113.303,270),  # photo-fitted socketed К155РЕ3 PROM, notch right; DIP origin compensates 5 um body-centre offset
-    'D9':(109.923,113.303,270),  # photo-fitted metal К555ИД7, notch right; same stock-footprint anchor compensation
+    'D9':(107.88,113.205,270),  # corrected owner D8/D7-relative fit; pin1 (116.77,109.4), notch right
     # video address counters (ИЕ7) + DRAM addr muxes (КП14) live in the LEFT columns of the DRAM
     # array (read off the drawing): two sub-rows at y217 / y242 descending into the array, with
     # D46/D44/D48 over D47/D45/D49 -- NOT a separate row up by the bus. (~13 mm pitch, vertical.)
@@ -390,9 +403,10 @@ PLACE = {
     # and the DRAM array -- D5 (8238) far left, then D6 / D7, and the wide D10 (8259).
     # This was a fictional bottom-centre row before; the muxes above now occupy that freed space.
     # D5/D7-D9 are direct-photo fitted against the nearby fitted D50/D51 anchors;
-    # D6 remains on the assembly-seeded row.
+    # D6 was photo-corrected from the assembly seed: right-facing socket notch,
+    # source-board body centre (57.66,113.165); see docs/d6-owner-footprint-photo-audit.md.
     'D5':(23.69,109.52,270),  # marked КР580ВК38, notch right
-    'D6':(63.8,114.1,90),'D7':(131.465,113.303,270),  # black КР1533ЛА3, notch right; stock-footprint anchor compensated
+    'D6':(57.66,113.165,270),'D7':(131.465,113.303,270),  # both owner-photo notches right; D6 center is a local D8-relative fit
     'D10':(192.44,110.08,90),  # КР580ВН59 local affine photo fit; old centre projected onto adjacent resistors/body
     'D107':(51.1,168.2,0),   # 3rd ВА86 (=U_BUFL) directly below D4 [emaplaat + owner photo]
     'D30':(32.9,189.5,90),   # READY flip-flop; section A traced, section B remains boundary
@@ -420,13 +434,13 @@ PLACE = {
     'D95':(256.000,93.000,270),'D97':(268.604,110.273,90),'D101':(244.810,110.380,270),
     'D99':(279.895,93.451,270),'D102':(292.567,110.024,90),
     'D36':(228.1,180.4,180),'D33':(258,180,180),'D35':(241.0,200.5,0),   # D36/D33 notch-DOWN (emaplaat+photo)   # D36 +3mm right to clear the DRAM right column; D35 up 4mm to clear D7
-    'D59':(106.6,257,90),   # osc ЛН1 -- read off the drawing: horizontal, bottom-centre by transformer Z
+    'D59':(106.6,257,270),  # marked КР531ЛН1 beside transformer Z1; two owner close-ups show right-facing notch
                           # (bottom row 281->275: photo shows ~11 mm body-to-edge margin; 281 put pads 3 mm from the cut)
     # NET-MODELED this session (Phase-B) -- promoted from placement-outlines to real footprints at
     # their traced drawing positions: bus transceivers (top band, horizontal) + bottom row.
     # buffer row at СБ y37.1 (sb_left_0: D25/D23 boxes y34.7-39.5; the old 53.4 sat on the ROM sockets)
     'D25':(29.8,37.1,90),'D23':(54.6,37.1,90),'D24':(81.6,37.1,90),'D29':(108.5,37.1,90),
-    'D42':(136,259,90),'D43':(159.6,259.5,90),'D58':(183.0,243.1,90),   # bottom row -6mm: photo-1's y-scale is 9.50 px/mm (board spans 2528px/266mm), not the 9.87 x-scale -- edge-relative re-measure
+    'D42':(136,259,270),'D43':(159.6,259.5,270),'D58':(183.0,243.1,270),   # owner close-ups show all three right-facing notches; D58 y remains provisional pending X9-landing fit
     'D37':(245.5,180.1,180),   # .006 lower row: bottom-notched КР1533ЛА3 between R57 and D33
     'D13':(31.9,205.3,270),  # owner photo: horizontal К555ТЛ2, right-facing notch
 }
@@ -441,13 +455,17 @@ for _ry, _refs in [(158.2, range(75, 67, -1)), (183.3, range(83, 75, -1)), (208.
 for _i, _x in zip(range(17, 23), (62.9, 82.6, 102.6, 122.5, 142.6, 162.5)): PLACE[f'D{_i}'] = (_x, 70.8, 0)   # СБ: all 8 sockets one row at y~70.8 (old 83.4 clipped D9/D5)
 # serial-port cluster (net-modeled): REAL positions read off the emaplaat (relative to the D11
 # anchor): D104/D32/D14 = the column under the X3 serial connector; D12/D3 right of D11.
-# serial column right of СБ-true D11 (D11 pins span x~177-194; D12 begins x~201):
+# serial column beside the photo-registered D11 (pins span x~193-209; D12 begins x~216):
 # D104 tucked above the column, D32/D14 at their emaplaat slots
 # Registered owner component photo: D104 is the notch-down К170УП2 left of
 # R30; D32/D14 are the upper/lower notch-up К170АП2 pair right of R30.
 PLACE['D104'] = (195.7, 38.9, 180)
 PLACE['D32'] = (211.8, 29.5, 0); PLACE['D14'] = (211.8, 41.0, 0)
-PLACE['D12']  = (206.3, 80.9, 0); PLACE['D3']  = (220.434, 80.356, 180)
+# Owner D3-local four-anchor fit projects D12's four corner joints over D3,
+# with its pin-one dot at the lower right; see
+# ref/photos/juku-pcb-2/d12-d3-local-placement.json.  The former
+# (206.3, 80.9) estimate occupied the photographed R10 lead field.
+PLACE['D12']  = (220.73, 63.82, 180); PLACE['D3']  = (220.434, 80.356, 180)
 X0, Y0, DX, DY = 30.0, 30.0, 28.0, 30.0   # fallback grid for any chip not in PLACE
 
 def main():
@@ -759,8 +777,8 @@ def main():
     make_conn('X2', 143, 7.85, x2_pads)
     # X8 itself is on the bracket. A59..A62 above are its physical PCB
     # cable landings; do not recreate the remote connector on the board.
-    # X9 itself is on the bracket. A45..A58 above are the physical PCB
-    # landings at this cable exit; do not recreate an on-board X9 footprint.
+    # X9 itself is on the bracket. A45..A58 above preserve the net-bearing
+    # PCB landing placeholders; do not recreate an on-board X9 footprint.
     # X6 itself is on the bracket. AX603/AX604 above preserve its photographed
     # A:3/A:4 component-side cable joints without inventing a PCB connector.
 
@@ -826,7 +844,9 @@ def main():
     # which pushed every chip's %-position down.
     # PCB = 310 x 266 mm (owner MEASURED the real board). So edges: left 0, right 310, top 22,
     # bottom = top(22)+266 = 288. (The 279 measured earlier was the OUTER envelope incl. the video
-    # jack X8 overhang -- not the PCB cut.) Chips read in the same frame sit correctly vs the top.
+    # jack X8 overhang -- not the PCB cut.) This coarse frame does not certify package placement:
+    # the owner component and solder photos put D54's lower row ~23 mm above the physical bottom,
+    # while the routed row is only 7.38 mm above Edge.Cuts; see docs/photo-registration.md.
     BX0, BY0, BX1, BY1 = 0.0, 0.0, 310.0, 266.0
     def edge(x1,y1,x2,y2):
         s = pcbnew.PCB_SHAPE(board); s.SetShape(pcbnew.SHAPE_T_SEGMENT)

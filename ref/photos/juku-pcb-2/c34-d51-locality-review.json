@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "review_state": "factory C34 locality closed relative to D51; owner pad pair and value open",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+  "assembly_crop_xyxy_original_pixels": [2550, 1250, 3072, 2150],
+  "assembly_observation": "The exact .009 assembly explicitly labels horizontal C34 immediately below vertical D51 and above the DRAM D78 row. C95 is separately above D51. This is a local placement relationship, not a numbered pad drawing.",
+  "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+  "owner_crop_xyxy_original_pixels": [2200, 2300, 3250, 3072],
+  "owner_observation": "The fitted, directly marked D51 lies at approximately (2630,2600), with its bottom-facing notch and lower edge near y2803. A white cable bundle and mastic cross the immediately lower board strip where assembly C34 should be sought. Distinct C34 leads or a two-hole pair cannot be identified in this view; absence of a visible body here is not evidence of a factory DNP option.",
+  "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+  "owner_solder_crop_xyxy_original_pixels": [700, 2350, 1650, 3072],
+  "owner_solder_observation": "The independently registered D51 reflected columns at x1010/x1181 end near y2585. The strip below them contains several solder joints, open drills, broad rails, and narrow departures; native close crop (850,2520)-(1400,2900) has no isolated two-hole pair that can be matched to a C34 body under the front cable. Proximity to D51 and a horizontal two-site spacing are insufficient to select C34 pads or their +5 V/GND polarities.",
+  "alternate_owner_photo_survey": "Reviewed a contact sheet of all 52 archived owner JPGs, then reopened the May component frames PXL_20260519_201907078.jpg and PXL_20260519_201910595.jpg and July frame PXL_20260710_202741162.jpg at native image scale. The May frames show other KR531KP14 packages and the nearby memory region, but no independently secure D51 registration with an exposed, identifiable C34 body or two-lead site. The July 202741162 frame covers another board region. These alternate angles do not supply the missing cross-face C34 pair; the direct July D51 component and solder views remain the relevant owner evidence.",
+  "current_source_pcb": "kicad/juku.kicad_pcb places the provisional C34 footprint near (44.5,242.0) mm and D51 near (104.5,177.9) mm; gen_kicad_pcb.py labels C34 approximate. This large separation conflicts with the factory drawing's adjacent D51/C34 locality and must not be treated as a photo-registered original footprint.",
+  "source_circuit": "Exact .009 sheet 2 connects C34 across grounded rail E and +5 V rail F but prints no capacitance value; the circuit identity does not determine its physical drilled pair.",
+  "decision": "Retain C34's source electrical role while treating the existing PCB placement as provisional and physically contradicted by the assembly locality. Do not infer an owner body, pad pair, or capacitance from the covered July view.",
+  "next_inspection": "Expose the strip directly below D51 on the owner board, register both C34 holes across faces, then meter them individually to D51-local known +5 V and ground and read or measure the fitted value."
+}

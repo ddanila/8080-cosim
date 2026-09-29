@@ -60,13 +60,38 @@ def main() -> int:
         pad = d11.FindPadByNumber(pin) if d11 else None
         if pad is None or pad.GetNetname() != net:
             failures.append(f"D11.{pin} is not assigned to {net}")
-    r104 = board.FindFootprintByReference("R104")
+    r101 = board.FindFootprintByReference("R101")
     for pin, net in {"1": "X3_HARNESS_1", "2": "P5V"}.items():
-        pad = r104.FindPadByNumber(pin) if r104 else None
+        pad = r101.FindPadByNumber(pin) if r101 else None
         if pad is None or pad.GetNetname() != net:
-            failures.append(f"R104.{pin} is not assigned to {net}")
-    if r104 is not None and r104.GetValue() != "120":
-        failures.append("R104 value is not 120 ohms")
+            failures.append(f"R101.{pin} is not assigned to {net}")
+    if r101 is not None and r101.GetValue() != "120":
+        failures.append("R101 value is not 120 ohms")
+    for refdes, pad_targets in {
+        "R104": {"1": (213.935, 59.309, "X2_IRQ0"), "2": (213.935, 69.469, "P5V")},
+        "R18": {"1": (211.299, 70.945, "S_OC"), "2": (211.654, 81.099, "SER_TXD")},
+    }.items():
+        footprint = board.FindFootprintByReference(refdes)
+        for pin, (x, y, net) in pad_targets.items():
+            pad = footprint.FindPadByNumber(pin) if footprint else None
+            if pad is None or pad.GetNetname() != net:
+                failures.append(f"{refdes}.{pin} is not assigned to {net}")
+            elif abs(pcbnew.ToMM(pad.GetPosition().x) - x) > 0.3 or abs(pcbnew.ToMM(pad.GetPosition().y) - y) > 0.3:
+                failures.append(f"{refdes}.{pin} is outside its registered owner-photo hole site")
+    modeled = {chip["ref"]: chip for chip in spec["chips"]}
+    if modeled.get("R101", {}).get("value") != "120":
+        failures.append("source-model R101 is not 120 ohms")
+    if modeled.get("R104", {}).get("value") != "470" or modeled.get("R104", {}).get("pcb_placement_pending"):
+        failures.append("source-model R104 must be 470 ohms and placed")
+    for refdes, expected in {
+        "D12": {"5": "X2_IRQ0", "6": "INT4_RAW", "7": "INT4_RAW"},
+        "X1": {"114C": "INT4_RAW"},
+    }.items():
+        footprint = board.FindFootprintByReference(refdes)
+        for pin, net in expected.items():
+            pad = footprint.FindPadByNumber(pin) if footprint else None
+            if pad is None or pad.GetNetname() != net:
+                failures.append(f"{refdes}.{pin} is not assigned to {net}")
     for refdes, expected in {
         "R18": {"1": "S_OC", "2": "SER_TXD"},
         "R30": {"1": "S_OC", "2": "GND"},

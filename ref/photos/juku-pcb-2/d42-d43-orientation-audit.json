@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "status": "owner-photo notch orientation resolved; routed copper review open",
+  "references": ["D42", "D43"],
+  "owner_photos": [
+    {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200452717.MP.jpg",
+      "sha256": "b4e4124c1eaf701f6acdf30f041c7a93cd3ab5ca182853c6f0654f1af28c0408",
+      "crop_xyxy_original_pixels": [1400, 2020, 2750, 2570]
+    },
+    {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200443117.jpg",
+      "sha256": "2645a1266ef788331123d190391dea3924982bcf3d928a1dbfad982a1246991c",
+      "crop_xyxy_original_pixels": [1250, 2250, 2700, 3050]
+    }
+  ],
+  "identification": "Factory lower-centre assembly sequence D59, D42, D43, D58 identifies the adjacent marked К555ИР16 packages.",
+  "observation": "Both independent component photographs show the notch at the right end of each 14-lead D42/D43 body.",
+  "source_correction": "The prior KiCad 90-degree footprints put both notches left. Generator and unrouted source footprints now use 270 degrees, preserving body centres (136,259) and (159.6,259.5) mm. The separate pin-1 silk dots moved with their pins.",
+  "corrected_source_pad_positions_mm": {
+    "D42": {"1": [143.62, 255.195], "7": [128.38, 255.195], "8": [128.38, 262.815], "14": [143.62, 262.815]},
+    "D43": {"1": [167.22, 255.695], "7": [151.98, 255.695], "8": [151.98, 263.315], "14": [167.22, 263.315]}
+  },
+  "source_drc": "165 error violations and 499 unconnected items after correction, unchanged from before correction.",
+  "routed_disposition": "Existing routed and routed-candidate PCB copies still carry the former 90-degree pad placement. All 28 D42/D43 physical pad sites would carry a different net after the source correction. The footprint-only routed DRC trial is recorded in ref/routing/d42-d43-orientation-copper-impact.json. Do not use their D42/D43 copper for fabrication; refresh and reroute with pin-net and DRC review.",
+  "solder_photo_review": {
+    "candidate_overlapping_tiles": [
+      "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200534267.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg"
+    ],
+    "tile_registration": "A distinctive D58 solder-field crop from 200530933 at original pixels (3000,1900)-(3900,2500) matches 200534267 near (336,2096) at quarter scale, giving an approximate old-to-new translation (-2664,+196) pixels. The alternate repetitive-row match near (-1592,+192) does not preserve the D58 field and is rejected. This translation is for locating the fields, not a precision affine fit.",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200534267.jpg",
+    "observed_contacts_px_approx": {
+      "D43": {"pin7_upper_right": [1590, 2320], "pin14_lower_left": [1210, 2505]},
+      "D42": {"pin7_upper_right": [2150, 2320], "pin14_lower_left": [1775, 2505]}
+    },
+    "observation": "The D58 2x10 field at new-tile x about 525..1085 and the two adjacent 2x7 fields at x about 1210..1590 (D43) and 1775..2150 (D42) retain the factory D58-D43-D42 sequence after backside reflection. Each seven-pin field spans about 61 pixels per pin. With the independently photographed right-facing notches, pin7 is the upper-right solder contact and pin14 the lower-left. Both pin7 contacts visibly join the same broad upper strip as D58.10; both pin14 contacts visibly join the same broad lower strip as D58.20.",
+    "ground_strip_chase": "The upper strip from the D42/D43/D58 pin7/pin10 contacts continues to the right in 200534267, then across the overlap into 200537608. In the latter tile it runs horizontally near y2200, jogs down around x2400..2600, and joins the rightmost solder terminal near (3700,2380), beside the engraved GND label. Its route is distinct from the nearby +12 V and +5 V strips. This supplies photographic GND identity for D42.7 and D43.7; the owner has not meter-confirmed it.",
+    "power_strip_chase": "The lower strip and the D42.14/D43.14 local joins are visible. It continues left through D58.20 to registered D26.26, whose broad spur is independently traced to the terminal engraved +5 V; the screw-area continuity is recorded in d26-d58-plus5-strip-review.json. In 200537608, the separate right-hand +5 V terminal departure remains apart from this local strip, so that nearby branch is not the joining route. The owner photo supports +5 V via D26.26, without a meter reading.",
+    "component_pin14_check": "In component image 200452717, the lower-right package contacts near (1970,2410) for D42.14 and (2500,2410) for D43.14 have no visible front-copper departures outside their solder fillets; the same is true in the alternate 200443117 close-up. Their photographed +5 V route is through the shared B.Cu strip toward D58.20 and D26.26, not the nearby D43-to-D58 front trace, which passes outside the chip end without a visible pin14 join.",
+    "disposition": "Treat owner D42.7/D43.7-to-GND and D42.14/D43.14-to-+5 V as photo-supported strip paths. Optional power-off continuity checks provide independent electrical confirmation; the routed replica still requires a pin-aware copper reroute and DRC review."
+  },
+  "remaining_owner_check": "Optionally confirm physical pin7 to known ground and pin14 to known +5 V with power off. Both paths now have photographed broad-strip routes to identified owner power anchors; the continuity check is independent electrical confirmation, not a missing photo-route requirement."
+}

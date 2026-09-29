@@ -12,22 +12,22 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 112
-- Populate-now component positions: 271
+- BOM lines: 118
+- Populate-now component positions: 273
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
-- Mechanical/circuit-review lines: 21
+- Mechanical/circuit-review lines: 31
 - Order posture: do not treat as a complete kit until the gated rows below are closed
 
 ## Action Totals
 
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
-| circuit-review | 9 | 23 |
+| circuit-review | 20 | 27 |
 | leave-empty | 3 | 0 |
-| mechanical-review | 12 | 17 |
+| mechanical-review | 11 | 16 |
 | program/dump | 5 | 6 |
-| source-now | 83 | 225 |
+| source-now | 79 | 224 |
 
 ## Buy Early / Acceptance-Test First
 
@@ -75,9 +75,21 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | 4 | C38, C42, C46, C50 | Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value. |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | 0 | C51, C52, C53, C70, C71, C72 | Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value. |
 | circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | 2 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
+| circuit-review | C_KM 56 | КМ ceramic capacitor 56 | 0 | C29 | Exact source prints bare 56 without a unit; the native-sheet convention reads values below 1000 as pF, giving nominal 56 pF. Owner population and pads remain open. |
+| circuit-review | C_KM 560 | КМ ceramic capacitor 560 | 1 | C5 | Exact source nominal 560 pF; no body is visible at the factory C5 site in May/July owner photos, and owner two-face copper photo-supports a D34.2-to-D34.6 bridge across its drawn terminals. Confirm continuity and population history before fitting. |
+| circuit-review | C_TRIM | trimmer capacitor | 1 | C73 | modern trimmer capacitor matching footprint/value |
 | circuit-review | Q_KT13 | КТ315 | 1 | VT2 | modern E-C-B transistor selected for the video role and KT-13 pad row |
 | circuit-review | Q_KT27 | КТ972 | 1 | VT1 | modern E-C-B TO-126 transistor selected for the beeper role |
+| circuit-review | R_AXIAL 12к | axial resistor 12к | 0 | R15, R16 | Source 12 kOhm and ground return; owner return rail and isolated body value require measurement. |
+| circuit-review | R_AXIAL 20к | axial resistor 20к | 0 | R2 | PCB pad locations and target-body continuity are pending; exact .009 value and drawn branch are captured in the source model. |
+| circuit-review | R_AXIAL 2к | axial resistor 2к | 0 | R7 | PCB pad locations and target-body continuity are pending; exact .009 value and drawn branch are captured in the source model. |
+| circuit-review | R_AXIAL 330 | axial resistor 330 | 0 | R35 | Source 330 ohms and owner 330R body agree; calibrated owner pad geometry is pending. |
+| circuit-review | R_AXIAL 360 | axial resistor 360 | 0 | R36, R37 | Exact .009 360-ohm phase pull-up; owner body begins 360, but pad nets and isolated value need measurement. |
+| circuit-review | R_AXIAL 470 | axial resistor 470 | 1 | R104 | Exact .009 R104 470-ohm D12.5 open-collector pull-up; owner photos close both local D12 links and locate the footprint; installed resistance, known +5 V rail, and remote X2 continuity pending. |
+| circuit-review | R_AXIAL 620 | axial resistor 620 | 1 | R33 | Source and apparent owner marking agree on 620 ohms, but owner front and solder copper photo-support a D34.2-to-R33-left-to-D34.6 bridge across the source C5-separated nodes. Meter and inspect the bare C5 site before fitting the pulse shaper. |
+| circuit-review | R_AXIAL 910 | axial resistor 910 | 0 | R106 | Exact source prints 910 ohms; owner body in this position reads 510R on two dates. Measure before physical-value adoption. |
 | circuit-review | UP2 | К170УП2 | 1 | D104 | RS-232/line-receiver substitute required; verify +/-12 V interface |
+| mechanical-review | DISPLAY_CONN | bracket display connector X6; exact mechanical fit pending | 1 | X6 | select exact substitute after circuit review |
 | mechanical-review | EXPANSION_CONN | СНП59-96 Р-20-2-В | 1 | X1 | select exact substitute after circuit review |
 | mechanical-review | JUMPER2 | wire/link | 1 | E5 | select exact substitute after circuit review |
 | mechanical-review | JUMPER3 | wire/link | 4 | E1, E2, E3, E4 | select exact substitute after circuit review |
@@ -85,11 +97,9 @@ against drawings/board photos before ordering final quantities.
 | mechanical-review | KBD_CONN | keyboard connector | 1 | X9 | select exact substitute after circuit review |
 | mechanical-review | PAR_CONN | СНП59-30-23-В / parallel connector | 1 | X2 | select exact substitute after circuit review |
 | mechanical-review | POWER_CONN | СНО51-30/56х9В-23 power connector | 1 | X8 | select exact substitute after circuit review |
-| mechanical-review | RF_CONN | RF connector | 1 | X6 | select exact substitute after circuit review |
 | mechanical-review | SERIAL_CONN | РГ1Н-1-4 12-contact serial socket (cable mate РШ2Н-1-23/-24) | 1 | X3 | select exact substitute after circuit review |
 | mechanical-review | SW | switch | 2 | S1, S4 | select exact substitute after circuit review |
 | mechanical-review | SW_DIP6 | DIP switch | 1 | S3 | select exact substitute after circuit review |
-| mechanical-review | VIDEO_CONN | BNC/composite video connector | 1 | X7 | select exact substitute after circuit review |
 
 ## Minimum Acceptance Ladder
 

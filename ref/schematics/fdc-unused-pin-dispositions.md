@@ -19,11 +19,11 @@ claim that D28.10-.13 and D96.9-.12 were unused. D28 pins 5/6 remain the live
 READY inverter, while pins 10-13 now form the source-proved interrupt
 conditioner. Only genuinely omitted pins remain no-connects.
 
-D96.13 remains an exact-revision no-connect in the source transcription, but
-it is not functionally retired: primary SN74LS74A truth makes the shared
-`/PRE2`/D2 section set-only without a real clear source. Recheck pin13 together
-with the remote pins9/11 and powered pins8-13 before hardware release; see
-`docs/d96-read-clock-readiness.md`.
+D96.13 is source-connected to D99.10 at a marked junction in the exact-revision
+sheet-3 photo `PXL_20260718_101641055.jpg`; it is not an unused pin. Their
+shared conductor continues to sheet 1 with an unread source. Recheck that
+source together with remote D96 pins9/11 and powered pins8-13 before hardware
+release; see `docs/d96-read-clock-readiness.md`.
 
 Primary views: `ref/photos/dgsh5-109-009-e3/PXL_20260718_101633062.jpg`,
 `PXL_20260718_101641055.jpg`, and `PXL_20260718_101648508.jpg`. Machine guards:

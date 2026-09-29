@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "reference": "D59",
+  "evidence": "Owner component photos show the notch on the right; ref/photos/juku-pcb-2/d59-orientation-audit.json records the registered solder contacts. Pad positions and nets below were read from the current KiCad source and both routed boards with pcbnew.",
+  "source_board": "kicad/juku.kicad_pcb",
+  "routed_boards": ["kicad/juku_routed.kicad_pcb", "kicad/juku_routed_candidate.kicad_pcb"],
+  "source_orientation_degrees": -90,
+  "routed_orientation_degrees": 90,
+  "position_note": "KiCad footprint position is its pad-1 anchor, not the body center. Source pad 1 is (114.22,253.195) mm; routed pad 1 is (98.98,260.805) mm. Corresponding pad rows differ by 0.010 mm in y, so the table matches nominal sites by nearest position.",
+  "site_mapping_source_pad_to_routed_pad": {
+    "1": 8, "2": 9, "3": 10, "4": 11, "5": 12, "6": 13, "7": 14,
+    "8": 1, "9": 2, "10": 3, "11": 4, "12": 5, "13": 6, "14": 7
+  },
+  "same_net_sites": ["source 1 / routed 8: OSC_PRE", "source 8 / routed 1: OSC_PRE"],
+  "different_net_site_count": 12,
+  "critical_reversals": [
+    "At source physical pin 7/GND, routed copper occupies old pin 14/P5V site.",
+    "At source physical pin 14/P5V, routed copper occupies old pin 7/GND site."
+  ],
+  "disposition": "Keep the corrected source orientation. Re-route both routed variants by physical pin and net, including both supply corners, then run DRC. A footprint-only swap is unsafe. Owner D59 supply continuity remains unproved by photos."
+}

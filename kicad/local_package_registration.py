@@ -146,6 +146,26 @@ def main() -> None:
                         "rotation_deg": round(rotation, 6),
                         "checks": checks, "projected_pins": projected,
                         "electrical_evidence": False})
+    # A local fit can match its own held-out pads while occupying a different
+    # package's contact field. Compare all projected pads, not only anchors.
+    by_image: dict[str, list[tuple[str, str, str, list[float]]]] = {}
+    for fit in results:
+        for pin, point in fit["projected_pins"].items():
+            by_image.setdefault(fit["image"], []).append(
+                (fit["refdes"], fit["side"], pin, point)
+            )
+    for image_name, pads in by_image.items():
+        for index, (refdes, side, pin, point) in enumerate(pads):
+            for other_refdes, other_side, other_pin, other_point in pads[index + 1:]:
+                if refdes == other_refdes:
+                    continue
+                separation = math.dist(point, other_point)
+                if separation < 10.0:
+                    errors.append(
+                        f"{Path(image_name).name}: {refdes}/{side}.{pin} overlaps "
+                        f"{other_refdes}/{other_side}.{other_pin} "
+                        f"({separation:.1f}px)"
+                    )
     REPORT.write_text(json.dumps({"schema_version": 1, "fits": results}, indent=2) + "\n")
     if errors:
         raise SystemExit("local package registration FAIL\n- " + "\n- ".join(errors))

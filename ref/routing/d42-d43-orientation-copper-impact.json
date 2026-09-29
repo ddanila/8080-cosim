@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "status": "routed copper incompatible with photo-corrected D42/D43 orientation",
+  "source_photo_audit": "ref/photos/juku-pcb-2/d42-d43-orientation-audit.json",
+  "method": "Temporary routed-board clone: replace only D42/D43 footprint blocks with corrected source blocks, leave all copper untouched, then run kicad-cli pcb drc --severity-error --format json. Original routed board is unchanged.",
+  "source_pcb_sha256": "3cef3120faacecb4ea23b0814dbe37834f1a08f782cd8902bb4f53180fa82329",
+  "routed_pcb_sha256": "f7626d0b4c9cc8d2eda999ff5c528a69408563064a4b55c47d2f596d90d42267",
+  "drc": {
+    "old_routed": {
+      "violations": {
+        "courtyards_overlap": 108,
+        "pth_inside_courtyard": 68
+      },
+      "unconnected_items": 54
+    },
+    "footprints_rotated_copper_unchanged": {
+      "violations": {
+        "clearance": 6,
+        "courtyards_overlap": 108,
+        "pth_inside_courtyard": 68,
+        "shorting_items": 38,
+        "solder_mask_bridge": 38
+      },
+      "unconnected_items": 79
+    }
+  },
+  "same_site_pad_permutation": [
+    {
+      "ref": "D42",
+      "old_pad": "1",
+      "old_net": "D43_DS",
+      "same_site_new_pad": "8",
+      "same_site_new_net": "SHIFT_G",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "2",
+      "old_net": "RDO4",
+      "same_site_new_pad": "9",
+      "same_site_new_net": "XTAL16M",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "3",
+      "old_net": "RDO5",
+      "same_site_new_pad": "10",
+      "same_site_new_net": "D42_Q",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "4",
+      "old_net": "RDO6",
+      "same_site_new_pad": "11",
+      "same_site_new_net": null,
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "5",
+      "old_net": "RDO7",
+      "same_site_new_pad": "12",
+      "same_site_new_net": null,
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "6",
+      "old_net": "LOAD_VID",
+      "same_site_new_pad": "13",
+      "same_site_new_net": null,
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "7",
+      "old_net": "GND",
+      "same_site_new_pad": "14",
+      "same_site_new_net": "P5V",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "8",
+      "old_net": "SHIFT_G",
+      "same_site_new_pad": "1",
+      "same_site_new_net": "D43_DS",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "9",
+      "old_net": "XTAL16M",
+      "same_site_new_pad": "2",
+      "same_site_new_net": "RDO4",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "10",
+      "old_net": "D42_Q",
+      "same_site_new_pad": "3",
+      "same_site_new_net": "RDO5",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "11",
+      "old_net": null,
+      "same_site_new_pad": "4",
+      "same_site_new_net": "RDO6",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "12",
+      "old_net": null,
+      "same_site_new_pad": "5",
+      "same_site_new_net": "RDO7",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "13",
+      "old_net": null,
+      "same_site_new_pad": "6",
+      "same_site_new_net": "LOAD_VID",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D42",
+      "old_pad": "14",
+      "old_net": "P5V",
+      "same_site_new_pad": "7",
+      "same_site_new_net": "GND",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "1",
+      "old_net": "GND",
+      "same_site_new_pad": "8",
+      "same_site_new_net": "SHIFT_G",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "2",
+      "old_net": "RDO0",
+      "same_site_new_pad": "9",
+      "same_site_new_net": "XTAL16M",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "3",
+      "old_net": "RDO1",
+      "same_site_new_pad": "10",
+      "same_site_new_net": "D43_DS",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "4",
+      "old_net": "RDO2",
+      "same_site_new_pad": "11",
+      "same_site_new_net": null,
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "5",
+      "old_net": "RDO3",
+      "same_site_new_pad": "12",
+      "same_site_new_net": null,
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "6",
+      "old_net": "LOAD_VID",
+      "same_site_new_pad": "13",
+      "same_site_new_net": null,
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "7",
+      "old_net": "GND",
+      "same_site_new_pad": "14",
+      "same_site_new_net": "P5V",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "8",
+      "old_net": "SHIFT_G",
+      "same_site_new_pad": "1",
+      "same_site_new_net": "GND",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "9",
+      "old_net": "XTAL16M",
+      "same_site_new_pad": "2",
+      "same_site_new_net": "RDO0",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "10",
+      "old_net": "D43_DS",
+      "same_site_new_pad": "3",
+      "same_site_new_net": "RDO1",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "11",
+      "old_net": null,
+      "same_site_new_pad": "4",
+      "same_site_new_net": "RDO2",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "12",
+      "old_net": null,
+      "same_site_new_pad": "5",
+      "same_site_new_net": "RDO3",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "13",
+      "old_net": null,
+      "same_site_new_pad": "6",
+      "same_site_new_net": "LOAD_VID",
+      "pad_center_delta_mm": 0.01
+    },
+    {
+      "ref": "D43",
+      "old_pad": "14",
+      "old_net": "P5V",
+      "same_site_new_pad": "7",
+      "same_site_new_net": "GND",
+      "pad_center_delta_mm": 0.01
+    }
+  ],
+  "disposition": "Both routed variants retain 90-degree footprints. Correct D42/D43 placement only together with copper reroute; do not treat current routed zero-open or fabrication data as valid for these packages."
+}

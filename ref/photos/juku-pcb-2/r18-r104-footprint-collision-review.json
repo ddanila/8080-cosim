@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "status": "SOURCE AND ROUTED FOOTPRINTS CORRECTED; DISPLACED COPPER UNROUTED",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+  "assembly_crop_xyxy_original_pixels": [
+    1950,
+    1550,
+    2900,
+    2600
+  ],
+  "owner_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+  "owner_crop_xyxy_original_pixels": [
+    950,
+    300,
+    1850,
+    1500
+  ],
+  "observation": "The exact .009 assembly labels R104 upright immediately left of the eight-pin D12, and a separate R18 upright immediately left of D3 below D12. The owner photograph shows both red bodies in those two distinct positions. R104's upper and lower local D12 links are reviewed in d12-r104-owner-photo-review.json.",
+  "owner_joint_centers_approx_px": {
+    "R104_upper": [
+      1240,
+      470
+    ],
+    "R104_lower": [
+      1240,
+      685
+    ],
+    "R18_upper": [
+      1185,
+      715
+    ],
+    "R18_lower": [
+      1192,
+      927
+    ]
+  },
+  "photo_to_board_fit": "D3 four-anchor fit in d12-d3-local-placement.json; hand-read joint centers, placement grade",
+  "candidate_board_joints_mm": {
+    "R104_1_upper": [
+      213.935,
+      59.309
+    ],
+    "R104_2_lower": [
+      213.935,
+      69.55
+    ],
+    "R18_1_upper": [
+      211.299,
+      70.945
+    ],
+    "R18_2_lower": [
+      211.635,
+      81.049
+    ]
+  },
+  "former_replica_r18_pads_mm": {
+    "1": [
+      214.493,
+      59.559
+    ],
+    "2": [
+      215.907,
+      69.621
+    ]
+  },
+  "corrected_replica_pads_mm": {
+    "R18.1": [
+      211.299,
+      70.945
+    ],
+    "R18.2": [
+      211.654,
+      81.099
+    ],
+    "R104.1": [
+      213.935,
+      59.309
+    ],
+    "R104.2": [
+      213.935,
+      69.469
+    ]
+  },
+  "r18_lower_solder_route": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "crop_xyxy_original_pixels": [
+      2780,
+      400,
+      3120,
+      720
+    ],
+    "d3_pin_registration": "D3 bottom-notch orientation and pin-8/pin-14 owner-component anchors in local-package-registration.json place D3.11 on the fourth left-column contact, about (1296,911) in 200418174. The neighboring two-face affine in r15-r16-actual-pad-review.json projects it near (2896,568) in the solder photo; the known D3.5 check shows about 20 pixels of local drift.",
+    "observed_solder_joints_xy_approx": {
+      "D3.11": [
+        2890,
+        585
+      ],
+      "R18_lower": [
+        2990,
+        585
+      ]
+    },
+    "observation": "The two solder caps share one uninterrupted short horizontal B.Cu bar in the native image. This photo-closes R18's lower body lead to D3.11/SER_TXD independently of the source sheet's resistor symbol.",
+    "limit": "The upper R18 lead's route to D12.3/S_OC is not identified end to end in this solder crop."
+  },
+  "r18_upper_solder_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "crop_xyxy_original_pixels": [
+      2840,
+      240,
+      3170,
+      480
+    ],
+    "component_to_solder_projection_xy_approx": [
+      3004,
+      363
+    ],
+    "observation": "A solder cap at the projected R18 upper position has a bright B.Cu departure westward through a short jog into a horizontal run. The native crop does not show a continuous join from that run to the separately registered D12.3 joint. The nearby R104/D12.8 supply-side copper must not be merged by proximity across the narrow clearances.",
+    "decision": "Keep the exact-sheet R18 upper-to-S_OC assignment in the source model, but hold owner-board continuity to D12.3 for a registered two-face trace or power-off measurement.",
+    "full_tile_comparison": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "crop_xyxy_original_pixels": [
+        2350,
+        0,
+        3300,
+        650
+      ],
+      "d12_3_joint_px_approx": [
+        2723,
+        200
+      ],
+      "d12_3_open_hole_px_approx": [
+        2837,
+        185
+      ],
+      "r18_upper_joint_px_approx": [
+        3004,
+        363
+      ],
+      "r18_upper_open_hole_px_approx": [
+        2803,
+        367
+      ],
+      "observation": "The D12.3 joint and R18 upper joint each have a local B.Cu departure to a different open plated hole. The hole endpoints are separated by roughly 182 pixels vertically in this view; no uninterrupted B.Cu bridge connects the two branches in the full native tile. The front-face or remote continuation between them remains unproved.",
+      "next_measurement": "With power off, meter D12.3 to its own open hole, R18 upper to its own open hole, and the two branches against each other; then trace any remote/front copper only if the owner measurement joins them.",
+      "front_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "front_crop_xyxy_original_pixels": [
+        1080,
+        320,
+        1660,
+        900
+      ],
+      "inverse_cross_face_fit": "Invert the R9/R10 four-joint affine from r15-r16-actual-pad-review.json; local D3 drift is tens of pixels, so these are search regions only.",
+      "d12_3_open_hole_front_search_px_approx": [
+        1370,
+        547
+      ],
+      "r18_upper_open_hole_front_search_px_approx": [
+        1402,
+        721
+      ],
+      "front_observation": "The first search point lies beneath the fitted D12 body in the native component tile; the second lies at/under the top edge of D3. Neither front continuation is exposed clearly enough for a visible F.Cu closure. Do not infer that their solder-side separation proves electrical isolation."
+    }
+  },
+  "assessment": "The former R18 footprint was approximately on the R104 body rather than the distinct R18 body. Its pad 1 was about 0.6 mm from the proposed R104 upper hole, and pad 2 about 2.0 mm from the proposed R104 lower hole. Relative to R18's actual body, pad 1 was about 11.4 mm too far north. This was not a cosmetic refdes issue: R18 copper in both routed variants terminated at the wrong physical site.",
+  "correction": "R18 was moved to its separate D3-left hole pair and R104 added at the D12-left hole pair with pin 1 upper on X2_IRQ0 and pin 2 lower on P5V. Twenty obsolete trace segments were removed from each routed variant. Source-PCB parity and electrical DRC pass; both routed variants now have 49 unconnected items and require rerouting before fabrication. Confirm both hole centers and R104 installed value before fabrication; two owner crops visually corroborate the source R18 33 kΩ marking, though isolated resistance is unmeasured.",
+  "remaining_physical_checks": "R18 upper-to-D12.3/S_OC continuity, R104 lower known +5 V rail, R104 upper X2.214/D10.18 continuation, D12.6/.7 X1.114C continuation, and R104 isolated body value are not established by this placement comparison. R18 prints 33К in two owner crops; its measured resistance remains unknown. R18 lower-to-D3.11/SER_TXD is photo-closed.",
+  "body_marking_review": {
+    "R18": {
+      "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+      "original_crop_xyxy_pixels": [
+        2570,
+        1740,
+        2800,
+        2390
+      ],
+      "independent_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "independent_crop_xyxy_pixels": [
+        1070,
+        370,
+        1420,
+        1030
+      ],
+      "read": "33К",
+      "confidence": "high",
+      "meaning": "The printed owner body agrees with exact .009 sheet-1 R18=33 kΩ. This identifies the fitted nominal marking, not its isolated measured resistance."
+    },
+    "R104": {
+      "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+      "read": "unresolved; print partly under glare/cable",
+      "meaning": "Exact .009 sheet-1 specifies 470 Ω, but the owner body print is not independently legible in these crops.",
+      "second_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+      "second_crop_xyxy_original_pixels": [
+        1190,
+        1940,
+        1440,
+        2500
+      ],
+      "assessment": "The independently overlapping 200402344 crop repeats a partly visible dark code under a strong white specular stripe; the last digit cannot be read reliably. The earlier 200418174 view is likewise under glare/cable. The three archived component views do not independently establish the fitted R104 value; isolate and measure it."
+    }
+  }
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Guard the factory X9 reversed-ribbon PCB landings."""
+"""Guard the factory X9 reversed-ribbon nets, not provisional PCB coordinates."""
 from __future__ import annotations
 
 import json
@@ -19,10 +19,6 @@ EXPECTED = {
 }
 
 
-def mm(value: int) -> float:
-    return pcbnew.ToMM(value)
-
-
 def main() -> int:
     board = pcbnew.LoadBoard(str(BOARD))
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
@@ -36,14 +32,9 @@ def main() -> int:
             failures.append(f"{refdes} landing is missing")
             continue
         pad = footprint.FindPadByNumber("1")
-        expected_x = 224.5 - (number - 45) * 2.5
         if pad is None:
             failures.append(f"{refdes}.1 is missing")
             continue
-        position = pad.GetPosition()
-        actual = (mm(position.x), mm(position.y))
-        if abs(actual[0] - expected_x) > 0.002 or abs(actual[1] - 262.0) > 0.002:
-            failures.append(f"{refdes}.1 position {actual} != ({expected_x}, 262.0)")
         if pad.GetNetname() != net:
             failures.append(f"{refdes}.1 net {pad.GetNetname()!r} != {net!r}")
         nodes = {tuple(node) for node in spec["nets"][net]["nodes"]}
@@ -57,7 +48,7 @@ def main() -> int:
         for failure in failures:
             print("FAIL:", failure)
         return 1
-    print("X9 LANDINGS: PASS — A45..A58 reverse onto off-board X9.14..X9.1")
+    print("X9 HARNESS NETS: PASS — A45..A58 reverse onto off-board X9.14..X9.1; physical pad positions remain provisional")
     return 0
 
 

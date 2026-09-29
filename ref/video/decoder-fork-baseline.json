@@ -82,7 +82,7 @@
       "proved": "Strict generic float32 baseband ingestion bypasses RF-only DSP and produces a deterministic grayscale headless frame while the upstream RF/IQ regression remains green.",
       "not_proved": [
         "non-NTSC or Juku timing-profile synchronization",
-        "physical Juku X7 voltage or loaded analog behavior",
+        "physical Juku VIDEO_OUT voltage or loaded analog behavior",
         "agreement with a Juku framebuffer or physical capture"
       ]
     }
@@ -155,7 +155,7 @@
       "proved": "An explicit generic timing profile locks a materially non-NTSC monochrome waveform, reports measured timing and levels, rejects five malformed waveform classes, and preserves the RF/NTSC regression.",
       "not_proved": [
         "actual Juku timing values or a Juku receiver preset",
-        "physical Juku X7 voltage or loaded analog behavior",
+        "physical Juku VIDEO_OUT voltage or loaded analog behavior",
         "agreement with a Juku framebuffer or physical capture"
       ]
     }
@@ -173,7 +173,7 @@
       "e2e_driver": "520bd28309b076b31e42665e0368e902d59408c2fc311e782b8e79dd7142e7e2"
     },
     "fixture": {
-      "classification": "ideal five-bar Juku-timing receiver fixture, not a physical X7 waveform",
+      "classification": "ideal five-bar Juku-timing receiver fixture, not a physical VIDEO_OUT waveform",
       "sample_rate_hz": 8000000,
       "line_rate_hz": 15625,
       "line_period_us": 64,
@@ -208,7 +208,7 @@
       "proved": "The generic receiver locks to an ideal generated waveform using the exact ROM-programmed Juku raster timing and guarded D56 pulse widths, recovers five grayscale bars, and preserves all earlier regressions.",
       "not_proved": [
         "the unresolved shared-DRAM video-slot schedule or physical Juku pixels",
-        "D34_SIG, physical X7 voltage, or loaded analog behavior",
+        "D34_SIG, physical VIDEO_OUT voltage, or loaded analog behavior",
         "agreement with a Juku framebuffer or physical capture",
         "a built-in guessed Juku receiver preset"
       ]
@@ -251,7 +251,7 @@
     "not_proved": [
       "HackRF hardware access or RF reception",
       "Juku baseband ingestion or non-NTSC synchronization",
-      "any Juku X7 receiver or image claim"
+      "any Juku VIDEO_OUT receiver or image claim"
     ]
   }
 }

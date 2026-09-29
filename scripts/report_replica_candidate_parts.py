@@ -230,7 +230,7 @@ def build() -> tuple[list[dict[str, str | bool]], list[str]]:
     holds = [
         "Fit E4 only in the 2-3 position and verify DRAM pin 8 is +5 V before seating any MK4564; the source model preserves all three pads but does not claim the installed jumper position.",
         "The MK4564-12 maximum access/cycle figures are faster than the recorded 200 ns РУ5Г grade, but unresolved physical CAS/slot timing still requires a scope or staged memory test.",
-        "Do not seat the FD1793 until the remaining D96/D99/D101 support-device continuity and powered-behavior gates close; verify D93 clocks and host strobes at the socket.",
+        "Do not seat the FD1793 until the remaining D96/D99/D100/D101 support-device continuity and powered-behavior gates close; verify D93 clocks and host strobes at the socket.",
         "Live seller stock, authenticity, date-code condition, pricing, purchase authorization, receipt inspection, and tester results remain procurement-time evidence.",
     ]
     return checks, holds

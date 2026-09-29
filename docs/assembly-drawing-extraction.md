@@ -30,7 +30,7 @@ is promoted as a copper netlist.
 | Bracket-mounted S1 is excluded from generated PCB footprints | PASS | `kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction |
 | Dedicated А:17 landing is present on RES_RC in the board spec and source PCB | PASS | two-sided owner photos; `kicad/juku.board.json`; `kicad/check_factory_switch_landings.py` |
 | R94 is the owner-confirmed 10k FDC DRQ pull-up; the separate 220-ohm body remains explicit and unidentified | PASS | `.009` assembly drawing; owner continuity; retained four-view `r94-photo-exhaustion.json`; `kicad/check_r94_landing.py` |
-| X9 is schematic-only and its reversed ribbon uses PCB landings A45-A58 | PASS | sheets 4-5 X9 wire table; `kicad/check_x9_offboard_landings.py` |
+| X9 is schematic-only and its reversed ribbon nets use provisional PCB landings A45-A58 | PASS | sheets 4-5 X9 wire table; `kicad/check_x9_offboard_landings.py` checks nets, while `ref/photos/juku-pcb-2/x9-solder-row-registration.json` holds physical placement open |
 | X8 is schematic-only and its six-conductor cable uses PCB landings A59-A62 | PASS | sheet 2 X8 power-cable table; `kicad/check_x8_offboard_landings.py` |
 | X6 is bracket-mounted and its 12 cm cable uses surface landings A:3/A:4 | PASS | sheet 3 cable table; two owner-photo angles; `kicad/check_x6_offboard_landings.py` |
 | X3 is schematic-only and its cable uses photo-fitted PCB landings A21-A32 | PASS | sheet 1 circuit; sheets 4-5 cable table; owner photos; `kicad/check_x3_offboard_landings.py` |

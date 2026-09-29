@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "status": "assembly order known; D11-local owner search regions corrected; pad pairs and population unresolved",
+  "factory_assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+  "factory_observation": "The exact .009 assembly detail shows two separate vertical capacitor outlines in a column left of D11: C78 above C77. Approximate full-image boxes are C78 x1990-2060/y1590-1740 and C77 x1960-2050/y1860-2020. This fixes the factory callout order, not copper endpoints.",
+  "assembly_to_july_search_registration": {
+    "method": "retired three-anchor D29/D27/D11 affine; its C78 estimate falls on a different owner package, contrary to the .009 C78-left-of-D11 order",
+    "factory_anchor_centres_px_approx": {
+      "D29": [
+        674,
+        1660
+      ],
+      "D27": [
+        1500,
+        1650
+      ],
+      "D11": [
+        2215,
+        2200
+      ]
+    },
+    "july_anchor_centres_px_approx": {
+      "D29": [
+        767,
+        1540
+      ],
+      "D27": [
+        1707.5,
+        1464
+      ],
+      "D11": [
+        2440,
+        2114.5
+      ]
+    },
+    "observation": "The old C78 search centre (2302,1443) lies on the small package above D11 in the owner photo, so it is not a reliable C78 location. The D11-local frame below supersedes both old C77/C78 centre estimates. The old three-anchor positions remain recorded only as rejected search history.",
+    "retired_c78_july_search_centre_px_approx": [
+      2302,
+      1443
+    ],
+    "retired_c77_july_search_centre_px_approx": [
+      2239,
+      1797
+    ],
+    "retired_c77_expected_vertical_end_search_px_approx": [
+      [
+        2251,
+        1695
+      ],
+      [
+        2228,
+        1900
+      ]
+    ]
+  },
+  "owner_component_images": [
+    "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg"
+  ],
+  "owner_observation": "The July component close-up registers D11 and shows the corridor to its left with a factory wire, a conspicuous tinned T-shaped feature, and multiple bare/open annuli. The independent May 19 owner photo shows the same T-shaped copper and bare-hole column with no fitted capacitor body spanning them; the July 10 photo preserves that appearance. This supports stable negative body evidence on this owner board across the two dates, but neither view proves factory DNP or the individual pad pairs. The upper C78 search area remains crowded by the neighboring package and wire.",
+  "t_feature_terminal_exclusion": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+    "native_crop_xyxy_original_pixels": [1900, 1250, 2700, 2100],
+    "front_holes_px_approx": [[2075, 1670], [2075, 1775]],
+    "observation": "The two plated holes at the upper and lower ends of the prominent T-shaped tinned feature are visibly joined by its uninterrupted vertical front-copper stem. The horizontal branch goes right to a third tinned end. The two stem holes therefore cannot be assigned as the opposite +5 V and GND terminals of one C77/C78 bypass capacitor. This excludes a tempting two-hole pair, without identifying which neighboring holes belong to C77 or C78."
+  },
+  "t_feature_two_face_search": {
+    "front_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "method": "Linear reflection and y-scale from registered D11 corners: front D11.1 (2280,1777) to solder (2705,1610), D11.28 (2600,1777) to solder (2425,1610), D11.14 y2452 to solder y2211. The T feature lies about 205 front pixels outside D11's left contact row, so the transfer is a local extrapolation.",
+    "projected_solder_holes_px_approx": {"upper": [2884, 1515], "lower": [2884, 1608]},
+    "visible_solder_holes_px_approx": {"upper": [2898, 1525], "lower": [2896, 1619]},
+    "native_solder_crop_xyxy_original_pixels": [2750, 1400, 3150, 1800],
+    "observation": "Each projected stem end has a conspicuous exposed drilled hole roughly 15-18 pixels away in the solder crop, with the pair preserving x alignment and about 94 pixels of y separation versus the projected 93. The lower hole lies on a narrow solder trace; the upper lies in the broad horizontal solder corridor. The continuous front T would electrically join these backside conductors if the two-face identifications are correct. This geometric match strengthens identification of the T's own through holes, not a C77/C78 footprint or a rail assignment.",
+    "limit": "The extrapolated fit and photo resolution do not prove same-hole identity. Check both holes directly across faces and trace the broad corridor before assigning a net."
+  },
+  "first_bare_column_hole_below_t": {
+    "front_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "front_px_approx": [2075, 1825],
+    "candidate_solder_px_approx": [2896, 1665],
+    "observation": "Native front crop (1900,1250)-(2700,2100) shows the first open annulus in the vertical bare-hole column about 50 pixels below the T stem's lower hole (2075,1775), with brown clearance and no visible front-copper neck between them. In native solder crop (2750,1400)-(3150,1800), the corresponding first hole below the proposed T-lower counterpart lies around (2896,1665) on the next narrow horizontal trace, visually separate from the T-lower candidate near (2896,1619). This makes the two holes distinct electrical search sites rather than the two already joined T-stem ends. Their through-hole registration, rail identity, and C77/C78 membership still require power-off continuity and a factory-placement fit; proximity alone does not assign a capacitor.",
+    "next_check": "Verify the front (2075,1825) hole against solder (2896,1665), then meter it separately from T-lower (2075,1775)/(2896,1619) to known +5 V and GND. Only after both site and rail identities are established should either be considered for C77 or C78."
+  },
+  "c77_outline_span_check": {
+    "method": "The audit's D11-local y scale is about 675/670 from factory D11 top y1865 to owner D11 top y1777. Applying it to factory C77 outline y1860..2020 gives owner front y about 1772..1933; this is an outline search span, not a calibrated pad pitch.",
+    "front_span_px_approx": [1772, 1933],
+    "candidate_column_sites_px_approx": [[2075, 1775], [2075, 1825], [2075, 1875], [2075, 1925]],
+    "third_bare_hole_candidate_solder_px_approx": [2895, 1760],
+    "observation": "The T-lower hole near y1775 and the third bare-column hole near y1925 bracket the projected C77 outline more closely than T-lower plus the first bare hole near y1825. The native solder crop shows separate drilled holes along the corresponding reflected column, including a lower hole near (2895,1760), but the simple D11 fit extrapolates left of the package and does not uniquely match the through holes. All of these holes may instead be unrelated test or routing vias; the outline gives a search order only.",
+    "next_check": "Register the y1925 front hole to the solder-side hole near (2895,1760), meter it and T-lower independently to +5 V/GND, and compare their spacing to a verified C77 footprint before assigning either site."
+  },
+  "c78_outline_span_check": {
+    "method": "Apply the same D11-local x/y scales to the factory C78 outline x1990..2060/y1590..1740, using factory D11 upper-left (2100,1865) and owner D11 upper-left (2280,1777).",
+    "projected_owner_outline_xyxy_px_approx": [2139, 1500, 2229, 1651],
+    "observation": "The projected C78 outline falls in the narrow component gap and white-cable corridor above/left of D11. Its lower edge is about 19 pixels above the T feature's upper hole (2075,1670), and its left edge is about 64 pixels right of the T column; the T stem is therefore a poor direct C78 outline match. Native front crop (2075,1450)-(2350,1700) shows an exposed ring near (2230,1565) in this corridor, but its front trace runs upward toward the neighboring package, and the cable hides part of the region. Neither a second matched terminal nor the ring's rail identity is proved. The factory artwork and local transform are approximate, so this deprioritizes the T as C78 without excluding a bent-lead mounting.",
+    "next_check": "Inspect behind the white cable in the x2140..2230/y1500..1650 corridor; register any two distinct drilled sites on the solder face and meter them individually to +5 V/GND before assigning C78."
+  },
+  "c78_corridor_ring_trace_limit": "Native July front crop (1950,1000)-(2450,1750) shows the exposed ring around (2230,1565) at the right edge of the projected C78 corridor. A narrow tinned front run leads upward from it to a joint around (2230,1430) beside the right edge of the horizontal D27 package and left of the vertical neighboring package. The white wire partly masks the upper area, and this view neither proves a numbered D27/D11 contact nor reveals a second C78 terminal. Keep the ring as a single traceable probe point, not a power/ground pad or an assigned capacitor site.",
+  "cross_date_limit": "The two views establish that the T-shaped feature and nearby hole column persist. They do not make either feature a C77/C78 pad. The corrected D11-local search regions preserve the factory left-of-D11 order but still do not identify unique terminal pairs.",
+  "schematic_boundary": "Exact .009 sheet 1 groups C77 and C78 among +5 V-to-ground bypasses, but that does not identify their physical pad polarity, capacitance, or owner-board population.",
+  "current_pcb_coverage": "A pcbnew footprint enumeration of kicad/juku.kicad_pcb, kicad/juku_routed.kicad_pcb, and kicad/juku_routed_candidate.kicad_pcb finds neither C77 nor C78 on any of the three boards. Their exact .009 assembly positions therefore remain an explicit physical-coverage gap; the search regions and T-feature exclusion do not justify inventing footprints yet.",
+  "decision": "Use the D11-local search centres C78 about (2180,1560) and C77 about (2152,1853), both left of D11, instead of the retired broad affine centres. Keep the factory C78-above-C77 order. Do not map the T feature, small package, or nearby bare annuli to either capacitor without two-face hole and +5 V/GND continuity evidence.",
+  "d11_local_search_registration": {
+    "method": "hand-read D11 outline in exact assembly against independently registered D11 owner package; scale x about 320/250=1.28 and y about 675/670=1.01, applied only to nearby search locations",
+    "factory_D11_box_px_approx": [
+      2100,
+      1865,
+      2350,
+      2535
+    ],
+    "owner_D11_contact_box_px_approx": [
+      2280,
+      1777,
+      2600,
+      2452
+    ],
+    "factory_centres_px_approx": {
+      "C78": [
+        2022,
+        1650
+      ],
+      "C77": [
+        2000,
+        1940
+      ]
+  },
+  "may_photo_cross_check": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
+    "crop_xyxy_original_pixels": [300, 1250, 1000, 2050],
+    "registration": "Using D11's owner body edges, the revised July C78/C77 search regions map approximately to May (470,1470)/(440,1795); this is a search-scale transfer, not a drilled-hole fit.",
+    "observation": "The May C78 search region also lies beneath or immediately beside the white cable crossing the small package above D11. The C77 region is an exposed bare field beside the T-shaped copper and open-hole column, with no installed capacitor body. The cable angle does not uncover a unique C78 terminal pair, and the exposed C77 field still has no pair tied to the assembly outline.",
+    "limit": "The second date confirms persistent population appearance and masking, not factory DNP or rail identity."
+  },
+    "owner_search_centres_px_approx": {
+      "C78": [
+        2180,
+        1560
+      ],
+      "C77": [
+        2152,
+        1853
+      ]
+    },
+    "observation": "Both revised search centres lie left of D11, respecting the .009 assembly order. C78 moves from the small package to the white-wire/open-hole corridor west of that package. C77 remains in the bare field left of D11, closer to the T-shaped copper and hole column. Neither search centre selects a unique two-hole pair.",
+    "limit": "The factory drawing is placement artwork and the body-outline/contact-box comparison is not a calibrated board transform. Search positions are approximate; the white wire masks parts of the C78 corridor and C77 still lacks a matched exposed pair."
+  }
+}

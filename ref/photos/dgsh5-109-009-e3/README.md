@@ -62,6 +62,10 @@ clock MUX D95 (КП12),
 data separator (ИЕ7 D106, ТМ2 D96, ЛА3), drive-select/step/direction latches,
 X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание микросхем
 согласно таблице».
+The original-pixel table at overview `(1200,2890)-(2700,3470)` is audited
+against 25 rail endpoints on 12 fitted devices in
+`docs/sheet3-power-table-audit.md`; board JSON and all three PCB pad sets
+agree. This checks rail names, not copper continuity.
 
 - `PXL_20260718_101633062.jpg` — overview (title block: «Лист 3 Листов 3»)
 - `PXL_20260718_101637906.jpg` … `PXL_20260718_101648508.jpg` — 4 detail tiles
@@ -83,9 +87,12 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
       assembly drawing: R79-R85 and R98 are modeled at their registered
       positions with exact values and endpoints.
 - [x] Sheet-3 D97/D102/D101 write-precompensation chain transcribed with all
-      timing passives; target copper resolves the drawing's duplicated R99,
-      conflicting R86, and D101 junctions
+      timing passives; target copper resolves the drawing's duplicated R99 and conflicting R86; D101 input junctions are source-closed but physically pending
       (`ref/schematics/fdc-write-precomp-map.md`).
+- [x] Sheet-1 D26 PA6/pin38 label is `IMDRG`, not the former `PREN` reading;
+      its `(3)` continuation matches sheet-3 `IMDRG (1)` at D101 VA/OE0_N
+      pin1. Physical continuity remains to be checked
+      (`docs/d26-imdrg-source-review.md`).
 - [x] Sheet-3 D95 clock mux completely transcribed: D40's 1/2 MHz rails feed
       D93 CLK, its 4/8 MHz rails feed D106 DOWN, FM/MFM and 5-inch/8-inch are
       the shared selects, and both enables are grounded
@@ -108,23 +115,34 @@ X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание
 - [x] Exact-revision unused sections reconciled: the drawing omits D28's last
       two inverter pairs only from the earlier partial frame; the exact frame
       restores them in the IRQ conditioner. D98 buffer pair 4, D97 Q/pin13,
-      D102 /Q/pin4, and D96 /CLR2/pin13 remain guarded NCs
-      (`ref/schematics/fdc-unused-pin-dispositions.md`).
+      and D102 /Q/pin4 remain guarded NCs. A full-resolution re-read of
+      `_101641055` instead joins D96 /CLR2/pin13 to D99 B2/pin10 at a marked
+      junction; their remote source is still unread
+      (`docs/d96-d99-junction-source-review.md`;
+      `ref/schematics/fdc-unused-pin-dispositions.md`).
 - [x] Sheet-1/3 D93 static paths reconciled: `RES (3)` lands on D93.19, and
       sheet 3 directly ties TEST/pin22 to WF/VFOE/pin33. The drawn reset-polarity
       tension remains an explicit scope check
       (`ref/schematics/fdc-controller-static-map.md`).
-- [x] Sheet-3 D93 HLT/RG paths reconciled: E11's drawn 2-3 selection straps
-      HLT/pin23 to READY/pin32 (MOTOR EN is the alternate source), and RG/pin25
-      is deliberately omitted between the explicit pin-24 and pin-26 paths
+- [x] Sheet-3 D93 HLT/RG paths reconciled: the full overview traces D99.4
+      Q1_N to HLT/pin23 on a rail separate from D94.14/D101.7 and E11.
+      E11 post 1 reaches D99.5 Q2, while its drawn 2-3 selection feeds
+      D28.6/R84 READY to pin32; RG/pin25 is deliberately
+      omitted between the explicit pin-24 and pin-26 paths
       (`ref/schematics/fdc-hlt-rg-map.md`).
 - [x] Sheet-3 D99 timing paths reconciled: grounded A1/CLR1,
       C17/C18/R97/R103 timing networks, and unused pin13 are modeled and
-      structurally guarded. D99.10 and joined D100.9/.11 are correctly retained
-      as distinct sheet-1 continuations, not logic-high markers
+      structurally guarded. The overlapping detail frames join D99.11 CLR2_N
+      to MOTOR EN; original-board continuity remains unmeasured. D99.12
+      joins D100.9 OE_N, and D99.5 Q2 drives D100.7 A7. D99.4 is drawn to
+      D93.23 HLT, while D101.7 joins D94.14 on the next lower rail.
+      Original-board D99.4-D93.23 continuity remains unmeasured. D99.10 and
+      D100.11 have separate sheet-1 continuations
       (`ref/schematics/fdc-d99-timing-map.md`).
 - [x] Sheet-3 DRQ/INTRQ conditioner reconciled: D28 sections 5/6, R93/R95,
-      and D96 section 2 are restored; D96.9/.11 remain sheet-1 boundaries
+      and D96 section 2 are restored. D96.9 reaches the common D101 A0–A3
+      input conductor in the full overview; D96.11 reaches the
+      D94.2/D99.9/R89.1 line there. Physical continuity remains pending
       (`ref/schematics/fdc-irq-conditioner-map.md`).
 - [x] Transcribe each sheet into a reviewed net/wire interpretation and
       reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any

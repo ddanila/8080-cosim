@@ -24,16 +24,16 @@ python3 scripts/report_d2_reconstruction_constraints.py
 
 | Pin | Role | Net | Source |
 | ---: | --- | --- | --- |
-| 1 | A6 | `A10` | scan + July-2026 D2/D4 solder local fits |
-| 2 | A5 | `IORC_N` | traced sheet-1: D29 physical B6 pin12 and X1.106C are labeled -IORC; D2 A5/pin2 is labeled -XACK at the identical factory edge coordinate 106C, proving the local alias on the same conductor |
-| 3 | A4 | `A14` | scan + July-2026 D2/D4 solder local fits |
-| 4 | A3 | `CAS` | traced sheet-2 (array read plus D38 load-gate bundle: per-bank R rails 11/12/13/14; C+W shared); rail15 = the ONE shared CAS: D36.11 (К531ЛА12/SN74S37 high-drive NAND) -> R57 -> all 32 C pins, R58 5.1k pullup -> rail E, D36.1 feedback, D38.1 load-gate input, and video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists) |
-| 5 | A0 | `A12` | scan + July-2026 D2/D4 solder local fits |
-| 6 | A1 | `A15` | scan + July-2026 D2/D4 solder local fits |
-| 7 | A2 | `A9` | scan + July-2026 D2/D4 solder local fits |
+| 1 | A6 | `A10` | scan; D2 pad fit retained, former D4 photo trace claim withdrawn |
+| 2 | A5 | `IORC_N` | traced sheet-1: D29 physical B6 pin12 and X1.106C are labeled -IORC; D2 A5/pin2 is labeled -XACK at the identical factory edge coordinate 106C, proving the local alias on the same conductor; exact .009 sheet-1 D29 output -IORC is physical pin 16 |
+| 3 | A4 | `A14` | scan; D2 pad fit retained, former D4 photo trace claim withdrawn |
+| 4 | A3 | `CAS` | traced sheet-2 (array read plus D38 load-gate bundle: per-bank R rails 11/12/13/14; C+W shared); rail15 = the ONE shared CAS: D36.11 (К531ЛА12/SN74S37 high-drive NAND) -> R57 -> all 32 C pins, R58 5.1k pulldown -> grounded rail E, D36.1 feedback, D38.1 load-gate input, and video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists) |
+| 5 | A0 | `A12` | scan; D2 pad fit retained, former D4 photo trace claim withdrawn |
+| 6 | A1 | `A15` | scan; D2 pad fit retained, former D4 photo trace claim withdrawn |
+| 7 | A2 | `A9` | scan; D2 pad fit retained, former D4 photo trace claim withdrawn |
 | 15 | A7 | `WREQ_N` | traced sheet-1 labels D2 A7/pin15 as -WREQ from edge connector coordinate 107C. Direct owner continuity closes D6.11/D2.15/D92.5/R12.2; recovered .009 sheet 3 continues the same signal to both asynchronous controls D96.1/.4 and to the clear inputs of the D97.1/D97.2/D102.1/D102.2 precompensation one-shots. The sheet's conflicting R86 reset pull-up is not adopted because registered target photos place R86 on the C19/D97.6 node |
-| 13 | V1 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; recovered .009 Э3 sheet 3 grounds both D95 mux enables pins1/15; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; two overlapping reflected D56 solder views prove trigger pins D56.1 and D56.9 share the uninterrupted perimeter rail with package-ground pin D56.8; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints |
-| 14 | V2 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; recovered .009 Э3 sheet 3 grounds both D95 mux enables pins1/15; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; two overlapping reflected D56 solder views prove trigger pins D56.1 and D56.9 share the uninterrupted perimeter rail with package-ground pin D56.8; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints |
+| 13 | V1 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; recovered .009 Э3 sheet 3 grounds both D95 mux enables pins1/15; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; corrected marked-AG3 component fit cross-checks both outer columns of the independently registered D56 solder footprint; overlapping solder views show D56.1 and D56.9 on the continuous D56.8 ground perimeter; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints |
+| 14 | V2 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; recovered .009 Э3 sheet 3 grounds both D95 mux enables pins1/15; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; corrected marked-AG3 component fit cross-checks both outer columns of the independently registered D56 solder footprint; overlapping solder views show D56.1 and D56.9 on the continuous D56.8 ground perimeter; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints |
 | 9 | D3 | NC | factory symbol draws only D0/pin12; explicit no-connect |
 | 10 | D2 | NC | factory symbol draws only D0/pin12; explicit no-connect |
 | 11 | D1 | NC | factory symbol draws only D0/pin12; explicit no-connect |
@@ -41,7 +41,7 @@ python3 scripts/report_d2_reconstruction_constraints.py
 
 ## Exact PROM Address Index
 
-The traced physical address byte is:
+The current modeled physical address byte is:
 
 `{WREQ_N, A10, XACK_N, A14, CAS/VIDEO_CYCLE, A9, A15, A12}`
 
@@ -52,15 +52,17 @@ Therefore `prom_address = (WREQ_N<<7) + (A10<<6) + (XACK_N<<5) +
 the separately named validated raw programming image carries the
 owner-observed values without rewriting this historical constraint file.
 
-The named schematic leads above are pin-level source evidence, not a
-claim that the D2 truth table is known. Each proved pin is promoted
-independently; the July-2026 paired D2/D4 local fits close all eight
-inputs. Three validated owner captures, including a separate power cycle,
-now establish the physical raw table.
+The named schematic leads above are pin-level source evidence where
+cited, not a claim that the D2 truth table is known. The five address
+labels with scan provenance still need an exact .009 route chase.
+D2 pads are registered, while five former D2-to-D4
+photo-route claims are withdrawn after correcting the D4 row and
+column assignment. Three validated owner captures, including a
+separate power cycle, now establish the physical raw table.
 
 ## KiCad DSN Cross-check
 
-The saved routed DSN predates the five photo-traced address inputs.
+The saved routed DSN predates the five source-assigned address inputs.
 Its missing rows are a reroute boundary, not missing source evidence.
 
 | Pin | Role | DSN Net | Result |
@@ -83,7 +85,8 @@ Its missing rows are a reroute boundary, not missing source evidence.
 ## KiCad PCB Cross-check
 
 The authoritative PCB source exposes every proved D2 input and adds
-one idempotent solder-side segment for each D2-to-D4 address route.
+five legacy D2-to-D4 solder segments whose endpoint pins require
+review against the corrected package fit.
 
 | Pin | Role | PCB Net | Result |
 | ---: | --- | --- | --- |
@@ -110,7 +113,8 @@ one idempotent solder-side segment for each D2-to-D4 address route.
 | Board identity names D2 as `.037` RT4 | PASS | `kicad/juku.board.json` |
 | Any D2 signal net is traced | PASS | `A10`, `IORC_N`, `A14`, `CAS`, `A12`, `A15`, `A9`, `WREQ_N`, `GND`, `GND`, `READY_D` |
 | Any D2 signal appears in DSN | PASS | `1`=`A10`, `12`=`READY_D`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`IORC_N`, `3`=`A14`, `4`=`CAS`, `5`=`A12`, `6`=`A15`, `7`=`A9` |
-| Any D2 signal appears in PCB | PASS | `1`=`A10`, `12`=`READY_D`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`IORC_N`, `3`=`A14`, `4`=`CAS`, `5`=`A12`, `6`=`A15`, `7`=`A9` |
+| Any D2 signal appears in PCB | PASS | `1`=`A10`, `12`=`READY_D`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `16`=`P5V`, `2`=`IORC_N`, `3`=`A14`, `4`=`CAS`, `5`=`A12`, `6`=`A15`, `7`=`A9`, `8`=`GND` |
+| D2 PCB pad nets match the logical model | PASS | all modeled pins agree; pins 9–11 remain NC |
 | 256-row symbolic address table is non-burnable | PASS | all D0 values are `?` |
 | Validated physical `.037` raw programming image exists | PASS | `ref/physical-proms/validated/d2_037.raw.bin` |
 | Old D2-as-I/O-decode path is superseded | PASS | `kicad/juku.board.json` D9 identity and provenance |

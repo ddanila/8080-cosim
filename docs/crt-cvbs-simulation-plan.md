@@ -1,13 +1,13 @@
-# Juku X7 composite-video and CRT simulation task plan
+# Juku VIDEO_OUT composite-video and CRT simulation task plan
 
 Status date: **2026-07-22**.
 
-Status: **IN PROGRESS / PARAMETERIZED GENERIC RECEIVER + STATIC X7 TOPOLOGY MODEL / NO RAW-X7 RECEIVER CLAIM YET**.
+Status: **IN PROGRESS / PARAMETERIZED GENERIC RECEIVER + STATIC VIDEO_OUT TOPOLOGY MODEL / NO RAW-VIDEO_OUT RECEIVER CLAIM YET**.
 
 This is a subordinate execution plan for the video/composite item in
 `../PLAN.md`. The main plan remains authoritative for project priorities and
 release gates. This document owns only the work needed to generate the Juku
-X7 waveform, decode it as a monitor would, and render the resulting monochrome
+VIDEO_OUT waveform, decode it as a monitor would, and render the resulting monochrome
 CRT picture.
 
 ## Goal
@@ -19,14 +19,14 @@ sample-domain monitor model:
 Juku timing + framebuffer readout
   -> D42/D43 serializer and D37/D34 video logic
   -> R62/R63/R64 + VT2 + R65 + 75-ohm load
-  -> timestamped X7 baseband voltage samples
+  -> timestamped VIDEO_OUT baseband voltage samples
   -> sync/line/frame receiver
   -> monochrome CRT presentation
 ```
 
 The result must answer two different questions without conflating them:
 
-1. **Electrical/timing validity:** does the modeled X7 waveform have plausible
+1. **Electrical/timing validity:** does the modeled VIDEO_OUT waveform have plausible
    levels, pulse widths, line/frame periods, loading, and polarity?
 2. **Monitor behavior:** can a receiver recover stable horizontal and vertical
    synchronization and display the expected framebuffer content from those
@@ -82,11 +82,11 @@ baseband envelope to `NtscDecoder::process(const float *, size_t)`, where AGC
 and synchronization are applied. That makes it a
 useful receiver foundation, but not a drop-in Juku decoder:
 
-- its file input is RF I/Q rather than baseband X7 voltage;
+- its file input is RF I/Q rather than baseband VIDEO_OUT voltage;
 - line rate, sync widths, active window, and 262-line frame behavior are
   Famicom/NTSC-specific;
 - its color decoder is unnecessary for Juku monochrome video; and
-- its current CRT toggle is presentation, not proof of the X7 circuit.
+- its current CRT toggle is presentation, not proof of the VIDEO_OUT circuit.
 
 `libanalogtv` was considered and rejected as the primary receiver. Its public
 low-level structure contains a fixed 263-by-912 IRE grid, while its documented
@@ -108,7 +108,7 @@ Already guarded in `8080-cosim`:
   D54/D55/D56 crossings into D34;
 - the composite handoff topology and values are recorded as R62=2 kOhm,
   R63=1 kOhm, R64=5.1 kOhm, VT2=KT315, and R65=430 Ohm; and
-- X7 is the VIDEO_OUT/GND connector; and
+- `VIDEO_OUT` is the supported VT2.1/R65.1 circuit node; the factory display cable is X6, with A:3-to-stage continuity still open; and
 - `scripts/model_x7_output_stage.py` now guards the traced DC topology, solves
   all four D34 logic combinations with 75-ohm and unterminated loads, sweeps
   1,296 terminated corners per state, and emits an optional metadata-complete
@@ -121,7 +121,7 @@ Not yet proved:
 
 - the exact shared-DRAM video-read slot schedule;
 - a faithful physical D34 picture/sync waveform in the runnable HDL;
-- X7 voltage levels and edge shape under a 75-ohm monitor load;
+- VIDEO_OUT voltage levels and edge shape under a 75-ohm monitor load;
 - a nonlinear output model or measured DC curves for exact-revision D34
   К555ЛП5; its preserved sheet's fanout and input-current limits imply 0.4 mA
   source/8 mA sink full-fanout loads but give no I/V curves, while the official
@@ -134,7 +134,7 @@ Not yet proved:
 
 The current `juku_top.vid_out` is only an abstract serialized pixel stream. It
 bypasses the physical sync summing and transistor output stage and must never
-be labeled as a simulated X7 waveform.
+be labeled as a simulated VIDEO_OUT waveform.
 
 ## Architecture decisions
 
@@ -237,7 +237,7 @@ and passed direct `synth_ntsc` on the exact fork commit.
 Exit gate: **passed at the generic NTSC-rate boundary**. A synthetic baseband
 fixture locks and produces a deterministic frame without passing through RF
 modulation or HackRF code. This does not claim non-NTSC/Juku synchronization,
-physical X7 voltage, or agreement with a Juku framebuffer; those remain WP2,
+physical VIDEO_OUT voltage, or agreement with a Juku framebuffer; those remain WP2,
 WP3/WP4, and WP5 respectively.
 
 ### WP2 — Parameterized synchronization receiver
@@ -276,7 +276,7 @@ direct `synth_ntsc` green at the exact fork tip.
 Exit gate: **passed for generic synthetic input**. Both the original synthetic
 NTSC test and a non-NTSC monochrome fixture pass; failures distinguish
 horizontal from frame-lock loss instead of silently claiming a successful
-framebuffer. Actual Juku timing/profile values and X7 lock remain WP3-WP5 work.
+framebuffer. Actual Juku timing/profile values and VIDEO_OUT lock remain WP3-WP5 work.
 
 ### WP3 — Juku digital waveform source
 
@@ -287,7 +287,7 @@ controlled-stimulus exporter verifies the modeled 223 us and 5.04 us D56 pulses,
 the traced D34 sync XOR truth, and exact board endpoints. Every exported event
 also carries `slot_schedule_known=0`; D34_SIG is deliberately absent. This proves
 component-chain observability only, not a Juku raster, framebuffer reconstruction,
-composite voltage, or X7 samples. See `video-physical-probes.md`.
+composite voltage, or VIDEO_OUT samples. See `video-physical-probes.md`.
 
 The second checkpoint decodes and executes the exact `ekta37` PIT programming
 sequence through `juku_top`. Correct 8253 BCD, mode-1, and mode-2 behavior now
@@ -305,10 +305,10 @@ uses the exact 64 us/313-line raster and guarded 5.04 us/223 us D56 pulse
 widths. Linux CI run `29888769589` passes the full RF/IQ build, all six CTests,
 and the unchanged direct NTSC regression. This is a receiver-development
 fixture, not a built-in Juku preset or a claim about shared-DRAM pixels,
-D34_SIG, analog X7 voltage, or a physical capture.
+D34_SIG, analog VIDEO_OUT voltage, or a physical capture.
 
 - [x] Add explicit HDL probes for the physical pixel and sync contributors instead
-  of using the current abstract `vid_out` as X7.
+  of using the current abstract `vid_out` as VIDEO_OUT.
 - [x] Drive D54/D55/D56/D34_SYNC through the physical structural path where
   evidence is complete. D34_SIG remains separately open.
 - [x] Export timestamped controlled-stimulus logic events for the bounded physical
@@ -323,10 +323,10 @@ Exit gate: the exported digital waveform contains independently measurable
 horizontal sync, vertical sync, blanking, and picture intervals, and its active
 pixels reconstruct the guarded framebuffer without metadata assistance.
 
-### WP4 — X7 output-stage model
+### WP4 — VIDEO_OUT output-stage model
 
 Progress: the traced resistor rails, VT2 E-C-B mapping, +5 V collector, grounded
-emitter load, and X7 endpoint are machine-guarded by the static model. The
+emitter load, and VIDEO_OUT endpoint are machine-guarded by the static model. The
 piecewise-linear emitter follower, exact КТ315Б beta endpoints and absolute
 limits, declared VBE sensitivity bounds, independent resistor corners,
 supply/load sweep, compact JSON summary, and on-demand float32 step fixture are
@@ -338,7 +338,7 @@ SDLM061 SN74LS86A PSpice model and machine-guards its data-sheet-generated,
 typical-25-C, supply-dependent 4.88–5.00 kΩ pull-up and 43.75–62.5 Ω pull-down
 resistances. Those comparison resistances now participate in the coupled
 D34/R62-R64/VT2 solve instead of fixed D34 pin voltages. Under the nominal
-75 Ω load the four X7 levels are 0, 0, 0.244, and 1.818 V; high-state pin
+75 Ω load the four VIDEO_OUT levels are 0, 0, 0.244, and 1.818 V; high-state pin
 current still crosses the exact-device fanout-derived envelope. C94 stays
 absent. The result deliberately does **not** pass the WP4 exit gate: TI typical
 behavior is comparison evidence, not К555ЛП5 equivalence or installed-part
@@ -346,7 +346,7 @@ calibration. An exact-device nonlinear source or hardware measurement remains
 necessary.
 
 - Model the two D34 logic sources and their real output characteristics.
-- Model R62/R63/R64, the KT315 emitter follower, R65, +5 V, and X7.
+- Model R62/R63/R64, the KT315 emitter follower, R65, +5 V, and VIDEO_OUT.
 - Include an explicit 75-ohm monitor termination and an unterminated diagnostic
   run.
 - Use a circuit solver or a documented numerical transistor approximation;
@@ -358,13 +358,13 @@ necessary.
   than guessing its connection.
 - Export voltage-versus-time samples and a compact waveform summary.
 
-Exit gate: X7 levels, source current, transistor operating region, and loaded
+Exit gate: VIDEO_OUT levels, source current, transistor operating region, and loaded
 amplitude remain plausible across the declared tolerance sweep. This is still
 a model result until checked against hardware.
 
 ### WP5 — End-to-end Juku receiver and CRT display
 
-- Feed only WP4 X7 samples into the fork's baseband input.
+- Feed only WP4 VIDEO_OUT samples into the fork's baseband input.
 - Add a named `juku-e5104` timing profile with provenance for every initial
   bound.
 - Recover a stable monochrome frame and compare its active pixels with the
@@ -375,12 +375,12 @@ a model result until checked against hardware.
 - Keep receiver lock metrics and the raw waveform accessible beside rendered
   images.
 
-Exit gate: a clean end-to-end run locks from X7 samples, emits measured timing
+Exit gate: a clean end-to-end run locks from VIDEO_OUT samples, emits measured timing
 and level data, and produces the expected active image.
 
 ### WP6 — Physical calibration
 
-- Capture D34_SYNC, D34_SIG, VT2 base, and terminated X7 on a surviving board
+- Capture D34_SYNC, D34_SIG, VT2 base, and terminated VIDEO_OUT on a surviving board
   or staged replica using a documented probe/load setup.
 - Record oscilloscope bandwidth, probe attenuation, sample rate, grounding,
   termination, firmware/screen state, and board identity.
@@ -391,7 +391,7 @@ and level data, and produces the expected active image.
 - Preserve a short redistributable capture fixture or, if owner restrictions
   prevent that, preserve hashes and derived measurements.
 
-Exit gate: the same receiver locks to both modeled and measured X7 captures,
+Exit gate: the same receiver locks to both modeled and measured VIDEO_OUT captures,
 with discrepancies recorded and bounded.
 
 ## Verification matrix
@@ -402,7 +402,7 @@ with discrepancies recorded and bounded.
 | Baseband ingestion | deterministic generated waveform | generator parameters |
 | Sync receiver | measured lock/rate/pulse report | fixture timing, not framebuffer metadata |
 | Digital Juku video | recovered active bits | guarded 9,640-byte framebuffer |
-| Analog output | X7 voltage/current/tolerance report | circuit equations and component data |
+| Analog output | VIDEO_OUT voltage/current/tolerance report | circuit equations and component data |
 | End-to-end display | decoded active-image hash | independent framebuffer hash |
 | Physical calibration | measured-vs-modeled waveform report | oscilloscope capture |
 
@@ -423,7 +423,7 @@ In `famicom-rf-hackrf-decoder`:
 In `8080-cosim`:
 
 - HDL/event exporter for physical video contributors;
-- X7 output-stage circuit model and parameter file;
+- VIDEO_OUT output-stage circuit model and parameter file;
 - waveform-to-decoder integration script pinned to a fork commit;
 - short deterministic input fixtures or generation recipes; and
 - generated timing, voltage, lock, and image-comparison reports.
@@ -441,9 +441,9 @@ The task is complete only when all of the following hold:
 - raw float32 baseband input works without HackRF hardware;
 - timing is profile-driven and measured rather than globally hard-coded to
   NTSC;
-- the receiver locks to a Juku X7 waveform without framebuffer metadata;
+- the receiver locks to a Juku VIDEO_OUT waveform without framebuffer metadata;
 - the decoded active pixels match the independent Juku framebuffer oracle;
-- the X7 model includes the 75-ohm load and reports actual voltages;
+- the VIDEO_OUT model includes the 75-ohm load and reports actual voltages;
 - assumptions and unresolved C94/shared-DRAM boundaries remain explicit;
 - a physical capture either corroborates the model or leaves a quantified
   discrepancy report; and
@@ -457,7 +457,7 @@ The task is complete only when all of the following hold:
 3. Keep explicit timing profiles, measured telemetry, and NTSC compatibility green.
 4. Keep the completed non-NTSC positive/negative lock suite green.
 5. In parallel with later decoder work, close the remaining Juku physical
-   video-slot and D34 signal boundaries before calling any HDL waveform X7.
+   video-slot and D34 signal boundaries before calling any HDL waveform VIDEO_OUT.
 6. Use the now-guarded TI LS86 comparison driver for bounded receiver
    development only; obtain an exact К555ЛП5 curve or loaded D34 measurement
    before promoting its voltages, then connect independently timed terminated

@@ -27,14 +27,14 @@ same-as-D8 analogy, not from `.009` scan, photo, or owner continuity evidence.
 | 12 | A2 | `IORD` | scan sheet-1 full-resolution plus direct owner continuity 2026-07-15: D5.25 IORD runs into D7.9; D94.12/A2 joins D27.5/RD_N and D29.4. D29.4 conflicts with the older IOM_STATUS scan interpretation and is adopted from the physical board; recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 later. D93.4 belongs only to D94.3 |
 | 13 | A3 | `IOWR` | owner continuity 2026-07-19: D105 NAND output pin3 is the qualified active-low peripheral write rail. Its inputs are D7.8 I/O-cycle-active high and D13.4 CPU-write-active high. Directly confirmed endpoints are D94.13, D29.5, D10.2, D11.10, D26.36, and D27.36; existing sheet-derived PIT write endpoints remain on the same rail. D5.27 is the separate raw IOWR_N source into D7.10 |
 | 14 | A4 | `D94_A4_D101_Q0` | owner continuity 2026-07-19 confirms D94.14/A4 reaches D101 К555КП12 Q0/pin7; the earlier R88 branch is retracted |
-| 15 | E_N | `FDC_CS_N` | direct owner continuity 2026-07-15 proves D94 enable pin15 reaches D93 chip-select pin3, and explicitly proves D94 output pin2 is isolated from this conductor. The upstream source is retained separately for later continuity |
+| 15 | E_N | `FDC_CS_N` | exact .009 sheet 1 draws D9.7 as CS7 to sheet 3; exact sheet 3 draws CS7 to D94 enable pin15 and D93 chip-select pin3. Direct owner continuity 2026-07-15 confirms D94.15 to D93.3 and isolates D94 output pin2 from this conductor |
 
 ## Output Pins
 
 | Pin | Role | Net | Captured activity | Source |
 | ---: | --- | --- | --- | --- |
-| 1 | D0 | `D94_D0_BOUNDARY` | asserts at rows 03, 07, 11, 15 | owner continuity 2026-07-19: D94.1 joins R8 through approximately 2 kohm to +5 V; no other connection was found |
-| 2 | D1 | `D94_D1_D99_A2N` | asserts at rows 04, 05, 06, 07, 08, 09, 10, 11, 20, 21, 22, 23, 24, 25, 26, 27 | owner continuity 2026-07-19 proves D94.2 reaches D99 К155АГ3 second-section active-low A input pin9 and R89.1; D94.2 does not reach D99.8 or GND, and R89.2 reaches +5 V |
+| 1 | D0 | `D94_D0_BOUNDARY` | asserts at rows 03, 07, 11, 15 | Exact .009 sheet 3 `PXL_20260718_101633062.jpg` traces D94.1 through the top wire bundle to `WREQ (1)`; sheet 1 draws R8=2 kΩ from +5 V to `-WREQ`. Owner continuity 2026-07-19 locally joins D94.1 to R8 and +5 V, but the remote D94.1-to-D2.15/WREQ path was not verified, so the owner boundary remains separate. |
+| 2 | D1 | `D94_D1_D99_A2N` | asserts at rows 04, 05, 06, 07, 08, 09, 10, 11, 20, 21, 22, 23, 24, 25, 26, 27 | owner continuity 2026-07-19 proves D94.2 reaches D99 К155АГ3 second-section active-low A input pin9 and R89.1; D94.2 does not reach D99.8 or GND, and R89.2 reaches +5 V Exact .009 Э3 sheet-3 overview PXL_20260718_101633062.jpg traces the D94.2 line across the top to D96.11 CLK2; detail PXL_20260718_101641055.jpg shows CLK2 crossing D28.10 without a junction. D96.11 physical continuity remains unmeasured. |
 | 3 | D2 | `FDC_RE_N` | asserts at rows 08, 09, 10, 24, 25, 26, 27 | owner continuity 2026-07-19 proves D94 output pin3 reaches D93 read-enable pin4 and R88.1; R88.2 is +5 V |
 | 4 | D3 | `FDC_WE_N` | asserts at rows 04, 05, 06, 20, 21, 22, 23 | owner continuity 2026-07-19 proves D94 output pin4 reaches D93 write-enable pin2 and R87.1; R87.2 is +5 V |
 | 5 | D4 | `NC` | invariant released | owner/photo-confirmed PCB no-connect |
@@ -172,7 +172,7 @@ candidate identity gate separately proves the promoted board has the same pads.
 - The nearby `V3_RC` RC node is traced as `R17.1`, `C99.1`, and `D9.6`
   in board JSON/DSN, but D94 pin 15 and D3-D7 are not tied to it in
   board JSON, DSN, or PCB evidence. It cannot substitute for the missing
-  remaining D94 enable/D0 boundary continuity.
+  D94 D0 hidden-branch continuity; the enable source is now CS7/D9.7.
 - A 2026-07-11 high-resolution recheck projected D93.2 and D93.4 from
   the validated reflected D94 solder fit into the same source image.
   Neither pad shows an obvious solder-side fanout. Owner continuity now
@@ -193,8 +193,9 @@ scaffold mapping as a closed physical claim:
   Owner continuity now supplies the actual five input sources.
 
 This does not refute the accepted local D94-to-D93 copper. It removes a
-false source claim. Remaining decode work is the upstream enable source
-and D0 hidden-load status; D29.4/IORD is only a guarded corroboration recheck.
+false source claim. Exact .009 sheet-1 CS7/D9.7 and sheet-3 CS7/D94.15/D93.3
+close the enable source. Remaining D94 work is D0 hidden-load status;
+D29.4/IORD is only a guarded corroboration recheck.
 
 ## Minimized asserted-output logic
 
@@ -297,14 +298,16 @@ and A4=D101.7. D5-D7 are owner/drawing-closed NC.
   equipment list's separately designated `ДГШ5.087.009` group contains
   exactly three МЛТ-0,125 6.2 kΩ ±5% parts as corroboration. The readable
   target-board pair and identical third body close R87/R88/R89 as 6.2 kΩ.
-- Unknown: the shared CS/enable upstream source and D0 hidden-branch status.
+- Closed CS/enable upstream source: D9.7 `CS7` reaches D94.15 and D93.3
+  on exact .009 sheets 1 and 3; owner continuity confirms the local branch.
+- Unknown: D0 hidden-branch status.
 - Closed A3 source: D94.13 belongs to D105.3 qualified peripheral `/WR`.
   D5.27 is the distinct raw `IOWR_N` input to D7.10; a simultaneous
   operating-level capture is useful corroboration, not a missing join.
 - Runnable-model disposition: the behavioral FDC now consumes the
   physical table's `/RE` and `/WE`. A3 consumes the owner-closed D105.3
-  `iowr_n` conductor. Only the decoded enable and pulled-high A4 runtime
-  behavior are simulation fits; Yosys/LVS preserves their measured
+  `iowr_n` conductor. The CS7 decoded enable is source-closed; only
+  pulled-high A4 runtime behavior remains a simulation fit. Yosys/LVS preserves the
   physical boundary nets separately.
   The fast bus guard also forces A4 low on register 3 and proves D0
   asserts while both D93 strobes release, without assigning D0 a load.

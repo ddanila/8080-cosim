@@ -92,9 +92,9 @@ def main() -> int:
         fail("schematic C63 is not retained on-board as DNP artwork")
 
     evidence = json.loads(EVIDENCE.read_text(encoding="utf-8"))
-    target = next((item for item in evidence["targets"] if item.get("refdes") == "C63"), None)
+    target = next((item for item in evidence["targets"] if item.get("refdes") == "C83"), None)
     if target is None or target.get("drawing_px") != [1570.0, 3045.0]:
-        fail("factory C63 target is missing or moved")
+        fail("factory C83 target is missing or moved")
     absence = target.get("owner_absence_evidence", [])
     if len(absence) != 1 or absence[0].get("bbox_px") != [2230.0, 1880.0, 2330.0, 2170.0]:
         fail("registered target-board absence box changed")
@@ -104,11 +104,13 @@ def main() -> int:
     grid = json.loads(GRID_EVIDENCE.read_text(encoding="utf-8"))
     special = grid.get("artwork_grid_photo_fit", {}).get("special_sites", {}).get("C63", {})
     if special.get("board_pad_midpoint_mm") != [176.1, 145.6]:
-        fail("inherited C63 grid landing is not photo-registered")
-    if "distinct from" not in str(special.get("disposition", "")):
-        fail("C63 callout/grid distinction is not explicit")
+        fail("inherited C63 model grid slot changed")
+    if grid.get("artwork_grid_photo_fit", {}).get("capacitor_pad_identity_verified") is True:
+        fail("C63 pad identity cannot be promoted from the DRAM contact lattice")
+    if "C83" not in str(special.get("disposition", "")):
+        fail("C63 grid/C83 callout distinction is not explicit")
 
-    print("C63 TARGET DNP: PASS; .009 callout absent, inherited bare grid landing retained")
+    print("C63 TARGET DNP: PASS; provisional model slot retained; distinct C83 callout checked")
     return 0
 
 

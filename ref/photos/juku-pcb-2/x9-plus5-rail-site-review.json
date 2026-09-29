@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "two X9-band solder sites photo-closed to D26.26/+5 V rail; cable membership and A53/A54 assignment unresolved",
+  "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+  "sha256": "dc32b9edae4b07f184cb1651dc442c8c4303a51878c1f8835e3dbc3b7ff62ab3",
+  "crop_xyxy_original_pixels": [
+    1550,
+    1750,
+    2900,
+    2460
+  ],
+  "known_anchor": "The accepted D26 solder fit registers physical pin26 near (2511,2185). docs/ppi-orientation-audit.md follows this pin's broad rail to the owner-board +5 V marking using overlapping solder photos.",
+  "observation": "In the same original-pixel solder view, the wide copper descending from the D26.26 joint remains continuous to the broad lower horizontal rail. Two separate soldered tabs in the X9 band, near (2325,2375) and (2505,2375), merge into this uninterrupted rail without a visible break. They are full 15-site band positions 9 and 12 counted solder-left-to-right (positions 8 and 11 in the retired 14-site subset). A native crop (2250,2290)–(2555,2450) shows the rail and both spurs in one frame; intervening full site10 near x2385 uses a separate narrow B.Cu line to an intermediate via near (2385,2240), with its front D26.27/DB7 candidate still awaiting continuity.",
+  "logical_context": "The exact .009 X9 wire table and board model assign both A53 and A54 to +5 V. These two owner-board rail sites are plausible physical landings for that pair, but the component-side white wire hides their conductor attachments. Either or both may instead be rail vias or other terminations. The image does not identify A53 versus A54 or prove that either site belongs to the fourteen factory cable wires.",
+  "slot_order_check": "The full regular band has fifteen sites x1835..2695. The former direct D26.28/DB6 claim for site10 is retracted: its B.Cu reaches an intermediate via but not the adjacent D26 crown in the native crop. A fresh front pin count favors D26.27/DB7 through the via, pending across-face and meter proof. Sites9/12 retain independent +5 V copper evidence; neither cable membership nor A53/A54 numbering follows from their positions. See x9-site10-via-review.json.",
+  "cross_face_check": "The registered D26 component pin20/pin1 x1550/2690 in 200455512 reflect to solder x2819/1650 in 200530933. This projects the fifteen solder-band sites onto the component landing band x1671..2510 at y≈2455, directly above the X9 white ribbon sheath. Rail full site9 near solder x2325 projects to front (2032,2455); rail full site12 near x2505 projects to front (1856,2455), within about 6 px horizontally of modeled D26 pin26's component contact x1850. A separate white insulated wire obscures both front landings, so the projection does not prove cable membership or A53/A54 identity; see x9-solder-row-registration.json.",
+  "disposition": "Promote both X9-band full sites9/12 as owner-board +5 V copper contacts. Do not assume that either or every adjacent solder-band site is a factory cable landing. Probe the two sites or inspect the hidden component-side attachments to determine whether they are A53/A54, then map the remaining A45-A58 conductors individually."
+}

@@ -14,6 +14,7 @@ NETS = {name: {f"{ref}.{pin}" for ref, pin in item["nodes"]}
 COMPONENTS = {item["ref"]: item for item in SPEC["chips"]}
 
 EXPECTED = {
+    "FDC_IMDRG": {"D26.38", "D101.1"},
     "FDC_PRECOMP_WRDATA": {"D101.9", "D100.6"},
     "FDC_EARLY_SEL": {"D93.17", "D101.2"},
     "FDC_LATE_SEL": {"D93.18", "D101.14"},
@@ -31,7 +32,7 @@ EXPECTED = {
     "D102_C1_C22": {"D102.14", "C22.1"},
     "D102_RC1_C22_R102": {"D102.15", "C22.2", "R102.1"},
     "FDC_WDATA_DELAY_IN": {"D93.31", "D97.10"},
-    "D101_D02_R92_R99": {"D101.4", "R92.1", "R99.2"},
+    "D101_D02_R92_R99": {"D96.9", "D101.3", "D101.4", "D101.5", "D101.6", "R92.1", "R99.2"},
     "D94_A4_D101_Q0": {"D94.14", "D101.7"},
 }
 

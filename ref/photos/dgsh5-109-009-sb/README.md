@@ -36,10 +36,11 @@ What the drawing is authoritative for:
   against same-hand glyph references (Д15/Д16 socket labels, callouts
   150/159, Д56) at full photo resolution.
   Owner-board registration now closes D15's A2/A1 cut and D14's local
-  D32.4/GND-to-D14.1 link and registers D14's fifth auxiliary landing; its
-  conductor, the other D14 traces, and the D56/D11 details remain
-  measurement-held. The D14 right-row dogleg is photo-exhausted across both
-  component and reflected solder views and requires continuity. At D56 the
+  D32.4/GND-to-D14.1 link and D14.4's local stem to the corrected fifth
+  auxiliary annulus. A D11-local cross-face fit identifies D14.2, D14.7,
+  and the fifth auxiliary drill on the solder face in `200506061`; their
+  remote conductors, the other D14 traces, and the D56/D11 details remain
+  measurement-held. The D14 right-row dogleg still requires continuity. At D56 the
   three-leader level registers as the separate left annulus plus D56.5/D56.12;
   bare-board gaps to the adjacent rail are visible, but the installed item-159
   conductor/material and any net change remain held. At D11, the unique L trace and four
@@ -66,13 +67,13 @@ Photo index (`PXL_20260711_*`):
 | Photo | Content |
 | --- | --- |
 | `114553710` | Upper-left placement: `X1`, rows `D23`–`D25`/`D29`, `D15`/`D16` sockets, `E71`, `D5`–`D9` row |
-| `114556899` | Top-centre placement: `X2`, `X3`, `D27`, `D11`, `D94`, `D10`, 310 mm reference dimension |
-| `114600417` | Top-right placement: `X4`, `X6`, `S1`, `D93`–`D102` region, `C17`/`C18`, `VT2`, `VD3` |
+| `114556899` | Top-centre placement: `X2`, `X3`, `D27`, `D11`, `D94`, `D10`, 310 mm reference dimension; lower edge labels `D50`/`C95` and adjacent `R58` (not `R38`) |
+| `114600417` | Top-right placement: `X4`, bracket `X6` directly above the VT2/VD3 cluster, `S1`, `D93`–`D102` region, `C17`/`C18`; item 151 cable callout reaches the analog cluster. No `X7` is labelled in this view. |
 | `114604420` | Left placement: `D1`, `D4`, `D107`, `D30`, `D13`, `D105`, `C31`–`C33`, power terminal block |
 | `114607591` | Centre/lower placement: DRAM row `D84`–`D91`, the `C38`/`C42`/`C46`/`C50` row, and right-edge resistors |
 | `114611058` | Top-right/FDC and centre-right logic placement, with the `D84`–`D86`/`C50` overlap at lower left |
 | `114615300` | Lower-left power/analog placement: `C31`–`C33`/`C93`, `X8` cable exit, «Установка VT1», and «Установка Z1» |
-| `114617677` | Lower-centre: `Z1`, `D59`, `D42`/`D43`/`D58`, `C98`, «Установка VT2» |
+| `114617677` | Lower-centre: `Z1`, `D59` with `R31`/`R32` and adjacent `R38`, `D42`/`D43`/`D58`, `C98`, «Установка VT2» |
 | `114620466` | Lower-right: `D26`/`D54`/`D55`, `E8` wire fan, `X9` ribbon detail, «Установка C73/C98,C100» |
 | `114626340` | «Вид В» solder-side detail: trace cuts at `D56`, patches at `D15`/`D14`/`D11` |
 | `114633498` | Enlarged «Разрезать» cut detail at `D15` |
@@ -106,14 +107,18 @@ with two independent component photographs and one reflected solder view. It
 closes the A2/A1 net partition while explicitly withholding the auxiliary-hole
 centres from fabrication use.
 
-`dram-decap-placement-registration.json` registers the complete target-revision
-4×8 DRAM-decoupler artwork. The drawing fixes C38/C42/C46/C50 as the four
-intended factory parts; registered component and reflected solder panoramas fit
-all 32 landing pairs, including the older C63 grid landing. The other 28 grid
-sites are assembly DNP but remain fabricated. The separate `.009` C63 callout
-between D41/D40 is bare and must not be conflated with that inherited landing.
-This evidence closes field artwork and population without promoting a
-capacitance value. The same record separately holds C51-C53/C70-C72 out
+`dram-decap-placement-registration.json` preserves the .006 4×8 refdes order
+and the .009 factory callouts C38/C42/C46/C50. The former claim that the
+panoramas prove 32 independent capacitor landing pairs has been withdrawn:
+the four historical row centres coincide with four DRAM top-contact rows,
+and the first proposed C35 midpoint matches adjacent D67.16/D66.1 package
+contacts. The bright marks at the four factory callouts continue to the
+top contacts of D91/D89/D87/D85. The .009 drawing omits the other 28 older
+refdes from factory population, but their current PCB footprints remain
+provisional until distinct holes are identified. The separate `.009` C83
+callout between D41/D40 is bare and remains distinct from the older C63
+grid label. No individual capacitance value is proved. The same record
+separately holds C51-C53/C70-C72 out
 of PCB fabrication: their former coordinates came from an early fit-to-space
 pass rather than registered source evidence. Their schematic rail-bypass intent
 is retained, but placement and target-revision population remain unresolved;

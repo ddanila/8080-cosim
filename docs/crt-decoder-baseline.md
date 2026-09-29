@@ -10,7 +10,7 @@ synthetic Juku-timing fixture. The recorded unmodified fork point builds
 and passes its upstream synthetic NTSC
 regression, then pins the float32/headless and explicit-profile E2E paths.
 The WP3 fixture consumes exact Juku raster evidence, but it makes no
-physical-X7, framebuffer-agreement, or hardware claim.
+physical-VIDEO_OUT, framebuffer-agreement, or hardware claim.
 
 ## Command
 
@@ -93,7 +93,7 @@ baseline.
 ## Boundaries after the synthetic WP3 checkpoint
 
 - the unresolved shared-DRAM video-slot schedule or physical Juku pixels
-- D34_SIG, physical X7 voltage, or loaded analog behavior
+- D34_SIG, physical VIDEO_OUT voltage, or loaded analog behavior
 - agreement with a Juku framebuffer or physical capture
 - a built-in guessed Juku receiver preset
 
@@ -102,4 +102,4 @@ strict raw-float input, explicit timing profiles, measured lock telemetry,
 positive/negative generated fixtures, and green full-build/test CI. The
 bounded WP3 fixture additionally proves receiver lock at the exact guarded
 Juku raster timing without promoting it to a built-in preset. Physical pixel
-slots, D34_SIG/X7 integration, and framebuffer validation remain open.
+slots, D34_SIG/VIDEO_OUT integration, and framebuffer validation remain open.

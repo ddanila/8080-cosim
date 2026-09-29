@@ -16,6 +16,7 @@
       "path": "ref/schematics/p2_sheet2.png",
       "sha256": "02e8ce5380a591e292a298d6cd1de13fb26489aaa87ee7e991d21cd82b2ab27c",
       "sheet": 2,
+      "revision": ".006 retained circuit",
       "regions_px": {
         "s3_pullups": [900, 1000, 1200, 1200],
         "d56_timing": [2750, 1000, 1100, 1000],
@@ -25,10 +26,22 @@
       }
     },
     {
+      "path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101927794.jpg",
+      "sha256": "a31896156ad7e1bc35e59ee43223babd3d39f40f2a086152d26f76cf14c71aa9",
+      "sheet": 2,
+      "revision": ".009 exact",
+      "crops_xyxy_original_pixels": {
+        "d56_timing": [0, 150, 1550, 1200],
+        "vt2_video_summing": [1250, 1150, 2950, 2400]
+      },
+      "observation": "The D56 timing detail independently prints R47=20к, R59=33к, and R61=12к on the same retained RC/clear branches. The VT2 crop prints R62=2к, R63=1к, R64=5,1к, R65=430, R66=1к, and R67=2к; the owner R67 body is 4K7."
+    },
+    {
       "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
       "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
       "sheet": ".009 owner board July",
-      "regions_px": {"r67_body": [3240, 1740, 160, 230]}
+      "regions_px": {"r65_body": [2960, 1690, 80, 280], "r67_body": [3240, 1740, 160, 230], "r66_body": [3440, 1730, 80, 340]},
+      "observation": "The factory-registered rightmost pale R66 body reads 1K0. The red R65 body left of VT2 reads К43 when the crop is rotated 270 degrees: K is the decimal marker in kilohms, so К43 is 430 ohms. Both agree with the exact .009 drawing."
     },
     {
       "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
@@ -40,7 +53,8 @@
       "path": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
       "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
       "sheet": ".009 owner board May",
-      "regions_px": {"r67_body": [3260, 730, 150, 330]}
+      "regions_px": {"r65_body": [3000, 790, 60, 230], "r67_body": [3260, 730, 150, 330], "r66_body": [3450, 790, 80, 300]},
+      "observation": "An independent angle again shows 1K0 on R66 beside glass VD3. Rotating the R65 crop 270 degrees reveals the same К43 marking, despite a reflection across the body. This corroborates the fitted 430-ohm value but is not an isolated resistance measurement."
     }
   ],
   "groups": [
@@ -66,7 +80,7 @@
       "name": "sheet-2 D56 timing network",
       "source_sheet": 2,
       "refs": {"R47": "20к", "R59": "33к", "R61": "12к"},
-      "observation": "the two AG3 timing resistors are printed R47=20k and R59=33k; the clear pullup is printed R61=12k"
+      "observation": "the two AG3 timing resistors are printed R47=20k and R59=33k; the clear pullup is printed R61=12k, independently matching the exact .009 D56 tile"
     },
     {
       "name": "sheet-2 frame interrupt pullup",
@@ -78,13 +92,13 @@
       "name": "sheet-2 video summing stage",
       "source_sheet": 2,
       "refs": {"R62": "2к", "R63": "1к", "R64": "5,1к", "R65": "430", "R66": "1к"},
-      "observation": "each value is printed directly beside its refdes around VT2; the .006 R67 value is not reused because the target body is independently readable"
+      "observation": "the exact .009 video-output detail independently confirms R62=2k, R63=1k, R64=5.1k, R65=430, and R66=1k. May and July owner views directly corroborate fitted R65=К43 (430 ohms) and R66=1K0. The drawing also prints R67=2k, which conflicts with the directly readable fitted 4K7 target body"
     },
     {
       "name": ".009 target video-clamp body",
       "source_sheet": ".009 photos",
       "refs": {"R67": "4,7к"},
-      "observation": "the factory drawing fixes the red vertical body between R66 and VD3 as R67; independent July and May owner views both directly read 4K7, superseding the .006 sheet's 2k for this target-revision part without assigning its unresolved far endpoint"
+      "observation": "the factory drawing fixes the red vertical body between R66 and VD3 as R67; independent July and May owner views both directly read 4K7, superseding the 2k value printed on both .006 and exact .009 sheets for this fitted target part without assigning its unresolved far endpoint"
     },
     {
       "name": ".009 D106 preset pull-up",

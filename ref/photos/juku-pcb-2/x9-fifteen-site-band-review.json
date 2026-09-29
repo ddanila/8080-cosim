@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "status": "15 regularly spaced joints; site10 front pin-count favors D26.27/DB7 through an intermediate via, unproved across faces",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+  "solder_crop_xyxy_original_pixels": [
+    1760,
+    2250,
+    2800,
+    2450
+  ],
+  "full_band_solder_left_to_right_px_approx": [
+    [
+      1835,
+      2375
+    ],
+    [
+      1900,
+      2375
+    ],
+    [
+      1960,
+      2375
+    ],
+    [
+      2020,
+      2375
+    ],
+    [
+      2080,
+      2375
+    ],
+    [
+      2140,
+      2375
+    ],
+    [
+      2205,
+      2375
+    ],
+    [
+      2265,
+      2375
+    ],
+    [
+      2325,
+      2375
+    ],
+    [
+      2385,
+      2375
+    ],
+    [
+      2445,
+      2375
+    ],
+    [
+      2505,
+      2375
+    ],
+    [
+      2570,
+      2375
+    ],
+    [
+      2635,
+      2375
+    ],
+    [
+      2695,
+      2375
+    ]
+  ],
+  "pitch_check": "The extra leftmost solder crown x≈1835 is 65 px before the previously counted first site x1900, consistent with the band's about 61 px pitch. The full endpoint span 860 px over 14 intervals gives about 61.4 px, matching D26's registered 61.53 px DIP pin pitch within one percent.",
+  "cross_face_leftmost_check": "Reflecting D26 component x1550..2690 onto solder x2819..1650 projects solder x1835 to component x≈2510 at y≈2455. A native component crop x2440..2600/y2280..2510 shows a soldered joint near that point immediately above the white X9 ribbon sheath. This supports including x1835 in the local band, without proving which cable conductor, if any, terminates there.",
+  "front_ribbon_visibility_limit": "Native owner component crop (1450,1900)-(2750,2700) of PXL_20260710_200455512.jpg exposes the full row of tinned joint heads beneath D26 and the white X9 sheath below them. The sheath covers the actual ribbon conductor entries; individual cable cores cannot be counted or matched to row sites from this archived view. A separate white insulated wire crosses the row and terminates at visible joints, so its apparent endpoints must not be counted as ribbon cores. The fifteen solder joints and fourteen factory conductors remain a geometric comparison until the physical cable entry is inspected or continuity-tested.",
+  "leftmost_net_chase_limit": "D26 lower pin37 lies near component x2510 by the registered 60-px pin pitch, almost above the projected full-band site1. A larger native crop x2390–2640/y2190–2500 shows the site's front trace leaving upward then sideways, while the D26 pin37 vicinity has separate horizontal copper and open vias. No uninterrupted local F.Cu segment joins the joint to pin37. Do not assign factory A49/KBD_STB to site1 from vertical alignment; a remote layer route or a different net remains possible.",
+  "known_copper_sites_full_band_index": {
+    "10": "x≈2385 B.Cu joins an intermediate via near (2385,2240), separated from the D26.28 solder crown. Front copper from pin-counted D26.27/DB7 leads to a likely same-hole via; verify across faces and by meter (x9-site10-via-review.json).",
+    "9": "x≈2325 joins D26.26/+5 V broad rail",
+    "12": "x≈2505 joins the same D26.26/+5 V broad rail"
+  },
+  "old_14_site_index_translation": "The prior 14-site list began at x1900. Its site n is full-band site n+1: old site9 is full site10, and old +5 V sites8/11 are full sites9/12. The former DB6 label for site10 is retracted.",
+  "factory_comparison": "Native position-153 scan has fourteen A45–A58 rows, reversed to X9.14..1; it does not print signal names. The reconstructed board model maps these A points to keyboard/control/+5 V and no data-bus net. Fifteen regular joints are photographed; site10 is a strong D26.27/DB7 candidate through an intermediate via, but same-hole identity and cable membership remain unproved. Subtracting site10 gives fourteen only as a provisional count.",
+  "next_check": "Power off: meter site10 to D26.27/DB7 first, then D26.28/DB6 separately; verify the intermediate via across faces and whether site10 carries any ribbon wire. Count actual cable conductors and map each to A45–A58 before moving PCB pads."
+}

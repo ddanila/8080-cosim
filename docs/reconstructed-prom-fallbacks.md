@@ -36,8 +36,8 @@ sync/prom_fallback_check.sh
   bits recover high in the consumer pull-up/TTL environment.
 - D94 `.092` physical raw SHA256 is
   `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`.
-  HDL adopts its open-collector table; the shared-enable source and D0
-  hidden load remain separate board-evidence boundaries.
+  HDL adopts its open-collector table; exact .009 CS7 closes the enable source; D0
+  hidden load remains a board-evidence boundary.
 - No video/DRAM timing РЕ3 image is exported. The exact slot/state timing
   remains a dump/programming-disk dependency.
 - Do not program the historical reconstruction now that repeated physical

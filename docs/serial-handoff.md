@@ -51,7 +51,7 @@ python3 scripts/report_serial_handoff.py
 | USART RTS/DTR reach AP2 driver | PASS | `SER_RTS` / `SER_DTR` |
 | USART RxD comes from UP2 receiver | PASS | `SER_RXD` |
 | USART CTS/DSR come from the other two UP2 receivers | PASS | `SER_CTS_N` / `SER_DSR_N` |
-| UP2 fourth receiver output is owner-closed NC | PASS | D104.7 remains separate from D94.13/R87; D104.10 is NC by owner continuity and exact-revision drawing |
+| UP2 fourth receiver output is owner-closed NC | PASS | D104.7 reaches R30 lower on visible front copper; source assigns that pad to GND, pending owner-board rail measurement; D104.10 is NC |
 | S_SOUT reaches X3.9 | PASS | `S_SOUT` |
 | S_RTS reaches X3.10 | PASS | `S_RTS` |
 | S_DTP reaches X3.11 | PASS | `S_DTP` |
@@ -80,7 +80,6 @@ python3 scripts/report_serial_handoff.py
 | `SER_RXD` | `D11.3`, `D104.13` |
 | `SER_CTS_N` | `D104.12`, `D11.17` |
 | `SER_DSR_N` | `D104.11`, `D11.22` |
-| `D104_X4_IN_BOUNDARY` | `D104.7` |
 | `USART_RXRDY_IRQ` | `D10.20`, `D11.14` |
 | `USART_TXRDY_IRQ` | `D10.21`, `D11.15` |
 | `S_SOUT` | `D14.6`, `A29.1`, `X3.9` |
@@ -118,9 +117,16 @@ python3 scripts/report_serial_handoff.py
   This follows the [Intel 8251A datasheet](https://community.intel.com/cipcp26785/attachments/cipcp26785/programmable-devices/89914/1/P8251A.pdf)
   CTS gating and the [TI MC1489 datasheet](https://www.ti.com/lit/ds/symlink/mc1489a.pdf)
   open-input output guarantee.
-- D104's fourth receiver input pin 7 is separate from D94.13 (~84 kΩ)
-  and preserved as `D104_X4_IN_BOUNDARY`; owner continuity on
-  2026-07-21 and the exact-revision drawing close output pin 10 as NC.
+- D104's fourth receiver input pin 7 is separate from D94.13 (~84 kΩ).
+  The marked notch-down package has an uninterrupted front copper path
+  from pin 7 to R30's lower pad. The exact-source model assigns that
+  pad to ground; owner-board rail polarity still needs a meter check.
+  Exact `.009` sheet 1 draws only
+  sections 4→13, 5→12, and 6→11, omitting the fourth 7→10 section; direct
+  owner continuity on 2026-07-21 closes output pin 10 as NC. The former
+  solder-side D104 pad fit remains rejected; a D11-local replacement fit
+  photo-registers its package but does not prove pin 7's rail. The ground
+  assignment uses component copper and R30's source endpoint.
 - D11 auxiliary pins without a net or explicit NC:
   none; all are dispositioned.
 - Native sheet 1 directly loops D11 RxRDY pin14 to PIC IR2 pin20 and
@@ -129,8 +135,21 @@ python3 scripts/report_serial_handoff.py
   those two inputs are replaced by КР1818ВГ93 INTRQ/DRQ on `.009`.
 - The same `.009` sheet 1 retains `IR4=(3) TAPE RUN INT`, but the
   complete replacement FDC sheet 3 has no matching continuation.
-  The board model therefore preserves only D10.22 as a stale-sheet
-  continuity boundary. It is not promoted to NC or connected to a
+  The registered D10 package in owner component photo
+  `ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg` has pin 15 at
+  approximately `(2844,1305)` and pin 28 at `(2123,1305)`; seventh-position
+  pin 22 is therefore approximately `(2456,1305)`. A native crop around
+  `(1980,1000)–(2930,1700)` shows the cable and dark adhesive covering
+  the departure of this contact. The visible front photo cannot identify
+  its remote endpoint or prove NC; use D10.22 as the powered-off probe point.
+  In solder tile `PXL_20260710_200522685.jpg`, the coherent reflected
+  fourteen-joint row puts pin 15 near `(3048,1028)`, pin 28 near
+  `(3775,1028)`, and pin 22 near `(3438,1028)`. The retired global
+  projection `(3264,905)` lies between rails and is excluded. Pin 22
+  has no exposed B.Cu departure; its front copper remains obscured.
+  The board model therefore preserves only D10.22 as an unmatched
+  continuation boundary. A retained label from the earlier tape revision is
+  plausible, but unproved. It is not promoted to NC or connected to a
   guessed FDC source. Exact ekta37 code writes PIC mask `0xDF`, keeping
   IR4 masked while enabling only the frame interrupt on IR5; tape is
   outside the current critical path, but physical continuity remains

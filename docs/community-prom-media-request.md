@@ -22,8 +22,7 @@ board-variant detection, not because the adopted PROM/EPROM set is incomplete:
 - D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` now have validated repeated
   physical tables from two `.009` boards. Independent reads or original
   programming-disk files would provide optional further provenance. D94's
-  shared-enable source and D0 hidden load
-  remain incomplete even though its content and other local continuity are closed.
+  D0 hidden load remains incomplete; exact `.009` sheets close its `CS7` enable source.
 - The third-source archival `JUKUROM0/1` pair is adopted as the D15/D16 EktaSoft
   3.7 content. Further EPROM reads may expose a board variant but are not a
   content or release gate.
@@ -78,12 +77,13 @@ Relevant local docs:
 6. Can an owner provide continuity readings, or clear trace-side photographs
    of an actual `.009` FDC-populated board, for the official footprints whose
    device pinouts are modeled but whose Juku signal nets remain untraced:
-   D96, D99, and D101? The exact requests are D96.9 Q2's remote destination,
-   D96.11 CLK2's remote source, confirmation that D96.13 `/CLR2` is truly NC,
+   D96, D99, D100, and D101? The exact requests are D96.9 Q2-to-D101 input continuity,
+   D96.11 CLK2-to-D94.2/D99.9 continuity, the shared sheet-1 source of D96.13 `/CLR2`
+   and D99.10 `B2`,
    powered D96 async-control captures, and the listed D99/D101 boundary pins.
    Exact-revision sheet 3 source-closes D28/D95/D97/D98/D102/D106 plus D96's
    local wiring, but primary SN74LS74A truth leaves section-1 restart phase
-   undefined and makes section 2 set-only without a real clear source. D105 and the
+   undefined and makes section 2 set-only while `/CLR2` is inactive. D105 and the
    measured `.009` WAIT/READY edge handoff are modeled and carried by the
    promoted route. D30.1/.4/.10/.12 and R5 are now continuity-closed as one
    D38-driven conductor, so there is no remaining D30 continuity ask.
@@ -134,8 +134,8 @@ recreation and digital twin:
 https://github.com/ddanila/8080-cosim
 
 The current twin boots ROMBIOS 3.43 from the real ROM set. The PCB package is
-reproducible but the physical design remains on hold while D94 shared-enable/D0 closure, the
-Juku-specific nets of 3 still-open modeled FDC-support ICs, and remaining
+reproducible but the physical design remains on hold while D94 D0 closure, the
+Juku-specific nets of 4 still-open modeled FDC-support ICs, and remaining
 programmable-part corroboration are incomplete. D2/D6/D8/D94 now have validated
 physical contents, and D2's measured READY handoff is source-modeled. D105
 wait/MRD logic and most of D30 READY are also source-modeled and present in the
@@ -155,9 +155,9 @@ programming-disk files and independent reads remain valuable corroboration.
 - the FDC-era D94 PROM ДГШ5.106.092 on the .009 board
 - the D15/D16 2764/M2764 ROM pair, if a physical board can be read
 
-The `.009` board also has 3 still-open FDC-support devices whose packages and
+The `.009` board also has 4 still-open FDC-support devices whose packages and
 device-level pin roles are now represented, but whose Juku-specific functional nets remain
-untraced: D96, D99, and D101. D96's section-1 read-clock toggle and local
+untraced: D96, D99, D100, and D101. D96's section-1 read-clock toggle and local
 section-2 copper are source-closed, but section-1 restart phase is undefined,
 section 2 is set-only without a real CLR2 source, and Q2/pin9 plus CLK2/pin11
 retain unresolved sheet-1 continuations. D28/D95/D97/D98/D102/D106 are source-closed

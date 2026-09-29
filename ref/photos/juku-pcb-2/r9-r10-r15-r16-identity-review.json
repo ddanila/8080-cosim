@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "status": "R9/R10 identities and values source/photo-closed; R15 lower→D3.5 and R16 right→D3.3 photo-closed; opposite returns continuity-held",
+  "factory_assembly": {
+    "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+    "sha256": "9cfa71a46d1af2224742394c15d249075e59d54ddaf6281eff70fbf55cf65f21",
+    "dimensions_px": [
+      3072,
+      4080
+    ],
+    "inspection_bbox_px": [
+      2100,
+      1700,
+      3000,
+      2900
+    ],
+    "reading": "Beside D3, two upright bodies to the left are R10 (outer/left) and R9 (inner/right). R15 is the separate upright body to the right of D3. R16 is the horizontal body below D3."
+  },
+  "exact_electrical": {
+    "r9_r10_path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg",
+    "sha256": "effc98746807ef28dab97051ceba293f4433c0f3b39b86cbb55ddcaad24aeca4",
+    "reading": "R9 and R10 are 2 kΩ pull-ups to rail A/+5 V for INT7_RAW and INT6_RAW respectively.",
+    "r15_r16_path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101809608.jpg",
+    "r15_r16_sha256": "62ee9a1ce20ef418bbbb5e49ca8b79f3ff7d0fc317c9c9ffe1a087277067d004",
+    "r15_r16_reading": "R15 and R16 are separately drawn 12 kΩ branches from D3.5/D26.14 and D3.3/D26.15 to ground return bars."
+  },
+  "owner_component": {
+    "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+    "dimensions_px": [
+      4080,
+      3072
+    ],
+    "left_pair_observation": "Two upright resistor bodies immediately left of the bottom-notched D3 package each show mirrored red-black-red/gold 2 kΩ bands; they correspond positionally to factory R10 (outer left) and R9 (inner right). Their upper leads appear joined, consistent with the source common +5 V rail but requiring continuity.",
+    "r15_observation": "A separate upright red body immediately right of D3 occupies the factory R15 position; its dark inscription is compatible with 12K but not a conclusive isolated resistance measurement.",
+    "r16_observation": "A separate horizontal red body immediately below D3 occupies the factory R16 position; its inscription appears compatible with 12K but remains to be measured.",
+    "r15_inspection_bbox_px": [
+      1490,
+      600,
+      1630,
+      950
+    ],
+    "r16_inspection_bbox_px": [
+      1300,
+      1120,
+      1590,
+      1300
+    ]
+  },
+  "d3_local_registration": {
+    "basis": "ref/photos/juku-pcb-2/local-package-registration.json D3 component fit; current source PCB D3 pad coordinates",
+    "image_to_board_affine_x": [
+      0.0479245283,
+      0.0,
+      154.508811
+    ],
+    "image_to_board_affine_y": [
+      0.0006206608,
+      0.0476355688,
+      36.1505154
+    ],
+    "four_anchor_rms_mm": 0.00637,
+    "photo_joints_px": {
+      "R10_upper": [
+        1183,
+        975
+      ],
+      "R10_lower": [
+        1183,
+        1192
+      ],
+      "R9_upper": [
+        1253,
+        1005
+      ],
+      "R9_lower": [
+        1243,
+        1215
+      ]
+    },
+    "projected_board_joints_mm": {
+      "R10_upper": [
+        211.204,
+        83.329
+      ],
+      "R10_lower": [
+        211.204,
+        93.666
+      ],
+      "R9_upper": [
+        214.558,
+        84.802
+      ],
+      "R9_lower": [
+        214.079,
+        94.799
+      ]
+    },
+    "interpretation": "D3-local fit supports separate R10-left/R9-right placements with approximately 10.16 mm vertical lead spans. Physical conductor identity still needs continuity."
+  },
+  "retraction": "The prior r15-r16-two-face-review.json assigned the left pair to R15/R16 by proximity. Original-resolution factory labels disprove that identity. Its four-joint solder geometry remains useful for R9/R10 only; it cannot establish R15/R16 value or rail.",
+  "next_checks": [
+    "R10 and R9 upper-to-upper continuity and +5 V/GND",
+    "R10 lower to D3.1/INT6_RAW",
+    "R9 lower to D3.13/INT7_RAW",
+    "R15 upper lead against +5 V/GND and isolated R15 value; optionally corroborate the photo-closed lower→D3.5 path",
+    "R16 left lead against +5 V/GND and isolated R16 value; optionally corroborate the photo-closed right→D3.3 path"
+  ],
+  "actual_r15_r16_pad_review": "ref/photos/juku-pcb-2/r15-r16-actual-pad-review.json"
+}

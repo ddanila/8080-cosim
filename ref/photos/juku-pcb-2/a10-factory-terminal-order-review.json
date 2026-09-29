@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "status": "factory left/right endpoint labels corrected; D50-side owner landing fitted, D41-side landing open",
+  "factory_left": {
+    "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+    "wire_mark_px_approx": [821, 3778],
+    "observation": "The left-hand 10 mark and start of the long shallow line lie immediately right of the clearly labeled vertical Д50 and below C95. This is the D50-side factory endpoint, internally named A10A in the registration."
+  },
+  "factory_right": {
+    "images": ["ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg", "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg"],
+    "wire_mark_px_approx_in_114556899": [3016, 3702],
+    "observation": "The line continues right past the R52 column into the overlapping 114600417 panel and its second 10 mark near the D41 region. It is the remote D41-side endpoint, internally named A10B; its actual owner wire joint remains unlocated. The far-right mark in 114556899 is a drawing marker, not an owner-board landing coordinate."
+  },
+  "owner_d50_landing": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "joint_px": [2804, 2266],
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+    "joint_px_solder": [915, 2000],
+    "board_mm": [108.865, 152.813],
+    "observation": "Two-face fit and short uninterrupted spur to registered D50.1 remain valid; the correction changes only its internal A10B label to factory-left A10A."
+  },
+  "d41_side_photo_chase": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "d41_pin13_component_px": [2148, 2124],
+    "d41_pin13_solder_px_approx": [2054, 1790],
+    "solder_trace_observation": "The corrected D41 pin-column fit places pin13 at the second contact from the left on the lower mirrored row. Native solder crop (1900,1680)–(2600,2160) shows an uninterrupted run from that joint down/right to a soldered endpoint near (2415,2090). The adjacent D41.14 candidate uses the lower eastbound trace at y≈1868, which turns south near x≈2383 and terminates at an open annulus near (2360,1950); that open hole is a different net candidate from the D41.13 soldered endpoint. This is a D41.13-net physical target, not yet a wire identification.",
+    "component_wire_tip_candidate_px_approx": [1825, 2435],
+    "candidate_limit": "A close native crop (1600,2200)–(2000,2650) shows the white cable's tinned tip near (1825,2435), with no discernible solder pool or component-side pad under the metal end; it appears to rest over the dense parallel-trace field. The D41-local front/back extrapolation of the (2415,2090) solder endpoint lands near (1777,2424), roughly 50 px west, beneath the cable insulation rather than at that exposed tip. The cable may obscure a separate surface joint along its length, but the visible metal tip is not a proved A10B landing and should not be treated as a soldered endpoint from this image.",
+    "next_check": "Power off: measure the visible white wire tip near (1825,2435), the D41.13 component contact, and the (2415,2090) solder endpoint against one another; identify the wire's remote end before promoting this tip as A10B."
+  },
+  "model_boundary": "W10 pin1 is on the D41.13 island and pin2 is on the D50.1/D51.1 island. Their electrical net assignment remains valid; the source-aligned terminal names are pin1=A10B and pin2=A10A. No copper changes are justified by this label correction.",
+  "physical_check": "Locate the actual D41-side A10B owner wire joint and establish its continuity to D41.13, then compare the D50/D41 endpoint chord with the factory 13.5 cm wire length."
+}

@@ -5,58 +5,182 @@
   "promotion_rule": "factory drawing registration establishes component identity and placement only, never electrical connectivity",
   "model": "affine",
   "anchors": [
-    {"refdes": "D95", "drawing_px": [1748.0, 2245.0], "board_mm": [256.000, 92.995], "use": "fit"},
-    {"refdes": "D101", "drawing_px": [1586.5, 2539.5], "board_mm": [244.810, 110.375], "use": "fit"},
-    {"refdes": "D102", "drawing_px": [2506.0, 2542.0], "board_mm": [292.567, 110.019], "use": "fit"},
-    {"refdes": "D99", "drawing_px": [2218.0, 2244.5], "board_mm": [279.895, 93.446], "use": "check"},
-    {"refdes": "D97", "drawing_px": [2060.5, 2539.5], "board_mm": [268.604, 110.268], "use": "check"}
+    {
+      "refdes": "D95",
+      "drawing_px": [
+        1748.0,
+        2245.0
+      ],
+      "board_mm": [
+        256.0,
+        92.995
+      ],
+      "use": "fit"
+    },
+    {
+      "refdes": "D101",
+      "drawing_px": [
+        1586.5,
+        2539.5
+      ],
+      "board_mm": [
+        244.81,
+        110.375
+      ],
+      "use": "fit"
+    },
+    {
+      "refdes": "D102",
+      "drawing_px": [
+        2506.0,
+        2542.0
+      ],
+      "board_mm": [
+        292.567,
+        110.019
+      ],
+      "use": "fit"
+    },
+    {
+      "refdes": "D99",
+      "drawing_px": [
+        2218.0,
+        2244.5
+      ],
+      "board_mm": [
+        279.895,
+        93.446
+      ],
+      "use": "check"
+    },
+    {
+      "refdes": "D97",
+      "drawing_px": [
+        2060.5,
+        2539.5
+      ],
+      "board_mm": [
+        268.604,
+        110.268
+      ],
+      "use": "check"
+    }
   ],
   "r92_r99_value_evidence": {
-    "values": {"R92": "1,3к", "R99": "4,7к"},
+    "values": {
+      "R92": "1,3к",
+      "R99": "4,7к"
+    },
     "owner_photos": [
       {
         "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
         "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
-        "dimensions_px": [4080, 3072],
-        "body_bbox_px": {"R92": [2315, 1255, 2590, 1375], "R99": [2035, 1310, 2315, 1430]},
+        "dimensions_px": [
+          4080,
+          3072
+        ],
+        "body_bbox_px": {
+          "R92": [
+            2315,
+            1255,
+            2590,
+            1375
+          ],
+          "R99": [
+            2035,
+            1310,
+            2315,
+            1430
+          ]
+        },
         "observation": "registered target-board component view shows the same 1K3 and 4K7 markings beneath stronger glare"
       },
       {
         "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
         "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
-        "dimensions_px": [4080, 3072],
-        "body_bbox_px": {"R92": [2010, 2570, 2225, 2685], "R99": [1815, 2670, 2025, 2785]},
+        "dimensions_px": [
+          4080,
+          3072
+        ],
+        "body_bbox_px": {
+          "R92": [
+            2010,
+            2570,
+            2225,
+            2685
+          ],
+          "R99": [
+            1815,
+            2670,
+            2025,
+            2785
+          ]
+        },
         "observation": "alternate-angle target-board view directly resolves R92 as 1K3 and R99 as 4K7"
       }
     ],
     "promotion_basis": "two target-board component photographs with different angles show matching printed values"
   },
   "right_edge_resistor_value_evidence": {
-    "values": {"R100": "12к", "R102": "12к", "R108": "12к", "R86": "4,7к"},
+    "values": {
+      "R100": "12к",
+      "R102": "12к",
+      "R108": "12к",
+      "R86": "4,7к"
+    },
     "owner_photos": [
       {
         "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
         "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
-        "dimensions_px": [4080, 3072],
+        "dimensions_px": [
+          4080,
+          3072
+        ],
         "body_bboxes_px": {
-          "R108": [3240, 1060, 3670, 1210],
-          "R86": [3230, 1190, 3730, 1380]
+          "R108": [
+            3240,
+            1060,
+            3670,
+            1210
+          ],
+          "R86": [
+            3230,
+            1190,
+            3730,
+            1380
+          ]
         },
         "observation": "registered target-board view directly resolves R100/R102/R108 as 12K and the lowest R86 as 4K7"
       },
       {
         "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
         "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
-        "dimensions_px": [4080, 3072],
+        "dimensions_px": [
+          4080,
+          3072
+        ],
         "observation": "independent target-board angle shows matching 12K markings on the same top two factory-ordered bodies"
       },
       {
         "source": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
         "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
-        "dimensions_px": [4080, 3072],
+        "dimensions_px": [
+          4080,
+          3072
+        ],
         "body_bboxes_px": {
-          "R108": [3450, 220, 3640, 370],
-          "R86": [3450, 340, 3640, 490]
+          "R108": [
+            3450,
+            220,
+            3640,
+            370
+          ],
+          "R86": [
+            3450,
+            340,
+            3640,
+            490
+          ]
         },
         "observation": "independent oblique target-board angle corroborates the third R108 marking as 12K and the lowest R86 marking as 4K7"
       }
@@ -65,14 +189,30 @@
     "promotion_basis": "registered July and oblique May target-board component photographs independently read all four factory-ordered bodies: R100/R102/R108 are 12K and R86 is 4K7"
   },
   "c16_c19_marking_evidence": {
-    "visible_markings": {"C16": "27", "C19": "22"},
+    "visible_markings": {
+      "C16": "27",
+      "C19": "22"
+    },
     "owner_photo": {
       "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
       "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
-      "dimensions_px": [4080, 3072],
+      "dimensions_px": [
+        4080,
+        3072
+      ],
       "body_bboxes_px": {
-        "C16": [2350, 2660, 2700, 2860],
-        "C19": [2930, 2380, 3150, 2720]
+        "C16": [
+          2350,
+          2660,
+          2700,
+          2860
+        ],
+        "C19": [
+          2930,
+          2380,
+          3150,
+          2720
+        ]
       },
       "observation": "oblique target-board view directly resolves 27 on C16 and 22 on C19; no unit, decimal, tolerance, or voltage glyph is unambiguously readable on either exposed face"
     },
@@ -83,22 +223,54 @@
       "table": 1,
       "observation": "the coded forms in Table 1 require a unit/decimal letter, so bare 27 and 22 do not uniquely establish capacitance"
     },
-    "unresolved": ["C16 value/unit", "C16 tolerance", "C16 voltage", "C19 value/unit", "C19 tolerance", "C19 voltage"],
+    "unresolved": [
+      "C16 value/unit",
+      "C16 tolerance",
+      "C16 voltage",
+      "C19 value/unit",
+      "C19 tolerance",
+      "C19 voltage"
+    ],
     "non_promotion_basis": "the target photo closes the literal visible glyphs but not whether they are complete nominal values, partial codes wrapped around the bodies, or other type/date markings"
   },
   "right_edge_resistor_common_rail_evidence": {
-    "joined_endpoints": ["R100.2", "R102.2", "R108.2", "R86.2"],
+    "joined_endpoints": [
+      "R100.2",
+      "R102.2",
+      "R108.2",
+      "R86.2"
+    ],
     "net": "P5V",
     "component_photo": {
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
       "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
-      "dimensions_px": [4080, 3072],
-      "rail_bbox_px": [3540, 980, 3740, 1450],
+      "dimensions_px": [
+        4080,
+        3072
+      ],
+      "rail_bbox_px": [
+        3540,
+        980,
+        3740,
+        1450
+      ],
       "endpoint_joint_px": {
-        "R100.2": [3628, 1072],
-        "R102.2": [3628, 1144],
-        "R108.2": [3628, 1222],
-        "R86.2": [3628, 1306]
+        "R100.2": [
+          3628,
+          1072
+        ],
+        "R102.2": [
+          3628,
+          1144
+        ],
+        "R108.2": [
+          3628,
+          1222
+        ],
+        "R86.2": [
+          3628,
+          1306
+        ]
       },
       "observation": "all four right-hand resistor leads terminate directly on one uninterrupted broad perimeter conductor"
     },
@@ -108,26 +280,56 @@
   },
   "c19_resistor_junction_evidence": {
     "joined_endpoints": {
-      "D97_RC2_C19_R100": ["C19.1", "R100.1", "D97.7"],
-      "D97_C2_C19_R86_TARGET": ["C19.2", "R86.1", "D97.6"]
+      "D97_RC2_C19_R100": [
+        "C19.1",
+        "R100.1",
+        "D97.7"
+      ],
+      "D97_C2_C19_R86_TARGET": [
+        "C19.2",
+        "R86.1",
+        "D97.6"
+      ]
     },
     "owner_photos": [
       {
         "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
         "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
-        "dimensions_px": [4080, 3072],
+        "dimensions_px": [
+          4080,
+          3072
+        ],
         "junction_px": {
-          "D97_RC2_C19_R100": [3294, 1064],
-          "D97_C2_C19_R86_TARGET": [3320, 1276]
+          "D97_RC2_C19_R100": [
+            3294,
+            1064
+          ],
+          "D97_C2_C19_R86_TARGET": [
+            3320,
+            1276
+          ]
         },
-        "bbox_px": [3230, 990, 3450, 1370],
+        "bbox_px": [
+          3230,
+          990,
+          3450,
+          1370
+        ],
         "observation": "registered July view exposes the upper C19/R100 shared landing and lower C19/R86 shared landing around the leaning capacitor body"
       },
       {
         "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
         "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
-        "dimensions_px": [4080, 3072],
-        "bbox_px": [2920, 2350, 3200, 2760],
+        "dimensions_px": [
+          4080,
+          3072
+        ],
+        "bbox_px": [
+          2920,
+          2350,
+          3200,
+          2760
+        ],
         "observation": "independent oblique view separates the bent leads and corroborates C19 upper-to-R100-left and C19 lower-to-R86-left at the two common solder landings"
       }
     ],
@@ -138,31 +340,76 @@
     "component_photo": {
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
       "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
-      "dimensions_px": [4080, 3072],
+      "dimensions_px": [
+        4080,
+        3072
+      ],
       "joint_px": {
-        "R100.1": [3294, 1064],
-        "R102.1": [3317, 1142],
-        "R108.1": [3325, 1217],
-        "R86.1": [3320, 1276]
+        "R100.1": [
+          3294,
+          1064
+        ],
+        "R102.1": [
+          3317,
+          1142
+        ],
+        "R108.1": [
+          3325,
+          1217
+        ],
+        "R86.1": [
+          3320,
+          1276
+        ]
       },
-      "bbox_px": [3230, 990, 3400, 1350],
+      "bbox_px": [
+        3230,
+        990,
+        3400,
+        1350
+      ],
       "observation": "the July component angle exposes all four left-hand lap-soldered resistor joints; only R100.1/C19.1 and R86.1/C19.2 reach another identified lead in-frame"
     },
     "corroborating_photo": {
       "source": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg",
       "sha256": "5e3face18c8d5e886abca7107ed654b4f9c935004a17c3c373250527277194a3",
-      "dimensions_px": [4080, 3072],
-      "bbox_px": [2920, 2350, 3250, 2780],
+      "dimensions_px": [
+        4080,
+        3072
+      ],
+      "bbox_px": [
+        2920,
+        2350,
+        3250,
+        2780
+      ],
       "observation": "the independent oblique component angle separates the same four left joints but exposes no additional uniquely attributable remote branch for R102.1 or R108.1"
     },
     "solder_photo": {
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
       "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
-      "dimensions_px": [4080, 3072],
-      "c19_joint_px_by_pad": {"1": [875, 712], "2": [823, 893]},
+      "dimensions_px": [
+        4080,
+        3072
+      ],
+      "c19_joint_px_by_pad": {
+        "1": [
+          875,
+          712
+        ],
+        "2": [
+          823,
+          893
+        ]
+      },
       "observation": "the corrected physical pad order follows the component-side upper-pad1/lower-pad2 orientation; the earlier coordinate array contained these same two joints in reverse order"
     },
-    "unresolved": ["R102.1 remote destination", "R108.1 remote destination", "C19/R100 common-net remote destination", "C19/R86 common-net remote destination"],
+    "unresolved": [
+      "R102.1 remote destination",
+      "R108.1 remote destination",
+      "C19/R100 common-net remote destination",
+      "C19/R86 common-net remote destination"
+    ],
     "non_promotion_basis": "two component angles and the registered solder field do not expose a complete, uniquely attributable remote path beyond these local joints"
   },
   "c20_value_evidence": {
@@ -171,8 +418,16 @@
     "owner_photo": {
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
       "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
-      "dimensions_px": [4080, 3072],
-      "body_bbox_px": [3450, 1400, 3680, 1730],
+      "dimensions_px": [
+        4080,
+        3072
+      ],
+      "body_bbox_px": [
+        3450,
+        1400,
+        3680,
+        1730
+      ],
       "observation": "registered target-board component view reads the C20 body marking 1Н5 after rotation and contrast enhancement"
     },
     "marking_standard": {
@@ -182,7 +437,10 @@
       "table": 1,
       "mapping": "1Н5 = 1500 пФ = 1,5 нФ"
     },
-    "unresolved": ["tolerance", "voltage"],
+    "unresolved": [
+      "tolerance",
+      "voltage"
+    ],
     "promotion_basis": "the owner-board marking is literal and the contemporary primary marking standard maps it exactly to 1500 pF"
   },
   "c22_value_evidence": {
@@ -191,8 +449,16 @@
     "owner_photo": {
       "source": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
       "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
-      "dimensions_px": [4080, 3072],
-      "body_bbox_px": [3540, 380, 3700, 700],
+      "dimensions_px": [
+        4080,
+        3072
+      ],
+      "body_bbox_px": [
+        3540,
+        380,
+        3700,
+        700
+      ],
       "observation": "independent target-board angle directly reads 1Н5 on the outer C22 body; D102 and the inner C20 body fix the already registered column order"
     },
     "marking_standard": {
@@ -202,64 +468,302 @@
       "table": 1,
       "mapping": "1Н5 = 1500 пФ = 1,5 нФ"
     },
-    "unresolved": ["tolerance", "voltage"],
+    "unresolved": [
+      "tolerance",
+      "voltage"
+    ],
     "promotion_basis": "the independent owner-board angle exposes the literal outer-body marking and the contemporary primary marking standard maps it exactly to 1500 pF"
   },
   "targets": [
-    {"refdes": "D93", "drawing_px": [1300.0, 1906.0], "observation": "physical КР1818ВГ93 socket centre; factory drawing corrects the former D95-overlapping global placement"},
-    {"refdes": "R79", "drawing_px": [2220.0, 992.0], "observation": "rightmost member of the factory R83..R79 vertical bank above D98; electrical sheet 3 assigns its 470-ohm pull-up to RD.DATA", "electrical_evidence": true},
-    {"refdes": "R80", "drawing_px": [2178.0, 992.0], "observation": "second-from-right member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -TR.00", "electrical_evidence": true},
-    {"refdes": "R81", "drawing_px": [2136.0, 992.0], "observation": "centre member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -INDEX", "electrical_evidence": true},
-    {"refdes": "R82", "drawing_px": [2094.0, 992.0], "observation": "second-from-left member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -WR.PROTECT", "electrical_evidence": true},
-    {"refdes": "R83", "drawing_px": [2052.0, 992.0], "observation": "leftmost member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -READY", "electrical_evidence": true},
-    {"refdes": "R84", "drawing_px": [1533.0, 2258.0], "owner_board_mm": [245.220, 97.300], "observation": "vertical factory body immediately left of D95; electrical sheet 3 assigns its 470-ohm pull-up to D28.6/D93 READY. Registered component-photo joints supersede the coarse drawing-centre projection", "electrical_evidence": true, "owner_evidence": [{"image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg", "side": "component", "joint_px": [[2262.0, 1086.0], [2262.0, 1380.0]], "precision": "reviewed approximate joint centres transformed through the guarded D95 component fit", "observation": "populated vertical red axial body immediately left of D95, clear of D93's pad row"}]},
-    {"refdes": "R85", "drawing_px": [2094.0, 1790.0], "observation": "vertical factory body between D28 and D96; electrical sheet 3 assigns its 470-ohm pull-up to the separator clock", "electrical_evidence": true},
-    {"refdes": "R94", "drawing_px": [1935.0, 1585.0], "observation": "leftmost vertical body in the R94/R93/R95 row above D28; owner identification and continuity confirm the sheet-3 10-kohm DRQ pull-up and supersede the former 220-ohm/D98 attribution", "electrical_evidence": true},
-    {"refdes": "R93", "drawing_px": [2040.0, 1585.0], "observation": "left member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 10-kohm pull-up to D93 INTRQ", "electrical_evidence": true},
-    {"refdes": "R95", "drawing_px": [2145.0, 1590.0], "observation": "right member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 2-kohm pull-up to the wired D28.10/.12 conditioner output", "electrical_evidence": true},
-    {"refdes": "R78", "drawing_px": [1887.0, 1824.0], "owner_board_mm": [267.999, 68.177], "observation": "left member of the factory-overlapped R78/R98 pair between D106 and D28; exact sheet 3 assigns the D106 preset/UP pull-up and the owner body directly reads 10K", "electrical_evidence": true, "owner_evidence": [{"image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg", "side": "component", "joint_px": [[2738.0, 2038.0], [2738.0, 2238.0]], "value": "10K", "observation": "registered D106/D28-local view resolves both joints and the printed 10K marking"}]},
-    {"refdes": "R98", "drawing_px": [1935.0, 1780.0], "owner_board_mm": [270.485, 68.177], "observation": "right member of the factory-overlapped R78/R98 pair between D106 and D28; electrical sheet 3 assigns its 4.7-kohm pull-up to -D.SEL1. Owner joints supersede the folded-drawing affine centre", "electrical_evidence": true, "owner_evidence": [{"image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg", "side": "component", "joint_px": [[2790.0, 2038.0], [2790.0, 2238.0]], "value": "4K7", "observation": "same local frame resolves both joints and corroborates the known 4K7 marking"}]},
-    {"refdes": "C10", "drawing_px": [1616.0, 1906.0], "observation": "vertical C10 immediately right of D93; replaces the former lower-row collision with D102"},
-    {"refdes": "C11", "drawing_px": [1985.5, 2256.5], "observation": "vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body"},
+    {
+      "refdes": "D93",
+      "drawing_px": [
+        1300.0,
+        1906.0
+      ],
+      "observation": "physical КР1818ВГ93 socket centre; factory drawing corrects the former D95-overlapping global placement"
+    },
+    {
+      "refdes": "R79",
+      "drawing_px": [
+        2220.0,
+        992.0
+      ],
+      "observation": "rightmost member of the factory R83..R79 vertical bank above D98; electrical sheet 3 assigns its 470-ohm pull-up to RD.DATA",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R80",
+      "drawing_px": [
+        2178.0,
+        992.0
+      ],
+      "observation": "second-from-right member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -TR.00",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R81",
+      "drawing_px": [
+        2136.0,
+        992.0
+      ],
+      "observation": "centre member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -INDEX",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R82",
+      "drawing_px": [
+        2094.0,
+        992.0
+      ],
+      "observation": "second-from-left member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -WR.PROTECT",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R83",
+      "drawing_px": [
+        2052.0,
+        992.0
+      ],
+      "observation": "leftmost member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -READY",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R84",
+      "drawing_px": [
+        1533.0,
+        2258.0
+      ],
+      "owner_board_mm": [
+        245.22,
+        97.3
+      ],
+      "observation": "vertical factory body immediately left of D95; electrical sheet 3 assigns its 470-ohm pull-up to D28.6/D93 READY. Registered component-photo joints supersede the coarse drawing-centre projection",
+      "electrical_evidence": true,
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+          "side": "component",
+          "joint_px": [
+            [
+              2262.0,
+              1086.0
+            ],
+            [
+              2262.0,
+              1380.0
+            ]
+          ],
+          "precision": "reviewed approximate joint centres transformed through the guarded D95 component fit",
+          "observation": "populated vertical red axial body immediately left of D95, clear of D93's pad row"
+        }
+      ]
+    },
+    {
+      "refdes": "R85",
+      "drawing_px": [
+        2094.0,
+        1790.0
+      ],
+      "observation": "vertical factory body between D28 and D96; electrical sheet 3 assigns its 470-ohm pull-up to the separator clock",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R94",
+      "drawing_px": [
+        1935.0,
+        1585.0
+      ],
+      "observation": "leftmost vertical body in the R94/R93/R95 row above D28; owner identification and continuity confirm the sheet-3 10-kohm DRQ pull-up and supersede the former 220-ohm/D98 attribution",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R93",
+      "drawing_px": [
+        2040.0,
+        1585.0
+      ],
+      "observation": "left member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 10-kohm pull-up to D93 INTRQ",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R95",
+      "drawing_px": [
+        2145.0,
+        1590.0
+      ],
+      "observation": "right member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 2-kohm pull-up to the wired D28.10/.12 conditioner output",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R78",
+      "drawing_px": [
+        1887.0,
+        1824.0
+      ],
+      "owner_board_mm": [
+        267.999,
+        68.177
+      ],
+      "observation": "left member of the factory-overlapped R78/R98 pair between D106 and D28; exact sheet 3 assigns the D106 preset/UP pull-up and the owner body directly reads 10K",
+      "electrical_evidence": true,
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+          "side": "component",
+          "joint_px": [
+            [
+              2738.0,
+              2038.0
+            ],
+            [
+              2738.0,
+              2238.0
+            ]
+          ],
+          "value": "10K",
+          "observation": "registered D106/D28-local view resolves both joints and the printed 10K marking"
+        }
+      ]
+    },
+    {
+      "refdes": "R98",
+      "drawing_px": [
+        1935.0,
+        1780.0
+      ],
+      "owner_board_mm": [
+        270.485,
+        68.177
+      ],
+      "observation": "right member of the factory-overlapped R78/R98 pair between D106 and D28; electrical sheet 3 assigns its 4.7-kohm pull-up to -D.SEL1. Owner joints supersede the folded-drawing affine centre",
+      "electrical_evidence": true,
+      "owner_evidence": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+          "side": "component",
+          "joint_px": [
+            [
+              2790.0,
+              2038.0
+            ],
+            [
+              2790.0,
+              2238.0
+            ]
+          ],
+          "value": "4K7",
+          "observation": "same local frame resolves both joints and corroborates the known 4K7 marking"
+        }
+      ]
+    },
+    {
+      "refdes": "C10",
+      "drawing_px": [
+        1616.0,
+        1906.0
+      ],
+      "observation": "vertical C10 immediately right of D93; replaces the former lower-row collision with D102"
+    },
+    {
+      "refdes": "C11",
+      "drawing_px": [
+        1985.5,
+        2256.5
+      ],
+      "observation": "vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body"
+    },
     {
       "refdes": "C16",
-      "drawing_px": [1987.0, 2384.5],
+      "drawing_px": [
+        1987.0,
+        2384.5
+      ],
       "observation": "horizontal capacitor between the upper and lower IC rows",
       "owner_evidence": [
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
           "side": "component",
-          "joint_px": [[2605.0, 1311.0], [2879.0, 1308.0]],
+          "joint_px": [
+            [
+              2605.0,
+              1311.0
+            ],
+            [
+              2879.0,
+              1308.0
+            ]
+          ],
           "precision": "reviewed approximate joint centres; identity/orientation and 12.5 mm span corroboration only",
           "observation": "populated grey axial body with bent leads reaching two horizontal landings"
         },
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
           "side": "solder",
-          "joint_px": [[1601.0, 649.0], [1333.0, 649.0]],
+          "joint_px": [
+            [
+              1601.0,
+              649.0
+            ],
+            [
+              1333.0,
+              649.0
+            ]
+          ],
           "precision": "reviewed approximate joint centres; cross-side corroboration only",
           "observation": "two backside landings on the factory-identified horizontal C16 span"
         }
       ]
     },
-    {"refdes": "C15", "drawing_px": [2268.5, 2541.5], "observation": "vertical capacitor between D97 and D102; owner component view is cable-obscured"},
+    {
+      "refdes": "C15",
+      "drawing_px": [
+        2268.5,
+        2541.5
+      ],
+      "observation": "vertical capacitor between D97 and D102; owner component view is cable-obscured"
+    },
     {
       "refdes": "C19",
-      "drawing_px": [2461.0, 2261.5],
+      "drawing_px": [
+        2461.0,
+        2261.5
+      ],
       "observation": "vertical capacitor immediately right of D99; upper pad1 shares R100.1 and lower pad2 shares R86.1",
       "owner_evidence": [
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
           "side": "component",
-          "joint_px": [[3294.0, 1064.0], [3320.0, 1276.0]],
+          "joint_px": [
+            [
+              3294.0,
+              1064.0
+            ],
+            [
+              3320.0,
+              1276.0
+            ]
+          ],
           "precision": "reviewed approximate joint centres; identity/orientation evidence, not the affine placement source",
           "observation": "populated grey axial body with both bent leads reaching distinct landings"
         },
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
           "side": "solder",
-          "joint_px": [[875.0, 712.0], [823.0, 893.0]],
-          "joint_order": ["pad1", "pad2"],
+          "joint_px": [
+            [
+              875.0,
+              712.0
+            ],
+            [
+              823.0,
+              893.0
+            ]
+          ],
+          "joint_order": [
+            "pad1",
+            "pad2"
+          ],
           "precision": "reviewed approximate joint centres; cross-side corroboration only",
           "observation": "two distinct backside solder joints at the factory-identified C19 site; corrected order maps upper component pad1 to (875,712) and lower pad2 to (823,893)"
         }
@@ -267,21 +771,42 @@
     },
     {
       "refdes": "R92",
-      "drawing_px": [1732.5, 2384.5],
+      "drawing_px": [
+        1732.5,
+        2384.5
+      ],
       "observation": "horizontal resistor below D95",
       "electrical_evidence": true,
       "owner_evidence": [
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
           "side": "component",
-          "joint_px": [[2341.0, 1317.0], [2564.0, 1314.0]],
+          "joint_px": [
+            [
+              2341.0,
+              1317.0
+            ],
+            [
+              2564.0,
+              1314.0
+            ]
+          ],
           "precision": "reviewed approximate joint centres; identity/orientation, 10.16 mm span, and uninterrupted component-copper endpoints",
           "observation": "R92.2 joins D95.14; R92.1 joins the R99.2/D101.4 junction"
         },
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
           "side": "solder",
-          "joint_px": [[1859.0, 647.0], [1642.0, 647.0]],
+          "joint_px": [
+            [
+              1859.0,
+              647.0
+            ],
+            [
+              1642.0,
+              647.0
+            ]
+          ],
           "precision": "reviewed approximate joint centres; cross-side corroboration only",
           "observation": "two backside joints matching the factory-identified R92 span"
         }
@@ -289,47 +814,170 @@
     },
     {
       "refdes": "R99",
-      "drawing_px": [1495.5, 2421.0],
+      "drawing_px": [
+        1495.5,
+        2421.0
+      ],
       "observation": "horizontal resistor below-left of D95",
       "electrical_evidence": true,
       "owner_evidence": [
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
           "side": "component",
-          "joint_px": [[2064.0, 1370.0], [2287.0, 1367.0]],
+          "joint_px": [
+            [
+              2064.0,
+              1370.0
+            ],
+            [
+              2287.0,
+              1367.0
+            ]
+          ],
           "precision": "reviewed approximate joint centres; identity/orientation, 10.16 mm span, and uninterrupted component-copper endpoints",
           "observation": "R99.1 joins D101.8/GND; R99.2 joins the R92.1/D101.4 junction"
         },
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
           "side": "solder",
-          "joint_px": [[2131.0, 599.0], [1913.0, 599.0]],
+          "joint_px": [
+            [
+              2131.0,
+              599.0
+            ],
+            [
+              1913.0,
+              599.0
+            ]
+          ],
           "precision": "reviewed approximate joint centres; cross-side corroboration only",
           "observation": "two backside joints matching the factory-identified R99 span"
         }
       ]
     },
-    {"refdes": "R100", "drawing_px": [2595.0, 2270.0], "observation": "upper resistor in the four-part row right of C19; left-hand pin1 shares C19.1 and right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
-    {"refdes": "R102", "drawing_px": [2595.0, 2325.0], "observation": "second resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
-    {"refdes": "R108", "drawing_px": [2595.0, 2380.0], "observation": "third resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
-    {"refdes": "R86", "drawing_px": [2595.0, 2435.0], "observation": "lowest resistor in the four-part row right of C19; left-hand pin1 shares C19.2 and right-hand pin2 joins the common perimeter rail", "electrical_evidence": true},
-    {"refdes": "C20", "drawing_px": [2648.0, 2545.0], "observation": "factory C20 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 303.997,110.024 mm drill-span centre"},
-    {"refdes": "C22", "drawing_px": [2692.0, 2545.0], "observation": "factory C22 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 306.537,110.024 mm drill-span centre"},
-    {"refdes": "C17", "drawing_px": [2397.0, 1499.0], "owner_board_mm": [303.0, 55.0], "observation": "factory-drawing identity plus local D98/D99 and target-photo lead correction for the populated vertical 120-uF axial electrolytic; the folded-sheet global affine drifts at this edge"},
-    {"refdes": "R103", "drawing_px": [2477.0, 1472.0], "owner_board_mm": [307.2, 47.2], "observation": "factory-drawing identity plus local right-edge correction for the vertical 47k timing resistor beside C17"},
-    {"refdes": "C18", "drawing_px": [2436.0, 1862.0], "owner_board_mm": [303.0, 70.0], "observation": "factory-drawing identity plus target-photo lead registration for the populated vertical axial electrolytic directly marked 47 uF / 6.3 V"},
-    {"refdes": "R97", "drawing_px": [2348.0, 1828.0], "owner_board_mm": [298.62, 67.15], "observation": "factory-drawing identity plus local D99/right-edge correction for the vertical 47k timing resistor beside C18"},
     {
-      "refdes": "C63",
-      "drawing_px": [1570.0, 3045.0],
-      "observation": "factory label reads C63, not C13, in the gap between D41 and D40; owner component photo shows no populated body or coherent drilled lead pair at that exact site",
+      "refdes": "R100",
+      "drawing_px": [
+        2595.0,
+        2270.0
+      ],
+      "observation": "upper resistor in the four-part row right of C19; left-hand pin1 shares C19.1 and right-hand pin2 joins the common perimeter rail",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R102",
+      "drawing_px": [
+        2595.0,
+        2325.0
+      ],
+      "observation": "second resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R108",
+      "drawing_px": [
+        2595.0,
+        2380.0
+      ],
+      "observation": "third resistor in the four-part row right of C19; right-hand pin2 joins the common perimeter rail",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "R86",
+      "drawing_px": [
+        2595.0,
+        2435.0
+      ],
+      "observation": "lowest resistor in the four-part row right of C19; left-hand pin1 shares C19.2 and right-hand pin2 joins the common perimeter rail",
+      "electrical_evidence": true
+    },
+    {
+      "refdes": "C20",
+      "drawing_px": [
+        2648.0,
+        2545.0
+      ],
+      "observation": "factory C20 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 303.997,110.024 mm drill-span centre"
+    },
+    {
+      "refdes": "C22",
+      "drawing_px": [
+        2692.0,
+        2545.0
+      ],
+      "observation": "factory C22 identity/body marker at the right end of D102; registered owner photos supersede this label-centre projection with the actual 306.537,110.024 mm drill-span centre"
+    },
+    {
+      "refdes": "C17",
+      "drawing_px": [
+        2397.0,
+        1499.0
+      ],
+      "owner_board_mm": [
+        303.0,
+        55.0
+      ],
+      "observation": "factory-drawing identity plus local D98/D99 and target-photo lead correction for the populated vertical 120-uF axial electrolytic; the folded-sheet global affine drifts at this edge"
+    },
+    {
+      "refdes": "R103",
+      "drawing_px": [
+        2477.0,
+        1472.0
+      ],
+      "owner_board_mm": [
+        307.2,
+        47.2
+      ],
+      "observation": "factory-drawing identity plus local right-edge correction for the vertical 47k timing resistor beside C17"
+    },
+    {
+      "refdes": "C18",
+      "drawing_px": [
+        2436.0,
+        1862.0
+      ],
+      "owner_board_mm": [
+        303.0,
+        70.0
+      ],
+      "observation": "factory-drawing identity plus target-photo lead registration for the populated vertical axial electrolytic directly marked 47 uF / 6.3 V"
+    },
+    {
+      "refdes": "R97",
+      "drawing_px": [
+        2348.0,
+        1828.0
+      ],
+      "owner_board_mm": [
+        298.62,
+        67.15
+      ],
+      "observation": "factory-drawing identity plus local D99/right-edge correction for the vertical 47k timing resistor beside C18"
+    },
+    {
+      "refdes": "C83",
+      "drawing_px": [
+        1570.0,
+        3045.0
+      ],
+      "photo_candidate_pad_mm": [[246.172, 135.701], [246.172, 146.041]],
+      "observation": "factory label reads C83 in the D41/D40 gap; the owner component photo has no fitted body. D41 package calibration maps two candidate front sites to x=246.172 mm, centered between D41.1 x=242.62 mm and D40.8 x=249.67 mm. The folded-drawing projection x=239.15 mm lies inside D41's span and is not an owner-pad placement. The promoted D41 fit aligns the front sites with solder crowns; same-hole identity remains unproved",
       "owner_absence_evidence": [
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
           "side": "component",
-          "bbox_px": [2230.0, 1880.0, 2330.0, 2170.0],
-          "between_refs": ["D41", "D40"],
-          "observation": "the factory-defined inter-package strip is bare; no C63 body and no two-hole axial span are visible"
+          "bbox_px": [
+            2230.0,
+            1880.0,
+            2330.0,
+            2170.0
+          ],
+          "between_refs": [
+            "D41",
+            "D40"
+          ],
+          "observation": "the factory-defined inter-package strip has no fitted C83 body; two possible bare front sites are visible but their refdes and same-hole matches need continuity"
         }
       ]
     }

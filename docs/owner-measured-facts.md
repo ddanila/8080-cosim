@@ -32,14 +32,14 @@ measurement lands, add a row here.
 | `D30.11 -> D105.2 / D13.4 / D11.20`; `D30.8 -> D29.7` | owner-continuity | `docs/d30-section-b-scan-chase.md` |
 | `X1.107B -BLOCK / H -> D13.13 -> D105.10`, pulled up by R1 2 kΩ to +5 V | native sheet + `.009` drawing/photo + owner-continuity | `docs/d105-h-boundary.md` |
 
-## D93 / D94 (FDC-era; FDC currently out of scope)
+## D93 / D94 (FDC-era board)
 
 | Fact | Provenance | Source |
 | --- | --- | --- |
 | `D93.40 VDD_12V` on the +12 V rail | owner-continuity | `docs/d93-pin40-photo-chase.md` |
-| D94 A0/A1/A2 = BA0/BA1/IORD; A3 = D105.3 qualified `/WR`; A4 = D101.7. D94.15→D93.3; D94.2→D99.9+R89; D94.3→D93.4+R88; D94.4→D93.2+R87. D94.1 has only R8 2 kΩ to +5 V. D94.5 is NC; D93.1 alone owns the visible open stub. | owner-continuity + full-resolution visual recheck, 2026-07-19 | `docs/d94-reconstruction-constraints.md` |
+| D94 A0/A1/A2 = BA0/BA1/IORD; A3 = D105.3 qualified `/WR`; A4 = D101.7. D94.15→D93.3; D94.2→D99.9+R89; D94.3→D93.4+R88; D94.4→D93.2+R87. D94.1 has a measured R8 2 kΩ pull-up to +5 V; whether it has another load remains open. D94.5 is NC; D93.1 alone owns the visible open stub. | owner-continuity + full-resolution visual recheck, 2026-07-19 | `docs/d94-reconstruction-constraints.md` |
 | D5.27→D7.10 is raw `IOWR_N`. D7.8→D105.1→D6.15 is I/O-cycle-active high; D1.18/D5.3→D13.3 and D13.4→D105.2 supply write-active high; D105.3 drives qualified peripheral `/WR` including D94.13, D29.5, D10.2, D11.10, D26.36, and D27.36. | owner-continuity, 2026-07-19 | `kicad/juku.board.json` |
-| `D106.7 Q3 -> D93.26 RCLK` | photo-closed | `docs/fdc-hardware-handoff.md` |
+| Former photo-only `D106.7 Q3 -> D93.26 RCLK` interpretation is retracted: exact `.009` sheet 1 routes D106.7 through D28.9/.8 to D96.3, while D96.5 drives D93.26. Do not use the photo registration as continuity evidence for the direct join. | exact-revision drawing supersedes photo inference | `docs/fdc-hardware-handoff.md`; `ref/schematics/fdc-read-clock-toggle-map.md` |
 | `D93.38 DRQ -> D28.11 -> R94.1`; R94 is `10к`, immediately above D28, and R94.2 -> +5 V. The video cable can obscure its body; the photographed 220-ohm body near D98 is not R94 and remains unassigned. | owner-continuity + owner visual identification, 2026-07-20 | `ref/schematics/fdc-irq-conditioner-map.md`; `ref/photos/juku-pcb-2/r94-photo-exhaustion.json` |
 | With D93 removed, `D93.19 MR_N -> D13.8` and the outer-bus contact physically at the rightmost position of the middle row (board viewed from top). `D13.9 -> D1.12 RESET`; D13 section 9->8 therefore inverts active-high RESET for D93. Exact X1 contact code remains unresolved. | owner-continuity, 2026-07-20 | `ref/schematics/fdc-controller-static-map.md` |
 | D94 outputs D5-D7/pins 6, 7, and 9 are NC; D104 receiver output pin 10 is also NC. Exact-revision `.009 E3` drawing review agrees with direct continuity. | owner-continuity + exact-revision drawing, 2026-07-21 | `docs/d94-reconstruction-constraints.md`; `docs/serial-handoff.md` |
@@ -71,7 +71,7 @@ measurement lands, add a row here.
 ## NOT yet measured (open asks) — see `docs/next-bench-session-checklist.md`
 
 - Factory Вид В item-159 material and auxiliary-annulus/adjacent-rail disposition at the registered D56.12/D56.5 level (the package-pad functional nets themselves are closed),
-  D14's photo-exhausted D14.2/.7 and registered fifth-landing conductor /
+  D14's photo-registered D14.2/.7 and fifth-landing remote conductors /
   remaining drawn traces, and D11's registered
   four-landmark bridge endpoints. Position 150 is tubing at solder locations,
   not a D56 cut instruction. The older D11

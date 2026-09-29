@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "local exact-source junction closed; westbound source unresolved",
+  "primary_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101813438.jpg",
+  "primary_crop_xyxy_original_pixels": [
+    850,
+    2900,
+    1850,
+    3650
+  ],
+  "cross_check_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg",
+  "observations": [
+    "D7 NAND second-section input pin5 joins D29 physical input pin3 at a filled T junction.",
+    "D7 pin4 crosses the D29.3 line without a junction and continues on the separate MEMW/D29.8 route.",
+    "The D7.5/D29.3 conductor continues west through the central control bundle in the full-sheet photograph; folds, overlapping strokes, and the reduced scale there do not identify a unique upstream device pin.",
+    "D29 physical input pin3 is paired with output pin17, printed -INHIB on the exact .009 source."
+  ],
+  "physical_limit": "No original-board D7.5↔D29.3 continuity or upstream-device-pin measurement is in the archived record. Keep INHIB_STATUS_BOUNDARY explicit; test those contacts and trace westward on the surviving board.",
+  "owner_probe_sites": {
+    "D7_5": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+      "solder_joint_px_approx": [2300, 1029],
+      "basis": "D7 2x7 solder fit in local-package-registration.json: top-row pin3 is near (2190,1029), so pin5 is two 55-pixel contacts farther right"
+    },
+    "D29_3": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
+      "solder_joint_px_approx": [2393, 1588],
+      "basis": "c75-c76-photo-review.json D29 end-contact registration fixes lower-row pin1 near (2489,1588) and pin10 near (2057,1588); pin3 is the third contact from pin1, about two 48-pixel pitches west"
+    },
+    "native_photo_limit": "The D29 solder crop (1940,1330)-(2600,1730) shows a distinct third lower-row cap but no local B.Cu bridge to another identified endpoint. D7 and D29 are in separate photo tiles; the source-drawn D7.5/D29.3 join still requires direct power-off continuity."
+  },
+  "overlap_recheck": {
+    "images": [
+      "ref/photos/dgsh5-109-009-e3/PXL_20260718_101813438.jpg",
+      "ref/photos/dgsh5-109-009-e3/PXL_20260718_101809608.jpg",
+      "ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg"
+    ],
+    "landmark_registration": "A shared ROM-package landmark in 101813438 crop (20,430)-(590,1160) matches 101809608 at about (2239,376), a local +2219/-54 px translation. The D15/E61/E72 landmark in 101809608 crop (70,460)-(650,1200) matches 101805510 at about (2488,505), a local +2418/+45 px translation. Both matches are visually verified but taken near the top of the photographed sheet.",
+    "lower_bundle_limit": "Projecting the D7.5/D29.3 westbound conductor near the left edge of 101813438 through those top-landmark translations places it among several parallel lower control strokes in the next tile. At the lower fold the projected level misses the candidate stroke by roughly 14 px; the native crops show nearby vertical crossings without a unique labeled junction. This registration cannot identify an upstream device pin, and the similar horizontal strokes must not be equated by row number or proximity.",
+    "decision": "Retain the source-proved local D7.5/D29.3 junction and the explicit upstream boundary. A physical continuity chase or a clearer, flatter source scan is needed for the remote driver."
+  },
+  "excluded_inferences": [
+    "The westbound source is not assigned by visual proximity to D5, D22, or a ROM select line.",
+    "The D7.4/MEMW line must not be merged into D29.3 at its crossing."
+  ]
+}

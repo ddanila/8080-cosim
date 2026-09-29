@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard the reviewed-but-occluded A13 factory-wire landing regions."""
+"""Guard the open A13 landings and the D50-local A13A photo candidate."""
 from __future__ import annotations
 
 import json
@@ -30,14 +30,14 @@ expected = {
         "owner_pin": "D13.1",
         "component": [1426, 906],
         "solder": [3051, 1193.5],
-        "phrases": ("immediately before C95", "horizontal factory-wire bundle"),
+        "phrases": ("immediately before C95", "white wire", "(2400,2330)", "unproved"),
     },
     "A13B": {
         "drawing_px": [1625, 3443],
         "owner_pin": "D92.1",
         "component": [2484, 2290],
-        "solder": [1382, 1949],
-        "phrases": ("immediately after D38", "no 13", "A8/A9"),
+        "solder": [1719, 1951],
+        "phrases": ("immediately after D38", "no printed 13", "D92.1/ROE", "unproved"),
     },
 }
 errors: list[str] = []
@@ -62,12 +62,17 @@ for terminal, wanted in expected.items():
     for phrase in wanted["phrases"]:
         if phrase not in proof:
             errors.append(f"{terminal} proof lost {phrase!r}")
+    if terminal == "A13A":
+        if evidence.get("component_images") != ["ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg"]:
+            errors.append("A13A D50-local component image drifted")
+        if evidence.get("solder_image") != "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg":
+            errors.append("A13A D50-local solder image drifted")
 
 fits_document = json.loads(REPORT.read_text(encoding="utf-8"))
 fits = {(fit["refdes"], fit["side"]): fit for fit in fits_document["fits"]}
 for refdes, component_px, solder_px in (
-    ("D13", [1426.0, 906.0], [3051.0, 1193.5]),
-    ("D92", [2484.0, 2290.0], [1382.0, 1949.0]),
+    ("D13", [1426.0, 906.0], [2682.1, 825.0]),
+    ("D92", [2484.0, 2290.0], [1719.0, 1951.0]),
 ):
     component = fits.get((refdes, "component"), {})
     solder = fits.get((refdes, "solder"), {})
@@ -88,6 +93,6 @@ if errors:
 
 print(
     "A13 FACTORY BOUNDARIES: PASS — "
-    "A13A C95/D30 corridor and A13B D38/R35 corridor remain occlusion-guarded; "
+    "A13A D50-local white-wire candidate remains unproved; A13B D38-side wire is strongly photo-supported on D92.1/ROE, with through-hole pairing still held; "
     "D13.1/D92.1 are fitted on both faces and both pending endpoints remain null"
 )

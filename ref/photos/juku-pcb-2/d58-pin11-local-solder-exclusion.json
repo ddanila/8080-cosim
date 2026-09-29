@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "status": "D58.11 local solder-side exclusion; remote strobe driver remains open",
+  "source_drawing": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101917240.jpg",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+  "registration": "ref/photos/juku-pcb-2/d58-x9-solder-relative-fit.json",
+  "pin11_solder_xy_original_px_approx": [3730, 2310],
+  "review_crop_xyxy_original_px": [3580, 2180, 3900, 2450],
+  "observation": "The right-facing notch and four-corner registration identify the lower-right joint of the D58 2x10 solder field as pin11. In the original close-up this crown has no visible B.Cu trace leaving it. The broad lower strip passes about 50-60 pixels below the joint without a visible join; the distinct next joint to the right has a conspicuous solder-side spur onto that strip. Thus the photo does not support merging D58.11 into the broad +5 V strip or using that strip to identify timing tag 5's driver.",
+  "limit": "The component-side trace and plated-hole continuity are hidden by the installed package and camera angle. This local solder-face exclusion does not identify the remote tag-5 endpoint; direct continuity or a readable exact-revision continuation remains necessary."
+}

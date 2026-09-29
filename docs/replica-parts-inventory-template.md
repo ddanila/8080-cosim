@@ -36,7 +36,7 @@ Source gates:
 | PIT/PPI/PIC/USART/FDC | received socketed peripheral ICs; D93 is КР1818ВГ93 or guarded FD1793B-01 DIP and the support-logic gate is closed |  |
 | Clock/video glue | received fast counters, muxes, gates, oscillator/crystal, and serializer-related ICs |  |
 | Passives | received resistor/capacitor/diode/transistor values with circuit-review rows resolved |  |
-| Connectors/switches | exact mechanical fit reviewed for X1/X2/X3/X7/X8/X9/S1/S3/S4 |  |
+| Connectors/switches | exact mechanical fit reviewed for X1/X2/X3/X6/X8/X9/S1/S3/S4 |  |
 | Sockets | DIP socket quantities and widths checked against footprints before IC seating |  |
 | PROM/EPROM blanks | received D2/D6 RT4-class, D8/D94 RE3-class, and D15/D16 EPROM blanks |  |
 | Programmed firmware | D15/D16 EPROMs and D2/D6/D8/D94 PROMs programmed or dumped/reconstructed with checksums |  |
@@ -49,7 +49,7 @@ Source gates:
 | D5 |  |  |  |  |  |  |  |
 | D84-D91 |  |  |  |  |  |  |  |
 | D93 |  |  |  |  |  |  |  |
-| X1/X2/X3/X7/X8/X9 |  |  |  |  | fit check |  |  |
+| X1/X2/X3/X6/X8/X9 |  |  |  |  | fit check |  |  |
 | sockets |  |  |  |  | footprint check |  |  |
 
 ## PROM / EPROM Programming Ledger
@@ -68,7 +68,7 @@ Source gates:
 - [ ] Received parts are inventoried against `docs/replica-dual-config-bom.csv`.
 - [ ] DRAM parts are К565РУ5Г or the guarded MK4564-12 DIP option, pass a compatible tester including at least one warm repeat, and E4 2-3 gives +5 V at pin 8.
 - [ ] CPU/system-controller parts pass a known-good tester or minimal fetch jig.
-- [ ] FDC choice is recorded as КР1818ВГ93 or guarded FD1793B-01 plastic DIP; D96/D99/D101 gates and socket clocks/strobes are verified before seating.
+- [ ] FDC choice is recorded as КР1818ВГ93 or guarded FD1793B-01 plastic DIP; D96/D99/D100/D101 gates and socket clocks/strobes are verified before seating.
 - [ ] Mechanical connector rows are fit-checked against the fabricated board before soldering.
 - [ ] PROM/EPROM contents have provenance and readback checksums.
 - [ ] `docs/replica-bringup-verification-points.md` has been copied into the build record with owner/measured dispositions for source-risk nets touched by early bring-up.

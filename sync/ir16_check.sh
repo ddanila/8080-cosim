@@ -41,8 +41,8 @@ checks = [
     ("D41 output control is physically high", ("D41", "8") in endpoints("P5V"),
      "D41.8 is on P5V"),
     ("D42/D43 output control remains one explicit rail", endpoints("SHIFT_G")
-     == {("D41", "9"), ("D42", "8"), ("D43", "8")},
-     "SHIFT_G joins D41.CLK to D42.OC/D43.OC; its remote source remains open"),
+     == {("D41", "9"), ("D42", "8"), ("D43", "8"), ("D35", "6"), ("R38", "1")},
+     "SHIFT_G joins D41.CLK, D42.OC, D43.OC, D35.6 and the R38 pull-up"),
 ]
 ok = all(result for _, result, _ in checks)
 lines = [
@@ -81,8 +81,9 @@ lines.extend([
     "- D41 uses that same rail as its clock while its own OC pin is tied high.",
     "- D42/D43 still receive their separate clock on `XTAL16M` and their mode",
     "  input on `LOAD_VID`.",
-    "- The remote sources of `SHIFT_G` and `TIMING_TAG17` remain evidence gaps,",
-    "  so this correction does not claim a physical DRAM slot schedule or pixels.",
+    "- The exact sheet-2 frame closes `SHIFT_G` through D35.6 and R38.1;",
+    "  its owner-board continuity and the remote `TIMING_TAG17` source remain",
+    "  evidence gaps, so this correction does not claim a physical DRAM slot schedule or pixels.",
     "",
     f"Source document: [{contract['primary_document']}]({contract['source_url']}).",
     "",

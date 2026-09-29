@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "review_state": "D14 package contacts registered across faces; remote electrical endpoints open",
+  "scope": "D14 К170АП2 physical pin2/pin7 and complete 2x4 owner solder field",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+  "component_sha256": "45dbac2b6aa2816beb71cd9e8c115e67ff233e7767a5284785c0c6c917873a88",
+  "component_crop_xyxy": [2500, 1370, 2810, 1710],
+  "component_observation": "The marked notch-up D14 package has four distinct leads on each side. Approximate lead centres are left pins1-4 at x2598 and y1460/1514/1567/1622, right pins8-5 at x2754 and the same row levels. The earlier (2577,1422) D14.1 record is a witness on the nearby D32.4-to-D14.1 front-copper strip, not the physical pin-1 lead centre.",
+  "component_second_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+  "component_second_sha256": "f369d158cf93842af1f97ecc78263bc33738cbbaf25a04c1678297ef7636e9dc",
+  "component_second_crop_xyxy": [1130, 1500, 1440, 1830],
+  "component_second_observation": "The independent view repeats the notch-up four-per-side field. Approximate pin2 is (1208,1640) and pin7 is (1380,1640); both leads are exposed. The existing D14.1 copper-strip witness near (1192,1544) is outside the physical first lead.",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+  "solder_sha256": "6f11cc69615f159fcaea852ce41e9af944da4886d31d0fc7d70394a56772070c",
+  "solder_crop_xyxy": [2150, 1180, 2580, 1580],
+  "local_registration": {
+    "anchor_source": "Independent D11 component/solder four-corner entries in local-package-registration.json, using the same 200358952 and 200506061 photo pair immediately below D14",
+    "affine_component_to_solder": {
+      "x_solder": "-0.879101*x_component + 0.001954*y_component + 4706.536",
+      "y_solder": "0.890370*y_component + 27.812"
+    },
+    "d11_anchor_rms_px": 0.66,
+    "projected_d14_solder_columns_px_approx": [2289, 2426],
+    "projected_rows_px_approx": [1328, 1376, 1423, 1472],
+    "observation": "The predicted eight contacts coincide with the visible two columns of four solder caps in the native crop. Both package-row count and reflected pin order agree; this replaces the unvalidated old x2141/x2279, y1708 geometry seeds, which sit south of this actual field."
+  },
+  "promoted_contacts": {
+    "D14.2": {"component_px_approx": [2598, 1514], "solder_px_approx": [2426, 1376]},
+    "D14.7": {"component_px_approx": [2754, 1514], "solder_px_approx": [2288, 1376]}
+  },
+  "pin2_pin7_local_copper_review": "In native solder photo 200506061, D14.2 near (2426,1376) and D14.7 near (2288,1376) are separate solder caps with no readable local solder-face trace departure; the bright east-west traces immediately above and below pass beside them with visible brown gaps. In component photo 200358952, their leads are exposed at the package edges but the body occludes any inward continuation. Do not assign either cap to a neighboring horizontal trace by proximity; remote endpoints remain for continuity testing.",
+  "fifth_auxiliary_landing": {
+    "component_px": [2600, 1668],
+    "projected_solder_px": [2424.1, 1512.9],
+    "observed_solder_hole_px_approx": [2424, 1513],
+    "evidence": "The D11-local affine projects the independently registered front fifth annulus onto a distinct drilled dark centre in the broad solder strip, 41 px below D14.4 solder at (2426,1472). This repeats the front fifth-to-pin4 spacing after reflection and supersedes the rejected broad-grid x2050/y1565 hole. The same-hole identity is accepted at photo precision; strip polarity and remote conductor are not established by this local crop.",
+    "solder_face_observation": "In native 200506061, the fifth drilled centre lies inside the long horizontal tinned strip below the D14 2x4 field. A bare-board gap separates that strip from the D14.4 solder cap above it. Thus the local fifth-to-D14.4 connection is the visible component-face stem; the solder strip's wider net cannot be assigned from this crop alone.",
+    "solder_strip_west_terminal_px_approx": [2074, 1521],
+    "solder_strip_west_terminal_observation": "The native solder view shows an exposed drilled west terminal near (2074,1521), continuously joined by the same broad tinned strip to the fifth drilled hole near (2424,1513). This is a second physical probe site on that strip, not an independently known ground.",
+    "overlap_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
+    "overlap_solder_sha256": "144e34399b779966f2f49057641175998706080c77f985bd98261cf8f84fda5b",
+    "overlap_registration": {
+      "method": "Native grayscale normalized template matching of 100x80 px patches from 200506061 into the overlapping strip corridor of 200509593; visual check of the exposed drilled terminal and hole spacing",
+      "matched_points_200506061_to_200509593_px_approx": [
+        [[2074, 1521], [241, 1656], 0.869],
+        [[2250, 1515], [422, 1648], 0.888],
+        [[2424, 1513], [604, 1644], 0.820],
+        [[2500, 1513], [682, 1643], 0.798]
+      ],
+      "observation": "The west drilled terminal and fifth drilled hole repeat on the same continuous wide strip in the second solder tile. The strip continues east to a photographed neck at D29.10 near (2057,1588), whose physical pin identity was independently registered in c75-c76-photo-review.json. Exact .009 sheet-1 power table names D29.10 GND. This photo chain makes the D14 fifth landing a source-ground candidate with a visible D29.10 path; owner electrical continuity is still unmeasured.",
+      "registered_ground_pin": {"refdes": "D29", "pin": "10", "solder_px_approx": [2057, 1588], "registration_source": "ref/photos/juku-pcb-2/c75-c76-photo-review.json", "source_net": "GND", "owner_continuity": "unmeasured"}
+    }
+  },
+  "electrical_limit": "This establishes physical D14 pad identities, the fifth auxiliary same-hole match, and a visible solder-strip path from the fifth hole to registered D29.10, named GND by the exact source power table. It does not measure owner-board continuity, D14.2's source, or D14.7's destination. The component dogleg under the package remains unread. Confirm fifth↔D29.10 and both remote pin paths by power-off continuity before claiming owner electrical closure."
+}

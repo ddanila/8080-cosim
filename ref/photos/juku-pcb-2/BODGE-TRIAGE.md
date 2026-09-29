@@ -24,7 +24,7 @@ two assemblies must not be mixed.
 
 | Ref | `.009` identity | Current conclusion |
 | --- | --- | --- |
-| D2 | КР556РТ4, program `.037` | validated physical table adopted from four independent accepted reads; remaining work is the D30/H WAIT edge, not PROM content |
+| D2 | КР556РТ4, program `.037` | validated physical table adopted from four independent accepted reads; the measured D30/D105/H handoff is in the model, while other source-risk nets remain open |
 | D6 | КР556РТ4, program `.038` | validated physical table adopted from three independent matching reads; runnable joined-conductor timing remains bounded |
 | D8 | К155РЕ3, program `.039` | validated physical table adopted from three independent matching reads; its contents select the ROM sockets in boot while D6 still supplies the functional enable |
 | D9 | К555ИД7 | I/O chip-select decoder; physical D2 is not this decoder |
@@ -57,18 +57,20 @@ D105 two visible ЛА3 sections are `(9,10)->8` and `(4,5)->6`. Direct owner
 continuity supersedes the false D2.12-to-D105.9 interpretation: D2.12 feeds
 D30.2/R6 `READY_D`, while CPU D1.17 `DBIN` and pulled-up edge `H` feed
 D105.9/.10; the second NAND drives D105.6 to D5.4. D2 V1/V2 are tied low.
-The July-2026 paired
-D2 and D4 solder fits trace D2 pins 1/3/5/6/7 to D4 pins 1/3/5/6/7
-(`A10/A14/A12/A15/A9`). All D2 inputs are now modeled and routed in the
-authoritative source PCB. Three matching reads, including a full power cycle,
-preserve the physical `.037` table.
+D2 pad identities remain registered on both faces. The earlier claim that
+paired D2/D4 solder fits close D2 pins 1/3/5/6/7 to D4 pins 1/3/5/6/7 was
+withdrawn after correcting the D4 contact columns and row count. The five
+address routes remain modeled but lack a complete photo or exact `.009` source
+chase; see `d2-d4-column-row-audit.json`. Three matching reads, including a
+full power cycle, preserve the physical `.037` table.
 The factory symbol draws only D0/pin 12 on the RT4 output side; package outputs
 pins 9-11 have no destination and are explicit no-connects in the board model.
 
 The full-resolution sheet also proves three D2 address leads: `VIDEO CYCLE` to
 A3/pin 4, `-XACK` to A5/pin 2, and `-WREQ` to A7/pin 15. It shows D105's other
 two sections as `(1,2)->3` (D13.4 and MWR inputs) and `(12,13)->11` (tied-input
-MEMW inverter). The paired board photographs subsequently close A0/A1/A2/A4/A6.
+MEMW inverter). The paired board photographs register A0/A1/A2/A4/A6 pad
+locations but do not close their remote nets.
 Only D0 is drawn on the factory symbol; D1-D3/pins 11/10/9 are explicit
 no-connects.
 
@@ -77,15 +79,18 @@ with the traced D56 АГ3 pinout on sheet 2, whose RC terminals explicitly use
 pins 14 and 15; the former 14-pin placement-only packages were physically
 incomplete and are not valid substitutes.
 
-## D30 READY boundary
+## D30 READY/WAIT handoff
 
-Sheet 1 proves the first half of D30 (`КМ555ТМ2`) rather than merely showing a
-placement: pins 4 (`/PRE`) and 2 (`D`) are pulled high, pin 3 (`CLK`) receives
-`PHI2TTL`, pin 1 (`/CLR`) receives `-SSTB`, and pin 5 (`Q`) drives D1 READY/pin
-23 through R29 1 kΩ. This section and R5/R6/R29 are now in the pin-level board
-model. The second half, pins 8-13, is present and visibly wired near the
-D105/select-rail area, but its crossing rails are not yet resolved end-to-end;
-that half remains an explicit design-release boundary.
+Sheet 1 and owner continuity establish both halves of D30 (`КМ555ТМ2`).
+The active-low STB conductor from D38.8 joins pins 1 (`/CLR1`), 4 (`/PRE1`),
+10 (`/PRE2`), and 12 (`D2`) with R5.2; R5.1 pulls it to +5 V. Pin 2 (`D1`)
+has its separate R6 pull-up node, pin 3 (`CLK1`) receives `PHI2TTL`, and pin 5
+(`Q1`) drives D1 READY/pin 23 through R29 1 kΩ. Owner continuity closes the
+second half: D30.11 (`CLK2`) joins D13.4/D105.2/D11.20, D30.13 (`/CLR2`)
+joins D105.11, and D30.8 (`/Q2`) drives D29.7. Pin 9 remains an explicit
+no-connect. `docs/d30-section-b-scan-chase.md` records why the older scan alone
+could not prove the two section-B routes; their target-board continuity is now
+in the model. Other READY/WAIT release checks remain in the generated reports.
 
 ## Factory wire-link evidence
 
@@ -229,14 +234,19 @@ body hides the component-side dogleg, so D14.2/.7 now require direct continuity.
 For D11, two component views instead show that the drawing's long hole column
 and unique L trace form an auxiliary drilled/copper field beside the package,
 not a 14-pad package row. Four position-159 landmarks are registered. The
-previously cited solder scar beside D11 pins 4-6 is more than twice the coarse
-component-fit error ceiling away and is a different feature; it cannot assign
-the bridge. A held-out-validated component package fit now pairs with the
-reflected D11 solder fit: their package-local projection puts the upper landing
-under the wide tinned rail and the three lower landmarks among repeated joints
-and parallel traces without a unique four-hole match. Four overlapping solder
-views repeat that ambiguity, so the photos are exhausted and the D11 pin/net,
-bridge, and remote endpoints remain held pending direct continuity.
+previously cited solder scar was assigned to D11 pins 4-6 using a solder fit
+four joint rows too high. Cross-aligning the D11 and D27 two-face landmarks
+corrects D11's reflected field to `y=1610..2211` in
+`PXL_20260710_200506061.jpg`; the scar is near the corrected upper rows
+and cannot assign the position-159 bridge. The corrected package-local
+projection puts the upper auxiliary landing beside an isolated open via and
+the three lower landmarks among several vias and parallel traces without a
+unique four-hole match. Recheck the other solder overlaps with these shifted
+projections; the first two complete tiles repeat that ambiguity after a
+D11-corner match, while the other two partial views put the upper point
+at their top edges and show no unique lower four-hole match. All four
+listed views are now reviewed at corrected coordinates. D11 pin/net,
+bridge, and remote endpoints remain held.
 
 ## Placement conclusions retained
 
@@ -256,8 +266,9 @@ bridge, and remote endpoints remain held pending direct continuity.
 
 This evidence closes several old identity disputes, but it does not release the
 PCB for fabrication. All four small-PROM contents are now preserved physical
-truth; the D2/D30 WAIT edge and D94/FDC connectivity remain incomplete, and two
+truth; the measured D2/D30/D105 handoff is adopted, while D94/FDC
+connectivity remains incomplete, and two
 official IC footprints (D99 and D101) still lack complete
 pin-level functional nets. D105 wait/MRD logic is modeled and routed; the FDC
-cluster and remaining READY/WAIT revision boundaries are not complete. See
+cluster and other source-risk boundaries are not complete. See
 `PLAN.md` and the generated reconstruction/unmodeled-footprint reports.

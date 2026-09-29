@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "review_state": "D58.11 tag-5 line locally disambiguated; upstream driver unresolved",
+  "source_images": [
+    "ref/photos/dgsh5-109-009-e3/PXL_20260718_101917240.jpg",
+    "ref/photos/dgsh5-109-009-e3/PXL_20260718_101908284.jpg"
+  ],
+  "board_photo_cross_check": "ref/photos/juku-pcb-2/d58-pin11-local-solder-exclusion.json: registered D58.11 solder crown has no visible B.Cu departure and is locally separate from the broad +5 V strip; component-side departure remains hidden",
+  "d58_crop_xyxy_original_pixels": [1180, 3050, 2300, 4080],
+  "bundle_crop_xyxy_original_pixels": [800, 2400, 1750, 3650],
+  "branch_crop_xyxy_original_pixels": [1450, 3280, 3072, 4080],
+  "observation": "The exact sheet-2 detail draws D58 ИР82 strobe pin11 into numbered conductor 5. In 101908284, the tag-5 line leaves the left timing bundle around image y3425, turns north near x1885, and continues east on an upper horizontal run. The lower D38.5 branch is drawn on a different line. Near source (2640,3365), the upper tag-5 run crosses the vertical branch from D33.12 labeled LATCH without a filled junction dot; that LATCH branch then turns west around y3425 toward D38.5. Tag 5 continues east into the next tile. D39.12 LOAD is on another right-edge line about 50 source pixels lower with a visible gap from tag 5.",
+  "exclusions": [
+    "Do not merge D58.11/tag 5 into D38.5/LATCH from the adjacent source lines.",
+    "Do not merge D58.11/tag 5 into D33.12/LATCH_SIG at the unmarked crossing near (2640,3365).",
+    "Do not merge D58.11/tag 5 into D39.12/LOAD from their nearby right-edge vertical strokes."
+  ],
+  "d38_pin5_source_trace": "In PXL_20260718_101908284.jpg original crop (1650,2850)-(3072,4080), D33.12 LATCH runs east to a filled junction at about (2640,3140), descends, turns west around (1950,3425), then descends directly into D38 input pin5 around (1950,3560). The tag-5 upper line crosses the LATCH descent without a dot. The lower-left bundle in original crop (1050,3200)-(2700,4080) shows D39.3 joining D39.4 on numbered rail4; D38.4 follows separate rail2. The connectivity JSON and all three PCB pad assignments now reflect this source trace. The two routed variants retire 18 obsolete rail-4 segments, retain the one local D39.3/.4 tie, and connect D38.5 to the LATCH route at D39.9 with three vias. Full KiCad DRC totals are unchanged at 798 violations and 55 unconnected items in each routed variant.",
+  "limit": "The archived detail tiles do not identify an unambiguous output pad driving tag 5 across the remaining fold and crossings. D58_STB_TAG5 remains a source-risk singleton pending a direct physical continuity check or an exact readable continuation."
+}

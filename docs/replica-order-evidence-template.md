@@ -1,6 +1,6 @@
 # Replica order evidence template
 
-Status: **TEMPLATE READY / DESIGN HOLD**
+Status: **TEMPLATE INVALID**
 
 This is a future private order-record template. Do not upload the current
 package or start an order while the design-release report says DESIGN HOLD.
@@ -20,17 +20,17 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 | Field | Value |
 | --- | --- |
 | Upload ZIP | `fab/gerbers/upload/juku-replica-gerbers-drill.zip` |
-| Upload ZIP SHA256 | `90308b962433648cf52d0de44046367380e79f3e653151da75fc08bd9d949a46` |
+| Upload ZIP SHA256 | - |
 | Upload checksum command | `(cd fab/gerbers/upload && sha256sum -c SHA256SUMS.txt)` |
 
 ## Required Source Evidence
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5364 | PASS |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5247 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 2959 | PASS |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 15741 | PASS |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3375 | FAIL |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 17520 | FAIL |
 
 ## Vendor Options To Record
 
@@ -77,11 +77,15 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 
 ## Receipt and first-article handoff
 
-- [ ] Record received quantity, lot/order identity, visible damage, finish,
-      outline, drill, and connector-orientation inspection.
+- [ ] Record received quantity, lot/order identity, visible damage, finish, outline, drill, and connector-orientation inspection.
 - [ ] Assign a unit serial/label before assembly or rework.
-- [ ] Start a per-unit `docs/replica-first-article-record.md` copy and enter the
-      released commit, PCB/package/BOM hashes, programmed-image hashes, jumper
-      settings, and every approved deviation.
-- [ ] Do not copy the first unit's acceptance result to later units; each unit
-      receives its own manufacturing/workmanship acceptance record.
+- [ ] Start a per-unit `docs/replica-first-article-record.md` copy and enter the released commit, PCB/package/BOM hashes, programmed-image hashes, jumper settings, and every approved deviation.
+- [ ] Do not copy the first unit's acceptance result to later units; each unit receives its own manufacturing/workmanship acceptance record.
+
+## Failures
+
+- missing or empty upload ZIP: fab/gerbers/upload/juku-replica-gerbers-drill.zip
+- missing or empty upload checksum file: fab/gerbers/upload/SHA256SUMS.txt
+- evidence marker missing in docs/replica-order-upload-runbook.md: Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**
+- evidence marker missing in docs/replica-fab-drc-disposition.md: Status: **READY**
+- evidence marker missing in docs/replica-bringup-verification-points.md: Status: **ENDPOINT COVERAGE FAILED** or Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED** or Status: **DESIGN RELEASE RISKS CLOSED**

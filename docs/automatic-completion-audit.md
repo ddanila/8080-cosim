@@ -17,6 +17,7 @@ python3 scripts/report_automatic_completion_audit.py
 
 There are 8 unchecked items across 3 tracked project-plan
 documents. Every one now requires evidence, hardware, purchasing, fabrication,
+
 or owner authorization.
 
 | Plan | Unchecked tasks |
@@ -28,7 +29,7 @@ or owner authorization.
 | Plan item | Tasks | Why automation must stop | Required next input |
 | --- | ---: | --- | --- |
 | P0 physical connectivity and reroute | 1 | Remaining endpoints are hidden, contradictory under powered behavior, or continuity-only | owner continuity and powered captures from `docs/owner-measurement-shortlist.md` |
-| Main-board release and order | 1 | The verified zero-open package is intentionally held by physical-connectivity and sourcing gates | closed P0 evidence, explicit release, vendor upload, and payment |
+| Main-board release and order | 1 | The current routed board has open connections and needs copper repair plus a regenerated package; physical-connectivity and sourcing gates remain held | closed P0 evidence, regenerated and reviewed package, explicit release, vendor upload, and payment |
 | Functional parts kit | 1 | No purchase is authorized and seller stock cannot establish fitted historical truth | procurement choice, purchase, receipt, and physical testing |
 | Tier 1, 2, and 3 bring-up | 3 | These milestones require a fabricated and assembled physical replica | board, parts, instruments, staged power-up, and surviving-machine comparison |
 | Physical framebuffer readout | 1 | D41/shared-DRAM slot timing, `SHIFT_G`, `TIMING_TAG17`, and `D34_SIG` are not evidence-complete | continuity/drawing closure and captured timing; no guessed serializer schedule |
@@ -39,7 +40,7 @@ or owner authorization.
 | Plan | Unchecked task | Class | External-boundary evidence |
 | --- | --- | --- | --- |
 | `PLAN.md` | P0 physical connectivity is complete and rerouted. | `connectivity` | `docs/owner-measurement-shortlist.md` (owner/bench packet ready); `docs/replica-bringup-verification-points.md` (source-risk net index unresolved); `docs/main-board-erc-parity.md` (release parity gate held) |
-| `PLAN.md` | Main-board design release passes; board is ordered. | `release` | `docs/replica-manufacturing-readiness.md` (package verified under design hold) |
+| `PLAN.md` | Main-board design release passes; board is ordered. | `release` | `docs/replica-manufacturing-readiness.md` (current package regeneration held) |
 | `PLAN.md` | Functional parts kit is received and tested. | `parts` | `docs/replica-sourcing-readiness.md` (sourcing gate held) |
 | `PLAN.md` | Replica completes Tier 1 bring-up. | `bringup` | `docs/replica-manufacturing-readiness.md` (no released fabrication package) |
 | `PLAN.md` | Replica completes Tier 2. | `bringup` | `docs/replica-manufacturing-readiness.md` (no released fabrication package) |
@@ -54,9 +55,9 @@ repository implementation backlog.
 
 ## Automatically closed scope
 
-- Source/routed PCB identity, zero-open copper, fabrication-package integrity,
+- Source/routed PCB identity, historical zero-open package integrity,
   adopted PROM/EPROM content, and runnable HDL/cosim behavior have dedicated
-  generated reports and CI guards.
+  generated reports and CI guards. The current routed board still has opens.
 - Cross-machine reads close the four small PROM tables, and the independent
   archival D15/D16 pair is adopted as exact EktaSoft 3.7 content. Missing
   programming-drawing filename linkage remains optional provenance nuance.

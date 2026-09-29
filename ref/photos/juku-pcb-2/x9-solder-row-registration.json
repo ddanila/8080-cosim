@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "status": "15-site regular band; site10 likely D26.27/DB7 via cross-face candidate, pending continuity and cable check",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+  "sha256": "dc32b9edae4b07f184cb1651dc442c8c4303a51878c1f8835e3dbc3b7ff62ab3",
+  "review_crop_xyxy_original_pixels": [
+    1800,
+    2260,
+    2800,
+    2470
+  ],
+  "basis": "The band below registered D26 has fifteen regularly spaced joints including leftmost x1835. Site10 reaches a B.Cu intermediate via near (2385,2240); a pin-counted front stem from D26.27/DB7 reaches a likely same-hole front annulus. Direct D26.28/DB6 B.Cu routing is retracted. Sites9/12 independently join +5 V. Wire count and membership remain unproved.",
+  "previous_14_site_subset_solder_left_to_right_px_approx": [
+    [
+      1900,
+      2375
+    ],
+    [
+      1960,
+      2375
+    ],
+    [
+      2020,
+      2375
+    ],
+    [
+      2080,
+      2375
+    ],
+    [
+      2140,
+      2375
+    ],
+    [
+      2205,
+      2375
+    ],
+    [
+      2265,
+      2375
+    ],
+    [
+      2325,
+      2375
+    ],
+    [
+      2385,
+      2375
+    ],
+    [
+      2445,
+      2375
+    ],
+    [
+      2505,
+      2375
+    ],
+    [
+      2570,
+      2375
+    ],
+    [
+      2635,
+      2375
+    ],
+    [
+      2695,
+      2375
+    ]
+  ],
+  "full_15_site_band_solder_left_to_right_px_approx": [
+    [
+      1835,
+      2375
+    ],
+    [
+      1900,
+      2375
+    ],
+    [
+      1960,
+      2375
+    ],
+    [
+      2020,
+      2375
+    ],
+    [
+      2080,
+      2375
+    ],
+    [
+      2140,
+      2375
+    ],
+    [
+      2205,
+      2375
+    ],
+    [
+      2265,
+      2375
+    ],
+    [
+      2325,
+      2375
+    ],
+    [
+      2385,
+      2375
+    ],
+    [
+      2445,
+      2375
+    ],
+    [
+      2505,
+      2375
+    ],
+    [
+      2570,
+      2375
+    ],
+    [
+      2635,
+      2375
+    ],
+    [
+      2695,
+      2375
+    ]
+  ],
+  "rail_sites": "Two separate full-band sites near (2325,2375) and (2505,2375), indexed 9 and 12 (old subset 8 and 11), visibly join the same broad lower copper rail. The latter joins the wide vertical copper from registered D26.26, already photo-traced to marked +5 V; the horizontal rail connects to site 9 without a break. See x9-plus5-rail-site-review.json. Either site could be an A53/A54 cable landing or another rail termination; cable membership remains open.",
+  "pitch_check": "Full-band endpoint span 860 px over 14 intervals gives about 61.4 px per site, within 1 percent of D26's registered 1169 px over 19 pin intervals (61.53 px per 2.54 mm). The x1835 joint previously treated as extra is full-band site1; see x9-fifteen-site-band-review.json.",
+  "d26_registration": "ref/photos/juku-pcb-2/local-package-registration.json registers D26 solder pin1 near (1650,1815), pin20 near (2819,1815), and its lower row near y2185 in the same image. The X9 row is about 190 px below that lower row.",
+  "cross_face_component_projection": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+    "anchors": "Registered D26 component pin20/pin1 x1550/2690 and lower y2270 reflect to solder pin20/pin1 x2819/1650 and lower y2185; use the two row separations 360/370 for local y scale.",
+    "solder_slot_to_component_x_px_approx": [
+      2446,
+      2388,
+      2329,
+      2271,
+      2212,
+      2149,
+      2090,
+      2032,
+      1973,
+      1915,
+      1856,
+      1793,
+      1729,
+      1671
+    ],
+    "component_row_y_px_approx": 2455,
+    "observation": "The reflected old 14-site subset spans component x1671..2446 at y≈2455. The newly included solder x1835 projects to component x≈2510 at the same row height and matches a visible joint beside the white ribbon sheath. Several central joints are partly covered by a separate white insulated wire. Site10's intermediate via and the opaque sheath prevent assigning all fifteen sites to the factory X9 wire list; see x9-site10-via-review.json.",
+    "rail_sites_8_and_11": "The two solder +5 V sites near (2325,2375)/(2505,2375) project to component (2032,2455)/(1856,2455). Both fall under the separate white wire where individual cable attachments cannot be distinguished reliably. Do not assign A53/A54 from this projection."
+  },
+  "component_left_end_trace_check": "Native component crop x1580–1940/y2220–2480 shows lower D26 pins roughly 22–27 above projected band sites 14–10. Several narrow front traces bend diagonally and disappear beneath the separate white insulated wire. The exposed left landing joints have sideways copper departures, so vertical pitch alignment with D26 pins23–25 does not prove direct pin-to-site continuity. No A50/A52/A51 assignment to sites14/13/12 is promoted from this crop. Rail sites8/11 have front contacts obscured.",
+  "local_copper_review": "Original-pixel crops show broad D26.26/+5 V copper reaching full sites9/12. Native solder crop (2330,2130)-(2440,2340) shows site10 B.Cu ending at via (2385,2240), with a gap to D26.28 crown (2388,2185). Native front pin count instead traces D26.27/DB7 to a probable counterpart via near (1970,2315), within roughly 20–25 px x/10–15 px y of package reflection. See x9-site10-via-review.json; meter before closing the net.",
+  "relative_model_inference": "Using the D26 solder row x pitch and upper/lower y separation as local reflected scales, the mixed solder band spans approximately board-model x213..246 mm at y266.4 mm. The source A45-A58 row spans x192..224.5 mm at y262.0 mm. The same fit puts the distinct D58 2x10 field near (181.4,260.0) mm, clear of this band and level with D43. This supports a source-model X9 corridor displacement, but the mixed band cannot be adopted as fourteen numbered A-pad centres; see d58-x9-solder-relative-fit.json.",
+  "limits": "The fifteen-site band is indexed solder-left-to-right. Factory X9 lists fourteen A45–A58 wires, including two +5 V wires and no data bus. Site10 likely carries D26.27/DB7 through a cross-face via, but its net and ribbon membership are not yet proved. Sites9/12 are on +5 V but cannot be assigned A53/A54 by index. The opaque sheath blocks individual wire-hole mapping.",
+  "disposition": "Keep A45–A58 locations provisional. Verify site10→via→D26.27/DB7 and exclude D26.28/DB6 by power-off meter; count actual cable wires, then register and map A-number holes before relocating footprints."
+}

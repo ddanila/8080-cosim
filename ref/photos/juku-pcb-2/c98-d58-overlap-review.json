@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "status": "ASSEMBLY OVERLAP CONFIRMED / OWNER BODY ABSENT / TWO-ANGLE LANDING PAIR CANDIDATE / RAILS OPEN",
+  "source": {
+    "electrical": {
+      "image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101827714.jpg",
+      "sha256": "960516eaf3a98d1caf5c543f9e131cea482766eb7e3e66e60655d3e4264bb7b0",
+      "observation": "C98 occurs in the printed C94...C98 group between +5 V and ground; no individual value or pad polarity is printed."
+    },
+    "assembly": [
+      {
+        "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114607591.jpg",
+        "sha256": "a7a7c64fc71d9c0dbc42546bea6998f7fc86cf9e14a19a30c03c54803e455217"
+      },
+      {
+        "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+        "sha256": "8483bec7e30bc7683a880b0a3123f4d6406f79a47bac44c321983804965a5a39"
+      },
+      {
+        "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114617677.jpg",
+        "sha256": "157a5671b7ffab1f4bc66dce72d89cbb8bf3b30c3d37151a12dbc47361f8bf69"
+      }
+    ],
+    "mounting_detail": {
+      "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114703874.jpg",
+      "observation": "The separately captioned 'Установка C98, C100' side view depicts the component arched above a package with its two board landings marked 25* mm apart. It confirms an over-package mounting instruction for both references, but does not identify C98's two specific holes or physical lead-to-rail polarity."
+    },
+    "observation": "The diagonal C98 rectangle crosses D58, with one lead stroke extending above its left end and the other below/right beyond its right end. The separately captioned mounting detail gives 25* mm between board landings. The drawing constrains a diagonal pair spanning approximately the D58 package length, but does not number the holes or assign lead polarity."
+  },
+  "owner": [
+    {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200452717.MP.jpg",
+      "sha256": "b4e4124c1eaf701f6acdf30f041c7a93cd3ab5ca182853c6f0654f1af28c0408",
+      "crop_xyxy_original_pixels": [
+        2300,
+        1450,
+        3500,
+        2800
+      ],
+      "observation": "Oblique overlapping view resolves marked KR580IR82 D58 and its bare right-end package top; no diagonal capacitor body is present over it."
+    },
+    {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+      "sha256": "87ef05efd7bf245bbe072526ca768cd1ce6787dc90ee15c7cb8e975badebcbe0",
+      "crop_xyxy_original_pixels": [
+        200,
+        1650,
+        1750,
+        3050
+      ],
+      "observation": "Second view confirms no capacitor body over D58. It repeats a small upper-left soldered feature and the protruding lower-right lead/joint, forming the diagonal pair detailed in owner_candidate_pair; their hole identities and rails remain unproved."
+    }
+  ],
+  "decision": "The owner board is unpopulated at the drawn over-D58 C98 body position. Two independently visible features form a source-consistent upper-left/lower-right landing-pair candidate across D58, roughly matching the 25* mm factory mounting span. Keep C98 PCB placement, population history, value, and rail polarity open until both holes and +5 V/GND continuity are proved.",
+  "next_checks": [
+    "Register the upper-left feature and lower-right protruding joint on the owner solder face as the same physical holes before choosing a C98 footprint.",
+    "With power removed, meter the two features separately to known +5 V and ground contacts and verify they are distinct drilled landings.",
+    "Obtain a factory BOM/assembly instruction before assigning value or a DNP instruction."
+  ],
+  "owner_candidate_pair": {
+    "first_image": "ref/photos/juku-pcb-2/PXL_20260710_200452717.MP.jpg",
+    "first_crop_xyxy_original_pixels": [
+      2300,
+      1450,
+      3500,
+      2800
+    ],
+    "first_upper_left_px_approx": [
+      2625,
+      2180
+    ],
+    "first_lower_right_px_approx": [
+      3165,
+      2490
+    ],
+    "second_image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+    "second_crop_xyxy_original_pixels": [
+      200,
+      1650,
+      1750,
+      3050
+    ],
+    "second_upper_left_px_approx": [
+      630,
+      2145
+    ],
+    "second_lower_right_px_approx": [
+      1180,
+      2455
+    ],
+    "observation": "Both owner angles show a small filled feature just above D58's left-end top contact and a separate protruding soldered lead/joint below its right end. Their upper-left to lower-right diagonal matches the two .009 C98 lead strokes. No C98 body bridges them on this photographed board.",
+    "pitch_check": "The pair spans roughly 623 px in the first view and 631 px in the second. D58's nine 2.54 mm pin intervals span about 535/550 px in those views, giving a pair separation near 26-27 mm. Perspective, joint-center reads, and assembly drawing scale prevent treating that as a drill dimension, but it is compatible with the factory 25* mm mounting note.",
+    "limit": "The upper feature has not been verified as a separate plated capacitor hole rather than a nearby solder/copper feature; neither feature is continuity-registered to +5 V or ground. This is a leading search pair, not a fabrication-ready pad pair or proof that C98 was ever fitted."
+  },
+  "solder_face_search": {
+    "images": [
+      "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200534267.jpg"
+    ],
+    "method": "Used the existing board-to-solder panorama registration to locate the D58 neighborhood, then inspected both visible DIP pin rows and surrounding solder joints in the overlapping close-up tiles.",
+    "result": "The visible rows and nearby joints do not uniquely identify two separate C98 drill holes. Panorama registration is search-grade here and does not establish the owner component-side features as particular solder-side joints.",
+    "decision": "Keep the candidate pair and both rail assignments provisional; obtain local face-to-face registration or owner continuity measurements before setting a footprint."
+  }
+}

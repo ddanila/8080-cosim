@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "status": "D35.13 component-side joint identified; route to post-R35 node unresolved",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+  "assembly_d35_body_bbox_px_approx": [1398, 2125, 1508, 2462],
+  "assembly_observation": "D35 is drawn vertical with its DIP notch at the top; the position-12 wire mark passes above the package and R39 sits to its left.",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+  "component_observation": "The vertical marked К155ЛН5 package between the D53-area upper package and lower board routes has its top partly crossed by white wires. The assembly's top-notch orientation is corroborated by the lower-right contact's visible route toward the nearby fitted 5K1 R60 pull-up: exact sheet 2 assigns R60 to D35.8, which is the bottom-right contact for a top-notched DIP14. Standard top-view numbering then makes pin 13 the second contact down on the right-hand row. A mould mark near the package bottom is not treated as a pin-1 notch.",
+  "d35_pin13_component_px_approx": [2408, 1540],
+  "overlap_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+  "d35_pin13_overlap_component_px_approx": [2504, 838],
+  "solder_projection": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+    "method": "affine cross-face map through fitted D57 pins 1, 12, and 24 in the same component and solder views",
+    "projected_pin13_px_approx": [1829, 719],
+    "nearest_visible_d35_row_joint_px_approx": [1839, 719],
+    "D55_package_center_heldout_error_px": 10.94,
+    "observation": "The projection lands beside the second joint down on the expected reflected D35 column. Neither the local solder crop nor the front tile shows an uninterrupted departure from that joint to the distant post-R35 cluster. Other package-centre residuals grow farther from D57, so this is a search registration, not a promoted copper path."
+  },
+  "front_copper_observation": "No unbroken copper departure from pin 13 to the R35/R106/C29 cluster can be followed in either overlapping component tile.",
+  "local_solder_copper_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+    "crop_xyxy_original_pixels": [1780, 630, 2070, 770],
+    "observation": "At the registered D35.13 solder joint near (1839,719), no B.Cu track leaves the annulus in the native-resolution image. The nearby open annulus around (1900,719) is visibly joined rightward to a different solder joint around (2015,719), but a brown clearance separates it from the D35.13 joint. The long parallel B.Cu lines above and below are likewise separate.",
+    "conclusion": "The nearby rightward via bar is not evidence for D35.13 continuity; any route from D35.13 to the distant post-R35 node must be established on the obscured component face or by meter."
+  },
+  "decision": "Use this owner pin-13 contact as the continuity target for the photo-established R35-lower/R106-upper/C29-upper node; do not promote a D35.13 physical route from proximity alone."
+}

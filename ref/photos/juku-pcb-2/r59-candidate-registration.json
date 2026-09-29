@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "review_state": "measurement",
+  "candidate_ref": "R59",
+  "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+  "body_marking": "33К",
+  "body_location": "vertical axial body between marked D103 К555ИЕ10 and D56 К155АГ3",
+  "approximate_component_landings_px": {
+    "upper": [3102, 1190],
+    "lower": [3105, 1410]
+  },
+  "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+  "approximate_cross_side_projections_px": {
+    "upper": [1088, 320],
+    "lower": [1090, 549]
+  },
+  "photo_observation": "The marked body has two distinct component-side solder pools. An affine transfer from the adjacent two-sided D56 and D103 package corners places neither lead on a matching backside annulus; both appear to be component-side lap landings. The photo does not prove either remote net.",
+  "source_comparison": "Exact .009 sheet-2 model R59 is 33 kOhm from +5 V to D56 section-1 RC pin15/C8.1. The .009 assembly view PXL_20260711_114611058.jpg places R59 to the right of D56, below R47, whereas this fitted 33К body lies to the left between D103 and D56. One different upright red body is fitted to D56's right across the two nearby source R47/R59 callout levels; its marking is unresolved and position alone does not select either reference. Thus value supports the left-body R59 hypothesis but assembly side contradicts a direct positional match; a relocated part or different reference is possible, and neither endpoint is net-proved.",
+  "unresolved": [
+    "whether this fitted body is relocated R59 or another 33 kOhm part despite the assembly-side mismatch",
+    "upper lead continuity to +5 V or D56.15/C8.1",
+    "lower lead continuity to +5 V or D56.15/C8.1"
+  ]
+}

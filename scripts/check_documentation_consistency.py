@@ -21,6 +21,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SHA256_RE = re.compile(r"(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])", re.I)
+PRE_D57_SOURCE_SHA = "6ecd888b64ddf4f51e373abe6af508f4b4da4f631a2a9721c37fe2c782779b4e"
+PRE_D57_ROUTED_SHA = "3a1f83c8277624f2c04633761de5703550420443839fb3d5e49eea2c8a99e266"
 
 
 def read(path: str) -> str:
@@ -226,21 +228,21 @@ def main() -> int:
     if "A3 consumes the owner-closed D105.3" not in read("docs/d94-reconstruction-constraints.md"):
         failures.append("D94 report does not preserve the owner-closed D105.3 runtime source")
     d101_report = read("docs/d101-reconstruction-constraints.md")
-    if "Status: **D101 FIRST HALF LOGIC-CONSTRAINED / FOUR PINS MEASUREMENT-GATED**" not in d101_report:
+    if "Status: **D101 FIRST HALF LOGIC-CONSTRAINED / FOUR SOURCE JOINS MEASUREMENT-GATED**" not in d101_report:
         failures.append("D101 first-half reconstruction constraints are missing or failed")
-    for marker in ("D101.1 `/OE0`, D03/pin3, D01/pin5, D00/pin6", "does **not**", "R92=1.3 kΩ"):
+    for marker in ("D101.1-D26.38 IMDRG continuity", "**not** join those pins", "R92=1.3 kΩ"):
         if marker not in d101_report:
             failures.append(f"D101 reconstruction report lost guarded marker: {marker!r}")
     if "d101-reconstruction-constraints.md" not in read("docs/README.md"):
         failures.append("documentation map omits the D101 reconstruction constraints")
     d96_report = read("docs/d96-read-clock-readiness.md")
-    if "Status: **SECTION 1 DIVIDE GUARDED / RESTART PHASE UNDEFINED / SECTION 2 SET-ONLY**" not in d96_report:
+    if "Status: **SECTION 1 DIVIDE GUARDED / RESTART PHASE UNDEFINED / SECTION 2 CLEAR SOURCE OPEN**" not in d96_report:
         failures.append("D96 section-2 logic constraint is missing or stale")
     for marker in (
         "D96-RCLK: PASS both-async state exposed; /Q feedback divides after release",
         "D96-IRQ-CONSTRAINT: PASS shared PRE_N/D only sets Q; CLR_N is sole clear",
         "requires Q1=1 and /Q1=1",
-        "continuity-check pins9, 11, and 13",
+        "continuity-check D96.13 to D99.10",
     ):
         if marker not in d96_report:
             failures.append(f"D96 readiness report lost guarded marker: {marker!r}")
@@ -379,7 +381,16 @@ def main() -> int:
     manufacturing = read("docs/replica-manufacturing-readiness.md")
     plan = core["PLAN.md"]
     architecture = read("docs/architecture.md")
-    if "Status: **PACKAGE INVALID**" in manufacturing:
+    if "Status: **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**" in manufacturing:
+        if "Release status: **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**" not in plan:
+            failures.append("PLAN does not expose current package regeneration hold")
+        if "**DESIGN HOLD / PACKAGE REGENERATION REQUIRED**" not in architecture:
+            failures.append("architecture summary does not expose package regeneration hold")
+        if PRE_D57_ROUTED_SHA not in manufacturing:
+            failures.append("manufacturing report omits historical package board hash")
+        if sha256(ROOT / "kicad/juku_routed.kicad_pcb") not in manufacturing:
+            failures.append("manufacturing report omits current routed board hash")
+    elif "Status: **PACKAGE INVALID**" in manufacturing:
         if "Release status: **DESIGN HOLD / PACKAGE INVALID**" not in plan:
             failures.append("PLAN does not expose generated package invalidity")
         if "**DESIGN HOLD / PACKAGE INVALID**" not in architecture:
@@ -412,7 +423,8 @@ def main() -> int:
         if (
             package_evidence.get("schema_version") != 1
             or package_evidence.get("board") != "kicad/juku_routed.kicad_pcb"
-            or package_evidence.get("board_sha256") != sha256(ROOT / "kicad/juku_routed.kicad_pcb")
+            or package_evidence.get("board_sha256") != PRE_D57_ROUTED_SHA
+            or package_evidence.get("superseded_by") != "ref/routing/d57-clock-correction.json"
             or (package_routing.get("footprints"), package_routing.get("pads")) != (322, 2436)
             or (package_routing.get("copper_items"), package_routing.get("nets")) != (30904, 412)
             or any(
@@ -442,6 +454,8 @@ def main() -> int:
     if main_fab_root.exists() and not upload_zip.exists():
         failures.append("local fabrication tree exists but main-board upload ZIP is missing")
     elif upload_zip.exists():
+        if package_evidence.get("board_sha256") != sha256(ROOT / "kicad/juku_routed.kicad_pcb"):
+            failures.append("local fabrication ZIP belongs to a historical routed board")
         digest = sha256(upload_zip)
         for path in ("README.md", "PLAN.md", "docs/replica-manufacturing-readiness.md"):
             if digest not in read(path):
@@ -462,6 +476,7 @@ def main() -> int:
             status in manufacturing
             for status in (
                 "Status: **DESIGN HOLD / PACKAGE VERIFIED**",
+                "Status: **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**",
                 "Status: **PACKAGE INVALID**",
             )
         )
@@ -524,16 +539,19 @@ def main() -> int:
     if completion_check.returncode:
         failures.append(completion_check.stdout.strip())
     completion_audit = read("docs/automatic-completion-audit.md")
+    desk_review_open = "Status: **EVIDENCE HOLD**" in read("docs/owner-measurement-shortlist.md")
     for marker in (
-        "Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**",
+        ("Status: **DESK REVIEW REOPENED / D56 REGISTRATION HOLD**" if desk_review_open else
+         "Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**"),
         "This generated audit answers a narrow question",
         "Any new unchecked task outside the four operator templates",
-        "The practical next action is therefore the owner/bench shortlist",
+        ("The practical next action is to register the marked D56 solder pads" if desk_review_open else
+         "The practical next action is therefore the owner/bench shortlist"),
     ):
         if marker not in completion_audit:
             failures.append(f"automatic-completion audit is stale; missing {marker!r}")
     for path, marker in (
-        ("docs/owner-measurement-shortlist.md", "Status: **READY**"),
+        ("docs/owner-measurement-shortlist.md", "Status: **EVIDENCE HOLD**" if desk_review_open else "Status: **READY**"),
         ("docs/firmware-gap-ledger.md", "ADOPTED FIRMWARE SET VERIFIED"),
         ("docs/cartridge-basic-boundary.md", "ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED"),
         ("docs/crt-cvbs-simulation-plan.md", "shared-DRAM video-slot schedule is evidence-complete"),
@@ -847,7 +865,7 @@ def main() -> int:
         candidate_moved_count = int(candidate_moved_match.group(1))
         routed_refresh = read("docs/routed-refresh-audit.md")
         if not re.search(
-            rf"finds {candidate_net_count} changed pad-net assignments and "
+            rf"finds {candidate_net_count} changed pad-net assignments? and "
             rf"{candidate_moved_count} pads",
             routed_refresh,
         ):
@@ -956,7 +974,7 @@ def main() -> int:
         if (
             live.get("schema_version") != 1
             or live.get("source_board_sha256") != "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb"
-            or live.get("superseded_by_source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
+            or live.get("superseded_by_source_board_sha256") != PRE_D57_SOURCE_SHA
             or live.get("routed_snapshot_sha256") != "f14ade81d3ff7b48ece405d91bc436a63c9f94617444371d7048c9893e3dd315"
             or (identity.get("footprints"), identity.get("pads")) != (321, 2434)
             or source.get("uncapped_unconnected") != 1814
@@ -991,7 +1009,7 @@ def main() -> int:
         if (
             live_prune.get("schema_version") != 1
             or live_prune.get("source_board_sha256") != "141d384c0b01e79cff33e04a099ea6626a2f5ed9ca6ebe4b9b87f6dd00d81afb"
-            or live_prune.get("superseded_by_source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
+            or live_prune.get("superseded_by_source_board_sha256") != PRE_D57_SOURCE_SHA
             or live_prune.get("input_board_sha256")
             != "eae597ab1667cf770211ff52bb21e89a6f1332762207decb4c47446ae62c0bf2"
             or live_prune.get("output_board_size") != 10641592
@@ -1354,8 +1372,9 @@ def main() -> int:
         if (
             zero.get("schema_version") != 1
             or zero.get("promoted_file") != "kicad/juku_routed.kicad_pcb"
-            or zero.get("source_board_sha256") != sha256(ROOT / "kicad/juku.kicad_pcb")
-            or zero.get("board_sha256") != sha256(ROOT / "kicad/juku_routed.kicad_pcb")
+            or zero.get("source_board_sha256") != PRE_D57_SOURCE_SHA
+            or zero.get("board_sha256") != PRE_D57_ROUTED_SHA
+            or zero.get("superseded_by") != "ref/routing/d57-clock-correction.json"
             or zero.get("uncapped_unconnected") != 0
             or zero.get("electrical_blockers") != 0
             or (zero.get("track_dangling"), zero.get("via_dangling")) != (0, 0)
@@ -1371,6 +1390,49 @@ def main() -> int:
         for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
             if "zero-open-promoted-topology.json" not in read(path):
                 failures.append(f"{path} omits the zero-open promotion evidence")
+
+    d57_path = ROOT / "ref/routing/d57-clock-correction.json"
+    if not d57_path.exists():
+        failures.append("D57 clock correction evidence is missing")
+    else:
+        d57 = json.loads(d57_path.read_text(encoding="utf-8"))
+        drc = d57.get("local_routed_drc", {})
+        if (
+            d57.get("schema_version") != 1
+            or d57.get("source_board") != "kicad/juku.kicad_pcb"
+            or d57.get("routed_board") != "kicad/juku_routed.kicad_pcb"
+            # This evidence records the historical D57 correction snapshot;
+            # later board revisions must not rewrite either checksum.
+            or d57.get("source_board_sha256") != "12d1ade69c4310ef645589b0abd81d1f954174f06bc39fe93c029adcb2b4f637"
+            or d57.get("routed_board_sha256") != "644e47218ca77e8b8445ebe86de1e4d4eb2a340531a0918668dafe535611887a"
+            or d57.get("routing_dsn") != "kicad/juku.dsn"
+            # This is the historical DSN from the D57 correction snapshot,
+            # just like the source/routed board checksums above. The current
+            # DSN has since been regenerated and must not rewrite evidence.
+            or d57.get("routing_dsn_sha256") != "c64f90b3c387112d5abd926c9d2f40e360066175dc5069f6e5770a0bc4fb0b2e"
+            or d57.get("parent_source_board_sha256") != PRE_D57_SOURCE_SHA
+            or d57.get("parent_routed_board_sha256") != PRE_D57_ROUTED_SHA
+            or d57.get("corrected_pad") != {"ref": "D57", "pin": "18", "old_net": "CLK_123M", "new_net": "VERT_RTR"}
+            or (d57.get("removed_old_clock_items"), d57.get("added_copper_items")) != (5, 49)
+            or (d57.get("source_routed_pad_count"), d57.get("source_routed_pad_net_mismatches")) != (2436, 0)
+            or d57.get("max_pad_delta_mm") != 0.0
+            or (d57.get("modeled_pcb_endpoints"), d57.get("modeled_endpoint_mismatches")) != (2297, 0)
+            or any(drc.get(name) != 0 for name in (
+                "unconnected_items", "shorting_items", "clearance", "tracks_crossing",
+                "hole_clearance", "hole_to_hole", "track_dangling", "via_dangling",
+                "copper_edge_clearance",
+            ))
+            or d57.get("package_status") != "REGENERATION REQUIRED"
+            or d57.get("historical_package_record") != "ref/routing/zero-open-fabrication-package.json"
+        ):
+            failures.append("D57 clock correction evidence is malformed or stale")
+        for relative, expected in d57.get("tool_sha256", {}).items():
+            tool_path = ROOT / relative
+            if not tool_path.is_file() or sha256(tool_path) != expected:
+                failures.append(f"D57 clock correction tool hash changed: {relative}")
+        for path in ("README.md", "PLAN.md", "docs/cs00024-t36-diagnosis.md"):
+            if "d57-clock-correction.json" not in read(path):
+                failures.append(f"{path} omits the D57 clock correction evidence")
 
     prune_path = ROOT / "ref/routing/current21-dangling-prune.json"
     if not prune_path.exists():
@@ -2051,7 +2113,9 @@ def main() -> int:
         return 1
 
     held = ", ".join(name for name, active in blockers.items() if active)
-    if "Status: **PACKAGE INVALID**" in manufacturing:
+    if "Status: **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**" in manufacturing:
+        package_scope = "historical package recorded; current package regeneration required"
+    elif "Status: **PACKAGE INVALID**" in manufacturing:
         package_scope = "local package invalidity exposed"
     elif upload_zip.exists():
         package_scope = "local package verified"

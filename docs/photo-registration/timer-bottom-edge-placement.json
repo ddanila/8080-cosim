@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "evidence": "ref/photos/juku-pcb-2/timer-bottom-edge-registration.json",
+  "board": "kicad/juku.kicad_pcb",
+  "status": "PLACEMENT HOLD",
+  "routed_pin1_to_bottom_edge_mm": 7.38,
+  "face_disagreement_mm": 0.285,
+  "observations": [
+    {
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+      "row_spacing_px": 360.0,
+      "edge_distance_px": 543.0,
+      "photo_distance_mm": 22.987,
+      "photo_pin_y_mm": 243.013,
+      "routed_pin_y_mm": 258.62,
+      "photo_minus_routed_pin_y_mm": -15.607
+    },
+    {
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "row_spacing_px": 370.0,
+      "edge_distance_px": 565.0,
+      "photo_distance_mm": 23.272,
+      "photo_pin_y_mm": 242.728,
+      "routed_pin_y_mm": 258.62,
+      "photo_minus_routed_pin_y_mm": -15.892
+    }
+  ],
+  "adjacent_d26_lower_row": [
+    {
+      "side": "component",
+      "photo_distance_mm": 23.029,
+      "photo_lower_row_y_mm": 242.971,
+      "routed_lower_row_y_mm": 258.62,
+      "photo_minus_routed_y_mm": -15.649
+    },
+    {
+      "side": "solder",
+      "photo_distance_mm": 23.066,
+      "photo_lower_row_y_mm": 242.934,
+      "routed_lower_row_y_mm": 258.62,
+      "photo_minus_routed_y_mm": -15.686
+    }
+  ],
+  "timer_column_relative_placement": [
+    {
+      "refdes": "D54",
+      "photo_pin1_y_mm_by_side": {
+        "component": 243.013,
+        "solder": 242.728
+      },
+      "side_disagreement_mm": 0.285,
+      "routed_pin1_y_mm": 258.62,
+      "photo_mean_minus_routed_y_mm": -15.75
+    },
+    {
+      "refdes": "D55",
+      "photo_pin1_y_mm_by_side": {
+        "component": 219.73,
+        "solder": 219.789
+      },
+      "side_disagreement_mm": 0.059,
+      "routed_pin1_y_mm": 236.82,
+      "photo_mean_minus_routed_y_mm": -17.06
+    },
+    {
+      "refdes": "D57",
+      "photo_pin1_y_mm_by_side": {
+        "component": 196.977,
+        "solder": 197.443
+      },
+      "side_disagreement_mm": 0.466,
+      "routed_pin1_y_mm": 214.22,
+      "photo_mean_minus_routed_y_mm": -17.01
+    }
+  ],
+  "timer_column_right_edge_placement": [
+    {
+      "refdes": "D57",
+      "photo_pin12_x_mm_by_side": {
+        "component": 292.148,
+        "solder": 290.518
+      },
+      "side_disagreement_mm": 1.63,
+      "routed_pin12_x_mm": 288.87,
+      "photo_mean_minus_routed_x_mm": 2.463
+    },
+    {
+      "refdes": "D55",
+      "photo_pin12_x_mm_by_side": {
+        "component": 291.692,
+        "solder": 290.204
+      },
+      "side_disagreement_mm": 1.488,
+      "routed_pin12_x_mm": 288.87,
+      "photo_mean_minus_routed_x_mm": 2.078
+    },
+    {
+      "refdes": "D54",
+      "photo_pin12_x_mm_by_side": {
+        "component": 291.152,
+        "solder": 290.023
+      },
+      "side_disagreement_mm": 1.129,
+      "routed_pin12_x_mm": 288.67,
+      "photo_mean_minus_routed_x_mm": 1.917
+    }
+  ],
+  "mounting_holes": [
+    {
+      "identity": "lower middle hole",
+      "photo_candidate_center_mm": [
+        199.0,
+        251.2
+      ],
+      "nearest_routed_hole_mm": 0.0,
+      "routed_status": "present",
+      "component_aperture_diameter_px_approx": 88.0
+    },
+    {
+      "identity": "lower right hole",
+      "photo_candidate_center_mm": [
+        300.3,
+        250.7
+      ],
+      "nearest_routed_hole_mm": 101.301,
+      "routed_status": "absent",
+      "component_aperture_diameter_px_approx": 90.0
+    }
+  ],
+  "lower_hole_aperture_width_ratio": 1.023,
+  "lower_hole_drill_inference": "similar photo apertures suggest the existing nominal 3.5 mm drill; unmeasured",
+  "d54_pin1_mechanical_candidate": {
+    "methods": {
+      "x_known_hole_to_right_edge_mm": 262.38,
+      "x_pin_pitch_to_right_edge_mm": 263.212,
+      "y_known_hole_and_row_pitch_mm": 243.749,
+      "y_bottom_edge_and_row_pitch_mm": 243.013
+    },
+    "method_spread_mm": {
+      "x": 0.832,
+      "y": 0.736
+    },
+    "routed_pin1_mm": [
+      260.73,
+      258.62
+    ],
+    "status": "candidate range only; perspective and landmark uncertainty remain"
+  },
+  "limitation": "Local row-scale approximation; final footprint coordinates need a full mechanical fit."
+}

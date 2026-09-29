@@ -51,33 +51,20 @@ def main() -> None:
     local_report = json.loads(
         (ROOT / "docs/photo-registration/local-packages/report.json").read_text()
     )
-    d104_solder = next(
-        (
-            fit
-            for fit in local_report["fits"]
-            if fit["refdes"] == "D104" and fit["side"] == "solder"
-        ),
-        None,
-    )
-    if d104_solder is None or d104_solder.get("model") != "affine":
-        errors.append("D104 reflected solder fit is missing or not affine")
-    else:
-        checks = {item["pin"]: item["error_px"] for item in d104_solder["checks"]}
-        if checks.get("9", float("inf")) > 1.1:
-            errors.append("D104 solder pin 9 held-out residual exceeds 1.1 px")
-        if checks.get("10", float("inf")) > 0.8:
-            errors.append("D104 solder pin 10 held-out residual exceeds 0.8 px")
-        if d104_solder["projected_pins"].get("10") != [2350.714, 1249.143]:
-            errors.append("D104.10 solder coordinate drifted")
-        d104_pad10 = board.FindFootprintByReference("D104").FindPadByNumber("10")
-        if d104_pad10.GetNetname() != "D104_X4_OUT_BOUNDARY":
-            errors.append("D104.10 premeasurement source-PCB boundary changed before controlled refresh")
+    if any(fit["refdes"] == "D104" and fit["side"] == "solder"
+           for fit in local_report["fits"]):
+        errors.append("D104 solder fit was retired after pixel review; do not adopt it")
+    board_json = json.loads((ROOT / "kicad/juku.board.json").read_text())
+    if ["D104", "10"] not in board_json["no_connects"]:
+        errors.append("owner-closed D104.10 NC disposition is missing")
+    if ["D104", "7"] not in board_json["nets"]["GND"]["nodes"]:
+        errors.append("modeled D104.7 to R30 lower/GND join is missing; owner rail polarity remains unverified")
     if errors:
         raise SystemExit("serial photo placement FAIL\n- " + "\n- ".join(errors))
     print(
-        "serial photo placement PASS — D104.10 solder 2350.7,1249.1 px; "
-        "B.Cu departure absent; board JSON closes pin 10 NC while the held source PCB "
-        "retains its premeasurement singleton until controlled refresh"
+        "serial component placement PASS — old D104 solder fit retired; "
+        "D11-local cross-face evidence registers D104.16 pad but not its rail; "
+        "front copper closes D104.7 to R30 lower; source assigns GND; owner continuity closes D104.10 NC"
     )
 
 

@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "source_board": "kicad/juku.kicad_pcb",
+  "source_board_sha256": "12d1ade69c4310ef645589b0abd81d1f954174f06bc39fe93c029adcb2b4f637",
+  "routed_board": "kicad/juku_routed.kicad_pcb",
+  "routed_board_sha256": "644e47218ca77e8b8445ebe86de1e4d4eb2a340531a0918668dafe535611887a",
+  "routing_dsn": "kicad/juku.dsn",
+  "routing_dsn_sha256": "c64f90b3c387112d5abd926c9d2f40e360066175dc5069f6e5770a0bc4fb0b2e",
+  "parent_source_board_sha256": "6ecd888b64ddf4f51e373abe6af508f4b4da4f631a2a9721c37fe2c782779b4e",
+  "parent_routed_board_sha256": "3a1f83c8277624f2c04633761de5703550420443839fb3d5e49eea2c8a99e266",
+  "evidence": "exact .009 E3 sheet 2 D55.13/D35.9/D57.18 VER RTR conductor; CS00015 D57S v2 physical positive control",
+  "corrected_pad": {
+    "ref": "D57",
+    "pin": "18",
+    "old_net": "CLK_123M",
+    "new_net": "VERT_RTR"
+  },
+  "removed_old_clock_items": 5,
+  "added_copper_items": 49,
+  "source_routed_pad_count": 2436,
+  "source_routed_pad_net_mismatches": 0,
+  "max_pad_delta_mm": 0.0,
+  "modeled_pcb_endpoints": 2297,
+  "modeled_endpoint_mismatches": 0,
+  "local_kicad_cli_version": "10.0.6",
+  "local_routed_drc": {
+    "unconnected_items": 0,
+    "shorting_items": 0,
+    "clearance": 0,
+    "tracks_crossing": 0,
+    "hole_clearance": 0,
+    "hole_to_hole": 0,
+    "track_dangling": 0,
+    "via_dangling": 0,
+    "copper_edge_clearance": 0
+  },
+  "package_status": "REGENERATION REQUIRED",
+  "historical_package_record": "ref/routing/zero-open-fabrication-package.json",
+  "tool_sha256": {
+    "kicad/apply_d57_clock_correction.py": "7ae34848bc4d7c0dd069e61e74b21151f27cf4ae93feca7b05015c64ef7f312f"
+  },
+  "post_c99_ground_correction": {
+    "evidence": "exact .009 sheet-1 C99 far-plate ground bar matches R16 symbol",
+    "current_routed_unconnected_items": 1,
+    "open_endpoint": "C99.2 GND",
+    "note": "D57 correction local DRC was zero before this subsequent source-net correction; routed C99 ground branch still requires routing and package regeneration"
+  },
+  "post_cs7_decode_correction": {
+    "evidence": "exact .009 E3 sheet 1 D9.7 CS7 (3) and sheet 3 (1) CS7 to D94.15/D93.3; owner continuity confirms D94.15-D93.3",
+    "current_routed_unconnected_items": 2,
+    "open_endpoints": [
+      "C99.2 GND",
+      "D9.7 FDC_CS_N"
+    ],
+    "note": "The former CS_FDC singleton was merged into FDC_CS_N; routed copper has not yet joined D9.7 to D94.15/D93.3, and C99.2 still needs its GND connection. Fabrication package remains held."
+  },
+  "post_d96_d99_junction_correction": {
+    "evidence": "exact .009 E3 sheet-3 photo PXL_20260718_101641055.jpg: marked junction of D96.13 /CLR2 and D99.10 B2; common continuation to sheet 1",
+    "current_routed_unconnected_items": 3,
+    "open_endpoints": [
+      "C99.2 GND",
+      "D9.7 FDC_CS_N",
+      "D96.13 to D99.10 D99_B2_SHEET1_BOUNDARY"
+    ],
+    "note": "The former D96.13 no-connect is now assigned to the D99 B2 conductor. Its sheet-1 source is unresolved and the routed PCB has no copper connecting these two pads. Fabrication package remains held."
+  },
+  "post_d99_motor_en_correction": {
+    "evidence": "overlapping exact .009 E3 sheet-3 photos PXL_20260718_101637906.jpg and PXL_20260718_101641055.jpg: MOTOR EN (1) rail reaches marked junction feeding D99.11 CLR2_N",
+    "current_routed_unconnected_items": 4,
+    "open_endpoints": [
+      "C99.2 GND",
+      "D9.7 FDC_CS_N",
+      "D96.13 to D99.10 D99_B2_SHEET1_BOUNDARY",
+      "D99.11 to existing FDC_MOTOR_EN copper"
+    ],
+    "note": "The former D99.11 singleton is now assigned to FDC_MOTOR_EN with D26.16 and D100.7. Original-board continuity is still unmeasured; the routed PCB lacks copper to D99.11. Fabrication package remains held."
+  },
+  "post_e12_hld_correction": {
+    "evidence": "exact .009 E3 sheet-3 photo PXL_20260718_101641055.jpg: E12 post 3 descends to marked D93.28/D100.3 HLD junction; bridge drawn 2-3 selects HLD for D99.2 B1",
+    "current_routed_unconnected_items": 5,
+    "open_endpoints": [
+      "C99.2 GND",
+      "D9.7 FDC_CS_N",
+      "D96.13 to D99.10 D99_B2_SHEET1_BOUNDARY",
+      "D99.11 to FDC_MOTOR_EN copper",
+      "D99.2 to D93.28/D100.3 FDC_HLD_TO_D100 copper"
+    ],
+    "note": "D99.2 source-closed selected E12 route is not connected in the current routed PCB. Physical E12 population and continuity require measurement; fabrication package remains held."
+  },
+  "post_d100_control_split": {
+    "evidence": "exact .009 E3 sheet-3 photo PXL_20260718_101641055.jpg: D99.12 Q2_N descends to D100.9 OE_N; D100.11 T crosses that path without dot and leaves to its own quoted sheet-1 continuation",
+    "removed_false_join_segments": 11,
+    "current_routed_unconnected_items": 6,
+    "open_endpoints": [
+      "C99.2 GND",
+      "D9.7 FDC_CS_N",
+      "D96.13 to D99.10 D99_B2_SHEET1_BOUNDARY",
+      "D99.11 to FDC_MOTOR_EN copper",
+      "D99.2 to D93.28/D100.3 FDC_HLD_TO_D100 copper",
+      "D100.9 to D99.12 D99_Q2N_BOUNDARY"
+    ],
+    "note": "The former D100.9/.11 common net was split. Eleven incompatible routed segments were removed; fresh DRC shows no short and one new D99.12/D100.9 open. Physical D100.9/D99.12 continuity and D100.11 remote source still require measurement. Fabrication package remains held."
+  },
+  "post_d99_motor_pulse_correction": {
+    "evidence": "exact .009 E3 sheet-3 photo PXL_20260718_101641055.jpg: D99.5 Q2 branches to E12 post1 and descends to D100 A7/pin7; D26 PC2 MOTOR EN feeds D99.11 CLR2_N separately",
+    "removed_false_direct_motor_segments": 226,
+    "removed_false_direct_motor_vias": 28,
+    "current_routed_unconnected_items": 7,
+    "open_endpoints": [
+      "C99.2 GND",
+      "D9.7 FDC_CS_N",
+      "D96.13 to D99.10 D99_B2_SHEET1_BOUNDARY",
+      "D26.16 to D99.11 FDC_MOTOR_EN",
+      "D99.2 to D93.28/D100.3 FDC_HLD_TO_D100",
+      "D99.5 to D100.7 D99_Q2_BOUNDARY",
+      "D99.12 to D100.9 D99_Q2N_BOUNDARY"
+    ],
+    "note": "The false direct D26.16-D100.7 route was removed. D99 Q2/pin5 now owns the buffer A7 motor input; D26 MOTOR EN controls D99 CLR2_N. Fresh routed DRC has no shorts but seven opens. Fabrication package remains held."
+  },
+  "post_imdrg_source_closure": {
+    "evidence": "exact .009 E3 sheet-1 PXL_20260718_101824181.MP.jpg D26 PA6/pin38 IMDRG (3), and sheet-3 PXL_20260718_101648508.jpg IMDRG (1) into D101 VA/OE0_N pin1",
+    "current_routed_unconnected_items": 8,
+    "new_open_endpoint": "D26.38 to D101.1 FDC_IMDRG",
+    "note": "The former D26 PA6 PREN and D101 OE0 singleton nets were merged. Source/routed pad-net identity is retained; KiCad DRC reports one new IMDRG open, no shorts or copper-clearance violations. Original-board continuity remains unmeasured and fabrication package remains held."
+  },
+  "post_d101_a_input_junction_correction": {
+    "evidence": "exact .009 E3 sheet-3 native PXL_20260718_101648508.jpg: filled junctions on D101 section-A data inputs pins 6, 5, 4, and 3; owner component photo independently closes D101.4 to R92.1/R99.2",
+    "current_routed_unconnected_items": 11,
+    "new_open_endpoints": [
+      "D101.3 to D101_D02_R92_R99",
+      "D101.5 to D101_D02_R92_R99",
+      "D101.6 to D101_D02_R92_R99"
+    ],
+    "note": "Three former singleton inputs now share the source-drawn D101.4/R92/R99 island. Their original-board continuity remains unmeasured. KiCad routed DRC reports three new opens and no electrical shorts; fabrication remains held."
+  },
+  "post_d96_q2_d101_inputs_closure": {
+    "source": "ДГШ5.109.009 Э3 sheet-3 overview PXL_20260718_101633062.jpg",
+    "correction": "D96.9 Q2 joins D101 A0-A3 pins 6/5/4/3 and the owner-visible D101.4/R92.1/R99.2 island in the source model; physical continuity pending",
+    "routed_unconnected_items": 12,
+    "new_unconnected_item": "D96.9 to D101.4/R92/R99 copper"
+  },
+  "post_d96_clk2_d94_source_closure": {
+    "source": "ДГШ5.109.009 Э3 full sheet-3 overview PXL_20260718_101633062.jpg and detail PXL_20260718_101641055.jpg",
+    "correction": "D96.11 CLK2 joins D94.2/D99.9/R89.1 source net; D28.10/D96.10 line crosses D96.11 without junction; physical continuity pending",
+    "routed_unconnected_items": 13,
+    "new_unconnected_item": "D96.11 to D94.2/D99.9/R89.1 copper"
+  },
+  "post_x6_a3_registration_retraction": {
+    "source": "original-resolution July component tile PXL_20260710_200418174.jpg and exact .009 assembly wire table PDF page 2",
+    "correction": "A:3 is beside VT2/R65 and not coincident with VD3.2; AX603/AX604 moved to D102-local affine coordinates and X6.1 isolated on X6_A3_BOUNDARY",
+    "routed_unconnected_items": 16,
+    "electrical_shorts": 0,
+    "remaining_dangling_items": 0,
+    "note": "Five obsolete SOUND_CLAMP tracks, the old A:4 ground spur, and one colliding VIDEO_OUT segment were removed. A three-segment F.Cu VIDEO_OUT detour passes current routed DRC without shorts, clearance, or dangling findings; design hold remains for 16 opens and X6 identity."
+  }
+}

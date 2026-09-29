@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "review_state": "D30.8/.11 component and solder contacts registered; owner net continuity already measured",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+  "component_sha256": "a009a302bf045ebe6fde6cc081afec748f633650e3a92741bb1fff99574fe252",
+  "component_crop_xyxy": [750, 860, 1400, 1450],
+  "component_observation": "The marked К555ТМ2 has its notch facing right and a complete 2x7 contact field. On the lower row physical pin8 is the leftmost contact near (875,1230), while pin11 is fourth from the left near (1040,1230). The former endpoint seeds at (1139,1012)/(975,1012) were above the top contacts under a white cable.",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
+  "solder_sha256": "b43f1a1cf7620d08d3450eb08e7fbcbe34f7da1f49499e86836da5d505e252a3",
+  "solder_crop_xyxy": [2250, 200, 3500, 1700],
+  "solder_observation": "The old projected pin8/pin11 points (2369,607)/(2550,607) lie on an unrelated broad rail. The native image shows three distinct 2x7 fields: D30 at y540/y730, D13 at y825/y1009, and D105 at y1192/y1370. The former D13 registration crossed into D105's upper row and falsely rejected the D30 field. The corrected reflected D30 fit puts pin8 at (3040,730) and pin11 at (2860,730), distinct lower-row joints. Upper-row copper connections do not imply a short between these lower-row contacts.",
+  "owner_continuity_source": "docs/d30-section-b-scan-chase.md",
+  "owner_nets": {"D30.8": "D30_Q2N_D29_AIN7 / D29.7", "D30.11": "D13_4_D105_2 / D13.4 / D105.2 / D11.20"},
+  "limit": "The local fits identify visual probe sites on both faces. The electrical closure is the independent chip-removed owner measurement; the pad fits alone do not prove remote continuity."
+}

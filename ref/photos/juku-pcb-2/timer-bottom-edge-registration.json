@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "status": "mechanical placement evidence; do not translate footprints without full local fit",
+  "refdes": "D54",
+  "pin": "1",
+  "row_spacing_mm": 15.24,
+  "board_bottom_y_mm": 266.0,
+  "observations": [
+    {
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+      "pin1_image_px": [2805.0, 2270.0],
+      "opposite_row_pin24_image_px": [2805.0, 1910.0],
+      "bottom_edge_image_px": [2805.0, 2813.0],
+      "right_edge_at_pin1_image_px": [3932.0, 2270.0],
+      "note": "Right-side timer tile: physical bottom board/material transition at the same x as D54 pin 1. The lower hole near (1305,2446) is compatible with the modeled (199,251.2) mm mounting hole."
+    },
+    {
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "pin1_image_px": [1526.0, 2185.0],
+      "opposite_row_pin24_image_px": [1526.0, 1815.0],
+      "bottom_edge_image_px": [1526.0, 2750.0],
+      "note": "Mirrored D54 solder field and physical bottom board/material transition at the same x. Edge is approximate because of image blur and substrate shadow."
+    }
+  ],
+  "adjacent_ppi_observations": [
+    {
+      "refdes": "D26",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+      "lower_row_pin40_image_px": [2690.0, 2270.0],
+      "opposite_row_pin1_image_px": [2690.0, 1910.0],
+      "bottom_edge_image_px": [2690.0, 2814.0],
+      "note": "Physical lower row uses pin 40 by the right-notch owner orientation; routed pad numbers have the opposite orientation and are compared by row position only."
+    },
+    {
+      "refdes": "D26",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "lower_row_pin40_image_px": [1650.0, 2185.0],
+      "opposite_row_pin1_image_px": [1650.0, 1815.0],
+      "bottom_edge_image_px": [1650.0, 2745.0],
+      "note": "Reflected D26 row centers and nearby substrate boundary; photo pin identity is separate from the routed left-notched footprint."
+    }
+  ],
+  "timer_right_edge_observations": [
+    {"refdes": "D57", "component_edge_at_pin12_px": [3908.0, 1190.0], "solder_reflected_edge_at_pin12_px": [378.0, 1090.0]},
+    {"refdes": "D55", "component_edge_at_pin12_px": [3919.0, 1720.0], "solder_reflected_edge_at_pin12_px": [373.0, 1630.0]},
+    {"refdes": "D54", "component_edge_at_pin12_px": [3932.0, 2270.0], "solder_reflected_edge_at_pin12_px": [366.0, 2185.0]}
+  ],
+  "lower_mounting_holes": [
+    {
+      "identity": "lower middle hole",
+      "component_image_px": [1305.0, 2446.0],
+      "component_aperture_diameter_px_approx": 88.0,
+      "solder_image_px": [3068.0, 2365.0],
+      "routed_center_mm": [199.0, 251.2],
+      "note": "The owner hole is about 15.7 mm above the photographed bottom edge, compatible with this existing Edge.Cuts circle."
+    },
+    {
+      "identity": "lower right hole",
+      "component_image_px": [3703.0, 2450.0],
+      "component_aperture_diameter_px_approx": 90.0,
+      "solder_image_px": [610.0, 2364.0],
+      "earlier_may_component_image": "ref/photos/juku-pcb-2/PXL_20260519_201907078.jpg",
+      "earlier_may_component_center_px_approx": [3250.0, 2625.0],
+      "earlier_may_right_edge_at_hole_y_px_approx": [3435.0, 2625.0],
+      "earlier_may_bottom_edge_at_hole_x_px_approx": [3250.0, 2915.0],
+      "edge_derived_center_mm_approx": [300.3, 250.7],
+      "routed_status": "absent",
+      "note": "Visible on both July faces and independently in the earlier May component photo, separate from the two X9 clamp screws; roughly 10 mm inside the right edge and 15 mm above the bottom edge in July. The two open holes appear about 88/90 pixels wide in the same July image, supporting a common nominal drill, but aperture edges and perspective prevent a certified diameter. May raw pixel coordinates corroborate presence only, not the metric center. Candidate center is approximate and must be dimensioned before drilling."
+    }
+  ],
+  "factory_context": "Assembly PXL_20260711_114611058.jpg places D54 above X9 and labels C84 below/right; it does not provide a dimensioned D54-to-edge datum.",
+  "decision": "hold D54/D55/D57 and adjacent D26 mechanical placement and lower-right mounting hole; do not use the broad panorama's near-zero y residual as validation"
+}

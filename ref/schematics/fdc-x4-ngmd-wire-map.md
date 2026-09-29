@@ -82,21 +82,22 @@ floppy control assignment is therefore:
 
 | D26 endpoint | Sheet-1 continuation | Sheet-3 endpoint / disposition |
 | --- | ---: | --- |
-| PC2 / pin 16 | 1 | `MOTOR EN` -> D100 A7/pin 7 |
-| PC3 / pin 17 | 2 | `5\"/8\"`; target sheet-3 destination not shown |
-| PC4 / pin 13 | 3 | `FM/MFM` -> D93 DDEN/pin 37 |
+| PC2 / pin 16 | 1 | `MOTOR EN` -> D99 `/CLR2`/pin 11; D99 Q2/pin 5 separately drives D100 A7/pin 7 |
+| PC3 / pin 17 | 2 | `5\"/8\"` -> D95 clock-mux A1/pin 2 |
+| PC4 / pin 13 | 3 | `FM/MFM` -> D93 DDEN/pin 37 and D95 clock-mux A0/pin 14 |
 | PC5 / pin 12 | 4 | `D_SEL` -> D28 input pin 1 |
 | PC6 / pin 11 | 5 | `S.SEL` -> D100 A8/pin 8 |
-| PC7 / pin 10 | 6 | `POF`; sheet-2 destination |
+| PC7 / pin 10 | 6 | `POF` -> sheet-2 D35 inverter input pin 3 |
 
 D28 output pin 2 is drawn back into input pin 3, so pin 2 produces
 `-D.SEL1` and the second inversion at pin 4 produces complementary
 `-D.SEL0`. D100 input pins 4,1,2,5,3 receive D93 TG43, DIR, STEP, WG, and HLD
 respectively; input pin 6 receives the write-data/precompensation path. D100
-control pins 9 and 11 share one conductor that leaves through a sheet-1
-continuation. The nearby `1` is the destination sheet, not a logic-high
-marker; its upstream source remains to be transcribed before it is named
-semantically.
+`OE_N`/pin 9 is joined to D99 Q2_N/pin 12. D100 `T`/pin 11 has a separate
+quoted sheet-1 continuation and crosses the OE_N path without a junction dot.
+The nearby `1` denotes the destination sheet, not a logic level or an
+electrical join. Its remote source remains unresolved
+(`docs/d100-control-source-review.md`).
 
 ## НГМД external XS5
 
@@ -160,13 +161,13 @@ It does not come from processor X4.12/.13.
 
 ## Source-model divergences
 
-The recovered primary drawing invalidates four inference-era assignments in
-the current source model:
+The recovered primary drawing invalidated four inference-era assignments in
+the earlier source model:
 
 1. D100 is not the CPU-data-to-D93-DAL transceiver. It is the drive-output
    КР580ВА87 whose B-side pins 16,19,18,14,15,17,13,12 feed X4.10,.16,.9,
    .11,.18,.17,.19,.20 respectively. The existing `FDC_DAL0..7` attachment
-   and D100 `/OE`/`T` bus-control narrative must be removed or reassigned.
+   and D100 `/OE`/`T` bus-control narrative were removed or reassigned.
 2. D28 pins 2 and 4 feed X4.21 `-D.SEL1` and X4.22 `-D.SEL0`, not the stale
    `.006` X4.5/X4.4 tape labels. D28 pins 5/6 are used in the READY receive
    path, so they are not NC on the `.009` board.
@@ -179,6 +180,6 @@ the current source model:
    D28.9 is part of the read-separator inverter on sheet 3, not a branch of
    the D26-PC4/DDEN conductor.
 
-These corrections precede another routed-board refresh. They do not authorize
-guessing external cable conductors for X4.1-.5 or the still-untraced source of
-the D100 pin-9/pin-11 control continuation.
+The source model has incorporated these corrections. The routed replica still
+has source-correction opens and remains held. The drawing does not establish
+external cable conductors for X4.1-.5 or D100.11's sheet-1 source.

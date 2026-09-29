@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "status": "independent owner-photo body marking confirmation",
+  "factory_schematic": {
+    "image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101911242.jpg",
+    "refdes": "R106",
+    "printed_ohms": 910
+  },
+  "may_owner": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260519_201907078.jpg",
+    "inspection_crop_original_px": [2140, 250, 2320, 720],
+    "orientation_for_reading_degrees": 180,
+    "lower_r106_body_marking": "510R",
+    "upper_r35_body_marking": "330R",
+    "c29_position_separate_body_visible": false,
+    "note": "The two upright axial bodies left of the empty DIP socket are legible in this earlier owner image. The lower R106-position body reads 510R, independently of the July photograph. The factory C29 position beside/below the pair has no separate fitted body in the visible component region; nearby bare annuli cannot be uniquely paired."
+  },
+  "july_owner": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "inspection_crop_original_px": [2270, 2480, 2390, 2740],
+    "lower_r106_body_marking": "510R",
+    "c29_position_separate_body_visible": false
+  },
+  "july_component_lead_search": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "inspection_crop_original_px": [2050, 2100, 2700, 3000],
+    "r35_330r_upper_lower_px_approx": [[2370, 2350], [2370, 2580]],
+    "r106_510r_upper_lower_px_approx": [[2315, 2520], [2320, 2745]],
+    "observation": "Both fitted body markings and their four physical lead joints are visible between marked D38 and the neighboring socket in the native July component image. The D92-local front/back fit and the independently reviewed four-package fit place R35 lower near solder (1830,2225) and R106 upper near (1880,2175). A continuous L-shaped solder run directly joins those contacts and the upper C29 candidate near (1940,2175). The C29 landing review separately follows its middle candidate to a wide solder rail with an independently registered D56.8 ground anchor. R35 upper projects near (1830,2010), while R106 lower lies on the wide return rail near (1880,2397); identify each exact hole by local features before treating those projections as meter-free net proof. The photographed node's continuation to D35.13 and the R35 input's PHI2TTL identity remain unproved.",
+    "cross_check": "ref/photos/juku-pcb-2/c29-landing-pair-review.json",
+    "next_measurement": "Power off: corroborate the photo-closed R35-lower/R106-upper/C29-upper node to D35.13; test R35 upper against PHI2TTL and R106 lower against a known ground contact; confirm the C29 middle candidate against ground. Measure R106 out of circuit to resolve the 910-ohm source versus 510R owner marking and inspect C29 population/value."
+  },
+  "value_variant_implication": {
+    "basis": "The source prints R106=910 ohms and C29=56 without an explicit unit; the native-sheet capacitor convention establishes nominal 56 pF (ref/schematics/native-capacitor-value-registration.json). The owner R106-position body is marked 510R, while owner C29 population is unproved. Using the source nominal C29 only for comparison, the R106-C29 products are 50.96 ns (source resistor value) and 28.56 ns (owner-marked resistor value).",
+    "source_rc_ns_if_56_pf": 50.96,
+    "owner_marking_rc_ns_if_56_pf": 28.56,
+    "assessment": "The 510R marking is a material clock-shaping value variant, not a harmless body-color difference. These simple products do not predict the actual D35.13 edge because R35, driver impedance, input thresholds, and unconfirmed C29 population also matter. Keep the source and photographed-owner variants separate until the installed resistor and capacitor are measured."
+  },
+  "decision": "The photographed owner board carried a 510R-marked body in the R106 assembly position and no separately visible C29 body in both May and July 2026. The .009 electrical drawing specifies 910 ohms for R106 and shows C29. July two-face photos support the common R35-lower/R106-upper/C29-upper node and a C29-middle route to the D56.8-grounded wide rail; these local physical paths are retained in c29-landing-pair-review.json. The installed R106 resistance, exact C29 population/value, PHI2TTL input, and D35.13 continuation remain unresolved."
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "review_state": "D2 package supply modeled and PCB pad nets assigned; power copper unconnected",
+  "source": "D2 is К556РТ4 / 82S126-class 256x4 PROM, programmed as ДГШ5.106.037. ref/datasheets/k556rt4-pinout.txt, based on the local Signetics 82S126 primary PDF and tracked programmer wiring, gives physical pin8=GND and pin16=+5 V. D6 is the same package and already has those nets. D2 pins13/14 are chip-enable inputs held low; their GND assignments did not supply the package pins.",
+  "model_and_pad_correction": "kicad/juku.board.json and source, routed, and routed-candidate PCB files now assign D2.8=GND and D2.16=P5V. Functional-only schematic symbols omit package supplies; pad-net parity and copper connectivity are separate checks.",
+  "pcb_audit": {
+    "D2_8_xy_mm": [70.01, 147.685],
+    "D2_16_xy_mm": [77.63, 129.905],
+    "pad_diameter_mm": 1.6,
+    "source": "No PCB_TRACK centreline within 1.5 mm of either pad.",
+    "routed_and_candidate": "No track touches either pad. Nearest track to D2.8 is CS_D54 B.Cu at 1.365 mm from centre; nearest track to D2.16 is GND B.Cu at 1.120 mm, outside the 0.8 mm pad radius and not a +5 V connection."
+  },
+  "next_inspection": "With power off, confirm owner D2.8 to known ground and D2.16 to known +5 V. Route both replica pads to their proper rails with clearance, then rerun connectivity and DRC."
+}

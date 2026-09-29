@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "status": "RETRACTED: site10 direct D26.28/DB6 claim; pin-counted front trace favors D26.27/DB7 via intermediate hole",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+  "native_crop_xyxy_original_pixels": [
+    2370,
+    2100,
+    2750,
+    2430
+  ],
+  "site_px_approx": [
+    2385,
+    2375
+  ],
+  "d26_contact_px_approx": [
+    2388,
+    2185
+  ],
+  "pin_registration": "The independently registered D26 lower solder row runs pin40 at x1650 to pin21 at x2819, 19 intervals. Pin28 is seven intervals left of pin21, projecting x≈2388; its y is 2185. The photographed top joint near (2385,2185) is therefore D26.28 within the local pad-fit precision.",
+  "copper_observation": "RETRACTED. The narrow B.Cu line joins site10 only to intermediate via (2385,2240); it does not directly touch the D26 lower-row crown (2388,2185) on the photographed solder face.",
+  "source_contract": "Native exact .009 sheet-1 PXL_20260718_101824181.MP.jpg labels D26.27=D7 and D26.28=D6; board JSON calls them DB7/DB6. Factory X9 position-153 lists A45-A58 without signal names. Its reconstructed nets contain no data-bus connection.",
+  "disposition": "Use x9-site10-via-review.json for the current evidence: site10 B.Cu reaches via (2385,2240), while front pin count favors D26.27/DB7 to the likely counterpart. Meter site10 to D26.27 and D26.28 separately and check ribbon membership before excluding or numbering any X9 landing.",
+  "effect_on_previous_inference": "The fourteen remaining sites are only a numerical coincidence until site10 is proved not to be a factory conductor. Sites9/12 retain their separate +5 V copper evidence, but cannot be assigned A53/A54 by index.",
+  "retraction": "Native solder crop (2330,2130)-(2440,2340) shows the site10 B.Cu line ending at a plated via near (2385,2240), about 55 pixels below the separate D26 lower-row crown (2388,2185), with a brown gap. Native front pin count instead favors D26.27/DB7; see x9-site10-via-review.json."
+}

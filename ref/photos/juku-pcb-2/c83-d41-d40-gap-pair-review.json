@@ -1,0 +1,36 @@
+{
+  "schema_version": 3,
+  "review_state": "C83 two solder crowns photo-trace to D41.7/GND and D39.14/P5V; front same-hole matches need continuity",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+  "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+  "owner_independent_component_image": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
+  "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "coordinate_system": "original source-image pixels",
+  "source_context": "The .009 assembly labels C83, not C63, between D41 and D40; sheet 1 includes C83 in the +5 V/GND bypass group. The owner component image shows no fitted C83 body and two possible front sites near (2283,1923) and (2283,2153).",
+  "registration_authority": "ref/photos/juku-pcb-2/local-package-registration.json D41 component and solder package fits. The promoted solder row is x1999..2329; the x1451..1781 row in old endpoints.csv was a wrong-package seed and is now corrected in that CSV.",
+  "photo_candidate_board_geometry": "Source PCB D41.1 at (242.62,137.095) mm and D41.7 at (227.38,137.095) calibrate the front D41 upper row 339 px/15.24 mm; the 169.5 px row separation maps to 7.62 mm. Front C83 candidates (2283,1923)/(2283,2153) therefore map to about (246.172,135.701)/(246.172,146.041) mm, a 10.340 mm vertical span. Source PCB D40.8 at x=249.67 mm agrees with the independent front D40 left pin at x2361 under the same scale. The candidate x=246.172 mm is centered in the 7.05 mm D41.1–D40.8 gap. The folded assembly's broad projection x=239.15 mm falls within D41's body span, 7.022 mm left of the photo candidate column, so it must not be used as a C83 hole placement. These are candidate locations, not confirmed C83 drills.",
+  "registered_D41_fiducials": {
+    "front_pin1_px": [2204, 1954],
+    "front_pin7_px": [1865, 1954],
+    "front_lower_row_y_px_approx": 2123.5,
+    "solder_pin1_px": [1999, 1620],
+    "solder_pin7_px": [2329, 1620],
+    "solder_lower_row_y_px_approx": 1785,
+    "derived_solder_pin14_px_approx": [1999, 1785],
+    "transform": "Local reflected fit: solder_x=1999-(front_x-2204)*330/339; solder_y=1620+(front_y-1954)*165/169.5. The solder x1451..1781 row is a different package and must not be used for D41."
+  },
+  "C83_front_candidates": {
+    "upper_px": [2283, 1923],
+    "lower_px": [2283, 2153],
+    "predicted_solder_upper_px_approx": [1922, 1590],
+    "predicted_solder_lower_px_approx": [1922, 1814],
+    "observed_solder_upper_crown_px_approx": [1920, 1585],
+    "observed_solder_lower_crown_px_approx": [1920, 1813],
+    "observation": "The upper and lower front projections each meet a visible solder crown within a few pixels. Native component crop (2060,1720)-(2500,2320) shows the upper front feature as a dark filled or capped joint near (2283,1923), while the lower feature near (2283,2153) is an exposed open annulus. No capacitor body or lead spans this pair. The solder-face crowns can coexist with an open component-side annulus on a plated board, so the apparent mismatch does not itself disprove same-hole registration; it also does not prove C83 was ever fitted. The upper solder crown has a visible stem into the broad B.Cu run joined to registered D41.7/GND. The lower crown joins a separate broad run photo-traced leftward to registered D39.14/P5V; see lower_rail_close_read."
+  },
+  "correction_history": "The 2026-09-27 attempted retraction used old seed-solder-D41 x1451..1781 entries from endpoints.csv and ignored the promoted D41 solder fit in local-package-registration.json, whose note explicitly rejects that wrong package. The CSV coordinates are now reconciled to the promoted x1999..2329 row, restoring the C83 x1920 crowns as strong candidates. Neither candidate is promoted to a proved pad or rail without continuity.",
+  "may_cross_date_population_check": "Independent May 19 native crop (2000,850)-(2800,1450) of PXL_20260519_201927098.jpg clearly shows the D41/D40 gap: one dark capped feature in the upper part and one open annulus lower down, with no capacitor body or bridging leads. This reproduces the July 10 pattern from a separate date and angle. It supports the owner's unpopulated appearance at both dates, while the exact factory assembly still labels C83 and the photos cannot establish why it is unpopulated or whether those two holes are its intended pads.",
+  "decision": "Keep the logical C83 +5 V/GND branch. Treat front upper-to-solder (1920,1585) and front lower-to-solder (1920,1813) as strong photo registrations only. The upper solder conductor joins registered D41.7/GND; the lower broad conductor visibly joins registered D39.14/P5V. Confirm both front-to-back same-hole identities and owner continuity before assigning the physical C83 pair. No owner C83 body, capacitance, or factory DNP cause is established.",
+  "lower_rail_close_read": "Native solder crop (1840,1650)-(2270,1970) of 200522685: the C83 lower candidate near (1920,1813) descends into a wide horizontal run near y≈1900. The nearby registered D41.14/P5V joint (1999,1785) has a brown gap to this run, so it is not the anchor. Following the wide run leftward in crops (0,1680)-(2600,2040) and (500,1350)-(1250,2000) reaches an exposed annulus near (645,1697), then toward the D39 region. Critically, native crop (1080,1810)-(1380,2040) resolves a continuous wide-copper stem from that same run into the registered D39.14 joint near (1213,1949). D39.14 is the source-modeled +5 V power contact, providing a photo-traced +5 V anchor for the lower solder crown. Owner continuity is still unmeasured.",
+  "next_inspection": "With power off, confirm front upper (2283,1923) to solder (1920,1585) and D41.7/GND; confirm front lower (2283,2153) to solder (1920,1813) and D39.14/+5 V. The exposed annulus near (645,1697) is an additional lower-run probe point. Inspect population/value before assigning a PCB footprint."
+}

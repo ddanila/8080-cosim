@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "review_state": "R39 body identity and printed 12-kOhm value photo-supported; pad polarities open",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+  "assembly_observation": "The .009 assembly places vertical R39 immediately left of vertical D35.",
+  "schematic_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101917240.jpg",
+  "schematic_observation": "The exact sheet-2 frame prints R39 as 12к between POF/D35.3/D35.5 and rail A, which the sheet-2 power table defines as +5 V.",
+  "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+  "review_crop_xyxy_original_pixels": [
+    2020,
+    1340,
+    2220,
+    1840
+  ],
+  "lower_visible_joint_px_approx": [
+    2090,
+    1665
+  ],
+  "solder_side_search": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+    "registration_basis": "Approximate local reflection from D35.13 at component (2408,1540) to solder (1839,719); this single-point extrapolation is a search aid only.",
+    "projected_lower_joint_px_approx": [
+      2157,
+      844
+    ],
+    "inspected_crop_xyxy_original_pixels": [
+      2080,
+      770,
+      2220,
+      920
+    ],
+    "observation": "The projected area shows isolated solder features and a horizontal copper segment, but no unique R39 through-hole or uninterrupted route can be associated with the exposed front joint. The registration uncertainty is too large to assign a pad or net.",
+    "decision": "Leave both R39 physical lead identities and POF/+5 V continuity open."
+  },
+  "upper_lead_limit": "The upper body and lead are crossed by two white insulated wires; no individual upper landing is identified in this view.",
+  "observation": "A separate red axial body stands immediately left of the marked К155ЛН5 D35. Rotating its original-resolution crop makes a printed 12К legible. Its orientation, assembly position and nominal value agree with R39. The exposed lower lead ends at a round soldered surface joint without an unambiguous front trace departure in the crop.",
+  "decision": "Identify this populated body as the owner-board R39 candidate with high photo confidence. Preserve the source 12-kOhm value. Do not assign which physical lead is POF or +5 V from position alone.",
+  "next_inspection": "With power off, measure the body value and check each lead separately to D35.3/D35.5/POF and independently marked +5 V; inspect the upper joint beneath the white wires.",
+  "wide_owner_cross_check": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+    "crop_xyxy_original_pixels": [
+      1930,
+      1170,
+      2390,
+      1890
+    ],
+    "observation": "The complete lower R39 lead and its round joint are exposed at about (2090,1665). A nearby straight front-side trace passes separately to the right of the body and joint; no direct bridge from that joint to the trace is visible. Two white insulated wires cross the upper lead area, hiding its individual landing.",
+    "limit": "The photo does not identify which physical R39 lead is POF or +5 V, and the lack of a visible front departure does not prove an isolated pad because a plated opposite-face route may exist."
+  }
+}

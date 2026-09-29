@@ -2,12 +2,17 @@
   "schema_version": 1,
   "scope": "D36-R57-D37-D33 CAS/timing-row identity and placement",
   "coordinate_system": "component-side board millimetres; raw-image centres are observations in PXL_20260710_200445914.jpg",
-  "promotion_rule": "the .006 assembly drawing fixes the lower-row order; literal target markings distinguish the two adjacent KR1533LA3 packages, and the D36/D33 bracketing placements plus the raw-photo pitch interpolate D37 and R57 without borrowing the upper D92/D39 row",
+  "promotion_rule": "the exact .009 assembly drawing fixes the lower-row D36-R57-D37-D33 order and bottom-facing D36/D37/D33 notches; literal target markings distinguish the two adjacent KR1533LA3 packages, and the D36/D33 bracketing placements plus the raw-photo pitch interpolate D37 and R57 without borrowing the upper D92/D39 row",
   "sources": [
+    {
+      "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+      "sha256": "8483bec7e30bc7683a880b0a3123f4d6406f79a47bac44c321983804965a5a39",
+      "role": "exact .009 assembly, native crop (900,1450)-(1950,2250): D36, vertical R57, D37, D33 in sequence, with bottom-facing package notches"
+    },
     {
       "path": "ref/schematics/es101_emaplaat.pdf",
       "sha256": "ef686cd1653965661bea184650f66f8891c3d538c8994852a440169b10ca464d",
-      "role": "assembly order D36, R57, D37, D33 and bottom-facing D37 notch"
+      "role": "older .006 assembly corroboration of the order; no longer the sole placement source"
     },
     {
       "path": "ref/schematics/p2_sheet2.png",
@@ -31,6 +36,7 @@
     }
   ],
   "assembly_order": ["D36", "R57", "D37", "D33"],
+  "exact_009_assembly_recheck": "Native .009 assembly crop (900,1450)-(1950,2250) visibly labels the four positions D36, R57, D37, D33 from left to right. R57 is a vertical resistor directly in the narrow D36/D37 gap. All three package outlines have bottom-facing notches. This independently confirms the lower-row identity and orientation used for the owner component-side pin count; it does not identify the matching solder holes or the CAS-input driver.",
   "lower_row": {
     "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
     "observations": {
@@ -55,5 +61,41 @@
     "orientation_deg": 0,
     "basis": "the .006 drawing places D39 immediately right of D92; the registered component frame literally shows decapped D92 immediately left of this top-notched KR1533LA3, while the separate lower-row target photo literally shows the bottom-notched D37 between R57 and D33"
   },
+  "d36_solder_search_exclusion": "Native crop (1980,460)-(2420,1020) of July solder image PXL_20260710_200522685.jpg has apparent mirrored columns near x2035/x2360, but each continues through more than D36's seven contacts per side in that crop. They cannot be accepted as D36's 14-pin solder footprint merely from the broad cross-face projection. The earlier D36.2 solder seed in endpoints.csv is in the separate 200530933.MP.jpg tile and is already marked registration-only; no D36.12/.13 solder joints or remote source are established by this candidate field.",
+  "d36_second_solder_search_exclusion": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+    "native_crop_xyxy_original_pixels": [2000, 40, 2360, 580],
+    "search_basis": "Extrapolating the independently fitted D56 cross-face corners in d56-fit-correction.json puts the D36 component centre near solder (2187,284), well outside the D56 local fit rectangle; this is a search hint only.",
+    "observation": "The candidate field at approximately x2075/x2260 has at least eight repeated contact levels in each aligned column across the native crop, whereas D36 is a seven-contact-per-side DIP14. The upper and lower aligned joints also run beyond the component-side D36 package's projected height. No unique D36 pin-1 corner or held-out contact can be verified there.",
+    "disposition": "Reject this projected field as a D36 package fit. Do not transfer its copper to D36.12/.13; find the true solder field with local same-hole anchors before tracing the CAS input."
+  },
+  "d36_solder_candidate_from_d40": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+    "native_crop_xyxy_original_pixels": [1650, 40, 2000, 640],
+    "search_basis": "The independently fitted D40 component/solder pair in local-package-registration.json lies below D36 in the same component tile. Extrapolating from D40 shifts the D36 search west of the rejected D56-only projection.",
+    "observed_columns_px_approx": [1715, 1895],
+    "observed_contact_rows_px_approx": [115, 175, 235, 295, 355, 415, 475],
+    "observation": "Two aligned columns each contain seven soldered contacts at the DIP14 pitch. The field lies directly above the independently fitted D40 solder package and near the predicted D36 row. This is a geometrically plausible D36 candidate, unlike the longer field near x2075/x2260.",
+    "cross_check": "The independent D103 and D56 cross-face package centres pull a broad three-package interpolation east of this field, toward the rejected longer x2075/x2260 rows. The divergent projections show that a global transform across these photographed tiles is unsafe. A separate native crop (1260,20)-(1630,630) of the adjacent x1350/x1530 solder field shows eight contact levels per column, so it cannot be used as the expected DIP14 D37 neighbor to certify this candidate. Neither the D36.7 ground nor D36.14 +5 V corner can be uniquely recognized from this crop, and the visible candidate D36.11-level copper does not establish a same-hole match to R57.",
+    "limit": "The x/y extrapolation from D40 has no direct same-hole anchor at D36. The two seven-contact columns are candidate package geometry only: pin numbers, D36 identity, and any CAS-input copper are not yet promoted. Check neighboring R57/D37 contacts and a second independent cross-face anchor before assigning D36.12/.13."
+  },
+  "d36_cross_face_fit_check": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+    "anchors": "D40 component-alt/solder-alt contacts and, independently, D103 contacts from local-package-registration.json; both pairs refer to these exact two images.",
+    "d40_local_affine": "D40 contact fit RMS 0.16 px. Approximate D36 component corners (1830,965), (2000,965), (1830,1310), (2000,1310) project to solder (1925,190), (1745,189), (1923,557), (1743,556). The seven-contact candidate occupies columns near x1715/x1895 and rows y115-475: roughly 30 px horizontally and 75 px vertically away. This is extrapolation above D40, not a D36 same-hole fit.",
+    "r57_negative_check": "The same D40-local transform projects R57's component lead centres (2085,965)/(2085,1195) to solder near (1655,190)/(1654,435). In the native solder crop around x1550-1750 these points lie on bare substrate, not a recognizable pair of joints. Thus the D40 extrapolation cannot validate the R57 neighbor or assign D36 pin numbers to the candidate field.",
+    "independent_d103_check": "A D103-only affine projects the same D36 corners to solder x2142-2307 and y77-424, far east of the seven-contact candidate; D40 held-out RMS is about 294 px. A combined D40+D103 affine has about 24 px anchor RMS and up to about 49 px individual residual, so it cannot be treated as a reliable local registration.",
+    "disposition": "Keep the x1715/x1895 seven-contact field as an unassigned candidate. A verified D36 or R57 same-hole contact in this photo pair is required before tracing D36.12/.13 solder copper."
+  },
+  "d36_component_pin_search": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+    "native_crop_xyxy_original_pixels": [1760, 900, 2040, 1450],
+    "orientation": "The molded notch is at the bottom; counting the complete seven-contact rows makes physical pin 1 bottom-right, pin 7 top-right, pin 8 top-left, and pin 14 bottom-left in this component view.",
+    "pin12_joint_px_approx": [1830, 1195],
+    "pin13_joint_px_approx": [1830, 1250],
+    "observation": "The second and third contacts up from the lower-left pin-14 joint are the source-tied CAS NAND inputs D36.13 and D36.12 respectively. Their component-side joint metal is individually visible; no continuous front-copper bridge between those two joints is proved in the exposed crop. These are package-pin probe centers, not accepted solder-side same-hole matches or a remote driver assignment."
+  },
+  "d36_may_cross_date": "Independent May 19 component photo PXL_20260519_201927098.jpg native crop (1500,1400)-(2150,2350) directly shows the same КР531ЛА12 marking and bottom-facing notch beside the upright 20-ohm R57-position body. The lower-left pin sequence again puts physical D36.12 and D36.13 near May pixels (1900,2050)/(1900,2110), respectively. The two exposed contacts are distinct in this angle; the crop does not prove an F.Cu tie, a same-hole solder match, or the common upstream source. The July coordinates remain the sharper probe centers.",
   "disposition": "D37/D39 physical identities and placements corrected; R57 and R46 vertical placements, lead spans, and schematic values closed; electrical nets unchanged"
 }

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "review_state": "photo-correlated value, electrical measurement still required",
+  "drawing_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101911242.jpg",
+  "drawing_observation": "Both R37 and R36 clock pull-ups are marked 360 on exact .009 sheet 2.",
+  "owner_images": [
+    "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260519_201918916.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260519_201915520.jpg"
+  ],
+  "owner_body_positions_200411500_px_approx": {
+    "R37_left": [605, 2710],
+    "R36_right": [690, 2710]
+  },
+  "owner_observation": "Rotating the native-resolution July crop of the two red axial bodies makes matching printed numerals beginning 360 visible on both. Independent earlier May image 201918916, native crop (2800,2150)-(3650,2850), shows the same fitted pair beside D1; a 180-degree view of its body marks again gives matching leading 360 numerals. The remaining suffix is obscured by glare and body curvature in both dates, so the images do not independently prove tolerance, unit suffix, or an ohmmeter value.",
+  "cross_face_upper_lead_review": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+    "method": "Extrapolate the registered D1 component-to-solder affine from its 40 pin contacts toward the resistor pair left of the CPU; this is a search projection, not a pad fit.",
+    "component_upper_annuli_px_approx": {
+      "R37": [645, 2530],
+      "R36": [730, 2530]
+    },
+    "projected_solder_search_px_approx": {
+      "R37": [2760, 2255],
+      "R36": [2675, 2255]
+    },
+    "observation": "The R37 projection is near an open solder annulus around (2755,2245) with a leftward B.Cu track. No matching open annulus is apparent at the R36 projection. Since these two nominally similar component annuli do not yield a consistent pair of backside matches, the apparent R37 via/trace is not promoted as a physical net route. Neither upper lead is photo-closed to the +12 V rail.",
+    "next_inspection": "Identify both upper front annuli and their opposite-face holes on the physical board, then meter each against a known +12 V pin and against each other."
+  },
+  "may_lead_route_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260519_201915520.jpg",
+    "crop_xyxy_original_pixels": [1350, 2080, 2050, 2550],
+    "observation": "The May component view exposes both red resistor bodies and four distinct local lead joints. A white insulated wire is visibly soldered to the displayed lower resistor's right joint; the upper right joint continues on a separate front trace. Comparing D1 and that wire termination with July 200411500 identifies the May lower displayed body as July's left R37 and the May upper body as July's right R36. The two May left joints end at separate short copper features and have no visible local F.Cu bridge to each other.",
+    "limit": "The cross-date body identity and R37 wire-side solder location are photo-supported; these views do not prove that the wire reaches D35.10/PHI1 or that either other lead is +12 V. The R36 phase-side endpoint also remains unmeasured."
+  },
+  "r36_lower_front_review": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+    "crop_xyxy_original_pixels": [680, 840, 830, 1370],
+    "observation": "A narrow front copper run leaves the R36 lower joint near (760,915), is hidden briefly by the crossing white insulated wire, then a line reappears in apparent alignment and bends west toward the upper lug of the nearby vertical metal-can component. The image does not show an uninterrupted copper path across the wire occlusion.",
+    "metal_can_identity": "The can is an assembly-position candidate C1: the .009 assembly PXL_20260711_114604420.jpg places vertical C1 beside R5 and left of D13/D105, matching the owner component arrangement. Its actual refdes is not closed by a pad match. Exact electrical sheet 1 PXL_20260718_101801729.jpg puts C1=47.0 on the reset RC node, separate from R36's sheet-2 +12-to-PHI2 branch. This source conflict makes the apparent R36-to-can path especially unsafe to promote.",
+    "decision": "The lower R36 path has a more specific local search target than the previously stated wire occlusion alone, but neither a can join, A:14 join, nor clock-phase net is physically closed by this photograph.",
+    "next_inspection": "Identify the metal-can component and continuity-check its upper lug against R36 lower, the C1 reset node/R2 lower lead, the A:14 D1-side wire start near (803,2897) in 200411500, and D35.12 separately."
+  },
+  "conclusion": "The owner markings support the drawing's 360-ohm values for both populated positions. Preserve the existing 360-ohm source assignment and still measure each isolated body before physical promotion; photographed printing and the inconclusive two-face projection do not prove resistance or pad nets."
+}

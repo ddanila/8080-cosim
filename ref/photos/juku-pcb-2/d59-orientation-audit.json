@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "status": "owner-photo D59 orientation resolved; routed copper review open",
+  "reference": "D59",
+  "marking": "КР531ЛН1",
+  "photos": [
+    {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200452717.MP.jpg",
+      "sha256": "b4e4124c1eaf701f6acdf30f041c7a93cd3ab5ca182853c6f0654f1af28c0408",
+      "crop_xyxy_original_pixels": [500, 1900, 2100, 2650]
+    },
+    {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200443117.jpg",
+      "sha256": "2645a1266ef788331123d190391dea3924982bcf3d928a1dbfad982a1246991c",
+      "crop_xyxy_original_pixels": [500, 2150, 1900, 3072]
+    }
+  ],
+  "identification": "The factory lower-centre assembly places D59 between transformer Z1 and the D42/D43/D58 row. The pictured body is marked КР531ЛН1.",
+  "observation": "Both component close-ups show D59's semicircular package notch at the right end, with seven leads along each long edge.",
+  "source_correction": "The former 90-degree source footprint put its notch left. The generator and unrouted source now use 270 degrees, preserving body center (106.6,257.0) mm and moving the separate pin-1 silk dot.",
+  "corrected_source_pads_mm": {"1": [114.22, 253.195], "7": [98.98, 253.195], "8": [98.98, 260.815], "14": [114.22, 260.815]},
+  "source_drc": "165 error violations and 499 unconnected items after correction, unchanged from before correction.",
+  "routed_trial": "Both routed variants still carry 90-degree D59 footprints. In a temporary copy of the primary routed PCB, replacing only D59 with its corrected source footprint while retaining copper produces 20 shorting-items violations, 21 solder-mask bridges, and 14 additional unconnected items relative to the unmodified routed PCB. Twelve of 14 same-site pad positions change net; the two unchanged-net positions are the duplicate OSC_PRE pins 1 and 8.",
+  "solder_photo_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200534267.jpg",
+    "field_crop_xyxy_original_pixels": [2400, 2150, 3050, 2570],
+    "registration": "The 2x7 field about x2530..2915/y2260..2450 is immediately to the solder-view right of the D42 field and matches the component-view D59-D42 order after backside reflection. Its approximately 61-pixel contact pitch and 185-pixel row separation agree with adjacent registered packages. The extra joint near (2975,2260) is outside the seven-contact D59 row and must not be counted as an eighth package pin.",
+    "cross_face_corner_fit": {
+      "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200452717.MP.jpg",
+      "component_corners_px_approx": {"pin7_upper_left": [875,2170], "pin1_upper_right": [1235,2170], "pin8_lower_left": [875,2360], "pin14_lower_right": [1235,2360]},
+      "solder_corners_px_approx": {"pin1_upper_left": [2530,2260], "pin7_upper_right": [2910,2260], "pin14_lower_left": [2530,2450], "pin8_lower_right": [2910,2450]},
+      "check": "The reflected component 360-pixel contact span matches the approximately 380-pixel solder span (scale about -1.06), while both row separations are about 190 pixels. The seventh upper solder contact near x2910 corresponds to component pin7 at the far left; the additional joint near x2975 falls beyond the package field. The three dark inner lower joints affect route reading, not this corner assignment."
+    },
+    "supply_contacts_px_approx": {"pin7_upper_right": [2915, 2260], "pin14_lower_left": [2530, 2450]},
+    "observation": "The right-facing component notch puts pin7 at the solder upper-right and pin14 at the solder lower-left. The upper-right contact has a narrow departure toward the extra joint; the lower-left contact has a separate narrow departure. Neither contact visibly joins the D42/D43 broad GND strip or a photographed +5 V terminal on this local solder crop. Three inner lower-row joints are obscured by dark rework material, but the supply-corner joints remain visible.",
+    "local_plus5_exclusion": "At native resolution, D59.14 near (2530,2450) is a discrete solder crown about 60 pixels right and 50 pixels above the broad +5 V strip spur near (2470,2500). The nearby narrow trace passes below the D59.14 crown without a visible B.Cu join. This spur belongs to the D58.20/D43.14/D42.14 strip traced to D26.26/+5 V in d26-d58-plus5-strip-review.json; mere proximity does not connect D59.14 to it. A front-face route or owner continuity is still required.",
+    "pin14_front_departure": "In native component crop (750,2050)-(1550,2700) of PXL_20260710_200452717.MP.jpg, D59.14 at the lower-right package corner near (1260,2350) runs right to the vertical front conductor near x1300. An enlarged native crop (1200,2290)-(1330,2470) resolves the horizontal neck meeting that vertical copper without a gap. The conductor reaches the left lead of the adjacent pale axial resistor marked 1K0 near (1300,2415) and the right lead of the red axial R32=1K3 body above near (1310,2110). This corrects the earlier narrow-trace description that missed the local joins. The pale 1K0 body is identified as R38 by the separate native .009 assembly read; its far-lead SHIFT_G destination and any independent +5 V continuation remain unproved, so do not call the supply path closed from this local view.",
+    "alternate_pin14_front_waypoint": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200443117.jpg",
+      "native_crop_xyxy_original_pixels": [1050, 2700, 1650, 3072],
+      "pin14_px_approx": [1200, 2875],
+      "resistor_left_lead_px_approx": [1250, 2935],
+      "observation": "The marked КР531ЛН1 package again has its notch right. Its lower-right physical pin14 front trace runs right and then down to the left lead of the adjacent axial resistor marked 1K0. This independently confirms the join also visible in 200452717. The separate native .009 assembly identifies this 1K0 body as R38; this angle alone does not establish its far-lead SHIFT_G net or independently close D59.14 to +5 V."
+    },
+    "r32_source_photo_conflict": "The red body above D59 is registered as R32 by the .009 assembly and its 1K3 marking in r31-r32-oscillator-value-review.json. The visible front copper places its right lead on the same local conductor as physical D59.14 and the neighboring pale 1K0 left lead. A fresh native read of exact sheet-2 PXL_20260718_101908284.jpg crop (1200,550)-(2650,1550) shows R32's left branch on D59.9/OSC_FB and right branch on D59.4/PST_CLK, with neither end at D59.14/P5V; the modeled endpoints in docs/master-oscillator-boundary.md reflect that drawing. This is a source-to-owner topology discrepancy or a still-unseen physical modification, not authority to change the logical netlist from a single photograph. Verify owner D59.14-to-R32-right continuity and R32-left-to-D59.4/D59.9, then inspect any cut or added copper before disposition.",
+    "r32_left_lead_pin_count": "Native crop (850,2040)-(1350,2280) of 200452717 shows seven upper D59 contacts at about x875,932,989,1046,1103,1160,1217 from left to right. With the notch at right, they are physical pins 7 through 1. The red R32 left lead joint near (1067,2105) has a short visible front stem down to the fourth contact from the left near (1046,2170), physical pin4. The right lead near (1305,2105) joins the separate vertical front conductor to pin14, as described above. Thus the photo-visible fitted R32 appears to span D59.4 and D59.14, whereas exact .009 sheet 2 draws D59.4 and D59.9. This is a pin-counted photo inference, pending direct meter checks of both resistor leads.",
+    "r32_two_face_lead_fit": {
+      "front_image": "ref/photos/juku-pcb-2/PXL_20260710_200452717.MP.jpg",
+      "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200534267.jpg",
+      "solder_crop_xyxy_original_pixels": [2350, 2070, 2850, 2520],
+      "method": "Reflect front x through registered D59 pin7/pin1 solder corners (875->2910,1235->2530), and transfer front upper/lower row y2170/2360 to solder y2260/2450. The R32 leads lie about 65 front pixels above D59's upper row, a short extrapolation.",
+      "predicted_solder_left_R32_lead_px_approx": [2707, 2195],
+      "predicted_solder_right_R32_lead_px_approx": [2456, 2195],
+      "visible_solder_joint_centres_px_approx": {"left_R32_lead": [2718, 2198], "right_R32_lead": [2465, 2196]},
+      "observation": "The two distinct exposed solder joints fall about 11 and 9 pixels from their front-derived projections, preserving the resistor lead order after reflection and the approximate 253-pixel joint separation. They add cross-face support for which photographed joints are R32's terminals. The local B.Cu departures differ, but neither alone resolves the front-copper D59.4/D59.14 joins or rules out a cut elsewhere."
+    },
+    "r32_left_solder_gap": "Native solder crop (2660,2140)-(2770,2310) of 200534267 resolves the R32-left joint near (2718,2198) directly above registered D59.4 near (2718,2260). Despite this alignment, brown board and a separate horizontal B.Cu line lie between the two crowns; there is no direct local solder-face neck. The component-side short stem from R32 left to physical D59.4 remains the photo basis for their connection. Do not cite the aligned solder crowns as an independent B.Cu closure; meter the owner contacts to confirm the electrical join.",
+    "r32_second_component_angle": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200443117.jpg",
+      "native_crop_xyxy_original_pixels": [850, 2450, 1350, 3000],
+      "observation": "The independent angle shows the red 1K3 left joint feeding the fourth upper package contact counted from D59's right notch (physical pin4). Its right joint follows a diagonal front trace into the outboard vertical conductor alongside the package; the lower-right package contact (physical pin14) has a visible rightward neck into that conductor, which also reaches the pale 1K0 left joint. This repeats the first image's apparent D59.4-R32-D59.14 physical arrangement under a different perspective, without replacing a direct continuity test or identifying a distant rail."
+    },
+    "r38_assembly_reidentification": "Exact .009 assembly PXL_20260711_114617677.jpg native crop (700,400)-(1500,900) explicitly labels the horizontal resistor right/below D59 as R38. The adjacent fitted pale horizontal body reads 1K0 in both July component angles, matching exact sheet-2 R38=1 kOhm. Its left lead shares the photographed D59.14 and R32-right front conductor, giving a strong candidate for R38's +5 V end; its right lead has not been traced to source SHIFT_G/D42.8/D43.8. The former R38 callout by D50/C95 is actually R58 in 114556899; see c95-d50-r58-placement-review.json. Do not assign R38's pad polarity or change copper until both leads are confirmed by continuity.",
+    "r38_far_lead_waypoint": {
+      "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200452717.MP.jpg",
+      "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200534267.jpg",
+      "front_crop_xyxy_original_pixels": [1200, 2050, 2450, 2750],
+      "detail_crop_xyxy_original_pixels": [1430, 2300, 1710, 2580],
+      "front_open_hole_px_approx": [1545, 2532],
+      "predicted_solder_hole_px_approx": [2203, 2622],
+      "visible_solder_hole_px_approx": [2217, 2640],
+      "observation": "The pale 1K0/R38 right lead runs on a narrow exposed front trace down and right to an open annulus near (1545,2532). The adjacent D42 lower-left contact and its separate front spur do not visibly join that resistor trace in the native detail. Reflecting through registered D59 corners predicts the annulus near solder (2203,2622); an exposed hole around (2217,2640), about 23 pixels away, is a plausible counterpart and has a narrow solder trace heading farther down beyond crop (2000,2400)-(2400,2800). Neither the cross-face identity nor a connection to SHIFT_G is proved by the images.",
+      "next_check": "Power off: confirm the front annulus is the solder hole near (2217,2640), then test it and the R38 far lead to D42.8/D43.8/D35.6 while keeping the nearby D42 contact spur separate."
+    },
+    "r38_candidate_solder_route_limit": "In native solder crop (1900,2350)-(2400,2750) of 200534267, registered D42.8 is the last package-row joint near (2150,2505), beside a distinct outboard joint near (2215,2505). The proposed R38 annulus near (2217,2640) is about 135 px lower, on the far side of the separate broad supply strip; no exposed local B.Cu neck joins it to D42.8. Crop (2050,2570)-(2350,3072) follows its narrow B.Cu stem down to about y2865 and west along a long lower-edge line beyond the crop. A wider y2740..3010 sweep shows that line continuing toward the left edge of this solder tile without a numbered endpoint. This path is a concrete SHIFT_G search corridor, not a proved D42.8 connection; confirm the same-hole match and continuity before promotion.",
+    "r38_candidate_west_tile_chase": {
+      "new_tile": "ref/photos/juku-pcb-2/PXL_20260710_200534267.jpg",
+      "old_tile": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "overlap_fit": "Quarter-density grayscale correlation of new tile x0..750/y2500..2950 against old x2580..2740/y2240..2830 peaks near old_x=new_x+2672, old_y=new_y-204 (correlation about 0.755). This refines the earlier search translation (-2664,+196) for this lower-edge overlap; line identity was also checked visually across three parallel runs.",
+      "old_tile_west_bend_px_approx": [1155, 2655],
+      "old_tile_open_hole_px_approx": [1155, 2390],
+      "observation": "The middle of the three lower-edge lines in the new tile is the proposed R38-hole solder departure. At the overlap it corresponds to the nested old-tile line near y2655, which remains visually continuous west, bends north near x1155, and terminates at a separate exposed plated hole around (1155,2390) in native crop (1080,2250)-(1250,2440). The neighboring parallel line bends farther west and must not be confused with it. The endpoint has no registered component contact or source net yet.",
+      "limit": "This extends a conditional photo route only: the first front R38 annulus-to-solder (2217,2640) match still needs confirmation, and the west hole's front counterpart and SHIFT_G relationship are unknown. Power-off continuity between both solder holes and D42.8/D43.8/D35.6 is the direct next check."
+    },
+    "r38_west_hole_front_search_limit": "Using the adjacent registered D43 corner rather than the distant D59 corner, solder hole (1155,2390) projects only approximately to component (2555,2285) in PXL_20260710_200452717.MP.jpg: D43.14 front (2500,2410) corresponds to solder (1210,2505), and its reflected package span is about unit scale. Native front crop (2250,2000)-(2800,2550) puts that search point at the crowded right edge of the D43 body/front gap trace, without an isolated open annulus to adopt. The visible solder hole remains the practical bench probe target; do not call a front same-hole match or front-net join from this extrapolation.",
+    "limit": "Do not infer owner D59 rail identity from the neighboring D42/D43 strip geometry. Follow the narrow departures across both faces or meter D59.7 to known ground and D59.14 to known +5 V with power off."
+  },
+  "disposition": "Do not rotate either routed footprint without a pin-aware reroute and DRC review. D59 orientation and supply-corner solder locations are photo-supported; owner-board supply continuity remains open."
+}

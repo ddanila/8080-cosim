@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "question": "Can archived target-board photos establish VD3 cathode lead and its copper net?",
+  "source_schematic": {
+    "path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101927794.jpg",
+    "sha256": "a31896156ad7e1bc35e59ee43223babd3d39f40f2a086152d26f76cf14c71aa9",
+    "reading": "VD3 cathode is at the R66.2/R67.1 junction (SOUND_CLAMP); anode is at ground."
+  },
+  "component_views": [
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "dimensions_px": [4080, 3072],
+      "inspection_bbox_px": [3260, 1610, 3660, 2210],
+      "observation": "The vertical glass diode sits between R67 and R66. A dark circumferential band appears near its upper end, consistent with a cathode mark, but the adjacent raised lead and lacquer hide a unique net chase."
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
+      "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
+      "dimensions_px": [4080, 3072],
+      "observation": "Independent oblique view shows the same installed diode and upper dark band; it does not expose a soldered copper endpoint."
+    }
+  ],
+  "solder_view": {
+    "path": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+    "dimensions_px": [4080, 3072],
+    "registration_source": "ref/photos/juku-pcb-2/c94-endpoint-registration.json",
+    "transform": "D102-local board-to-component inverse followed by component-to-solder affine; these are model-pad projections, not identified physical solder joints",
+    "model_pad_projection_px": {
+      "VD3.2_SOUND_CLAMP_upper": [691.8, 1033.2],
+      "VD3.1_GND_lower": [684.6, 868.0],
+      "R66.2_SOUND_CLAMP_upper": [619.9, 1035.1],
+      "R66.1_P12V_lower": [612.7, 869.8],
+      "R67.1_SOUND_CLAMP": [762.0, 930.0]
+    },
+    "observation": "The projected sites lie among backside copper and holes, but the component-side diode leads are raised/lap-soldered and no matching VD3 through-hole annulus is identifiable. Nearby backside copper cannot establish either diode lead net."
+  },
+  "model_state": {
+    "upper_physical_pad": "VD3.2 on SOUND_CLAMP",
+    "lower_physical_pad": "VD3.1 on GND",
+    "pin_names": "generic D_DIODE labels 1=K and 2=A, contradicting exact .009 schematic polarity",
+    "disposition": "Value/placement retained. Do not claim polarity or remap pad numbers until cathode-band lead and continuity to R66.2/R67.1 and ground are both established."
+  }
+}

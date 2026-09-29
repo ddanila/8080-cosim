@@ -2,6 +2,7 @@
   "schema_version": 1,
   "board": "kicad/juku_routed.kicad_pcb",
   "board_sha256": "3a1f83c8277624f2c04633761de5703550420443839fb3d5e49eea2c8a99e266",
+  "superseded_by": "ref/routing/d57-clock-correction.json",
   "toolchain": {
     "kicad_cli": "/usr/bin/kicad-cli-nightly",
     "kicad_version": "10.99.0",

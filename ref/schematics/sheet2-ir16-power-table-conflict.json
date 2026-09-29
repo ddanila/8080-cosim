@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "confirmed 16/8 table/package-width error; D42/D43 owner rail paths photo-closed, D41 supply still requires independent closure",
+  "table_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101927794.jpg",
+  "table_crop_original_px": [
+    0,
+    2150,
+    3072,
+    3920
+  ],
+  "table_observation": "Original-pixel reread of PXL_20260718_101924004.jpg shows the full header 555 ИР16 in the second device column, with A(+5) pin16 and ground pin8 in that column. The overlapping PXL_20260718_101927794.jpg shows the table continuation. This is a literal 16/8 entry for ИР16, not a column-boundary or blurred-letter ambiguity.",
+  "device_refs": [
+    "D41",
+    "D42",
+    "D43"
+  ],
+  "counterevidence": [
+    "The official .009 component census identifies D41-D43 as К555ИР16.",
+    "ref/video/ir16-device-contract.json gives К555ИР16 as a 14-contact SN74LS295B-class package with pin7 GND and pin14 VCC.",
+    "ref/photos/juku-pcb-2/local-package-registration.json fits the physical D41 component and solder seven-contact row, pin1 through pin7; the model's other row ends at pin14.",
+    "Owner component photo PXL_20260710_200452717.MP.jpg shows D42 and D43 both marked К555ИР16 with seven contacts on each side; no pin16 exists on either photographed package.",
+    "ref/photos/juku-pcb-2/d42-d43-orientation-audit.json photo-traces D42/D43 physical pin7 through the shared upper strip to the engraved GND terminal, and physical pin14 through D58.20/D26.26 to the engraved +5 V terminal."
+  ],
+  "disposition": "Fitted D41-D43 are 14-contact ИР16 packages, so table pins16/8 cannot apply. Keep pin14 +5 V and pin7 GND in the model. The owner D42/D43 rail paths are photo-closed to marked power terminals; optional power-off meter checks would independently confirm them. D41.7 has a local broad-strip join. D41.14's proposed front/solder through-hole route reaches a solder annulus that also visibly joins registered D38.1/CAS, making the D41 owner supply route unresolved and requiring direct continuity before any net change. Routed D42/D43 copper still needs pin-aware correction.",
+  "next_evidence": "Power off, meter D41.7 to known GND and D41.14 through the proposed front/solder open-hole candidate (2230,2180)/(1974,1845) to the far hole (1844,2285)/(2360,1950), D38.1, and known +5 V; optionally confirm D42/D43 rail paths electrically. Recheck the cross-face hole identifications and D38 pin indexing if D41.14-D38.1 continuity is found. Separately reroute and DRC-check the routed D42/D43 footprints, which retain old physical pin positions.",
+  "d38_1_source_recheck": "Native crop (1000,3000)-(2550,4080) of exact .009 sheet-2 photo ref/photos/dgsh5-109-009-e3/PXL_20260718_101908284.jpg shows the D38 four-input gate's pin1 input on numbered rail 15; ref/schematics/p2_sheet2.png is an older .006 render and was the wrong provenance citation. The sheet-2 RAM array and timing transcription identifies rail 15 as the shared CAS line. This corroborates the D38.1/CAS model assignment independently of the photographed D38 pin fit, leaving the proposed D41.14-to-D38.1 photo route as a real unresolved contradiction.",
+  "contract_recheck_2026_09_27": "Independent reread of the Texas Instruments SDLS154 SN54LS295B/SN74LS295B datasheet (TI-authored PDF mirrored at https://www.syntax.com.tw/upload/pdf/IC-74LS295.pdf) confirms the 14-contact package, GND pin7 and VCC pin14. This matches the preserved contract and the owner D41 seven-contact row; the factory table’s 16/8 numbers cannot be fitted D41-D43 supply pins.",
+  "d42_d43_owner_photo_check": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200452717.MP.jpg",
+    "sha256": "b4e4124c1eaf701f6acdf30f041c7a93cd3ab5ca182853c6f0654f1af28c0408",
+    "crop_xyxy_original_pixels": [
+      1400,
+      2020,
+      2750,
+      2570
+    ],
+    "identification": "The factory lower-centre assembly places D59, D42, D43, D58 in sequence. The owner crop shows the two adjacent middle bodies both marked К555ИР16, followed by the wider КР580ИР82 D58.",
+    "observation": "Each marked ИР16 has seven visible contact tips on its upper row and seven on its lower row, establishing 14 physical leads for D42 and D43 independently of the already registered D41 seven-contact row. Neither body has a physical pin 16.",
+    "limit": "The component crop proves 14 leads and right-facing notches. The separate solder overlap audit now photo-traces D42/D43 physical pin7 and pin14 to engraved GND and +5 V anchors; see d42-d43-orientation-audit.json and d26-d58-plus5-strip-review.json. The component crop alone does not prove those rails, and owner meter continuity remains optional independent confirmation."
+  }
+}

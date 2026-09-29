@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "scope": "legible capacitor values on the native .006 electrical sheets reused by the .009 target model",
+  "scope": "legible capacitor values on retained native circuits plus exact .009 supply-group boundaries for target-held capacitors",
   "promotion_rule": "promote only a value printed unambiguously beside the same refdes and retained circuit; do not inherit values from target-reused refdes or infer missing units from incomplete target body markings",
   "sources": [
     {
@@ -15,19 +15,68 @@
       "path": "ref/schematics/p2_sheet2.png",
       "sha256": "02e8ce5380a591e292a298d6cd1de13fb26489aaa87ee7e991d21cd82b2ab27c",
       "sheet": 2,
+      "revision": ".006 retained circuit",
       "regions_px": {
         "d56_timing": [2450, 1450, 1000, 900]
       }
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101927794.jpg",
+      "sha256": "a31896156ad7e1bc35e59ee43223babd3d39f40f2a086152d26f76cf14c71aa9",
+      "sheet": 2,
+      "revision": ".009 exact",
+      "crop_xyxy_original_pixels": [350, 200, 1500, 1150],
+      "observation": "The D56 timing detail independently prints C7=560 and C8=15Н on the same two one-shot RC branches retained from .006."
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101827714.jpg",
+      "sha256": "960516eaf3a98d1caf5c543f9e131cea482766eb7e3e66e60655d3e4264bb7b0",
+      "sheet": 1,
+      "observation": "exact .009 supply detail groups C9-C12 and C15 on the +5 V-to-ground bypass branch; this does not identify each photographed pad or value"
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg",
+      "sha256": "40a524d663dc4685a7093782165264524cd70780fb41638a8d1c0cbca0b36216",
+      "sheet": 1,
+      "observation": "exact .009 D7/D9 decode detail prints C99=160 and draws its second plate to the perpendicular ground-bar symbol"
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101911242.jpg",
+      "sha256": "d30b527eeef67ebc587014909b6f8ac347174f594c2bde236a7b3fcf92f0e1b8",
+      "sheet": 2,
+      "observation": "exact .009 D34 detail prints bare 560 immediately beside C5"
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101908284.jpg",
+      "sha256": "aa586c8eef859bdcaa1454e0c53378f8f45ea78454c5df76027f115efba5f652",
+      "sheet": 2,
+      "observation": "exact .009 D33 detail prints bare 56 immediately beside C6; the same sheet prints bare 56 beside C29"
     }
   ],
   "closed": [
+    {
+      "ref": "C5",
+      "value": "560",
+      "normalized": "560 pF",
+      "source_sheet": 2,
+      "circuit": "D34 counter-load pulse shaper",
+      "observation": "the literal 560 is printed beside C5; the native-sheet bare-value convention gives 560 pF"
+    },
+    {
+      "ref": "C6",
+      "value": "56",
+      "normalized": "56 pF",
+      "source_sheet": 2,
+      "circuit": "D33 clock-gate input",
+      "observation": "the literal 56 is printed beside C6; the native-sheet bare-value convention gives 56 pF"
+    },
     {
       "ref": "C7",
       "value": "560",
       "normalized": "560 pF",
       "source_sheet": 2,
       "circuit": "D56 section-2 one-shot timing",
-      "observation": "the literal 560 label is printed directly below C7; the sheet convention uses bare values below 1000 as picofarads"
+      "observation": "the literal 560 is printed directly below C7 in both the older .006 render and the exact .009 D56 tile; the sheet convention uses bare values below 1000 as picofarads"
     },
     {
       "ref": "C8",
@@ -35,7 +84,7 @@
       "normalized": "15 nF",
       "source_sheet": 2,
       "circuit": "D56 section-1 one-shot timing",
-      "observation": "the literal 15Н label is printed directly below C8; Cyrillic Н is the nanofarad unit marker"
+      "observation": "the literal 15Н is printed directly below C8 in both the older .006 render and the exact .009 D56 tile; Cyrillic Н is the nanofarad unit marker"
     },
     {
       "ref": "C99",
@@ -43,18 +92,28 @@
       "normalized": "160 pF",
       "source_sheet": 1,
       "circuit": "D7/D9 decode RC path",
-      "observation": "the literal 160 label is printed beside C99; its far endpoint remains a separate continuity boundary"
+      "observation": "the literal 160 label is printed beside C99; exact .009 sheet 1 closes C99.2 to GND, while physical pad assignment and population remain unproved"
+    }
+  ],
+  "source_nominal_without_footprint": [
+    {
+      "ref": "C29",
+      "value": "56",
+      "normalized": "56 pF",
+      "source_sheet": 2,
+      "circuit": "post-R35 D35.13 clock-shaping branch",
+      "observation": "exact .009 sheet 2 prints C29=56 with no unit glyph; the same native-sheet bare-value convention used for C6 gives nominal 56 pF. The owner-board body, pad pair, and physical value remain unproved"
     }
   ],
   "held": [
-    {"ref": "C9", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; target value and endpoints are unread"},
-    {"ref": "C10", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; target value and endpoints are unread"},
-    {"ref": "C11", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; target value and endpoints are unread"},
-    {"ref": "C12", "reason": "the .009 target refdes replaces the .006 trimmer identity; target value and endpoints are unread"},
-    {"ref": "C15", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; target value and endpoints are unread"},
+    {"ref": "C9", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value, physical pad polarity, and cable-hidden population remain open"},
+    {"ref": "C10", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value and physical pad polarity remain open"},
+    {"ref": "C11", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value, physical pad polarity, and body population remain open"},
+    {"ref": "C12", "reason": "the .009 target refdes replaces the .006 trimmer identity; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value and physical pad polarity remain open"},
+    {"ref": "C15", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value and cable-obscured pad polarity remain open"},
     {"ref": "C16", "reason": "target body reads bare 27 without a unit or decimal letter, which is incomplete under GOST 11076-69"},
     {"ref": "C19", "reason": "target body reads bare 22 without a unit or decimal letter, which is incomplete under GOST 11076-69"},
     {"ref": "C34", "reason": "the native sheet proves the rail endpoints but prints no value"},
-    {"ref": "C94", "reason": "the former 680 value was a misread of the adjacent three-lead VT2 body marked Б/8901; the separately drawn target C94 is not resolved in owner imagery"}
+    {"ref": "C94", "reason": "the former 680 value was a misread of adjacent three-lead VT2 marked Б/8901; exact .009 sheet 1 proves C94 is a separate +5 V/GND bypass, while its physical population, value, and pad polarity remain unresolved"}
   ]
 }

@@ -291,7 +291,7 @@ def main() -> int:
         "and passes its upstream synthetic NTSC",
         "regression, then pins the float32/headless and explicit-profile E2E paths.",
         "The WP3 fixture consumes exact Juku raster evidence, but it makes no",
-        "physical-X7, framebuffer-agreement, or hardware claim.",
+        "physical-VIDEO_OUT, framebuffer-agreement, or hardware claim.",
         "",
         "## Command",
         "",
@@ -420,7 +420,7 @@ def main() -> int:
         "positive/negative generated fixtures, and green full-build/test CI. The",
         "bounded WP3 fixture additionally proves receiver lock at the exact guarded",
         "Juku raster timing without promoting it to a built-in preset. Physical pixel",
-        "slots, D34_SIG/X7 integration, and framebuffer validation remain open.",
+        "slots, D34_SIG/VIDEO_OUT integration, and framebuffer validation remain open.",
         "",
     ])
     REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")

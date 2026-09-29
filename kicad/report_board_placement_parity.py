@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+"""Report footprint placement drift from the source PCB to routed variants."""
+
+from pathlib import Path
+
+import pcbnew
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE = ROOT / "kicad/juku.kicad_pcb"
+ROUTED = [ROOT / "kicad/juku_routed.kicad_pcb", ROOT / "kicad/juku_routed_candidate.kicad_pcb"]
+REPORT = ROOT / "docs/board-placement-parity.md"
+
+
+def placements(path: Path) -> dict[str, tuple[float, float, float]]:
+    board = pcbnew.LoadBoard(str(path))
+    return {
+        footprint.GetReference(): (
+            pcbnew.ToMM(footprint.GetPosition().x),
+            pcbnew.ToMM(footprint.GetPosition().y),
+            footprint.GetOrientationDegrees() % 360,
+        )
+        for footprint in board.GetFootprints()
+    }
+
+
+def differs(a: tuple[float, float, float], b: tuple[float, float, float]) -> bool:
+    return abs(a[0] - b[0]) > 0.01 or abs(a[1] - b[1]) > 0.01 or abs((a[2] - b[2] + 180) % 360 - 180) > 0.1
+
+
+def fmt(pos: tuple[float, float, float]) -> str:
+    return f"({pos[0]:.3f}, {pos[1]:.3f}) mm / {pos[2]:.1f}°"
+
+
+def main() -> int:
+    source = placements(SOURCE)
+    lines = [
+        "# Source-to-routed footprint placement parity", "",
+        "This compares footprint reference, centre, and rotation in the source PCB with both routed variants. Tolerance: 0.01 mm and 0.1°. It does not verify whether the source PCB itself matches the owner board or whether copper follows a moved footprint.", "",
+        "| Routed PCB | Missing source refs | Extra refs | Moved/rotated refs |", "| --- | --- | --- | --- |",
+    ]
+    details = []
+    total_gaps = 0
+    for path in ROUTED:
+        routed = placements(path)
+        missing = sorted(source.keys() - routed.keys())
+        extra = sorted(routed.keys() - source.keys())
+        changed = sorted(ref for ref in source.keys() & routed.keys() if differs(source[ref], routed[ref]))
+        total_gaps += len(missing) + len(extra) + len(changed)
+        lines.append(f"| `{path.relative_to(ROOT)}` | {', '.join(missing) or 'none'} | {', '.join(extra) or 'none'} | {', '.join(changed) or 'none'} |")
+        details.append((path, source, routed, changed))
+    lines += ["", "## Position differences", "", "| Routed PCB | Ref | Source centre / rotation | Routed centre / rotation |", "| --- | --- | --- | --- |"]
+    for path, source, routed, changed in details:
+        for ref in changed:
+            lines.append(f"| `{path.name}` | `{ref}` | {fmt(source[ref])} | {fmt(routed[ref])} |")
+    lines += [
+        "", "The source PCB now places D11 at the two-view owner-photo position; both routed variants retain the old D11 position and copper. The exact .009 assembly and owner component image place D12 above D3 (`ref/photos/juku-pcb-2/d12-d3-local-placement.json`); the source PCB has that corrected placement. Both routed variants retain D12's old left-of-D3 estimate inside the corrected D11 area and omit source-placed R9/R10. D26, D27, D6, and D9 also differ as listed above; see their individual placement audits and `docs/r9-r10-routed-collision-audit.md`.", "",
+    ]
+    REPORT.write_text("\n".join(lines), encoding="utf-8")
+    print(f"Placement parity: {total_gaps} source-to-routed gaps across {len(ROUTED)} boards")
+    return int(bool(total_gaps))
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

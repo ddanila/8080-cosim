@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "review_state": "C89 assembly position known; visible D38-left annuli remain unassigned",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+  "assembly_crop_xyxy_original_pixels": [860, 1270, 1360, 1850],
+  "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+  "owner_crop_xyxy_original_pixels": [1780, 2230, 1920, 2740],
+  "visible_features_px_approx": {
+    "upper_open_annulus": [1842, 2298],
+    "middle_filled_joint": [1870, 2470],
+    "upper_white_wire_exposed_tip_no_visible_solder": [1810, 2420],
+    "lower_white_wire_termination": [1810, 2694],
+    "lower_open_annulus": [1872, 2694]
+  },
+  "assembly_to_owner_vertical_screen": {
+    "method": "Approximate drawing-to-photo vertical scale from D38 outline top/bottom in assembly crop (about y1311/1650 native) to registered owner D38 pin-1/pin-7 y2280/2614; this is a positional screen, not a pad registration.",
+    "assembly_c89_upper_lower_lead_y_px_approx": [1284, 1475],
+    "projected_owner_lead_y_px_approx": [2253, 2442],
+    "owner_upper_middle_lower_site_y_px_approx": [2298, 2470, 2694],
+    "assessment": "The upper open annulus and middle filled joint are vertically closer to the two drawn C89 leads (about 45/28 px) than the lower open annulus, which is over 250 px below the projected lower lead. This was a positional priority only. The upper annulus's likely solder counterpart is on the D38.1/CAS copper, so geometry alone cannot justify the upper/middle pair as C89's +5 V/GND bypass."
+  },
+  "upper_annulus_cas_conflict": {
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "registered_d38_1_solder_px": [2244, 1950],
+    "component_upper_annulus_px_approx": [1842, 2298],
+    "d38_local_projection_solder_px_approx": [2355, 1964],
+    "visible_solder_open_annulus_px_approx": [2355, 1950],
+    "observation": "The open solder annulus near (2355,1950) has an uninterrupted short horizontal copper run west to registered D38.1 at (2244,1950). A separate close read shows the same annulus joined east to a narrow trace from the proposed D41.14 via near (1974,1845), creating a possible CAS/VCC conflict. The source board assigns D38.1 to CAS, separate from +5 V and ground. The projected component upper annulus is about 14 px below that solder hole, within the same order of local photo-fit offset seen elsewhere; it is a plausible, not physically proven, through counterpart.",
+    "assessment": "If the two annuli are the same hole, the upper C89-position site is on D38.1/CAS and cannot be one lead of the source-drawn +5 V/GND bypass. The same copper also requires a direct D41.14-to-D38.1 continuity check before either net assignment is promoted. Withdraw the assembly-position upper/middle pair as the preferred C89 footprint until the through-hole match is checked."
+  },
+  "middle_joint_ground_chase": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "middle_filled_joint_px_approx": [1870, 2470],
+    "front_trace_turn_px_approx": [1870, 2636],
+    "front_trace_meets_d38_7_lower_leg_px_approx": [1955, 2636],
+    "registered_d38_7_pad_centre_px": [1964, 2614],
+    "source_board_net": "GND",
+    "observation": "A native crop (1820,2520)–(2010,2680) shows uninterrupted front copper south from the middle filled joint, then east into the lower edge of D38's bottom-left pin-7 solder leg. The contact point is about 22 px below the registered pad center because the trace meets the lower leg edge. The source board independently assigns D38.7 to GND. This supports the middle C89-position joint as a ground contact, while its identity as a C89 pad remains unproved."
+  },
+  "local_vcc_reference": {
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "native_crop_xyxy_original_pixels": [1800, 1850, 2350, 2300],
+    "registered_d38_14_solder_px_approx": [2078, 1951],
+    "observation": "The mirrored D38 pin fit places physical pin14 near (2078,1951), where its joint visibly meets the broad upper B.Cu strip. This strip is separated by brown board from the narrower D38.1/CAS trace and upper open annulus near (2355,1950). Pin14 is the local device-contract +5 V reference for comparing C89 candidate holes with a power-off meter, but the photo has not carried that strip to an engraved +5 V terminal or identified a C89 pad on it."
+  },
+  "lower_annulus_solder_search": {
+    "component_lower_open_annulus_px_approx": [1872, 2694],
+    "d38_local_solder_projection_px_approx": [2340, 2364],
+    "d92_local_solder_projection_px_approx": [2334, 2356],
+    "visible_east_open_annulus_solder_px_approx": [2327, 2347],
+    "visible_west_open_annulus_solder_px_approx": [1607, 2342],
+    "d92_local_back_to_front_east_hole_px_approx": [1879, 2685],
+    "d92_local_back_to_front_west_hole_px_approx": [2608, 2680],
+    "earlier_component_image": "ref/photos/juku-pcb-2/PXL_20260519_201907078.jpg",
+    "earlier_component_hole_below_decapped_d92_px_approx": [2470, 620],
+    "observation": "The D38-local projection is roughly 21 px from an open solder annulus near (2327,2347). An independent D92 pin-1/7/8 reflection projects the component lower annulus near (2334,2356), about 12 px from that same hole; the inverse D92 fit places the solder hole near front (1879,2685), also about 12 px from the visible lower annulus (1872,2694). A narrow uninterrupted solder trace runs west from the east hole to another open annulus near (1607,2342), visibly separate from the wide return rail below. The west hole's projected front point (2608,2680) falls under the decapped D92 package edge in July. An independent May component view also shows a bare hole immediately below the decapped package near (2470,620), but the package hides its onward front copper in both views. The two fits strengthen the lower annulus pairing but neither end is registered to +5 V, so this does not establish a C89 partner."
+  },
+  "lower_annulus_front_departure": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "inspection_crop_px": [1750, 2600, 2300, 3072],
+    "observation": "The lower open annulus near (1872,2694) has a visible straight component-side trace continuing south into the body-covered field of the next vertical DIP package. The copper is hidden beneath that package before it reaches any registered pad in this tile. This is consistent with the west solder hole's projected front region also being package-obscured; neither observation identifies +5 V."
+  },
+  "observation": "The .009 assembly draws C89 as a vertical two-lead body to the left of D38. On the owner component face, the upper open annulus has a continuous straight front trace downward through this crop; it does not visibly stop at the middle filled joint. The middle filled joint has its own front trace running down and then right toward the D38-side pin field. A close native crop (1720,2190)–(1940,2800) shows the upper white cable's exposed metal tip near (1810,2420) over the parallel-trace field without a discernible solder pool or pad; this is the weak A10B tip candidate, not a registered wire landing. The lower white cable is visibly soldered to a joint near (1810,2694) on the left-hand vertical route. A lower open annulus is also visible. No capacitor body spans these features and no pair can be identified from the assembly outline alone.",
+  "decision": "Keep the open annuli, filled joint, lower soldered wire joint, and upper unsoldered-looking cable tip distinct. The middle filled joint has a photo-supported front-copper route to D38.7/GND and is the best ground-side C89 search contact. The upper open annulus's likely solder counterpart photo-traces to D38.1/CAS, conflicting with C89's +5 V/GND role if that through-hole pairing is correct. The lower annulus's likely backside hole instead runs to another open hole, with no supply anchor visible on this face. No +5 V partner or capacitor pad pair is proved; do not model C89 until both site identities are checked.",
+  "next_inspection": "With power off, first confirm the middle filled joint (1870,2470) to D38.7/GND. Test the upper open annulus (1842,2298) to solder hole (2355,1950), D38.1/CAS, and D38.14/local +5 V reference; if continuous to D38.1 and isolated from D38.14, exclude it from C89's +5 V/GND pair. Test the lower open annulus (1872,2694) to solder hole (2327,2347), west hole (1607,2342), D38.14, and an independently known +5 V contact. Keep both white cables separate from all three sites. Only identify a C89 pair after one physical site is proved +5 V and the other ground."
+}

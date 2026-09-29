@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "coordinate_system": "component-side board millimetres; source-image pixels are unscaled originals",
-  "status": "D56 trigger pins 1/9 photo-closed to the pin-8 ground perimeter while its separate three-callout field remains electrically held; D15 cut pair and the D14 local ground link photo-closed; D11 endpoints and remaining D14 paths pending",
+  "status": "D56 component fit corrected to marked AG3 and cross-side solder pad identities retained; D56 trigger pins 1/9 photo-closed to pin-8 ground perimeter while three-callout material remains held; D15 cut pair and D14 local ground link photo-closed; D11 endpoints and remaining D14 paths pending",
   "d56": {
     "drawing": {
       "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114638730.MP.jpg",
@@ -27,6 +27,8 @@
       ]
     },
     "trigger_ground_rail": {
+      "review_state": "accepted",
+      "superseded_by": "ref/photos/juku-pcb-2/d56-fit-correction.json",
       "source_net": "GND",
       "package_ground_pin": "8",
       "trigger_pins": ["1", "9"],
@@ -46,9 +48,11 @@
           "observation": "independent overlap repeats both rail contacts and the uninterrupted left-edge return between the pin-1 and pin-8 levels"
         }
       ],
-      "result": "D56.1 A_N and D56.9 A2_N are physically grounded with D56.8 on the installed .009 board. This resolves both B-input trigger prerequisites independently of the separate position-159 D56.5/D56.12 callout field."
+      "result": "The corrected marked-AG3 component fit aligns with all four outer corners of the independent solder fit, retaining the photographed uninterrupted D56.1/D56.8/D56.9 ground copper."
     },
     "callout_field": {
+      "review_state": "accepted_geometry",
+      "superseded_by": "ref/photos/juku-pcb-2/d56-fit-correction.json",
       "registered_level": "D56.12/D56.5 row",
       "package_fits": {
         "component": "docs/photo-registration/local-packages/D56-component.jpg",
@@ -70,13 +74,13 @@
           "observation": "overlap view independently repeats the left annulus, both package joints, their collinear order, and the gaps to the adjacent rail"
         }
       ],
-      "result": "The factory detail's three position-159 locations register as the separate left annulus plus D56.5 and D56.12 at one physical level. The photographed bare-board copper leaves visible gaps between both package pads and the nearby horizontal rail, but the position-150 tubing and unexpanded position-159 callout do not prove what conductor or material was installed at assembly."
+      "result": "The corrected marked-AG3 component fit cross-checks the independent D56 solder package. The three position-159 locations remain the separate left annulus plus D56.5 and D56.12 at one physical level; their installed material and auxiliary-annulus conductor remain open. Position 150 is tubing."
     },
     "callout_identity_evidence": {
       "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114649169.jpg",
       "observation": "Assembly note 11 says to fit tubing positions 157 and 150 at solder locations; this disproves the former position-150-equals-cut interpretation. The specification identity of position 159 was not photographed, so it remains a guarded solder-location callout rather than an inferred material or conductor."
     },
-    "remaining_boundary": "D56.1 and D56.9 are photo-closed to the D56.8 ground perimeter. The separate three physical position-159 locations are fixed as the left annulus, D56.5, and D56.12; determine the installed conductor/material and continuity among those locations and the adjacent rail directly or recover the complete item-159 specification. Position 150 remains tubing, and no callout-row gap is promoted as an assembly cut or source-net change."
+    "remaining_boundary": "The corrected D56 component fit aligns with the independent solder footprint, preserving D56.1/D56.9 ground and the D56.5/D56.12 pad identities. Determine the installed position-159 conductor/material and auxiliary-annulus continuity; no callout-row gap is promoted as a cut or net change. Position 150 remains tubing."
   },
   "d15": {
     "drawing": {
@@ -100,6 +104,7 @@
         "solder_confirmation": {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200514102.jpg",
           "image_px": [2965.0, 2085.0],
+          "coordinate_kind": "trace-segment witness, not a registered drill centre",
           "observation": "short diagonal solder-side copper reaches D15.8"
         }
       },
@@ -119,6 +124,7 @@
         "solder_confirmation": {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200514102.jpg",
           "image_px": [2962.0, 2129.0],
+          "coordinate_kind": "trace-segment witness, not a registered drill centre",
           "observation": "short diagonal solder-side copper reaches D15.9"
         }
       }
@@ -149,12 +155,14 @@
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
           "upper_endpoint_px": [2576.3, 1344.1],
           "lower_endpoint_px": [2576.8, 1421.7],
+          "coordinate_kind": "component-side copper-strip witnesses near the D32.4 and D14.1 landings, not physical lead centres",
           "observation": "one uninterrupted vertical component-side copper strip joins the adjacent D32.4 and D14.1 annuli"
         },
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
           "upper_endpoint_px": [1191.6, 1464.0],
           "lower_endpoint_px": [1191.8, 1543.9],
+          "coordinate_kind": "component-side copper-strip witnesses near the D32.4 and D14.1 landings, not physical lead centres",
           "observation": "independent close view shows the same uninterrupted inter-package copper strip"
         }
       ],
@@ -164,30 +172,38 @@
       "component_observations": [
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
-          "image_px": [2576.0, 1677.0],
-          "observation": "open annulus below D14.4, separated from the four package leads"
+          "image_px": [2600.0, 1668.0],
+          "observation": "open annulus below D14.4 at the end of its visible front-copper stem; the former (2576,1677) coordinate landed beside the white wire, not on the drill"
         },
         {
           "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
-          "image_px": [1190.0, 1806.0],
-          "observation": "independent view repeats the same open annulus and adjacent trace geometry"
+          "image_px": [1215.0, 1798.0],
+          "observation": "independent view repeats the open annulus and stem; the former (1190,1806) coordinate landed beside the white wire"
         }
       ],
-      "result": "The fifth left-field landing is physically registered in two component views but has no accepted pin/net or fabrication drill geometry."
+      "result": "The corrected fifth left-field annulus is registered in two component views. Its short front-copper stem visibly joins D14.4. The D11-local cross-face fit now matches it to the distinct solder hole near (2424,1513) in 200506061, below D14.4 solder near (2426,1472). The matched strip also photo-joins registered D29.10 in overlapping solder view 200509593; exact .009 sheet-1 power table names both D14.4 and D29.10 GND. Owner continuity, any other remote conductor, and fabrication geometry remain open.",
+      "rejected_solder_projection": {
+        "projection_basis": "Corrected provisional board centre (209.095,49.491) mm through the broad solder_grid board-to-panorama homography and archived tile inverses; cross-region absolute accuracy is not established",
+        "PXL_20260710_200506061.jpg": "projected near (2038,1556); a distinct narrow-trace drilled annulus is visible around (2050,1565)",
+        "PXL_20260710_200509593.jpg": "projected near (203,1694); the same overlapping narrow-trace annulus appears around (215,1700)",
+        "package_contact_check": "The same transform projects D14.1/.2/.3/.4 to approximately (2059,1333)/(2059,1379)/(2059,1425)/(2059,1471) in 200506061. The native image does not contain the corresponding four-contact vertical solder row at those positions; only the first point happens to approach an unrelated tinned horizontal field. The transform therefore fails the local D14 package check.",
+        "disposition": "Reject the isolated x2050/y1565 annulus as the fifth-hole target. A later D11-local package fit instead matches the fifth landing to solder (2424,1513); see d14-cross-face-contact-fit.json."
+      }
     },
     "solder_exclusion": {
       "images": [
         "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
         "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg"
       ],
-      "observation": "Reflected board registration places D14 and the fifth landing inside the same heavily scraped/reworked two-row solder field in both overlapping views. The immediate right-row dogleg is hidden by the package on the component face and is not uniquely separable from the scraped solder copper on the reverse face; the available photographs are exhausted for D14.7 continuity."
+      "observation": "The broad reflected board registration is rejected for D14: in 200506061 it projects D14.1/.2/.3/.4 onto (2059,1333)/(2059,1379)/(2059,1425)/(2059,1471), where no four-contact package row exists. Older geometry-only D14.2/D14.7 seeds (2279,1708)/(2141,1711) are retired. The independent D11-local cross-face fit identifies the actual D14 2x4 field at columns x2289/x2426, rows y1328/1376/1423/1472, and the fifth landing's distinct drilled solder hole near (2424,1513). The right-row front dogleg and remote electrical endpoints remain hidden or unmeasured."
     },
-    "remaining_boundary": "The fifth auxiliary landing is registered, but its conductor and the remote endpoints of the three long drawn traces and right-row dogleg remain unproved. Position 159 marks solder locations and does not prove these are replacement conductors. D14.2 and D14.7 therefore require direct continuity rather than another global photo projection, and no auxiliary drill geometry is promoted."
+    "local_cross_face_recovery": "ref/photos/juku-pcb-2/d14-cross-face-contact-fit.json: D11 four-corner anchors in the same photo pair fit D14's eight solder contacts within the native joint field and identify physical D14.2 near (2426,1376), D14.7 near (2288,1376), and the fifth auxiliary through-hole near (2424,1513). These are photo registrations, not remote net assignments.",
+    "remaining_boundary": "The fifth auxiliary annulus is matched across faces and its local front-copper stem to D14.4 is registered. A solder-strip path to registered D29.10 is photo-traced and the source names that pin GND, but owner electrical continuity and any other remote conductor, plus the remote endpoints of the three long drawn traces and right-row dogleg, remain unproved. Position 159 marks solder locations and does not prove these are replacement conductors. D14.2 and D14.7 have registered physical pads but still require direct continuity to remote endpoints; no auxiliary fabrication drill geometry is promoted."
   },
   "d11": {
     "drawing": {
       "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114626340.jpg",
-      "observation": "The unique L-shaped trace and the adjacent drilled column register directly to the component-side owner photographs. The long column is an auxiliary drilled/copper field beside D11, not a drawn 14-pad package column. Position 159 points to the right-hand junction of a four-landing subfield: an upper landing reaches it by a long vertical trace, a left landing approaches through the obscured horizontal bridge, and a lower landing leaves on a separate trace."
+      "observation": "The unique L-shaped trace and the adjacent drilled column register directly to the component-side owner photographs. The long column is an auxiliary drilled/copper field beside D11, not a drawn 14-pad package column. Position 159 points to the right-hand junction of a four-landing subfield: an upper landing reaches it by a long vertical trace, a left landing is drawn joined to it horizontally, and a lower annulus has its own downward trace. The corrected owner lower_exit near (2209,2305)/(813,2456) matches that separate annulus-and-downward-stem topology; its distance below the junction is much larger in the photo than in the undimensioned drawing, so drawing pixel spacing is not used as a placement constraint."
     },
     "landings": {
       "upper_rail": {
@@ -210,15 +226,15 @@
       },
       "lower_exit": {
         "component_observations": [
-          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg", "image_px": [2210.9, 2220.6]},
-          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg", "image_px": [812.0, 2368.0]}
+          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg", "image_px": [2209.0, 2305.0]},
+          {"image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg", "image_px": [813.0, 2456.0]}
         ]
       }
     },
     "solder_exclusion": {
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
       "local_package_overlay": "docs/photo-registration/local-packages/D11-solder.jpg",
-      "observation": "The held-out-validated reflected package fit localizes a conspicuous solder scar beside D11 pins 4 through 6, but cross-registration places the factory drawing's component-side four-landing field elsewhere. The scar is therefore not evidence for the position-159 bridge and must not be used to assign its pins or nets."
+      "observation": "The corrected reflected D11 package fit moves the old fourteen-row assignment four joints down. The conspicuous scar is now near the upper D11 rows, while the projected position-159 bridge field is farther south. The scar is not evidence for the bridge and must not be used to assign its pins or nets."
     },
     "solder_photo_exhaustion": {
       "package_fits": {
@@ -227,10 +243,18 @@
       },
       "reference_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
       "projected_points_px": {
-        "upper_rail": [2745.9, 1515.6],
-        "bridge_left": [2791.3, 1775.9],
-        "position159_junction": [2746.4, 1755.8],
-        "lower_exit": [2769.0, 1818.3]
+        "upper_rail": [2745.9, 1700.6],
+        "bridge_left": [2791.3, 1960.9],
+        "position159_junction": [2746.4, 1940.8],
+        "lower_exit": [2771.2, 2078.2]
+      },
+      "bridge_pair_solder_review": {
+        "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+        "crop_xyxy_original_pixels": [2620, 1810, 2910, 2130],
+        "projected_junction_px": [2746.4, 1940.8],
+        "projected_left_px": [2791.3, 1960.9],
+        "observation": "Two distinct open annuli lie close to the package-local projected junction and left points, with approximately the same pair spacing and orientation as the front-side landings. The native solder crop shows no local B.Cu strip between these annuli; the junction-side annulus has a short westward trace to a separate soldered joint, while the left-side annulus does not visibly bridge to it.",
+        "limit": "The two annuli are a leading cross-face pair, not certified same holes: the D11 fits are package-local and the auxiliary field lies outside the package. Absence of a visible local copper bridge on both faces does not disprove a remote path or fitted conductor. Meter front-to-back hole identities and left-to-junction continuity before assigning the drawn bridge."
       },
       "overlap_images": [
         "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
@@ -238,8 +262,29 @@
         "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
         "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg"
       ],
-      "observation": "A held-out-validated D11 component fit and the existing reflected solder fit replace the coarse whole-board projection. In 200506061 the package-local transform places the upper landing under the wide tinned rail and the three lower landmarks among repeated joints and parallel traces without a unique four-hole match. The same lower-field ambiguity repeats in all three overlapping solder views; 200509593 also repeats the rail obstruction, while the upper point lies outside 200522685 and 200525009. The available solder photographs are exhausted for a through-hole identity."
+      "second_tile_review": {
+        "image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
+        "lower_candidate_first_to_second_homography_px": [[2776, 2094], [973.0, 2237.1]],
+        "lower_candidate_observed_second_px_approx": [978, 2234],
+        "method": "compose the archived first-tile original-to-panorama and inverse second-tile homographies; a hole read near (2776,2094) maps to (973.0,2237.1), about 6 px from the observed second-tile hole",
+        "result": "The two solder tiles show the same narrow-trace open hole to search precision. It is about 17 px from the D11-package-local projection (2771.2,2078.2) in the first tile, so its identity as the corrected front lower_exit remains unproved. The upper projection is beside a different open via and the bridge/junction field still has several nearby vias; no D11 pin/net or auxiliary drill is assigned."
+      },
+      "partial_tile_reviews": [
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+          "approximate_projected_points_px": {"upper_rail": [3423.7, 140.0], "bridge_left": [3479.6, 440.0], "position159_junction": [3427.1, 416.9], "lower_exit": [3456.4, 563.9]},
+          "method": "archived solder panorama homographies from the corrected 200506061 package frame; only a partial D11 field is in this tile",
+          "result": "The upper point is close to the image top and the lower points sit among several separate vias and traces; no unique four-hole correspondence is visible."
+        },
+        {
+          "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+          "approximate_projected_points_px": {"upper_rail": [1365.4, 33.7], "bridge_left": [1418.3, 331.2], "position159_junction": [1366.3, 308.2], "lower_exit": [1394.7, 454.7]},
+          "method": "archived solder panorama homographies from the corrected 200506061 package frame; D11 pin 1 is outside this tile",
+          "result": "The upper point is at the image top boundary and the lower points remain amid non-unique vias and traces; this partial view cannot establish the factory four-hole pattern."
+        }
+      ],
+      "observation": "The corrected D11 solder fit shifts the four projected factory landings about 185 px south in 200506061. The old upper-rail claim is retracted. The lower_exit component coordinate was then corrected from bare board to a drilled annulus in both front views, moving its package-local solder projection to (2771,2078). Two complete solder views show a nearby common open hole near (2776,2094) / (978,2234), but the offset and absence of a shared-hole calibration keep it a candidate only. The upper projection remains beside an open via, while bridge_left and position159_junction remain in a multi-via field. The other two listed views cover only a partial D11 field. The archived photos do not establish a complete through-hole identity for the factory four-landing field."
     },
-    "remaining_boundary": "The four component-side landing identities and the position-159 junction are registered in two views. A validated two-sided D11 package-local transform exhausts four solder views without identifying a unique corresponding four-hole field, so no through-hole or fabrication drill is accepted. The obscured bridge still does not prove a D11 pin/net or either remote trace endpoint. Preserve the source nets and require direct continuity before promoting replacement copper."
+    "remaining_boundary": "The four component-side landing identities and the position-159 junction are registered in two July views, with lower_exit corrected to its actual annulus. Native component crops (2130,2090)-(2290,2220) in 200358952 and (730,2230)-(900,2360) in 200402344 show bare substrate between bridge_left and position159_junction, excluding a visible local F.Cu bridge despite the drawing's horizontal join. Independent earlier owner image PXL_20260519_201922448.jpg, crop about (400,1950)-(550,2170), repeats the same two bare annuli and gap before the July photo session. A reverse-side or fitted connection remains possible. The D11 solder fit changes projected positions by about 185 px relative to the retired fit; updated lower_exit has one nearby two-tile open-hole candidate but no calibrated same-hole proof. Both complete solder tiles and partial overlaps lack a unique four-hole match. No through-hole or fabrication drill is accepted. The drawing does not prove a D11 pin/net or either remote trace endpoint. Preserve source nets until direct continuity or a stronger local cross-face anchor resolves them."
   }
 }

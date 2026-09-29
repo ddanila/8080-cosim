@@ -23,5 +23,7 @@
       "observation": "the unique populated vertical body in the factory-defined slot has red-black-red bands and photographed drill separation consistent with 10.16 mm pitch"
     }
   },
-  "electrical_evidence": "direct owner continuity recorded 2026-07-19 closes R8 between D94.1 and +5 V"
+  "electrical_evidence": "direct owner continuity recorded 2026-07-19 closes R8 between D94.1 and +5 V; no other D94.1 branch was found in the measured scope",
+  "source_electrical_reconciliation": "Exact .009 sheet-1 PXL_20260718_101817644.jpg draws R8=2k from rail A (+5 V) to -WREQ. Original-resolution sheet-3 overview PXL_20260718_101633062.jpg, native crop (1180,500)-(1500,1400) followed into crop (1200,450)-(3072,1450), shows D94 output pin1 rise in the top bundle to the horizontal WREQ (1) continuation. The two source sheets therefore put R8, D94.1, and WREQ on one intended node; the photographed R8-to-D94.1 owner continuity agrees locally. The owner-board D94.1-to-D2.15/WREQ remote copper path has not been directly measured, and the earlier search found no other D94.1 load in its tested scope.",
+  "owner_photo_route_limit": "Registered component D94.1 is near (1628,1560) in PXL_20260710_200402344.jpg; native crop (1450,1400)-(1870,1800) shows its socket contact but the departure disappears under the blue socket. Registered solder D94.1 is near (2046,1330) in PXL_20260710_200506061.jpg; native crop (1980,1250)-(2160,1390) shows a heavily solder-coated joint beside several thin traces and neighboring joints, without a uniquely continuous B.Cu route from D94.1 to a WREQ anchor. Do not infer connection from adjacent traces. Probe D94.1 directly against physical D2.15 and another independently identified WREQ point with the PROM removed and power off."
 }

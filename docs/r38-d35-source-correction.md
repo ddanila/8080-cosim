@@ -1,0 +1,61 @@
+# R38 and D35 sheet-2 source correction
+
+The native `.009 Э3` sheet-2 frame
+`ref/photos/dgsh5-109-009-e3/PXL_20260718_101917240.jpg`, original crop
+approximately `(1530,1750)`–`(2400,2650)`, prints **R38 1к** and **R39 12к**.
+The power table in `PXL_20260718_101924004.jpg` defines rail **A as +5 V**.
+
+The filled junction left of R38 connects D35.6 to the D42/D43 output-control
+line at pins 8. That line is the existing `SHIFT_G` timing rail, also joined
+to D41.9. R38's other terminal ends at rail A. POF enters both D35.3 and
+D35.5 and R39's left terminal; R39's right terminal ends at A. D37.11
+descends separately to D35.4. D35.1/.2 remain unused in this detail.
+
+The former model instead connected R38.1 to D37.11, D35.4 to R39.1,
+placed R38.2/R39.2 on a fictitious `NODE_A`, and marked D35.5/.6 NC.
+`kicad/juku.board.json`, the generated `juku.kicad_sch`, and the source
+`juku.kicad_pcb` pad nets now follow the photographed drawing. The source
+PCB had no copper on the affected old signal nets, so those pad changes
+pass source PCB DRC, schematic parity, and the direct board-JSON-to-source-PCB
+pad-net check in `report_main_board_erc_parity.py`. The two routed variants
+each had 108 copper items on the three disproved old nets (`VID_MIX1`,
+`VID_MIX2`, and `NODE_A`); those items were removed, and the seven affected
+pads were assigned the corrected nets. A later photo-closed D104.7→R30 lower join and source-ground assignment adds one unrouted endpoint. Both routed boards
+had zero short, clearance, and track-crossing DRC findings and 24 unconnected items after this correction. The later D29 exact-source migration removed 32 stale local copper items from each routed variant; that DRC remained free of those violations with 35 unconnected items. The later R101/R104/D12 correction left 38 unconnected items. Moving the separately photographed R18 body and placing R104 removed 20 obsolete copper segments from each routed variant, bringing the current count to 49 with no electrical shorts, clearances, or track crossings. The later full-resolution .009 assembly re-read corrects the D50/C95-adjacent resistor label from R38 to **R58** (`PXL_20260711_114556899.jpg`, rotated native crop). A separate lower-centre assembly panel `PXL_20260711_114617677.jpg` explicitly labels **R38** right/below D59. The source and routed boards already place R38 beside D59 at pads `(121.4,252.91)`/`(121.4,245.29)` mm; the former claim that this was a D50/D51 placement error is withdrawn. The owner pale horizontal 1K0 beside D59 matches R38 position and value, and its left front lead joins physical D59.14/P5V and red R32 right; the far lead-to-SHIFT_G route still needs continuity (`ref/photos/juku-pcb-2/d59-orientation-audit.json`). The D51-right pale 5K1 body instead matches assembly R58 position and 5.1 kΩ source value. Its upper joint visibly joins D51.8/GND through solder copper, consistent with R58's grounded rail-E terminal; the lower joint heads west and needs a CAS continuity check. The current R58 PCB footprint at `(200.29,220.5)`/`(207.91,220.5)` mm is far from the D51-local owner estimate `(106.632,155.905)`/`(106.818,166.537)` mm, so R58 placement and copper remain on hold (`ref/photos/juku-pcb-2/c95-d50-r58-placement-review.json`). The owner-board
+continuity of these source paths has not been measured, so neither routed
+board is released.
+
+The direct model-to-PCB pad-net check now passes for the source PCB and
+both routed variants. The former candidate-only D57.18 mismatch was
+corrected with a guarded `VERT_RTR`/`CLK_123M` copper transplant from the
+primary routed board. Both routed variants still lack the four R9/R10
+modeled pad endpoints present on the source PCB; the parity report counts
+these separately from wrong net names.
+
+The HDL structural netlist now includes D35.5 on POF, D35.6 on `SHIFT_G`,
+and D35.4 with D37.11. `./sync/check.sh` matches the corrected KiCad
+connectivity. The runnable pixel oracle retains its separate functional
+POF clamp and constant shift-enable stimulus; the electrical behavior of
+the source-drawn D35.4/D37.11 output tie is not established by the photos.
+The controlled video probe and POF simulations pass with that boundary.
+The two-package owner view fixes D37.11 and D35.4 as inspection targets,
+but no uninterrupted front trace or independently registered solder path
+between them is visible; see
+`ref/photos/juku-pcb-2/d35-d37-output-tie-photo-review.json`.
+The same owner tile shows a separate red **12К** body directly left of
+marked D35, matching R39's assembly position and sheet-2 value. Its
+lower joint is visible, but the upper lead is covered by white wires;
+neither physical lead has a proved POF/+5 V assignment. See
+`ref/photos/juku-pcb-2/r39-d35-body-review.json`.
+Projecting that lower joint into the overlapping solder-side tile from
+D35.13 only provides a search area: no unique R39 hole or continuous
+copper route can be identified there. Its lead polarity remains a
+two-lead continuity measurement.
+The ИР16 readiness and video-slot timing reports now record D35.6/R38.1
+as the source-drawn `SHIFT_G` driver and pull-up; they retain the
+unmeasured physical-continuity and slot-schedule limits.
+
+To identify physical R38, read or measure its 1 kOhm body, then with
+power off check one lead against D35.6 and D42.8/D43.8, and the other
+against an independently identified +5 V landing. Do not use D37.11 as
+an R38 lead target. Check D37.11 against D35.4 separately.

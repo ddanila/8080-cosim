@@ -46,7 +46,7 @@ for pin in ("4", "14"):
         )
 
 solder_checks = {item["pin"]: item["error_px"] for item in solder["checks"]}
-for pin in ("11", "1"):
+for pin in ("4", "11", "14"):
     if solder_checks.get(pin, float("inf")) > 1.6:
         raise SystemExit(
             f"D13 PHOTO PLACEMENT: solder pin {pin} residual "
@@ -55,7 +55,7 @@ for pin in ("11", "1"):
 
 if component["projected_pins"].get("2") != [1369.0, 906.0]:
     raise SystemExit("D13 PHOTO PLACEMENT: component-side D13.2 coordinate drifted")
-if solder["projected_pins"].get("2") != [2989.5, 1193.5]:
+if solder["projected_pins"].get("2") != [2743.567, 824.967]:
     raise SystemExit("D13 PHOTO PLACEMENT: solder-side D13.2 coordinate drifted")
 
 
@@ -80,15 +80,14 @@ def map_from_alt(candidate: complex, destination: dict) -> complex:
 
 
 # The alternate tile makes a loose/tinned white-wire end look like a surface
-# joint at first glance. Both cross-view projections land on bare substrate;
-# guard their reviewed coordinates so this false A12 candidate stays rejected.
+# joint at first glance. The component cross-view lands on bare substrate.
+# The solder projection is far outside D13's fitted pad field and cannot close
+# or reject a same-hole match there.
 wire_end_alt = complex(1405.0, 1479.0)
 wire_end_component = map_from_alt(wire_end_alt, component)
 wire_end_solder = map_from_alt(wire_end_alt, solder)
 if abs(wire_end_component - complex(1627.770, 1070.144)) > 0.01:
     raise SystemExit("D13 PHOTO PLACEMENT: component wire-end projection drifted")
-if abs(wire_end_solder - complex(3268.699, 1031.550)) > 0.01:
-    raise SystemExit("D13 PHOTO PLACEMENT: solder wire-end projection drifted")
 
 board = pcbnew.LoadBoard(str(BOARD))
 footprint = board.FindFootprintByReference("D13")
@@ -102,7 +101,7 @@ if abs(orientation - 270.0) > 0.01:
 
 print(
     "D13 PHOTO PLACEMENT: PASS — "
-    "D13.2 component 1369.0,906.0 px; solder 2989.5,1193.5 px; "
-    "false wire end -> component 1627.8,1070.2 / solder 3268.7,1031.5 px; "
+    "D13.2 component 1369.0,906.0 px; solder 2743.6,825.0 px; "
+    "unlanded wire end -> component 1627.8,1070.2 px; "
     "held-outs <=1.5 px"
 )

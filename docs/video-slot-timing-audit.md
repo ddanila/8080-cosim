@@ -56,7 +56,8 @@ python3 scripts/report_video_slot_timing_audit.py
 - The shared ИР16 primitive is now datasheet-exact: falling-edge clock,
   high LD/SH for parallel load, low LD/SH for right shift, and active-high
   output control. This reclassifies `SHIFT_G` as D42/D43 OC rather than
-  a clock gate; its remote source remains open.
+  a clock gate; the exact sheet-2 frame now joins it to D35.6 and R38.1,
+  while owner-board continuity remains unmeasured.
 - D48-D52 now preserve the physical КП14/258 output inversion and
   three-state disable behavior; the DRAM model normalizes that inversion
   only at its internal logical address index.

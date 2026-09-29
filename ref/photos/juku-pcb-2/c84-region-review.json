@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "status": "two obvious below-D54 annulus pairings rejected by D54 signal traces; actual C84 landings unproved",
+  "factory_assembly": {
+    "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+    "review_crop_px": [1550, 2900, 2850, 3800],
+    "observation": "C84 is drawn horizontally below the D54 timer and above the X9 connector; the assembly outline gives no lead-hole coordinates or fitted value."
+  },
+  "owner_component_july": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+    "review_crop_px": [3000, 2150, 3900, 2650],
+    "bare_annuli_px_approx": [[2988, 2475], [3167, 2475], [3496, 2475]],
+    "observation": "No capacitor body is visible. Three bare annuli lie below D54 around the dark hand mark. The far-left annulus (2988,2475) has a continuous front trace straight to fitted D54.4/D4 at (2988.545,2270). The middle annulus (3167,2475) has an uninterrupted trace upward and right to D54.10/OUT0 near (3355.636,2270). These two signal joins reject both the far-left/middle and middle/right annulus pairings as the source-drawn +5 V/GND bypass C84. The far-right annulus and other nearby vias remain unassigned."
+  },
+  "other_rejected_pair": {
+    "far_left_annulus_component_px_approx": [2988, 2475],
+    "middle_annulus_component_px_approx": [3167, 2475],
+    "far_left_trace_fitted_d54_pin": "D54.4/D4",
+    "d54_pin4_component_px": [2988.545, 2270.0],
+    "reason": "The far-left annulus visibly rises on the front copper to a timer data pin, so pairing it with the middle OUT0 annulus cannot form a supply bypass."
+  },
+  "far_right_annulus_close_read": "Native owner crop (2950,2100)-(3850,2750) in PXL_20260710_200455512.jpg resolves the far-right open annulus near (3496,2475). Its narrow front trace runs east, then north to a separate open annulus near (3700,2330); it stays visibly clear of the wide perimeter strip farther right throughout this crop. The remote destination of that narrow route is outside the crop or hidden. This does not identify its net or make the far-right hole a C84 pad. Every two-hole pair among the three conspicuous same-height annuli contains either the D54.4/D4 or D54.10/OUT0 signal hole, so none is the source-drawn +5 V/GND C84 pair.",
+  "rejected_candidate_pair": {
+    "left_annulus_component_px_approx": [3167, 2475],
+    "right_annulus_component_px_approx": [3496, 2475],
+    "left_trace_fitted_d54_pin": "D54.10/OUT0",
+    "d54_pin10_component_px": [3355.636, 2270.0],
+    "visible_trace_contact_px_approx": [3370, 2270],
+    "reason": "The left annulus visibly joins a functional timer output rather than either bypass-supply rail."
+  },
+  "owner_component_may": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260519_201907078.jpg",
+    "review_crop_px": [2500, 2100, 3650, 2850],
+    "observation": "The same lower D54 strip has no visible capacitor body in this earlier view; the bare holes and hand mark recur. Absence after photography does not establish factory nonpopulation."
+  },
+  "owner_solder_july": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+    "review_crop_px": [600, 2100, 1250, 2650],
+    "candidate_matching_holes_px_approx": [[1160, 2400], [820, 2400]],
+    "observation": "The two component annuli project near these two solder through-holes using D54's mirrored package fit. From the two holes, separate narrow traces continue around the X9 area toward the bottom/right of the tile. Neither visibly joins the adjacent wide tinned power rail here. The component-side D54.10/OUT0 connection independently rejects the former pair as C84; solder routing alone had only weakened it."
+  },
+  "overlapping_solder_tile": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200534267.jpg",
+    "review_crop_px": [0, 2480, 2000, 3072],
+    "observation": "Three narrow lower-edge traces from the timer/X9 tile continue into this overlapping view. The upper route terminates at a small via to the left of the 7.102.158 inscription; the lower routes continue past it. The archived panorama alignment is navigation-grade and does not uniquely associate either C84 candidate hole with one of these continuations. No +5 V or ground label is reached."
+  },
+  "decision": "Do not reuse either the (2988,2475)/(3167,2475) or (3167,2475)/(3496,2475) pairs for C84, add C84, or mark it DNP. Identify any actual physical C84 landings and continuity to +5 V and ground before model promotion."
+}

@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "status": "R15 LOWER-TO-D3.5 AND R16 RIGHT-TO-D3.3 PHOTO-CLOSED; RETURNS OPEN",
+  "source_identity": "ref/photos/juku-pcb-2/r9-r10-r15-r16-identity-review.json",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+  "component_sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+  "component_joints_px_approx": {
+    "R15_upper": [
+      1545,
+      625
+    ],
+    "R15_lower": [
+      1554,
+      870
+    ],
+    "R16_left": [
+      1338,
+      1198
+    ],
+    "R16_right": [
+      1555,
+      1198
+    ]
+  },
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "solder_sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+  "solder_search_bbox_px": [
+    2500,
+    150,
+    3000,
+    1050
+  ],
+  "registration": {
+    "method": "R9/R10 four-joint least-squares affine, checked against D3 solder pin row; projected positions are search targets, not exact pad identities",
+    "component_to_solder_affine": {
+      "x": [
+        -0.923365348,
+        -0.0261905383,
+        4116.57505
+      ],
+      "y": [
+        -0.00806456391,
+        1.05126544,
+        -379.422898
+      ]
+    },
+    "r9_r10_fit_rms_px": 2.147,
+    "d3_pin5_check": {
+      "projected_px": [
+        2750.6,
+        510.8
+      ],
+      "observed_px": [
+        2723,
+        530
+      ],
+      "note": "Local drift near D3 is about half a pad pitch, so use complete joint geometry and visible copper rather than projected pixel alone."
+    },
+    "projected_px": {
+      "R15_upper": [
+        2673.6,
+        265.2
+      ],
+      "R15_lower": [
+        2658.9,
+        522.6
+      ],
+      "R16_left": [
+        2849.7,
+        869.2
+      ],
+      "R16_right": [
+        2649.4,
+        867.5
+      ]
+    }
+  },
+  "solder_joint_candidates_px_approx": {
+    "R15_upper": [
+      2635,
+      315
+    ],
+    "R15_lower": [
+      2635,
+      525
+    ],
+    "R16_left": [
+      2855,
+      855
+    ],
+    "R16_right": [
+      2635,
+      855
+    ]
+  },
+  "observations": [
+    "The R15 candidate is a vertical two-joint column at x~2635 with approximately 210-pixel pitch, to the right of the D3 field on the component face and left of it on the mirrored solder face.",
+    "R15 lower at about (2635,525) has a continuous short B.Cu bar to D3 pin 5 at about (2723,530); the two solder pools and intervening copper are directly visible without a crossing.",
+    "The R15 upper candidate at about (2635,315) does not have a B.Cu route that reaches a supply rail within this crop; component-side copper leaves upward. Its +5/GND identity remains unproved.",
+    "The R16 horizontal lead pair is near (2855,855)/(2635,855). Its right lead reaches the component-side annulus (1555,965), whose solder-side counterpart (2635,637) is directly bridged to D3.3 at (2723,638). The left lead near (2855,855) remains unassigned to a rail."
+  ],
+  "decision": "Promote the photo-closed signal-side observations R15 lower→D3.5 and R16 right→D3.3. Keep both resistor values and their opposite return rails for direct measurement; do not infer +5 V or ground from source/owner conflict.",
+  "owner_probe_targets": [
+    "R15 upper candidate (2635,315) to +5 V and ground; optionally corroborate R15 lower (2635,525) to D3.5/D26.14.",
+    "R16 left candidate (2855,855) to +5 V and ground; optionally corroborate R16 right (2635,855) to D3.3/D26.15.",
+    "Isolated R15 and R16 resistance."
+  ],
+  "front_to_back_r16_signal_path": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "front_crop_xyxy_original_pixels": [
+      1440,
+      920,
+      1600,
+      1230
+    ],
+    "front_observation": "The R16 right lead at about (1555,1198) joins a single narrow F.Cu run to the open plated annulus near (1555,965). The bright D3.2 L-shaped trace at x~1490 is distinct and ends without contacting this run.",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "back_crop_xyxy_original_pixels": [
+      2580,
+      590,
+      2780,
+      700
+    ],
+    "back_observation": "The matching annulus near (2635,637) is tied by an uninterrupted short B.Cu bar to the D3.3 solder joint near (2723,638).",
+    "conclusion": "R16 right lead has photo-closed continuity to D3.3 through F.Cu, plated annulus, and B.Cu bar; source also places D26.15 on this net. Electrical meter confirmation remains useful but no longer needed merely to identify the photographed route."
+  },
+  "r16_return_review": {
+    "component_crop_xyxy_original_pixels": [
+      1150,
+      1050,
+      1550,
+      1850
+    ],
+    "solder_crop_xyxy_original_pixels": [
+      2750,
+      760,
+      3100,
+      1350
+    ],
+    "observation": "The left R16 lead has nearby front-side annuli and the mirrored solder pad has a short copper departure, but the overlapping wire and parallel conductors do not provide an unambiguous uninterrupted path to a known +5 V or ground anchor. No rail is promoted.",
+    "next_measurement": "With power removed, test the left R16 lead directly against a known +5 V pin, a known ground pin, and D3.3; also measure isolated resistor value."
+  },
+  "r16_left_solder_spur_close_read": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "crop_xyxy_original_pixels": [
+      2730,
+      650,
+      3190,
+      1220
+    ],
+    "r16_left_candidate_joint_px_approx": [
+      2855,
+      855
+    ],
+    "west_open_annulus_px_approx": [
+      2800,
+      860
+    ],
+    "observation": "The R16-left candidate solder joint has a short uninterrupted B.Cu spur west to a distinct open annulus near (2800,860). The conspicuous east-going horizontal trace begins farther right after a brown clearance; it is not an exposed B.Cu continuation of this spur. The open annulus's F.Cu continuation is hidden in this solder view, so neither supply rail is identified.",
+    "front_comparison": "Native component crop (1180,1050)-(1680,1470) in PXL_20260710_200418174.jpg shows R16 left near (1338,1198) on a short F.Cu stem descending to a separate open annulus near (1338,1255). The R9/R10 local affine projects that front hole around solder (2848,929), not on the west solder annulus (2800,860). An independent D3-package corner fit projects it to (2844,938). Its held-out R16-right via predicts (2620,639) versus observed (2635,637); applying that local (+15,-2) correction puts the front hole near solder (2859,936), still about 96 px from the west annulus. Native solder crop (2730,790)-(2990,1050) has no drilled centre at (2859,936). A different open hole near (2860,910), 26 px north, is the leading counterpart candidate but remains outside the local fit tolerance; the west solder hole should be excluded as that same hole.",
+    "overlap_open_hole_candidate": "The open solder hole near (2860,910) in PXL_20260710_200522685.jpg repeats near (795,800) in overlapping PXL_20260710_200525009.jpg, consistent with the documented tile translation of roughly (-2060,-112). Its x coordinate agrees with the D3-plus-R16-right-via projection of the front R16-left annulus within about 1 px, but its y coordinate is about 26 px north. Both native crops show a genuine hole on a separate narrow line, not the west R16-left solder spur hole (2800,860). This is a prioritized same-hole test, not an accepted match or rail assignment.",
+    "decision": "Use the front lower annulus and west solder annulus as separate R16-return probe points. The two local package frames exclude the west solder annulus as the front hole's direct counterpart at photo resolution. Do not infer a connection to the adjacent east-going trace by proximity."
+  },
+  "r15_return_extended_front_review": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "crop_xyxy_original_pixels": [
+      1150,
+      100,
+      1900,
+      1050
+    ],
+    "observation": "R15 upper lead near (1545,625) visibly joins the broad front-side copper tongue that rises to an open annulus near (1540,260). This identifies a local F.Cu path beyond the lead, but the photo does not identify the annulus's backside continuation or a known supply pin on that copper.",
+    "decision": "Keep the return rail unresolved; the open annulus is a better follow-up continuity target than the resistor lead alone.",
+    "next_measurement": "Check the open annulus near (1540,260) against R15 upper, an independently established +5 V pin, and ground."
+  },
+  "r15_upper_annulus_solder_coverage": {
+    "front_annulus_px_approx": [
+      1540,
+      260
+    ],
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "r9_r10_local_affine_projection_px_approx": [
+      2688,
+      -119
+    ],
+    "observation": "Applying the R9/R10 four-joint component-to-solder affine in this review to the R15-upper front annulus places its opposite-face search point above the top edge of 200522685. The fitted R15 upper lead itself already has about 50 px local drift, so the extrapolation is navigation-grade; nevertheless the annulus is hundreds of pixels outside the captured tile rather than on one of its visible nearby rails. This archived solder view cannot assign the R15 return polarity.",
+    "decision": "Do not use an apparent top-edge solder rail as R15 upper. Probe the front annulus and R15 upper lead against independently known +5 V and ground."
+  },
+  "body_marking_native_reread": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "r15_crop_xyxy_original_pixels": [
+      1460,
+      570,
+      1640,
+      830
+    ],
+    "r16_crop_xyxy_original_pixels": [
+      1270,
+      1110,
+      1570,
+      1230
+    ],
+    "observation": "Rotating the native R15 crop makes the upper dark glyphs appear as '12K', in agreement with the exact .009 source. The red cylindrical body has glare and lower overprint that prevent a fully independent value reading. The native R16 crop has dark strokes compatible with '12K' but a bright central specular band interrupts the characters. Treat both markings as photo corroboration of the source 12 kΩ nominal, not measured isolated values or evidence for either return rail.",
+    "decision": "Keep source nominal 12 kΩ for both parts and retain the owner resistance and return-rail checks; the body marks do not resolve the +5 V versus ground conflict."
+  },
+  "r15_upper_annulus_additional_solder_tile_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "crop_xyxy_original_pixels": [
+      1800,
+      1150,
+      2600,
+      1900
+    ],
+    "method": "Transfer the D3-local R9/R10 affine prediction (2688,-119) in 200522685 through the solder-grid tile-to-tile homographies to 200506061, yielding about (2115,1474). Independently the observed R15 upper joint (2635,315) in 200522685 transfers near (2067,1852); the component-face annulus is roughly 365 px above that lead, placing a second local search near (2067,1477).",
+    "local_search_bbox_px_approx": [
+      2010,
+      1420,
+      2170,
+      1535
+    ],
+    "observation": "The native 200506061 tile covers both local search points, but no distinct drilled annulus lies at either. Nearby open holes belong to separate narrow traces; neither can be snapped to the front annulus from these fits. A broad component-to-solder board-panorama projection instead lands near (1692,1553), about 420 px west of the package-local search and on unrelated D94-side geometry; reject that broad projection as a same-hole claim.",
+    "decision": "The additional archived solder tile does not identify R15 upper annulus or its rail. Keep the front annulus (1540,260) and R15 upper as direct power-off probe targets; do not adopt a neighboring solder hole or rail."
+  },
+  "r15_upper_annulus_alt_front_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+    "crop_xyxy_original_pixels": [
+      1250,
+      1300,
+      2000,
+      2200
+    ],
+    "panorama_projected_annulus_px_approx": [
+      1611,
+      1792
+    ],
+    "observation": "The second native component view repeats the conspicuous open annulus above R15 and its single broad F.Cu tongue down to the resistor upper joint. No other F.Cu departure is visible at that annulus. The trace ends at the open hole; its B.Cu continuation and supply polarity remain unknown. The photo independently confirms the component-side local path without identifying its return rail.",
+    "decision": "Retain R15 upper/front annulus as a same-net local observation only; meter the annulus to known +5 V and ground rather than assigning either from adjacent parallel lines."
+  }
+}

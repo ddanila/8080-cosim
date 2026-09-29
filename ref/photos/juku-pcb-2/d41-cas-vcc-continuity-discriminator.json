@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "photo conflict reduced to cross-face and rail-continuity tests",
+  "sources": [
+    "ref/photos/dgsh5-109-009-e3/PXL_20260718_101908284.jpg",
+    "ref/video/ir16-device-contract.json",
+    "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg"
+  ],
+  "source_contract": "D41.14 is VCC for the fitted 14-pin ИР16; D38.1 receives numbered rail15/CAS in exact .009 sheet 2. They are separate modeled nets.",
+  "native_photo_read": "The solder crop (1880,1680)-(2550,2100) visibly joins the open annulus near (2360,1950) west to registered D38.1 near (2244,1951), and east/north to the narrow line descending from the earlier open annulus near (1974,1845). The parallel line from D41.13 instead turns farther right and does not enter this annulus. The component crop (1820,2050)-(2330,2350) shows D41.14 reaching a front open annulus near (2230,2180); registration predicts its solder counterpart at (1974,1845), but photo geometry alone cannot establish same-hole identity or electrical continuity.",
+  "power_off_test_order": [
+    "Measure D41.14 to the front open annulus (2230,2180) in 200418174, then to the proposed backside annulus (1974,1845) in 200522685. This decides the first cross-face match.",
+    "Measure backside (1974,1845) to (2360,1950) and D38.1, separately. This checks the apparent B.Cu path without assuming the front match.",
+    "Measure D41.14 and D38.1 independently to known +5 V and to the shared CAS rail at a DRAM C pin. Record resistance with power removed and whether chips are installed."
+  ],
+  "interpretation": "If D41.14-to-(1974,1845) is open, the visually continuous B.Cu line is a different net and the proposed cross-face match is wrong. If it is continuous and the B.Cu path to D38.1 is also continuous, the owner board has a real VCC/CAS topology conflict requiring inspection for a cut, jumper, damage, or pin-identification error before a replica net change. Do not merge VCC and CAS from the photographs alone."
+}

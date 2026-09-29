@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "review_state": "exact .009 and fitted owner value agree at 12 kOhm; older .006 says 13 kOhm",
+  "exact_source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101908284.jpg",
+  "exact_source_crop_xyxy": [500, 1500, 1600, 2800],
+  "exact_source_observation": "R34 is printed 12к from rail A to the tied D40 CLR_N pin1 and LOAD_N pin9 node.",
+  "older_source_image": "ref/schematics/p2_sheet2.png",
+  "older_source_crop_xyxy": [200, 650, 1600, 1700],
+  "older_source_observation": "The older .006 sheet-2 scan prints R34=13к on the same branch.",
+  "owner_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+  "owner_crop_xyxy": [1600, 1200, 2200, 2100],
+  "owner_observation": "The upright fitted red body immediately right of the marked КР531ИЕ17 D40 package directly reads 12K; a white insulated wire crosses above but does not cover the code.",
+  "decision": "Use 12 kOhm in the exact .009 target model and PCB value fields. The 13 kOhm value is an older .006 revision difference. Body marking and assembly position establish value identity, while individual R34 pad-to-rail continuity remains a separate physical check."
+}

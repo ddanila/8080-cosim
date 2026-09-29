@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "status": "relative D58 row and X9 cable exit resolved; individual A45-A58 hole fit open",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+  "component_image_sha256": "87ef05efd7bf245bbe072526ca768cd1ce6787dc90ee15c7cb8e975badebcbe0",
+  "review_crop_xyxy_original_pixels": [
+    0,
+    1800,
+    3500,
+    2800
+  ],
+  "factory_sources": [
+    "ref/photos/dgsh5-109-009-sb/PXL_20260711_114617677.jpg",
+    "ref/photos/dgsh5-109-009-sb/PXL_20260711_114620466.jpg"
+  ],
+  "factory_source_sha256": [
+    "157a5671b7ffab1f4bc66dce72d89cbb8bf3b30c3d37151a12dbc47361f8bf69",
+    "411ac100a179bcff0cf94e5dbd5e189781ae80f29c7f549973428d72fd8a9abe"
+  ],
+  "factory_identification": "The assembly view identifies D42, D43 and D58 in the lower-centre sequence, while the adjacent X9 ribbon detail identifies the off-board connector and its 14 reversed PCB landing wires A45-A58.",
+  "approximate_original_pixel_observations": {
+    "D43_body_center": [
+      410,
+      2290
+    ],
+    "D58_body_center": [
+      890,
+      2290
+    ],
+    "D26_body_center": [
+      1900,
+      2100
+    ],
+    "visible_X9_cable_termination_band": "roughly x1430..2420, y2450, below D26; individual conductor ends are partly hidden by the white sheath",
+    "lower_board_edge_y": "roughly 2730"
+  },
+  "relative_fit": "D43-to-D58 horizontal center separation is about 480 px versus 23.4 mm in the source model; D58-to-D26 is about 1010 px versus 49 mm. Both imply roughly 20.5 px/mm horizontally. D43 and D58 are visually level; D26 is about 190 px above them, consistent with the source model's 8.5 mm D26-to-D43 y difference at about 22 px/mm vertically. This supports D58 near the D43 row, not the model's 16.4 mm higher y position.",
+  "modeled_conflict": "Source A45-A58 pads lie at x224.5..192.0, y262.0 mm; A56-A58 at x197.0,194.5,192.0 mm. A same-row D58 at x183.0 extends to about x195.98 mm, causing A57/A58 electrical pad overlap. In the photo the X9 cable termination band begins well to D58's right, under D26. The model's leftmost X9 pad placement is therefore incompatible with the photographed relative layout.",
+  "limits": "The opaque sheath and separate white insulated wire obscure individual conductor entries, so the component image cannot number A45-A58 holes. The solder photo locates a regular 15-site band, but site10 terminates at an intermediate via rather than directly at D26.28/DB6 on B.Cu; see x9-site10-via-review.json. The D26-relative fit places the band near y266.4 mm and D58 near y260.0 mm, but wire membership and exact net remain open.",
+  "disposition": "Keep source D58 center and A45-A58 positions provisional; retain corrected D58 orientation. Meter site10 via to D26.27/.28 and identify the fourteen actual cable holes before mapping factory A numbers or moving footprints."
+}

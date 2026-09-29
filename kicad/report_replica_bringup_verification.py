@@ -15,10 +15,16 @@ PCB = ROOT / "kicad" / "juku.kicad_pcb"
 ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
 REPORT = ROOT / "docs" / "replica-bringup-verification-points.md"
 OFF_BOARD_REFS = {"S1", "S4", "X3", "X4", "X6", "X8", "X9"}
-PLACEMENT_PENDING_REFS = {"C51", "C52", "C53", "C70", "C71", "C72"}
+PLACEMENT_PENDING_REFS = {
+    "C29", "C51", "C52", "C53", "C70", "C71", "C72",
+    "C74", "C75", "C76", "C77", "C78",
+    "C82", "C83", "C84", "C85", "C86", "C87", "C88", "C89", "C90", "C91", "C92", "C93",
+    "C95", "C96", "C97", "C98", "C100",
+    "R2", "R7", "R15", "R16", "R35", "R36", "R37", "R106",
+}
 
 RISK_RE = re.compile(
-    r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|not readable|cannot be uniquely followed|pending|unread|await|owner-verify|mame|approx|refine|dump|source confirmation|requires? (?:source|continuity)",
+    r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|not readable|cannot be uniquely followed|pending|unread|unresolved|uncertain|await|owner-verify|mame|approx|refine|dump[- /]dependent|dump required|source confirmation|requires? (?:source|continuity)",
     re.I,
 )
 
@@ -147,7 +153,7 @@ def category_for(name: str, source: str) -> str:
     if (
         "VIDEO" in text
         or "VT" in text
-        or "RF" in text
+        or re.search(r"(?<![A-Z0-9])RF(?![A-Z0-9])", text)
         or "SYNC" in text
         or "XTAL" in text
         or "ANALOG" in text
@@ -360,7 +366,7 @@ def main() -> int:
             "- Endpoint coverage proves that modeled nets survive into both PCB files;",
             "  it does not prove that the modeled net is historically correct or that",
             "  omitted functional pins are safe.",
-            "- The 3 official FDC devices with remaining source-risk pins are tracked",
+            "- The 4 official FDC devices with remaining source-risk pins are tracked",
             "  separately in `docs/unmodeled-footprint-inventory.md`; they are outside",
             "  every endpoint count above and remain design-release blockers.",
             "- Any row affecting boot, memory, bus direction, interrupts, or video",

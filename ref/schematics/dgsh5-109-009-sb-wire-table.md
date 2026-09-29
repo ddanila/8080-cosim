@@ -59,6 +59,13 @@ A59->X8.8, A60->X8.3, A61->X8.6/X8.2, and A62->X8.5/X8.1.
 | 13 | А:57 | X9:2 |
 | 14 | А:58 | X9:1 |
 
+Native page 1 shows exactly these fourteen position-153 rows, each marked
+30 cm. The table identifies numbered board points and connector contacts;
+it does not name their electrical signals. Keyboard/control/+5 V signal
+names come from the separate `.009` schematic reconstruction and board
+model. In particular, the table itself cannot identify or exclude the
+additional owner-board solder-band site now under review beside D26.
+
 ## Sheet 3 — Провода (wires)
 
 Поз. 151 — shielded cable (sheet-1 note 11, ГОСТ 23585-79):
@@ -69,10 +76,14 @@ A59->X8.8, A60->X8.3, A61->X8.6/X8.2, and A62->X8.5/X8.1.
 | 2 | А:4 | X6⊥ (marked return terminal) | 12 |
 
 The suffix mark is transcribed literally rather than treated as polarity evidence
-by itself. Registered owner photos and placement resolve the construction: the
-printed `А:3` joint lands on VD3.2/`SOUND_CLAMP`, while the separately insulated
-`А:4` return terminates on the wide ground strip. The durable
-cross-source registration is `ref/photos/juku-pcb-2/x6-cable-registration.json`.
+by itself. The system cable map (`ДГШ3.031.011 Э6`) identifies X6 as the
+two-conductor display connection. Exact `.009 Э3` sheet 2 labels output contact
+3 VIDEO and contact 4 ground. The owner photo places the `А:3` cable joint
+beside VT2, separate from VD3.2; its copper path to the output stage still
+requires continuity confirmation. The separately insulated `А:4` return appears
+to terminate on the wide ground strip. See
+`ref/photos/juku-pcb-2/x6-cable-registration.json` and
+`docs/x6-a3-video-source-conflict-review.md`.
 
 Поз. 155 — on-board insulated links (sheet-1 note 10, mastic-fixed):
 
@@ -91,16 +102,33 @@ cross-source registration is `ref/photos/juku-pcb-2/x6-cable-registration.json`.
 | 13 | А:19 | А:19 | ~9.5 |
 | 14 | А:20 | А:20 | ~6 |
 
+The final handwritten values in all twelve rows above were checked against
+the full 300 dpi rendering of PDF page 2 (printed sheet 3). Several cells
+contain crossed-out earlier numbers; the table transcribes the surviving
+number in each cell, not the crossed revision history. In particular, A9
+ends at `12`, A10 at `13,5`, A11 at `11,5`, A12 at `20`, A13 at `15`,
+and A14 at `23` cm.
+
 The duplicate's conductor-6 length cell has an earlier value crossed out and
 `13,5` written as the final value. The two-sided photo fit independently gives
 a 131.355 mm straight A10 terminal chord, consistent with a 13.5 cm insulated
 lead and impossible for the former tentative `~11.5` transcription.
 
-For conductor 4/A8, the duplicate reads 19 cm while the two locally fitted
-surface terminals have a 196 mm straight chord. The endpoint geometry is
-retained because each landing has direct copper to its owner-confirmed package
-pin, but 19 cm is not yet safe as a fabrication cut length; re-read or measure
-the installed lead before producing the assembly wire table.
+For conductor 4/A8, a 300 dpi re-read of PDF page 2 (printed sheet 3) confirms
+that the length cell has `20` crossed out and `19` written below it. Thus the
+revised table value really is 19 cm. The two locally fitted surface terminals
+have a 195.9 mm straight chord, already 5.9 mm longer than that value before
+allowing for routing or stripped ends. Each landing has direct copper to its
+owner-confirmed package pin, so the endpoint geometry is retained. The source
+value cannot be used as an assembly cut length; measure the installed lead or
+resolve the discrepancy against a physical original before fabrication.
+
+The same re-read confirms conductor 7/A11 has an earlier value crossed out
+with `11,5` written below. The crossed value is not reliably legible in this
+scan. Its final table value is therefore 11.5 cm, despite the
+119.177 mm fitted terminal chord. As with A8, this revised table value is
+shorter than the straight span and must not be used to cut the replacement
+wire until the installed lead or physical original has been checked.
 
 All ten on-board link rows are now mapped to electrical endpoints. The owner
 read for `А:20` was made through the installed X3 cable, so the table below
@@ -147,14 +175,16 @@ off-board harness contract, while `A17` is a one-pad PCB footprint.
 
 ## Sheets 4-5 — Провода to X3 and X4
 
-Поз. 155, wires 15-26 (lengths struck and revised; original ~35, revised
-value not confidently legible):
+Поз. 155, wires 15-26: the repeated length cells read an earlier `3,5`
+crossed out and a final `4,5` cm written below. The decimal comma is visible
+on the full-resolution scan; these are centimetres, not 35/45 cm.
 
 | Провод | Начало | Конец |
 | ---: | --- | --- |
 | 15-26 | А:21 … А:32 (in order) | X3:1 … X3:12 (in order) |
 
-Поз. 155, wires 27-49 (same struck lengths). The начало column writes the
+Поз. 155, wires 27-49 (the same repeated `3,5` to `4,5` cm revision on
+both continuation sheets). The начало column writes the
 board points as `А Х4:n`, i.e. sheet-1 placement points labelled `X4:1` …
 `X4:23` on board А:
 
@@ -188,16 +218,21 @@ X4.6-X4.23 are promoted only as landing-to-connector harness nets: their
 on-board circuit destinations remain explicit boundaries.
 
 The X9 row is now promoted without changing its already traced keyboard nets:
-the source PCB contains fourteen one-pad footprints `A45` through `A58` at the
-ribbon exit, and the off-board X9 connector remains schematic-only. Each net
-contains its D26 endpoint, physical A:N landing, and reversed X9 pin; A53/A54
-carry the two +5 V conductors.
+the source PCB contains fourteen one-pad `A45` through `A58` placeholders,
+and the off-board X9 connector remains schematic-only. Each net contains its
+D26 endpoint, numbered A:N landing, and reversed X9 pin; A53/A54 carry the
+two +5 V conductors. The placeholder pad coordinates are not photo-registered:
+owner solder photos locate a candidate fourteen-site cable row beneath D26,
+farther right than the model. One site near (2505,2375) joins the photographed
+D26.26/+5 V rail, but its A53/A54 number and the other slots' A numbers are
+open. The evidence is in `ref/photos/juku-pcb-2/x9-solder-row-registration.json`
+and `ref/photos/juku-pcb-2/x9-plus5-rail-site-review.json`.
 
 X3 is now promoted as the photographed single-row `A21`..`A32` PCB landings
 feeding schematic-only connector pins 1..12. The older `.006` schematic closes
 A23/TTL SOUT, A24/SIN, A25/CTS, A26/DSR, A29/SOUT, A30/RTS, A31/DTP, and
 A32/OC SOUT; the `.009` table supplies the connector-pin mapping. Sheet 1 and
-the registered component photo additionally close A21 through R104 120 ohms
+the registered component photo additionally close A21 through R101 120 ohms
 to +5 V. Junction dots on the same source sheet tie A22/X3.2 directly to the
 OC SOUT node shared by A32/X3.12 and D12.3. The identified A27/A28 solder
 joints have no PCB-copper departure and the older circuit sheet omits both;
@@ -213,15 +248,19 @@ source-drawn pre-inverter rather than a direct behavioral shortcut.
 
 ## Sheet 6 — Лист регистрации изменений (change registration)
 
-Row alignment between изм. numbers, document numbers, and dates is partly
-uncertain in the scan; the legible entries are:
+The full-resolution page-5 re-read separates the handwritten revision rows.
+The list places revision 9 above revision 8; the document number and date
+columns should be read on those same horizontal lines. Revision 5 has a date
+but no legible document number, and the 1994 document row has no revision
+number entered.
 
 | Изм. | № докум. | Дата |
 | ---: | --- | --- |
 | 2 | ДГШ19… (sheets 2-6 introduced, всего 6) | — |
 | 4 | ен139546 | 14.04.89 |
-| 5 | ен147074 | 25.08.89 |
-| 8/9 | ен152153 | 25.10.89 / 25.07.90 |
+| 5 | — | 25.08.89 |
+| 9 | ен147074 | 25.10.89 |
+| 8 | ен152153 | 25.07.90 |
 | 10 | ен151937 | 14.05.90 |
 | 11 | ен157459 | 07.06.91 |
 | — | ен164807 | 05.12.94 |

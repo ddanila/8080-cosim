@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "review_state": "unresolved",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+  "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+  "electrical_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101927794.jpg",
+  "drawing_observation": "At the right edge of D56, R47 and R59 are drawn as adjacent horizontal resistor bodies with lead strokes. R110 is a separate horizontal outline below R59; R109 is another below R110. Neither R110 nor R109 has lead strokes in this view.",
+  "owner_observation": "The owner component photo has one upright populated axial resistor east of D56 across the nearby R47/R59 assembly callout levels. Its marking is unreadable, and the change from horizontal drawn bodies to a vertical fitted body prevents assigning it to R47 or R59 by height alone. No axial bodies appear in the lower right-edge region corresponding broadly to the R110/R109 callouts. Open holes and traces are visible there, but this photo does not identify a two-pad landing pair for either reference.",
+  "left_body_value_screen": "The same July owner image has a separate upright red axial resistor immediately west of D56, at approximately x3100–3180/y1170–1450. A native crop rotated 270 degrees clearly reads 33K on its body. This matches the exact .009 R59=33 kΩ source value numerically, but the assembly drawing places R59 to the right of D56 and no pad-to-net tracing here identifies this west-side body. Do not assign it to R59 by matching value alone; test each end against D56.15/C8.1 and the source supply branch before changing the population model.",
+  "electrical_observation": "The legible D56 timing detail names R47=20 kOhm and R59=33 kOhm but supplies no R109 or R110 value or endpoint.",
+  "conclusion": "R109 and R110 are assembly-drawing positions without a proven owner-board footprint, value, net, or population state. Do not assign DNP or add electrical components from these outlines alone.",
+  "remaining_work": [
+    "Find factory pad coordinates or a board overlay that independently fixes the R109/R110 landing pairs",
+    "Check physical continuity and factory population evidence if such landing pairs are found"
+  ],
+  "right_hand_fitted_body_review": {
+    "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+    "native_crop_xyxy_original_pixels": [
+      2950,
+      850,
+      3700,
+      1600
+    ],
+    "body": "single upright red axial body east of marked D56; only a dark fragment of its print faces the camera",
+    "component_joint_search_px_approx": {
+      "upper": [
+        3505,
+        1005
+      ],
+      "lower": [
+        3505,
+        1245
+      ]
+    },
+    "cross_face_method": "The corrected D56 four-corner component-to-solder fit maps x3415 to x807, x3215 to x990, y940 to y89, and y1380 to y536. The hand-read lead sites are only search centers, not accepted same-hole registration.",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+    "solder_search_px_approx": {
+      "upper": [
+        725,
+        155
+      ],
+      "lower": [
+        725,
+        399
+      ]
+    },
+    "result": "The target solder tile has multiple nearby filled and open features along package-adjacent traces. The projected hand-read search centers do not identify a unique matching drilled pair or a complete owner-board net. Do not identify this body as R47 or R59 from value/height or a nearest-cap snap.",
+    "next_check": "With power off, identify each actual lead hole in both faces and measure the two ends separately to D56.7/C7.1, D56.15/C8.1, and known +5 V; isolate the resistor for value only after documenting its connected state."
+  },
+  "assembly_pad_order_limit": "Native .009 assembly crop (1950,1550)-(2900,2600) in PXL_20260711_114611058.jpg shows R47 above R59, each as a horizontal body with two unnumbered end strokes; R110/R109 below are plain outlines. The end strokes show intended horizontal mounting only. There are no pad numbers, printed net labels, or asymmetric markers at either end, so this drawing cannot assign owner-body polarity or map the single upright fitted resistor to either refdes. The exact E3 sheet-2 nets and owner continuity must decide."
+}

@@ -138,9 +138,11 @@ def main() -> None:
             errors.append(f"VT2.{number} owner joint is not reproduced by its affine")
     disposition = evidence.get("c94_disposition", {})
     if (disposition.get("value") is not None or disposition.get("joined_endpoints") != [] or
+            disposition.get("schematic_pair", {}).get("source") != "ref/photos/dgsh5-109-009-e3/PXL_20260718_101827714.jpg" or
+            disposition.get("schematic_pair", {}).get("rails") != ["P5V", "GND"] or
             disposition.get("unresolved") != [
-                "owner-board C94 body visibility/population", "C94 value",
-                "C94.1 remote destination", "C94.2 remote destination",
+                "owner-board C94 population and actual landing pads", "C94 value",
+                "C94.1 physical rail assignment", "C94.2 physical rail assignment",
             ]):
         errors.append("C94 retraction does not preserve all four evidence boundaries")
     if not np.allclose(disposition.get("board_center_mm", []), [289.870, 130.321], atol=0.001):

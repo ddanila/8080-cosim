@@ -43,9 +43,9 @@ the Juku-specific HDL clocks remain authoritative for count progression.
   `decode_prom_functional` is retained only by the B37A diagnostic comparison.
 - D94's validated physical `.092` table is modeled with open-collector outputs,
   and its first three outputs are wired to the accepted local FDC controls.
-  D4-D7 are proved no-connects; only the upstream enable source and D0's hidden
-  load beyond its measured pull-up remain open.
-- 3 official FDC-support devices have package pins and power endpoints in
+  D4-D7 are proved no-connects; exact `.009` sheets close D9.7 `CS7` to
+  D94.15/D93.3. D0's hidden load beyond its measured pull-up remains open.
+- 4 official FDC-support devices have package pins and power endpoints in
   the board model but retain untraced functional pins or explicit boundary
   nets;
   `docs/unmodeled-footprint-inventory.md` owns that boundary.
@@ -60,9 +60,12 @@ the Juku-specific HDL clocks remain authoritative for count progression.
   asserts both asynchronous controls instead of assigning clear priority;
   restart phase is undefined, while divide-by-two behavior after release is
   guarded. Section 2 is structurally restored from the exact sheet:
-  wired D28.10/.12 feeds /PRE2 and D2, CLK2/Q2 remain distinct sheet-1
-  boundaries, /CLR2 is drawn unused, and /Q2 retains its isolated pin-8 test
-  landing. That half is set-only without a real /CLR2 source.
+  wired D28.10/.12 feeds /PRE2 and D2. CLK2 is source-joined to
+  D94.2/D99.9/R89.1, with physical continuity pending;
+  Q2 feeds D101 A0–A3 in the full sheet-3 overview, with physical continuity
+  still pending. /CLR2 joins D99.10 B2 and an unread sheet-1 source, and /Q2
+  retains its isolated pin-8 test landing. That half is set-only while /CLR2
+  is inactive; the clear-source timing remains unproved.
 - D103's К555ИЕ10/74LS161 behavior and its source-traced D33 feedback are
   guarded through the actual `0011` preset, proving the modulo-13 path from
   16 MHz to the labeled 1.23 MHz Q3 rail. The upstream OSC-to-XTAL16M physical
@@ -85,7 +88,7 @@ the Juku-specific HDL clocks remain authoritative for count progression.
   D7.2/A19B landing, with W19 as the only modeled closure.
 - Factory wire A:20 separates D3.10/A20B from the co-located A20A/A23.1/X3.3
   cable island; W20 remains transparent in HDL while preserving that assembly.
-- 43 modeled nets still carry source-risk annotations requiring
+- 48 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
   Physical D41/D42/D43 and mux/decode instances exist. Their ИР16 falling-edge

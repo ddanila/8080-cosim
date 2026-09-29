@@ -36,8 +36,8 @@ def pad_centre(board: pcbnew.BOARD, refdes: str) -> complex:
 
 document = json.loads(REPORT.read_text(encoding="utf-8"))
 fits = {(fit["refdes"], fit["side"]): fit for fit in document["fits"]}
-required = {(refdes, "component") for refdes in ("D39", "D38", "D92")}
-required |= {("D92", "solder")}
+required = {(refdes, side) for refdes in ("D39", "D38", "D92")
+            for side in ("component", "solder")}
 missing = required - fits.keys()
 if missing:
     raise SystemExit(f"D92 PHOTO PLACEMENT: missing fits {sorted(missing)}")
@@ -60,10 +60,34 @@ if component["projected_pins"].get("1") != [2484.0, 2290.0]:
     raise SystemExit("D92 PHOTO PLACEMENT: component D92.1 coordinate drifted")
 if component["projected_pins"].get("13") != [2654.333, 2345.833]:
     raise SystemExit("D92 PHOTO PLACEMENT: component D92.13 coordinate drifted")
-if solder["projected_pins"].get("1") != [1382.0, 1949.0]:
+if solder["projected_pins"].get("1") != [1719.0, 1951.0]:
     raise SystemExit("D92 PHOTO PLACEMENT: solder D92.1 coordinate drifted")
-if solder["projected_pins"].get("13") != [1214.333, 2004.833]:
+if solder["projected_pins"].get("13") != [1552.167, 2007.0]:
     raise SystemExit("D92 PHOTO PLACEMENT: solder D92.13 coordinate drifted")
+
+def column_fraction(side: str) -> float:
+    x38 = fits[("D38", side)]["projected_pins"]["1"][0]
+    x39 = fits[("D39", side)]["projected_pins"]["1"][0]
+    x92 = fits[("D92", side)]["projected_pins"]["1"][0]
+    return (x92 - x38) / (x39 - x38)
+
+fraction_gap = abs(column_fraction("component") - column_fraction("solder"))
+if fraction_gap > 0.06:
+    raise SystemExit(f"D92 PHOTO PLACEMENT: cross-face column fraction gap {fraction_gap:.3f}")
+
+def normalized_separation(a: str, b: str, side: str) -> float:
+    first, second = fits[(a, side)], fits[(b, side)]
+    pitch = (first["scale_px_per_mm"] + second["scale_px_per_mm"]) / 2
+    return abs(image_centre(first) - image_centre(second)) / pitch
+
+for a, b, tolerance in (("D102", "D41", 2.0), ("D101", "D39", 2.5),
+                        ("D38", "D92", 1.0)):
+    if (a, "component") not in fits or (a, "solder") not in fits:
+        raise SystemExit(f"D92 PHOTO PLACEMENT: missing cross-row anchor {a}")
+    gap = abs(normalized_separation(a, b, "component")
+              - normalized_separation(a, b, "solder"))
+    if gap > tolerance:
+        raise SystemExit(f"D92 PHOTO PLACEMENT: {a}/{b} cross-face gap {gap:.3f} mm")
 
 board = pcbnew.LoadBoard(str(BOARD))
 
@@ -98,5 +122,5 @@ print(
     "D92 PHOTO PLACEMENT: PASS — "
     f"centre {actual.real:.3f},{actual.imag:.3f} mm; "
     f"D38/D39 spread {spread:.3f} mm; source residual {placement_error:.3f} mm; "
-    "two-sided held-outs <=2.0 px"
+    f"two-sided held-outs <=2.0 px; cross-face fraction gap {fraction_gap:.3f}"
 )

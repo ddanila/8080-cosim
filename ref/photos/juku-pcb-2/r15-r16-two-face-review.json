@@ -1,0 +1,282 @@
+{
+  "schema_version": 1,
+  "status": "RETRACTED R15/R16 attribution: reviewed left pair is factory-labelled R10/R9; geometry retained for R9/R10 probe planning",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+  "component_observation": "Two upright axial bodies LEFT of D3 show mirrored red-black-red/gold 2 kΩ codes. Exact .009 factory assembly labels that left pair R10 (outer) and R9 (inner), not R15/R16. Their upper joints have a visible solder bridge; lower leads depart separately.",
+  "component_joint_px_approx": {
+    "left_upper": [
+      1183,
+      975
+    ],
+    "right_upper": [
+      1253,
+      1005
+    ],
+    "left_lower": [
+      1183,
+      1192
+    ],
+    "right_lower": [
+      1243,
+      1215
+    ]
+  },
+  "right_lower_front_gap_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "right_resistor_lower_joint_px_approx": [
+      1243,
+      1215
+    ],
+    "nearby_front_trace_end_px_approx": [
+      1278,
+      1228
+    ],
+    "observation": "At full resolution the bright front-side trace east of the right resistor ends about 35 pixels to the right of its lower joint, with visible bare board between them. It runs north near the D3 left pin row. Proximity alone does not connect this trace to the resistor; any opposite-face link requires a registered drilled hole or continuity."
+  },
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "cross_face_registration": {
+    "method": "least-squares affine fit of D95, D99, D101, D97, and D102 package centres in the same component and solder panoramas; D3 package pin rows independently match the projected search region",
+    "package_center_rms_px": 15.867,
+    "left_upper_projected_px": [
+      3005.3,
+      664.3
+    ],
+    "right_upper_projected_px": [
+      2937.2,
+      693.1
+    ],
+    "left_lower_projected_px": [
+      3023.5,
+      873.4
+    ],
+    "right_lower_projected_px": [
+      2964.9,
+      895.4
+    ]
+  },
+  "d3_solder_field_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "method": "direct visual read of two seven-joint rows around the projected D3 package; approximate image coordinates",
+    "left_row_pin7_to_pin1_px_approx": [
+      [
+        2723,
+        418
+      ],
+      [
+        2723,
+        475
+      ],
+      [
+        2723,
+        530
+      ],
+      [
+        2723,
+        585
+      ],
+      [
+        2723,
+        638
+      ],
+      [
+        2723,
+        693
+      ],
+      [
+        2723,
+        748
+      ]
+    ],
+    "right_row_pin8_to_pin14_px_approx": [
+      [
+        2887,
+        418
+      ],
+      [
+        2887,
+        475
+      ],
+      [
+        2887,
+        530
+      ],
+      [
+        2887,
+        585
+      ],
+      [
+        2887,
+        638
+      ],
+      [
+        2887,
+        693
+      ],
+      [
+        2887,
+        748
+      ]
+    ],
+    "d3_pin5_px_approx": [
+      2723,
+      530
+    ],
+    "d3_pin3_px_approx": [
+      2723,
+      638
+    ],
+    "observation": "The solder field has regular approximately 55-pixel pin pitch and agrees with D3 component orientation. For the reidentified left pair, R10 expects D3.1 near (2723,748) and R9 expects D3.13 near (2887,693); neither resistor-to-pin path is photo-closed. D3.5/D3.3 remain separate R15/R16 source endpoints. The broad five-package projection is 8-30 pixels low across the D3 row and cannot select resistor holes.",
+    "d3_pin1_px_approx": [
+      2723,
+      748
+    ],
+    "d3_pin13_px_approx": [
+      2887,
+      693
+    ]
+  },
+  "solder_observation": "Near the two projected upper sites, a narrow U/dogleg copper run joins the two solder joints and a short spur reaches the long horizontal conductor near y615. That conductor can be followed east to an open annulus near (3325,615) in the same solder panorama. Two separate narrow routes cross the projected lower-site search region. The five-package affine is search-grade; a direct four-joint comparison gives a stronger provisional drilled-hole match, but rail polarity and route destinations still need continuity.",
+  "four_joint_candidate_match": {
+    "method": "direct full-resolution comparison of the mirrored two-column, two-row joint geometry in component and solder photographs; coordinates approximate",
+    "left_upper_solder_px_approx": [
+      2997,
+      637
+    ],
+    "right_upper_solder_px_approx": [
+      2935,
+      666
+    ],
+    "left_lower_solder_px_approx": [
+      2995,
+      863
+    ],
+    "right_lower_solder_px_approx": [
+      2935,
+      889
+    ],
+    "local_affine_four_joint_rms_px": 2.15,
+    "component_photo_correction": "The right upper lead bends under the shared solder bridge and enters near component (1253,1005), not the earlier (1253,982) bare-board point. The two upper component joints therefore have a similar roughly 30-pixel vertical stagger to the solder pair.",
+    "observation": "All four nearby solder joints reproduce the mirrored horizontal spacing and vertical staggering of the two fitted resistor leads. This is a stronger physical-hole candidate than the five-package affine alone. The two lower solder pads join distinct east-going traces. The match remains provisional pending direct continuity or a tighter local two-face registration; trace destinations and common-rail polarity are not established."
+  },
+  "lower_pad_solder_routes": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "registration_from_200522685_px_approx": [
+      -2060,
+      -112
+    ],
+    "right_lower_candidate_route_px_approx": [
+      [
+        875,
+        777
+      ],
+      [
+        1300,
+        781
+      ],
+      [
+        1900,
+        785
+      ],
+      [
+        2500,
+        787
+      ],
+      [
+        3205,
+        786
+      ]
+    ],
+    "right_lower_route_end": "open annulus near (3205,786); any front-side continuation and net identity remain unknown",
+    "left_lower_candidate_route_px_approx": [
+      [
+        935,
+        751
+      ],
+      [
+        1300,
+        754
+      ],
+      [
+        1900,
+        758
+      ],
+      [
+        2500,
+        759
+      ],
+      [
+        3260,
+        786
+      ]
+    ],
+    "left_lower_annulus_px_approx": [
+      3260,
+      786
+    ],
+    "adjacent_annulus_spacing_px_approx": 55,
+    "later_solder_photo": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+    "observation": "The two candidate lower pads enter distinct east-going solder traces in the overlapping photograph. The right candidate trace terminates at a visible open annulus near (3205,786). The left candidate reaches a separate open annulus near (3260,786), about 55 pixels east of the right one. The later 200527310 photograph independently shows both neighboring annuli and the long soldered bar above them. A neck appears near the left annulus and that bar, but its electrical continuity is not proved by the photos. Route attribution inherits the provisional four-hole physical match; neither D3 signal destination is established."
+  },
+  "lower_annuli_front_projection_review": {
+    "component_search_image": "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
+    "five_package_extrapolation": "Reverse D95/D99/D101/D97/D102 fit into component 200418174 puts both annuli beyond its left frame; transferring the overlap to 200415237 gives right/left search positions near (657,1140)/(603,1140). This extrapolates well outside the package calibration region.",
+    "four_package_extrapolation": "Reverse D1/D2/D50/D51 fit from solder 200527310 into component 200411500 has about 60.6-pixel package-centre RMS; transferring the component overlap to 200415237 gives right/left search positions near (792,1188)/(724,1189).",
+    "decision": "The two independent extrapolations disagree by more than 120 horizontal pixels and both are too weak to identify front-side annuli or resistor-bank pads. Preserve the solder-side open annuli as probe targets; require local two-face registration or continuity before assigning a front route."
+  },
+  "common_conductor_east_annulus_solder_px_approx": [
+    3325,
+    615
+  ],
+  "east_annulus_front_projection": {
+    "method": "reverse least-squares affine fit of the same D95/D99/D101/D97/D102 package centres",
+    "component_px_approx": [
+      864.5,
+      923.0
+    ],
+    "package_center_rms_px": 15.594,
+    "observation": "This point falls under the large D10 body in component panorama 200418174, so its front-side copper continuation is hidden. The solder annulus remains an accessible physical probe target; no D10 terminal or supply rail is assigned by proximity."
+  },
+  "adjacent_solder_photo_registration": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "method": "normalized edge-template correlation at one-quarter resolution using two independent local overlap patches from solder panorama 200522685; approximate translation only",
+    "translation_from_200522685_px_approx": [
+      -2060,
+      -112
+    ],
+    "overlap_patch_scores": [
+      0.821,
+      0.827
+    ],
+    "left_lower_search_px_approx": [
+      964,
+      761
+    ],
+    "right_lower_search_px_approx": [
+      905,
+      783
+    ],
+    "observation": "Two narrow east-going traces cross the projected lower-lead search region in the overlapping 200525009 solder photo. At full resolution neither projected point falls on an identifiable drilled annulus. Their attribution to the two resistors is unproven; neither drilled resistor hole nor destination D3 pin is established by the package-centre affine and photograph registration alone."
+  },
+  "next_solder_photo_registration": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+    "method": "normalized edge-template correlation at one-eighth resolution using two upper-overlap patches from 200525009; approximate translation only",
+    "translation_from_200525009_px_approx": [
+      -1836,
+      24
+    ],
+    "independent_patch_offsets_px": [
+      [
+        -1848,
+        24
+      ],
+      [
+        -1824,
+        24
+      ]
+    ],
+    "observation": "The projected lower-lead search sites near x901 and x960 in 200525009 map left of the 200527310 image. Any continuation visible in 200527310 must first be identified through the intermediate photograph; the later photograph alone cannot assign a resistor lead or D3 destination."
+  },
+  "source_conflict": "Former 12 kΩ versus 2 kΩ R15/R16 conflict was caused by misidentifying the left pair. Exact .009 sheet 1 marks R15/R16 12 kΩ; separate owner-visible R15 right of D3 and R16 below D3 have not been isolated or measured. The left pair matches exact-source R9/R10 2 kΩ.",
+  "decision": "Apply the four-joint geometry only to R10/R9. Probe their common upper corridor to +5 V and each lower lead to D3.1/D3.13. Inspect and measure the distinct R15 vertical right of D3 and R16 horizontal below D3 separately. See r9-r10-r15-r16-identity-review.json.",
+  "retraction_source": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg"
+}

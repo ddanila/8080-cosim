@@ -38,9 +38,9 @@ python3 scripts/report_s4_interrupt_boundary.py
 
 | Net | Endpoints | Source note |
 | --- | --- | --- |
-| `INT7_RAW` | `D3.13, X1.113B` | scan |
+| `INT7_RAW` | `D3.13, R9.1, X1.113B` | scan; exact .009 E3 sheet-1 PXL_20260718_101754468.jpg adds R9 2k pull-up to rail A |
 | `IR7` | `D10.25, D3.12` | scan |
-| `INT6_RAW` | `D3.1, X1.113C` | scan |
+| `INT6_RAW` | `D3.1, R10.1, X1.113C` | scan; exact .009 E3 sheet-1 PXL_20260718_101754468.jpg adds R10 2k pull-up to rail A |
 | `INT6_BUF` | `D3.2, S4.3` | scan sheet-1: D3.2 buffered -INT6 reaches the upper S4.2 throw |
 | `SYNDET_S4` | `D11.16, S4.1` | scan sheet-1: D11 SYNDET pin 16 reaches the lower S4.1 throw |
 | `IR6` | `D10.24, S4.2` | scan sheet-1: S4 changeover common drives D10 IR6 |

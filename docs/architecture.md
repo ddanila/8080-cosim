@@ -62,11 +62,13 @@ been assigned a net. Consequently physical release needs all of the following:
 - programmable-part contents and provenance;
 - explicit disposition of analog/timing assumptions.
 
-The promoted zero-open route has exact source-pad identity, and its deterministic
-Gerber/drill ZIP passes the machine package gates (tracked status
-**DESIGN HOLD / PACKAGE VERIFIED**). This is not fabrication authorization:
-factory-wire construction, functional connectivity, and sourcing/programming
-holds still forbid upload or ordering. `PLAN.md` lists those release blockers.
+The formerly zero-open routed snapshot had exact source-pad identity after the D57.18
+correction. Later source corrections leave 24 unrouted items on the current routed
+board, including the photo-traced D104.7→R30 lower join, assigned to GND in the source model. Its Gerber/drill package needs regeneration and independent review
+(**DESIGN HOLD / PACKAGE REGENERATION REQUIRED**); the tracked verified ZIP
+report describes the earlier board hash. Factory-wire construction, functional
+connectivity, and sourcing/programming also hold release. `PLAN.md` lists the
+remaining blockers.
 
 ## Design rules
 

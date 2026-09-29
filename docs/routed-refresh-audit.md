@@ -2,8 +2,34 @@
 
 This audit began from a routed fabrication snapshot that predated substantial
 photo-driven placement and connectivity work. The guarded refresh and routing
-campaign is now complete: the promoted routed PCB has exact source endpoint and
-coordinate parity, zero opens, and zero electrical DRC blockers.
+campaign established exact source endpoint and coordinate parity and a
+zero-open routed checkpoint. The subsequent exact-sheet C99.2 ground-net
+correction preserves pad-net parity but leaves one routed GND connection open.
+The exact-sheet `CS7` closure then merged D9.7 into the D94.15/D93.3
+`FDC_CS_N` net. A further sheet-3 re-read joins D96.13 to D99.10 on
+`D99_B2_SHEET1_BOUNDARY`. The overlapping sheet-3 details also join D99.11
+to `FDC_MOTOR_EN`. The selected E12 2-3 path joins D99.2 to the
+D93.28/D100.3 HLD line. A native control-line re-read separates
+D100.9 OE_N from T/pin11 and joins OE_N to D99.12 Q2_N; the eleven
+routed segments preserving the false 9/11 join were removed. The Q2
+motor-pulse re-read then separates D100.7 from D26.16 and joins it to
+D99.5; 226 segments and 28 vias on the false direct MOTOR EN route were
+removed. The exact sheet-1/sheet-3 `IMDRG` continuation additionally joins
+D26.38 to D101.1. The sheet-3 D101 A0–A3 junctions add three more
+input connections to the D101.4/R92/R99 island. The full sheet-3 overview
+also joins D96.9 Q2 to those inputs and D96.11 CLK2 to the D94.2/D99.9/R89.1
+island. Before the X6 correction, routed board DRC reported thirteen unconnected items: C99.2
+to GND, D9.7 to `FDC_CS_N`, D96.13 to D99.10, D26.16 to D99.11, D99.2
+to `FDC_HLD_TO_D100`, D99.5 to D100.7, D99.12 to D100.9, and D26.38 to
+D101.1, plus D96.9 and D101.3, D101.5, and D101.6 to the D101.4/R92/R99
+copper, and D96.11 to the D94.2/D99.9/R89.1 copper. The other
+reported violations include preexisting warnings and do not close these
+thirteen routes.
+The later original-resolution X6 reread rejects A:3/VD3.2 and moves the A:3/A:4 surface joints to their D102-local affine positions. The routed snapshots removed the five obsolete SOUND_CLAMP segments, the old A:4 ground spur, and a VIDEO_OUT segment that shorted against the corrected isolated A:3 pad. After that X6 correction, DRC had zero electrical shorts and 16 unconnected items; the unsupported physical X7 footprint and its route had been removed. The later native sheet-2 R38/D35 correction removes 108 wrong-net copper items from each routed variant and assigns seven pads to the source-proved nets. The later D104.7→R30 lower photo join and source-ground assignment changes the isolated D104.7 pad to GND without adding routed copper. That historical DRC had zero shorts, clearances, or track crossings and 24 unconnected items on each board. The later exact D29 source-map correction removed 32 stale copper items from each routed variant; current DRC still has zero shorts, clearances, or track crossings and had 35 unconnected items on each board. The later exact R101/R104 refdes correction and D12/X1 pad assignments left 38 unconnected items. A subsequent two-face owner-photo review found the R18 footprint wrongly placed at the separate R104 body. R18 was moved, R104 was placed, and 20 stale copper segments were removed from each routed variant. Both now have 49 unconnected items and zero shorts, clearances, or track crossings. R38 placement and A:3 target-board continuity remain open; see `docs/r38-d35-source-correction.md`. Both routed variants also lack source PCB R9/R10 footprints; their direct insertion collides with the stale routed D12 placement and several copper nets (`docs/r9-r10-routed-placement-hold.md`).
+The earlier zero-open promotion record is a historical parent of the current
+D57-corrected route. Current board and DSN hashes, pad-net parity, and the
+post-C99, post-CS7, post-D96/D99, post-D99/MOTOR EN, post-E12/HLD, and post-D100 control, and post-D99 Q2 motor DRC status are pinned in `ref/routing/d57-clock-correction.json`; its package
+must be regenerated after the remaining design changes.
 
 ## Reproducible audit
 
@@ -31,23 +57,23 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source PCB SHA-256 | `6ecd888b64ddf4f51e373abe6af508f4b4da4f631a2a9721c37fe2c782779b4e` |
-| Routed-snapshot PCB SHA-256 | `3a1f83c8277624f2c04633761de5703550420443839fb3d5e49eea2c8a99e266` |
-| Source footprints | 322 |
+| Source PCB SHA-256 | `8bf322d4790e5fd9cc115eac56243c2c7e3b4e3d0fe4d5212f4549859185b34c` |
+| Routed-snapshot PCB SHA-256 | `40ecf0550c44bb205ebb8cfb547d34613b698dc6ba14323a5560348ccfc42c3c` |
+| Source footprints | 324 |
 | Routed-snapshot footprints | 322 |
-| Source-only footprints | 0 |
+| Source-only footprints | 2 |
 | Routed-only footprints | 0 |
-| Routed copper nets classified by the refresh | 411 |
-| Nets with currently reusable routed copper | 411 |
-| Routed nets currently quarantined | 0 |
-| Reusable non-duplicate track/via items | 30,901 |
-| Quarantined/duplicate track/via items | 3 |
+| Routed copper nets classified by the refresh | 405 |
+| Nets with currently reusable routed copper | 286 |
+| Routed nets currently quarantined | 119 |
+| Reusable non-duplicate track/via items | 15,236 |
+| Quarantined/duplicate track/via items | 15,123 |
 | Common-pad net mismatches requiring reroute | 0 |
 <!-- routed-refresh-current:end -->
 
 The promoted board contains the same 322 footprints and 2,436 pads as the
 source, with no source-only or routed-only footprints and no common-pad net
-mismatches. All 411 nets carrying routed copper pass the refresh classifier;
+mismatches. All 409 nets carrying routed copper pass the refresh classifier;
 three route items are duplicate geometry rather than quarantined topology.
 
 ### Historical live-source salvage baseline
@@ -1460,19 +1486,14 @@ $(scripts/find-kicad-python.sh) kicad/check_routed_candidate.py
 
 ## Post-checkpoint source drift
 
-The formerly zero-open artifact remains routing-convergence evidence, not a
-claim of parity with every later source edit. Merging the native drawing's
-formerly separate rail-E model into ground exposes one real missing join between
-that old copper island and the main ground domain; it must be rerouted rather
-than hidden by another label. The candidate contains 2,383 pad identities,
-while the current source contains 2,393; 2,369 identities are common and 24 are
-source-only, including W7.1/W7.2, W8.1/W8.2, W10.1/W10.2, W11.1/W11.2,
-W14.1/W14.2, W19.1/W19.2, and W20.1/W20.2. Among the common identities it finds 265 changed pad-net assignments and 224 pads
-whose coordinates moved by more than 50 nm. The moved set is confined to
-C69, D5, D7, D8, D9, D13, D37-D39, D50, D51, D105, R13, R14, R46, and R49-R57; one net-only
-change is source C34.1, corrected from `RAIL_H` to `P5V` by the native E-F
-drawing. `check_routed_candidate.py`
-therefore correctly rejects the checkpoint against current source instead of
-silently blessing stale copper. Refresh/reroute is deliberately deferred until
-the remaining factory-wire islands and functional P0 netlist freeze; doing it
-now would route the known-wrong copper substitutions again.
+The preserved candidate remains routing-convergence evidence, not a claim of
+production parity. A fresh source/candidate pad comparison finds 2,440 source
+pad identities and 2,436 candidate identities: the four R9/R10 pads exist only
+on the source PCB. Among common pads it finds 1 changed pad-net assignment and 8 pads
+whose coordinates moved by more than 50 nm. D57.18 is `VERT_RTR` in
+the source and `CLK_123M` in the historical candidate; all eight D12 pads
+still occupy older coordinates in that candidate. The factory-wire report records this live
+comparison. The earlier 2,383/2,393-pad, 265-net, 224-moved snapshot has been
+superseded by subsequent source and candidate updates and must not be used
+as a current parity result. Refresh/reroute still waits on the remaining
+factory-wire islands and functional P0 netlist freeze.

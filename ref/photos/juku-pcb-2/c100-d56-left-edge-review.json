@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "review_state": "R59-position red axial body excluded; C100 body and pad pair unproved",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+  "mounting_detail_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114703874.jpg",
+  "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+  "coordinate_system": "original source-image pixels",
+  "assembly_crop_xyxy": [1850, 1350, 2900, 2550],
+  "owner_crop_xyxy": [2650, 650, 3650, 1650],
+  "source_context": "The .009 assembly places C100 against D56's left edge, with C8 separately below/left. The dedicated 'Установка C98, C100' mounting detail shows a component arched over a package, with its two board landings marked 25* mm apart; it is a side-view mounting instruction, not a square-body footprint. Sheet-1 assigns C100 to the +5 V-to-ground bypass branch. The corrected owner package fit identifies D56 as the marked K155AG3, not neighboring D103.",
+  "owner_observation": "In the registered D56-left corridor, a rotated original-resolution crop around (3060,1100)-(3140,1410) reads approximately 33K on the fitted red axial body. Its value fits R59, but the source assembly draws R59 on D56's right, so its R59 attribution is positionally conflicted. It is not evidence for C100. The marked D56 package top is fully exposed in owner photo 200445914, without a component or leads arched over it as in the source mounting detail. Thus the depicted over-package C100 mounting is not fitted on this photographed board at this date. No unique pair of C100 board landings has been matched on both faces.",
+  "decision": "Exclude the 33K red axial body from C100 identification. Leave its R59 attribution provisional pending net continuity. Record negative population evidence for the specific over-D56 mounting on the photographed owner board; hold factory population history, value, and physical pad joins because the detail and photograph do not prove the assembly build state or another placement.",
+  "next_inspection": "Search for the 25* mm over-package mounting arrangement and register its two board landings around D56 on both faces, then test candidates to known +5 V and ground. Keep the red 33K body leads separate from C100; independently meter them to the source R59 endpoints before promoting R59."
+}

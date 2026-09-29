@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "status": "top bus-buffer population confirmed; D23/D24/D29 notches direct and D25 left-facing pin order supported by common solder copper",
+  "photos": [
+    {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200354648.jpg",
+      "sha256": "569acfb32af8da3e670f377885f777ad82d17335e160b04eb74888455e869530",
+      "crop_xyxy_original_pixels": [150, 750, 3300, 1700]
+    },
+    {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+      "sha256": "45dbac2b6aa2816beb71cd9e8c115e67ff233e7767a5284785c0c6c917873a88",
+      "crop_xyxy_original_pixels": [0, 750, 2800, 1750]
+    }
+  ],
+  "identification": "The .009 assembly/source row from left to right is D25, D23, D24, D29 beneath the top edge connector fields. The first three owner bodies are legibly marked КР580ВА87; the overlapping second view resolves the fourth as КР580ВА86.",
+  "notches": {
+    "D23": "left-facing molded semicircle visible in the first view",
+    "D24": "left-facing molded semicircle visible in both views",
+    "D29": "left-facing molded semicircle visible in both views beside marked КР580ВА86",
+    "D25": "both molded ends appear nearly flat in the available front view; the white left-side mark is not a decisive notch locator"
+  },
+  "source_pcb_check": "D25/D23/D24/D29 all currently use 90-degree left-notched source footprints. The component photos directly support D23/D24/D29 orientation and the three-ВА87/one-ВА86 population. The .009 assembly crop 114553710 explicitly draws left-facing notch arcs on D25 and D23 with C74 between them. The adjacent owner solder view shows D25's lower-left pair joining the same continuous broad strip as left-notched D23's pins9/10 GND, independently supporting D25's left-facing pin order despite its indistinct molded notch; see d25-ground-strip-orientation-review.json.",
+  "next_evidence": "A power-off meter check from the shared D23/D25 strip to an independently marked ground landing would confirm rail polarity without relying on D23's device pinout."
+}

@@ -1,0 +1,6 @@
+{
+  "schema_version": 2,
+  "review_state": "RETRACTED: D50/C95 assembly callout is R58, not R38",
+  "superseded_by": "ref/photos/juku-pcb-2/c95-d50-r58-placement-review.json",
+  "reason": "Native rotated crop of exact .009 assembly PXL_20260711_114556899.jpg reads R58 beside the package below C95. A separate panel PXL_20260711_114617677.jpg reads R38 immediately right/below D59. The former D51-right R38 identity, 5K1-versus-1K conflict, and claimed source-R38 placement error are withdrawn."
+}

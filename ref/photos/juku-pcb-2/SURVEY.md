@@ -34,11 +34,13 @@ Target: processor module `7.102.158`, 50 owner photographs taken in 2026.
 - The clock/video corner visibly includes ИЕ17/74S169-class, ИР16, ЛП5, ЛА3,
   ИЕ10, and ЛА1 devices. Refdes and exact role come from the official documents
   and board model, not package sighting alone.
-- The 2026-07-10 batch adds a complete overlapping solder-side grid. Reviewed
-  two-sided copper establishes D2.1/.3/.5/.6/.7 to
-  `A10/A14/A12/A15/A9` and D94.1/.2/.3 to
-  `FDC_RE_N/FDC_CS_N/FDC_WE_N`; these paths are now in
-  `kicad/juku.board.json`.
+- The 2026-07-10 batch adds a complete overlapping solder-side grid. Later
+  package-row corrections withdrew the claimed D2.1/.3/.5/.6/.7 photo routes;
+  their `A10/A14/A12/A15/A9` names remain model assignments pending an exact
+  `.009` line chase or continuity. Chip-removed owner continuity also corrected
+  the early D94 mapping: D94.15 reaches D93.3/`FDC_CS_N`, D94.3 reaches
+  D93.4/`FDC_RE_N`, D94.4 reaches D93.2/`FDC_WE_N`, and D94.2 reaches D99.9.
+  See `d2-d4-column-row-audit.json` and `docs/photo-registration.md`.
 - Seven later 2026-07-10 component-side photographs show the same FDC-equipped
   board with the КР1818ВГ93 temporarily removed. In particular,
   `PXL_20260710_202708344.jpg` exposes the footprint and component-side copper
@@ -75,4 +77,5 @@ FDC board, but refdes-to-pad registration and end-to-end trace extraction must
 be completed before using it to assign the remaining functional nets of D99 or D101.
 D28/D97/D98/D102/D106 are source-closed by exact-revision sheet 3. Traces hidden by sockets, solder, glare, or crossings still
 require continuity measurements. The exact C35-C72 per-position capacitor
-values and the remaining D30 READY/D105 WAIT boundaries also remain open.
+values and other READY/WAIT source-risk boundaries remain open; the measured
+D30 section-B and D105 handoff routes are adopted in the board model.

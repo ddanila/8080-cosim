@@ -202,10 +202,10 @@ def main() -> int:
             "`.009` assembly drawing; owner continuity; retained four-view `r94-photo-exhaustion.json`; `kicad/check_r94_landing.py`",
         ),
         (
-            "X9 is schematic-only and its reversed ribbon uses PCB landings A45-A58",
+            "X9 is schematic-only and its reversed ribbon nets use provisional PCB landings A45-A58",
             x9_landings.returncode == 0
             and marker(read(WIRE_TABLE_MD), "X9 row is now promoted", "A45", "A58", "schematic-only"),
-            "sheets 4-5 X9 wire table; `kicad/check_x9_offboard_landings.py`",
+            "sheets 4-5 X9 wire table; `kicad/check_x9_offboard_landings.py` checks nets, while `ref/photos/juku-pcb-2/x9-solder-row-registration.json` holds physical placement open",
         ),
         (
             "X8 is schematic-only and its six-conductor cable uses PCB landings A59-A62",
@@ -238,7 +238,7 @@ def main() -> int:
         (
             "X4 bracket harness has all 23 physical board landings",
             x4_landings.returncode == 0 and marker(
-                read(BOARD_SPEC), '"ref": "X4"', '"ref":"AX401"', '"ref":"AX423"',
+                read(BOARD_SPEC), '"ref": "X4"', '"ref": "AX401"', '"ref": "AX423"',
                 '"X4_01_NC_HARNESS"', '"X4_05_BOUNDARY"', '"X4_RD_DATA"',
             ),
             "`.009` sheets4-5 wires27-49; `kicad/check_x4_offboard_landings.py`",
@@ -247,7 +247,7 @@ def main() -> int:
             "D26 PC2-PC6 retain the five recovered target-revision FDC control paths",
             marker(
                 read(BOARD_SPEC),
-                '"FDC_MOTOR_EN"', "D26 PC2/pin16 drives D100 A7/pin7",
+                '"FDC_MOTOR_EN"', "D26 PC2/pin16 enters D99 CLR2_N/pin11",
                 '"FDC_DRIVE_SIZE_5_8"', "D26 PC3/pin17 as 5-inch/8-inch selection",
                 '"FDC_DDEN"', "D26 PC4/pin13 FM/MFM",
                 '"FDC_DSEL_IN"', "D26 PC5/pin12 D_SEL to D28 input pin1",

@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "review_state": "R33 position and apparent К62 body photo-closed; no separate C5 body in May/July views; R33-left photo route to D34.6 conflicts with source C5/R33 topology",
+  "sources": [
+    {
+      "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+      "sha256": "8483bec7e30bc7683a880b0a3123f4d6406f79a47bac44c321983804965a5a39",
+      "crop_xyxy_px": [
+        1450,
+        900,
+        2350,
+        1800
+      ]
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "crop_xyxy_px": [
+        2750,
+        1800,
+        3350,
+        2800
+      ]
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+      "sha256": "8407dec2631bf99b232052e2fab6687742f349ed81c7c2b4eae81d3e02df3301",
+      "crop_xyxy_px": [
+        2850,
+        80,
+        3600,
+        630
+      ]
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260519_202100511.jpg",
+      "sha256": "c5c3c9ae8dd778f4a1766e2b736842427e8f75d30c644a837353447f2dcdfb49",
+      "crop_xyxy_px": [
+        0,
+        1900,
+        1250,
+        2850
+      ]
+    }
+  ],
+  "assembly_observation": "The .009 assembly labels horizontal R33 above D39 and D34, and vertical C5 between those package outlines at package height; C82 is the separate neighboring vertical outline.",
+  "owner_observation": "Two overlapping July owner photos and one May oblique close-up show a horizontal red axial body at the R33 assembly position above D39/D34. Its rotated marking is partial and cannot establish an isolated resistance. The inter-package strip at the C5 drawn height shows exposed copper and individual joints but no separate fitted capacitor body. The yellow molded body higher above D34 is at a different height and cannot be used as C5.",
+  "source_boundary": "Exact .009 sheet 2 PXL_20260718_101911242.jpg prints R33=620 ohm and C5=560 (nominal pF by native bare-value convention) in the D34 pulse shaper. These source values do not prove what is fitted on the owner board.",
+  "decision": "Retain R33=620 ohm and C5=560 pF as source circuit values. Treat the R33-position body as visibly fitted with a May body marking photo-consistent with 620 ohms but without isolated resistance measurement. Keep C5's owner population history and through-hole pair open; no separate body is visible at the factory position in the two July views or the May close-up. Do not infer factory DNP or assign the higher yellow body to C5.",
+  "next_inspection": "Power off: meter R33-left/front gap joint (3098,2345)/solder (1110,2007) to D34.6 and D34.2 separately, and meter R33 right to ground/+5 V/D34.1 separately. Inspect the bare C5 site for cut, removal, or jumper; see r33-d34-pin6-source-conflict.json.",
+  "may_value_cross_check": "In the independent May 19 oblique close-up, the R33-position red body rotated 180 degrees presents a marking that reads К62. Contemporary resistor notation uses K as the decimal marker in kilohms, so К62 denotes 0.62 kΩ = 620 ohms. The 1989 Soviet parts catalog also lists К62 (620 Ом). This visually corroborates the exact .009 R33=620 drawing, but no isolated resistance has been measured.",
+  "marking_reference": "https://djvu.online/file/7ommtfONcYFYr (1989 Soviet radio-parts catalog: К62 = 620 Ом)",
+  "may_gap_cross_date": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260519_202100511.jpg",
+    "crop_xyxy_px": [
+      0,
+      1250,
+      1500,
+      2900
+    ],
+    "package_registration": "marked К555ЛП5 D34 is left and КР1533ЛА3 D39 is right in the oblique May frame; this reverses their left/right order relative to the July overhead view",
+    "observation": "The full D34/D39 gap is exposed and no separate fitted capacitor body is present, independently confirming the July negative population observation. At least two neighboring columns of mixed filled and open features are visible; the perspective and intervening traces prevent assigning either column uniquely to factory C5 or C82.",
+    "candidate_search_features_px_approx": [
+      [
+        690,
+        1970
+      ],
+      [
+        740,
+        2105
+      ],
+      [
+        850,
+        1970
+      ],
+      [
+        925,
+        2130
+      ]
+    ],
+    "limit": "These are original-image search points only, not a paired footprint, electrical net, or evidence of factory DNP."
+  },
+  "solder_gap_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+    "crop_xyxy_px": [
+      850,
+      1550,
+      1700,
+      2650
+    ],
+    "observation": "The solder-side close-up shows nearby package rows and individual joints in the reflected D34/D39 region, but no independently established same-hole correspondence for either May bare-feature column. The endpoint seed file labels D34 component and solder points registration-only because their projections miss a coherent pin row; those seeds cannot identify C5 or C82 holes.",
+    "decision": "Do not assign C5/C82 from a reflected visual neighborhood or the retired D34 seeds. Fit actual D34 and D39 package contacts on both faces before testing candidate feature pairs."
+  },
+  "d34_registered_contact_fit": "D34 two seven-contact rows are now registered between July component PXL_20260710_200418174.jpg and solder PXL_20260710_200522685.jpg to roughly 15 px, with a held-out mounting-hole check. D34.2 and D34.6 solder search points are about (1055,2001) and (1055,2225). These are package contacts, not C5 holes; see d34-cross-face-contact-fit.json.",
+  "d39_registered_contact_fit": "D39 contact rows independently cross-check the D34 local map within about 8 px and its registered D39.7 ground solder point within about 5 px. Together the packages bound the component-side gap at x about 2990-3155 and solder-side gap at x about 1055-1220; see d39-cross-face-contact-fit.json. This bounds search only, not C5/C82 pad identity.",
+  "excluded_xtal_annulus": "Front open annulus near (3040,2375) in July component view directly routes to D39.10/XTAL16M and maps within about 2 px to solder open hole (1167,2034). It is excluded from C5 and C82 candidate pads; see c5-c82-d39-annulus-exclusion.json.",
+  "r33_left_candidate_c5_node": "RETRACTED as a C5.2/D34.2 assignment: the same front run continues to physical D34.6 after the gap joint. Source separates R33.1/D34.2 from D34.6 across C5; the owner photo presents a conflict. Keep the gap joint as a two-face probe target; see r33-d34-pin6-source-conflict.json.",
+  "r33_right_rail_limit": "The R33 right-hand wide F.Cu strip disappears under D34 body. A close July crop resolves D34.1 on a separate thin trace to its left, with no exposed bridge. Neither +5 V nor ground is photo-proved for the right lead; see r33-d34-pin6-source-conflict.json.",
+  "r33_solder_pair": "July solder view 200522685 matches right/left R33 leads near (1005,1808)/(1227,1810), each within about 7 px of the corrected face map. The joints and nearby wide B.Cu rail are visibly separate; the right-hand destination remains hidden under D34 on F.Cu (r33-d34-pin6-source-conflict.json).",
+  "d34_pin2_pin6_photo_bridge": "Native July solder photo shows D34.2 near (1055,2001) on a short continuous B.Cu strip to matched R33-left gap solder joint (1110,2007); front copper from that same hole continues to D34.6. This photo-supports a two-face D34.2/.6 copper path contrary to the .009 C5-separated source, pending direct continuity (d34-pin2-pin6-c5-bridge-review.json)."
+}

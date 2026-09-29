@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101827714.jpg",
+  "source_crop_xyxy_original_pixels": [
+    1100,
+    450,
+    2700,
+    1700
+  ],
+  "review_state": "individual supply branches traced at original resolution",
+  "branches": {
+    "C31": {
+      "rails": [
+        "+5 V",
+        "GND"
+      ],
+      "positive_plate": "+5 V"
+    },
+    "C32": {
+      "rails": [
+        "GND",
+        "+12 V"
+      ],
+      "positive_plate": "+12 V"
+    },
+    "C33": {
+      "rails": [
+        "GND",
+        "-12 V"
+      ],
+      "positive_plate": "GND"
+    },
+    "C92": {
+      "rails": [
+        "GND",
+        "-12 V"
+      ],
+      "positive_plate": null
+    },
+    "C93": {
+      "rails": [
+        "GND",
+        "+12 V"
+      ],
+      "positive_plate": null
+    }
+  },
+  "owner_fitted_can_candidates": {
+    "evidence": "ref/photos/juku-pcb-2/c93-power-corner-candidate-review.json",
+    "july_image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
+    "may_image": "ref/photos/juku-pcb-2/PXL_20260519_202054713.jpg",
+    "C31": "upper fitted can: C31 position photo-registered, body marked 47 uF/63 V; +5 V/GND continuity open",
+    "C32": "middle fitted can: C32 position photo-registered, body marked 22 uF/16 V; +12 V/GND continuity open",
+    "C33": "lower fitted can: C33 position photo-registered, body marked 47 uF/35 V; GND/-12 V continuity open",
+    "boundary": "The exact assembly and overlapping owner photos uniquely align all five fitted X8-corner bodies by position: C92 red axial above C31; C31/C32/C33 upper/middle/lower cans with right/right/left positive marks; C93 green axial between C32/C33. These are physical body identities and installed can markings, not measured rail connections. Every owner lead-to-rail join remains open."
+  },
+  "annotation_boundary": "The source prints C82...C93 beside a separate +5 V/GND bypass symbol, while explicitly drawing C92 and C93 on the -12 V and +12 V branches. The individual branches control those two references; the collective text cannot assign every member of the range to +5 V/GND. C79-C81 are not named by the adjacent C74...C78 and C82...C93 ranges.",
+  "model_correction": "The former juku.board.json model had C32 on -12 V/GND and C33 on +12 V/GND. The exact sheet requires C32 positive pin 1 on +12 V and pin 2 on GND, and C33 positive pin 1 on GND and pin 2 on -12 V. C74-C78, C82-C91, C95-C98, and C100 are now represented as logical nonpolar +5 V/GND bypasses with physical placement and values pending. C92 and C93 are now represented as source-proved nonpolar capacitors on GND/-12 V and GND/+12 V, with logical sheet-top/bottom pin numbers and PCB placement pending.",
+  "routed_board_gap": "Closed in both routed variants: C32.1=P12V, C32.2=GND, C33.1=GND, and C33.2=M12V now have matching local copper. Owner-board capacitor identity and rail continuity remain separate open checks.",
+  "source_pcb_correction": "The source PCB has no track touching any C32/C33 pad, so its pad net names now match the exact .009 branches: C32.1=P12V, C32.2=GND, C33.1=GND, C33.2=M12V. No copper was rerouted by this change.",
+  "routed_copper_endpoint_audit": {
+    "units": "millimetres; both routed variants have these same local endpoints",
+    "C32_1_old_M12V": "F.Cu segment (23.000,235.955) to (34.000,246.955) terminates at C32.1; desired pad net P12V.",
+    "C32_2_GND": "F.Cu segment to (24.355,235.310) and B.Cu segments to (21.895,232.850) and (20.549,236.406) terminate at C32.2; desired GND unchanged.",
+    "C33_1_old_P12V": "F.Cu segment (24.500,244.955) to (29.000,249.455) terminates at C33.1, then continues to P12V trunk at x29; desired pad net GND.",
+    "C33_2_old_GND": "B.Cu segment (24.500,242.955) to (20.549,246.906) terminates at C33.2; desired pad net M12V.",
+    "nearby_power_anchor": "Existing P12V B.Cu trunk runs x29.000 from y235.724 to 252.600; the M12V F.Cu branch reaches (34.000,246.955). These coordinates are route-planning anchors, not validated new tracks.",
+    "baseline_drc": "kicad-cli pcb drc --severity-error --format json on juku_routed.kicad_pcb produced 53 unconnected items and 176 other violations (108 courtyard overlaps, 68 plated holes inside courtyards). DRC was run read-only without zone refill; it is a baseline, not a release pass.",
+    "repair_condition": "Remove or redirect the three old-rail branches with the pad net changes. Keep C32.2 on GND. Verify final same-net copper connection and no new cross-rail short in both routed variants with DRC and pad parity."
+  },
+  "routed_copper_trial_2026_09_27": {
+    "scope": "Temporary copy of kicad/juku_routed.kicad_pcb only; shared routed PCB files were not changed.",
+    "common_trial_edits": "Removed the three old-rail segments ending at C32.1, C33.1, and C33.2; assigned their source-proved pad nets; joined C33.1 to existing GND B.Cu branch and C33.2 to existing M12V F.Cu branch.",
+    "direct_P12V_BCu_trial": "Straight segment from C32.1 (23.000,235.955) to P12V B.Cu trunk (29.000,235.724) produced three track crossings and one RAM_OUT_EN via short; baseline 176 DRC violations became 180.",
+    "front_P12V_trial_1": "F.Cu segment to trunk via at (29.000,235.724) produced a RAM_OUT_EN short and GND clearance violation; baseline 176 became 178.",
+    "front_P12V_trial_2": "F.Cu dogleg via (23.000,238.000) to via on P12V trunk at (29.000,238.000) produced a RAM_OUT_EN short plus three BA4/RAM_OUT_EN clearances; baseline 176 became 180.",
+    "connectivity": "All trial layouts still showed 53 unconnected items in read-only KiCad DRC, the same as baseline; this alone does not establish the repaired power nets are physically connected.",
+    "decision": "Reject these unverified trial traces. A new path must avoid the RAM_OUT_EN and BA4 corridor and then pass full local DRC/connectivity comparison before the two routed variants are changed."
+  },
+  "routed_copper_repair_2026_09_27": {
+    "boards": [
+      "kicad/juku_routed.kicad_pcb",
+      "kicad/juku_routed_candidate.kicad_pcb"
+    ],
+    "route": "Replace the old C32.1-to-M12V F.Cu diagonal with a shorter C32.1-to-(29.000,241.955) P12V F.Cu diagonal and a through via there to the existing P12V B.Cu trunk. Replace the old C33.2-to-GND B.Cu diagonal with C33.1-to-GND B.Cu segments via (22.549,246.906); replace C33.1-to-P12V F.Cu with C33.2-to-M12V F.Cu segments via (28.500,246.955) to the existing M12V trunk. C32.2 GND copper is unchanged.",
+    "validation": "KiCad 10 error-only DRC without zone refill: routed baseline and both repaired variants each have 176 violations and 61 unconnected items; normalized violation and unconnected records add/remove zero. report_main_board_erc_parity.py reports ERC=0, parity=0, unowned=0, and no C32/C33 routed pad-net mismatch. Existing DRC and missing R9/R10 endpoints remain design holds; this repair is not a fabrication release.",
+    "remaining_owner_check": "Measure the actual C31/C32/C33 cans and their two rails against marked X8 power landings with power off; photo order/polarity is only a candidate."
+  },
+  "mechanical_footprint_gap": "All three PCB variants use CP_Radial_D5.0mm_P2.00mm for C31/C32/C33, 2.00 mm between pads; exact .009 assembly and owner photos show three axial metal cans with widely separated bent lead joints. See docs/x8-electrolytic-footprint-audit.md. Six owner joints need board-coordinate registration before axial footprints and copper are changed.",
+  "solder_pitch_candidate": "In original solder tile 200537608 the three large can-joint pairs near x2750/3375 span about 625 px, about five times the ~125 px pitch of four labeled X8 power landings. Independent D13 DIP-14 solder anchors in the same image span 369 px across six 2.54 mm intervals (24.21 px/mm), estimating ~25.8 mm can pitch and ~5.16 mm landing pitch. A 25–26 mm axial pitch is plausible; perspective between D13 and X8 plus approximate joint centers require a local two-face fit before final drilling. See docs/x8-electrolytic-footprint-audit.md.",
+  "axial_source_trial": "Temporary source board replacing C31/C32/C33 with 25 mm axial footprints at approximate x15/40 mm, y230.0/237.4/245.0 mm and correct positive-lead orientations had no new electrical DRC violations and 499 opens unchanged. Error violations rose 173->177 solely because C31 intersects E4 courtyard/pads; E4 source pads lie x39.9, y223.96–229.04 mm. See docs/x8-electrolytic-footprint-audit.md. Trial not applied; local photo registration and cluster placement remain required."
+}

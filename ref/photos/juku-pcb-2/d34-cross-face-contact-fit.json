@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "review_state": "D34 package contact rows registered between July component and solder faces; adjacent C5/C82 holes unassigned",
+  "images": [
+    {"path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg", "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a", "crop_xyxy_px": [2950, 2050, 3600, 2800]},
+    {"path": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg", "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215", "crop_xyxy_px": [800, 1800, 1230, 2450]}
+  ],
+  "coordinate_system": "original source-image pixels; approximate centers from native crops, not PCB millimetres",
+  "identity_basis": "The component face directly marks the 14-pin К555ЛП5 as D34 to the right of marked D39. Its two seven-contact rows and the board-edge mounting hole reflect onto the solder crop's matching two seven-joint rows and mounting hole.",
+  "component_rows_px_approx": {"pins_1_to_7_left_x": 3155, "pins_14_to_8_right_x": 3332, "pin_1_or_14_y": 2280, "pin_7_or_8_y": 2630, "row_pitch_y": 58},
+  "solder_rows_px_approx": {"pins_1_to_7_reflected_right_x": 1055, "pins_14_to_8_reflected_left_x": 885, "pin_1_or_14_y": 1945, "pin_7_or_8_y": 2282, "row_pitch_y": 56},
+  "local_map_approx": {"x_solder_from_component": "4084 - 0.960*x_component", "y_solder_from_component": "-251 + 0.963*y_component", "search_tolerance_px": 15},
+  "held_out_check": "The round mounting hole right of D34 near component (3483,2170) maps near solder (740,1839); the visible solder hole is near (730,1830), about 13 px away. This supports orientation and rough scale independently of the package contacts.",
+  "pin_search_targets_px_approx": {"D34.2_component": [3155, 2338], "D34.2_solder": [1055, 2001], "D34.6_component": [3155, 2570], "D34.6_solder": [1055, 2225]},
+  "retired_seed_warning": "The earlier endpoints.csv D34 registration-only seeds put component pins near x2915/3075 and solder pins near x650/812, roughly 80-240 px away from these directly visible package rows. They must not be used to assign C5/C82 holes or continuity.",
+  "decision": "The D34 package location and reflected pin rows are now photo-registered to about 15 px for local searching. No C5 or C82 footprint is promoted: their separate holes in the D39/D34 gap and any opposite-face matches still require direct registration and electrical checks.",
+  "next_inspection": "Fit D39's own contact rows in the same two native photos, then search the bounded inter-package strip for distinct two-hole C5 and C82 sites. Test C5 candidates against D34.6 and D34.2/R33.1, and C82 candidates against +5 V and ground."
+}

@@ -256,8 +256,8 @@ def main() -> int:
     )
     d99_section1_excluded = (
         has_node(board, "GND", "D99", "3")
-        and has_node(board, "D99_B_TEST_LANDING", "D99", "2")
-        and endpoint_state(board, "D99", "2") == "BOUNDARY"
+        and has_node(board, "FDC_HLD_TO_D100", "D99", "2")
+        and endpoint_state(board, "D99", "2") == "CONNECTED"
     )
     if not d96_q2n_landing_guarded:
         failures.append("D96 section-2 isolated-/Q constraint is absent")
@@ -267,19 +267,20 @@ def main() -> int:
         and all(has_node(board, "WREQ_N", "D96", pin) for pin in ("1", "4"))
         and has_node(board, "FDC_IRQ_CONDITIONED_N", "D96", "10")
         and has_node(board, "FDC_IRQ_CONDITIONED_N", "D96", "12")
-        and has_node(board, "D96_IRQ_CLOCK_SHEET1_BOUNDARY", "D96", "11")
-        and has_node(board, "D96_IRQ_Q_SHEET1_BOUNDARY", "D96", "9")
-        and ["D96", "13"] in board.get("no_connects", [])
+        and has_node(board, "D94_D1_D99_A2N", "D96", "11")
+        and has_node(board, "D101_D02_R92_R99", "D96", "9")
+        and has_node(board, "D99_B2_SHEET1_BOUNDARY", "D96", "13")
+        and has_node(board, "D99_B2_SHEET1_BOUNDARY", "D99", "10")
     )
     if not d96_toggle_closed:
         failures.append("sheet-3 D96 read-clock toggle wiring is absent")
     exact_revision_nc = {
-        ("D96", "13"), ("D97", "13"), ("D98", "9"),
+        ("D97", "13"), ("D98", "9"),
         ("D98", "10"), ("D102", "4"),
     }
     actual_nc = {tuple(item) for item in board.get("no_connects", [])}
     if not exact_revision_nc <= actual_nc:
-        failures.append("sheet-3 D96/D97/D98/D102 unused-pin dispositions are absent")
+        failures.append("sheet-3 D97/D98/D102 unused-pin dispositions are absent")
     if not d99_section1_excluded:
         failures.append("D99 section-1 grounded-clear/test-landing constraint is absent")
     rclk_closed = (
@@ -486,7 +487,7 @@ def main() -> int:
             "D93.23 HLT / D93.25 RG",
             "SOURCE-CLOSED",
             "selected head-load timing and unused read-gate output",
-            "exact .009 sheet 3 draws E11 in position 2-3 (HLT=READY) and deliberately omits RG/pin25 between the explicit pin24/pin26 paths",
+            "exact .009 sheet-3 overview traces D99.4 Q1_N to HLT/pin23 on a rail distinct from D94.14/D101.7 and E11; RG/pin25 is omitted between the explicit pin24/pin26 paths",
         ),
         (
             "D93.24 `CLK`",
@@ -495,10 +496,10 @@ def main() -> int:
             "recovered .009 sheet 3 closes D95.7 to D93.24; FM/MFM and 5-inch/8-inch select D40's traced 1/2 MHz divider rails independently of the D106 separator clock",
         ),
         (
-            "D100.9/.11 sheet-1 continuation",
-            endpoint_state(board, "D100", "9"),
-            "shared drive-output-buffer controls",
-            "exact .009 sheet 3 joins D100.9/.11 locally, then sends that conductor to sheet 1; the `(1)` annotation is not logic high and D99.10 is a separate continuation",
+            "D100.9 OE_N / D100.11 T",
+            "PARTIAL: OE_N SOURCE-CLOSED; T REMOTE UNKNOWN",
+            "separate drive-output-buffer controls",
+            "native .009 sheet 3 ties OE_N/pin9 to D99 Q2_N/pin12; T/pin11 has its own quoted sheet-1 continuation and crosses the OE_N path without a junction dot",
         ),
     ]
 
@@ -559,19 +560,21 @@ def main() -> int:
         "| --- | --- | --- | --- |",
         table_row(["raw-read pulse conditioner", "74123", "D97/D99/D102 К155АГ3", "D97/D102 source-closed; D99 section 1 held clear; section 2 access trigger/timing constrained, remote gates/outputs open"]),
         table_row(["recovery counter", "74LS193", "D106 К555ИЕ7", "package family matched"]),
-        table_row(["read-clock toggle", "74LS74", "D96 КМ555ТМ2", "wiring closed; section-1 restart phase undefined; section 2 set-only, Q/CLK/clear open"]),
+        table_row(["read-clock toggle", "74LS74", "D96 КМ555ТМ2", "wiring closed; section-1 restart phase undefined; section-2 clear joins D99 B2, remote source open"]),
         "",
         "The manufacturer topology was useful as a search constraint, but the",
         "recovered Juku sheet is now authoritative for the actual wiring.",
         "",
         "D96.8 (/Q2) reaches a proved isolated component-side test landing. Sheet 3",
         "draws section 2 as the local DRQ/INTRQ path: D96.10/.12 share the",
-        "wired D28.10/.12/R95 node, D96.9 Q2 and D96.11 CLK2 leave through distinct",
-        "unresolved sheet-1 continuations, and D96.13 /CLR2 is explicitly unused.",
-        "Primary SN74LS74A truth makes that shared /PRE2/D2 wiring set-only:",
+        "wired D28.10/.12/R95 node. D96.9 Q2 feeds D101 A0-A3; D96.11 CLK2 joins the D94.2/D99.9/R89.1 island in the full overview; this is a",
+        "physical continuity check. D96.13 /CLR2 joins D99.10 B2 at",
+        "a marked junction and shares their unresolved sheet-1 source.",
+        "Primary SN74LS74A truth makes the shared /PRE2/D2 node set-only",
+        "while /CLR2 is inactive:",
         "condition low presets Q2, while condition high makes a CLK2 edge capture",
-        "one. No documented input clears Q2 after it is set; pin13 therefore",
-        "requires a direct NC recheck and powered capture with pins8-12.",
+        "one. The now-drawn pin13 clear conductor could reset Q2; its",
+        "remote source requires continuity and powered capture with pins8-12.",
         "Sheet 3 directly closes section 1",
         "as the active toggle: /Q pin6 feeds D pin2, D28.8 clocks pin3, Q pin5",
         "drives D93.26 RCLK, and WREQ_N drives both asynchronous controls.",
@@ -584,20 +587,26 @@ def main() -> int:
         "requests. D28 and D98 are structural-only HDL cells and LVS-visible, including",
         "all six inverter paths, five enabled status buffers, and the explicit D98 pair-4",
         "no-connect. D99.3",
-        "(/CLR1) is physically grounded and D99.2 (B1) reaches another isolated",
-        "test landing. The SN74123 contract therefore holds Q1/pin13 low and",
+        "(/CLR1) is physically grounded. D99.2 (B1) reaches a one-sided",
+        "component landing; exact sheet 3 draws E12 posts 2-3 selecting",
+        "D93.28/D100.3 HLD for B1. Physical E12 population is unproved. The",
+        "SN74123 contract holds Q1/pin13 low and",
         "Q1_N/pin4 high, excluding section 1 as an active pulse conditioner.",
         "Physical D94 D1 drives section-2 A_N low on either selected FDC read or",
-        "write; B2, CLR2_N, Q2, and Q2_N retain their remote-path boundaries.",
-        "The 3 still-open support devices are D96, D99, and D101.",
+        "write; B2 retains a sheet-1 source boundary. Exact sheet 3 ties",
+        "Q2/pin5 to D100 A7/pin7, Q2_N/pin12 to D100 OE_N/pin9, and",
+        "CLR2_N/pin11 to the separate D26 MOTOR EN continuation; physical",
+        "continuity and powered timing remain to be checked.",
+        "The 4 still-open support devices are D96, D99, D100, and D101.",
         "",
         "The Juku",
         "cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas",
         "Figure 11 contains no mux and only one half of a single 74123. The owner",
         "photos identify the packages but the recovered Juku sheet, not the generic",
         "reference circuit, closes D95 and D106 completely plus D96's exact wiring.",
-        "D96 section-1 restart phase remains undefined; D96.9/.11 remain external boundaries,",
-        "and the functionally contradictory drawn-NC pin13 remains a verification gate.",
+        "D96 section-1 restart phase remains undefined; D96.9-to-D101 continuity is physically pending,",
+        "D96.11-to-D94.2 continuity remains unmeasured,",
+        "and the D99.10-joined pin13 sheet-1 source remains a verification gate.",
         "",
         "## Soviet VG93 Circuit Cross-Check",
         "",
@@ -622,8 +631,8 @@ def main() -> int:
         "The same full-resolution region restores the local interrupt path:",
         "D93 DRQ/INTRQ drive D28.11/.13, wired open-collector outputs D28.10/.12",
         "feed D96.10/.12 through the R95 pull-up, and R93 pulls INTRQ high.",
-        "D96.9 Q2 and D96.11 CLK2 remain distinct remote boundaries, while D96.13",
-        "must be rechecked because the documented set-only logic has no other clear.",
+        "D96.9 Q2 feeds D101 A0-A3; D96.11 CLK2 is source-joined to D94.2, while D96.13",
+        "shares D99.10 B2's sheet-1 boundary and needs its source identified.",
         "Registered",
         "two-sided photos prove neither pad departs on B.Cu, while the F.Cu chase",
         "and the drawing's plain/primed continuation marks remain non-unique; see",
@@ -742,7 +751,7 @@ def main() -> int:
     fdc_nets = {
         name: item
         for name, item in sorted(board["nets"].items())
-        if name.startswith("FDC_") or name in {"CS_FDC", "IORD", "IOWR"}
+        if name.startswith("FDC_") or name in {"IORD", "IOWR"}
     }
     lines.extend(
         [
@@ -768,36 +777,37 @@ def main() -> int:
             "  pin-15 enable source and D0 hidden load. R87/R88/R89 and D3-D7 are",
             "  owner/drawing-closed; the recorded D29.4/IORD recheck is optional",
             "  corroboration. The `.092` table is physically captured.",
-            "- Before real FDC bring-up, continuity-identify D96.9 Q2's remote",
-            "  destination, D96.11 CLK2's remote source, and whether drawn-NC",
-            "  D96.13 /CLR2 is truly open. Capture WREQ_N at pins1/4 with Q1/pin5",
+            "- Before real FDC bring-up, confirm physical D96.9 Q2-to-D101 A0-A3",
+            "  continuity, D96.11 CLK2-to-D94.2/D99.9 continuity, and whether sheet-3",
+            "  D96.13 /CLR2 joins D99.10 B2; identify the shared clear/B2 source separately. Capture WREQ_N at pins1/4 with Q1/pin5",
             "  and /Q1/pin6 because simultaneous async release leaves restart phase",
             "  undefined. The registered solder",
             "  view excludes B.Cu departures at both pads, and the obscured F.Cu",
             "  paths plus non-unique drawing marks do not prove PIC joins. Direct D93.39/38-to-D10.18/19",
             "  was a retired MAME-era assumption: sheet 3 instead proves the local",
             "  D28/R93/R95/D96 path. Primary device truth makes the shared",
-            "  /PRE2/D2 wiring set-only without a real pin13 clear source; capture",
+            "  /PRE2/D2 wiring set-only while /CLR2 is inactive; capture",
             "  pins8-13 during request and acknowledge. D93.19 is source-connected to",
             "  D13.8; active-high RESET enters D13.9 and is inverted for MR_N.",
             "  D93.24 is",
             "  source-closed through D95's selected 1/2 MHz clock section. The adopted",
             "  archival D15/D16 pair fixes the replica to the direct-bus/NOP profile;",
             "  physical D100 is not the profile selector. D99.10 and",
-            "  joined D100.9/.11 are distinct unresolved sheet-1 continuations; D100.6's selected write-data input",
+            "  D100.11 is a separate unresolved sheet-1 continuation, while",
+            "  D100.9 OE_N is source-closed to D99.12 Q2_N; D100.6's selected write-data input",
             "  is source-closed through D101.9. See",
             "  `docs/fdc-bus-polarity.md`.",
             "  D10 CAS0-2 are source-proved NC, IR2/IR3 are source-connected, and",
             "  SP/EN pin16 is source-proved at +5 V. Only the stale tape IR4",
             "  continuation remains a Tier-3 continuity boundary; ROM mask 0xDF",
             "  keeps it disabled in the runnable configuration.",
-            "- D93.23 HLT is source-strapped through E11 2-3 to READY, and D93.25",
+            "- D93.23 HLT is source-joined to D99.4 Q1_N, separate from E11/READY; D93.25",
             "  RG is source-proved unused/open. The remaining support-device boundaries",
-            "  are D96.9/.11 plus the listed D99/D101 pins; D96.13 is a separate",
-            "  functional NC recheck. D93.22/.33 are directly tied on sheet 3,",
+            "  are D96.9-to-D101 continuity, D96.11-to-D94.2 continuity, and the listed D99/D101 pins; D96.13 joins D99.10",
+            "  on a common sheet-1 boundary. D93.22/.33 are directly tied on sheet 3,",
             "  and D93.15-.19/.26-.32/.34-.36 are source-connected.",
             "  D28/D95/D97/D98/D102/D106 are source-closed. D96's local read-clock",
-            "  and section-2 copper paths are closed, but its two sheet-1 continuations",
+            "  and section-2 copper paths are source-closed, but D96.11's D94.2 branch",
             "  and missing clear mechanism need verification; physical waveform",
             "  quality remains a bring-up check.",
             "  D93.40 to `P12V` is already owner-confirmed.",

@@ -273,14 +273,14 @@ if c63_chip is None or c63_chip.get("assembly_dnp") is not True or c63_chip.get(
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C63 target DNP is not encoded")
 c63_artwork = board.FindFootprintByReference("C63")
 if c63_artwork is None:
-    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: inherited C63 grid landing is missing")
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: provisional C63 model footprint is missing")
 c63_pads = [pad.GetPosition() for pad in c63_artwork.Pads()]
 c63_midpoint = (
     sum(pcbnew.ToMM(point.x) for point in c63_pads) / len(c63_pads),
     sum(pcbnew.ToMM(point.y) for point in c63_pads) / len(c63_pads),
 )
 if math.dist(c63_midpoint, (176.1, 145.6)) > 0.01:
-    raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: inherited C63 landing moved to {c63_midpoint}")
+    raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: provisional C63 model slot moved to {c63_midpoint}")
 targets = []
 for item in document["targets"]:
     factory_x, factory_y = project(transform, item["drawing_px"])
@@ -381,8 +381,8 @@ for item in targets:
 lines += ["", "D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected",
           "factory-drawing positions. C20/C22 are also restored, but their table deltas are intentional: the drawing points identify the",
           "overlapping body labels, whereas registered owner component and solder photos prove the actual adjacent 2.54 mm drill columns",
-          "at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. C63 is an explicit target-board DNP:",
-          "the factory drawing shows its intended outline, while the raw owner photo shows the exact D41/D40 gap bare without a body or coherent drilled lead pair. The separately photo-registered inherited DRAM-grid landing at `(176.1,145.6)` mm remains fabricated as bare common artwork.",
+          "at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. C83 is absent at its factory callout:",
+          "the factory drawing shows its intended outline, while the owner photo shows no body in the D41/D40 gap. Two candidate front sites align with solder crowns under the promoted D41 fit, pending same-hole continuity. The separately photo-registered inherited DRAM-grid landing at `(176.1,145.6)` mm remains fabricated as bare common artwork.",
           "Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;",
           "that corroborates population and orientation. Two independent component angles read R100/R102/R108=`12К` and R86=`4К7`. Recovered `.009` Э3 sheet 3 closes the common right-hand rail to +5 V, R102.1 to C22.2/D102.15, R108.1 to C20.2/D102.7, and the C19/R100 side to D97.7. Target copper closes C19.2/R86.1 to D97.6 and overrides the sheet's conflicting R86=470 reset annotation. The registered solder view",
           "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints; cross-side review corrects their recorded order to upper pad1 `(875,712)` and lower pad2 `(823,893)`. The July view also registers all four resistor pin-1 joints. An oblique May view literally reads `22` on C19's exposed face, but no unambiguous unit/decimal glyph; its value/unit remains a boundary. The same owner views",
@@ -392,9 +392,9 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, a
           "R92.1-R99.2-D101.4, and R99.1-D101.8/GND. The May view likewise literally reads bare `27` on C16, but GOST 11076-69 Table 1 requires a unit/decimal letter for a coded capacitance; C16's value/unit remains a boundary while sheet 3 closes its endpoints to D97.15/.14.",
           "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Enhanced July pixels",
           "read C20=`1Н5`, and an independent May angle directly reads the outer C22 body as `1Н5`; GOST 11076-69 Table 1 maps both codes exactly to 1500 pF / 1.5 nF, now adopted for both parts. Sheet 3 closes their D102 timing endpoints; only tolerances and voltages remain unpromoted.",
-          "The lower drawing also labels the vertical part between D41 and D40 as `C63`, not `C13`.",
-          "The owner component view is bracketed by direct fits of both marked packages and contains neither a fitted C63 body nor a coherent two-hole span.",
-          "Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. The schematic retains the intended GND-to-RAIL_H bypass connection and the inherited grid verification footprint while excluding C63 from the populate-now BOM. The unrelated `.006` RF-option C13 is also DNP on the `.009` target and must not be conflated with this C63 site.",
+          "The original-resolution lower drawing labels the vertical part between D41 and D40 as `C83`.",
+          "The owner component view is bracketed by direct fits of both marked packages and contains no fitted C83 body. Two candidate front sites form a plausible span and align with solder crowns under the promoted D41 fit; physical identity still requires continuity.",
+          "Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. C83 is present in the logical source model on +5 V/GND, but physical PCB placement and the owner-board pad pair remain unresolved. C63 remains a separate bare inherited DRAM-grid footprint. The unrelated `.006` RF-option C13 is also DNP on the `.009` target.",
           "The owner component view does not expose a complete electrical path at either corrected",
           "site: C11's landings are visible without an unambiguous body, while C15 is hidden by the",
           "factory cable. Neither placement is connectivity evidence."]

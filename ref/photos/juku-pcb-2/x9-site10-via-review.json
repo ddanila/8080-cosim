@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "status": "site10-to-intermediate-via photo-closed on B.Cu; front pin-count favors D26.27/DB7, pending same-hole and continuity checks",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+  "site10_solder_px_approx": [
+    2385,
+    2375
+  ],
+  "intermediate_solder_via_px_approx": [
+    2385,
+    2240
+  ],
+  "previously_claimed_d26_28_solder_px_approx": [
+    2388,
+    2185
+  ],
+  "native_solder_crop_xyxy_original_pixels": [
+    2330,
+    2130,
+    2440,
+    2340
+  ],
+  "solder_observation": "A narrow B.Cu line runs from full-band site10 (2385,2375) to the open plated annulus near (2385,2240). A native grid read of crop (2330,2130)-(2440,2340) places the annulus center around y2240, about 55 pixels below the separate D26 lower-row crown near (2388,2185), with brown board between them. The former uninterrupted B.Cu-to-D26.28/DB6 claim is false.",
+  "component_observation": "In native component crop (1870,2230)-(2070,2360), a continuous front copper stem leaves the D26 lower-row lead near (1935,2250), bends to an open annulus near (1970,2315), and disappears under the white wire only below the annulus. Counting from the visibly rightmost lower-row lead near x2705 as physical D26.40 at about 60-pixel pitch makes the x1935 source physical pin27 (13 intervals left), whose source net is DB7. The old corner fit used x2690 for pin40 and can misassign one pin at this precision. Reflecting the front annulus through the package corners predicts the solder annulus within roughly 20-25 pixels in x and 10-15 pixels in y, so they are a strong same-hole candidate, not a certified match. The front trace plus B.Cu site10 route therefore favors D26.27/DB7, but only continuity can close the across-face via identity and exclude DB6.",
+  "factory_context": "Native page 1 of ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf visibly lists position 153 as fourteen rows A:45→X9:14 through A:58→X9:1, all 30 cm. It gives board-point labels, not signal names. The reconstructed exact-revision board model maps those fourteen A points to keyboard/control/+5 V nets and none to D26.27/DB7 or D26.28/DB6. The photographed row has fifteen regular joints. If site10 proves DB7 with no ribbon conductor, subtracting it would yield fourteen cable candidates; neither condition is proved by the sheath-covered photo.",
+  "next_check": "With power off, meter site10 to the intermediate via and D26.27/DB7, then separately to D26.28/DB6; inspect whether a ribbon conductor also terminates at site10. Only then exclude it from the fourteen factory X9 wires or assign its net.",
+  "factory_source": "ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf page 1, position 153; ref/schematics/dgsh5-109-009-sb-wire-table.md; kicad/juku.board.json A45-A58 net nodes",
+  "exact_schematic_pin_check": "Native exact .009 sheet-1 PXL_20260718_101824181.MP.jpg crop (0,500)-(1500,3000) explicitly labels D26 pin27 as D7 and pin28 as D6 on the PPI data pins. The board model names those nets DB7 and DB6 respectively. This confirms the candidate signal naming if the owner front lead count and via match are correct; it does not itself prove the owner copper.",
+  "source_images": [
+    "ref/photos/dgsh5-109-009-e3/PXL_20260718_101824181.MP.jpg",
+    "ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "status": "D59.10 solder probe joint located; exposed copper continuation unresolved",
+  "image": "ref/photos/juku-pcb-2/PXL_20260710_200534267.jpg",
+  "registration": "ref/photos/juku-pcb-2/d59-orientation-audit.json",
+  "crop_xyxy_original_pixels": [2450, 2310, 3020, 2660],
+  "pin10_solder_xy_original_px_approx": [2780, 2450],
+  "pin_count": "D59 right-facing notch establishes lower solder row left-to-right as pins14,13,12,11,10,9,8; pin10 is the fifth of seven joints, the middle of three dark reworked crowns near x2720,2780,2840.",
+  "observation": "At native resolution, dark solder or rework material obscures the immediate B.Cu departure from the pin10 crown. A neighboring pin8 joint has a visible rightward trace, but that is two contacts away and is not evidence for pin10. The crop therefore locates an exact power-off probe target without identifying the remote numbered-tag-10 endpoint.",
+  "next_check": "With power off, probe D59.10 at approximately (2780,2450) in the named solder photo to candidate timing endpoints. Keep D57.13 SOUND separate unless direct continuity establishes a physical modification; the exact .009 drawing depicts different tag-10 domains."
+}

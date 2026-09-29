@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "status": "former A9B wire candidate disfavored: matching solder annulus photo-traces to D92.1/ROE",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "factory_drawing_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+  "factory_endpoint": "A9B on D38.12/SYNC side",
+  "component_candidate_joint_px": [2286.0, 2450.0],
+  "component_candidate_annulus_px": [2288.0, 2298.0],
+  "component_observation": "A visible front-copper line joins the candidate white-wire surface joint to the circular annulus. The annulus has not been proved to pass through to the solder face.",
+  "competing_identity": "The same physical white-wire/annulus pair is in the A13B D38/R35 corridor (see a13a-c95-d50-candidate-review.json). The D92-local cross-face fit places its front annulus within about 9.5 px of the solder annulus at (1916,1950), whose visible uninterrupted trace runs to registered D92.1/ROE at (1719,1951). This strongly favors A13B and disqualifies this joint as the preferred A9B candidate. Physical continuity still needs to confirm the through-hole pairing.",
+  "cross_face_projection": {
+    "method": "affine map through corrected D38 pins 1, 7, and 14 on both faces",
+    "projected_candidate_annulus_solder_px": [1907.163, 1982.216],
+    "projected_candidate_joint_solder_px": [1915.114, 2134.834],
+    "corrected_d38_pin12_solder_px": [2076.333, 2063.5],
+    "nearest_visible_open_annulus_solder_px_approx": [1916.0, 1950.0],
+    "observation": "The D38-only projected point sits on a narrow horizontal solder trace. The nearby open annulus is about 33 pixels from this projection, but a wider four-package fit brings the predicted point closer. That open annulus is therefore a plausible through counterpart, not a proved separate feature. Its visible solder trace does not run continuously to corrected D38.12."
+  },
+  "independent_cross_package_check": {
+    "package_centers": ["D38", "D41", "D92", "D39"],
+    "method": "least-squares affine fit between component and solder package pin-field centers",
+    "projected_candidate_annulus_solder_px": [1914.007, 1964.193],
+    "projected_candidate_joint_solder_px": [1917.972, 2119.926],
+    "open_annulus_distance_from_broad_projection_px_approx": 14.3,
+    "assessment": "The open solder annulus near (1916,1950) may correspond to the front annulus, within the disagreement of the two geometric fits. The photo still does not show a continuous copper route from this annulus to D38.12."
+  },
+  "d38_12_sync_spur_search": {
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "registered_d38_12_solder_px_approx": [2078, 2063],
+    "west_open_annulus_solder_px_approx": [2025, 2063],
+    "observation": "A short uninterrupted solder-side copper trace runs west from registered D38.12 to the open annulus near (2025,2063). This is a better local SYNC search anchor than the former white-wire annulus at (1916,1950), which traces to D92.1/ROE. The D38 pin-1/7/8 two-face fit projects this SYNC annulus near component (2175,2384). A visible front annulus around (2176,2404) is a plausible counterpart, about 20 px away, and is joined by uninterrupted front copper to another open annulus around (2178,2520). Neither location visibly carries an insulated wire. The through-hole match and onward SYNC path still need confirmation.",
+    "second_annulus_solder_search": "The lower front annulus projects near solder (2028,2200), while a visible open annulus at about (2028,2170) is a plausible counterpart after the same roughly 20–30 px local fit offset. Its short solder spur points east toward D38 pin10's row but ends visibly short of the pin contact near (2078,2175). Do not infer a D38.12-to-D38.10 join from pad proximity; the source keeps SYNC at pin12 separate from the pin10/13 load-gate input. A meter or stronger hole registration is needed to identify the second annulus and any intended cut."
+  },
+  "decision": "The solder annulus near (1916,1950) is visibly on D92.1/ROE and is the strong counterpart candidate for the front white-wire annulus. Withdraw this white joint as the preferred A9B candidate; retain A9B unlocated and do not restore a D38.12 board assignment. Confirm the annulus pairing and wire continuity on the owner board before promoting A13B."
+}

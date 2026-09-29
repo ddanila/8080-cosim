@@ -20,6 +20,8 @@ board = pcbnew.LoadBoard(str(BOARD))
 landing_document = json.loads(LANDINGS.read_text(encoding="utf-8"))
 point = next(record for record in landing_document["points"] if record["point"] == 8)
 endpoints = {item["terminal"]: item for item in point["endpoints"]}
+if endpoints["A8B"].get("board_mm") is None:
+    raise SystemExit("A8 FACTORY LANDINGS: HOLD — A8B must be retraced against corrected D38 solder joints")
 fit = next(
     item
     for item in json.loads(LOCAL_REPORT.read_text(encoding="utf-8"))["fits"]

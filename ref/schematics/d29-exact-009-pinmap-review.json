@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "status": "exact .009 D29 physical row map transcribed; replica source model and PCB pad nets migrated; routed copper repair and physical continuity pending",
+  "source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101813438.jpg",
+  "source_crop_xyxy_original_pixels": [
+    1520,
+    3000,
+    2360,
+    3580
+  ],
+  "observation": "All eight D29 A/B rows are legible at original resolution. The printed physical pin pairs match the 8286 datasheet pair map despite the symbol rows being permuted. The source row labels, not their vertical order alone, determine each command output.",
+  "rows": [
+    {
+      "input_pin": 3,
+      "output_pin": 17,
+      "printed_output": "-INHIB",
+      "current_input_net": "INHIB_STATUS_BOUNDARY",
+      "current_output_net": "INHIB_N"
+    },
+    {
+      "input_pin": 1,
+      "output_pin": 19,
+      "printed_output": "CCLCK",
+      "current_input_net": "PHI2TTL",
+      "current_output_net": "CCLCK"
+    },
+    {
+      "input_pin": 2,
+      "output_pin": 18,
+      "printed_output": "-IO/M",
+      "current_input_net": "AMW_N",
+      "current_output_net": "IOM_N"
+    },
+    {
+      "input_pin": 7,
+      "output_pin": 13,
+      "printed_output": "-MWC",
+      "current_input_net": "D30_Q2N_D29_AIN7",
+      "current_output_net": "MWC_N"
+    },
+    {
+      "input_pin": 6,
+      "output_pin": 14,
+      "printed_output": "-MRC",
+      "current_input_net": "MEMR",
+      "current_output_net": "MRC_N"
+    },
+    {
+      "input_pin": 8,
+      "output_pin": 12,
+      "printed_output": "-AMWC",
+      "current_input_net": "MEMW",
+      "current_output_net": "AMWC_N"
+    },
+    {
+      "input_pin": 4,
+      "output_pin": 16,
+      "printed_output": "-IORC",
+      "current_input_net": "IORD",
+      "current_output_net": "IORC_N"
+    },
+    {
+      "input_pin": 5,
+      "output_pin": 15,
+      "printed_output": "-IOWC",
+      "current_input_net": "IOWR",
+      "current_output_net": "IOWC_N"
+    }
+  ],
+  "critical_conflict": "The earlier replica put CCLCK on D29.18 and D29.1 on MEMW, left D29.2 singleton, assigned D29.8 to IORD, and permuted six command outputs. The exact .009 source contradicts that earlier map; the current source model, HDL, and PCB pad nets now follow the printed pin pairs. Owner-board continuity and R35/C29/R106 physical registration remain open.",
+  "owner_evidence": "Owner continuity recorded 2026-08-04 connects D35.13 clock path to D29.1, supporting the D29.1 clock-input correction, but the resistor R35 in that path requires a resistance reading to separate direct PHI2TTL from post-R35 node. Existing 2026-07-19 D29.5 qualified /WR continuity supports only that individual input, not the complete source row map.",
+  "decision": "Adopted this table in the JSON source model, schematic, all three PCB pad maps, HDL, and 8286 pinout guard. Removed 32 stale copper items from each routed variant; both remain clean of shorts, clearances, and track crossings with 35 unconnected items. Physical continuity and passive placement remain release holds.",
+  "input_source_chase": {
+    "image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101813438.jpg",
+    "input_crop_xyxy_original_pixels": [
+      1000,
+      3040,
+      1740,
+      3540
+    ],
+    "gate_crop_xyxy_original_pixels": [
+      650,
+      3200,
+      1400,
+      3650
+    ],
+    "observations": [
+      "D7 first NAND section output pin 3 runs right, turns up, and reaches D29 physical pin 2. Its vertical rise crosses the separate D29.7 rail without a filled junction. This source join is visible at original resolution.",
+      "The five lower input rows have continuation numerals 9, 1, 2, 8, 7 for D29 physical pins 7, 6, 8, 4, 5 respectively; the lower legends print 1=-MRD, 2=-MWR, 7=-IOWR, 8=-IORD. Thus D29.8 is -MWR/MEMW, D29.4 is -IORD/IORD, and D29.5 is -IOWR/IOWR.",
+      "D29.1 is on the PHI2TTL branch established by the separate full-sheet clock chase and owner continuity; D29.3 shares the distinct -INHIB source with D7.5."
+    ],
+    "model_disagreements": [
+      "Historical replica D29.1/MEMW assignment corrected to PHI2TTL.",
+      "Historical D29.2 singleton corrected to AMW_N with D7.3.",
+      "Historical D29.8/IORD assignment corrected to MEMW."
+    ],
+    "physical_limits": "The new D7.3-to-D29.2 conclusion is a source-drawing join. Registered owner photos do not yet prove the corresponding board continuity or the separately drawn D7.11/D105.3 output tie."
+  }
+}

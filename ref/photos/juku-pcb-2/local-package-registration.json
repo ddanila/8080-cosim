@@ -22,13 +22,13 @@
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
       "model": "affine",
       "anchors": [
-        {"pin": "1", "image_px": [2578.0, 1485.0], "use": "fit", "observation": "top joint of the reflected pin-1-to-20 outer column"},
-        {"pin": "20", "image_px": [2581.0, 2549.0], "use": "fit", "observation": "bottom joint of the complete reflected pin-1-to-20 column"},
-        {"pin": "21", "image_px": [2245.0, 2549.0], "use": "fit", "observation": "bottom joint of the opposite outer column"},
-        {"pin": "22", "image_px": [2245.0, 2493.0], "use": "check", "observation": "independent PHI1 joint immediately above pin 21"},
-        {"pin": "40", "image_px": [2242.0, 1485.0], "use": "check", "observation": "independent top joint of the pin-21-to-40 column"}
+        {"pin": "1", "image_px": [2905.0, 1485.0], "use": "fit", "observation": "top joint of the reflected pin-1-to-20 outer CPU column"},
+        {"pin": "20", "image_px": [2905.0, 2549.0], "use": "fit", "observation": "bottom joint of the complete reflected pin-1-to-20 column"},
+        {"pin": "21", "image_px": [2580.0, 2549.0], "use": "fit", "observation": "bottom joint of the opposite CPU column"},
+        {"pin": "22", "image_px": [2580.0, 2493.0], "use": "check", "observation": "independent joint immediately above pin 21"},
+        {"pin": "40", "image_px": [2580.0, 1485.0], "use": "check", "observation": "independent top joint of the pin-21-to-40 column"}
       ],
-      "note": "The CPU backside is the pair of outer twenty-joint columns; the aligned inner features are trace/via fanout, not a narrow DIP row. The fit supplies a local frame for the separately printed 14 and 7 remote joints below D1."
+      "note": "Native front/back package order puts D2, D4, and D1 from left to right on the mirrored solder image. The former D1 fit occupied x2242/x2580 and wrongly included D4's left column; the CPU's full twenty-joint columns are x2580/x2905. The fit supplies a local frame only, not connectivity evidence."
     },
     {
       "refdes": "D10",
@@ -42,6 +42,20 @@
         {"pin": "28", "image_px": [2123.0, 1305.0], "use": "check", "observation": "top-left contact beside the notch end"}
       ],
       "note": "The marking is unambiguous КР580ВН59. This fit replaces global projections displaced onto adjacent resistors and the package body, corrects the source footprint centre to approximately (192.44,110.08) mm through the registered component panorama, and provides physical PIC endpoint geometry for the FDC interrupt audit."
+    },
+    {
+      "refdes": "D10",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [3775.0, 1355.0], "use": "fit", "observation": "right end of the reflected lower fourteen-joint row"},
+        {"pin": "14", "image_px": [3048.0, 1355.0], "use": "fit", "observation": "left end of the reflected lower row"},
+        {"pin": "15", "image_px": [3048.0, 1028.0], "use": "fit", "observation": "left end of the reflected upper row"},
+        {"pin": "22", "image_px": [3438.0, 1028.0], "use": "check", "observation": "eighth upper-row joint, correcting the retired rail-gap projection"},
+        {"pin": "28", "image_px": [3775.0, 1028.0], "use": "check", "observation": "right end of the reflected upper row"}
+      ],
+      "note": "The 14-joint upper/lower rows match the independently marked component-side D10 package under reflection. The fit corrects the old board-level solder projections for pins 12, 13, 15, 16, 20, 21, and 22; it establishes joint identity only. Pin 22 shows no exposed B.Cu departure, and its F.Cu path is hidden by cable and adhesive."
     },
     {
       "refdes": "D94",
@@ -101,14 +115,14 @@
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
       "model": "affine",
       "anchors": [
-        {"pin": "1", "image_px": [1382.0, 1949.0], "use": "fit", "observation": "top joint of the reflected pin-1-to-7 column between fitted D38 and D37"},
-        {"pin": "4", "image_px": [1386.0, 2117.0], "use": "check", "observation": "independent fourth joint on the complete right column"},
-        {"pin": "7", "image_px": [1390.0, 2284.0], "use": "fit", "observation": "bottom joint of the complete mirrored right column"},
-        {"pin": "8", "image_px": [1221.0, 2284.0], "use": "fit", "observation": "bottom joint of the opposite complete column"},
-        {"pin": "13", "image_px": [1214.0, 2005.0], "use": "check", "observation": "independent second joint from the top on the mirrored left column"},
-        {"pin": "14", "image_px": [1213.0, 1949.0], "use": "check", "observation": "independent top joint on the mirrored left column"}
+        {"pin": "1", "image_px": [1719.0, 1951.0], "use": "fit", "observation": "top joint of the right column matched to upper FDC packages across faces"},
+        {"pin": "4", "image_px": [1720.0, 2119.0], "use": "check", "observation": "independent fourth joint on the complete right column"},
+        {"pin": "7", "image_px": [1720.0, 2287.0], "use": "fit", "observation": "bottom joint of the complete mirrored right column"},
+        {"pin": "8", "image_px": [1553.0, 2287.0], "use": "fit", "observation": "bottom joint of the opposite complete column"},
+        {"pin": "13", "image_px": [1552.0, 2007.0], "use": "check", "observation": "independent second joint from the top on the mirrored left column"},
+        {"pin": "14", "image_px": [1552.0, 1951.0], "use": "check", "observation": "independent top joint on the mirrored left column"}
       ],
-      "note": "The two complete seven-joint columns between the already fitted D38 and D37 fields establish D92 on the backside. An affine model absorbs the slight column perspective while holding both factory-link owner pins out independently; neither D92.1 nor D92.13 carries a visible wire stub."
+      "note": "A broad cross-face check using the upper FDC row revealed that the former D38/D92/D39 solder group was shifted about 500 pixels left as a block. The complete x1552/x1719 field is D92, between corrected D38 and D39 fields. Local pin checks alone could not detect the common group shift. No insulated-wire stub is visible at D92.1 or D92.13."
     },
     {
       "refdes": "D2",
@@ -130,9 +144,39 @@
       "anchors": [
         {"pin": "1", "image_px": [1800.0, 1498.0], "use": "fit", "observation": "centre of mirrored upper-right solder joint"},
         {"pin": "4", "image_px": [1800.0, 1673.0], "use": "check", "observation": "centre of fourth right-column solder joint"},
-        {"pin": "8", "image_px": [1800.0, 1902.0], "use": "fit", "observation": "centre of mirrored lower-right solder joint"}
+        {"pin": "8", "image_px": [1800.0, 1902.0], "use": "fit", "observation": "centre of mirrored lower-right solder joint"},
+        {"pin": "14", "image_px": [1628.0, 1614.0], "use": "check", "observation": "third left-column joint from top, independently visible in the overlapping tile"}
       ],
       "note": "Two vertical 8-pad columns are visible; direct solder view reverses the component-side left/right sequence."
+    },
+    {
+      "refdes": "D2",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [3620.0, 1465.0], "use": "fit", "observation": "top joint of the reflected pin-1-to-8 right column"},
+        {"pin": "4", "image_px": [3620.0, 1630.0], "use": "check", "observation": "fourth right-column joint in the overlapping tile"},
+        {"pin": "8", "image_px": [3620.0, 1850.0], "use": "fit", "observation": "bottom joint of the complete right column"},
+        {"pin": "9", "image_px": [3450.0, 1850.0], "use": "fit", "observation": "bottom joint of the reflected left column"},
+        {"pin": "14", "image_px": [3450.0, 1575.0], "use": "check", "observation": "third left-column joint from the top, reached by the C99-left candidate B.Cu line"},
+        {"pin": "16", "image_px": [3450.0, 1465.0], "use": "check", "observation": "top joint of the reflected left column"}
+      ],
+      "note": "The same 2×8 field independently registered in 200527310 appears in this overlap with x about 1820 px farther east and y about 33 px north. Its two complete rows and unique neighboring narrow traces identify D2.14 at the third left-column joint. Pad identity does not by itself establish the owner's ground continuity."
+    },
+    {
+      "refdes": "D4",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1320.0, 1665.0], "use": "fit", "observation": "upper-left contact under the cable beside the top-facing notch of the marked КР580ВА86"},
+        {"pin": "5", "image_px": [1320.0, 1885.0], "use": "check", "observation": "fifth left-column contact beside the body marking"},
+        {"pin": "10", "image_px": [1320.0, 2165.0], "use": "fit", "observation": "lowest left-column contact above the separately notched lower package"},
+        {"pin": "11", "image_px": [1505.0, 2165.0], "use": "check", "observation": "lowest right-column contact"},
+        {"pin": "20", "image_px": [1505.0, 1665.0], "use": "fit", "observation": "upper-right contact beside the top-facing notch"}
+      ],
+      "note": "Exact .009 assembly photo PXL_20260711_114604420.jpg explicitly places D4 above D107 and D2 to their right, identifying this marked upper 2x10 package. Its top-facing notch establishes the front pin count independently of the corrected x2242/x2410 solder field. A D2/D4 local reflection places the D2.1 solder via near front (1568,1725), distinct from the exposed hole near (1555,1755); this remains a cross-face search, not a same-hole promotion."
     },
     {
       "refdes": "D4",
@@ -140,11 +184,13 @@
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
       "model": "similarity_reflected",
       "anchors": [
-        {"pin": "1", "image_px": [2240.0, 1491.0], "use": "fit", "observation": "centre of upper pad on the D4 mirrored input row"},
-        {"pin": "5", "image_px": [2241.0, 1718.0], "use": "check", "observation": "independent fifth-pad centre on the same row"},
-        {"pin": "10", "image_px": [2243.0, 1997.0], "use": "fit", "observation": "centre of lower pad on the D4 mirrored input row"}
+        {"pin": "1", "image_px": [2410.0, 1438.0], "use": "fit", "observation": "centre of upper joint of D4's reflected pin-1-to-10 column"},
+        {"pin": "5", "image_px": [2410.0, 1662.0], "use": "check", "observation": "centre of independent fifth joint of the same column"},
+        {"pin": "10", "image_px": [2410.0, 1942.0], "use": "fit", "observation": "centre of tenth joint above the separately notched lower D107 package"},
+        {"pin": "11", "image_px": [2242.0, 1942.0], "use": "check", "observation": "centre of tenth joint of D4's opposite column"},
+        {"pin": "20", "image_px": [2242.0, 1438.0], "use": "check", "observation": "centre of upper joint of D4's opposite column on a broad strip"}
       ],
-      "note": "Fits the D4 input row independently to identify the five remote D2 solder-trace landings."
+      "note": "Exact .009 assembly photo PXL_20260711_114604420.jpg labels D4 above D107 beside D2, confirming the upper solder field x2242/x2410, y1438..1942. The previous D4 fit used x2071/x2242 and collided with D1's previous fit at x2242. A second native close read moved provisional y1425/y1920 anchors onto actual cap centres. D2.1's B.Cu run ends at a separate open via near (2185,1498), short of D4.19; other D2 routes require individual copper chases."
     },
     {
       "refdes": "D3",
@@ -158,20 +204,6 @@
         {"pin": "1", "image_px": [1455.0, 1069.0], "use": "check", "observation": "independent bottom-right contact beside the photographed bottom-facing notch"}
       ],
       "note": "The direct fit establishes D3.10 beside the distinct component-side white-wire surface joint. Package geometry alone does not promote the wire connection; that requires the separately visible tinned departure."
-    },
-    {
-      "refdes": "D104",
-      "side": "solder",
-      "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
-      "model": "affine",
-      "anchors": [
-        {"pin": "8", "image_px": [2213.0, 1203.0], "use": "fit", "observation": "top-left joint of the reflected 2x8 D104 field"},
-        {"pin": "1", "image_px": [2211.0, 1526.0], "use": "fit", "observation": "bottom-left joint of the complete reflected row"},
-        {"pin": "16", "image_px": [2349.0, 1526.0], "use": "fit", "observation": "bottom-right joint of the opposite complete row"},
-        {"pin": "9", "image_px": [2350.0, 1203.0], "use": "check", "observation": "independent top-right joint"},
-        {"pin": "10", "image_px": [2350.0, 1249.0], "use": "check", "observation": "fourth-receiver output joint; visibly lacks a B.Cu departure"}
-      ],
-      "note": "The reflected fit cross-registers the photo-placed D104 onto the backside in two overlapping solder views. D104.10 has no B.Cu departure, but its possible F.Cu corridor is hidden by a vertical white wire in both component views, so the fit narrows the continuity request without declaring the pin NC."
     },
     {
       "refdes": "D13",
@@ -193,12 +225,14 @@
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
       "model": "similarity_reflected",
       "anchors": [
-        {"pin": "8", "image_px": [2682.0, 1009.0], "use": "fit", "observation": "leftmost joint on the complete mirrored pin-8-to-14 row"},
-        {"pin": "11", "image_px": [2868.0, 1009.0], "use": "check", "observation": "independent middle joint on the complete upper row"},
-        {"pin": "14", "image_px": [3051.0, 1009.0], "use": "fit", "observation": "rightmost joint on the complete mirrored upper row"},
-        {"pin": "1", "image_px": [3051.0, 1192.0], "use": "check", "observation": "independent lower-right joint on the opposite row"}
+        {"pin": "1", "image_px": [2682.0, 825.0], "use": "fit", "observation": "leftmost upper joint in the seven-contact D13 field above D105"},
+        {"pin": "4", "image_px": [2868.0, 825.0], "use": "check", "observation": "independent middle upper joint on the same package row"},
+        {"pin": "7", "image_px": [3051.0, 825.0], "use": "fit", "observation": "rightmost upper joint of D13"},
+        {"pin": "8", "image_px": [3051.0, 1009.0], "use": "fit", "observation": "rightmost lower joint of D13"},
+        {"pin": "11", "image_px": [2868.0, 1009.0], "use": "check", "observation": "independent middle lower joint of D13"},
+        {"pin": "14", "image_px": [2682.0, 1009.0], "use": "check", "observation": "leftmost lower joint of D13"}
       ],
-      "note": "The two complete seven-pad rows immediately above D105 establish the reflected backside field. D13.2 is the second joint from the right on the lower row; its solder cap and ordinary narrow etched departure are visible between unrelated broad traces, but there is no distinct insulated-wire stub or remote A12 departure in this view."
+      "note": "The prior D13 solder fit mistakenly paired the lower D13 row at y1009 with D105's upper row at y1192, assigning one physical joint to two packages. Native package order and spacing put D13 at y825/y1009 and D105 at y1192/y1370. D13.2 is the second upper-row joint near (2743.5,825); no remote A12 wire is proved by this package fit."
     },
     {
       "refdes": "D13",
@@ -212,7 +246,78 @@
         {"pin": "8", "image_px": [866.0, 1501.0], "use": "fit", "observation": "lower-left contact of the opposite row"},
         {"pin": "14", "image_px": [1205.0, 1501.0], "use": "check", "observation": "independent lower-right contact below the notch"}
       ],
-      "note": "This sharper overlapping component tile exposes an apparent white-wire endpoint east of D13/R20 near (1405,1479) px. Cross-projection into the second component angle and solder view shows that the tinned end rests over bare substrate rather than a copper landing; the fit preserves the rejected A12 candidate audit."
+      "note": "This sharper overlapping component tile exposes an apparent white-wire endpoint east of D13/R20 near (1405,1479) px. Cross-projection into the second component angle places the tinned end over bare substrate; the corrected solder fit places its long-extrapolated search near (2465,987), close enough to unrelated copper that it is not an independent same-hole exclusion. The wire end has no proved pad landing."
+    },
+    {
+      "refdes": "D30",
+      "side": "component-alt",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1205.0, 1055.0], "use": "fit", "observation": "upper-right contact beside the right-facing notch on the marked К555ТМ2"},
+        {"pin": "7", "image_px": [875.0, 1055.0], "use": "fit", "observation": "far upper-left contact"},
+        {"pin": "8", "image_px": [875.0, 1230.0], "use": "fit", "observation": "lower-left contact counted from the marked notch"},
+        {"pin": "11", "image_px": [1040.0, 1230.0], "use": "check", "observation": "fourth lower contact"},
+        {"pin": "14", "image_px": [1205.0, 1230.0], "use": "check", "observation": "lower-right contact below the notch"}
+      ],
+      "note": "The marked right-notched 2x7 package identifies D30 and its pin8/pin11 contacts independently of the solder image."
+    },
+    {
+      "refdes": "D30",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2680.0, 540.0], "use": "fit", "observation": "leftmost upper joint of D30's seven-joint field"},
+        {"pin": "4", "image_px": [2860.0, 540.0], "use": "check", "observation": "fourth upper joint"},
+        {"pin": "7", "image_px": [3040.0, 540.0], "use": "fit", "observation": "rightmost upper joint"},
+        {"pin": "8", "image_px": [3040.0, 730.0], "use": "fit", "observation": "rightmost lower joint"},
+        {"pin": "11", "image_px": [2860.0, 730.0], "use": "check", "observation": "fourth lower joint"},
+        {"pin": "14", "image_px": [2680.0, 730.0], "use": "check", "observation": "leftmost lower joint"}
+      ],
+      "note": "Distinct upper 2x7 field above D13 at y825/y1009. Its lower row is y730; the retired x2369/x2550,y607 projections lie on unrelated copper. This fit identifies package joints only."
+    },
+    {
+      "refdes": "D105",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [2682.0, 1192.0], "use": "fit", "observation": "leftmost upper joint independently identified in D105 pin3 review"},
+        {"pin": "3", "image_px": [2805.0, 1192.0], "use": "check", "observation": "third upper joint from independent D105 review"},
+        {"pin": "7", "image_px": [3051.0, 1192.0], "use": "fit", "observation": "rightmost upper joint"},
+        {"pin": "8", "image_px": [3051.0, 1370.0], "use": "fit", "observation": "rightmost lower joint"},
+        {"pin": "14", "image_px": [2682.0, 1370.0], "use": "check", "observation": "leftmost lower joint"}
+      ],
+      "note": "The third 2x7 field below D13 is D105. Its independently reviewed pin1/pin3 joints exposed the previous D13 package collision."
+    },
+    {
+      "refdes": "D107",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1320.0, 2260.0], "use": "fit", "observation": "upper-left contact beside the top notch of the lower marked КР580ВА86"},
+        {"pin": "5", "image_px": [1320.0, 2482.0], "use": "check", "observation": "fifth contact along the left row"},
+        {"pin": "10", "image_px": [1320.0, 2760.0], "use": "fit", "observation": "lowest left-row contact"},
+        {"pin": "11", "image_px": [1505.0, 2760.0], "use": "check", "observation": "lowest right-row contact"},
+        {"pin": "20", "image_px": [1505.0, 2260.0], "use": "fit", "observation": "upper-right contact beside the top notch"}
+      ],
+      "note": "Exact .009 assembly photo PXL_20260711_114604420.jpg labels the lower of the two vertically stacked КР580ВА86 packages D107, below D4. This fit establishes its separate front pad field, not copper connectivity."
+    },
+    {
+      "refdes": "D107",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2410.0, 1997.0], "use": "fit", "observation": "top joint of lower reflected 2x10 field"},
+        {"pin": "5", "image_px": [2410.0, 2221.0], "use": "check", "observation": "independent fifth joint of right solder column"},
+        {"pin": "10", "image_px": [2410.0, 2501.0], "use": "fit", "observation": "bottom joint of right solder column"},
+        {"pin": "11", "image_px": [2242.0, 2501.0], "use": "check", "observation": "bottom joint of left solder column"},
+        {"pin": "20", "image_px": [2242.0, 1997.0], "use": "fit", "observation": "top joint of left solder column below D4"}
+      ],
+      "note": "Native 200527310 shows a separate lower 2x10 field at x2242/x2410 and y1997..2501. Its order below the registered D4 field mirrors the exact .009 assembly placement of D107 below D4. The fit names physical joints only."
     },
     {
       "refdes": "D5",
@@ -227,6 +332,18 @@
         {"pin": "28", "image_px": [1322.0, 1480.0], "use": "check", "observation": "independent bottom-right contact below the notch"}
       ],
       "note": "The marked package is unambiguously КР580ВК38. Its right-facing notch proves a 270-degree PCB orientation, while the old drawing seed used 90 degrees and displaced the package. The complete 2x14 contact field also identifies D5.26 independently of the adjacent factory-wire joint."
+    },
+    {
+      "refdes": "D5",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "28", "image_px": [2406.0, 1215.0], "use": "fit", "observation": "leftmost joint of the complete 14-contact lower row, reflected from the front pin28 beside the right-facing notch"},
+        {"pin": "25", "image_px": [2570.0, 1215.0], "use": "check", "observation": "fourth joint from the left; a narrow B.Cu run descends from the C88-gap trace corridor into this IORD contact"},
+        {"pin": "15", "image_px": [3125.0, 1215.0], "use": "fit", "observation": "rightmost joint of the same complete lower row"}
+      ],
+      "note": "The 14-joint row immediately right of registered D6 in this solder tile is the mirrored backside of marked КР580ВК38 D5, whose front lower row is x620..1322 in 200411500. Counting from physical pin28 at the solder left identifies the narrow-trace destination x2570 as D5.25/IORD. This registers that row only; other D5 copper remains separate evidence."
     },
     {
       "refdes": "D7",
@@ -257,6 +374,47 @@
       "note": "This overlapping tile separates the known A19 joint below-left of D7 from a second white insulated lead soldered at (1825,1706) px below-right. The factory table assigns the two D7-side wires to pins 2/A19 and 1/A11 respectively; the fit preserves their distinct physical landings."
     },
     {
+      "refdes": "D7",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2080.0, 1029.0], "use": "fit", "observation": "leftmost top joint of the complete seven-joint row; component right-facing notch reflects to the solder left"},
+        {"pin": "3", "image_px": [2190.0, 1029.0], "use": "check", "observation": "third top joint, the source-risk D7.3 output"},
+        {"pin": "7", "image_px": [2410.0, 1029.0], "use": "fit", "observation": "rightmost top joint of the seven-joint row"},
+        {"pin": "8", "image_px": [2410.0, 1193.0], "use": "check", "observation": "rightmost bottom joint after solder-side reflection"},
+        {"pin": "11", "image_px": [2245.0, 1193.0], "use": "check", "observation": "fourth bottom joint from the left, the PROM_EN output"},
+        {"pin": "14", "image_px": [2080.0, 1193.0], "use": "fit", "observation": "leftmost bottom joint of the complete seven-joint row"}
+      ],
+      "note": "Three consecutive solder fields in this image are 2x7, 2x8, 2x8 from left to right, mirroring the component-photo D7, D9, D8 order. The D7 55-pixel pitch and 164-pixel row separation register all 14 joints. D7.3 and D7.11 are separate local solder joints with no visible short bridge; the corrected exact source ties D7.11 to D105.3, not D7.3, and that remote owner continuity is unmeasured."
+    },
+    {
+      "refdes": "D6",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1897.0, 1317.0], "use": "fit", "observation": "upper-right socket contact beside the right-facing notch on marked КР556РТ4А"},
+        {"pin": "8", "image_px": [1503.0, 1317.0], "use": "fit", "observation": "upper-left contact at the far end of the same eight-pad row"},
+        {"pin": "9", "image_px": [1503.0, 1480.0], "use": "fit", "observation": "lower-left contact of the opposite row"},
+        {"pin": "16", "image_px": [1897.0, 1480.0], "use": "check", "observation": "independent lower-right contact below the notch"}
+      ],
+      "note": "The marked КР556РТ4А is the socket immediately left of registered D8. Its right-facing notch is now reflected in the corrected source PCB D6 footprint; both routed variants still have the old +90-degree end assignment. See docs/d6-owner-footprint-photo-audit.md."
+    },
+    {
+      "refdes": "D6",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1850.0, 1055.0], "use": "fit", "observation": "leftmost upper joint of the right-hand 2x8 field after solder-side reflection"},
+        {"pin": "8", "image_px": [2238.0, 1055.0], "use": "fit", "observation": "rightmost upper joint, with visible tinned neck to the upper broad GND strip"},
+        {"pin": "9", "image_px": [2238.0, 1215.0], "use": "check", "observation": "rightmost lower joint of the opposite row"},
+        {"pin": "16", "image_px": [1850.0, 1215.0], "use": "fit", "observation": "leftmost lower joint of the opposite row"}
+      ],
+      "note": "The right-hand solder 2x8 field in 200527310 reflects the marked D6 socket in component photo 200411500. These joint centers are approximate source-image pixels; the upper pin8-to-broad-strip join is separately reviewed in c87-d6-outer-pad-review.json."
+    },
+    {
       "refdes": "D8",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
@@ -270,17 +428,71 @@
       "note": "The metal package is the photographed К155РЕ3 D8 PROM, located by the assembly drawing between the unambiguous D6 КР556РТ4А and D9. Its complete 2x8 socket-contact field and right-facing notch replace the stale vertical drawing seed."
     },
     {
+      "refdes": "D8",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [3120.0, 1030.0], "use": "fit", "observation": "leftmost top joint of the complete eight-joint D8 field immediately right of registered D9"},
+        {"pin": "6", "image_px": [3395.0, 1030.0], "use": "check", "observation": "sixth top joint, independently counted from the left"},
+        {"pin": "8", "image_px": [3505.0, 1030.0], "use": "fit", "observation": "rightmost top joint, the GND pin nearest the R28 search region"},
+        {"pin": "9", "image_px": [3505.0, 1193.0], "use": "check", "observation": "rightmost bottom joint, the eighth PROM output on the opposite row"},
+        {"pin": "16", "image_px": [3120.0, 1193.0], "use": "fit", "observation": "leftmost bottom joint of the complete row"}
+      ],
+      "note": "The 55-pixel pitch and 163-pixel row separation match the adjacent D9 solder field. The mirrored component-side D8 notch fixes pin 1 at the left of the top solder row. This registration identifies package pads only; it does not prove R28 continuity."
+    },
+    {
       "refdes": "D9",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
       "model": "affine",
       "anchors": [
-        {"pin": "1", "image_px": [3011.0, 1320.0], "use": "fit", "observation": "top-right contact immediately above the right-facing notch of the metal package"},
-        {"pin": "8", "image_px": [2640.0, 1320.0], "use": "fit", "observation": "top-left contact at the far end of the complete eight-pad row"},
-        {"pin": "9", "image_px": [2640.0, 1485.0], "use": "fit", "observation": "bottom-left contact of the opposite complete row"},
-        {"pin": "16", "image_px": [3011.0, 1485.0], "use": "check", "observation": "independent bottom-right contact below the notch"}
+        {"pin": "1", "image_px": [2977.0, 1318.0], "use": "fit", "observation": "top-right contact immediately above the right-facing notch of the metal package in native crop (2520,1160)-(3100,1610)"},
+        {"pin": "8", "image_px": [2590.0, 1318.0], "use": "fit", "observation": "top-left contact at the far end of the complete eight-pad row"},
+        {"pin": "9", "image_px": [2590.0, 1480.0], "use": "fit", "observation": "bottom-left contact of the opposite complete row"},
+        {"pin": "16", "image_px": [2977.0, 1480.0], "use": "check", "observation": "independent bottom-right contact with direct front trace to open annulus near (2978,1530)"}
       ],
-      "note": "The assembly drawing places D9 between the socketed D8 К155РЕ3 and the marked D7 КР1533ЛА3; the faint metal marking and complete 2x8 field agree with the К555ИД7 footprint. The right-facing notch corrects the stale vertical seed that overlapped D7."
+      "note": "The assembly drawing places D9 between the socketed D8 К155РЕ3 and the marked D7 КР1533ЛА3; the faint metal marking and complete 2x8 field agree with the К555ИД7 footprint. Native enlargement corrects the former x2640..3011 component seed, which was shifted about 35–50 px right of the actual contacts; the corrected x2590..2977 row and right-facing notch are supported by all eight visible sockets. The lower-right pin16 front trace reaches an open annulus near (2978,1530), relevant to C88."
+    },
+    {
+      "refdes": "D9",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2574.0, 1030.0], "use": "fit", "observation": "leftmost top joint of the eight-joint field immediately right of registered D7"},
+        {"pin": "6", "image_px": [2848.0, 1030.0], "use": "check", "observation": "sixth top joint, the source-proved V3_RC enable input"},
+        {"pin": "8", "image_px": [2957.0, 1030.0], "use": "fit", "observation": "rightmost top joint of the complete eight-joint row"},
+        {"pin": "9", "image_px": [2957.0, 1193.0], "use": "check", "observation": "rightmost bottom joint after solder-side reflection"},
+        {"pin": "16", "image_px": [2574.0, 1193.0], "use": "fit", "observation": "leftmost bottom joint of the complete eight-joint row"}
+      ],
+      "note": "This 2x8 solder field lies directly between the registered D7 2x7 and the next D8 2x8 field, the mirror image of the component-side package order. The 54.7-pixel pitch and 163-pixel row separation identify physical D9 joints; the fit does not establish their onward copper nets."
+    },
+    {
+      "refdes": "D67",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2843.0, 1776.0], "use": "fit", "observation": "upper-left drill of the first bare 2x8 DRAM field immediately below D9; .006 assembly labels this package D67 with the notch at the top"},
+        {"pin": "8", "image_px": [2843.0, 2191.0], "use": "fit", "observation": "eighth and lowest exposed drill of the left column above the white wire"},
+        {"pin": "9", "image_px": [3010.0, 2191.0], "use": "fit", "observation": "eighth and lowest exposed drill of the right column"},
+        {"pin": "16", "image_px": [3010.0, 1776.0], "use": "check", "observation": "upper-right drill of the same bare DRAM package"}
+      ],
+      "note": "The .006 assembly explicitly puts D67 below C35 at the left end of the first DRAM row, and the .009 board keeps this bare expansion site. Both pad columns are exposed in the native owner image. This fit fixes package geometry, not C35's capacitor holes or any net continuity."
+    },
+    {
+      "refdes": "D66",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [3093.0, 1776.0], "use": "fit", "observation": "upper-left drill of the second bare 2x8 DRAM field; .006 assembly labels the adjacent package D66"},
+        {"pin": "8", "image_px": [3093.0, 2191.0], "use": "fit", "observation": "lowest exposed drill of its left column"},
+        {"pin": "9", "image_px": [3260.0, 2191.0], "use": "fit", "observation": "lowest exposed drill of its right column"},
+        {"pin": "16", "image_px": [3260.0, 1776.0], "use": "check", "observation": "upper-right drill of the adjacent bare package"}
+      ],
+      "note": "D66 is the next position right of D67 in the inherited .006/.009 DRAM row; its matching 167 px column spacing provides an independent group-position check against D9."
     },
     {
       "refdes": "R13",
@@ -291,7 +503,7 @@
         {"pin": "1", "image_px": [1415.0, 1137.0], "use": "fit", "observation": "left joint of the horizontal 1 kOhm resistor drawn above the D5-D6 row"},
         {"pin": "2", "image_px": [1638.0, 1137.0], "use": "fit", "observation": "right joint of the same fully visible axial resistor"}
       ],
-      "note": "The assembly drawing labels this isolated horizontal body R13. The fit establishes placement and posture only; symmetric axial-body appearance does not independently promote electrical pad numbering."
+      "note": "The assembly drawing labels this isolated horizontal body R13. Independent May component photo PXL_20260519_201933909.jpg, native crop (200,1000)-(850,1900), shows the same horizontal body above D6 directly marked 1K0, corroborating the source 1 kohm nominal and photographed population. The fit establishes placement and posture only; symmetric axial-body appearance does not independently promote electrical pad numbering."
     },
     {
       "refdes": "R14",
@@ -302,7 +514,7 @@
         {"pin": "1", "image_px": [1580.0, 1655.0], "use": "fit", "observation": "left landing of the lower resistor in the assembly-drawn R11/R14 pair below D6, obscured only at its departure by A19"},
         {"pin": "2", "image_px": [1880.0, 1655.0], "use": "fit", "observation": "right landing visible beside the crossing A19 wire"}
       ],
-      "note": "The assembly drawing labels the lower of the stacked horizontal pair R14. The red body is partly hidden by A19, but both terminal regions and the pair ordering remain visible; pad numbering is not promoted as continuity evidence."
+      "note": "The assembly drawing labels the lower of the stacked horizontal pair R14. May component photo PXL_20260519_201933909.jpg, native crop (350,1650)-(1100,2300), shows both fitted bodies: upper pale R11 directly reads 1K0; lower red R14 visibly ends K0 and is partly covered by the white A19 wire. A second May angle PXL_20260519_201915520.jpg, native crop (660,1110)-(780,1400), again exposes R14's K0 and R11's 1K0 while the wire hides the first red digit. This is consistent with the source 1 kohm nominal but not a complete independent R14 marking read. Both R14 terminal regions and the pair ordering remain visible; pad numbering is not promoted as continuity evidence."
     },
     {
       "refdes": "D50",
@@ -360,14 +572,14 @@
       "refdes": "D56",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
-      "model": "similarity",
+      "model": "affine",
       "anchors": [
-        {"pin": "1", "image_px": [3050.0, 1380.0], "use": "fit", "observation": "bottom-right contact beside the downward-facing notch"},
-        {"pin": "8", "image_px": [3050.0, 940.0], "use": "check", "observation": "independent top-right contact on the complete pin-1-to-8 column"},
-        {"pin": "9", "image_px": [2865.0, 940.0], "use": "fit", "observation": "top-left contact on the opposite complete column"},
-        {"pin": "16", "image_px": [2865.0, 1380.0], "use": "check", "observation": "independent bottom-left contact on the pin-9-to-16 column"}
+        {"pin": "1", "image_px": [3415.0, 1380.0], "use": "fit", "observation": "bottom-right contact beside the downward-facing notch on the marked К155АГ3"},
+        {"pin": "8", "image_px": [3415.0, 940.0], "use": "check", "observation": "independent top-right contact on the marked К155АГ3"},
+        {"pin": "9", "image_px": [3215.0, 940.0], "use": "fit", "observation": "top-left contact on the marked К155АГ3"},
+        {"pin": "16", "image_px": [3215.0, 1380.0], "use": "fit", "observation": "bottom-left contact on the marked К155АГ3"}
       ],
-      "note": "The notch-down К155АГ3 8901 body and both complete eight-contact columns identify D56 independently of the displaced whole-board endpoint seeds."
+      "note": "Corrected component fit on the marked К155АГ3 8901. The former x2865/3050 anchors landed on adjacent К555ИЕ10; the independently registered solder columns are retained after four-corner cross-side alignment to the corrected body."
     },
     {
       "refdes": "D56",
@@ -375,12 +587,169 @@
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
       "model": "similarity_reflected",
       "anchors": [
-        {"pin": "1", "image_px": [807.0, 536.0], "use": "fit", "observation": "bottom-left joint of the coherent reflected field"},
-        {"pin": "8", "image_px": [807.0, 89.0], "use": "check", "observation": "independent top-left joint at the wide upper rail"},
-        {"pin": "9", "image_px": [990.0, 89.0], "use": "fit", "observation": "top-right joint at the wide upper rail"},
-        {"pin": "16", "image_px": [990.0, 536.0], "use": "check", "observation": "independent bottom-right joint beside the lower rail stub"}
+        {"pin": "1", "image_px": [807.0, 536.0], "use": "fit", "observation": "bottom-left joint of the reflected marked-AG3 field"},
+        {"pin": "8", "image_px": [807.0, 89.0], "use": "check", "observation": "top-left joint on the wide upper rail"},
+        {"pin": "9", "image_px": [990.0, 89.0], "use": "fit", "observation": "top-right joint on the wide upper rail"},
+        {"pin": "16", "image_px": [990.0, 536.0], "use": "check", "observation": "bottom-right joint beside the lower rail stub"}
       ],
-      "note": "The two complete eight-joint columns identify the reflected D56 field and show that the older whole-board projections were displaced from the physical joints. The fit establishes package-pad identity only; the adjacent position-150/159 callouts remain electrically guarded."
+      "note": "Four corrected component-to-solder corner pairs preserve the reflected D56 identification: x3415/3215 maps to x807/990 and y940/1380 maps to y89/536. This supersedes the old component fit on D103 without changing independently identified solder copper."
+    },
+    {
+      "refdes": "D103",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [3050.0, 1380.0], "use": "fit", "observation": "bottom-right contact of marked К555ИЕ10 8905"},
+        {"pin": "8", "image_px": [3050.0, 940.0], "use": "check", "observation": "top-right contact of the same marked body"},
+        {"pin": "9", "image_px": [2865.0, 940.0], "use": "fit", "observation": "top-left contact of the same marked body"},
+        {"pin": "16", "image_px": [2865.0, 1380.0], "use": "fit", "observation": "bottom-left contact of the same marked body"}
+      ],
+      "note": "The old D56 component anchors are reassigned to their actual marked К555ИЕ10 / D103 body. Four outer contacts and bottom notch establish the package identity independently of D56."
+    },
+    {
+      "refdes": "D103",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [1120.0, 494.0], "use": "fit", "observation": "bottom-left joint of the D103 reflected 2x8 field"},
+        {"pin": "8", "image_px": [1120.0, 52.0], "use": "check", "observation": "top-left joint of the same field"},
+        {"pin": "9", "image_px": [1300.0, 52.0], "use": "fit", "observation": "top-right joint of the same field"},
+        {"pin": "16", "image_px": [1300.0, 494.0], "use": "fit", "observation": "bottom-right joint of the same field"}
+      ],
+      "note": "The complete adjacent two-column solder field cross-aligns with the marked К555ИЕ10 component body; D103 pin identity is distinct from the neighboring D56 columns at x807/990."
+    },
+    {
+      "refdes": "D57",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2805.0, 1190.0], "use": "fit", "observation": "bottom-left lead of the uppermost, left-notched КР580ВИ53 timer"},
+        {"pin": "12", "image_px": [3478.0, 1190.0], "use": "fit", "observation": "bottom-right lead after twelve complete contacts"},
+        {"pin": "13", "image_px": [3478.0, 840.0], "use": "fit", "observation": "top-right lead of the opposite twelve-contact row"},
+        {"pin": "24", "image_px": [2805.0, 840.0], "use": "check", "observation": "independent top-left lead beside the notch end"}
+      ],
+      "note": "Factory and owner order D57/D55/D54 identifies this uppermost marked КР580ВИ53. The left notch gives pin 1 at bottom-left. This package fit establishes photo pin order, not absolute board placement or net connectivity."
+    },
+    {
+      "refdes": "D57",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1526.0, 1090.0], "use": "fit", "observation": "bottom-right joint of the mirrored uppermost timer field"},
+        {"pin": "12", "image_px": [850.0, 1090.0], "use": "fit", "observation": "bottom-left joint after twelve complete contacts"},
+        {"pin": "13", "image_px": [850.0, 720.0], "use": "fit", "observation": "top-left joint of the opposite row"},
+        {"pin": "24", "image_px": [1526.0, 720.0], "use": "check", "observation": "independent top-right joint of the same timer"}
+      ],
+      "note": "The uppermost pair of twelve-joint rows belongs to D57 by factory package order and mirrored component geometry; the fourth corner checks the reflected pin sequence."
+    },
+    {
+      "refdes": "D55",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2805.0, 1720.0], "use": "fit", "observation": "bottom-left lead of the middle, left-notched КР580ВИ53 timer"},
+        {"pin": "12", "image_px": [3478.0, 1720.0], "use": "fit", "observation": "bottom-right lead after twelve complete contacts"},
+        {"pin": "13", "image_px": [3478.0, 1360.0], "use": "fit", "observation": "top-right lead of the opposite twelve-contact row"},
+        {"pin": "24", "image_px": [2805.0, 1360.0], "use": "check", "observation": "independent top-left lead beside the notch end"}
+      ],
+      "note": "Factory and owner order D57/D55/D54 identifies this middle marked КР580ВИ53. The left notch gives pin 1 at bottom-left. This package fit establishes photo pin order, not absolute board placement or net connectivity."
+    },
+    {
+      "refdes": "D55",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1526.0, 1630.0], "use": "fit", "observation": "bottom-right joint of the mirrored middle timer field"},
+        {"pin": "12", "image_px": [850.0, 1633.0], "use": "fit", "observation": "bottom-left joint after twelve complete contacts"},
+        {"pin": "13", "image_px": [850.0, 1266.0], "use": "fit", "observation": "top-left joint of the opposite row"},
+        {"pin": "24", "image_px": [1525.0, 1264.0], "use": "check", "observation": "independent top-right joint of the same timer; slight row tilt visible in the source tile"}
+      ],
+      "note": "The middle pair of twelve-joint rows belongs to D55 by factory package order and mirrored component geometry; the fourth corner checks the reflected pin sequence."
+    },
+    {
+      "refdes": "D54",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2805.0, 2270.0], "use": "fit", "observation": "bottom-left lead of the lowest, left-notched КР580ВИ53 timer"},
+        {"pin": "12", "image_px": [3478.0, 2270.0], "use": "fit", "observation": "bottom-right lead after twelve complete contacts"},
+        {"pin": "13", "image_px": [3478.0, 1910.0], "use": "fit", "observation": "top-right lead of the opposite complete twelve-contact row"},
+        {"pin": "24", "image_px": [2805.0, 1910.0], "use": "check", "observation": "independent top-left lead beside the notch end"}
+      ],
+      "note": "The factory and owner order D57/D55/D54 from top to bottom identifies this lowest marked КР580ВИ53. The left notch gives pin 1 at bottom-left. Both complete 12-contact rows align; the fit establishes the D54 local frame for C84 search without assigning C84 pads or population."
+    },
+    {
+      "refdes": "D54",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1526.0, 2185.0], "use": "fit", "observation": "bottom-right joint of the mirrored lowest timer field"},
+        {"pin": "12", "image_px": [850.0, 2185.0], "use": "fit", "observation": "bottom-left joint after the complete twelve-joint row"},
+        {"pin": "13", "image_px": [850.0, 1815.0], "use": "fit", "observation": "top-left joint of the opposite row"},
+        {"pin": "24", "image_px": [1526.0, 1815.0], "use": "check", "observation": "independent top-right joint of the same mirrored timer"}
+      ],
+      "note": "Six twelve-joint rows in this tile pair as D57, D55, then D54 toward the board edge. The bottom pair at y=1815/2185 belongs to D54; the fourth corner independently checks the reflected pad sequence. Copper connectivity and nearby C84 identity are separate questions."
+    },
+    {
+      "refdes": "D26",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2690.0, 1910.0], "use": "fit", "observation": "upper-right contact next to the right-facing notch of the marked КР580ВВ55А"},
+        {"pin": "20", "image_px": [1550.0, 1910.0], "use": "fit", "observation": "upper-left contact after the complete twenty-contact row"},
+        {"pin": "21", "image_px": [1550.0, 2270.0], "use": "fit", "observation": "lower-left contact at the beginning of the opposite complete row"},
+        {"pin": "40", "image_px": [2690.0, 2270.0], "use": "check", "observation": "independent lower-right contact next to the notch end"}
+      ],
+      "note": "The marked КР580ВВ55А sits left of the three PITs D54/D55/D57. Its right-edge notch and both complete twenty-contact rows identify the physical sequence; the fourth corner checks the local fit. The fit does not identify supply-rail polarity or remote copper destinations."
+    },
+    {
+      "refdes": "D26",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [1650.0, 1815.0], "use": "fit", "observation": "left end of the upper reflected twenty-joint row beside the timer fields"},
+        {"pin": "20", "image_px": [2819.0, 1815.0], "use": "fit", "observation": "right end of the same complete row"},
+        {"pin": "21", "image_px": [2819.0, 2185.0], "use": "fit", "observation": "right end of the lower reflected twenty-joint row"},
+        {"pin": "40", "image_px": [1650.0, 2185.0], "use": "check", "observation": "independent left end of the lower row"}
+      ],
+      "note": "The mirrored timer row order and board edge locate D26's two horizontal solder rows. The component-side right-facing notch sets the reflected pin sequence. Pin 26 falls near the broad-rail tap, but that visual coincidence alone does not establish rail polarity or connectivity."
+    },
+    {
+      "refdes": "D27",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+      "model": "affine",
+      "anchors": [
+        {"pin": "1", "image_px": [2180.0, 1305.0], "use": "fit", "observation": "upper-right contact next to the right-facing notch of the marked КР580ВВ55А"},
+        {"pin": "20", "image_px": [1235.0, 1305.0], "use": "fit", "observation": "upper-left contact after the complete twenty-contact row; corrected against the lead tips"},
+        {"pin": "21", "image_px": [1235.0, 1623.0], "use": "fit", "observation": "lower-left contact at the beginning of the opposite complete row; corrected against the lead tips"},
+        {"pin": "26", "image_px": [1485.0, 1623.0], "use": "check", "observation": "independent interior lower-row lead tip; detects the former left-end anchor bias that the opposite corner missed"},
+        {"pin": "40", "image_px": [2180.0, 1623.0], "use": "check", "observation": "independent lower-right contact next to the notch end"}
+      ],
+      "note": "The КР580ВВ55А marking and right-edge notch identify D27 independently of the vertical D11 USART. The corrected left endpoints and right endpoints fit the forty visible lead tips; the former x=1215 left anchors produced a coherent but biased grid. The fourth corner checks the image fit, while the full-row overlay is needed to detect shared anchor bias. Package geometry alone does not establish copper connectivity."
+    },
+    {
+      "refdes": "D27",
+      "side": "solder",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+      "model": "similarity_reflected",
+      "anchors": [
+        {"pin": "1", "image_px": [2806.0, 1195.0], "use": "fit", "observation": "left end of the upper reflected twenty-joint row below X2"},
+        {"pin": "20", "image_px": [3707.0, 1195.0], "use": "fit", "observation": "right end of the same complete row"},
+        {"pin": "21", "image_px": [3707.0, 1480.0], "use": "fit", "observation": "right end of the lower reflected twenty-joint row"},
+        {"pin": "40", "image_px": [2806.0, 1480.0], "use": "check", "observation": "independent left end of the lower row"}
+      ],
+      "note": "The mirrored X2 connector and neighboring registered D11 field locate D27's two complete horizontal rows. The component-side right-facing notch sets the reflected pin sequence. This fit identifies pad centers only and does not prove any electrical connection."
     },
     {
       "refdes": "D11",
@@ -401,12 +770,12 @@
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
       "model": "similarity_reflected",
       "anchors": [
-        {"pin": "1", "image_px": [2705.0, 1425.0], "use": "fit", "observation": "top joint of the mirrored pin-1/14 solder column"},
-        {"pin": "14", "image_px": [2705.0, 2026.0], "use": "check", "observation": "independent bottom joint of the same coherent 14-contact column"},
-        {"pin": "15", "image_px": [2425.0, 2026.0], "use": "fit", "observation": "bottom joint of the opposite 14-contact column"},
-        {"pin": "28", "image_px": [2425.0, 1425.0], "use": "check", "observation": "independent top joint of the opposite coherent column"}
+        {"pin": "1", "image_px": [2705.0, 1610.0], "use": "fit", "observation": "top joint of the D11 mirrored pin-1-to-14 column, four visible lattice rows below the former false anchor"},
+        {"pin": "14", "image_px": [2705.0, 2211.0], "use": "check", "observation": "independent bottom joint of the same complete D11 column above the broad rail"},
+        {"pin": "15", "image_px": [2425.0, 2211.0], "use": "fit", "observation": "bottom joint of the opposite D11 14-contact column"},
+        {"pin": "28", "image_px": [2425.0, 1610.0], "use": "check", "observation": "independent top joint of the opposite D11 column"}
       ],
-      "note": "The two complete 14-contact columns identify the D11 КР580ВВ51А footprint. This package-local reflected fit replaces whole-board projections displaced about 100 pixels onto adjacent copper and reserves both unused corners for independent validation."
+      "note": "The D11 2x14 field is the fourteen rows from y=1610 through y=2211, directly above the lower broad rail. Four aligned joints above this field had fooled the earlier y=1425..2026 fit; that assignment produced about 58 px RMS error when combined with the independently marked D27 two-face landmarks, while the corrected field gives about 5 px. The complete corrected rows and the held-out opposite corners identify pad locations only; connectivity remains separate."
     },
     {
       "refdes": "D106",
@@ -582,11 +951,11 @@
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
       "model": "similarity",
       "anchors": [
-        {"pin": "9", "image_px": [2827.0, 1232.0], "use": "fit", "observation": "bottom-left contact of the notch-right one-shot package directly right of D95"},
-        {"pin": "14", "image_px": [3107.0, 1229.0], "use": "check", "observation": "independent first unobscured lower-row contact right of the black cable"},
-        {"pin": "16", "image_px": [3219.0, 1227.0], "use": "fit", "observation": "bottom-right contact below the right-facing notch"}
+        {"pin": "9", "image_px": [2853.0, 1232.0], "use": "fit", "observation": "bottom-left contact of the notch-right one-shot package directly right of D95; native contact recheck shifts the old x2827 anchor 26 px right"},
+        {"pin": "14", "image_px": [3133.0, 1229.0], "use": "check", "observation": "independent first unobscured lower-row contact right of the black cable"},
+        {"pin": "16", "image_px": [3245.0, 1227.0], "use": "fit", "observation": "bottom-right contact below the right-facing notch"}
       ],
-      "note": "The factory assembly drawing places D99 directly right of D95. Its black cable hides lower pins 12-13 and part of the marking, but the six visible lower contacts and right-facing notch establish the pins 9-to-16 row; no electrical path is promoted."
+      "note": "The factory assembly drawing places D99 directly right of D95. Native PXL_20260710_200418174.jpg crop (2740,900)-(3290,1420) shows the old component anchor row consistently about 26 px left of all visible joints; the corrected seven-contact lower-row pitch and right-facing notch establish pins 9-to-16, with pins 12-13 cable-obscured. No electrical path is promoted."
     },
     {
       "refdes": "D99",
@@ -617,15 +986,15 @@
       "refdes": "D39",
       "side": "solder",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
-      "model": "similarity_reflected",
+      "model": "affine",
       "anchors": [
-        {"pin": "1", "image_px": [850.0, 1953.0], "use": "fit", "observation": "top joint of the mirrored pin-1-to-7 column left of registered D38"},
-        {"pin": "4", "image_px": [851.0, 2121.0], "use": "check", "observation": "independent fourth joint; no solder-side etched departure is visible"},
-        {"pin": "7", "image_px": [851.0, 2289.0], "use": "fit", "observation": "bottom joint of the same coherent seven-pad column"},
-        {"pin": "8", "image_px": [683.0, 2289.0], "use": "check", "observation": "independent bottom joint of the opposite column"},
-        {"pin": "14", "image_px": [682.0, 1953.0], "use": "check", "observation": "independent top joint of the opposite column"}
+        {"pin": "1", "image_px": [1382.0, 1949.0], "use": "fit", "observation": "top joint of the mirrored right column matched to the upper FDC row"},
+        {"pin": "4", "image_px": [1386.0, 2117.0], "use": "check", "observation": "independent fourth joint on the complete right column"},
+        {"pin": "7", "image_px": [1390.0, 2284.0], "use": "fit", "observation": "bottom joint of the right column"},
+        {"pin": "8", "image_px": [1221.0, 2284.0], "use": "fit", "observation": "bottom joint of the opposite column"},
+        {"pin": "14", "image_px": [1213.0, 1949.0], "use": "check", "observation": "independent top joint of the opposite column"}
       ],
-      "note": "Transferred from the adjacent two-sided D38 registration and then anchored to all four D39 row corners. This is the reflected upper-row package immediately right of D92; it does not constrain the separate lower-row D37/A12 boundary."
+      "note": "The complete x1213/x1382 field is D39 after the common lower-cluster x-shift is corrected against the upper FDC row. The prior x683/x850 field was a coherent but wrong 14-joint assignment. This does not constrain the separate lower-row D37/A12 boundary."
     },
     {
       "refdes": "D37",
@@ -660,12 +1029,12 @@
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
       "model": "similarity_reflected",
       "anchors": [
-        {"pin": "1", "image_px": [1719.0, 1951.0], "use": "fit", "observation": "top joint of the mirrored pin-1-to-7 column"},
-        {"pin": "4", "image_px": [1720.0, 2119.0], "use": "check", "observation": "independent fourth joint on the same coherent column"},
-        {"pin": "7", "image_px": [1720.0, 2287.0], "use": "fit", "observation": "bottom joint of the mirrored pin-1-to-7 column"},
-        {"pin": "8", "image_px": [1553.0, 2287.0], "use": "check", "observation": "independent bottom joint of the opposite column"}
+        {"pin": "1", "image_px": [2244.0, 1951.0], "use": "fit", "observation": "top joint of the mirrored right column matched to the upper FDC row"},
+        {"pin": "4", "image_px": [2245.0, 2119.0], "use": "check", "observation": "independent fourth joint on the same coherent column"},
+        {"pin": "7", "image_px": [2245.0, 2287.0], "use": "fit", "observation": "bottom joint of the mirrored right column"},
+        {"pin": "8", "image_px": [2078.0, 2287.0], "use": "check", "observation": "independent bottom joint of the opposite column"}
       ],
-      "note": "The existing two-sided D41 fit predicts this package before fitting. The reflected D38 fit then identifies both complete seven-pad columns without treating their copper departures as continuity evidence."
+      "note": "The complete x2078/x2244 solder field matches D38 under upper-row cross-face registration. The prior x1552/x1719 field was the adjacent D92 and passed package-local checks because both are complete DIP14 fields. Copper departures remain separate evidence."
     },
     {
       "refdes": "D40",
@@ -726,11 +1095,11 @@
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
       "model": "similarity_reflected",
       "anchors": [
-        {"pin": "1", "image_px": [1451.0, 1620.0], "use": "fit", "observation": "leftmost contact on the mirrored upper row"},
-        {"pin": "4", "image_px": [1616.0, 1620.0], "use": "check", "observation": "independent fourth contact on the mirrored upper row"},
-        {"pin": "7", "image_px": [1781.0, 1620.0], "use": "fit", "observation": "rightmost contact on the same coherent row"}
+        {"pin": "1", "image_px": [1999.0, 1620.0], "use": "fit", "observation": "leftmost contact on the mirrored upper row matched to upper FDC packages"},
+        {"pin": "4", "image_px": [2164.0, 1620.0], "use": "check", "observation": "independent fourth contact on the mirrored upper row"},
+        {"pin": "7", "image_px": [2329.0, 1620.0], "use": "fit", "observation": "rightmost contact on the same coherent row"}
       ],
-      "note": "Transferred through the registered component and solder panoramas, then anchored in the original solder image. The fit replaces global projections that landed about 300 pixels to the right of the actual package."
+      "note": "The seven-joint row at x1999..2329 aligns D41 with the upper FDC row across faces and with corrected D38 below. The old x1451..1781 fit was a coherent but wrong package assignment."
     },
     {
       "refdes": "D93",

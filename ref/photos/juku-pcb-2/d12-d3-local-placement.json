@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "status": "PHOTO-REGISTERED PLACEMENT; ELECTRICAL CONTINUITY OPEN",
+  "assembly_image": {
+    "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+    "sha256": "9cfa71a46d1af2224742394c15d249075e59d54ddaf6281eff70fbf55cf65f21",
+    "observation": "Exact .009 assembly view labels the eight-pin D12 directly above D3, rather than left of the R10/R9 pair."
+  },
+  "owner_image": {
+    "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+    "crop_xyxy_original_pixels": [
+      1260,
+      370,
+      1530,
+      800
+    ],
+    "observation": "The eight-pin body above D3 has a bottom-right pin-one dot and four visible joints per side."
+  },
+  "registration": {
+    "source": "ref/photos/juku-pcb-2/local-package-registration.json D3 four-anchor fit",
+    "pixel_to_board_mm": {
+      "x": [
+        0.0479245283,
+        0,
+        154.508811
+      ],
+      "y": [
+        0.0006206608,
+        0.0476355688,
+        36.1505154
+      ]
+    },
+    "estimated_owner_pixel_joint_centers": {
+      "D12.1": [
+        1465,
+        638
+      ],
+      "D12.4": [
+        1463,
+        487
+      ],
+      "D12.5": [
+        1299,
+        487
+      ],
+      "D12.8": [
+        1297,
+        638
+      ]
+    },
+    "projected_board_mm": {
+      "D12.1": [
+        224.718,
+        67.451
+      ],
+      "D12.4": [
+        224.622,
+        60.257
+      ],
+      "D12.5": [
+        216.763,
+        60.155
+      ],
+      "D12.8": [
+        216.667,
+        67.347
+      ]
+    },
+    "pixel_selection_uncertainty": "Approximate centers of visible component-side joints; not an independent electrical continuity measurement."
+  },
+  "pcb_decision": {
+    "footprint": "Package_DIP:DIP-8_W7.62mm",
+    "placement_mm": [
+      220.73,
+      63.82
+    ],
+    "rotation_degrees": 180,
+    "previous_estimate_mm": [
+      206.3,
+      80.9
+    ],
+    "reason": "Joint pattern and pin-one dot fix the package over D3; previous estimate overlapped the independently photographed R10 field.",
+    "source_drc": "PASS: zero shorts and zero clearance errors after D12 and R9/R10 placement."
+  },
+  "open_checks": [
+    "Confirm D12 lead nets by owner continuity; image registration alone proves geometry only.",
+    "Refresh routed PCB from corrected source and reroute displaced D12 copper before fabrication."
+  ]
+}

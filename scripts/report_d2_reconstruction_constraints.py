@@ -122,7 +122,7 @@ def pcb_pin_nets(ref: str) -> dict[str, str]:
     for match in re.finditer(r'\n\t\t\(pad\s+"([^"]+)"', block):
         pin = match.group(1)
         pad_block = matching_block(block, match.start() + 3)
-        net = re.search(r'\(net\s+\d+\s+"([^"]+)"\)', pad_block)
+        net = re.search(r'\(net\s+(?:\d+\s+)?"([^"]+)"\)', pad_block)
         if net:
             found[pin] = net.group(1)
     return found
@@ -236,7 +236,8 @@ def main() -> int:
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
         "The D2 pin table from sheet 1 is:",
         "A0-A7=5/6/7/4/3/2/1/15",
-        "All D2 inputs are now modeled and routed",
+        "D2 pad identities remain registered on both faces",
+        "address routes remain modeled but lack a complete photo",
         "preserve the physical `.037` table",
         "pins 9-11 have no destination and are explicit no-connects",
     )
@@ -258,6 +259,15 @@ def main() -> int:
     address_pins = {"1", "2", "3", "4", "5", "6", "7", "15"}
     source_inputs_closed = all(net_for_pin(board, "D2", pin) for pin in address_pins)
     source_inputs_in_pcb = all(pin in pcb_nets for pin in address_pins)
+    model_pin_nets = {
+        str(pin): name
+        for name, net in board["nets"].items()
+        for ref, pin in net.get("nodes", [])
+        if ref == "D2"
+    }
+    pcb_matches_model = all(
+        pcb_nets.get(pin) == name for pin, name in model_pin_nets.items()
+    ) and all(pin not in pcb_nets for pin in intentional_nc)
     if identity_ok and source_inputs_closed and physical_image_ok and owner_evidence:
         status = "D2 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED"
     elif identity_ok and not signal_nets and not dsn_nets and not pcb_nets and not candidates:
@@ -303,7 +313,7 @@ def main() -> int:
             "",
             "## Exact PROM Address Index",
             "",
-            "The traced physical address byte is:",
+            "The current modeled physical address byte is:",
             "",
             "`{WREQ_N, A10, XACK_N, A14, CAS/VIDEO_CYCLE, A9, A15, A12}`",
             "",
@@ -314,15 +324,17 @@ def main() -> int:
             "the separately named validated raw programming image carries the",
             "owner-observed values without rewriting this historical constraint file.",
             "",
-            "The named schematic leads above are pin-level source evidence, not a",
-            "claim that the D2 truth table is known. Each proved pin is promoted",
-            "independently; the July-2026 paired D2/D4 local fits close all eight",
-            "inputs. Three validated owner captures, including a separate power cycle,",
-            "now establish the physical raw table.",
+            "The named schematic leads above are pin-level source evidence where",
+            "cited, not a claim that the D2 truth table is known. The five address",
+            "labels with scan provenance still need an exact .009 route chase.",
+            "D2 pads are registered, while five former D2-to-D4",
+            "photo-route claims are withdrawn after correcting the D4 row and",
+            "column assignment. Three validated owner captures, including a",
+            "separate power cycle, now establish the physical raw table.",
             "",
             "## KiCad DSN Cross-check",
             "",
-            "The saved routed DSN predates the five photo-traced address inputs.",
+            "The saved routed DSN predates the five source-assigned address inputs.",
             "Its missing rows are a reroute boundary, not missing source evidence.",
             "",
             table_row(["Pin", "Role", "DSN Net", "Result"]),
@@ -336,7 +348,8 @@ def main() -> int:
             "## KiCad PCB Cross-check",
             "",
             "The authoritative PCB source exposes every proved D2 input and adds",
-            "one idempotent solder-side segment for each D2-to-D4 address route.",
+            "five legacy D2-to-D4 solder segments whose endpoint pins require",
+            "review against the corrected package fit.",
             "",
             table_row(["Pin", "Role", "PCB Net", "Result"]),
             table_row(["---:", "---", "---", "---"]),
@@ -380,6 +393,15 @@ def main() -> int:
                 ", ".join(f"`{pin}`=`{net}`" for pin, net in sorted(pcb_nets.items()))
                 if pcb_nets
                 else "no D2 pins in PCB nets",
+            ]),
+            table_row([
+                "D2 PCB pad nets match the logical model",
+                "PASS" if pcb_matches_model else "FAIL",
+                "; ".join(
+                    f"pin {pin}: model {name}, PCB {pcb_nets.get(pin, '-') }"
+                    for pin, name in sorted(model_pin_nets.items())
+                    if pcb_nets.get(pin) != name
+                ) or "all modeled pins agree; pins 9–11 remain NC",
             ]),
             table_row([
                 "256-row symbolic address table is non-burnable",

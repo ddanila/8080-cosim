@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "evidence": "ref/photos/juku-pcb-2/d27-left-edge-placement.json",
+  "board": "kicad/juku.kicad_pcb",
+  "photo_px_per_mm": 20.908,
+  "photo_left_pin_x_mm": 126.94,
+  "photo_right_pin_x_mm": 175.2,
+  "routed_left_pad_x_mm": 127.575,
+  "routed_right_pad_x_mm": 175.835,
+  "left_pin_photo_minus_routed_x_mm": -0.635,
+  "row_overlay": "docs/photo-registration/d27-left-edge-row.jpg",
+  "edge_overlay": "docs/photo-registration/d27-left-edge-edge.jpg",
+  "status": "no gross horizontal placement conflict; physical pin-net mapping held"
+}

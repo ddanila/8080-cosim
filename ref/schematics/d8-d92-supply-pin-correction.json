@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "review_state": "four single-instance IC supply pins modeled; D8.8 and D92.7 ground and D92.14 +5 V routed; D8.16 copper open",
+  "source_evidence": {
+    "D8": "D8 is the К155РЕ3 32x8 PROM on the exact .009 assembly/schematic. docs/prom-dump-procedure.md records its board-power-table pinout VCC=16 and GND=8; the local ref/datasheets/sn74188-ti.pdf provides the 74188-class package contract. D94 of the same PROM family already carried pin8=GND and pin16=P5V in the model.",
+    "D92": "The .009 IC census identifies D92 as К555ЛЕ4, a triple 3-input NOR. The corresponding TI SN74LS27 datasheet (https://www.ti.com/lit/ds/symlink/sn74ls27.pdf) assigns GND pin7 and VCC pin14. The former BOM text saying 74LS02-class quad 2-input NOR was incorrect and is corrected."
+  },
+  "model_and_pad_correction": "kicad/juku.board.json and all three PCB variants now assign D8.8=GND, D8.16=P5V, D92.7=GND, and D92.14=P5V. The generated schematic uses functional-only device symbols and omits power nets, so PCB pad labels and connectivity/DRC are separate gates.",
+  "pcb_audit": {
+    "pad_centres_mm": {
+      "D8.8": [
+        74.442,
+        109.498
+      ],
+      "D8.16": [
+        92.222,
+        117.118
+      ],
+      "D92.7": [
+        256.195,
+        166.82
+      ],
+      "D92.14": [
+        263.815,
+        151.58
+      ]
+    },
+    "pad_diameter_mm": 1.6,
+    "source": "No PCB_TRACK centreline within 1.5 mm of any of the four pads.",
+    "pre_repair_routed_and_candidate": "No track touched any of the four pads. Nearest signal-track centrelines were 1.171 mm at D8.8 (ROM_SEL), 1.124 mm at D8.16 (DB7), 1.195 mm at D92.7 (LATCH_B), and 1.147 mm at D92.14 (CTR_LD), outside the 0.8 mm pad radius. These nearby signals constrain power routing."
+  },
+  "routed_d92_14_repair": "Both routed variants connect D92.14 P5V on B.Cu to a through via at (260.000,147.000) and then on F.Cu to the existing +5 V run at (260.000,146.500). Straight F.Cu to (265.500,146.500) shorted D39Y; straight B.Cu to (268.500,145.500) shorted D40Q1_D39 and MEMR. The selected path adds no DRC violation and reduces unconnected items from 57 to 56 in each board. The source PCB remains unrouted at D92.14.",
+  "routed_d8_8_repair": "Both routed variants connect D8.8 GND on F.Cu from (74.442,109.498) to the existing GND endpoint at (72.712,109.112). Error-only KiCad DRC adds no violation and reduces unconnected items from 56 to 55 in each board. The source PCB remains unrouted at D8.8.",
+  "d92_7_ground_boundary": "Direct B.Cu to GND (255.000,171.000) crossed D40Q1_D39; direct F.Cu toward (251.000,165.500) or (261.805,172.380) crossed CLKG_D33 or PHI2TTL. Those trials were rejected before the two-layer local route was accepted.",
+  "next_inspection": "With power off, confirm owner D8.8/D92.7 to known ground and D8.16/D92.14 to known +5 V. Route replica D8.16 with signal clearance in both routed boards; the source PCB is still unrouted at all four. Verify physical connectivity, DRC, and parity before fabrication.",
+  "routed_d92_7_repair": "Both routed variants connect D92.7 GND on F.Cu from (256.195,166.820) to a through via at (256.195,171.750), then on B.Cu to the existing GND run at (256.500,172.500). This crosses the D40Q1_D39 and D33_O4 back-layer barriers on F.Cu while remaining west of PHI2TTL. Error-only KiCad DRC adds no violation and reduces unconnected items from 55 to 54 on each board. The source PCB remains unrouted at D92.7.",
+  "d8_16_route_audit": "The nearest existing P5V track endpoint is R12.1 (73.500,104.810), 22.405 mm away; D9.16 is 26.591 mm away. D2.16 lies 19.402 mm away but is itself unconnected to P5V copper. Nearby BA5 F.Cu, DB7 B.Cu, and a F.Cu GND run constrain a direct feed. See docs/d8-power-route-audit.md."
+}

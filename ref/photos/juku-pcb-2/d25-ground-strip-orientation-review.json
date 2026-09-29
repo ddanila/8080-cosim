@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "status": "D25 left-facing pin sequence supported by shared solder copper; direct owner ground continuity open",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200354648.jpg",
+  "component_sha256": "569acfb32af8da3e670f377885f777ad82d17335e160b04eb74888455e869530",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114553710.jpg",
+  "assembly_crop_xyxy_original_pixels": [600, 1350, 1850, 2200],
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200514102.jpg",
+  "solder_sha256": "e7516fb64d7da32e571cb8031dc3af05c83cab515d11ba9940aaacd4ba65e4a5",
+  "review_crop_xyxy_original_pixels": [2200, 1280, 3350, 1640],
+  "identification": "The owner component row places the marked КР580ВА87 D25 immediately left of marked КР580ВА87 D23. Mirroring reverses their order on the solder face. D23 has a clear left-facing molded notch; D25's ends are nearly flat. The .009 assembly drawing independently draws left-facing notch arcs on both D25 and D23, with C74 between them; this states the factory placement orientation but does not itself prove the owner's hidden D25 molded end.",
+  "solder_observation": "Counting ten contacts per upper and lower row in the full-width crop places the D25 lower-left pair near original-image x2755/2805, y1540, and the corresponding D23 lower-left pair near x2175/2220. Both pairs join the same uninterrupted broad horizontal copper strip below, near y1570. The former x2650/2700 assignment was displaced by about two lead pitches; the native solder grid and c90-d15-outer-strip-review.json independently put the D25 ground pair at x2755/2805. The photo establishes copper continuity across the two package regions, not the strip's measured ground polarity.",
+  "upper_row_seam_check": "Two upper-row solder joints near original-image x2655/2705 join the broad upper strip. The first is D23's rightmost upper contact, pin20 in the left-notched mapping; the second is a distinct, intervening solder site in the D23/D25 gap, not D23.19. D23.19 is the immediately preceding contact near x2605 and has no visible strip spur. D25's first upper contact, pin11/D25_T, is the next joint near x2755 with a narrow downward trace. Thus the gap-site rail spur does not visually join D25.11 to +5 V. The gap site's component-face annulus near (1012,1255) is now geometrically matched in c74-d25-d23-gap-review.json; its C74 refdes remains unproved.",
+  "pin_order_argument": "For the photographed left-notched D23 КР580ВА87, the solder-left lower pair is physical pins 10 and 9; both are GND in the exact .009 model, and pin10 is the device supply-ground pin. If D25 also faces left, its solder-left lower pair is D25.10/.9 GND, matching the continuous common strip. A right-facing D25 would put its physical pin20 (+5 V) at that lower-left solder site and short it to D23.10 GND through the visible copper. This makes the modeled left-facing D25 orientation strongly supported despite the missing molded notch cue.",
+  "model_check": "The source PCB uses 90-degree D25 and D23 footprints: D25 pins9/10=GND and pin20=P5V; D23 pins9/10=GND and pin20=P5V. No footprint change is needed from this evidence.",
+  "remaining_check": "A power-off meter check from the shared strip to a separately identified ground landing would establish owner rail polarity independently of the D23 package contract; it is useful but no longer the sole basis for D25's pin-one end."
+}

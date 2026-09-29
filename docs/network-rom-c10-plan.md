@@ -103,7 +103,7 @@ C10 must add all of the following:
 - `STATUS` output that reports the current PPI0 Port C value and whether POF is
   released;
 - a `DIAG VIDEO` check of POF plus renderer/timing state. Its wording must not
-  claim that software has measured the analog X7 waveform or monitor picture;
+  claim that software has measured the analog VIDEO_OUT waveform or monitor picture;
   and
 - an attended physical `VIDTEST` on a known-working display machine. A remote
   transcript alone is insufficient; a blank local result fails promotion.

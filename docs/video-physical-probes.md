@@ -6,7 +6,7 @@ This generated report guards explicit simulation observability for the
 source-proved D42/D43/D37 and D54/D55/D56/D34_SYNC contributors. The
 event export uses controlled PIT trigger stimulus solely to prove the traced
 component chain and modeled one-shot durations. It is not a Juku raster,
-D34_SIG waveform, transistor waveform, composite voltage, or X7 sample stream.
+D34_SIG waveform, transistor waveform, composite voltage, or X6 A:3 sample stream.
 
 ## Commands
 
@@ -49,7 +49,7 @@ The controlled run emits the following transition times:
   as the open `pixel^REV?` boundary in the board evidence.
 - D42/D43/D37 probes are physical-net observability only; under this controlled
   test they do not claim a valid fetched framebuffer byte.
-- D34's nonlinear loaded output, the installed VT2 parameters, C94, and X7
+- D34's nonlinear loaded output, the installed VT2 parameters, C94, and X6 A:3
   voltage remain separate WP4/physical-calibration boundaries. The traced
   75-ohm transfer and published К555ЛП5/КТ315Б limits are guarded separately by
   `scripts/model_x7_output_stage.py`.

@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
-  "scope": "target-revision 4x8 inherited DRAM-field decoupler artwork and population",
-  "promotion_rule": "the factory assembly drawing establishes C38/C42/C46/C50 refdes, placement, and original population; registered component and solder panoramas prove that all 32 common-artwork landing pairs remain fabricated, including the older C63 grid landing even though the separate .009 C63 callout between D41/D40 is bare; the complete target view establishes assembly DNP for the other 28 grid footprints; no source establishes capacitance value beyond the schematic model",
+  "scope": "target-revision DRAM-decoupler factory callouts and reopened inherited 4x8 capacitor-hole audit",
+  "exact_009_rail_branch": "Exact .009 electrical sheet 2 overview ref/photos/dgsh5-109-009-e3/PXL_20260718_101901243.jpg, viewed upright at its power corner, draws C35...C53 between node G (E4-selected +12/+5 V array pin-8 supply) and E/GND, and C54...C72 between node H (-5 V via E5) and E/GND. This directly supports the modeled C38/C42/C46/C50 RAIL_G/GND role. The owner-photo bright marks at the top package pins are RAIL_H/GND in the model, so they cannot be promoted as those capacitor lead pairs from proximity.",
+  "promotion_rule": "The factory assembly drawing establishes C38/C42/C46/C50 refdes and original population, and the complete target view omits the other 28 older grid refdes. The former 4x8 panorama pattern is identified as DRAM package top-contact rows, not independent capacitor pairs: all four registered y rows coincide with package-contact rows and the first x midpoint lies between D67.16/D66.1. Keep optional footprint fabrication and absolute placement provisional until distinct capacitor holes are identified; no source establishes capacitance value beyond the schematic model.",
   "factory_drawing": {
     "source": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114607591.jpg",
     "sha256": "a7a7c64fc71d9c0dbc42546bea6998f7fc86cf9e14a19a30c03c54803e455217",
@@ -42,41 +43,55 @@
   "legacy_grid_mapping": {
     "source": "ref/schematics/es101_emaplaat.pdf",
     "sha256": "ef686cd1653965661bea184650f66f8891c3d538c8994852a440169b10ca464d",
-    "observation": "the older .006 assembly drawing maps a complete 4x8 DRAM-field zigzag; this source is used only to identify the optional bare footprint refdes inherited by the common 7.102.158 artwork, never to promote target-revision population"
+    "observation": "The older .006 assembly drawing explicitly maps a complete 4x8 DRAM-field zigzag; this source identifies optional bare footprint refdes inherited by the common 7.102.158 artwork, never target-revision population. C35 is printed over D67 in the leftmost top slot, not near D60 at the rightmost top slot as stale model prose claimed.",
+    "refdes_rows_left_to_right": [
+      ["C35", "C54", "C39", "C58", "C43", "C62", "C47", "C66"],
+      ["C36", "C55", "C40", "C59", "C44", "C63", "C48", "C67"],
+      ["C37", "C56", "C41", "C60", "C45", "C64", "C49", "C68"],
+      ["C38", "C57", "C42", "C61", "C46", "C65", "C50", "C69"]
+    ],
+    "package_rows_left_to_right": [
+      ["D67", "D66", "D65", "D64", "D63", "D62", "D61", "D60"],
+      ["D75", "D74", "D73", "D72", "D71", "D70", "D69", "D68"],
+      ["D83", "D82", "D81", "D80", "D79", "D78", "D77", "D76"],
+      ["D91", "D90", "D89", "D88", "D87", "D86", "D85", "D84"]
+    ]
   },
   "owner_board": {
     "source": "ref/photos/juku-pcb-2/PXL_20260710_200443117.jpg",
     "sha256": "2645a1266ef788331123d190391dea3924982bcf3d928a1dbfad982a1246991c",
     "dimensions_px": [4080, 3072],
     "side": "component",
-    "coordinate_precision": "reviewed approximate enclosing boxes; removal/population evidence, not electrical endpoint coordinates",
-    "observation": "the populated D91-D84 bank fixes the same four sites; each site has a coherent horizontal landing pair with solder and clipped lead remnants but no capacitor body, consistent with post-factory precious-metal removal rather than a factory DNP",
+    "coordinate_precision": "reviewed approximate enclosing boxes; no-body observation and package-strip morphology, not proof of capacitor endpoints or later removal",
+    "observation": "the populated D91-D84 bank fixes the four factory-labeled assembly regions, and no capacitor body is visible now. Bright solder and possible cut-lead marks lie on/near DRAM package top strips; the current image boxes do not independently identify each capacitor pair or prove later removal. Factory population follows the .009 drawing, not this owner-removal inference",
+    "owner_removal_verified": false,
+    "factory_site_package_contact_screen": "Native owner component photo PXL_20260710_200443117.jpg shows the same two-mark pattern in all four factory-labeled regions: approximate left/right bright marks C38/D91 (1230,1645)/(1405,1645), C42/D89 (1750,1665)/(1900,1665), C46/D87 (2270,1665)/(2420,1665), and C50/D85 (2775,1665)/(2920,1665). Each mark continues down a broad front-copper strip to a top contact of the corresponding notched DRAM package, pin1 at left and pin16 at right. The source model assigns those contacts RAIL_H and GND, whereas C38/C42/C46/C50 are modeled RAIL_G/GND. These marks cannot establish source-consistent capacitor lead pairs or clipped capacitor bodies. The .009 factory callouts remain valid, but distinct pad identity and owner-board removal remain open for all four.",
     "optional_grid_bbox_px": [900, 0, 3100, 1550],
-    "optional_grid_observation": "D60-D83 are bare expansion footprints and the other DRAM-field capacitor sites have clean tinned landings without fitted bodies or clipped component leads; the four populated-row remnant sites remain visually distinct",
+    "optional_grid_observation": "D60-D83 are bare expansion footprints and no optional capacitor bodies are visible. The former assignment of clean tinned hole pairs to all optional capacitors is under re-audit because the proposed C35 pair coincides with adjacent DRAM package contacts; the four populated-row remnant sites remain a separate observation.",
     "sites": [
       {
         "refdes": "C38",
         "above_ref": "D91",
         "site_bbox_px": [1130, 1420, 1435, 1660],
-        "population_state": "body removed; landing pair and clipped lead remnants retained"
+        "population_state": "no capacitor body visible; solder/lead marks near package strip have unresolved component identity"
       },
       {
         "refdes": "C42",
         "above_ref": "D89",
         "site_bbox_px": [1630, 1420, 1940, 1660],
-        "population_state": "body removed; landing pair and clipped lead remnants retained"
+        "population_state": "no capacitor body visible; solder/lead marks near package strip have unresolved component identity"
       },
       {
         "refdes": "C46",
         "above_ref": "D87",
         "site_bbox_px": [2135, 1420, 2445, 1660],
-        "population_state": "body removed; landing pair and clipped lead remnants retained"
+        "population_state": "no capacitor body visible; solder/lead marks near package strip have unresolved component identity"
       },
       {
         "refdes": "C50",
         "above_ref": "D85",
         "site_bbox_px": [2635, 1420, 2950, 1660],
-        "population_state": "body removed; landing pair and clipped lead remnants retained"
+        "population_state": "no capacitor body visible; solder/lead marks near package strip have unresolved component identity"
       }
     ]
   },
@@ -84,38 +99,45 @@
     "rectified_solder_image": "docs/photo-registration/solder_grid-rectified.jpg",
     "sha256": "dc2c7bdc163935a594514a0efde6273cc2257c5fc6e66eab67ee25acbef4a2d5",
     "dimensions_px": [1550, 1330],
-    "coordinate_system": "component-side board orientation after the guarded solder-panorama rectification; pixels remain observations and are locally fit to board millimetres",
+    "coordinate_system": "component-side board orientation after the corner-fiducial solder-panorama rectification; grid pixels and relative spacing are observations, while absolute board millimetres remain unverified against a local DRAM/D9 shared anchor",
     "source_registration": "docs/photo-registration/board-registration.json",
-    "observation": "four rows of eight distinct horizontal two-hole landing pairs are exposed above the four DRAM rows. The older C63 position is the sixth pair of row two; the C69 position is the eighth pair of row four, not the 3.9 mm left-shifted routing workaround. A separate two-sided R49-R56 registration retires the stale R52 placement that formerly collided with C69, so both parts retain their normal photographed annuli",
+    "observation": "Four regular rows of eight historical midpoints were measured, but native package registration shows they follow DRAM top contacts rather than independent capacitor pairs. The .006 labels C63 at row two/column six and C69 at row four/column eight in the model, but these photographed midpoints do not prove their capacitor holes. The former 3.9 mm C69 routing workaround and the stale R52 collision do not supply pad-identity evidence",
     "board_columns_mm": [119.6, 130.9, 142.3, 153.7, 164.7, 176.1, 187.1, 198.4],
     "board_rows_mm": [120.9, 145.6, 170.7, 195.8],
     "observed_column_centres_px": [579.9, 637.7, 695.6, 753.7, 811.9, 870.2, 929.0, 987.6],
     "observed_row_centres_px": [631.5, 760.3, 890.4, 1021.0],
     "max_local_fit_error_mm": 0.35,
+    "capacitor_pad_identity_verified": false,
+    "registered_feature_identity": "four DRAM package top-contact rows, with each historical grid x midpoint between adjacent package contacts; not an independent capacitor-pad census",
+    "four_row_package_alignment": "The historical observed row centers y=[631.5,760.3,890.4,1021.0] px in solder_grid-rectified.jpg coincide with the visible top-contact rows of the four DRAM banks at approximately y=[633,761,890,1019] px. The x centers repeat at DRAM package pitch; the first center (579.9,631.5) matches the D67.16/D66.1 midpoint (581.02,632.74). Thus the regular 4x8 observations classify package contacts, not 32 independent capacitor landing pairs.",
+    "c35_native_solder_screen": "The current PCB C35 5.00 mm pair lies 3.31 mm above D67's top row at x offsets +1.305/+6.305 mm from D67.1. The direct D67 component fit in 200411500 projects those model pads to front (2872,1699)/(2981,1699); the registered D9 component-to-solder reflection then projects them to original 200525009 solder near (2678,1415)/(2570,1415). Native crop (2400,1310)-(2850,1550) shows uninterrupted trace/bare board at both projected points, with no drill annuli. This is a negative screen for the current C35 PCB geometry, not proof that no separate C35 holes exist elsewhere on the .009 board. An overlapping owner component image 200415237 independently places the modeled holes near original (1142,1792)/(1250,1792) after the registered tile-to-tile transform; both positions are visible bare board below the white wire with no annuli. Thus both faces reject the current C35 geometry. Retain the fabrication hold and search for actual holes rather than copying the modeled pair.",
+    "package_contact_confounder": "First proposed grid midpoint (579.9,631.5) in the rectified solder image is within about 1.7 px of the midpoint (581.02,632.74) of independently registered D67.16 and D66.1 package contacts. Their two rails are GND and RAIL_H in the source model, whereas C35 is modeled across RAIL_G and GND. The observed 4x8 regularity therefore cannot prove independent optional capacitor pairs. Inspect each site in native component and solder photos before promoting footprint fabrication.",
+    "fit_error_scope": "The 0.35 mm residual checks spacing/linearity inside the observed 4×8 grid against the existing board-coordinate pattern. It is not an independent absolute placement error bound: the broad board-to-panorama homography is fit to four board corners, with D94 as its only held-out fiducial, and disagrees by about 16 mm in x with locally registered D9/D7. Do not derive exact C35-to-C88 clearance from it.",
     "special_sites": {
       "C63": {
         "grid_index": [5, 1],
         "board_pad_midpoint_mm": [176.1, 145.6],
         "observed_midpoint_px": [870.2, 760.3],
-        "disposition": "inherited common-artwork landing retained and assembly DNP; distinct from the bare .009 callout between D41/D40"
+        "disposition": "older .006 C63 grid slot and .009 assembly DNP; independent capacitor pad identity on the target board remains unverified, distinct from the bare .009 C83 callout between D41/D40"
       },
       "C69": {
         "grid_index": [7, 3],
         "board_pad_midpoint_mm": [198.4, 195.8],
         "observed_midpoint_px": [987.6, 1021.0],
-        "disposition": "eighth-column physical landing; retire the 194.5 mm DRC workaround"
+        "disposition": "eighth-column model slot; the 194.5 mm DRC workaround is not photo evidence, and independent capacitor pad identity remains unverified"
       }
     }
   },
+  "c35_c88_boundary": "The older .006 drawing labels C35 above D67, but the presumed first-grid capacitor pair is not independently registered: its rectified solder midpoint (579.9,631.5) matches the midpoint of D67.16 and D66.1 package contacts within about 1.7 px. Native solder 200525009 places those package contacts near y1494, while the separate C88 +5 V candidate is an open hole near (2574,1247), about 247 px above. Thus C88 is not the same drilled site as the two package contacts; the C35 capacitor holes remain unidentified. D67/D66 component fits also show a common DRAM-row offset against D9-local source PCB placement, so do not move C35 alone. RAIL_G equals +5 V with E4 set for РУ5, but equal rail roles do not identify shared holes. See docs/d9-owner-footprint-photo-audit.md.",
   "target_optional_grid_dnp": {
     "refs": [
       "C35", "C36", "C37", "C39", "C40", "C41", "C43", "C44", "C45",
       "C47", "C48", "C49", "C54", "C55", "C56", "C57", "C58", "C59", "C63",
       "C60", "C61", "C62", "C64", "C65", "C66", "C67", "C68", "C69"
     ],
-    "population_state": "assembly DNP; retain the fabricated two-pad footprint",
-    "basis": "the complete .009 target assembly view labels only C38/C42/C46/C50 in the DRAM field, while registered target component and solder panoramas show the other 28 inherited grid sites as clean bare tinned landing pairs",
-    "boundary": "population is closed; capacitance, tolerance, and voltage remain unresolved for the four factory-fitted positions"
+    "population_state": "assembly DNP; current modeled two-pad PCB footprints are provisional until independent holes are proved",
+    "basis": "the complete .009 target assembly view labels only C38/C42/C46/C50 in the DRAM field, while the older .006 drawing maps the other 28 optional refdes; their distinct physical capacitor holes are not established by the regular grid-photo midpoints",
+    "boundary": "optional population is drawing-supported, but footprint fabrication and exact placement are open; capacitance, tolerance, and voltage remain unresolved for the four factory-fitted positions"
   },
   "non_field_placement_hold": {
     "refs": ["C51", "C52", "C53", "C70", "C71", "C72"],
@@ -123,7 +145,7 @@
     "retired_coordinate_origin": "the former source-PCB coordinates came from an early fit-to-space pass, not from the .009 factory drawing, the .006 assembly drawing, or a registered owner-board observation",
     "boundary": "placement, target-revision population, package style, and capacitance remain unresolved; absence from the current PCB is an evidence hold and must not be promoted to assembly DNP"
   },
-  "population_disposition": "populate all four in the exact factory-assembly replica; the surviving owner board records later removal, not the original build state",
+  "population_disposition": "populate all four in the exact factory-assembly replica as drawn in .009; present owner photos show no bodies but do not establish whether they were fitted on that board and later removed",
   "unresolved": [
     "C38 capacitance/tolerance/voltage",
     "C42 capacitance/tolerance/voltage",

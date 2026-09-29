@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "review_state": "two printed-12 solder joints separated; C96 and A:12 identities open",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+  "assembly_locality_recheck": "In the exact .009 assembly native crop (900,1450)-(1950,2250), the horizontal C96 outline lies immediately below bottom-notched D36 and above D53, left of the separate D35 outline. The numbered 12 leader crosses this lower strip toward D35; its proximity does not assign either of the two printed-12 solder joints to a C96 lead or A:12. Search for the C96 front body/pair in the D36-bottom strip first, with D36/R57/D37 as placement anchors, then register its holes to the solder face before using the printed 12 joints.",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+  "native_crop_xyxy_original_pixels": [1750, 300, 2450, 1000],
+  "printed_12_left_joint_px_approx": [2075, 600],
+  "printed_12_right_joint_px_approx": [2170, 605],
+  "observation": "The right joint has a narrow vertical B.Cu stem up into the broad east-west strip immediately above printed 12. The left joint stands separately below that strip with a brown clearance and no visible solder-side departure in the native crop. The broad strip extends west to an open annulus near (680,600) and east to a soldered end near (2440,570), but no engraved +5 V or GND anchor is traced from this crop. Neither printed-12 joint visibly carries an insulated wire.",
+  "earlier_component_screen": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260519_201907078.jpg",
+    "observation": "The earlier wide component view shows the D35-area vertical К555ЛН5 package and the same multi-wire bundle crossing its upper neighborhood. This angle does not expose a complete two-lead C96 body or a securely registered A:12 terminal. It therefore does not lift the front-face occlusion seen in the July views."
+  },
+  "interpretation_limit": "The .009 assembly places C96 below D36 and the numbered 12 leader in the adjacent D36/D35 lower strip, while sheet 1 puts C96 among +5 V-to-ground bypasses. The photo differentiates two copper islands but does not prove either joint is a C96 lead or the A:12 wire landing. Broad copper alone does not establish rail polarity.",
+  "next_check": "Expose the D36-bottom strip and identify the horizontal C96 body or bare pair shown by the exact .009 assembly, then register both holes across faces. With power off, measure each printed-12 joint separately to known +5 V, GND, D37.4/RAM_OUT_EN, and the opposite joint. Check the right joint to the broad strip and the left joint for any front-side departure. Only assign C96 or A12B after the physical part and net are independently established."
+}

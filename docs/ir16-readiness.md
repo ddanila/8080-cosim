@@ -23,7 +23,7 @@ sync/ir16_check.sh
 | LD/SH polarity is literal | PASS | LD/SH=1 loads A-D; LD/SH=0 shifts SER through QA toward QD |
 | OC is active-high three-state control | PASS | OC=0 produces Z while sequential state continues |
 | D41 output control is physically high | PASS | D41.8 is on P5V |
-| D42/D43 output control remains one explicit rail | PASS | SHIFT_G joins D41.CLK to D42.OC/D43.OC; its remote source remains open |
+| D42/D43 output control remains one explicit rail | PASS | SHIFT_G joins D41.CLK, D42.OC, D43.OC, D35.6 and the R38 pull-up |
 
 ## Physical consequence
 
@@ -32,7 +32,8 @@ sync/ir16_check.sh
 - D41 uses that same rail as its clock while its own OC pin is tied high.
 - D42/D43 still receive their separate clock on `XTAL16M` and their mode
   input on `LOAD_VID`.
-- The remote sources of `SHIFT_G` and `TIMING_TAG17` remain evidence gaps,
-  so this correction does not claim a physical DRAM slot schedule or pixels.
+- The exact sheet-2 frame closes `SHIFT_G` through D35.6 and R38.1;
+  its owner-board continuity and the remote `TIMING_TAG17` source remain
+  evidence gaps, so this correction does not claim a physical DRAM slot schedule or pixels.
 
 Source document: [Texas Instruments SDLS154, March 1988 revision](https://www.syntax.com.tw/upload/pdf/IC-74LS295.pdf).

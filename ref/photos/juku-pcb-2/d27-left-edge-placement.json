@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "status": "horizontal photo placement check only",
+  "image": "ref/photos/juku-pcb-2/PXL_20260710_200354648.jpg",
+  "refdes": "D27",
+  "pin_span_mm": 48.26,
+  "physical_pin20_left_px": [2824.0, 1120.0],
+  "physical_pin1_right_px": [3833.0, 1120.0],
+  "left_board_edge_at_same_y_px": [170.0, 1120.0],
+  "note": "The board/background transition and the complete upper 20-contact D27 row are visible in one original owner tile. The pin row is right-notched; pin 20 is left and pin 1 right. Full-row visual overlay shows every contact at the selected pitch. Edge/pin selection and perspective limit precision to roughly millimetres.",
+  "decision": "no gross D27 horizontal shift at local photo scale; 180-degree physical pin-net mismatch remains"
+}

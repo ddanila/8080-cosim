@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "state": "D29.2 component-side local waypoint candidate; cable gap and remote endpoint open",
+  "source_image": "ref/photos/juku-pcb-2/PXL_20260710_200354648.jpg",
+  "source_sha256": "569acfb32af8da3e670f377885f777ad82d17335e160b04eb74888455e869530",
+  "package_evidence": "Notch-left D29 DIP20 has its lower row numbered 1 through 10 from left to right. The corrected D29.2 lower lead is near (2265,1438); older endpoint CSV geometry seeds were on the neighboring package/body and inter-row solder traces.",
+  "pin2_component_px_approx": [2265, 1438],
+  "front_waypoint_px_approx": [2255, 2352],
+  "native_review_crop_xyxy": [2190, 1350, 2320, 2520],
+  "observation": "The exposed component-side copper from D29.2 descends in the parallel lower-row bundle toward the white cable. A collinear copper segment below that cable terminates at the open annulus near (2255,2352). The cable occludes the middle of the proposed local path, so this annulus is a leading power-off probe candidate rather than photo-closed continuity.",
+  "opposite_face_search": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
+    "basis": "Four D29 corner contacts in component view 200354648 and solder view 200509593 give a local reflected package transform; extrapolation to the front waypoint is about 914 component pixels below the package row, far beyond its fitted anchors.",
+    "projected_solder_px_approx": [2451, 2393],
+    "native_crop_xyxy": [2200, 2150, 2700, 2600],
+    "observation": "The projection itself falls on bare board without a distinct drill. An exposed solder hole near (2450,2433) is about 40 pixels lower and belongs to a visible narrow trace, so proximity under this long extrapolation does not establish same-hole identity.",
+    "disposition": "Do not register an opposite-face waypoint from this fit; use direct same-hole inspection or power-off continuity."
+  },
+  "electrical_limit": "The exact .009 sheet-1 drawing joins D7.3 to D29.2, but the cable gap, opposite-face conductor, and remote join remain unproved. Verify D29.2↔waypoint and waypoint↔D7.3 by continuity before promoting owner-board equivalence."
+}

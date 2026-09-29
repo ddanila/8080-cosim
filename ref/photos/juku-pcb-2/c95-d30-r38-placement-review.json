@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "review_state": "RETRACTED: Д50 was misread as Д30",
+  "superseded_by": "ref/photos/juku-pcb-2/c95-d50-r58-placement-review.json",
+  "reason": "Native .009 assembly label reads Д50, and independent 114604420 view labels the real Д30 horizontally above Д13; all D30-relative C95/resistor projections in this former review are invalid. A later native rotated read identifies the C95-adjacent resistor as R58, not R38; follow the supersession pointer."
+}

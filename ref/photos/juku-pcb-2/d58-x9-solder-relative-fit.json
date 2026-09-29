@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "status": "D58 2x10 solder field registered relative to D26; 15-site mixed X9-corridor band estimated, A-number assignment open",
+  "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+  "coordinate_system": "original image pixels and source PCB millimetres",
+  "d26_anchor": {
+    "pcb_center_mm": [
+      232.005,
+      251.0
+    ],
+    "solder_pin1_and_pin20_upper_end_x_px": [
+      1650,
+      2819
+    ],
+    "solder_upper_and_lower_row_y_px": [
+      1815,
+      2185
+    ],
+    "solder_center_px": [
+      2234.5,
+      2000.0
+    ],
+    "x_scale_px_per_mm": 24.223,
+    "y_scale_px_per_mm": 24.278,
+    "basis": "registered D26 40-pin footprint: 19 x-pitch intervals of 2.54 mm over 1169 px and 15.24 mm row spacing over 370 px"
+  },
+  "d58_solder_field": {
+    "upper_row_end_px_approx": [
+      [
+        3190,
+        2125
+      ],
+      [
+        3730,
+        2125
+      ]
+    ],
+    "lower_row_end_px_approx": [
+      [
+        3190,
+        2310
+      ],
+      [
+        3730,
+        2310
+      ]
+    ],
+    "center_px_approx": [
+      3460,
+      2217.5
+    ],
+    "identification": "A distinct ten-joint upper row and ten-joint lower row occupy x≈3190..3730. The field lies at the reflected location of marked D58, left of D26 on the component face. Its upper-right joint joins the broad upper strip and lower-left joint joins the broad lower strip. The upper strip is followed in the overlapping solder tiles to the engraved GND terminal; the lower strip is visibly continuous left through a screw-area detour to D26.26, whose route to the engraved +5 V terminal is separately traced.",
+    "estimated_pcb_center_mm": [
+      181.4,
+      260.0
+    ],
+    "source_pcb_center_mm": [
+      183.0,
+      243.1
+    ],
+    "source_center_delta_mm_approx": [
+      -1.6,
+      16.9
+    ],
+    "cross_check": "The estimated y is within about 0.5 mm of source D43 centre y259.5, matching the owner component views that show D58 and D43 level. The 1.6 mm x difference is within the uncertainty of this single-package reflected projection."
+  },
+  "d58_cross_face_corner_fit": {
+    "component_upper_left_pin10_px_approx": [
+      630,
+      2205
+    ],
+    "component_upper_right_pin1_px_approx": [
+      1160,
+      2205
+    ],
+    "component_lower_left_pin11_px_approx": [
+      630,
+      2390
+    ],
+    "component_lower_right_pin20_px_approx": [
+      1160,
+      2390
+    ],
+    "solder_upper_left_pin1_px_approx": [
+      3190,
+      2125
+    ],
+    "solder_upper_right_pin10_px_approx": [
+      3730,
+      2125
+    ],
+    "solder_lower_left_pin20_px_approx": [
+      3190,
+      2310
+    ],
+    "solder_lower_right_pin11_px_approx": [
+      3730,
+      2310
+    ],
+    "fit": "Reflecting the component x span 630..1160 onto solder 3730..3190 gives scale -1.019; the component and solder row separations are both about 185 px. The matching ten-contact pitch and right-facing component notch support the four corner identities. The lower front joints are partly masked by the package body, so the coordinates remain approximate photo registrations rather than independent plated-hole continuity measurements.",
+    "rail_corroboration": "The solder-view pin10 upper-right spur joins the broad upper strip that continues through the 200534267/200537608 overlap to the terminal engraved GND; see d42-d43-orientation-audit.json. Pin20 lower-left joins the broad lower strip that is visually continuous to registered D26.26; see d26-d58-plus5-strip-review.json. D26.26 is traced to the engraved +5 V terminal. These are photographic paths, not owner meter measurements."
+  },
+  "x9_candidate_row": {
+    "solder_full_band_end_sites_px_approx": [
+      [
+        1835,
+        2375
+      ],
+      [
+        2695,
+        2375
+      ]
+    ],
+    "estimated_board_x_span_mm_approx": [
+      248.5,
+      213.0
+    ],
+    "estimated_board_y_mm_approx": 266.4,
+    "source_model_x_span_mm": [
+      224.5,
+      192.0
+    ],
+    "source_model_y_mm": 262.0,
+    "meaning": "The regular 15-site solder band is below D26 and physically right of D58. Site10 near (2385,2375) joins an intermediate via on B.Cu; the native crop does not directly join it to D26.28/DB6. The fourteen-wire factory count cannot identify which band site, if any, is extra. These coordinates must not be copied to numbered A pads; see x9-site10-via-review.json."
+  },
+  "limits": "D26 is a valid local package anchor and D58 four-corner geometry is matched, but absolute PCB coordinates still come from one relative solder photo. Distortion, hand-read centers, and unknown X9-band membership prevent fabrication-grade placement. Optionally meter D58.10/GND and D58.20/+5 V; independently determine site10 net and actual fourteen cable holes, then map each X9 wire before moving pads or routing copper."
+}

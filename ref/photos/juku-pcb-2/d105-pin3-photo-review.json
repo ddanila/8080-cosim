@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "scope": "physical D105.3 probe site for the exact .009 D7.11/D105.3 source-output tie",
+  "source_drawing": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg native crop (1180,2550)-(1550,3450); the lower pin-3 gate is visibly marked D105, not D7",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+  "component_sha256": "a009a302bf045ebe6fde6cc081afec748f633650e3a92741bb1fff99574fe252",
+  "component_crop_xyxy": [850, 1150, 1550, 2000],
+  "component_observation": "Marked right-notched K155LA3 D105 is the lower of the two packages. Its independently identified upper-right pin1 is near (1228,1680). Counting left along the same upper row at roughly 60 px pitch puts physical pin2 near (1168,1680) and pin3 near (1108,1680). The leads are distinct; this is a package contact identification, not a copper route to D7.11.",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
+  "solder_sha256": "b43f1a1cf7620d08d3450eb08e7fbcbe34f7da1f49499e86836da5d505e252a3",
+  "solder_crop_xyxy": [2400, 850, 2980, 1530],
+  "solder_observation": "The D105.1 same-hole anchor is near (2687,1190). Its reflected seven-contact row advances east at about 60 px pitch: pin2 near (2747,1190), pin3 near (2807,1190). The third solder cap is exposed in this tile. No trace continuing to a separately registered D7.11 contact can be established from this local crop.",
+  "physical_hold": "With power removed, probe D105.3 at the counted contact against D7.11 (solder near (2245,1193) in separate tile 200525009), D94.13 on measured qualified /WR, and R17.2 on modeled PROM_EN. Keep PROM_EN and IOWR separate until this contradiction is checked directly."
+}

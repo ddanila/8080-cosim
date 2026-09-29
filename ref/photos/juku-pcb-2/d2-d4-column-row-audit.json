@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "review_state": "D2 and D4 package fields corrected; five electrical routes and raw/buffered identity unresolved",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+  "observation": "The component image shows D2 to the right of the marked, top-notched КР580ВА86 D4, which is to the right of the КР580ВМ80А CPU D1. Reflection reverses this order in the solder image. Native contact counting places D2 at x1628/x1800, D4 at x2242/x2410 and y1438..1942, and D1 at x2580/x2905. The lower x2242/x2410 contacts belong to the separate package D107. Earlier D4 and D1 fits each started one column left; D4 also began one row low, at y1491; the provisional y1425/y1920 cap markers were subsequently re-centred to y1438/y1942.",
+  "corrected_d4_solder_pins": {
+    "1": [
+      2410.0,
+      1438.0
+    ],
+    "5": [
+      2410.0,
+      1662.0
+    ],
+    "10": [
+      2410.0,
+      1942.0
+    ],
+    "11": [
+      2242.0,
+      1942.0
+    ],
+    "13": [
+      2242.0,
+      1830.0
+    ],
+    "14": [
+      2242.0,
+      1774.0
+    ],
+    "15": [
+      2242.0,
+      1718.0
+    ],
+    "17": [
+      2242.0,
+      1606.0
+    ],
+    "19": [
+      2242.0,
+      1494.0
+    ],
+    "20": [
+      2242.0,
+      1438.0
+    ]
+  },
+  "d2_route_search": [
+    {
+      "d2_pin": 1,
+      "d2_solder_px": [
+        1800,
+        1498
+      ],
+      "near_d4_opposite_column_pin": 19,
+      "model_net": "A10"
+    },
+    {
+      "d2_pin": 3,
+      "d2_solder_px": [
+        1800,
+        1613
+      ],
+      "near_d4_opposite_column_pin": 17,
+      "model_net": "A14"
+    },
+    {
+      "d2_pin": 5,
+      "d2_solder_px": [
+        1800,
+        1729
+      ],
+      "near_d4_opposite_column_pin": 15,
+      "model_net": "A12"
+    },
+    {
+      "d2_pin": 6,
+      "d2_solder_px": [
+        1800,
+        1787
+      ],
+      "near_d4_opposite_column_pin": 14,
+      "model_net": "A15"
+    },
+    {
+      "d2_pin": 7,
+      "d2_solder_px": [
+        1800,
+        1844
+      ],
+      "near_d4_opposite_column_pin": 13,
+      "model_net": "A9"
+    }
+  ],
+  "inference_limit": "Corrected D2 and D4 pad identities plus the native solder crop disprove a direct same-row D2.1-to-D4.19 B.Cu join. D2.5/.6 lines also pass between nearby D4 joints. The exact .009 overview favors a CPU-side feed, but each D2 route still needs an end-to-end trace across the paper fold and both board faces. No raw/buffered net change is justified from row proximity.",
+  "next_check": "With power off, measure D2.1 to its solder via near (2185,1498), D2.5 to the via near (2640,1685), D2.6 to the via near (2500,1745), and D2.7 to the via near (2100,1840), then measure each via to a known CPU or buffer address pad. Probe D2.3 directly against a known A14 pad because neither solder photo exposes its trace. For D2.6, test the front ring near July (1227,2002)/May (1768,1650) as a candidate only. Do not substitute the separate D2.1 front annulus July (1555,1755)/May (1477,1245). Record both positive and negative continuity for raw and buffered candidate pads before changing A10/A14/A12/A15/A9 model nets.",
+  "source_sheet_review": {
+    "d2_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101817644.jpg",
+    "d6_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg",
+    "observation": "The 101817644 detail identifies the К556РТ4 as D2: A3/pin4 is drawn from VIDEO CYCLE, A5/pin2 from -XACK, A7/pin15 from -WREQ, while the other address lines continue beyond that tile. The ROM immediately right of the D4 buffer in 101805510 is labeled D6, not D2. Its directly drawn D4 output routes cannot be used to assign D2 inputs. The schematic page layout does not assign physical package order; the separate .009 assembly drawing does, placing D4 above D107. The adjacent 101813438 detail is a DRAM and external-bus section; it does not close the D2 lines either.",
+    "overview_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg",
+    "overview_orientation": "rotated 90 degrees counterclockwise for reading; original source pixels unchanged in archive",
+    "overview_observation": "The full-sheet view shows D2 lower-left of the CPU/buffer cluster. Its five unlabelled address leads bend upward through the CPU-side bundle. The D4 output side is visibly routed rightward into D6. This favors the current raw-address interpretation over a direct D4-output feed, but the folded/crossing overview cannot identify each of the five D2 leads end to end. Treat this as a search direction, not source closure."
+  },
+  "native_solder_route_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+    "crop_xyxy_original_pixels": [
+      1710,
+      1380,
+      2470,
+      1835
+    ],
+    "d2_pin1": "D2.1 near (1800,1498) has an uninterrupted narrow B.Cu line east to the open via near (2185,1498). A visible brown gap of about 55 pixels separates that via from corrected D4.19 near (2242,1494). The solder face therefore excludes a direct D2.1-to-D4.19 join at this local row.",
+    "d2_pin5_pin6": "The D2.5 and D2.6 eastbound runs bend into horizontal channels that pass between the corrected D4 row centres. Row proximity is not a D4 pad landing. Their remote endpoints remain unidentified in this crop.",
+    "front_candidate": "Using D4 component corners (1320,1665)/(1505,1665)/(1320,2165) and solder corners (2410,1438)/(2242,1438)/(2410,1942), the D2.1 solder via near (2185,1498) projects to front approximately (1568,1725). D2.1 itself independently maps solder (1800,1498) to front (1932,1726), consistent in y within about 1 px. The conspicuous front annulus near (1555,1755) is about 33 px away, outside the local package-anchor agreement, and the projected point shows no exposed drill. Do not adopt that annulus as the same hole.",
+    "limit": "The D2.1 via may carry the route to the front face, but its opposite-face drill is not identified in the existing component photo. A different angle, obscured plating, or local registration distortion may explain the mismatch. The remote net remains open."
+  },
+  "overlapping_solder_tile_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "crop_xyxy_original_pixels": [
+      3760,
+      1320,
+      4080,
+      1630
+    ],
+    "registration": "The D2 row shifts approximately (+1820,-33) pixels from 200527310 to this overlapping tile: D2.1 projects from (1800,1498) to (3620,1465), and its eastbound via from (2185,1498) to (4005,1465). The observed open annulus at approximately (4005,1465) has the same 385 px offset from D2.1 as in the first tile.",
+    "observation": "The narrow solder-face trace enters the open annulus from the left and stops there. A separate soldered contact near (4055,1465), consistent within about 7 px with D4.19 projected from (2242,1494), sits to its right across a visible copper gap. This second image corroborates the local exclusion of a D2.1-to-D4.19 B.Cu join.",
+    "limit": "The D4.19 identity here comes from overlap translation of the independently fitted 200527310 package, not a separate package fit in 200525009. The matching annulus locates the same visible via on the solder face; it does not identify the front-face landing or the route's remote electrical destination."
+  },
+  "d2_pin3_face_review": {
+    "native_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+    "overlapping_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "native_pad_px": [1800, 1613],
+    "overlapping_pad_px_approx": [3620, 1580],
+    "observation": "The fitted D2.3 solder joint has no visible copper departure in either native photo. Narrow horizontal traces run above and below it, separated by brown substrate. D2.4 and D2.5 immediately below provide clear eastbound departure examples in both views. A D2.3 route therefore cannot be followed east on the visible solder face toward the nearby D4.17 row.",
+    "limit": "These photographs cannot exclude a hidden or obscured solder-side connection at the joint, and they do not identify the component-face trace from the plated pin. D2.3 electrical destination remains open."
+  },
+  "d2_pin3_component_review": {
+    "july_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "july_crop_xyxy_original_pixels": [1250, 1590, 2250, 2250],
+    "may_image": "ref/photos/juku-pcb-2/PXL_20260519_201940304.jpg",
+    "may_crop_xyxy_original_pixels": [1300, 390, 2200, 1050],
+    "observation": "The July vertical D2 socket has pin 1 at its upper-left contact, placing D2.3 near (1932,1852), the third contact down that edge. The May view rotates the same notched package to a horizontal posture with the notch left, putting pins 1 through 8 along its lower edge; D2.3 is the third lower contact from the left, near (1599,775). Both views show the contact inside the socket edge but no exposed copper departure that can be followed from pin 3. The July close-up is partly crossed by a white factory wire above the package, while the May lower edge has multiple parallel traces below the socket without an exposed pin-3 landing to select one.",
+    "limit": "The two component photographs confirm which socket contact to probe but do not establish a D2.3-to-A14 route. Pair a continuity measurement at D2.3 with a known A14 pad or a higher-resolution image of the bare socket area before promoting the modeled net to physical evidence."
+  },
+  "d2_pin5_pin6_pin7_solder_review": {
+    "native_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+    "native_crop_xyxy_original_pixels": [1750, 1680, 2500, 1980],
+    "overlapping_image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "overlapping_crop_xyxy_original_pixels": [3550, 1680, 4080, 1890],
+    "observations": [
+      "D2.5 near (1800,1729) leaves east, bends north, and runs through the gap above D4.15 near (2242,1718); it has no visible landing on that contact in the native crop.",
+      "D2.6 near (1800,1787) likewise leaves east, bends north, and passes above D4.14 near (2242,1774); it has no visible landing on that contact in the native crop.",
+      "D2.7 near (1800,1844) leaves east and bends southeast into an open via near (2100,1840), about 140 px west of D4.13 near (2242,1830). The overlapping tile repeats this distinctive bend and isolated via near approximately (3950,1830). The via is separate from the D4.13 solder joint and the adjacent horizontal runs."
+    ],
+    "limit": "This tight crop shows local solder-face geometry only. A wider crop of the same native image identifies open via endpoints for D2.5 and D2.6 farther east; D2.7 also changes face at its via. None of their remote destinations or modeled A12/A15/A9 net assignments is established by these local traces."
+  },
+  "d2_pin5_pin6_east_via_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+    "crop_xyxy_original_pixels": [1750, 1600, 2800, 1860],
+    "observations": [
+      "D2.5 near (1800,1729) bends north near x1875, runs east above D4.15, and terminates at an open annulus near (2640,1685). The line crosses the D4 and CPU-side contact columns without a visible solder-pad landing in this crop.",
+      "D2.6 near (1800,1787) bends north near x1875, runs east above D4.14, and terminates at an open annulus near (2500,1745), west of the CPU's fitted near column."
+    ],
+    "limit": "These are visible solder-face segments ending at plated holes, not established front-face routes or end-to-end A12/A15 net proofs. The via centres are approximate photo coordinates; use continuity or calibrated opposite-face registration before assigning a remote pad."
+  },
+  "d2_pin7_front_projection_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "crop_xyxy_original_pixels": [1510, 1930, 1840, 2200],
+    "projection": "Using D4's fitted component and reflected solder columns and row endpoints, the D2.7 solder via near (2100,1840) projects to approximately (1661,2064) on this component photo. The D4-local x and y mappings differ by under 10 px from the simpler x-reflection/y-offset estimate (1653,2067).",
+    "observation": "No exposed annulus appears at the projected point, which falls in brown substrate beside a vertical front trace. An obvious ring around (1637,2028) is roughly 43 px away from the fitted projection; other nearby rings are farther. None is adopted as the opposite face of the D2.7 via on proximity alone.",
+    "limit": "Socket occlusion, perspective away from the D4 anchors, or a buried/obscured front landing could affect the projection. The same-hole identity and outgoing front trace require continuity or a calibrated bare-board image."
+  },
+  "d2_pin5_pin6_front_projection_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "crop_xyxy_original_pixels": [980, 1840, 1410, 2190],
+    "registration": "Reflect the corrected D1 solder columns x2905/x2580 onto component x826/x1157 and interpolate its row endpoints solder y1485/y2549 onto component y1758/y2824. D2.5 solder via near (2640,1685) projects to front approximately (1096,1958); D2.6 via near (2500,1745) projects to approximately (1238,2018).",
+    "observation": "The D2.5 projection falls under the fitted CPU body and cannot reveal its front drill. The D2.6 projection lies in the exposed CPU-to-D4 trace field, about 15–20 px from a visible annulus near (1227,2000). A second annulus farther right around (1280,2057) is farther away. The closer ring is a physical candidate only; its centre does not coincide within the fitted pad-anchor accuracy.",
+    "limit": "Neither projected point establishes a same-hole match or a front-face continuation. Check continuity from each D2 pad to its solder via and from that via to the candidate front annulus before following any trace or promoting an address net."
+  },
+  "d2_pin6_may_component_crosscheck": {
+    "may_image": "ref/photos/juku-pcb-2/PXL_20260519_201940304.jpg",
+    "may_crop_xyxy_original_pixels": [1500, 1300, 2150, 1820],
+    "july_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "july_crop_xyxy_original_pixels": [1160, 1940, 1360, 2270],
+    "three_ring_match": "The July CPU-to-D4 gap has open annuli near (1227,2002), (1280,2058), and (1280,2195). The May photo shows the corresponding rotated three-ring pattern near (1768,1650), (1838,1580), and (1998,1580), with the same trace orientations after rotation. Thus the July ring near (1227,2002) is a persistent physical feature, not a highlight or image defect.",
+    "d2_pin6_assessment": "The D1-based front projection of the D2.6 solder via is near July (1238,2018), about 20 px from the first July ring. Mapping that projected point through the local three-ring May registration lands approximately (1787,1636), likewise about 24 px from the corresponding May ring (1768,1650). Neither component view exposes a separate drill exactly at the projection. The ring remains an unverified candidate, not an accepted same-hole match.",
+    "limit": "Three-ring registration validates the component-photo feature correspondence, not the solder-to-component projection at this via. Continuity or a calibrated bare-board image is needed to decide whether the solder via reaches that ring or a hidden neighboring landing."
+  },
+  "alternate_component_angle_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260519_201940304.jpg",
+    "crop_xyxy_original_pixels": [
+      1250,
+      1050,
+      1800,
+      1650
+    ],
+    "observation": "The May view rotates the marked КР580ВА86 D4 horizontal with its notch to the left. An exposed open annulus beside its upper row is near (1477,1245) in this image. Its position relative to D4 is consistent with the July front annulus near (1555,1755), not an additional drill at the D2.1 solder-via projection near July (1568,1725). The projected point lies over the close trace field without a separately exposed ring in both front views.",
+    "limit": "The May/July match is a local geometry check, not a through-hole proof. Optical perspective and obscuration remain possible. Do not adopt either front annulus as the solder via without continuity."
+  },
+  "assembly_identity": {
+    "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+    "observation": "The exact .009 assembly drawing explicitly labels D4 as the upper vertical 20-pin outline, D107 directly below it, and D2 to their right. This identifies the upper marked КР580ВА86 component package and the corresponding upper 2x10 solder field as D4 independently of the routed board model.",
+    "limit": "Assembly placement identifies packages and posture, not their copper destinations.",
+    "registration": "D4 component and solder fits and D107 component and solder fits now independently occupy nonoverlapping 2x10 fields in local-package-registration.json; all four fits pass their held-out pad checks."
+  }
+}

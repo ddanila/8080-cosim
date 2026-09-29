@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "status": "factory C75/C76 placements; C75 shared D29.20 upper landing plus lower candidate; C76 geometric candidate; owner continuity and population unresolved",
+  "factory_assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+  "factory_observation": "The exact .009 assembly detail places a vertical C75 immediately left of horizontal D29 and a separate vertical C76 between D29 and D27. Approximate full-image centres are C75 (408,1683) and C76 (986,1683).",
+  "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+  "owner_solder_images": [
+    "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg"
+  ],
+  "search_registration": {
+    "method": "approximate three-anchor affine using factory assembly D29/D27/D11 centres and their owner component package centres; source centres are hand read, so search grade only",
+    "factory_anchor_centres_px_approx": {
+      "D29": [
+        674,
+        1660
+      ],
+      "D27": [
+        1500,
+        1650
+      ],
+      "D11": [
+        2215,
+        2200
+      ]
+    },
+    "july_anchor_centres_px_approx": {
+      "D29": [
+        767,
+        1540
+      ],
+      "D27": [
+        1707.5,
+        1464
+      ],
+      "D11": [
+        2440,
+        2114.5
+      ]
+    },
+    "superseded_two_anchor_d29_residual_px_approx": 146,
+    "held_out_d24_check": "The factory drawing labels D24 immediately west of C75, and the July owner panorama shows the expected КР580ВА87 package immediately west of D29. Its body is clipped by the left photo edge, so no precise fourth-centre residual is available; this supports only the coarse ordering, not pad-level projection accuracy.",
+    "c75_owner_search_px_approx": [
+      461,
+      1590
+    ],
+    "c76_owner_search_px_approx": [
+      1118,
+      1546
+    ],
+    "observation": "C75 falls at the D24/D29 seam and C76 between D29/D27. Counting D29's complete ten-contact upper row identifies the C75 upper mark near (490,1465) as the D29.20 landing. The lower mark near (490,1680) is a separate annulus on a front trace from D24 lower-right contact. C76 retains two exposed candidate features. Neither position has a fitted capacitor body."
+  },
+  "owner_geometric_joint_pairs": {
+    "C75": {
+      "upper_image_px_approx": [
+        490,
+        1465
+      ],
+      "lower_image_px_approx": [
+        490,
+        1680
+      ],
+      "crop_xyxy": [
+        300,
+        1320,
+        650,
+        1900
+      ],
+      "observation": "The upper coordinate (490,1465) is the leftmost contact in D29's complete ten-contact upper row, identified as physical pin 20 by the left notch and 20-pin sequence. The lower coordinate (490,1680) is a separate annulus connected by visible front copper to D24 lower-right contact (modeled pin 10/GND). This supports a shared-pad bypass topology, subject to owner continuity."
+    },
+    "C76": {
+      "upper_image_px_approx": [
+        1120,
+        1465
+      ],
+      "lower_image_px_approx": [
+        1120,
+        1676
+      ],
+      "crop_xyxy": [
+        900,
+        1300,
+        1350,
+        1900
+      ],
+      "observation": "The upper annulus terminates a narrow vertical front trace from above, left of D27; the lower soldered feature is separate below D27 left edge. No local photo bridge or C75-like D29 power-contact pair is visible."
+    },
+    "limit": "C75 has a package-contact plus separate lower-hole candidate, not two separate annuli. The source PCB names D29.20 +5 V and D24.10 GND, but owner continuity and exact two-face hole registration remain open. C76 remains geometric only."
+  },
+  "c76_solder_projection": {
+    "basis": "D27 component and solder package pin anchors in local-package-registration.json, using D27.20/.21 for y and the package ends for reflected x; C76 lies about 115 component pixels outside D27's left edge, so this remains an extrapolation",
+    "upper_image_px_approx": [
+      3816,
+      1338
+    ],
+    "lower_image_px_approx": [
+      3816,
+      1527
+    ],
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "observation": "Both projected points lie on or beside separate broad horizontal solder runs. Neither exact point exposes a unique drilled centre in the available view; adjacent solder lumps and holes cannot be selected without a local same-hole anchor or continuity. Do not promote the broad runs to proven +5 V and ground merely from their width."
+  },
+  "c76_local_copper_recheck": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+    "crop_xyxy_original_pixels": [
+      900,
+      1350,
+      1370,
+      1850
+    ],
+    "observation": "At native pixels, the upper candidate annulus around (1120,1465) ends a narrow vertical front trace descending from above beside D27's left edge. The lower candidate around (1120,1676) is a separate small soldered feature below D27's left edge, with no front-copper bridge to the upper annulus. D29's right-end broad trace turns down west of both candidates. Thus the C75 D24/D29 power-contact pattern does not transfer to C76 by visual symmetry.",
+    "limit": "The far ends of the narrow upper trace and the lower candidate's opposite-face copper are not established. Their +5 V/GND identities and C76 pad assignment remain open."
+  },
+  "d29_local_solder_search_fit": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
+    "component_D29_end_contacts_px_approx": {"pin20_upper_left": [490, 1465], "pin11_upper_right": [1030, 1465], "pin1_lower_left": [490, 1615], "pin10_lower_right": [1030, 1615]},
+    "solder_D29_end_contacts_px_approx": {"pin11_upper_left": [2057, 1447], "pin20_upper_right": [2489, 1447], "pin10_lower_left": [2057, 1588], "pin1_lower_right": [2489, 1588]},
+    "identification": "The ten-joint D29 rows follow the registered D27 row in the reflected solder image. The D29.11 upper-left and D29.10 lower-left positions are merged into broad upper and lower solder bars, consistent with the source-board +5 V/GND contacts; the corresponding right ends have ten-contact pitch. End centers are hand-read to search precision, not an independent net measurement.",
+    "corrected_endpoint_csv_seeds": "Four older 200509593 entries labeled D29.1/.2/.3/.6 landed on parallel inter-row traces around y1495–1520, not on the D29 lower package row. endpoints.csv now places those four on the visible lower ten-contact row at (2489,1588)/(2441,1588)/(2393,1588)/(2249,1588), counted from pin1 at the reflected right end. The corresponding four old component seeds in 200354648 were also on chip bodies; they now land on the notch-left lower lead row at (2213,1438)/(2265,1438)/(2318,1438)/(2478,1438). These are photo probe sites, not owner continuity readings.",
+    "c76_refined_solder_search_px_approx": {"upper": [1985, 1447], "lower": [1985, 1645]},
+    "limit": "This is a reflected D29-end extrapolation of about 90 component pixels beyond the package. It shifts the earlier D27-based C76 estimate about 35 pixels left but still lands amid broad rails and neighboring joints, without a unique matching drilled pair. Do not promote either projected position to a C76 pad."
+  },
+  "c76_corridor_d29_rail_chase": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
+    "native_crop_xyxy_original_pixels": [1760, 1300, 2260, 1750],
+    "narrow_native_crop_recheck_xyxy_original_pixels": [1800, 1300, 2200, 1800],
+    "narrow_crop_observation": "The refined upper projection near (1985,1447) falls on a tinned broad-strip patch without a separately exposed drill. The lower projection near (1985,1645) falls on the other broad strip, also without a unique drill at that point. A conspicuous open hole below the lower strip around (2010,1690) is offset roughly 50 pixels from the lower projection and sits on a distinct narrow trace; it cannot be adopted as the front lower feature simply because it is nearby. The front native crop (850,1280)-(1400,1880) clearly shows two distinct features around (1120,1465)/(1120,1676), so this is a cross-face identification limit, not uncertainty about there being two front features.",
+    "upper_strip_observation": "The broad strip across the C76 upper search level y≈1447 turns into the D29.11 upper-left solder contact near (2057,1447) without a visible B.Cu break. The source PCB assigns D29.11 to P5V.",
+    "lower_strip_observation": "The separate broad strip across the C76 lower search level y≈1645 has an uninterrupted neck up to the D29.10 lower-left solder contact near (2057,1588). The source PCB and exact sheet-1 power table assign D29.10 to GND.",
+    "limit": "These identify nearby upper and lower copper corridors by their package contacts, not C76's two physical drill holes. Neither projected C76 point near x≈1985 has a uniquely resolved separate joint center, and owner electrical continuity remains unmeasured. Do not create a C76 footprint from strip proximity."
+  },
+  "solder_tile_overlap": {
+    "method": "edge-pattern cross-correlation of a D27-side 200506061 crop against 200509593 at quarter resolution",
+    "from_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "to_image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
+    "approx_translation_px": [
+      -1796,
+      112
+    ],
+    "c76_search_in_overlap_px_approx": [
+      [
+        2020,
+        1450
+      ],
+      [
+        2020,
+        1639
+      ]
+    ],
+    "c75_long_extrapolation_in_overlap_px_approx": [
+      [
+        2620,
+        1450
+      ],
+      [
+        2620,
+        1643
+      ]
+    ],
+    "observation": "The second solder tile independently shows the same two broad horizontal runs at the C76 projected levels, with soldered joints close to but not exactly at the projected points. Similar runs continue through the much longer C75 search projection. The tile match confirms image overlap and the rail corridors; it does not identify through-hole centres or the rails' net names. The C75 estimate is extrapolated about 745 component pixels beyond D27's left edge and is search-grade only."
+  },
+  "schematic_boundary": "Exact .009 sheet 1 groups both with +5 V-to-ground bypasses; the group supplies no individual body value, owner population, or physical pad polarity.",
+  "native_crop_recheck": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+    "c75_crop_xyxy_original_pixels": [
+      300,
+      1280,
+      670,
+      1880
+    ],
+    "c76_crop_xyxy_original_pixels": [
+      850,
+      1280,
+      1400,
+      1880
+    ],
+    "c76_solder_crop_xyxy_original_pixels": [
+      3550,
+      1150,
+      4000,
+      1750
+    ],
+    "observation": "In crop (400,1250)-(1150,1750), counting all ten D29 upper contacts shows the ring near (490,1465) is the first package landing, physical pin 20, not an extra annulus. The lower mark near (490,1680) is a separate annulus on visible front copper from D24 lower-right contact. C76 has two exposed candidate features, with no unique solder-side matches.",
+    "disposition": "Correct the previous two-separate-annuli interpretation. C75 may use D29.20 as its upper shared +5 V landing and the lower annulus as its ground landing. The photo supports package-contact geometry; meter owner continuity before assigning the physical capacitor pads."
+  },
+  "c75_wider_corridor_recheck": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+    "crop_xyxy_original_pixels": [
+      0,
+      1120,
+      650,
+      2020
+    ],
+    "factory_context": "The .009 C75 body is drawn vertically across the left end of D29, between D24 and D29. This is placement artwork, not a pad drawing.",
+    "owner_observation": "The D29 upper-left ring is the first of ten upper package contacts, physical D29.20. The lower mark is a separate annulus on a front trace leaving D24 lower-right contact. No fitted C75 body is visible.",
+    "limit": "The source PCB names D29.20 +5 V and D24.10 GND. The photo suggests C75 could share D29.20 and use the lower annulus connected toward D24.10, but owner continuity and the opposite-face match have not been measured. The assembly drawing gives no drill dimensions."
+  },
+  "c75_d29_local_solder_screen": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
+    "basis": "Reflect the hand-read D29 end contacts already recorded in d29_local_solder_search_fit: front pin20 (490,1465) to solder (2489,1447) and front pin1 (490,1615) to solder (2489,1588). This is package-local interpolation in x and a 65-pixel y extrapolation below the lower row.",
+    "lower_front_candidate_px": [490, 1680],
+    "lower_solder_projection_px_approx": [2489, 1649],
+    "solder_crop_xyxy_original_pixels": [2250, 1290, 2750, 1820],
+    "observation": "The projected lower point lies on a broad horizontal copper strip with no distinct drilled annulus at that exact position in the native solder crop. The D29.20 top contact remains visible near (2489,1447). Nearby lower-row solder joints and strip necks are separate features and must not be adopted merely for proximity.",
+    "limit": "The D29 end centers are hand-read and the lower point lies outside the fitted package rows. This rejects the proposed exact same-hole correspondence at search precision, not the front annulus or every possible C75 landing. Register an independent shared hole or meter D29.20 and the front lower annulus before assigning C75 pads."
+  },
+  "c75_second_solder_tile_check": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200514102.jpg",
+    "crop_xyxy_original_pixels": [1400, 1450, 1800, 1800],
+    "observation": "The overlapping tile shows the same D29 lower broad-strip corridor and its two nearby package spurs from another camera position. At the corresponding projected C75 lower-annulus column, the strip remains broad and bright without a separately resolved drill. The alternate angle therefore does not rescue the proposed exact same-hole identification from the 200509593 screen. It also cannot exclude a solder-filled or front-only pad without independent registration."
+  },
+  "may_population_check": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260519_201933909.jpg",
+    "review_crop_xyxy_original_pixels": [1100, 0, 2200, 550],
+    "observation": "The earlier May component view shows both the D24/D29 gap (factory C75 position) and the D29/D27 gap (factory C76 position) bare of capacitor bodies. The latter is visible between the right edge of marked КР580ВА86 D29 and the large D27 package in the native crop. July 200358952 likewise leaves both positions bare. This supports owner-board nonpopulation for C75 and C76 on both dates, without establishing factory DNP status or identifying either lower pad."
+  },
+  "adjacent_bypass_spacing_check": "The two separate C76 front features near (1120,1465)/(1120,1676) span about 211 px vertically in July photo 200358952. C75's upper D29.20 contact and lower annulus in the same image span about 215 px, and the first C74 upper-to-lower candidate pair in adjacent July tile 200354648 spans about 210 px. The repeated .009 vertical C74/C75/C76 assembly symbol and similar owner photo scale support treating the C76 pair as the leading geometric landing search, distinct from D29 and D27 package contacts. This spacing does not identify either net, prove same-hole solder counterparts, or establish owner population.",
+  "decision": "C75 near (490,1465)/(490,1680) remains a front-side package-contact/annulus candidate: upper physical D29.20 (source-model +5 V) and a separate lower annulus visibly routed toward D24.10 (source-model GND). A D29-local reflection of the lower point to solder (2489,1649) finds no distinct drill, so the proposed opposite-face match is not established. Do not claim owner continuity, capacitor population, or final pad dimensions until checked. C76 near (1120,1465)/(1120,1676) remains geometric only. Nearby solder corridors visibly join D29.11/P5V and D29.10/GND, but neither C76 front feature is same-hole matched to those corridors, so its actual pad rails remain unproved."
+}

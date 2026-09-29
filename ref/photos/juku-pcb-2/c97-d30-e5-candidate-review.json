@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "review_state": "assembly position localized; owner two-hole geometric candidate; rails unproved",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+  "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
+  "owner_component_overlap_image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+  "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
+  "coordinate_system": "original source-image pixels",
+  "assembly_crop_xyxy": [1070, 1700, 1900, 2050],
+  "owner_crop_xyxy": [1450, 350, 2100, 850],
+  "source_context": "The .009 assembly draws a horizontal C97 body on the E5 line immediately above and right of D30, beyond the vertical R6/R5 pair. Sheet-1 puts C97 in the C94-C98 +5 V-to-ground bypass group.",
+  "refdes_disambiguation": "The vertical pair beside D30 reads R6 (left) and R5 (right) in the original 114604420 assembly image. A separate vertical pair left of D1 reads R37/R36; those resistors are elsewhere on the same sheet and must not be used as C97 local registration anchors.",
+  "owner_candidate_holes": [
+    {
+      "image_px": [1690, 524],
+      "overlap_image_px": [1468, 917],
+      "observation": "open annulus on a narrow vertical front-copper trace, above/right of the R6/R5 pair"
+    },
+    {
+      "image_px": [1926, 580],
+      "overlap_image_px": [1703, 972],
+      "observation": "upper open annulus on a wider plated vertical strip farther right; a white factory wire passes just below it"
+    }
+  ],
+  "overlap_cross_check": "The independent overlapping owner photograph 200439607 shows both open annuli above the same wire bundle. Their two-photo displacements are (-222,+393) and (-223,+392) px. D13 package anchors in the same photos give about (-220,+415) px; the 22 px y difference over the intervening area cautions against a single global translation. The pairwise agreement confirms two distinct visible holes and no fitted capacitor body at either, but it does not identify their nets or prove that they are C97 terminals.",
+  "decision": "The two holes are a geometric C97 landing hypothesis, not a proved capacitor footprint. Their visible x separation fits the assembly body relative to R6/R5, but the y offset and intervening wire bundle prevent a unique assignment. Do not infer +5 V or ground from strip width, and do not assign a DNP status from the absence of a body in this single crop.",
+  "solder_cross_check": "The former D13-based solder estimates (3336,1566) and (3591,1511) used a now-retired D13 fit that mixed a D13 row with a D105 row. They are withdrawn. Even with the corrected D13 field, C97 lies far outside its package anchors, so no opposite-face C97 hole is promoted from that extrapolation.",
+  "local_reference_limit": "At original resolution in component 200450127, the upper R6 lead is crossed by the white cable bundle; R5's lower lead bends left from the resistor body before reaching its annulus. Body-centre coordinates are therefore not safe substitutes for plated-hole centres in a front-to-back registration. The candidate solder region in 200537608 contains several multi-joint vertical strips, so matching either resistor by apparent body x position alone is ambiguous.",
+  "next_inspection": "Identify the individual R6/R5 plated-hole centres in both faces, using an unobstructed overlapping component photo if available, or register D30 contacts directly across component 200450127 and solder 200537608. Only then inspect projected counterparts of (1690,524) and (1926,580). Meter each hole to known +5 V and ground contacts. Check neighboring annuli on the same wide strip individually so the C97 endpoint is not selected by proximity alone."
+}

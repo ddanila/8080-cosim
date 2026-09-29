@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "status": "photo-supported D26.26 to D58.20/D43.14/D42.14 broad-strip path",
+  "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+  "review_crop_xyxy_original_pixels": [2300, 1900, 4080, 2600],
+  "registered_start": {
+    "pin": "D26.26",
+    "solder_px_approx": [2511, 2185],
+    "net_basis": "The right-notched 40-pin D26 package registration identifies pin26; docs/photo-registration.md traces its broad rail across overlapping tiles to the terminal engraved +5 V."
+  },
+  "visible_path": [
+    "The D26.26 joint near (2511,2185) has a broad vertical spur into the lower local strip near y2430.",
+    "That strip runs right, jogs around the screw near x2800 and the nearby large hole, then rises at the dark tinned joint near (3190,2310). The copper edges remain visibly continuous through the detour in the native-resolution crop.",
+    "The dark joint is the independently registered D58.20 lower-left solder contact. Its broad lower strip continues right through the 200530933/200534267 overlap to the registered D43.14 and D42.14 lower-left contacts."
+  ],
+  "conclusion": "The archived solder photographs support a same-copper +5 V path from D26.26 to D58.20, D43.14 and D42.14. The separate right-hand +5 V terminal departure in 200537608 is not the local joining route; the connection reaches the marked terminal through the previously traced D26.26 branch. A meter check remains useful as an independent owner-board confirmation, but the missing photographic route is resolved.",
+  "limits": "The photographed copper continuity is visual evidence, not a four-wire resistance measurement. The routed replica footprints still require pin-aware regeneration and electrical DRC."
+}

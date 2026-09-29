@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "D41.6 tag-17 owner pad located; visible local departure unresolved",
+  "source_net": "TIMING_TAG17: exact .009 sheet 2 joins D41.6 and D36.2; remote driver open",
+  "registration": "ref/photos/juku-pcb-2/d41-supply-pin-review.json",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "solder_crop_xyxy_original_pixels": [1900, 1450, 2450, 1950],
+  "solder_pin6_xy_original_pixels_approx": [2274, 1620],
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+  "component_crop_xyxy_original_pixels": [1860, 1800, 2010, 1990],
+  "component_pin6_xy_original_pixels_approx": [1921, 1954],
+  "pin_count": "D41 upper front row left-to-right pins7,6,5,4,3,2,1; the reflected solder row runs pins1..7 from x1999 to x2329. Pin6 is the penultimate upper solder joint near x2274, between the grounded pin7 strip junction at x2329 and the grounded A-D solder strap that ends near x2220.",
+  "observation": "In the native solder crop, pin6 is a distinct joint between two broad grounded runs, without a visible B.Cu neck to either. In the native component crop, pin6 has no exposed front trace above its crown; the nearby narrow vertical front trace is offset toward the next contact and must not be assigned to pin6 by proximity. Copper hidden under the installed package or a plated-hole continuation cannot be excluded.",
+  "next_check": "Power off: first confirm D41.6 to D36.2 continuity, then trace this isolated visible joint to the remote tag-17 driver. Keep adjacent D41.5/D41.7 GND straps separate."
+}

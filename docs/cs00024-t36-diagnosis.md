@@ -159,11 +159,50 @@ bytes. The exact-signature fault injection remains useful for testing the
 software discriminator after valid timing, not as proof that CS00024 has that
 fault. Primary source: [Intel 1979 Peripheral Design Handbook, 8253 section](https://www.bitsavers.org/components/intel/_dataBooks/1979_Intel_Peripheral_Design_Handbook.pdf).
 
-The correction is already present in the authoritative board JSON and HDL.
-It deliberately reopens one replica-layout gate: the current source and routed
-KiCad PCBs still assign D57.18 to `CLK_123M`. Their copper must be rerouted and
-reviewed against `/VER RTR` before fabrication; the generated bring-up report
-lists the mismatch rather than hiding it behind a pad-only edit.
+The correction is present in the authoritative board JSON, HDL, source PCB,
+and routed PCB. D57.18 is on `VERT_RTR` in both PCBs, and the routed copper
+passes the local zero-open electrical DRC and full endpoint-parity gates. The
+package made from the older board hash must be regenerated and independently
+reviewed before fabrication.
+
+A first 2026-09-26 desk routing trial used a temporary copy of the routed PCB. D57.18
+is at `(276.17, 198.98)` mm. Changing only its pad net leaves two `CLK_123M`
+tracks touching the new `VERT_RTR` pad and creates shorts. Removing those two
+pad stubs and their next segments clears the shorts but leaves two opens:
+the old `CLK_123M` branches between `(275.6732, 186.7518)` and the via at
+`(278.25, 197.75)`, and `VERT_RTR` between D57.18 and the existing track
+near `(277, 216)`. KiCad 10.0.6 DRC reports zero new shorts for this
+temporary disconnected state. The repository's guarded A* router did not
+produce a legal route for either gap. A reduced-clearance diagnostic for
+`VERT_RTR` intersects D57.7/DB1 and copper on `CLK_123M` and `GND`, so the
+straight corridor needs a different path or a reviewed copper rip-up and
+restoration. The source and routed project PCBs were not changed by this trial.
+Revalidate final work with the project's pinned KiCad release gates; the
+local KiCad 10.0.6 violation totals are not a substitute for those gates.
+
+A second isolated trial exported that same two-open candidate as Specctra DSN
+and invoked the repository's custom freerouting build. The importer reported
+72 internal unrouted items, far more than KiCad's two DRC opens. After over
+six minutes of active CPU time the full-board pass had not emitted a session
+file and logged normalization iteration limits on unrelated `CS_D10` and
+`W_RAIL16` nets; the exploratory run was stopped. This is no evidence of a
+legal D57 route or of an impossible route.
+
+A second local route targeted the existing `VERT_RTR` D55.13 through-hole pad
+instead of the nearest F.Cu segment. Guarded multilayer A* closed that net
+with 32 segments and six vias; a separate eight-segment, three-via route
+restored the split `CLK_123M` branch. The old single-layer clock via was then
+removed. The reviewed delta changes only D57.18's pad net, removes five old
+`CLK_123M` copper items, and adds 49 items on the two affected nets. A
+format-preserving transplant applied the delta to the project PCBs. Local
+KiCad 10.0.6 DRC reports zero opens and zero electrical/dangling blockers;
+`check_routed_candidate.py` reports 2,436 identical pad nets and zero pad
+movement. The generated bring-up report now matches all 2,297 modeled PCB
+endpoints. The committed Specctra DSN was regenerated from the corrected
+source and puts D57.18 only on `VERT_RTR`; the clock net retains D57.9.
+Exact current hashes are in
+`ref/routing/d57-clock-correction.json`; fabrication files have not been
+regenerated from the corrected board.
 
 The exact `ekta37.bin` also uses this channel. At ROM offsets `01FCh..020Dh`
 it writes D57 control `B0h`, then sends `FFh,FFh` to port `1Ah`. An executed

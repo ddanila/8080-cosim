@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# Report the provenance of a board spec: how much of the connectivity is read
-# from the schematic scan vs assumed/convention/datasheet. Keeps the "source of
-# truth" honest -- nothing should be silently invented.
+# Report the source annotations of a board spec. Net `src` fields now contain
+# free-form evidence descriptions, so prefix counts are descriptive only; the
+# board-fidelity gap ledger identifies unresolved claims.
 #
 # Usage: provenance.py <board.json>
 import sys, json
@@ -32,10 +32,11 @@ print("\nCHIPS:")
 for c in b["chips"]:
     p = c.get("prov", {})
     print(f"  {c['ref']:5} {c['type']:9}  type={p.get('type','?')}, refdes={p.get('refdes','?')}, pins={p.get('pins','?')}")
-scan = sum(n for src, n in nc.items() if src == "scan" or src.startswith("scan "))
-scan += sum(n for src, n in nc.items() if src == "datasheet" or src.startswith("datasheet "))
+scan = sum(n for src, n in nc.items() if src.startswith(("scan", "datasheet")))
 prom = nc.get("prom",0)
 total = sum(nc.values())
 rest = total - scan - prom
-print(f"\nscan/datasheet-grounded: {scan}/{total};  prom (off-schematic contents): {prom};  "
-      f"remaining (assumed/boundary): {rest}")
+print(f"\nscan/datasheet-prefixed: {scan}/{total};  prom: {prom};  "
+      f"other free-form source notes: {rest}")
+print("Unresolved claims are inventoried in docs/board-fidelity-gap-ledger.md; "
+      "prefix counts are not a completeness measure.")

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "review_state": "two-face photo route links D34.2 through R33-left gap joint to D34.6; exact .009 source keeps those nodes separated by C5",
+  "images": [
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "crop_xyxy_px": [
+        2900,
+        1980,
+        3420,
+        2630
+      ]
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+      "crop_xyxy_px": [
+        1020,
+        1940,
+        1210,
+        2120
+      ]
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101911242.jpg",
+      "sha256": "d30b527eeef67ebc587014909b6f8ac347174f594c2bde236a7b3fcf92f0e1b8"
+    },
+    {
+      "path": "ref/schematics/p2_sheet2.png",
+      "sha256": "02e8ce5380a591e292a298d6cd1de13fb26489aaa87ee7e991d21cd82b2ab27c",
+      "crop_xyxy_px": [
+        900,
+        100,
+        2100,
+        750
+      ]
+    }
+  ],
+  "coordinate_system": "original source-image pixels",
+  "d34_pin2_solder_px_approx": [
+    1055,
+    2001
+  ],
+  "r33_left_gap_joint_front_px_approx": [
+    3098,
+    2345
+  ],
+  "r33_left_gap_joint_solder_px_approx": [
+    1110,
+    2007
+  ],
+  "d34_pin6_front_px_approx": [
+    3155,
+    2570
+  ],
+  "solder_observation": "The corrected D34 seven-contact registration places physical pin 2 on the solder joint near (1055,2001). An exposed, continuous short B.Cu strip runs east from that joint to the distinct solder joint near (1110,2007). The latter matches the front R33-left gap joint within the established local face-map tolerance.",
+  "front_observation": "The front R33-left gap joint near (3098,2345) follows continuous exposed F.Cu downward and right into the sixth contact of D34's notch-up left row near (3155,2570), physical pin 6. The May owner photo independently shows the R33-left branch entering the same gap, but only the July overhead view resolves the pin index.",
+  "front_gap_cut_inspection": "A native-resolution crop of July component image PXL_20260710_200418174.jpg at (2900,1980)-(3420,2630) shows the exposed R33-left trace, the two nearby bare annuli, and the separate open XTAL16M annulus. There is no visible cut or added wire on the exposed front segment from the R33-left gap joint toward D34.6. This does not inspect copper hidden by D34 or establish the original C5 through-hole pair.",
+  "source_disagreement": "Both the retained .006 scan and exact .009 sheet 2 draw D34.6/C5.1 separately from C5.2/D34.2/R33.1. The owner photos instead show a two-face copper path D34.2 -> gap joint -> D34.6 while no separate C5 body is visible on May or July dates. A target-board modification, original copper variant, or local damage remains possible; the archives do not establish factory intent.",
+  "decision": "Treat the two-face D34.2-to-D34.6 copper path as photo-supported on this owner board. Keep the exact .009 source model's two nodes separate and both passives on circuit review until powered-off continuity proves the board path and the C5 site is inspected. Do not install C5 or merge nets solely because the photo path is visible.",
+  "next_inspection": "Power off: measure D34.2 to D34.6 directly in both meter polarities, then measure each to R33-left gap joint and R33 right. Inspect the C5 site for a cut, jumper, or removed capacitor and compare with any other original .009 PCB before choosing the replica circuit.",
+  "older_revision_comparison": "Retained .006 sheet-2 scan crop (900,100)-(2100,750) independently draws D34.6 to C5=560, the opposite C5 plate to D34.2/R33=620, and R33 to ground. The exact .009 photo prints the same component values and topology. No archived schematic revision among these two documents explains the owner-board photo bridge.",
+  "assembly_and_change_record_review": {
+    "assembly_photo": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+    "assembly_observation": "The .009 assembly placement explicitly labels C5 between R33 and D34/D39, alongside C82. The owner component photos show R33 but no distinct C5 body at that position.",
+    "change_record": "ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf, sheet 6",
+    "change_record_observation": "The retained change-registration sheet lists revision numbers, document identifiers and dates, not the contents of those change documents. The assembly drawing and transcribed wire/cable table contain no explicit C5 omission or D34.2-to-D34.6 bridge instruction. This limited search cannot rule out an unarchived change document or owner modification.",
+    "decision": "No archived assembly or change-list instruction resolves the source-versus-owner disagreement; retain circuit-review status and the powered-off continuity request."
+  }
+}

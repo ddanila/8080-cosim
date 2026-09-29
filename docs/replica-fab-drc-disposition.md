@@ -1,7 +1,7 @@
 # Replica fab DRC disposition
 
 Source report: `fab/gerbers/juku_routed-drc.json`
-Status: **READY**
+Status: **REVIEW REQUIRED**
 
 This generated report is the tracked disposition record for the main-board
 fabrication DRC findings. It deliberately fails if a count changes or a new
@@ -17,16 +17,16 @@ silently.
 | `lib_footprint_issues` | 0 | Pass |
 | `shorting_items` | 0 | Pass |
 | `tracks_crossing` | 0 | Pass |
-| `unconnected_items` | 0 | Pass |
+| `unconnected_items` | 54 | Fix before order |
 
 ## Review-Only Classes
 
 | DRC type | Count | Expected | Highest-repeat references | Disposition |
 | --- | ---: | ---: | --- | --- |
-| `courtyards_overlap` | 107 | 107 | D97, C17, C20, R33, R66, R84, R97, VD3 | Waived as dense authentic placement after visual assembly-fit review. |
-| `pth_inside_courtyard` | 0 | 0 | - | Waived as dense through-hole/socket proximity after visual assembly-fit review. |
+| `courtyards_overlap` | 108 | 107 | D97, C17, C20, R33, R84, R97, VT1, A22 | Waived as dense authentic placement after visual assembly-fit review. |
+| `pth_inside_courtyard` | 68 | 0 | R1, D97, D105, D13, D35, D51, E14, R84 | Waived as dense through-hole/socket proximity after visual assembly-fit review. |
 | `silk_over_copper` | 199 | 199 | X1, X2, R1, E14, E13, D105, D13, D35 | Cosmetic silkscreen clipping; order-time preview must confirm labels remain usable. |
-| `silk_overlap` | 199 | 199 | C1, C33, D23, D25, R39, E13, D48, D53 | Cosmetic silkscreen overlap in dense labels/outlines; order-time preview must confirm labels remain usable. |
+| `silk_overlap` | 199 | 199 | VD4, D35, R90, VT1, R39, D34, E13, R91 | Cosmetic silkscreen overlap in dense labels/outlines; order-time preview must confirm labels remain usable. |
 | `text_thickness` | 199 | 199 | VD3, VD4, C1, C18, C21, C5, C73, R1 | GOST/TrueType stroke warning; manufacturing-readability item, not copper geometry. |
 
 ## Order-Time Visual Checks
@@ -49,4 +49,12 @@ silently.
 - `copper_edge_clearance` and `silk_edge_clearance`: resolved by deferring the two conflicting generated cutouts at `(104.0,251.4)` and `(300.3,138.1)` until the exact non-rectangular outline can be re-read.
 - Review-only DRC classes are accepted only at the exact counts above; changed counts require a fresh disposition.
 
-Visual disposition failures: 0
+Visual disposition failures: 5
+
+## Failures
+
+- Blocking DRC class `unconnected_items` is nonzero: 54
+- Unexpected DRC class without disposition: `track_dangling`=24
+- Unexpected DRC class without disposition: `via_dangling`=1
+- Review-only DRC count changed for `courtyards_overlap`: expected 107, got 108
+- Review-only DRC count changed for `pth_inside_courtyard`: expected 0, got 68

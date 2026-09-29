@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Guard bracket X6, its two surface cable joints, and the closed video path."""
+"""Guard bracket X6 and its two surface cable joints."""
 from __future__ import annotations
 
 import json
@@ -13,8 +13,8 @@ BOARD = ROOT / "kicad/juku.kicad_pcb"
 SPEC = ROOT / "kicad/juku.board.json"
 EVIDENCE = ROOT / "ref/photos/juku-pcb-2/x6-cable-registration.json"
 EXPECTED = {
-    "AX603": ((299.551, 124.391), "SOUND_CLAMP", ("X6", "1"), "A:3"),
-    "AX604": ((305.182, 123.141), "GND", ("X6", "2"), "A:4"),
+    "AX603": ((280.233, 123.791), "X6_A3_BOUNDARY", ("X6", "1"), "A:3"),
+    "AX604": ((285.606, 122.617), "GND", ("X6", "2"), "A:4"),
 }
 
 
@@ -29,6 +29,10 @@ def main() -> int:
     failures: list[str] = []
     if board.FindFootprintByReference("X6") is not None:
         failures.append("off-board X6 still has a PCB footprint")
+    if board.FindFootprintByReference("X7") is not None or any(chip["ref"] == "X7" for chip in spec["chips"]):
+        failures.append("unsupported physical X7 connector returned")
+    if next(chip for chip in spec["chips"] if chip["ref"] == "X6")["type"] != "DISPLAY_CONN":
+        failures.append("X6 lost its documented display-connector role")
 
     for refdes, (expected_xy, net, remote, point) in EXPECTED.items():
         footprint = board.FindFootprintByReference(refdes)
@@ -49,20 +53,19 @@ def main() -> int:
         if not required <= nodes:
             failures.append(f"{net} lacks cable nodes {sorted(required - nodes)}")
         mapping = evidence.get("logical_mapping", {}).get(point, {})
-        if mapping.get("footprint") != f"{refdes}.1" or mapping.get("net") != net:
+        expected_evidence_net = None if point == "A:3" else net
+        if mapping.get("footprint") != f"{refdes}.1" or mapping.get("net") != expected_evidence_net:
             failures.append(f"{point} evidence mapping drifted")
 
-    if "X6_1_BOUNDARY" in spec["nets"]:
-        failures.append("closed X6.1 still has a boundary net")
     clamp = {tuple(node) for node in spec["nets"]["SOUND_CLAMP"]["nodes"]}
-    if not {("VD3", "2"), ("AX603", "1"), ("X6", "1")} <= clamp:
-        failures.append("A:3/X6.1 SOUND_CLAMP closure drifted")
+    if {( "AX603", "1"), ("X6", "1")} & clamp:
+        failures.append("rejected A:3/X6.1 SOUND_CLAMP join returned")
 
     if failures:
         for failure in failures:
             print("FAIL:", failure)
         return 1
-    print("X6 LANDINGS: PASS — bracket X6 uses surface A:3/SOUND_CLAMP and A:4/GND joints")
+    print("X6 LANDINGS: PASS — bracket X6 A:3 isolated pending continuity; A:4 ground")
     return 0
 
 

@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "status": "corrected D9 fit supports distinct C99 candidate pair; left solder route reaches source-grounded D2.14, but front same-hole identity and population remain unresolved",
+  "factory_assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+  "factory_assembly_observation": "The exact .009 assembly detail below D9 labels a horizontal C99 immediately left of vertical R17; the C99 box is approximately x576-732, y3300-3360 in the full-resolution assembly photograph.",
+  "owner_component_images": [
+    "ref/photos/juku-pcb-2/PXL_20260519_201933909.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg"
+  ],
+  "owner_observation": "The May close-up and two overlapping July component photographs show the D9 region and an upright resistor in R17's factory assembly position. No fitted C99 body is visible. A horizontal pair of solder joints below D9 and left of R17 repeats across May and July and matches the factory C99 placement, but neither photo proves the pair's refdes by continuity.",
+  "candidate_bare_landing_pair": {
+    "may_201933909_left_right_px_approx": [[1440, 1990], [1600, 1990]],
+    "july_200411500_left_right_px_approx": [[2508, 1782], [2680, 1782]],
+    "observation": "Both dates show the same roughly 160-170-pixel horizontal separation. The right candidate joint has a short visible front copper link to the nearby upright R17 body's lower physical joint. The left candidate joint is isolated from that link in the visible component copper. The white factory wire passes immediately above both; no capacitor body spans them. The pair is a strong placement candidate, not a verified C99 identity or electrical pin assignment."
+  },
+  "r17_component_trace_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "upper_physical_joint_px_approx": [2730, 1585],
+    "lower_physical_joint_px_approx": [2730, 1790],
+    "observation": "The upper physical lead enters a north-going front trace that disappears under the lower edge of D9. The photo does not establish a numbered D9 pin because the final junction is covered by the package. The lower physical lead joins the right candidate C99 joint near (2680,1782) by a short exposed front trace. Resistor lead orientation is not a schematic pin-number assignment."
+  },
+  "solder_projection_review": {
+    "candidate_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+    "method": "three-package component-to-solder affine fits using already registered D1, D2, D50, and D51 centres in 200411500 and 200527310",
+    "d2_d50_d51_left_right_search_px_approx": [[1210, 1502], [1031, 1494]],
+    "d1_d2_d50_left_right_search_px_approx": [[1391, 1549], [1237, 1548]],
+    "d1_d50_d51_left_right_search_px_approx": [[1183, 1495], [1045, 1497]],
+    "observation": "The independently selected package triples shift the left candidate by over 200 pixels, and the solder search region contains multiple similar trace and hole fields. The available broad fits cannot identify unique opposite-face holes or prove which candidate physical pad reaches the schematic ground plate."
+  },
+  "d9_local_solder_review": {
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "method": "RETIRED projection from the pre-correction D9 component row x2640..3011; the corrected native D9 row x2590..2977 supersedes these coordinates. The C99 sites remain outside the package and any projection is still an extrapolation, not a same-hole proof.",
+    "projected_component_left_right_to_solder_px_approx": [[3093, 1487], [2916, 1487]],
+    "nearby_soldered_joint_pair_west_east_px_approx": [[2875, 1495], [3040, 1492]],
+    "r17_lower_component_px_approx": [2730, 1790],
+    "r17_lower_to_solder_projection_px_approx": [2864, 1495],
+    "observation": "The old D9 component anchors were shifted 35–50 px right. Their projected C99 sites and R17 lower projection are retired. The corrected D9 fit below matches three separate solder joints: left C99 candidate, right C99 candidate, and R17 lower."
+  },
+  "three_feature_local_check": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "component_features_left_to_right_px_approx": {
+      "C99_left_candidate": [2508, 1782],
+      "C99_right_candidate": [2680, 1782],
+      "R17_lower": [2730, 1790]
+    },
+    "d9_fit_projected_solder_x_px_approx": {
+      "C99_left_candidate": 3093,
+      "C99_right_candidate": 2916,
+      "R17_lower": 2864
+    },
+    "observation": "RETIRED three-feature comparison based on the old D9 component row. The absent x2916 joint was a projection error, not evidence against the C99 pair. The corrected fit places the right candidate near actual solder (2875,1495), R17 lower near a distinct solder joint (2818,1515), and the left candidate near (3040,1492).",
+    "next_inspection": "Use the corrected three-joint map below. Confirm each front candidate to its predicted solder joint by direct same-hole inspection or continuity, then test the left candidate to ground and the right candidate to D9.6/R17."
+  },
+  "corrected_d9_three_joint_fit": {
+    "authority": "ref/photos/juku-pcb-2/local-package-registration.json corrected D9 component pins 1/8/9/16 in PXL_20260710_200411500.jpg and solder pins 1/8/9/16 in PXL_20260710_200525009.jpg",
+    "transform": "solder_x≈2574−(front_x−2977)*383/387; solder_y≈1030+(front_y−1318)*163/162",
+    "left_c99_front_to_solder_px_approx": [[2508,1782],[3038,1497],[3040,1492]],
+    "right_c99_front_to_solder_px_approx": [[2680,1782],[2868,1497],[2875,1495]],
+    "r17_lower_front_to_solder_px_approx": [[2730,1790],[2818,1505],[2818,1515]],
+    "observation": "The triplets are front joint, package-fit projection, and observed solder joint in original pixels. The two C99 candidate projections are about 5–7 px from separate observed joints; the rough R17 lower front coordinate projects about 10 px from a third joint. Native solder crop (2770,1410)-(3100,1580) shows a short L-shaped B.Cu run from the R17-lower joint near (2818,1515) to the separate right-C99 candidate near (2875,1495). Native front photo independently shows a short F.Cu link between their front joints. The third solder joint near (3040,1492) corresponds to the left C99 candidate and remains on a separate visible local route.",
+    "limit": "The local D9 transform extrapolates about 300 front pixels below the package. The three-feature fit strongly supports this correspondence but does not prove through-hole identities, ground polarity, installed capacitance, or whether a capacitor was ever fitted."
+  },
+  "left_candidate_solder_route": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+    "crop_xyxy_original_pixels": [2980,1430,3480,1730],
+    "observation": "The left C99 candidate solder joint near (3040,1492) has a narrow uninterrupted B.Cu trace eastward, then a downward dogleg to the third contact from the top of the left column of a vertical 2×8 solder field near (3450,1580). Two close parallel traces cross the same corridor without junctions. The overlapping solder tile PXL_20260710_200527310.jpg shows the same field, with its third left contact near (1628,1614). Independently registered D2 solder pin1/pin4/pin8 on the opposite column at x≈1800 identify this as D2's left column; counting from top gives D2.16, D2.15, then D2.14 at the trace destination. The owner component photo PXL_20260710_200411500.jpg marks that vertical socketed package КР556РТ4А, matching D2. Exact .009 sheet-1 detail PXL_20260718_101817644.jpg draws D2 V1/V2 pins13/14 to ground; board JSON also assigns D2.14 to GND. Thus the C99-left solder candidate is photo-traced to a source-grounded package contact.",
+    "tile_registration": "The D2 solder field moves from left/right columns about x1628/x1800 and top row y1498 in 200527310 to x3450/x3620 and y1465 in 200525009. Corresponding 55–58 px row spacing and the distinctive adjacent parallel traces cross-check the same package; the third left-row contact is near y1614/y1580 respectively.",
+    "limit": "This closes the visible B.Cu route from the proposed left solder hole to D2.14, not the front C99-left same-hole identity or an independently metered owner ground rail. The source ground assignment and owner continuity remain distinct evidence types.",
+    "next_inspection": "Confirm front (2508,1782) to solder (3040,1492) as the same plated hole; then meter that hole to D2.14 and a known ground contact. Inspect whether C99 was fitted before assigning its footprint."
+  },
+  "schematic_boundary": "Exact .009 sheet 1 labels C99=160. The native bare-value convention gives a 160 pF source nominal (ref/schematics/native-capacitor-value-registration.json). Its left plate joins the R17.1/D9.6 V3_RC node and its right plate ends at a perpendicular ground bar matching the R16 ground symbol on the same sheet. Assembly position does not settle physical pad identity or population.",
+  "decision": "Use front (2508,1782)/(2680,1782) and solder (3040,1492)/(2875,1495) as the leading left/right C99 hole matches. The left solder candidate visibly routes to D2.14, which exact .009 sheet 1 grounds. Keep R17 lower's separate solder joint near (2818,1515); the visible B.Cu link to the right C99 candidate supports their common node. Confirm both front-to-back holes directly, meter left to known ground and right to D9.6/R17, and inspect value/population before adding a footprint. Do not treat a shared net as proof of a same hole."
+}

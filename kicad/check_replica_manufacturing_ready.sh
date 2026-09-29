@@ -4,6 +4,16 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
+if [ ! -f fab/gerbers/upload/juku-replica-gerbers-drill.zip ]; then
+  echo "replica manufacturing readiness: DESIGN HOLD (local fabrication ZIP absent; tracked verification is historical; regenerate after remaining design changes)" >&2
+  exit 3
+fi
+if [ ! -f fab/gerbers/source-board.sha256 ] ||
+   [ "$(cat fab/gerbers/source-board.sha256)" != "$(sha256sum kicad/juku_routed.kicad_pcb | awk '{print $1}')" ]; then
+  echo "replica manufacturing readiness: DESIGN HOLD (fabrication files are not stamped for the current routed PCB)" >&2
+  exit 3
+fi
+
 python3 kicad/report_replica_bringup_verification.py
 "$(scripts/find-kicad-python.sh)" kicad/check_d56_owner_timing_routes.py
 "$(scripts/find-kicad-python.sh)" kicad/check_d40_1mhz_route.py

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "review_state": "fitted C92 position photo-registered by assembly geometry and two owner views; marking and electrical rails unproved",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+  "owner_component_images": [
+    "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg"
+  ],
+  "coordinate_system": "original source-image pixels",
+  "assembly_crop_xyxy": [
+    1000,
+    2480,
+    1650,
+    3000
+  ],
+  "source_context": "The assembly draws horizontal C92 right of the vertical R4/R2/VD1 stack and above C31. Exact sheet-1 X8 supply detail draws C92 separately from ground to -12 V, despite the nearby collective C82...C93 text beside the +5 V/GND bypass symbol. The explicit C92 branch controls its rail assignment.",
+  "source_crossover_review": "Native sheet-1 PXL_20260718_101827714.jpg crop (1150,450)-(2700,1500) shows C93's lower lead ending with a junction dot on the +12 V/B line. C92's lower lead passes that +12 V/B line without a junction dot and ends with a dot on the lower -12 V/C line; its upper lead joins ground. This visible crossover is the reason the two adjacent capacitors must not be assigned the same lower rail.",
+  "body_marking_recheck": "Native July owner crops 200439607 (1150,2070)-(1520,2220) and 200450127 (1360,1650)-(1760,1820) both expose the same red molded body. The dark legend lies on its curved, glare-covered front face. Autocontrast and enlargement recover strokes but no complete numeric or unit code; neither view supports a value transcription. A lower-angle physical view or isolated capacitance measurement is needed.",
+  "owner_body": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+    "body_centre_px": [
+      1335,
+      2150
+    ],
+    "lead_joints_px": [
+      [
+        1225,
+        2145
+      ],
+      [
+        1465,
+        2145
+      ]
+    ],
+    "overlap_image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
+    "overlap_body_centre_px": [
+      1555,
+      1735
+    ],
+    "observation": "A red molded horizontal axial body occupies the matching strip between the reset stack and C31 in two overlapping owner photographs. It carries dark printed characters, not discernible color bands, but the characters cannot be read reliably from either photograph. A separate lower glass axial body is in a different row and is not this candidate."
+  },
+  "visible_copper_limit": "The red body's left joint runs into a front trace that bends left beneath D105; its right joint joins a vertical front trace beside a small green body. A separate open annulus near (1230,2090) caps the wide strip from D105's bottom-right contact, which is pin 14 with the visible notch-right orientation and +5 V in the source board netlist. The red left joint near (1225,2145) is about 55 px below that annulus with a visible front-side copper gap; do not merge the two by proximity. The nearby C31 lead is also not visibly continuous with the red left joint. The component side proves neither red-body joint to the source C92 rails GND and -12 V.",
+  "decision": "The red molded axial body is the fitted component at the unique C92 assembly position, right of R4/R2/VD1 and above C31, corroborated by two overlapping owner views. Register its physical C92 position. Its unreadable marking and both rail joins remain open; if continuity contradicts the exact C92 ground/-12 V branch, investigate a board change or misregistration before assigning the replica pads. Do not classify C92 as DNP.",
+  "next_inspection": "With power removed, meter the red body leads near (1225,2145)/(1465,2145) to known ground and -12 V at X8. Separately check its left lead against D105.14/+5 V at the nearby annulus (1230,2090); the visible front gap does not prove through-board isolation. Read the body marking under better light or magnification."
+}

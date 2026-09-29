@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "evidence": "ref/photos/juku-pcb-2/d27-top-edge-placement.json",
+  "board": "kicad/juku.kicad_pcb",
+  "photo_px_per_mm": 20.866,
+  "photo_upper_row_y_mm": 27.221,
+  "photo_lower_row_y_mm": 42.461,
+  "routed_upper_row_y_mm": 28.08,
+  "routed_lower_row_y_mm": 43.32,
+  "upper_row_photo_minus_routed_y_mm": -0.859,
+  "solder_photo_px_per_mm": 18.701,
+  "solder_photo_upper_row_y_mm": 27.539,
+  "solder_upper_row_photo_minus_routed_y_mm": -0.541,
+  "cross_face_upper_row_difference_mm": 0.318,
+  "status": "both faces show no gross vertical placement conflict; physical pin-net mapping held"
+}

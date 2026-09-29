@@ -282,7 +282,8 @@ module ln1_osc   (input wire sclk, xin, input wire i13, i11, i3, i5, i9,
     assign o8  = ~i9;   // section 9->8 returns through R31 to physical pin 1
 endmodule
 // D35 ЛН5 phase/frame generator. Sections 9->8 invert D55.OUT1/VER RTR into
-// FRAME INT for D10.IR5; 3->4 inverts POF into VID_MIX2. The discrete clock
+// FRAME INT for D10.IR5; POF enters both 3 and 5, with outputs 4 tied to
+// D37.11 and 6 driving the D42/D43 output-control pull-up. The discrete clock
 // mesh feeding `osc` is an un-traced
 // boundary (D36/D33/D40 gate inputs deferred), so realize the КР580 2-phase clock to functional
 // INTENT here -- a non-overlapping Φ1/Φ2. This is a sim clock: it only sets the simulated VALUE;
@@ -760,7 +761,7 @@ module ppi_8255 #(
                  parameter [7:0] S21_CONFIG = 8'hFF
                  ) (input wire [1:0] A, inout wire [7:0] D, input wire cs_n, rd_n, wr_n, reset,
                  output wire [7:0] pc,      // physical Port C pins (D26: mem-mode+floppy ctl; D27: X2)
-                 output wire [7:0] pa,      // physical Port A pins (kbd scan SC0-3, AUDC, PREN, STB)
+                 output wire [7:0] pa,      // physical Port A pins (kbd scan SC0-3, AUDC, IMDRG, STB)
                  input wire [7:0] pb,       // physical Port B pins (kbd data; unused by the sim path)
                  input wire kbd_en, kbd_pressed, kbd_shift,
                  input wire [3:0] kcol, input wire [2:0] kbit);
@@ -1204,8 +1205,9 @@ module ln2_inv (input wire a, i13, i1, i3, i5, i9,
     assign y = ~a;
 endmodule
 // К155ЛА55/ЛА18 open-collector NAND (D12): -> OC SOUT.
-module la18_oc (input wire i1, i2, output wire o3);
+module la18_oc (input wire i1, i2, i6, i7, output wire o3, o5);
     assign o3 = ~(i1 & i2);
+    assign o5 = ~(i6 & i7);
 endmodule
 // К170УП2 serial line receiver (D104): sheet 1 draws pins 4->13 SIN,
 // 5->12 CTS, and 6->11 DSR; the primary pin contract adds fourth channel
@@ -2656,9 +2658,9 @@ endmodule
 // D94 К155РЕ3 #2, programmed part ДГШ5.106.092. The exact physical table is
 // adopted from three matching reads, including a power-cycled read.
 module re3_prom_092 (input wire [4:0] a, input wire e_n, output wire [7:0] d);
-    // Owner continuity connects enable to D93.CS, D1 to ground, D2 to D93.RE,
-    // and D3 to D93.WE. The table closes their programmed states, but the
-    // upstream enable and remaining branches are still unresolved; see
+    // Exact .009 CS7 joins enable to D9.7 and D93.CS; owner continuity joins
+    // D1 to D99.9/R89, D2 to D93.RE, and D3 to D93.WE. The table closes their
+    // programmed states, but D0's hidden load remains unresolved; see
     // d94-reconstruction-constraints.md.
     // РЕ3 outputs are open collector: a programmed one releases the line and a
     // programmed zero sinks it. Board pull-ups therefore recover the raw byte.

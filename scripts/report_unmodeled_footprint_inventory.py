@@ -20,11 +20,11 @@ REPORT = ROOT / "docs" / "unmodeled-footprint-inventory.md"
 PHYSICAL_EVIDENCE = ROOT / "ref" / "photos" / "juku-pcb-2" / "BODGE-TRIAGE.md"
 SHEET1 = ROOT / "ref" / "schematics" / "p3_sheet1.png"
 SOURCE_DRC_REPORT = ROOT / "docs" / "source-pcb-drc.md"
-FDC_BOUNDARY_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D101", "D102", "D106"}
+FDC_BOUNDARY_REFS = {"D28", "D95", "D96", "D97", "D98", "D99", "D100", "D101", "D102", "D106"}
 
 RISK_RE = re.compile(
     r"assumed|boundar(?:y|ies)|deferred|untraced|not traced|not established|not readable|"
-    r"cannot be uniquely followed|pending|unread|await|owner-verify|mame|approx|refine|dump|"
+    r"cannot be uniquely followed|pending|unread|unresolved|uncertain|await|owner-verify|mame|approx|refine|dump[- /]dependent|dump required|"
     r"source confirmation|requires? (?:source|continuity)",
     re.I,
 )
@@ -290,7 +290,8 @@ def main() -> int:
         "- `D28` is now typed as the К155ЛН3 six-inverter open-collector family.",
         "  Factory `.009` sheet 3 closes all six sections through drive-select, READY,",
         "  separator-clock, and DRQ/INTRQ conditioner paths. The drawing instead omits",
-        "  D96.13, D98.9/.10, and complementary outputs D97.13/D102.4.",
+        "  D98.9/.10 and complementary outputs D97.13/D102.4. The exact sheet-3",
+        "  D96.13-D99.10 junction is now retained as a sheet-1 source boundary.",
         "  All six D28 sections are now structural-only HDL and LVS-visible.",
         "",
         "## Footprint-Only ICs",

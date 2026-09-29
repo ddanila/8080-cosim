@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "review_state": "D39.9/.10 physical pads corrected on both faces; remote owner continuity unmeasured",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+  "component_sha256": "8407dec2631bf99b232052e2fab6687742f349ed81c7c2b4eae81d3e02df3301",
+  "component_crop_xyxy": [2780, 380, 3100, 840],
+  "component_observation": "The marked КР1533ЛА3 has a top notch. Pin1 begins at the top of the left seven-contact row; pin14 begins at the top of the right row. Therefore physical pin10 is the fifth right contact near (3038,655), and pin9 the sixth near (3038,710). Old endpoint seeds (2853,713)/(2853,768) pointed to left-row contacts and were withdrawn.",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "solder_sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+  "solder_crop_xyxy": [1070, 1890, 1480, 2330],
+  "solder_observation": "The independently fitted D39 left solder column runs from pin14 at (1213,1949) to pin8 at (1221,2284). Pin10 is the fifth joint near (1218,2172), and pin9 the sixth near (1220,2228); both older coordinate values were already on actual caps despite stale notes saying they fell between pad columns. Pin10 has no readable local B.Cu departure at its cap. Pin9 has a narrow etched departure to the right toward an exposed annulus, but its remote owner net is not closed by this crop.",
+  "source_model_nets": {"D39.10": "XTAL16M", "D39.9": "LATCH_SIG"},
+  "electrical_limit": "The package contacts and nearby visible copper are photo-registered. The source-model net names are not substitutes for measured owner continuity."
+}

@@ -5,7 +5,7 @@ Status: **D99 TRIGGER/TIMING LOGIC CONSTRAINED / FIVE PINS MEASUREMENT-GATED**
 D99 is the target-board К155АГ3 / SN74123-compatible dual retriggerable
 monostable. Exact-revision sheet evidence closes both RC networks and the
 local trigger pins; this report converts those facts into digital and
-timing constraints without assigning the five remote conductors.
+timing constraints without assigning the remote sheet-1 sources.
 
 ## Command
 
@@ -21,7 +21,7 @@ sync/ag3_check.sh
 | --- | --- |
 | TI SN74LS123 PDF and validated D94 image hashes match | PASS |
 | D99 all-pin board mapping matches the measured/source model | PASS |
-| Five remote D99 pins remain separate singleton boundaries | PASS |
+| D99 B2 joins D96 clear; Q1_N joins D93 HLT separately from READY | PASS |
 | D94 D1, both RC networks, and section-1 Q NC preserve exact endpoints | PASS |
 | C17/C18/R97/R103 fitted values remain source-closed | PASS |
 | Local D99 pinout records the exact clear/trigger contract | PASS |
@@ -34,7 +34,7 @@ sync/ag3_check.sh
 | Pin | Device/board role | Board net | State |
 | ---: | --- | --- | --- |
 | 1 | 1A_N / GND | `GND` | CLOSED |
-| 2 | 1B / isolated test landing | `D99_B_TEST_LANDING` | CLOSED |
+| 2 | 1B / E12 2-3 selects HLD; physical bridge pending | `FDC_HLD_TO_D100` | MEASURE |
 | 3 | 1CLR_N / GND | `GND` | CLOSED |
 | 4 | 1Q_N / constant-high boundary | `D99_Q1N_BOUNDARY` | MEASURE |
 | 5 | 2Q boundary | `D99_Q2_BOUNDARY` | MEASURE |
@@ -43,7 +43,7 @@ sync/ag3_check.sh
 | 8 | GND | `GND` | CLOSED |
 | 9 | 2A_N / D94 D1 | `D94_D1_D99_A2N` | CLOSED |
 | 10 | 2B / sheet-1 boundary | `D99_B2_SHEET1_BOUNDARY` | MEASURE |
-| 11 | 2CLR_N boundary | `D99_CLR2_BOUNDARY` | MEASURE |
+| 11 | 2CLR_N / MOTOR EN | `FDC_MOTOR_EN` | CLOSED |
 | 12 | 2Q_N boundary | `D99_Q2N_BOUNDARY` | MEASURE |
 | 13 | 1Q / constant-low NC | `D99_Q1_NC` | CLOSED |
 | 14 | 1Cext / C18− | `D99_C1_TIMING` | CLOSED |
@@ -79,13 +79,20 @@ to +5 V. Exhaustive inspection of all 32 physical `.092` rows gives
 | 1 | 0 | asserted low | read |
 | 1 | 1 | released high | neither valid direction |
 
-With the still-unknown B2/pin10 and `/CLR2`/pin11 both high, entry into
+With the still-unknown B2/pin10 and MOTOR EN `/CLR2`/pin11 both high, entry into
 either selected read or write state makes A2_N fall and triggers Q2 high
 with Q2_N low. B2 rising while A2_N is already low, or `/CLR2` rising
 while A2_N is low and B2 high, also triggers/retriggers exactly as the
 datasheet specifies. B2 low or `/CLR2` low prevents the D94 edge from
 starting a pulse. D94's shared enable must also be asserted; a disabled
 PROM releases D1 through R89.
+Exact sheet 3 joins B2/pin10 to D96.13 `/CLR2`, so this same
+unread sheet-1 conductor can both inhibit D99 section 2 and clear
+D96 section 2 when low. Its actual source and timing remain unproved.
+Overlapping sheet-3 detail frames close D99.11 `/CLR2` to the
+MOTOR EN continuation from D26.16. Q2/pin5 instead feeds
+D100 A7/pin7, whose B7 output drives -MOTOR ON. Original-board
+continuity and the actual motor timing remain unmeasured.
 
 ## RC timing predictions
 
@@ -103,8 +110,16 @@ powered measurement before hardware release.
 
 ## Minimal closure sequence
 
-1. With D99 removed, identify the remote endpoints of pins 4, 5, 10,
-   11, and 12. Keep the five singleton nets separate until then.
+1. With D99 removed, identify the remote endpoints of pins 2, 4, 5,
+   10, and 12. Locate E12 posts and its installed bridge; drawing
+   selects 2-3 and offers Q2/pin5 on post 1. Pin10/B2 is already
+   source-joined to D96.13; identify
+   their common sheet-1 source. Confirm D99.11 continuity to D26.16.
+   Full sheet 3 draws Q1_N/pin4 on the rail above the distinct
+   D94.14-D101.7 rail and descends to D93 HLT/pin23.
+   Confirm D99.4-D93.23 directly on the original board.
+   Confirm Q2/pin5 to D100.7
+   and Q2_N/pin12 to D100.9 separately.
 2. Powered but current-limited, confirm pin4 remains high while pin13
    remains low; any pulse on pin4 contradicts the grounded-clear model.
 3. Capture D94.2/A2_N, B2, `/CLR2`, Q2, and Q2_N together during both
@@ -118,5 +133,6 @@ powered measurement before hardware release.
 Closed automatically: package truth table, section-1 constant outputs,
 D94-D1 access equation, both fitted RC networks, nominal timing, and exact
 probe conditions. Still physical: pin4 destination, B2/pin10 source,
-`/CLR2`/pin11 source, Q2/pin5 destination, Q2_N/pin12 destination, and
+original-board MOTOR EN continuity to `/CLR2`/pin11, Q2/pin5 to
+D100.7, Q2_N/pin12 to D100.9, and
 the installed analog timing waveform.

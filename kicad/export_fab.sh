@@ -9,5 +9,6 @@ mkdir -p "$OUT"
 "$KCLI" pcb export gerbers --layers "F.Cu,B.Cu,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts" \
     -o "$OUT/" "$BOARD"
 "$KCLI" pcb export drill --format excellon --drill-origin absolute -o "$OUT/" "$BOARD"
+sha256sum "$BOARD" | awk '{print $1}' > "$OUT/source-board.sha256"
 echo "--- fab package ---"
 ls -la "$OUT" | awk 'NR>1 {print $5, $NF}'

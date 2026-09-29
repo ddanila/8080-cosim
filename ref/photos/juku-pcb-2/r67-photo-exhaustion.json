@@ -5,7 +5,7 @@
   "status": "photo-exhausted / continuity required",
   "value": "4,7к",
   "visible_marking": "4K7",
-  "value_basis": "the factory drawing fixes this body as R67 and independent July/May target-board views directly read 4K7; the target marking supersedes the .006 sheet's 2k while connectivity remains separate",
+  "value_basis": "the factory drawing fixes this body as R67 and independent July/May target-board views directly read 4K7; the target marking supersedes the 2k printed on both the older .006 and exact .009 sheet-2 drawings while connectivity remains separate",
   "component_observations": [
     {
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",

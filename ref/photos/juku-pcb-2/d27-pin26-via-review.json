@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "status": "front D27.26-to-annulus copper closed; +5 V rail and opposite-face landing unresolved",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+  "physical_pin26_px_approx": [1484, 1623],
+  "front_trace_end_via_px_approx": [1467, 1993],
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+  "d11_d27_homography_projection_px_approx": [3480, 1819],
+  "nearest_plausible_open_annulus_px_approx": [3438, 1811],
+  "projection_to_annulus_distance_px_approx": 43,
+  "inverse_west_annulus_component_px_approx": [1511, 1988],
+  "shared_homography_eight_corner_rms_px_approx": 4.8,
+  "full_resolution_solder_crop_bbox_px": [3400, 1740, 3620, 1900],
+  "full_resolution_crop_observation": "At the projected point around (3480,1819), the enlarged source pixels show uninterrupted board/trace between the west and east drilled annuli, with no distinct drilled landing. Enlargement adds no defensible intermediate via candidate; the projection remains insufficient to identify the solder landing.",
+  "observation": "The component photo shows a continuous copper path from the registered D27.26 lead to the open front via. The shared D11/D27 two-face homography lands on a solder trace between drilled holes. The nearest west annulus at (3438,1811), about 43 pixels away, inversely projects near (1511,1988): visibly bare component board about 44 pixels east of the true front via at (1467,1993). That annulus is not a defensible photo match. Adjacent parallel traces and similarly spaced vias still prevent a unique through-hole match.",
+  "additional_solder_photo_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
+    "observation": "The broad solder panorama shows the X2/PPI region at a different scale and angle, but it has no independent local D27 package registration or unique annulus pair at the front-via search position. It does not recover the opposite-face landing rejected in 200506061.",
+    "decision": "Do not promote an apparent rail or via by visual proximity across the panorama."
+  },
+  "decision": "Retire the west annulus as a targeted D27.26 probe. Measure physical D27.26 to its visible front via and independently marked +5 V; identify the opposite-face drilled landing by local inspection or continuity before routing it."
+}

@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "status": "A13B ROE landing strongly photo-supported through D92.1; A13A identity open",
+  "factory_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+  "factory_observation": "The left А:13 line begins near (467,3851), immediately left of C95 below the native-labeled Д50. The exact wire table assigns this position to the D13.1–D92.1 ROE conductor; assembly position alone does not prove either physical landing.",
+  "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+  "candidate_component_joint_px_approx": [2400, 2330],
+  "component_observation": "A white insulated wire is visibly soldered to a front-side joint left/below registered D50 and above D51. This is the corrected C95/D50 corridor, unlike the formerly searched D30 tile. A wider native crop (2200,1950)–(3200,2500) separates this lower cable from the upper A10A cable attached to the D50.1 spur near (2804,2266): the two have different physical starts and run side by side to the right. In the same raw photo the two enter a tied mastic bundle near (3600,2050) and continue beyond the right edge, so their remote ends cannot be distinguished in this tile. The lower cable's copper net remains unproved.",
+  "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+  "projected_solder_search_px_approx": [1334, 2065],
+  "solder_observation": "D50-local front/back interpolation projects the component wire joint into a horizontal bare trace at this position, without a distinct matching through-hole joint. A closer component crop shows a short front-copper link from that joint to an open annulus near (2430,2377). The D50 pin-1/8/9 reflection projects that annulus near solder (1303,2111); a nearer D51 pin-1/8/9 fit projects it near (1306,2136). The visually plausible open solder annulus is around (1294,2149), about 39 px from the D50 estimate but 18 px from the D51 estimate. This makes it a stronger through-counterpart candidate, not proof of ROE or cable identity.",
+  "front_wire_spur": {
+    "component_joint_px_approx": [2400, 2330],
+    "front_open_annulus_px_approx": [2430, 2377],
+    "solder_projection_px_approx": [1303, 2111],
+    "d51_local_solder_projection_px_approx": [1306, 2136],
+    "nearest_solder_open_annulus_px_approx": [1294, 2149],
+    "assessment": "The front copper joins the wire joint to its open annulus. The nearer D51 fit reduces the miss to about 18 px from 39 px under D50, making the solder hole a stronger counterpart candidate. Local image distortion and several nearby traces still prevent a unique cross-face match; do not assign a net from the nearest hole."
+  },
+  "solder_candidate_route": "In owner solder image 200527310 the plausible open hole (1294,2149) has an uninterrupted fine horizontal copper departure heading east across the C95/D50 crop. It enters a dense group of parallel traces and contacts in the wider (1200,2050)–(3500,2450) strip, where no registered D13.1 or other ROE anchor is present in this tile. The visible departure makes this hole probeable but does not identify it as the front annulus or establish its net.",
+  "length_geometry": {
+    "method": "Approximate component-side joint position interpolated from the registered D50.1 and D50.9/D50.8 pitch in owner image 200411500; straight-line chords use source board pin coordinates, not measured cable routing.",
+    "candidate_board_search_mm_approx": [90.05, 155.75],
+    "independent_d51_board_search_mm_approx": [89.91, 156.27],
+    "d50_d51_search_disagreement_mm_approx": 0.54,
+    "factory_a13_wire_length_mm_approx": 150,
+    "chord_to_d92_1_mm_approx": 166.2,
+    "chord_to_d38_1_mm_approx": 140.8,
+    "chord_from_d50_based_a13a_to_d92_based_a13b_candidate_mm_approx": 157.1,
+    "chord_from_d51_based_a13a_to_d92_based_a13b_candidate_mm_approx": 157.2,
+    "candidate_pair_excess_over_nominal_cut_mm_approx": 7.1,
+    "interpretation": "Independent D50 and D51 package-pitch estimates of the C95-side joint agree within about 0.54 mm on the source board, so the local board search area is stable despite the larger opposite-face solder-hole mismatch. The two present white-wire landing candidates have a minimum straight-line separation of about 157.1–157.2 mm, roughly 7 mm longer than the factory table's nominal 15 cm A13 length before routing slack. A wire ending on the D92.1 pin itself would require about 166 mm. Since the table length is approximate and cable identity remains unproved, this is a concrete construction discrepancy to measure, not grounds to merge or reject the two candidate ends from geometry alone."
+  },
+  "a13b_owner_corridor_inspection": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "overlap_image": "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
+    "native_crop_px": [900, 1600, 2850, 2850],
+    "observation": "The D38/R35 corridor contains two prominent white cable ends near component pixels (1825,2440) and (2290,2460), emerging from the left mastic bundle and crossing D38. The former exposed metal tip has no discernible solder pool or pad and is about 50 px from the D41.13 route endpoint projection; it is a weak A10B candidate. The latter has a visible front copper spur to an annulus whose likely solder counterpart traces to D92.1/ROE, strongly favoring A13B. Overlapping image 200415237 shows the parallel middle cable bundle crossing two mastic ties, but neither end can be followed continuously back to the distinct lower C95-side wire in image 200411500. Keep formal A13B and W13 placement pending the through-hole and cable identity checks below.",
+    "tip_length_screen": {
+      "method": "Search-only affine projection from registered D38 component pins 1, 7, and 8 in image 200418174 to their source-board pad coordinates, compared with the C95-side candidate search point (90.05,155.75) mm. Tip pixels are approximate and need exact joint registration.",
+      "left_tip_px_approx": [1825, 2440],
+      "left_tip_board_search_mm_approx": [224.70, 159.08],
+      "left_tip_chord_mm_approx": 134.7,
+      "right_tip_px_approx": [2290, 2460],
+      "right_tip_board_search_mm_approx": [245.86, 160.75],
+      "right_tip_chord_mm_approx": 155.9,
+      "interpretation": "The left tip is within the approximate 150 mm A13 length, but has no visible solder attachment and is a weak A10B candidate. The right tip exceeds the nominal A13 length by about 6 mm in this D38-local projection; a D92-local fit gives about 157 mm. Approximate cut length, projection uncertainty, routing slack, and unproved cable continuity prevent formal endpoint assignment or rejection from length alone."
+    },
+    "cross_face_solder_search": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+      "method": "Affine search projection through registered D38 pins 1, 7, and 8 on each face; component wire-tip pixels are approximate, and a surface joint need not have a distinct opposite through hole.",
+      "left_tip_solder_search_px_approx": [2377, 2107],
+      "right_tip_solder_search_px_approx": [1913, 2144],
+      "observation": "In solder crop (1750,1800)–(2500,2450), the left search point is east of D38 at a bare region beside etched runs, without an unmistakable matching through joint. The right joint's direct projection lies near a small soldered cluster west of D38; this direct surface-joint projection does not isolate a counterpart. Following its separate front-copper spur to the upper annulus and using the D92-local fit gives the stronger D92.1/ROE evidence recorded below."
+    },
+    "right_tip_front_trace": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "inspection_crop_px": [2140, 2250, 2470, 2800],
+      "wire_joint_px_approx": [2290, 2460],
+      "upper_open_annulus_px_approx": [2285, 2287],
+      "observation": "A narrow uninterrupted component-side copper trace runs north from the right white-wire joint to the open annulus near (2285,2287). It does not visibly join the adjacent R35/R106 lead sites on the front face. This is the same physical white-wire/annulus pair formerly logged as provisional A9B at (2286,2450)/(2288,2298) in a9b-corrected-trace-review.json; the coordinate differences reflect approximate visual picks. The likely solder counterpart near (1916,1950) visibly traces to D92.1/ROE as detailed below, so A13B is strongly favored. The exact through-hole pairing and cable identity remain unproved."
+    },
+    "candidate_collision": "The right D38-side white wire is the former provisional A9B candidate in ref/photos/juku-pcb-2/a9b-corrected-trace-review.json. The solder annulus that matches its front annulus is visibly joined to D92.1/ROE, strongly favoring A13B and disfavoring A9B. Exact through-hole pairing and owner continuity remain the final checks before assigning a board landing.",
+    "next_photo_check": "Cross-face fit the two candidate D38/R35-side joints and test continuity from each to D13.1/D92.1 and the distinct lower C95-side wire joint on the unpowered owner board."
+  },
+  "d92_roe_trace_chase": {
+    "component_annulus_px_approx": [2288, 2298],
+    "component_wire_joint_px_approx": [2286, 2450],
+    "solder_open_annulus_px_approx": [1916, 1950],
+    "registered_d92_1_solder_px": [1719, 1951],
+    "solder_crop_px": [1050, 1850, 2050, 2130],
+    "d92_local_projection_of_component_annulus_solder_px": [1912.9, 1959.0],
+    "projection_to_open_annulus_distance_px_approx": 9.5,
+    "observation": "The solder image shows one uninterrupted narrow copper trace from the registered D92.1 joint (1719,1951) east to the open annulus (1916,1950). The D92 pin-1/7/8 cross-face fit predicts the component annulus (2288,2298) at (1912.9,1959.0), about 9.5 px from that visible solder annulus. The component front trace directly joins the white-wire joint to its annulus. This is strong two-face evidence for a white-wire-to-D92.1/ROE path and therefore an A13B identity. The annulus through-hole pairing is still a photo fit, not physical continuity; keep the formal A13B landing unassigned pending a meter check. It is not support for the former A9B/D38.12 assignment."
+  },
+  "retracted_search": "The former A13A occlusion note used owner D30/D13 tiles 200450127/200439607 before the assembly Д50/Д30 label correction. Those images do not register the C95-side A13A corridor.",
+  "next_check": "Power off: first test the D38-side white-wire joint near (2286,2450) to the front annulus (2288,2298), solder annulus (1916,1950), and D92.1/ROE, and verify isolation from D38.12/SYNC. At the C95 side, test the distinct lower white-wire joint (2400,2330) to its visible front annulus (2430,2377), then separately to solder open hole (1294,2149), D13.1, D92.1, and the D38-side cable end. Record resistance, not only beeper response, so the uncertain through-hole match and the cable's opposite termination are resolved independently. Only then promote A13A/A13B board coordinates or W13 footprint."
+}

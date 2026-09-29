@@ -22,8 +22,6 @@ def main() -> None:
             ["D28", "10"], ["D28", "12"], ["D96", "10"],
             ["D96", "12"], ["R95", "1"],
         ],
-        "D96_IRQ_CLOCK_SHEET1_BOUNDARY": [["D96", "11"]],
-        "D96_IRQ_Q_SHEET1_BOUNDARY": [["D96", "9"]],
     }
     for name, nodes in expected.items():
         if nets.get(name, {}).get("nodes") != nodes:
@@ -39,20 +37,20 @@ def main() -> None:
         if chips.get(ref, {}).get("value") != value:
             raise SystemExit(f"{ref} value missing: {chips.get(ref, {}).get('value')}")
     forbidden_nc = {("D28", pin) for pin in ("10", "11", "12", "13")}
-    forbidden_nc |= {("D96", pin) for pin in ("9", "10", "11", "12")}
+    forbidden_nc |= {("D96", pin) for pin in ("9", "10", "11", "12", "13")}
     returned = forbidden_nc & {tuple(node) for node in spec["no_connects"]}
     if returned:
         raise SystemExit(f"source-used pins marked NC: {sorted(returned)}")
-    if ["D96", "13"] not in spec["no_connects"]:
-        raise SystemExit("sheet-omitted D96.13 is not retained as NC")
+    if nets.get("D99_B2_SHEET1_BOUNDARY", {}).get("nodes") != [["D99", "10"], ["D96", "13"]]:
+        raise SystemExit("exact sheet-3 D99.10-D96.13 junction is missing")
     evidence = json.loads(EVIDENCE.read_text(encoding="utf-8"))
     if (evidence.get("schema_version") != 1 or evidence.get("refdes") != "D96" or
             evidence.get("endpoints") != ["9", "11"] or
             evidence.get("status") != "photo-exhausted / continuity required" or
             evidence.get("unresolved") != [
-                "D96.9 Q2 remote destination", "D96.11 CLK2 remote source"]):
+                "D96.9 Q2-to-D101 A0-A3 physical continuity", "D96.11 CLK2-to-D94.2/D99.9 physical continuity"]):
         raise SystemExit("D96.9/.11 photo-exhaustion evidence header mismatch")
-    for key in ("drawing_observation", "component_observation", "solder_observation"):
+    for key in ("drawing_observation", "overview_observation", "component_observation", "solder_observation"):
         observation = evidence.get(key, {})
         image_path = ROOT / observation.get("source", "")
         if not image_path.is_file():
@@ -77,9 +75,9 @@ def main() -> None:
     hdl = HDL.read_text(encoding="utf-8")
     for marker in (
         ".d2(d96_irq_conditioned_boundary)",
-        ".clk2(d96_irq_clock_boundary)",
+        ".clk2(d94_d1_d99_a2n)",
         ".pre2_n(d96_irq_conditioned_boundary)",
-        ".q2(d96_irq_q_sheet1_boundary)",
+        ".q2(d101_d02_r92_r99)",
     ):
         if marker not in hdl:
             raise SystemExit(f"structural D96 marker missing: {marker}")

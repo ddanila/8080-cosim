@@ -22,10 +22,10 @@ def main() -> None:
     d93 = next((fp for fp in board.GetFootprints() if fp.GetReference() == "D93"), None)
     if d93 is None:
         raise SystemExit("D93 footprint is missing")
-    d93.FindPadByNumber("23").SetNet(net(board, "FDC_READY"))
+    d93.FindPadByNumber("23").SetNet(net(board, "D99_Q1N_BOUNDARY"))
     d93.FindPadByNumber("25").SetNet(net(board, "D93_RG_NC"))
     pcbnew.SaveBoard(sys.argv[1], board)
-    print("D93 HLT/RG: APPLIED — HLT->READY, RG->unused/open net")
+    print("D93 HLT/RG: APPLIED — HLT->D99 Q1_N, RG->unused/open net")
 
 
 if __name__ == "__main__":

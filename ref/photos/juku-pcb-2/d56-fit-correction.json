@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "status": "corrected-component-fit; independent-solder-fit-retained",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+  "marked_d56": "К155АГ3 8901 at approximately x3215..3415, y940..1380",
+  "misidentified_neighbor": "К555ИЕ10 8905 / D103 at former D56 component anchors x2865..3050, y940..1380",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+  "solder_columns_px": [807, 990],
+  "cross_side_corners": {
+    "1": {"component_px": [3415, 1380], "solder_px": [807, 536]},
+    "8": {"component_px": [3415, 940], "solder_px": [807, 89]},
+    "9": {"component_px": [3215, 940], "solder_px": [990, 89]},
+    "16": {"component_px": [3215, 1380], "solder_px": [990, 536]}
+  },
+  "cross_side_observation": "The corrected marked-AG3 contacts align with the independently fitted reflected solder columns at all four outer pins, with x scale -0.915 and y scale 1.016 across the local rectangle. The solder fit's held-out pins 8 and 16 differ from their observed joints by 7.878 px each, inside the 8 px package guard. The older component anchors instead sat on adjacent D103 about 350 px to the left.",
+  "retracted": [
+    "former D56 component-pad projections on D103"
+  ],
+  "endpoint_table_correction": "The five component-face D56 rows for pins 1, 5, 9, 12 and 13 in endpoints.csv now use the marked K155AG3 package corners and pitch, replacing stale coordinates on D103; corresponding solder rows retain their independent local fit.",
+  "retained": "the solder-side D56 package fit, its visually continuous D56.1/D56.8/D56.9 ground copper, and the independent exact-sheet plus owner-continuity D56.5/D34.9 and D56.12/D55.15/D55.18 functional nets",
+  "next_evidence": "retain the corrected component fit and cross-side check as the D56 pad-identity provenance; separately resolve position-159 material and auxiliary-annulus continuity"
+}

@@ -193,7 +193,7 @@ def main() -> int:
         "",
         "This closes autonomous digital raster timing, not video memory arbitration.",
         "D41/D50/D51/D52/D53 slot control, D34_SIG, fetched framebuffer bytes, the",
-        "VT2 stage, and loaded X7 voltage remain separate open boundaries. The",
+        "VT2 stage, and loaded VIDEO_OUT voltage remain separate open boundaries. The",
         "abstract `vid_out` is still only a framebuffer oracle and is not composite.",
         "",
     ])

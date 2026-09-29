@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "status": "Source PCB D11 moved to two-view owner placement; both routed PCBs still displaced and require D12/copper redesign",
+  "primary_image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+  "primary_sha256": "45dbac2b6aa2816beb71cd9e8c115e67ff233e7767a5284785c0c6c917873a88",
+  "second_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+  "second_sha256": "f369d158cf93842af1f97ecc78263bc33738cbbaf25a04c1678297ef7636e9dc",
+  "method": "Project original owner pixels through the archived component-grid original-to-panorama homographies and inverse board-to-panorama homography in docs/photo-registration. Package identities and front pin corners come from the marked КР580ВВ51А and ref/photos/juku-pcb-2/local-package-registration.json. The second view independently exposes the top two corners.",
+  "primary_corners": {
+    "D11.1": {
+      "owner_px": [
+        2280,
+        1777
+      ],
+      "projected_board_mm": [
+        193.09,
+        54.81
+      ],
+      "previous_all_pcb_mm": [
+        177.88,
+        49.19
+      ],
+      "current_source_pcb_mm": [
+        193.392,
+        54.976
+      ]
+    },
+    "D11.14": {
+      "owner_px": [
+        2283,
+        2452
+      ],
+      "projected_board_mm": [
+        193.183,
+        87.969
+      ],
+      "previous_all_pcb_mm": [
+        177.88,
+        82.21
+      ],
+      "current_source_pcb_mm": [
+        193.392,
+        87.996
+      ]
+    },
+    "D11.15": {
+      "owner_px": [
+        2600,
+        2452
+      ],
+      "projected_board_mm": [
+        208.854,
+        87.993
+      ],
+      "previous_all_pcb_mm": [
+        193.12,
+        82.21
+      ],
+      "current_source_pcb_mm": [
+        208.632,
+        87.996
+      ]
+    },
+    "D11.28": {
+      "owner_px": [
+        2600,
+        1777
+      ],
+      "projected_board_mm": [
+        209.052,
+        54.873
+      ],
+      "previous_all_pcb_mm": [
+        193.12,
+        49.19
+      ],
+      "current_source_pcb_mm": [
+        208.632,
+        54.976
+      ]
+    }
+  },
+  "second_view_top_corners": {
+    "D11.1": {
+      "owner_px_approx": [
+        883,
+        1917
+      ],
+      "projected_board_mm_approx": [
+        192.981,
+        55.129
+      ]
+    },
+    "D11.28": {
+      "owner_px_approx": [
+        1203,
+        1917
+      ],
+      "projected_board_mm_approx": [
+        208.514,
+        55.244
+      ]
+    }
+  },
+  "second_view_max_top_corner_disagreement_mm_approx": 0.66,
+  "projected_owner_centre_mm_approx": [
+    201.012,
+    71.486
+  ],
+  "copper_aware_review": {
+    "trial_translation_mm": [
+      15.512,
+      5.786
+    ],
+    "method": "Translate the original D11 footprint to the photo-projected centre and compare broad boxes and copper in each KiCad PCB; the source-only move was then checked with KiCad DRC.",
+    "translated_d11_bounding_box_mm_approx": [
+      192.32,
+      49.68,
+      209.7,
+      89.56
+    ],
+    "source_pcb": "No tracks or vias occupy the translated D11 bounding box. Source D12 is at (224.535,67.630) mm and clear, while R18's bounding box begins at x209.74 mm, giving only about 0.04 mm between these broad boxes; actual courtyard and body clearances need review. Source D11 has now been moved to the trial position; KiCad error-only DRC falls from 168 to 165 violations (107 to 106 courtyard overlaps, 61 to 59 PTH-inside-courtyard), with 499 unconnected items unchanged and no new D11/R18 issue.",
+    "routed_pcbs": "Both routed variants retain stale D12 at (202.495,77.090) mm inside the translated D11 bounding box. D12 pads 5-8 are about 1.66 mm from proposed D11 pads 16-19, respectively, and on different nets. Each routed board has 170 F.Cu and 189 B.Cu track/via items whose endpoint box intersects the broad proposed D11 box, so rerouting is required; these counts do not prove exact geometry intersections.",
+    "photo_check": "The primary owner crop visibly places two upright resistor bodies between D11 and the small-package column. Four hand-read resistor joint centers independently agree with the present source PCB pads within about 1 mm; the near-touching broad footprint boxes therefore overstate the physical collision concern. Actual KiCad courtyard/assembly clearance still needs checking."
+  },
+  "resistor_cluster_crosscheck": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200358952.jpg",
+    "method": "Hand-read the distinct two-lead red bodies in the D11 owner crop and project through the D11 four-corner pixel-to-board frame; compare with the independent D3-local resistor registration in r18-r104-footprint-collision-review.json. These are approximate component joint centers, not electrical joins.",
+    "R104_upper": {
+      "owner_px_approx": [
+        2700,
+        1880
+      ],
+      "d11_frame_board_mm_approx": [
+        214.04,
+        59.87
+      ],
+      "current_source_pad_mm": [
+        213.935,
+        59.309
+      ]
+    },
+    "R104_lower": {
+      "owner_px_approx": [
+        2710,
+        2077
+      ],
+      "d11_frame_board_mm_approx": [
+        214.54,
+        69.55
+      ],
+      "current_source_pad_mm": [
+        213.935,
+        69.469
+      ]
+    },
+    "R18_upper": {
+      "owner_px_approx": [
+        2660,
+        2093
+      ],
+      "d11_frame_board_mm_approx": [
+        212.04,
+        70.34
+      ],
+      "current_source_pad_mm": [
+        211.299,
+        70.945
+      ]
+    },
+    "R18_lower": {
+      "owner_px_approx": [
+        2660,
+        2300
+      ],
+      "d11_frame_board_mm_approx": [
+        212.04,
+        80.5
+      ],
+      "current_source_pad_mm": [
+        211.654,
+        81.099
+      ]
+    },
+    "assessment": "The four D11-frame and D3-frame joint positions agree to roughly 0.1-1.0 mm in this hand-read check. This independently supports the large D11 translation while retaining R18/R104 source placements. It does not prove pad identity, continuity, or clearance."
+  },
+  "observation": "All four primary corners show the same large displacement, while both top corners repeat within about 0.66 mm in the independent second component view. The photographed D104 above D11 also repeats across those views; D104's independent panorama position agrees with its current PCB, so D11's current coordinates cannot be used to infer a D104 footprint error. The earlier D11-local front-to-solder pixel transform remains valid because it does not depend on either PCB position.",
+  "decision": "Source PCB D11 now follows the photo-projected centre with no DRC regression. Both routed variants retain the old D11 and D12 positions and dense nearby copper; correct them together, preserving pin nets and reviewing clearance before release.",
+  "previous_all_three_pcb_centres_mm": [
+    185.5,
+    65.7
+  ],
+  "current_source_pcb_centre_mm": [
+    201.012,
+    71.486
+  ],
+  "current_routed_pcb_centres_mm": [
+    185.5,
+    65.7
+  ],
+  "corner_delta_pcb_to_photo_mm_range_before_source_move": {
+    "x": [
+      15.21,
+      15.932
+    ],
+    "y": [
+      5.62,
+      5.783
+    ]
+  },
+  "source_correction_verification": {
+    "source_footprint_anchor_mm": [
+      193.392,
+      54.976
+    ],
+    "source_footprint_bbox_centre_mm": [
+      201.012,
+      71.486
+    ],
+    "generated_footprint_anchor_mm": [
+      193.392,
+      54.976
+    ],
+    "generated_footprint_bbox_centre_mm": [
+      201.012,
+      71.486
+    ],
+    "standalone_pin1_key_dot_mm": [
+      191.492,
+      54.976
+    ],
+    "pad_net_check": "All 28 source D11 pads retained their net assignments; selected pins 1,4,14,15,16,18,26,28 match both routed variants.",
+    "drc": "KiCad error-only source DRC 168 to 165 violations, 499 unconnected items unchanged; moved source removes D104/D11 courtyard and two pad-in-courtyard findings."
+  }
+}

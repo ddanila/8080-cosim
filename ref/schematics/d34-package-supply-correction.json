@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "review_state": "D34 К555ЛП5 package supply modeled and routed copper connected; owner continuity open",
+  "source": "The exact .009 IC census identifies D34 as К555ЛП5. The preserved exact-device ref/datasheets/k555lp5-eandc.pdf, extracted text line '7 - общий; 14 - напряжение питания', fixes pin7=GND and pin14=+5 V. The formerly modeled D34.5/GND and D34.1/D34.13/P5V are functional logic-input ties and did not connect the package supplies.",
+  "model_and_pad_correction": "kicad/juku.board.json and source, routed, and routed-candidate PCB files now assign D34.7=GND and D34.14=P5V. Functional-only schematic symbols omit the package power pins.",
+  "pcb_audit": {
+    "D34_7_xy_mm": [293.695, 150.82],
+    "D34_14_xy_mm": [301.315, 135.58],
+    "pad_diameter_mm": 1.6,
+    "source": "No PCB_TRACK centreline within 1.5 mm of either pad.",
+    "pre_repair_routed_and_candidate": "No track touched either pad. D34.7 had nearby D34_SIG F.Cu at 1.326 mm from centre; D34.14 had no track centreline within 1.5 mm."
+  },
+  "routed_repair": "Both routed variants now connect D34.14 P5V by a 2.54 mm F.Cu segment to the D34.13 P5V tie. D34.7 GND takes a three-segment B.Cu detour through (291.500,150.820) and (291.500,145.740) to the D34.5 GND tie, avoiding intervening D34.6/D34_SIG. A direct F.Cu dogleg was rejected because KiCad found a D34_SIG crossing and short. Error-only DRC remains at 176 violations and drops from 59 to 57 unconnected items in both variants; no violation record was added. The source PCB still has no copper at these pads.",
+  "next_inspection": "With power off, confirm owner D34.7 to known ground and D34.14 to known +5 V. The DRC-checked replica routes do not establish the original-board rail continuity."
+}

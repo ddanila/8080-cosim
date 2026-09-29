@@ -20,7 +20,7 @@ NETS = {
 }
 
 EXPECTED_NC = {
-    "D97.13", "D98.9", "D98.10", "D102.4", "D96.13",
+    "D97.13", "D98.9", "D98.10", "D102.4",
 }
 actual_nc = {f"{ref}.{pin}" for ref, pin in BOARD.get("no_connects", [])}
 missing = EXPECTED_NC - actual_nc
@@ -37,12 +37,14 @@ if connected:
 
 EXPECTED_USED = {
     "D98_Y1_D28_READY": {"D98.3", "D28.5"},
-    "FDC_READY": {"D28.6", "D93.23", "D93.32", "R84.1"},
+    "FDC_READY": {"D28.6", "D93.32", "R84.1"},
+    "D99_Q1N_BOUNDARY": {"D99.4", "D93.23"},
     "FDC_RAW_READ": {"D97.4", "D93.27", "D106.11"},
     "PRECOMP_TAP_3": {"D102.13", "D101.12"},
     "FDC_INTRQ": {"D93.39", "D28.13", "R93.1"},
     "FDC_DRQ": {"D93.38", "D28.11", "R94.1"},
     "FDC_IRQ_CONDITIONED_N": {"D28.10", "D28.12", "D96.10", "D96.12", "R95.1"},
+    "D99_B2_SHEET1_BOUNDARY": {"D99.10", "D96.13"},
 }
 for name, expected in EXPECTED_USED.items():
     if NETS.get(name) != expected:
@@ -84,7 +86,7 @@ def pad_net(ref: str, pin: str) -> str | None:
     )
     if not match:
         raise SystemExit(f"FDC UNUSED: source PCB missing {ref}.{pin}")
-    net_match = re.search(r'\n\t\t\t\(net \d+ "([^"]+)"\)', match.group())
+    net_match = re.search(r'\n\t\t\t\(net (?:\d+ )?"([^"]+)"\)', match.group())
     return net_match.group(1) if net_match else None
 
 

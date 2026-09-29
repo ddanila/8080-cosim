@@ -34,6 +34,10 @@ def main() -> None:
         raise SystemExit(f"missing two-sided validated fits for {', '.join(sorted(missing))}")
     with ENDPOINTS.open(newline="") as source:
         rows = list(csv.DictReader(source))
+    for row in rows:
+        overflow = row.pop(None, None)
+        if overflow:
+            row["note"] = ",".join([row["note"], *overflow])
     changed = 0
     for row in rows:
         if row["refdes"] not in requested or not row["endpoint_id"].startswith("seed-"):
@@ -338,7 +342,8 @@ def main() -> None:
     if changed != expected_changed:
         raise SystemExit(f"expected {expected_changed} unresolved observations, changed {changed}; fits expose {expected} pads")
     with ENDPOINTS.open("w", newline="") as destination:
-        writer = csv.DictWriter(destination, FIELDS); writer.writeheader(); writer.writerows(rows)
+        writer = csv.DictWriter(destination, FIELDS, lineterminator="\n")
+        writer.writeheader(); writer.writerows(rows)
     print(f"applied {args.side} local fits to {changed} measurement observations")
 
 

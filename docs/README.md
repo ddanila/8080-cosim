@@ -13,7 +13,7 @@ history.
   every active unchecked item as evidence-, hardware-, procurement-, or
   authorization-gated.
 - `crt-cvbs-simulation-plan.md` — subordinate execution plan for generating a
-  loaded X7 voltage waveform, adapting the forked sample-domain receiver, and
+  loaded VIDEO_OUT voltage waveform, adapting the forked sample-domain receiver, and
   validating monitor lock before optional CRT presentation.
 - `network-rom-c9-plan.md` — completed C9 scope and physical closeout: bounded
   resident-host transport passed, while a proved PC7/POF initialization defect
@@ -72,7 +72,7 @@ history.
   and routed high-address/command permutation guard.
 - `phi2ttl-d29-clock-route.md` — exact `.009` and owner-verified correction of
   the PHI2TTL branch through D30.3/D29.1 and the post-R35 D35.13 node; this
-  supersedes the older reconstructed D29.1/MEMW attribution pending atomic
+  supersedes the older reconstructed D29.1/MEMW attribution after atomic
   replica migration.
 - `8282-pinout-audit.md` — complete physical D58 DRAM read-latch pinout,
   power, and routed data-channel guard.

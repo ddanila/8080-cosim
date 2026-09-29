@@ -75,8 +75,9 @@ net containing:
 - D59.5, E14.1/.3, and D50.15/D51.15;
 - tied D92.2/.3.
 
-`PHI2TTL` is now limited to D35.13, D39.1, D53.4, and its sheet-1 continuation
-D30.3. The HDL drives the D59 input and both D92 timing inputs from D40 Q3
+The later exact `.009` R35 correction puts D39.1, D53.4, D30.3, D29.1,
+and R35.1 on `PHI2TTL`; D35.13 is on the separate `PHI2_POST_R35` RC node
+with R35.2, R106.1, and C29.1. The HDL drives the D59 input and both D92 timing inputs from D40 Q3
 instead of the former fixed-high/D35 phase assumptions. The generated
 schematic passes the mapped LVS check.
 The structural Yosys/LVS view applies D59's complementary outputs to D48-D51.
@@ -100,6 +101,15 @@ pass the connectivity, electrical DRC, and dangling-item checks. The exact
 endpoint and direct-tie invariant is executable in
 `kicad/check_d40_1mhz_route.py`; the guarded one-shot migration is retained as
 `kicad/apply_d40_1mhz_route.py`.
+
+The current checker also guards the later `.009` R35 split: D29.1 and R35.1
+belong to `PHI2TTL`, while D35.13 belongs to `PHI2_POST_R35`. It passes on
+the present source PCB. The present routed PCB has 49 unconnected items after
+subsequent source corrections, so its full connectivity check remains held;
+the byte-identical and complete-route statement above describes this earlier
+1 MHz checkpoint only. Its exact checker version is preserved at
+`ref/routing/tool-snapshots/check_d40_1mhz_route_zero_open.py` under the
+historical SHA256 in `ref/routing/zero-open-promoted-topology.json`.
 
 ## D96 exclusion
 

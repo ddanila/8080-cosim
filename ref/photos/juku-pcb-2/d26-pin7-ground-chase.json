@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "status": "measurement required",
+  "package": "D26",
+  "pin": 7,
+  "expected_function": "8255 ground",
+  "component": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+    "registered_pin_px": [2330.0, 1910.0],
+    "review_crop_px": [2240, 1660, 2420, 1930],
+    "observation": "The exposed lead/annulus at the registered pin has no unambiguous outward copper branch; adjacent bright diagonal traces pass on both sides. Copper hidden beneath the package cannot be excluded."
+  },
+  "solder": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
+    "registered_pin_px_approx": [2019.0, 1815.0],
+    "review_crop_px": [1940, 1740, 2090, 1890],
+    "observation": "The dark solder joint lies between two bright horizontal traces with no visible contact to either. No outward branch can be followed from this joint in the tile."
+  },
+  "older_component_view": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260519_201907078.jpg",
+    "review_crop_px": [1380, 2080, 2500, 2250],
+    "pin7_image_px_approx": [2095, 2160],
+    "observation": "Counting seven contacts from the photographed right-notch end places pin 7 at an exposed lead with no followable outward copper branch. Adjacent contacts do have visible traces. This older image is supporting visual evidence, not an independently fitted pin registration."
+  },
+  "decision": "do not infer a ground route from neighboring traces; measure D26.7 continuity to an independently identified ground landing"
+}

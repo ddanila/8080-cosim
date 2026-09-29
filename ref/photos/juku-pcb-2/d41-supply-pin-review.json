@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "review_state": "logical supply pins corrected; routed PCB copper connected; owner rail continuity open",
+  "device_contract": "ref/video/ir16-device-contract.json",
+  "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "package_registration": "ref/photos/juku-pcb-2/local-package-registration.json",
+  "continuity_discriminator": "ref/photos/juku-pcb-2/d41-cas-vcc-continuity-discriminator.json",
+  "native_pin_fit_recheck": "Reopened the native July component and solder photos with registered D41.1/.7/.14 and D38.1/.4/.7/.8 overlaid. D41's right-end notch, both seven-contact rows, and the registered pin centres agree with the visible package. The D41.14 front neck visibly terminates at the drilled hole near (2230,2180), whose reflected solder hole near (1974,1845) starts the lower of two separate parallel B.Cu runs. D38's registered solder pin centres also match its visible seven-contact row; the D38.1 joint near (2244,1951) is the upper joint of that row. In a native close crop the short D38.1 run enters the open annulus near (2360,1950) from the west, and the D41-via run touches that annulus from the northeast. A simple package-origin offset like the one found at D99 does not explain this conflict. The cross-face identity of the far annulus and electrical continuity still require measurement; do not merge P5V and CAS in the replica model.",
+  "ground_observation": "The promoted D41 solder fit in local-package-registration.json puts pin7 near (2329,1620), not the wrong-package seed x1781. The original solder photo shows this pin on the broad upper B.Cu run; the candidate C83 upper crown near (1920,1585) has a visible stem into that same uninterrupted run. Thus the solder crown is photo-traced to D41.7/GND, while its exact same-hole identity with front (2283,1923) remains a strong geometric candidate pending continuity.",
+  "vcc_observation": "The promoted D41 solder fit places pin14 near (1999,1785), opposite pin1 at (1999,1620). The owner component view shows a front-copper neck from physical D41.14 to an open annulus near (2230,2180) in 200418174; a D41-corner reflection matches a solder annulus around (1974,1845) in 200522685. The narrow B.Cu line from this annulus runs east near y=1868, then south near x=2383 to an open annulus near (2360,1950). Critically, the native crop also shows that annulus joined westward to the recorded D38.1/CAS solder joint near (2244,1951). This conflicts with D41.14's VCC device contract if both same-hole identifications and the D38.1 net assignment are correct. The other parallel line turns farther east and reaches the lower solder joint near (2380,2090). Do not promote the owner D41.14 +5 V connection from these photos; D42/D43 have separate photographed +5 V paths.",
+  "former_model_gap": "D41 pin 7 and pin 14 were absent from the P5V/GND node lists while D42 and D43 had the supply assignments. Before correction, the D41 footprint pads 7/14 were unassigned in the source, routed, and routed-candidate PCBs.",
+  "model_correction": "D41.7 is in GND and D41.14 in P5V in kicad/juku.board.json. Both D41 pads carry matching net names in the source, routed, and routed-candidate PCB files. The generated schematic uses a functional-pin-only IR16 symbol and skips power nets by default; pad-net parity no longer flags D41.",
+  "pcb_boundary": "The source PCB remains unrouted at D41.7/.14. Both routed variants now have a D41.7 GND F.Cu segment to (227.500,135.000) and a D41.14 P5V B.Cu segment to (244.000,144.000). KiCad error-only DRC remains at 176 violations and drops from 61 to 59 unconnected items in each board; normalized DRC comparison adds no violation or unconnected record. These replica routes do not prove the owner-board rail connections.",
+  "next_inspection": "Power off: confirm D41.7 near solder (2329,1620) to known ground, and D41.14 through the front open hole near (2230,2180)/solder counterpart (1974,1845) to known +5 V. Use the promoted D41 fit and keep the adjacent parallel solder lines and C83 same-hole candidate separate until measured.",
+  "replica_copper_audit": {
+    "method": "pcbnew inspection of D41 pad coordinates and PCB_TRACK segment distances on F.Cu/B.Cu; pad diameter 1.6 mm, nearest-track search radius 1.5 mm",
+    "source_pcb": {
+      "pad7_xy_mm": [
+        227.38,
+        137.095
+      ],
+      "pad14_xy_mm": [
+        242.62,
+        144.715
+      ],
+      "pad7_tracks_within_1_5_mm": 0,
+      "pad14_tracks_within_1_5_mm": 0
+    },
+    "pre_repair_routed_and_candidate": {
+      "pad7_tracks_within_1_5_mm": 0,
+      "pad14_nearest_track": "P5V B.Cu segment at 1.38 mm from pad centre, outside the 0.8 mm pad radius; no touching track"
+    },
+    "nearest_same_net_pads": "Historical pre-route search: D41.5/GND is 5.08 mm from D41.7 with intervening D41.6 signal pad; D41.1/P5V is 7.62 mm from D41.14 across the package. The adopted routes use closer same-net track endpoints instead."
+  },
+  "pin14_front_to_solder_via_search": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "front_crop_xyxy_original_pixels": [
+      1750,
+      1800,
+      2450,
+      2350
+    ],
+    "solder_crop_xyxy_original_pixels": [
+      1880,
+      1680,
+      2550,
+      2100
+    ],
+    "front_pin14_px_approx": [
+      2204,
+      2120
+    ],
+    "front_open_via_px_approx": [
+      2230,
+      2180
+    ],
+    "solder_pin14_px_approx": [
+      1999,
+      1785
+    ],
+    "solder_open_via_px_approx": [
+      1974,
+      1845
+    ],
+    "far_open_hole_crosscheck": "The front far hole center is approximately (1842,2295), with a 10-15 px vertical read spread across crops. The D41-local reflection places it near solder x≈2360 and y≈1960 from the first via pair (2230,2180)/(1974,1845). Independently, registered D38 pin1 front (1952,2280)/solder (2244,1951) predicts solder x≈2354 and y≈1966. Both select the observed solder annulus near (2355,1950), with about 10-20 px vertical residual. This is strong geometric evidence, not a continuity measurement.",
+    "factory_d38_pin1_recheck": "Exact .009 sheet-2 photo ref/photos/dgsh5-109-009-e3/PXL_20260718_101908284.jpg, native crop (1000,3000)-(2550,4080), shows the D38 И-А12 gate's four input pins 5,4,2,1. The pin-1 input is the lowest line and comes from numbered rail 15. The older ref/schematics/p2_sheet2.png depicts the same connection but is a .006 render, not exact .009 evidence. The current sheet-2 transcription identifies rail 15 as shared CAS. Thus the D38.1/CAS identity is source-supported independently of the owner-board photo registration; it is not merely a model net-name guess.",
+    "registration": "D41 pin1 front (2204,1954) to solder (1999,1620), pin7 front (1865,1954) to solder (2329,1620), and opposite row front y≈2120 to solder y≈1785 predict the front via at solder x≈1974/y≈1845. The native solder crop exposes a matching drilled annulus at that location. This is a strong local same-hole geometric match, pending direct continuity.",
+    "observation": "The front copper neck from the lower-right physical pin14 bends right/down to the open hole. Its plausible solder counterpart has a distinct narrow B.Cu run near y=1868 heading east below the D41 lower row, then south near x=2383 and left to an open annulus around (2360,1950). A native close crop (2100,1860)-(2460,2020) shows this annulus also joined westward through the upper of the two nearby D38 solder traces to registered D38.1 near (2244,1951), currently assigned CAS. The adjacent upper D41 line turns separately near x=2410 and reaches the lower solder joint around (2380,2090). Reflection predicts the far annulus near front (1844,2285), where an open hole is visible below a white cable in 200418174. The front trace from this hole continues down under the adjacent marked D38 package, but its hidden endpoint cannot be assigned from that face. This creates a D41.14/VCC versus D38.1/CAS conflict conditional on the same-hole identifications, not a proved +5 V path.",
+    "next_check": "Power off, measure D41.14 to the front open hole and solder (1974,1845), then to the far open annulus near solder (2360,1950)/front (1844,2285), D38.1, and independently known +5 V. Recheck D38 package pin indexing and the two cross-face hole matches if D41.14-D38.1 continuity is found. Keep the adjacent parallel D41.13 line and lower solder joint (2380,2090) separate."
+  }
+}

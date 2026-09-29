@@ -1,16 +1,21 @@
 {
   "schema_version": 1,
   "target": "7.102.158 / ДГШ5.109.009 FDC-era processor module",
-  "conclusion": "The .006 dashed RF-modulator option is not populated on the .009 target. Keep the .009 physical capacitor positions without importing .006 RF connectivity; the separate bracket X6 cable is target-photo-closed at A:3/SOUND_CLAMP and A:4/GND.",
+  "conclusion": "The .006 dashed RF-modulator option is not populated on the .009 target. Exact .009 sheet 1 proves reused C9/C10/C11/C12/C15 are +5 V-to-ground bypass pairs; keep physical pad polarity open rather than importing .006 RF connectivity. The bracket X6 cable reaches A:3 and A:4 and is the system-drawn display connection; A:3 is the documented video conductor but its exact copper path beside VT2/R65 remains unmeasured, while A:4 is the ground return. A separate physical X7 video connector is not established by the indexed .009 sources.",
   "legacy_source": {
     "schematic": "ref/schematics/p2_sheet2.png",
     "drawing": "ДГШ5.109.006 Э3 sheet 2",
     "observation": "The lower-right dashed option contains VT3/VT4, the adjustable L1/R73 RF network, and its dedicated bias/output passives.",
     "group_bom": "ref/schematics/es101_nimekiri_komponendid.pdf",
-    "group_bom_pages": [7, 8],
+    "group_bom_pages": [
+      7,
+      8
+    ],
     "group_bom_observation": "The adjustable СП3-22б 4.7 kOhm part and the KT315/KT325 transistor population are assigned to ДГШ5.109.006."
   },
   "target_evidence": {
+    "electrical_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101827714.jpg",
+    "electrical_observation": "Exact .009 sheet-1 supply detail groups C9...C12 and C15 on a +5 V-to-ground bypass branch; it does not label individual owner-board pad polarity.",
     "assembly_images": [
       "ref/photos/dgsh5-109-009-sb/PXL_20260711_114553710.jpg",
       "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
@@ -40,20 +45,72 @@
     "owner_observation": "The documented 4x3 component-side tile set covers the complete owner board and corroborates the .009 assembly population: no VT3/VT4 RF cluster, adjustable L1, or R73 trimmer is populated."
   },
   "legacy_dnp_refs": [
-    "C13", "C14", "L1",
-    "R68", "R69", "R70", "R71", "R72", "R73", "R74", "R75", "R76", "R77",
-    "VT3", "VT4"
+    "C13",
+    "C14",
+    "L1",
+    "R68",
+    "R69",
+    "R70",
+    "R71",
+    "R72",
+    "R73",
+    "R74",
+    "R75",
+    "R76",
+    "R77",
+    "VT3",
+    "VT4"
   ],
-  "reused_target_boundary_refs": ["C9", "C10", "C11", "C12", "C15"],
-  "retained_target_analog_refs": ["R62", "R63", "R64", "R65", "R66", "R67", "VT2", "VD3", "C94", "X7"],
+  "reused_target_boundary_refs": [
+    "C9",
+    "C10",
+    "C11",
+    "C12",
+    "C15"
+  ],
+  "reused_target_schematic_pair": {
+    "refs": [
+      "C9",
+      "C10",
+      "C11",
+      "C12",
+      "C15"
+    ],
+    "rails": [
+      "P5V",
+      "GND"
+    ],
+    "physical_pad_mapping": null
+  },
+  "retained_target_analog_refs": [
+    "R62",
+    "R63",
+    "R64",
+    "R65",
+    "R66",
+    "R67",
+    "VT2",
+    "VD3",
+    "C94"
+  ],
   "boundary_endpoints": [
-    "C9.1", "C9.2", "C10.1", "C10.2", "C11.1", "C11.2",
-    "C12.1", "C12.2", "C15.1", "C15.2", "R67.2"
+    "C9.1",
+    "C9.2",
+    "C10.1",
+    "C10.2",
+    "C11.1",
+    "C11.2",
+    "C12.1",
+    "C12.2",
+    "C15.1",
+    "C15.2",
+    "R67.2"
   ],
   "x6_target_mapping": {
     "physical": "bracket-mounted; no PCB connector footprint",
-    "A:3": "AX603.1 / X6.1 / SOUND_CLAMP",
+    "A:3": "AX603.1 / X6.1 / X6_A3_BOUNDARY; documented display video conductor, board-stage continuity pending",
     "A:4": "AX604.1 / X6.2 / GND",
-    "evidence": "ref/photos/juku-pcb-2/x6-cable-registration.json"
-  }
+    "evidence": "factory .009 assembly sheet-1 PXL_20260711_114600417.jpg; .009 assembly wire table item 151; system cable map ДГШ3.031.011 Э6; ref/photos/juku-pcb-2/x6-cable-registration.json"
+  },
+  "x7_disposition": "Former model X7 VIDEO_OUT/GND connector and PCB footprint were removed. The factory assembly image labels X6 above VT2/VD3 and the system map assigns X6 to the display; no indexed .009 drawing establishes a separate physical X7. VIDEO_OUT remains the VT2.1/R65.1 circuit node while A:3 continuity is open. See docs/x6-x7-connector-identity-audit.md."
 }

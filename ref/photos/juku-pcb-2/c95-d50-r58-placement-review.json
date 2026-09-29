@@ -1,0 +1,90 @@
+{
+  "schema_version": 2,
+  "review_state": "CORRECTED: D50/C95 assembly resistor is R58, while R38 is beside D59; owner 5K1 is a strong R58 candidate pending CAS continuity",
+  "assembly_images": [
+    "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
+    "ref/photos/dgsh5-109-009-sb/PXL_20260711_114617677.jpg"
+  ],
+  "assembly_label_correction": "Original crop (500,3250)-(1250,4080) of 114556899 labels D50 and C95; the upright resistor below/right of C95 reads R58 when rotated 270 degrees, not R38. Original crop (700,400)-(1500,900) of 114617677 labels horizontal R32 above D59, vertical R31 to its left, and horizontal R38 below/right of D59. The two labels differ only in the handwritten 5/3 and were previously conflated.",
+  "d50_d51_boundary": "The package below C95 is registered as D51 by the owner two-package row; its factory package label is cut off in this assembly crop. The separate D30/D13 assembly check remains valid.",
+  "independent_d30_check": {
+    "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+    "crop_xyxy_original_pixels": [
+      950,
+      1500,
+      1650,
+      2300
+    ],
+    "observation": "A separate view explicitly labels horizontal Д30 above horizontal Д13, matching the КМ555ТМ2/K555ТЛ2 owner pair in PXL_20260710_200450127.jpg. That pair is unrelated to C95/R58."
+  },
+  "owner_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+  "owner_5k1_position": "The pale upright body immediately right of registered D51 reads 5K1 in native owner crop (2660,2350)-(2960,2780) of 200411500. Its position, value, and grounded upper lead now support R58 as the leading reference candidate; the other lead must be checked to CAS before promotion.",
+  "owner_5k1_lead_registration": {
+    "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+    "method": "Use the direct D51 component and reflected-solder pin-column anchors in local-package-registration.json; account for the visibly left-bent upper resistor lead rather than projecting both leads at one x coordinate. Approximate pixels have about 15 px reading uncertainty.",
+    "upper_lead": {
+      "component_px": [
+        2760,
+        2322
+      ],
+      "solder_px": [
+        970,
+        2095
+      ],
+      "status": "the registered solder joint is visibly joined by a continuous U-shaped B.Cu/solder bridge to D51.8 near (1010,2176), which the exact-source model assigns GND"
+    },
+    "lower_lead": {
+      "component_px": [
+        2764,
+        2554
+      ],
+      "solder_px": [
+        955,
+        2315
+      ],
+      "status": "native solder crop (880,2250)–(1050,2420) shows a solder blob at the predicted counterpart, at the end of a narrow B.Cu trace heading west into a dense bundle; no numbered net is identified"
+    },
+    "candidate_board_mm_from_d51_component_fit": {
+      "upper": [
+        106.632,
+        155.905
+      ],
+      "lower": [
+        106.818,
+        166.537
+      ],
+      "body_midpoint": [
+        106.725,
+        161.221
+      ],
+      "method": "Interpolate D51 registered component pin1/pin8 17.78-mm column and pin8/pin9 7.62-mm row to the native-crop resistor lead pixels. Approximate contact picking, image skew, and the 1.125-mm D50/D51 cross-face spread make these search coordinates, not fabrication-ready placement."
+    },
+    "electrical_status": "The upper 5K1 solder joint visibly joins registered D51.8/GND through uninterrupted B.Cu. This is compatible with R58.2 on native grounded rail E in the exact sheet-2 model. The lower lead heads west on a narrow B.Cu trace; its CAS identity remains unproved. Confirm both with power-off continuity."
+  },
+  "lower_lead_local_fan_trace": "Native solder crop (830,2200)-(1120,2460) of PXL_20260710_200527310.jpg separates the 5K1 lower joint near (955,2315) from the D51 joint column and the upper-lead ground bridge. Its narrow B.Cu trace bends northwest to about (900,2265), then enters one of several closely spaced westbound signal runs visible in crop (0,2100)-(1200,2550). The apparent continuation heads toward the left edge of this solder tile without a registered package contact, but the dense fan prevents a unique end-to-end line assignment from this view. This is a more specific CAS search departure, not proof of a CAS join or a second ground connection.",
+  "lower_lead_west_tile_candidate": {
+    "new_tile": "ref/photos/juku-pcb-2/PXL_20260710_200527310.jpg",
+    "preceding_tile": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "registration": "A grayscale normalized-correlation search on new x0..1040/y1760..2600 against the preceding tile gives a leading old_x≈new_x+2944, old_y≈new_y+56 match (score about 0.33 at 1/8 resolution). A second repetitive-grid score near x+2688 is rejected by the distinct dense-array boundary and local hole pattern. Native local crops old (2944,2240)-(3244,2460) and new (0,2184)-(300,2404) match the individual fan jogs and holes under the leading shift.",
+    "conditional_old_tile_hole_px_approx": [2885, 2295],
+    "observation": "If the R58 lower lead's selected line remains the same through the dense fan to the new tile's left overlap, its old-tile continuation bends west to an exposed annulus around (2885,2295), visible in native crop (2600,2200)-(3000,2420). Wider native crop (2780,1800)-(2980,2600) places that hole in a repetitive vertical DRAM-area column with many same-pitch open holes; the available local-package registration does not assign that column to a numbered DRAM package or pin. The tile-to-tile image registration is convincing, but the line assignment from R58's joint through the crowded new-tile fan has not been verified segment by segment. This annulus is therefore an extra search/probe candidate, not a photo-closed CAS endpoint.",
+    "next_check": "Power off, verify R58 lower lead to old-tile annulus (2885,2295), then test both against registered D36.1, D38.1, R57.2, or a known DRAM CAS contact. Keep adjacent parallel fan lines separate."
+  },
+  "source_electrical": "The exact .009 sheet-2 model assigns R58=5.1 kOhm between shared CAS and native grounded rail E; R38=1 kOhm between SHIFT_G and +5 V. These are distinct resistors in distinct assembly locations.",
+  "native_r58_rail_e_read": "Exact .009 schematic PXL_20260718_101924004.jpg shows R58 marked 5,1к from the shared CAS/strobe line to rail E in the middle-left of the image. The overlapping native power corner PXL_20260718_101921033.MP.jpg crop (900,2450)-(2700,3750) explicitly places a ground symbol on rail E. Together they make R58 a CAS-to-ground pulldown in the source drawing. This also explains why the owner 5K1 candidate's D51.8/GND-side lead is electrically plausible; its other lead still requires CAS continuity proof.",
+  "r38_owner_candidate": "The pale horizontal 1K0 body immediately right/below D59 matches the corrected assembly R38 location and 1 kOhm nominal. Its left lead is photo-joined to physical D59.14/P5V and red R32 right; this supports the +5 V terminal. Its far lead runs on exposed front copper to open annulus (1545,2532), with plausible reflected solder counterpart near (2217,2640), but its SHIFT_G destination is unproved. See d59-orientation-audit.json.",
+  "replica_placement": "All three PCB variants place R38 beside D59 at pads (121.4,252.91)/(121.4,245.29) mm, consistent with the corrected assembly region. Their R58 pads are at (200.29,220.5)/(207.91,220.5) mm, far from the D51-local 5K1 body estimate near (106.725,161.221) mm; R58 physical placement and surrounding copper need separate review before fabrication.",
+  "retracted_claims": [
+    "The C95/D51 assembly resistor is R38.",
+    "The 5K1 body conflicts with R38 value and rails.",
+    "The source R38 footprint is misplaced because it is far from D50/D51.",
+    "A separate R38 body must be searched for in the D50/D51 corridor."
+  ],
+  "physical_checks": [
+    "Confirm the D51-right 5K1 upper lead to D51.8/GND and its lower lead to CAS; verify isolated 5.1 kOhm before promoting it as R58.",
+    "Confirm D59-right pale 1K0 left lead to D59.14/+5 V and its far lead to SHIFT_G/D42.8/D43.8; verify isolated 1 kOhm before promoting it as R38.",
+    "Register C95 holes between D50 and D51 independently; no fitted body is visible.",
+    "Keep factory-wire A10/A13 owner-joint checks separate from the resistor labels."
+  ]
+}

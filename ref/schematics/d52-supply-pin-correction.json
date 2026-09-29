@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "review_state": "exact .009 supply table modeled and PCB pad nets assigned; all PCB variants still need copper routing",
+  "source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101927794.jpg",
+  "source_crop_xyxy_original_pixels": [
+    0,
+    2350,
+    2100,
+    4080
+  ],
+  "source_observation": "The sheet-2 microcircuit power table has a К531КП14 column with pin 16 on rail A (+5 V) and pin 8 on the ground row. D52 is a КП14 mux on this same sheet. The D48/D49/D50/D51 instances already carried pin8=GND and pin16=P5V.",
+  "former_gap": "D52 pin8 and pin16 were omitted from board JSON supply nets and were blank on source, routed, and routed-candidate PCB pads. This is a package-supply omission, not a data-path ambiguity.",
+  "model_correction": "kicad/juku.board.json includes D52.8 in GND and D52.16 in P5V. The source, routed, and routed-candidate PCB D52 pads now carry the matching net names. The generated schematic uses functional-only symbol pins and skips power nets by default; PCB pad parity no longer flags D52, but connectivity remains open.",
+  "pcb_audit": {
+    "pad8_xy_mm": [
+      53.395,
+      220.49
+    ],
+    "pad16_xy_mm": [
+      61.015,
+      202.71
+    ],
+    "pad_diameter_mm": 1.6,
+    "source": "D52 pads 8 and 16 now have GND/P5V net names. No track centreline within 1.5 mm of either pad; copper remains unconnected.",
+    "routed_and_candidate": "D52 pads 8 and 16 now have GND/P5V net names. Nearby signal tracks approach pad8 as close as 1.105 mm and pad16 as close as 1.155 mm, outside the 0.8 mm pad radius; no track touches either pad. Copper-aware power routing must respect these signal clearances."
+  },
+  "next_inspection": "With power off, confirm physical owner D52.8 to known ground and D52.16 to known +5 V. Route power copper to both pads on the source and routed PCB variants, then rerun connectivity and DRC; pad-net parity alone cannot prove a conductor."
+}

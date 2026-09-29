@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the evidence-bounded static Juku X7 output-stage model report."""
+"""Generate the evidence-bounded static Juku VIDEO_OUT output-stage model report."""
 from __future__ import annotations
 
 import argparse
@@ -148,7 +148,7 @@ def topology_checks(
         "D34_SYNC": {("D34", "8"), ("R62", "1")},
         "D34_SIG": {("D34", "11"), ("R63", "1")},
         "VT2_BASE": {("R62", "2"), ("R63", "2"), ("R64", "1"), ("VT2", "3")},
-        "VIDEO_OUT": {("VT2", "1"), ("R65", "1"), ("X7", "1")},
+        "VIDEO_OUT": {("VT2", "1"), ("R65", "1")},
     }
     checks: list[dict[str, Any]] = []
     for net, expected in expected_nets.items():
@@ -469,7 +469,7 @@ def build_summary(
         {
             "name": "Nominal base drive is ordered and emitter output is nondecreasing",
             "pass": order_ok,
-            "evidence": "base: 00 < sync-only < signal-only < 11; X7 may remain off below VBE",
+            "evidence": "base: 00 < sync-only < signal-only < 11; VIDEO_OUT may remain off below VBE",
         },
         {
             "name": "A 75-ohm termination never raises the nominal emitter voltage",
@@ -532,7 +532,7 @@ def build_summary(
                 "droops under the traced load, but still sources more current than the "
                 "exact К555ЛП5 sheet's fanout-derived high-state envelope in at least "
                 "one nominal state. TI labels the model typical 25 C behavior, not "
-                "К555ЛП5 equivalence evidence; physical X7 voltages still require an "
+                "К555ЛП5 equivalence evidence; physical VIDEO_OUT voltages still require an "
                 "exact-device curve or measurement."
                 if envelope_exceeded else
                 "The supply-dependent TI SN74LS86A comparison driver stays within the "
@@ -551,14 +551,14 @@ def markdown_table_row(values: Iterable[Any]) -> str:
 def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
     nominal = summary["nominal"]
     lines = [
-        "# X7 output-stage static model",
+        "# VIDEO_OUT output-stage static model",
         "",
         "Status date: **2026-07-23**.",
         "",
         "Status: **TOPOLOGY + DATA-BACKED LS86 COMPARISON DRIVER GUARDED / EXACT D34 CURVE + HARDWARE CALIBRATION OPEN**.",
         "",
         "This generated report is the second evidence-bounded part of CVBS-plan WP4.",
-        "It solves the traced X7 emitter-follower topology with the official TI",
+        "It solves the traced VIDEO_OUT emitter-follower topology with the official TI",
         "SN74LS86A PSpice model's supply-dependent output resistances instead of fixed",
         "D34 pin voltages. TI describes that driver as data-sheet-generated typical",
         "25 C behavior. It is comparison evidence, not proof of exact К555ЛП5 I/V",
@@ -623,7 +623,7 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "means that output is sinking current from the summing node. The reported D34",
         "pin voltages are solved between the TI comparison resistance and R62/R63.",
         "",
-        "| Load | D34 sync | D34 signal | Region | Sync pin (V) | Signal pin (V) | Base (V) | X7 (V) | Ic (mA) | Sync pin (mA) | Signal pin (mA) |",
+        "| Load | D34 sync | D34 signal | Region | Sync pin (V) | Signal pin (V) | Base (V) | VIDEO_OUT (V) | Ic (mA) | Sync pin (mA) | Signal pin (mA) |",
         "| --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ])
     for load_name, table in (("75 Ω", nominal["terminated_75_ohm"]), ("unterminated", nominal["unterminated"])):
@@ -654,7 +654,7 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "droop, but those warnings still mark operation outside the exact device's",
         "stated same-family load envelope.",
         "",
-        "| Load | State | X7 range (V) | Base range (V) | Max Ic (mA) | Max /D34 sync/ (mA) | Max /D34 signal/ (mA) | Min saturation margin (V) | Sync warnings | Signal warnings |",
+        "| Load | State | VIDEO_OUT range (V) | Base range (V) | Max Ic (mA) | Max /D34 sync/ (mA) | Max /D34 signal/ (mA) | Min saturation margin (V) | Sync warnings | Signal warnings |",
         "| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
     ])
     for load_name, sweep_key in (("75 Ω", "terminated"), ("unterminated", "unterminated")):
@@ -696,7 +696,7 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "  load, then promote or replace the explicitly comparative TI driver.",
         "- Feed independently timed D34_SYNC/D34_SIG events into this transfer model only",
         "  after the physical video-slot and D34 waveform boundaries close.",
-        "- Inspect C94 and capture terminated X7 plus VT2 base on hardware before adding",
+        "- Inspect C94 and capture terminated VIDEO_OUT plus VT2 base on hardware before adding",
         "  any dynamic component or promoting model voltages to calibrated results.",
         "",
     ])
@@ -768,7 +768,7 @@ def main() -> int:
     print(f"Wrote {REPORT_PATH.relative_to(ROOT)}")
     if args.fixture_dir:
         emit_fixture(args.fixture_dir.resolve(), model, summary)
-    print(f"X7 STATIC MODEL: {summary['status'].upper()}")
+    print(f"VIDEO_OUT STATIC MODEL: {summary['status'].upper()}")
     return 1 if summary["status"] == "fail" else 0
 
 

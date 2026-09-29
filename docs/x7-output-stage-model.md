@@ -1,11 +1,11 @@
-# X7 output-stage static model
+# VIDEO_OUT output-stage static model
 
 Status date: **2026-07-23**.
 
 Status: **TOPOLOGY + DATA-BACKED LS86 COMPARISON DRIVER GUARDED / EXACT D34 CURVE + HARDWARE CALIBRATION OPEN**.
 
 This generated report is the second evidence-bounded part of CVBS-plan WP4.
-It solves the traced X7 emitter-follower topology with the official TI
+It solves the traced VIDEO_OUT emitter-follower topology with the official TI
 SN74LS86A PSpice model's supply-dependent output resistances instead of fixed
 D34 pin voltages. TI describes that driver as data-sheet-generated typical
 25 C behavior. It is comparison evidence, not proof of exact К555ЛП5 I/V
@@ -30,7 +30,7 @@ rate, load, state schedule, model hash, and sample hash.
 | D34_SYNC endpoint contract | PASS | D34.8, R62.1 |
 | D34_SIG endpoint contract | PASS | D34.11, R63.1 |
 | VT2_BASE endpoint contract | PASS | R62.2, R63.2, R64.1, VT2.3 |
-| VIDEO_OUT endpoint contract | PASS | R65.1, VT2.1, X7.1 |
+| VIDEO_OUT endpoint contract | PASS | R65.1, VT2.1 |
 | R64 and R65 fitted returns are grounded | PASS | R64.2 + R65.2 on GND |
 | VT2 collector is on +5 V | PASS | VT2.2 on P5V |
 | VT2 device and E-C-B mapping are guarded | PASS | VT2 = КТ315; 1=E, 2=C, 3=B |
@@ -41,7 +41,7 @@ rate, load, state schedule, model hash, and sample hash.
 | Preserved SN74LS86A current-comparison datasheet hash matches | PASS | TI SDLS124 page 4; current threshold only, not К555ЛП5 equivalence |
 | Official SN74LS86A comparison-driver model and coefficients match | PASS | TI SDLM061 rev 2.0; typical 25 C; supply-dependent ROH/ROL; comparison only |
 | Preserved КТ315Б datasheet hash, package, and model limits match | PASS | owner marking Б/8901; old KT-13 E-C-B; hFE 50..350; VCE(sat) <=0.4 V |
-| Nominal base drive is ordered and emitter output is nondecreasing | PASS | base: 00 < sync-only < signal-only < 11; X7 may remain off below VBE |
+| Nominal base drive is ordered and emitter output is nondecreasing | PASS | base: 00 < sync-only < signal-only < 11; VIDEO_OUT may remain off below VBE |
 | A 75-ohm termination never raises the nominal emitter voltage | PASS | terminated output <= unterminated output for all four states |
 | Declared DC corners remain outside transistor saturation | PASS | 1296 terminated + 432 unterminated parameter corners per logic state |
 | Declared DC corners remain inside published КТ315Б absolute limits | PASS | Ic <=100 mA, P <=150 mW at 25 C, VCE <=20 V |
@@ -73,7 +73,7 @@ explicit comparison driver, not К555ЛП5 equivalence evidence.
 | sync=1,signal=1 | sync | source | 0.358 | 0.400 | WITHIN |
 | sync=1,signal=1 | signal | source | 0.418 | 0.400 | EXCEEDS |
 
-The supply-dependent TI SN74LS86A comparison driver self-consistently droops under the traced load, but still sources more current than the exact К555ЛП5 sheet's fanout-derived high-state envelope in at least one nominal state. TI labels the model typical 25 C behavior, not К555ЛП5 equivalence evidence; physical X7 voltages still require an exact-device curve or measurement.
+The supply-dependent TI SN74LS86A comparison driver self-consistently droops under the traced load, but still sources more current than the exact К555ЛП5 sheet's fanout-derived high-state envelope in at least one nominal state. TI labels the model typical 25 C behavior, not К555ЛП5 equivalence evidence; physical VIDEO_OUT voltages still require an exact-device curve or measurement.
 
 ## Nominal DC transfer
 
@@ -81,7 +81,7 @@ Positive D34 pin current means current sourced out of that output; negative
 means that output is sinking current from the summing node. The reported D34
 pin voltages are solved between the TI comparison resistance and R62/R63.
 
-| Load | D34 sync | D34 signal | Region | Sync pin (V) | Signal pin (V) | Base (V) | X7 (V) | Ic (mA) | Sync pin (mA) | Signal pin (mA) |
+| Load | D34 sync | D34 signal | Region | Sync pin (V) | Signal pin (V) | Base (V) | VIDEO_OUT (V) | Ic (mA) | Sync pin (mA) | Signal pin (mA) |
 | --- | ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | 75 Ω | 0 | 0 | off | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.000 | 0.000 | 0.000 |
 | 75 Ω | 0 | 1 | active | 0.0244 | 1.6271 | 0.9442 | 0.2442 | 3.786 | -0.460 | 0.683 |
@@ -106,7 +106,7 @@ fanout-derived loads. The comparison driver now predicts its own resistive
 droop, but those warnings still mark operation outside the exact device's
 stated same-family load envelope.
 
-| Load | State | X7 range (V) | Base range (V) | Max Ic (mA) | Max /D34 sync/ (mA) | Max /D34 signal/ (mA) | Min saturation margin (V) | Sync warnings | Signal warnings |
+| Load | State | VIDEO_OUT range (V) | Base range (V) | Max Ic (mA) | Max /D34 sync/ (mA) | Max /D34 signal/ (mA) | Min saturation margin (V) | Sync warnings | Signal warnings |
 | --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | 75 Ω | sync=0,signal=0 | 0.0000–0.0000 | 0.0000–0.0000 | 0.000 | 0.000 | 0.000 | 4.350 | 0 | 0 |
 | 75 Ω | sync=0,signal=1 | 0.0320–0.5119 | 0.8031–1.0770 | 8.174 | 0.524 | 0.745 | 3.942 | 0 | 1296 |
@@ -141,5 +141,5 @@ rise/fall time, bandwidth, actual composite polarity, or receiver lock.
   load, then promote or replace the explicitly comparative TI driver.
 - Feed independently timed D34_SYNC/D34_SIG events into this transfer model only
   after the physical video-slot and D34 waveform boundaries close.
-- Inspect C94 and capture terminated X7 plus VT2 base on hardware before adding
+- Inspect C94 and capture terminated VIDEO_OUT plus VT2 base on hardware before adding
   any dynamic component or promoting model voltages to calibrated results.
