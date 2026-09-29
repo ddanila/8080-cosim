@@ -43,5 +43,13 @@
     "observation": "Both projective predictions again lie on solder areas without distinct drilled centers in native crop (1970,260)-(2530,590). The nearest conspicuous holes at approximately (2434,399)/(2192,460) are now about 52/70 px away. The D30-only affine predicts (2393,390)/(2137,450), within 10/14 px of the projective predictions, so choice of these two package fits does not explain the large nearest-hole offsets.",
     "limit": "Both C97 candidates lie to the right of the calibrated package-contact envelope, particularly the second. The fits exclude adopting the nearby solder holes by simple geometric snap but cannot prove where either front hole exits on the back face; use direct continuity or a closer uniquely identified drilled landmark."
   },
-  "next_inspection": "With power off, meter front holes (1690,524)/(1926,580) in 200450127, repeated at (1468,917)/(1703,972) in 200439607, separately to known +5 V and ground. Find exact back-side counterparts from a nearby independently matched R6/R5 drilled hole or by continuity; do not adopt solder (2434,399)/(2192,460) solely from the D30 extrapolation. Check neighboring annuli on the wide strip individually before identifying a C97 pad pair."
+  "front_strip_continuation": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+    "native_crops_xyxy": [[1380, 820, 1810, 1640], [1350, 1200, 1980, 2090]],
+    "wide_strip_upper_hole_px_approx": [1703, 972],
+    "wide_strip_lower_hole_px_approx": [1765, 1555],
+    "observation": "The upper candidate hole belongs to a long broad front-copper strip with multiple exposed openings. It runs south under the diagonal white cable, bends east near its lower end, and terminates at a separate open annulus around (1765,1555). A brown gap separates that annulus from the adjacent top-right contact of the next package in this photo. The narrow trace from the other C97 candidate (1468,917) also continues south, but its lower path is obscured by the wire bundle and nearby fitted parts. Neither candidate is visibly tied to a registered +5 V, ground, or signal pin on this face.",
+    "decision": "Probe the wide strip's lower annulus as an additional local same-net point. Its existence does not identify the upper hole as a capacitor pad or establish the rail."
+  },
+  "next_inspection": "With power off, meter front holes (1690,524)/(1926,580) in 200450127, repeated at (1468,917)/(1703,972) in 200439607, separately to known +5 V and ground. Check the wide strip's lower open annulus near (1765,1555) as a local same-net probe. Find exact back-side counterparts from a nearby independently matched R6/R5 drilled hole or by continuity; do not adopt solder (2434,399)/(2192,460) solely from the D30 extrapolation. Check neighboring annuli on the wide strip individually before identifying a C97 pad pair."
 }
