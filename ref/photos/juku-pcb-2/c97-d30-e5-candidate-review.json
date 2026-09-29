@@ -36,5 +36,12 @@
     "observation": "The first prediction falls on a narrow horizontal trace without a visible drill; an open hole around (2434,399) is roughly 42 px away. The second prediction falls beside a wide strip without a visible drill; a visible open hole around (2192,460) is roughly 56 px away. Those offsets greatly exceed the local D30/D13 contact agreement, but C97 lies outside the D30 package-anchor span, so neither nearby hole can be declared a counterpart or absolutely excluded by this extrapolation.",
     "decision": "Keep both component holes as distinct C97 search candidates. Do not assign either neighboring solder hole or its net by proximity. A local resistor/annulus landmark or direct continuity is needed for exact front-to-back identity."
   },
+  "d30_d13_projective_recheck": {
+    "method": "Independent eight-parameter projective fit of ten registered package-contact pairs spanning D30 pins 1,7,8,11,14 and D13 pins 1,4,7,8,14 in component 200439607 and solder 200537608. Neither C97 feature or resistor body enters the fit.",
+    "package_contact_residual_px": "About 0.8–3.0 px across the ten contacts; a single affine fit of the same contacts has about 1.9–3.5 px residual.",
+    "projected_c97_solder_px_approx": [[2383, 391], [2123, 451]],
+    "observation": "Both projective predictions again lie on solder areas without distinct drilled centers in native crop (1970,260)-(2530,590). The nearest conspicuous holes at approximately (2434,399)/(2192,460) are now about 52/70 px away. The D30-only affine predicts (2393,390)/(2137,450), within 10/14 px of the projective predictions, so choice of these two package fits does not explain the large nearest-hole offsets.",
+    "limit": "Both C97 candidates lie to the right of the calibrated package-contact envelope, particularly the second. The fits exclude adopting the nearby solder holes by simple geometric snap but cannot prove where either front hole exits on the back face; use direct continuity or a closer uniquely identified drilled landmark."
+  },
   "next_inspection": "With power off, meter front holes (1690,524)/(1926,580) in 200450127, repeated at (1468,917)/(1703,972) in 200439607, separately to known +5 V and ground. Find exact back-side counterparts from a nearby independently matched R6/R5 drilled hole or by continuity; do not adopt solder (2434,399)/(2192,460) solely from the D30 extrapolation. Check neighboring annuli on the wide strip individually before identifying a C97 pad pair."
 }
