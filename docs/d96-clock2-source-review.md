@@ -14,6 +14,8 @@ upper run near `y≈616`, then right to the filled junction above D96.11 near
 output stroke near `(1580,915)` without a dot. D94 output-0/pin-1
 uses a different parallel conductor; this trace starts at pin 2.
 
+In native detail `PXL_20260718_101641055.jpg`, crop `(510,1120)`–`(1250,1840)`, the D96.11 vertical conductor crosses the D28.10-to-D96.10 horizontal line near original `(963,1470)` with no filled dot. The adjacent D28.10/D28.12 join near `(910,1470)` has a filled dot, as does the clock-line join to its upper source near `(963,1207)`. These visible controls make the unjoined crossing a positive drawing observation.
+
 Owner chip-removed continuity already joins D94.2 to D99.9 and R89.1.
 The source model includes D96.11 on that island. A native owner solder reread
 of `PXL_20260710_200506061.jpg` crop `(580,1920)`–`(1150,2040)` shows a

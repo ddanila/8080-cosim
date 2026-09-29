@@ -13,7 +13,8 @@
       3072,
       4080
     ],
-    "observation": "exact .009 sheet-3 detail proves D96.9 Q2 and D96.11 CLK2 leave on distinct conductors; D96.11 crosses D28.10-to-D96.10 without a junction dot. The full overview traces Q2 to D101 A0-A3 and CLK2 to D94.2."
+    "observation": "exact .009 sheet-3 detail proves D96.9 Q2 and D96.11 CLK2 leave on distinct conductors; D96.11 crosses D28.10-to-D96.10 without a junction dot. The full overview traces Q2 to D101 A0-A3 and CLK2 to D94.2.",
+    "crossing_native_controls": "Native sheet-3 detail crop (510,1120)-(1250,1840): D96.11 vertical CLK2 crosses D28.10-to-D96.10 horizontal near (963,1470) without a dot. Filled comparison dots occur at D28.10/D28.12 near (910,1470) and D96.11 clock-line upper join near (963,1207). These coordinates make the source no-join conclusion auditable independently of the owner copper conflict."
   },
   "component_observation": {
     "source": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
