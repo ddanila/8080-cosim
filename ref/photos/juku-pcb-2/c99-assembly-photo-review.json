@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "corrected D9 fit supports distinct C99 candidate pair; left solder route reaches source-grounded D2.14, but front same-hole identity and population remain unresolved",
+  "status": "strong D9-local three-feature photo match for bare C99 pair; left solder route reaches source-grounded D2.14; owner continuity and population remain unresolved",
   "factory_assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114556899.jpg",
   "factory_assembly_observation": "The exact .009 assembly detail below D9 labels a horizontal C99 immediately left of vertical R17; the C99 box is approximately x576-732, y3300-3360 in the full-resolution assembly photograph.",
   "owner_component_images": [
@@ -60,8 +60,9 @@
     "right_c99_front_to_solder_px_approx": [[2680,1782],[2868,1497],[2875,1495]],
     "r17_lower_front_to_solder_px_approx": [[2730,1790],[2818,1505],[2818,1515]],
     "observation": "The triplets are front joint, package-fit projection, and observed solder joint in original pixels. The two C99 candidate projections are about 5–7 px from separate observed joints; the rough R17 lower front coordinate projects about 10 px from a third joint. Native solder crop (2770,1410)-(3100,1580) shows a short L-shaped B.Cu run from the R17-lower joint near (2818,1515) to the separate right-C99 candidate near (2875,1495). Native front photo independently shows a short F.Cu link between their front joints. The third solder joint near (3040,1492) corresponds to the left C99 candidate and remains on a separate visible local route.",
-    "limit": "The local D9 transform extrapolates about 300 front pixels below the package. The three-feature fit strongly supports this correspondence but does not prove through-hole identities, ground polarity, installed capacitance, or whether a capacitor was ever fitted."
+    "limit": "The local D9 transform extrapolates about 300 front pixels below the package. The coherent three-feature photo match is strong, but direct owner continuity has not confirmed the exact plated-hole identities, rail polarity, installed capacitance, or whether a capacitor was ever fitted."
   },
+  "native_paired_crop_check": "Compare July component crop (2400,1270)-(3110,1910) in 200411500 with horizontally reflected solder crop (2450,990)-(3160,1630) in 200525009. The complete D9 2×8 contact rows align as controls. About 300 pixels below the corresponding package row, the front left/right C99-position joints (2508,1782)/(2680,1782) and R17 lower joint (2730,1790) align with three distinct solder features (3040,1492)/(2875,1495)/(2818,1515). The corrected D9 fit misses the two C99 solder centers by about 5–7 px, much less than their roughly 165 px separation; the R17 check differs by about 10 px. The right C99 and R17 solder features share a visible short B.Cu link, matching their separate front F.Cu link; the left feature has a distinct eastward B.Cu route. This supports a high-confidence photo match for the bare physical pair, while direct same-hole continuity and owner ground probing remain outstanding.",
   "left_candidate_solder_route": {
     "image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
     "crop_xyxy_original_pixels": [2980,1430,3480,1730],
