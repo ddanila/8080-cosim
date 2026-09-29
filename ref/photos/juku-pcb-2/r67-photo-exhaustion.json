@@ -2,7 +2,7 @@
   "schema_version": 1,
   "refdes": "R67",
   "endpoint": "2",
-  "status": "photo-exhausted / continuity required",
+  "status": "corrected two-face R67.2 solder joint and B.Cu run identified; remote net requires continuity",
   "value": "4,7к",
   "visible_marking": "4K7",
   "value_basis": "the factory drawing fixes this body as R67 and independent July/May target-board views directly read 4K7; the target marking supersedes the 2k printed on both the older .006 and exact .009 sheet-2 drawings while connectivity remains separate",
@@ -11,10 +11,10 @@
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
       "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
       "dimensions_px": [4080, 3072],
-      "joint_px": [3321, 1698],
+      "joint_px": [3365, 1730],
       "bbox_px": [3220, 1580, 3430, 1980],
       "body_bbox_px": [3240, 1740, 3400, 1970],
-      "observation": "the upper physical lead of the factory-identified red 4K7 R67 terminates at a distinct component-side solder pool; no copper continuation leaves the visible pool"
+      "observation": "Native grid reread puts the upper physical lead of the factory-identified red 4K7 R67 at about (3365,1730), not the former (3321,1698) point on adjacent bare board. The lead ends in a distinct component-side solder pool with no visible front-copper continuation."
     },
     {
       "source": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
@@ -31,28 +31,30 @@
     "model": "affine component 200418174 pixels to solder 200522685 pixels",
     "transform": [-0.984243042, -0.025227553, 0.025228936, -0.984242960, 4141.78717, 2743.27454],
     "max_anchor_residual_px": 0.001,
-    "component_joint_px": [3321, 1698],
-    "projected_solder_joint_px": [916, 988],
-    "interpretation": "the physical R67.2 location is a bare backside trace corner without an annulus, drill, solder joint, or other inter-layer handoff"
+    "component_joint_px": [3365, 1730],
+    "projected_solder_joint_px": [873.5, 955.6],
+    "observed_solder_joint_px_approx": [869, 953],
+    "interpretation": "The corrected projection is about 5 px from a real soldered through-hole joint. The old (916,988) projection came from a wrong component-side point and fell on unrelated bare copper. The sub-pixel D102 anchor residual does not itself bound extrapolation to R67; the independent matching joint and its trace topology support this local pairing."
   },
   "solder_observations": [
     {
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
       "sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
       "dimensions_px": [4080, 3072],
-      "review_point_px": [916, 988],
-      "bbox_px": [700, 800, 1150, 1200],
-      "observation": "the D102-local cross-side projection falls on an unperforated copper corner; no backside joint proves connection to that coincident trace"
+      "review_point_px": [869, 953],
+      "bbox_px": [800, 850, 1350, 1100],
+      "observation": "Native crop shows a soldered joint around (869,953) at the corrected front-lead projection and an uninterrupted narrow B.Cu run east to a distinct open annulus around (1295,958). This identifies a local R67.2-side physical route, but the far annulus's front counterpart and net remain unproved."
     },
     {
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
       "sha256": "6f11cc69615f159fcaea852ce41e9af944da4886d31d0fc7d70394a56772070c",
       "dimensions_px": [4080, 3072],
-      "review_point_px": [597, 2430],
-      "bbox_px": [400, 2250, 850, 2650],
-      "observation": "the overlapping solder tile independently shows the same bare trace corner without a via or solder joint"
+      "review_point_px": [555, 2410],
+      "bbox_px": [400, 2200, 950, 2550],
+      "observation": "The overlapping solder tile repeats the narrow run from a filled joint near (555,2410) to an open annulus near (915,2410). These are navigation-grade coordinates from the overlap, not an independent front-to-back fit."
     }
   ],
-  "unresolved": ["R67.2 remote destination"],
-  "non_promotion_basis": "two component angles stop at the R67.2 solder pool and two cross-side-registered solder views prove that the coincident backside trace has no inter-layer handoff; direct continuity is required"
+  "unresolved": ["R67.2 remote net and the far open annulus's exact front-side counterpart"],
+  "correction": "Withdraw the former photo-exhausted/no-via conclusion. Its front coordinate (3321,1698) was about 44 px west and 32 px north of the actual upper lead joint, displacing the solder projection onto unrelated bare copper. The corrected point (3365,1730) projects to an observed solder joint within about 5 px.",
+  "next_check": "With power off, confirm R67 upper lead to solder (869,953), the east open annulus (1295,958), and VT2 base/R62.2/R63.2/R64.1 separately. Trace the far annulus's front counterpart before assigning R67.2 to VT2_BASE in the target model."
 }

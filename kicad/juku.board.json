@@ -5150,7 +5150,7 @@
       "prov": {
         "type": "scan",
         "refdes": ".009 factory identity plus independent registered July/May owner photos; target body reads 4K7",
-        "pins": "pin1 remains on the source-proved SOUND_CLAMP node. Both the exact .009 drawing and the older .006 drawing label this position 2k, but the target body independently reads 4K7; the .006 SND_MIX continuation is revision-superseded, the exact .009 sheet 2 draws pin2 to VT2_BASE, while July and May views expose pin2's separate joint but no onward copper; D102-local cross-side registration lands on a bare backside trace corner without a via, so R67.2 still requires continuity"
+        "pins": "pin1 remains on the source-proved SOUND_CLAMP node. Both the exact .009 drawing and the older .006 drawing label this position 2k, but the target body independently reads 4K7; the .006 SND_MIX continuation is revision-superseded and the exact .009 sheet 2 draws pin2 to VT2_BASE. Corrected July front joint (3365,1730) projects within about 5 px of solder (869,953), where a visible B.Cu run reaches open annulus (1295,958); the far annulus's remote net remains unproved and R67.2 still requires continuity"
       }
     },
     {
@@ -17940,7 +17940,7 @@
       ]
     },
     "R67_2_BOUNDARY": {
-      "src": ".009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg draws R67.2 to VT2_BASE/R62.2/R63.2/R64.1; the target body is directly marked 4K7, differing from the exact .009 printed 2k branch. Registered July and May component views expose the R67.2 joint without onward copper; a D102-local cross-side fit projects it onto a bare backside trace corner with no via in two solder views, so the target endpoint is photo-exhausted and requires continuity",
+      "src": ".009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg draws R67.2 to VT2_BASE/R62.2/R63.2/R64.1; the target body directly reads 4K7, differing from the printed 2k branch. Corrected July front joint (3365,1730) matches solder joint (869,953) within about 5 px and a continuous B.Cu run reaches open annulus (1295,958). The earlier no-via claim used a wrong front point. The far annulus's net remains open pending continuity to VT2_BASE",
       "nodes": [
         [
           "R67",

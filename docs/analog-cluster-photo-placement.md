@@ -85,18 +85,17 @@ target-continuity boundaries. R67.2 and X6 A:3 remain such boundaries; the
 factory table still closes A:3/A:4 to X6 independently of the superseded RF nets. The
 yellow `Б / 8901` part is the retained VT2; C94 remains separately bounded.
 
-R67.2 has now been chased to the limit of the owner imagery. The registered
-July component view and an independent May angle both expose its upper physical
-lead ending in a distinct solder pool without visible onward copper. Both angles
-directly read `4K7` on the factory-identified body, so R67 is now source-closed
-as 4.7 kΩ even though its pin-2 destination remains open. A local
-cross-side affine built from all fourteen paired D102 pin centres projects that
-joint to `(916,988)` in solder image `PXL_20260710_200522685.jpg` with less than
-0.001 px anchor residual. That location is a bare copper corner with no annulus,
-drill, or solder joint; the overlapping `200506061` tile independently shows the
-same absence. The coincident backside trace is therefore not promoted as an
-inter-layer join. R67.2 remains a photo-exhausted continuity measurement, with
-the evidence preserved in `ref/photos/juku-pcb-2/r67-photo-exhaustion.json`.
+R67.2's July upper-lead coordinate is corrected from `(3321,1698)` to about
+`(3365,1730)` in `200418174`. Both July and May views read `4K7` on the
+factory-identified body, superseding the printed 2 kΩ value. The D102-local
+cross-side fit now projects that lead near `(874,956)` in solder image
+`PXL_20260710_200522685.jpg`, about 5 px from an actual solder joint
+`(869,953)`. Native copper runs east without a break to open annulus
+`(1295,958)`; overlapping `200506061` repeats the joint-to-annulus pattern.
+The prior bare-copper/no-via claim used the wrong front point. The local route
+is photo-supported, while the far annulus's front counterpart and the
+source-drawn VT2-base destination still require continuity. Evidence is in
+`ref/photos/juku-pcb-2/r67-photo-exhaustion.json`.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
 the former assembly-grid approximations for `VT2`/`R65`/`R67`/`VD3`/`R66`/`C94`, and

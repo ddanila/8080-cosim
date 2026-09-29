@@ -64,15 +64,23 @@ endpoint table contains 641 reviewed rows:
 | `measurement` | 596 | pad/path review is inconclusive; continuity or better local evidence is required |
 | `rejected` | 6 | two former D94.5-D93.1 claims and four former R94 endpoint assignments disproved by owner continuity/photo review |
 
-Confidence metadata consists of 428 `local-package-fit`, 156
+The table's `candidate_net` names the current model net for a registered pad;
+on a `measurement` row it does not assert that the owner board follows that
+net. All 81 nonblank candidate labels now resolve to their stated pad in
+`kicad/juku.board.json`. R102.1 and R108.1, for example, carry the sheet-3
+RC net names while their remote owner-board paths remain unproved.
+
+Confidence metadata consists of 429 `local-package-fit`, 155
 `registration-only`, and 14 `registration+unique-hole-snap` rows. Eight use
 `registration+package-row-snap` after correcting the D29 lower-row probes. Two use
 `local-package-pin-count` after correcting the D39 component probes. Two use
 `local-package-fit+continuous-copper`, two use `local-package-fit+visible-gap`, four use
 `registration+visible-common-landing`, one uses
 `registration+separate-cable-joint`, four use
-`registration+unique-joint`, three use `registration+three-lead-identity`, and
-nine use `cross-side-registration`. Four `panorama-projected-region`
+`registration+unique-joint`, three use `registration+three-lead-identity`, four use
+`local-cross-face-fit`, seven use `cross-side-registration`, one uses
+`cross-side-registration+visible-joint`, and one uses `overlap-trace-topology`.
+Four `panorama-projected-region`
 observations record photo-exhausted regions without pretending that a
 projection is pad identity.
 A hole snap or accurate pad projection is not electrical evidence by itself.
@@ -154,8 +162,16 @@ Accepted paths and owner corrections:
 - The former photo-only D106.7 `Q3` -> D93.26 `RCLK` join is
   superseded by exact `.009` sheet 1: D106.7 reaches D28.9, D28.8 clocks
   D96.3, and D96.5 drives D93.26 / `FDC_RCLK`. See
-  `docs/fdc-hardware-handoff.md`; the photo remains package-registration
-  evidence, not proof of a direct join.
+  `docs/fdc-hardware-handoff.md`. A raw solder crop `(1050,2020)-(1660,2240)`
+  of `PXL_20260710_200506061.jpg` resolves the registration mistake: the
+  former D106.7 seed at `(1154,2131)` lies on the bare westbound D93.26 trace,
+  without a visible D106 joint. The D93.26 pad remains identifiable, but the
+  supposed cross-package endpoint is only a trace projection. Both rows are
+  measurement requests; D106.7 needs a new pad fit or continuity check. The
+  wider crop `(550,1850)-(1650,2240)` shows the D93.26 trace continuing west
+  across the D106 region, but no uninterrupted B.Cu path from it to the
+  registered D96.5 joint at `(762,2041)`; that source-drawn join also remains
+  a continuity check on the original board.
 - D95.14 -> R92.2 / `FDC_DDEN` (sheet-identified `FM/MFM`).
 - D101.4 -> R92.1 + R99.2 / `D101_D02_R92_R99`.
 - D101.7 and D101.9 have separate registered solder landings without a visible
@@ -167,6 +183,10 @@ Accepted paths and owner corrections:
   overview places it on the rail above D94.14/D101.7 and traces that rail
   to D93.23/HLT; confirm physical continuity
   (`docs/d99-q1n-a4-conflict-photo-review.md`).
+- The D93 socket registrations identify individual pad positions. Only the
+  D93.23 pair records the source-drawn HLT/D99.4 relation; 31 other D93 pad
+  notes had inherited that sentence by copy and have been corrected. Their
+  remote nets still require their own source or continuity evidence.
 - R99.1 -> D101.8 / `GND`.
 - VT2.1 -> R65.1 / `VIDEO_OUT`; two registered July angles directly expose
   the emitter's shared landing, while an independent May angle identifies the
@@ -177,11 +197,13 @@ Accepted paths and owner corrections:
   photo review. The separately insulated A:4 reaches X6.2 / `GND`. Both are
   component-side lap joints; X6 itself is bracket-mounted and has no PCB footprint.
 
-R67.2 remains unaccepted but is now precisely photo-exhausted. Its component
-joint is registered at `(3321,1698)` in `200418174`; fourteen paired D102 pins
-map it to `(916,988)` in `200522685` with sub-pixel residual. Both that image
-and the overlapping `200506061` tile show a bare backside trace corner without
-a via, so visual coincidence is explicitly not treated as electrical evidence.
+R67.2's former no-via conclusion is withdrawn. The upper component lead is
+near `(3365,1730)` in `200418174`, not `(3321,1698)` on adjacent bare board.
+The D102-local cross-face fit projects it near `(874,956)` in `200522685`,
+within about 5 px of a real solder joint `(869,953)`. A visible B.Cu line
+continues east to open annulus `(1295,958)`, also repeated in overlapping
+`200506061`. This accepts the local two-face R67.2 joint and trace, while the
+far annulus's front counterpart and VT2-base continuity remain open.
 
 The reviewed package fits also corrected the source placement/orientation of
 D2, D10, D40, D41, D94, D100, and D98. A D11 solder fit corrects endpoint
@@ -279,10 +301,9 @@ fits. Direct component and reflected solder fits now replace D106 projections
 that landed left of the vertical К555ИЕ7 package or on its body. The corrected
 solder anchors use the centers of visible joints rather than adjacent trace
 departures; the independent pin-5 check is 0.001 px. Pins 7-10 extrapolate into
-the rail-obscured package end. Pin 7 is the one exception now promoted
-electrically: its fitted coordinate lies exactly on an uninterrupted slightly
-sloped solder trace that reaches the independently fitted D93.26 joint, with no
-gap, via, or branch between them. Pins 8-10 remain non-electrical projections.
+the rail-obscured package end and remain non-electrical projections. The
+former pin-7 projection lands on D93.26's trace, without a visible D106
+solder joint; see the RCLK review above.
 Separate component and reflected solder fits now land D28 on the
 adjacent К155ЛН3, using its unobscured seven-pad column and coherent solder
 rows. The component pin-4 check is exact and the solder pin-5 check is 0.010
@@ -649,9 +670,8 @@ pin-4 held-out check. Its reflected solder fit identifies the two small-joint
 columns left of D28 with a 0.632 px pin-4 check; pins 7-8 extrapolate beneath
 the broad rail and are explicitly not electrical evidence. Together the D106,
 D28, and D96 fits guard the physical row spacing rather than preserving the
-former overlapping placeholder grid. D106.7 is promoted only because complete
-copper continuity to D93.26 is visible; all other unresolved functional pins
-remain measurements.
+former overlapping placeholder grid. D106.7 remains a physical measurement
+request; the trace under its former projection does not establish a joint.
 
 The registered `PXL_20260710_200402344.jpg` serial-area view also corrects an
 older placeholder column. The marked notch-down К170УП2 left of R30 is D104;
