@@ -57,6 +57,25 @@ wire/tape bundle. These views locate the meter probe but do not establish a
 remote net. Probe this joint separately from D100.9, whose photographed
 contact is at approximately `(2652,1545)` component and `(1182,1165)` solder.
 
+## Decision for the next physical check
+
+The archive has two separate proposed continuations here. Keep them separate
+in both the replica and the measurement notes until the board identifies
+their remote endpoints. With the original board unpowered, use the registered
+IC legs as probe points; the photo coordinates above are only a way to find
+those legs.
+
+| Probe pair | What the result establishes |
+| --- | --- |
+| D100.11 T ↔ D99.10 B2 | Continuity would join the two similarly annotated sheet-3 continuations on the physical board. An open reading leaves their source arrows independent. |
+| D100.11 T ↔ D100.9 OE_N | Checks the former replica short directly. The exact sheet-3 drawing has no local junction here, so any continuity needs a separate physical path to explain it. |
+| D100.9 OE_N ↔ D99.12 Q2_N | Checks the drawn local connection independently of T. |
+| D99.10 B2 ↔ D96.13 CLR2_N | Checks the other drawn local junction before following its sheet-1 continuation. |
+
+Neither a matching-looking arrow annotation nor an open reading at one probe
+pair identifies D100.11's remote driver. Trace that driver from D100.11 only
+after recording these four pair results.
+
 The routed replica previously had eleven track segments on the false
 D100.9/.11 common net. Those segments were removed from the routed and
 candidate PCBs when the pads were split; retaining them would preserve
