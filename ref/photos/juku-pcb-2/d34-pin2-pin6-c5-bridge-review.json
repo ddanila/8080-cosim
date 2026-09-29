@@ -75,5 +75,6 @@
   "d34_pin6_gap_joint_solder_px_approx": [
     1110,
     2057
-  ]
+  ],
+  "c5_pad_pair_candidate": "Assembly-relative x position and separate upper/lower D34 RC branches make front (3098,2345)/(3098,2395), solder (1110,2007)/(1110,2057) a strong C5.2/C5.1 hole-pair candidate; see c5-gap-pad-pair-candidate.json. Same-hole continuity and population remain open."
 }

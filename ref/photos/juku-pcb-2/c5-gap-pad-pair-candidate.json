@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "review_state": "strong C5 two-hole candidate from assembly position and separate D34 RC branches; same-hole continuity and population open",
+  "images": [
+    "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+    "ref/photos/dgsh5-109-009-e3/PXL_20260718_101911242.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg"
+  ],
+  "assembly_position": "Assembly crop (1450,900)-(2350,1800) places C5 to the right of C82 between D39 and D34. In crop coordinates, D39 right outline x≈594, D34 left outline x≈740, and C5 center x≈691: normalized gap position about 0.66. This is an artwork position, not exact pad geometry.",
+  "owner_position": "July front D39 right pin row x≈2990, D34 left row x≈3155, and the two filled joints share x≈3098: normalized gap position about 0.65. Their centers are near (3098,2345) and (3098,2395), about 50 px apart. July solder has corresponding separate joints near (1110,2007) and (1110,2057), also about 50 px apart.",
+  "circuit_relation": "Exact .009 sheet 2 draws C5 between D34.6 and D34.2/R33.1. Exposed front copper takes the lower joint toward D34.6. Exposed solder copper takes D34.2 to the upper joint, and front copper takes R33 left to the upper joint. The two joints have visible clearance on both faces; the earlier bridge claim is retracted.",
+  "decision": "Promote the upper/lower pair as a strong candidate for C5.2/C5.1 holes respectively, preserving the exact source pin roles. Do not assert a fitted C5, complete same-hole registration, or electrical isolation solely from images. The source PCB footprint remains a model choice until hole-to-pad and measured continuity are established.",
+  "next_inspection": "Power off: check front upper (3098,2345) to solder upper (1110,2007), front lower (3098,2395) to solder lower (1110,2057), upper to R33.1/D34.2, lower to D34.6, and upper to lower with any capacitor accounted for. Inspect the two holes for clipped C5 leads, solder fill, cuts, and old repair evidence."
+}

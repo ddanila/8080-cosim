@@ -98,5 +98,6 @@
   "r33_left_candidate_c5_node": "Upper front gap joint (3098,2345)/solder (1110,2007) is on D34.2/R33-left branch. A distinct lower joint (3098,2395)/(1110,2057) routes toward D34.6. The earlier retraction based on an alleged two-face short is withdrawn; neither joint is yet proved to be a C5 pad.",
   "r33_right_rail_limit": "The R33 right-hand wide F.Cu strip disappears under D34 body. A close July crop resolves D34.1 on a separate thin trace to its left, with no exposed bridge. Neither +5 V nor ground is photo-proved for the right lead; see r33-d34-pin6-source-conflict.json.",
   "r33_solder_pair": "July solder view 200522685 matches right/left R33 leads near (1005,1808)/(1227,1810), each within about 7 px of the corrected face map. The joints and nearby wide B.Cu rail are visibly separate; the right-hand destination remains hidden under D34 on F.Cu (r33-d34-pin6-source-conflict.json).",
-  "d34_pin2_pin6_photo_bridge": "RETRACTED: native crop separates upper D34.2/R33-left joint from lower D34.6 joint on both faces. See d34-pin2-pin6-c5-bridge-review.json."
+  "d34_pin2_pin6_photo_bridge": "RETRACTED: native crop separates upper D34.2/R33-left joint from lower D34.6 joint on both faces. See d34-pin2-pin6-c5-bridge-review.json.",
+  "c5_pad_pair_candidate": "Assembly-relative x position and separate upper/lower D34 RC branches make front (3098,2345)/(3098,2395), solder (1110,2007)/(1110,2057) a strong C5.2/C5.1 hole-pair candidate; see c5-gap-pad-pair-candidate.json. Same-hole continuity and population remain open."
 }
