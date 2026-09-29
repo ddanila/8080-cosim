@@ -16594,7 +16594,7 @@
       ]
     },
     "D94_D1_D99_A2N": {
-      "src": "owner continuity 2026-07-19 proves D94.2 reaches D99 К155АГ3 second-section active-low A input pin9 and R89.1; D94.2 does not reach D99.8 or GND, and R89.2 reaches +5 V Exact .009 Э3 sheet-3 overview PXL_20260718_101633062.jpg traces the D94.2 line across the top to D96.11 CLK2; detail PXL_20260718_101641055.jpg shows CLK2 crossing D28.10 without a junction. D96.11 physical continuity remains unmeasured.",
+      "src": "owner continuity 2026-07-19 proves D94.2 reaches D99 К155АГ3 second-section active-low A input pin9 and R89.1; D94.2 does not reach D99.8 or GND, and R89.2 reaches +5 V Exact .009 Э3 sheet-3 overview PXL_20260718_101633062.jpg traces the D94.2 line across the top to D96.11 CLK2; detail PXL_20260718_101641055.jpg shows CLK2 crossing D28.10 without a junction. Owner solder crop 200506061 shows a candidate B.Cu route from registered D96.11 near (625,1994) to a joint near registered D28.11 (839,1996), which belongs to separate FDC_DRQ in the exact source; confirm both pin identities and continuity before changing either model net.",
       "nodes": [
         [
           "D94",
@@ -16895,7 +16895,7 @@
       ]
     },
     "FDC_DRQ": {
-      "src": "recovered .009 Э3 sheet 3 and owner continuity 2026-07-20 directly join D93 DRQ/pin38, D28 open-collector inverter input pin11, and R94.1; physical R94 is the 10-kohm pull-up immediately above D28 and its other terminal joins +5 V",
+      "src": "recovered .009 Э3 sheet 3 and owner continuity 2026-07-20 directly join D93 DRQ/pin38, D28 open-collector inverter input pin11, and R94.1; physical R94 is the 10-kohm pull-up immediately above D28 and its other terminal joins +5 V. Owner solder photo 200506061 has a candidate D28.11-to-D96.11 B.Cu line conflicting with the exact-source separate DRQ and CLK2 nets; check the two pins directly before a model merge",
       "nodes": [
         [
           "D93",

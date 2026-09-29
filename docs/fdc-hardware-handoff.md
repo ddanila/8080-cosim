@@ -99,8 +99,7 @@ Figure 11 contains no mux and only one half of a single 74123. The owner
 photos identify the packages but the recovered Juku sheet, not the generic
 reference circuit, closes D95 and D106 completely plus D96's exact wiring.
 D96 section-1 restart phase remains undefined; D96.9-to-D101 continuity is physically pending,
-D96.11-to-D94.2 continuity remains unmeasured,
-and the D99.10-joined pin13 sheet-1 source remains a verification gate.
+D96.11-to-D94.2 continuity remains unmeasured. A native owner solder crop now shows a candidate D96.11-to-D28.11/DRQ B.Cu line that conflicts with those separate exact-source nets; check that apparent join directly. The D99.10-joined pin13 sheet-1 source remains a verification gate.
 
 ## Soviet VG93 Circuit Cross-Check
 
@@ -285,9 +284,11 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   continuity, D96.11 CLK2-to-D94.2/D99.9 continuity, and whether sheet-3
   D96.13 /CLR2 joins D99.10 B2; identify the shared clear/B2 source separately. Capture WREQ_N at pins1/4 with Q1/pin5
   and /Q1/pin6 because simultaneous async release leaves restart phase
-  undefined. The registered solder
-  view excludes B.Cu departures at both pads, and the obscured F.Cu
-  paths plus non-unique drawing marks do not prove PIC joins. Direct D93.39/38-to-D10.18/19
+  undefined. The solder view leaves D96.9 without a clear B.Cu departure,
+  but D96.11 has a visible route to a joint near D28.11. Meter D96.11↔D28.11
+  separately from D94.2/D99.9; the conditional owner copper conflicts with
+  the source DRQ/CLK2 separation. Obscured F.Cu paths and non-unique
+  drawing marks do not prove other PIC joins. Direct D93.39/38-to-D10.18/19
   was a retired MAME-era assumption: sheet 3 instead proves the local
   D28/R93/R95/D96 path. Primary device truth makes the shared
   /PRE2/D2 wiring set-only while /CLR2 is inactive; capture

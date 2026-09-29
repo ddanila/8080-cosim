@@ -205,6 +205,13 @@ continues east to open annulus `(1295,958)`, also repeated in overlapping
 `200506061`. This accepts the local two-face R67.2 joint and trace, while the
 far annulus's front counterpart and VT2-base continuity remain open. D102 and neighboring D97 inverse fits place that back hole near front `(2937,1739)` and `(2905,1736)` respectively; neither is a unique visible drill. Three neighboring open holes register between the May and July component views within about 2 px of shift (+26,-935), and the two predicted points are bare in both views. Nearby front annuli must not be snapped to the back hole.
 
+The D96 solder reread likewise withdraws the old claim that both D96.9 and
+D96.11 lack B.Cu departures. Pin11 near `(625,1994)` has a visible narrow
+route to a joint near registered D28.11 `(839,1996)` in `200506061`. Exact
+`.009` sheet 3 keeps CLK2/D94.2 and raw DRQ/D28.11 separate, so this
+conditional owner-board join requires direct continuity before any net merge.
+D96.9 still has no clear local B.Cu continuation.
+
 The reviewed package fits also corrected the source placement/orientation of
 D2, D10, D40, D41, D94, D100, and D98. A D11 solder fit corrects endpoint
 coordinates without changing its source placement. At D98.7, the component
@@ -1133,7 +1140,7 @@ may support a change to `kicad/juku.board.json`.
 The automated seed/review queue is complete. Further work should be targeted,
 not another broad projection pass:
 
-1. D96.9-to-D101 input continuity and D96.11-to-D94.2 continuity and D100 pins 9/11; D93.19/.24/.26/.37
+1. D96.9-to-D101 input continuity, D96.11-to-D94.2 continuity, and the new solder-side D96.11-to-D28.11/DRQ candidate conflict; also D100 pins 9/11 and D93.19/.24/.26/.37
    plus raw D93.38/.39 into D28 are now source-closed.
 2. Remaining functional pins of D99 and D101. D28/D95/D97/D98/D102/D106 are
    source-closed by the recovered `.009` electrical sheet. D96's section-1

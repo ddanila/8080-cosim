@@ -5,7 +5,7 @@
     "9",
     "11"
   ],
-  "status": "photo-exhausted / continuity required",
+  "status": "D96.11 local B.Cu-to-D28.11 candidate found; source conflict and D96.9 continuation require continuity",
   "drawing_observation": {
     "source": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101641055.jpg",
     "sha256": "86740a80fb494cdb08f4de3a120cab83e4f6638cf5885d4c83418a4a94c881a7",
@@ -63,13 +63,24 @@
       850,
       2220
     ],
-    "observation": "registered reflected package fit fixes both solder pads; neither pad has a B.Cu departure, so any remote continuation is on F.Cu or changes layer at a separately obscured handoff"
+    "observation": "The reflected package fit places D96.11 near (625,1994), within about 6 px of a native visible solder joint around (624,1988). An uninterrupted B.Cu line rises east from that joint, runs right around y1963, and descends to a filled joint around (849,1990), about 11 px from registered D28.11 at (839,1996). D96.9 near (625,2086) has no comparably clear local B.Cu departure. The D96.11-to-D28.11 pin match is strong but conditional on those joint centers; it conflicts with the separate exact-source clock and DRQ nets."
+  },
+  "pin11_photo_route_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+    "native_crops_xyxy": [[570, 1850, 820, 2170], [580, 1920, 1150, 2040]],
+    "d96_11_registered_px": [625.4, 1994.2],
+    "d96_11_observed_joint_px_approx": [624, 1988],
+    "d28_11_registered_px": [838.8, 1995.6],
+    "far_observed_joint_px_approx": [849, 1990],
+    "visible_b_cu": "Continuous narrow trace from the D96-side joint northeast to about (650,1963), east to about (820,1963), then southeast into the D28-side joint. The full native crop separates this line from the parallel runs above and below.",
+    "source_conflict": "Exact .009 sheet 3 places D96.11 CLK2 with D94.2/D99.9/R89.1, while D28.11 is the D93.38 DRQ/R94.1 input. The photographed B.Cu route would join these modeled nets if both physical pin registrations are correct. Do not merge or reroute the replica from photo alone.",
+    "next_check": "With power off, measure D96.11↔D28.11 directly, then each against D94.2, D99.9, D93.38, and R94.1. If the join is confirmed, inspect for a board modification or source/model pin-registration error before changing either net."
   },
   "unresolved": [
     "D96.9 Q2-to-D101 A0-A3 physical continuity",
-    "D96.11 CLK2-to-D94.2/D99.9 physical continuity"
+    "D96.11 CLK2-to-D94.2/D99.9 physical continuity and its apparent D28.11/DRQ copper join"
   ],
-  "non_promotion_basis": "both D96.9-to-D101 and D96.11-to-D94.2 are source-closed by the full overview, but registered board views exclude direct B.Cu chases and leave F.Cu paths obscured; direct continuity is required.",
+  "non_promotion_basis": "Both D96.9-to-D101 and D96.11-to-D94.2 are source-closed by the full overview. D96.9's owner continuation remains hidden. D96.11's newly visible B.Cu route appears to reach D28.11/DRQ instead, so physical pin continuity and the drawing/board discrepancy must be resolved before any model-net change.",
   "overview_observation": {
     "source": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101633062.jpg",
     "sha256": "5f58dff9c2e1f8237f1c54e44a7ff5db2381b7c503d5e25466fcd219915f7047",

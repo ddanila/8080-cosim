@@ -15,9 +15,16 @@ output stroke near `(1580,915)` without a dot. D94 output-0/pin-1
 uses a different parallel conductor; this trace starts at pin 2.
 
 Owner chip-removed continuity already joins D94.2 to D99.9 and R89.1.
-The source model now adds D96.11 to that island. The archived component and
-reflected solder views identify the D96.11 pad but cannot follow its obscured
-F.Cu path to D94.2. Thus the D96.11 branch is drawing-closed and physically
-unconfirmed. With D94 and D96 removed and power off, check D96.11 against
-D94.2, D99.9, and R89.1. Also check D96.11 against D96.10 to test the
-unmarked crossing without assuming a join.
+The source model includes D96.11 on that island. A native owner solder reread
+of `PXL_20260710_200506061.jpg` crop `(580,1920)`–`(1150,2040)` shows a
+continuous B.Cu line from the joint near registered D96.11 `(625,1994)`
+through `(650,1963)` and `(820,1963)` to a filled joint near registered
+D28.11 `(839,1996)`. The visible joint centres are about `(624,1988)` and
+`(849,1990)`, within roughly 6/11 px of the package fits. Exact sheet 3
+places D28.11 on raw DRQ with D93.38/R94.1, separate from D96.11 CLK2.
+The photographed route is therefore a conditional owner-board/source
+conflict, not grounds to merge the replica nets. With power off, check
+D96.11↔D28.11 directly, then D96.11 against D94.2, D99.9, R89.1,
+D93.38, and R94.1. Also check D96.11↔D96.10 to test the unmarked drawing
+crossing, and revisit the photo pin registration if the apparent DRQ join
+fails continuity.
