@@ -81,5 +81,12 @@
     "package_contact_residual_px": "About 0.0–6.1 px; D40 solder centers are approximate native-photo reads.",
     "far_hole": "Front (1842,2295) predicts solder (2367,1950), about 12 px east of the D38.1/CAS annulus (2355,1950). The previous D41/D38 fit instead predicts (2355,1964), about 14 px south. Independent neighboring-package choices therefore miss the proposed same-hole pairing in different directions.",
     "conclusion": "Neither fit proves that the visible C89-position front hole is the D41-side/CAS-joined solder annulus. Both residuals exceed their package-contact residuals, so owner continuity remains the discriminator."
+  },
+  "far_hole_native_center_reread": {
+    "front_image_crop_xyxy": ["PXL_20260710_200418174.jpg", 1770, 2220, 1920, 2360],
+    "front_drill_center_px_approx": [1843, 2297],
+    "solder_image_crop_xyxy": ["PXL_20260710_200522685.jpg", 2300, 1900, 2430, 2010],
+    "cas_joined_drill_center_px_approx": [2356, 1953],
+    "observation": "Independent native-pixel enlargement puts the candidate front drilled center slightly lower than the prior (1842,2295) estimate. The B.Cu annulus remains joined to west and northeast traces. This reread does not remove the 12-14 px disagreement between the two package-only cross-face fits and the proposed far-hole pairing; it strengthens the need for electrical continuity before treating D41.14 and D38.1 as one physical node."
   }
 }
