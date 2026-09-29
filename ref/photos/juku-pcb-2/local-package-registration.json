@@ -165,6 +165,17 @@
       "note": "The same 2×8 field independently registered in 200527310 appears in this overlap with x about 1820 px farther east and y about 33 px north. Its two complete rows and unique neighboring narrow traces identify D2.14 at the third left-column joint. Pad identity does not by itself establish the owner's ground continuity."
     },
     {
+      "refdes": "R12",
+      "side": "component",
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+      "model": "similarity",
+      "anchors": [
+        {"pin": "1", "image_px": [1745.0, 2190.0], "use": "fit", "observation": "left visible solder joint of the horizontal 1K0 body below-left of registered D2"},
+        {"pin": "2", "image_px": [1960.0, 2190.0], "use": "fit", "observation": "right visible solder joint beside D2's lower-left socket corner"}
+      ],
+      "note": "Exact .009 assembly 114607591 labels R12 immediately below-left of D2, matching this July body and the May 201933909 1K0 body at the same relative location. These are approximate joint centers for placement and probing; axial symmetry and visual overlap do not establish electrical pin numbering. The nearby D1.24 WAIT front trace passes beneath the body without a visible lead junction; see d1-wait-source-review.json."
+    },
+    {
       "refdes": "D4",
       "side": "component",
       "image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
