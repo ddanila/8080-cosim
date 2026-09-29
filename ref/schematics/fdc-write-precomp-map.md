@@ -16,7 +16,7 @@ The recovered ДГШ5.109.009 Э3 sheet 3 closes the target board's write-data d
 
 ## Conflict resolution
 
-The sheet prints `R99 4.7k` for both the D97 read-stage timing resistor and the D101 output pull-up, although the assembly has one R99. Target component and solder views instead close physical R99 between D101.4/R92.1 and D101.8/GND. That observed target topology is retained.
+Two overlapping exact .009 sheet-3 detail frames independently print `R99 4,7к`: `PXL_20260718_101644861.jpg` beside D97 timing network (native crop about (1390,1230)-(2260,1540)) and `PXL_20260718_101648508.jpg` beside D101 Q0/pin7 (native crop (1250,390)-(1780,1050)). The duplicated designator is legible in both originals, although the assembly has one R99. Target component and solder views instead close physical R99 between D101.4/R92.1 and D101.8/GND. That observed target topology is retained.
 
 The sheet labels a separate `R86 470` WREQ reset pull-up. Target views unambiguously place physical R86=4.7k in the four-resistor timing column, with R86.1 on C19.2/D97.6 and R86.2 on the common +5 V rail. The target identity and connectivity override the sheet annotation.
 

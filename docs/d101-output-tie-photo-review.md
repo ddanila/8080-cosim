@@ -18,8 +18,7 @@ pin-7-to-pin-9 isolation measurement remains a useful board check, but the
 exact drawing no longer supplies a reason to merge them.
 In net notation, D101.7 and D101.9 have no visible local B.Cu bridge.
 
-The source's separate `R99` label remains problematic: it duplicates the
-timing-resistor designator, while owner copper instead places the physical
+The source's separate `R99` label remains problematic: the native D97 detail tile `PXL_20260718_101644861.jpg` and D101 detail tile `PXL_20260718_101648508.jpg` each legibly print `R99 4,7к`, so it duplicates the timing-resistor designator, while owner copper instead places the physical
 R99 between D101.4/R92.1 and D101.8/GND. That source-to-board discrepancy
 is independent of the corrected output crossing.
 
