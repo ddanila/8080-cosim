@@ -116,7 +116,7 @@ new, missing, or multiply assigned gap instead of silently omitting it.
 | C84 physical landing and population | - | - |
 | C73 trimmer range | - | `C73` |
 | analog/video/sound/serial bring-up captures | `D34_SIG`, `D34_SYNC`, `VT2_BASE` | - |
-| photos and passive values | `D34_RC_DRIVE`, `D34_RC_NODE` | `C35`, `C36`, `C37`, `C38`, `C39`, `C40`, `C41`, `C42`, `C43`, `C44`, `C45`, `C46`, `C47`, `C48`, `C49`, `C50`, `C54`, `C55`, `C56`, `C57`, `C58`, `C59`, `C60`, `C61`, `C62`, `C64`, `C65`, `C66`, `C67`, `C68` |
+| photos and passive values | - | `C35`, `C36`, `C37`, `C38`, `C39`, `C40`, `C41`, `C42`, `C43`, `C44`, `C45`, `C46`, `C47`, `C48`, `C49`, `C50`, `C54`, `C55`, `C56`, `C57`, `C58`, `C59`, `C60`, `C61`, `C62`, `C64`, `C65`, `C66`, `C67`, `C68` |
 | factory insulated-wire lengths | `PHI1_D35`, `PHI2_D35` | `W11`, `W14`, `W19`, `W7`, `W8` |
 
 ## Current D94 blockers

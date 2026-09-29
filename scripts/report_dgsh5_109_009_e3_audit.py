@@ -60,7 +60,7 @@ MARKERS = {
     "ref/photos/juku-pcb-2/c5-c82-d39-annulus-exclusion.json": ("D39.10", "XTAL16M", "within roughly 2 px", "Exclude"),
     "ref/photos/juku-pcb-2/c5-r33-rc-node-landing-review.json": ("R33-left", "Restore the upper", "D34.6", "1110"),
     "ref/photos/juku-pcb-2/r33-d34-pin6-source-conflict.json": ("D34.6", "D34.2", "two_joints_native_reread", "Power off"),
-    "ref/photos/juku-pcb-2/d34-pin2-pin6-c5-bridge-review.json": ("short B.Cu strip", "D34.2", "D34.6", "RETRACTED", "p2_sheet2.png"),
+    "ref/photos/juku-pcb-2/d34-pin2-pin6-c5-bridge-review.json": ("D34.2 B.Cu strip", "D34.2", "D34.6", "RETRACTED", "p2_sheet2.png"),
     "ref/photos/juku-pcb-2/c29-landing-pair-review.json": ("56 pF", "R35's lower lead", "D56.8", "D35.13"),
     "ref/photos/juku-pcb-2/r106-cross-date-review.json": ("510R", "910", "56 pF", "D35.13"),
     "ref/photos/juku-pcb-2/c99-assembly-photo-review.json": ("C99=160", "160 pF", "R17", "ground bar", "physical pad identity"),

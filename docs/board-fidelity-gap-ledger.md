@@ -26,7 +26,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Nets modeled: `463`
 - Chip-level fidelity gaps: `62`
 - Source-proved passive refs absent from model: `9`
-- Net-level source-risk gaps: `46`
+- Net-level source-risk gaps: `44`
 - Explicitly dispositioned closed net risks: `14`
 - Documented intentional no-connect pins: `63`
 
@@ -84,7 +84,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 2 | 6 |
 | PROM/decode | 0 | 1 |
-| logic/source | 19 | 29 |
+| logic/source | 19 | 27 |
 | memory/timing | 0 | 2 |
 | placement/value | 41 | 0 |
 | sound/analog | 0 | 2 |
@@ -258,8 +258,6 @@ same fidelity ledger as the chip provenance gaps.
 | `D26_PB4_BOUNDARY` | logic/source | `D26.22` | sheet-1 full-resolution: D26 PB4 pin22 enters the E8 CONTRDAT selector region, but the absent switch symbol prevents a proved remote endpoint, so this remain... |
 | `D26_PC0_D3_I5` | logic/source | `D26.14, D3.5, R15.1` | direct .009 owner continuity 2026-07-14: D26 PC0/pin14 reaches D3 inverter input pin5 and owner reports a resistor path to +5 V; exact .009 sheet-1 photo PXL... |
 | `D26_PC1_D3_I3` | logic/source | `D26.15, D3.3, R16.1` | direct .009 owner continuity 2026-07-14: D26 PC1/pin15 reaches D3 inverter input pin3 and owner reports a resistor path to +5 V; exact .009 sheet-1 photo PXL... |
-| `D34_RC_DRIVE` | logic/source | `D34.6, C5.1` | exact .009 sheet-2 PXL_20260718_101911242.jpg: D34 first XOR output pin 6 drives C5.1 in the counter-load pulse shaper; owner two-face photos support a coppe... |
-| `D34_RC_NODE` | logic/source | `C5.2, R33.1, D34.2` | exact .009 sheet-2 PXL_20260718_101911242.jpg: C5.2 joins R33.1 and D34 second-XOR input pin 2; owner two-face photos support a copper bridge through R33 lef... |
 | `D34_SIG` | video/analog | `D34.11, R63.1` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
 | `D36_CAS_IN` | memory/timing | `D36.12, D36.13` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and o... |
