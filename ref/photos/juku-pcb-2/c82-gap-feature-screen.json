@@ -1,15 +1,16 @@
 {
   "schema_version": 1,
-  "review_state": "simple C82 two-feature column not promoted; lower feature has visible D39-side signal-route candidate",
+  "review_state": "lower x3040 feature front-routes to counted D39.9/LATCH_SIG; simple C82 pair excluded pending same-hole confirmation",
   "images": [
     "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
+    "ref/photos/dgsh5-109-009-e3/PXL_20260718_101908284.jpg",
     "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
     "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg"
   ],
   "coordinate_system": "original source-image pixels; approximate native-crop reads",
   "assembly_context": "The factory drawing places C82 left of C5 in the D39/D34 gap. The C5 candidate column is near front x3098. A C82 search column is therefore farther left, near x3040, but assembly outlines alone do not define holes.",
-  "front_screen": "In native front crop (2930,2210)-(3190,2680), an upper filled feature near (3040,2310) and lower filled feature near (3040,2565) form a tempting vertical pair. The lower feature has a visible copper route back toward the right contact row of D39. A nearby open annulus (3040,2375) is already photo-closed to D39.10/XTAL16M and excluded from C82. The lower filled feature cannot be assigned to a +5 V/GND bypass terminal by position alone; its exact D39 pin number needs a native pin-row count.",
-  "solder_screen": "D34-local reflection sends front x3040 to solder x≈1166, and y2310/2565 to about y1974/2219. The corresponding solder neighborhood has two large joints on separate wide runs. Neither wide run has yet been traced to an independently known +5 V or ground contact. Same-hole identity and polarity remain open.",
-  "decision": "Do not promote the apparent x3040 vertical pair as C82. First resolve the lower D39-side trace and both solder rails; find a distinct pair if either reaches a signal node. Preserve C82 as placement pending in board JSON.",
-  "next_inspection": "Power off: meter the lower front joint near (3040,2565) to counted D39 right-row pins, especially pin9/LATCH_SIG and pin10/XTAL16M, and to known +5 V/GND; meter upper joint near (3040,2310) independently. Verify both proposed solder same-hole matches and their rail polarities before assigning C82."
+  "front_screen": "Native front crop (2760,2240)-(3110,2670) shows all seven D39 right-row contacts with notch at top. Counting top to bottom 14,13,12,11,10,9,8, the lower filled gap feature near (3040,2565) follows the sixth right-row contact, physical D39.9, by an exposed jog. Board source names D39.9 LATCH_SIG. The separate open annulus near (3040,2375) follows the fifth right-row contact D39.10/XTAL16M and was already excluded. The upper filled feature near (3040,2310) has no proved rail polarity.",
+  "solder_screen": "D34-local reflection sends front x3040 to solder x≈1166, and y2310/2565 to about y1974/2219. The lower proposed solder joint belongs to a wide run, but no same-hole continuity to front D39.9 has been measured. The upper solder neighborhood also has a wide run with no independently established +5 V/GND polarity. Visual width alone must not assign either rail.",
+  "decision": "Exclude the lower front (3040,2565) feature as a C82 bypass pad candidate because its exposed F.Cu reaches counted D39.9/LATCH_SIG. Do not assign the proposed solder counterpart until same-hole confirmation. Keep C82 placement pending and seek another ground partner for any upper rail candidate.",
+  "next_inspection": "Power off: confirm lower front feature (3040,2565) to D39.9, and test its proposed solder counterpart near (1166,2219) to D39.9. Identify upper feature (3040,2310) and proposed solder counterpart near (1166,1974) against known +5 V/GND, then find a distinct second bypass hole."
 }
