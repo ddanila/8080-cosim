@@ -496,6 +496,9 @@ while electrical sheet 2 identifies it as 20 ohms. D37 is now centred at
 solder fit or new electrical continuity is claimed.
 `kicad/check_d37_photo_placement.py` guards the source hashes, bracketing
 registration, package fit, R57/R46 values, and all three placements.
+Native July and May component crops also expose a short F.Cu neck joining
+the counted D36.12 and D36.13 pads. This closes their local physical tie;
+the D36 solder field and remote CAS-input driver remain unregistered.
 
 The marked `К555ТЛ2` D13 now has direct component and reflected-solder fits.
 The right-facing notch and complete component contact field put D13.2 at

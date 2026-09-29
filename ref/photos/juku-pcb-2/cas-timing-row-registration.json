@@ -94,8 +94,15 @@
     "orientation": "The molded notch is at the bottom; counting the complete seven-contact rows makes physical pin 1 bottom-right, pin 7 top-right, pin 8 top-left, and pin 14 bottom-left in this component view.",
     "pin12_joint_px_approx": [1830, 1195],
     "pin13_joint_px_approx": [1830, 1250],
-    "observation": "The second and third contacts up from the lower-left pin-14 joint are the source-tied CAS NAND inputs D36.13 and D36.12 respectively. Their component-side joint metal is individually visible; no continuous front-copper bridge between those two joints is proved in the exposed crop. These are package-pin probe centers, not accepted solder-side same-hole matches or a remote driver assignment."
+    "observation": "The second and third contacts up from the lower-left pin-14 joint are the source-tied CAS NAND inputs D36.13 and D36.12 respectively. Native crop (1800,1160)-(1850,1290) shows a narrow bright F.Cu neck from the pin12 pad near y1205 down through y1220-1240 to the pin13 pad near y1258, with brown clearance west of it. The two pins are locally photo-joined on F.Cu; these are still not accepted solder-side same-hole matches or a remote driver assignment."
   },
-  "d36_may_cross_date": "Independent May 19 component photo PXL_20260519_201927098.jpg native crop (1500,1400)-(2150,2350) directly shows the same КР531ЛА12 marking and bottom-facing notch beside the upright 20-ohm R57-position body. The lower-left pin sequence again puts physical D36.12 and D36.13 near May pixels (1900,2050)/(1900,2110), respectively. The two exposed contacts are distinct in this angle; the crop does not prove an F.Cu tie, a same-hole solder match, or the common upstream source. The July coordinates remain the sharper probe centers.",
+  "d36_may_cross_date": "Independent May 19 component photo PXL_20260519_201927098.jpg native crop (1500,1400)-(2150,2350) directly shows the same КР531ЛА12 marking and bottom-facing notch beside the upright 20-ohm R57-position body. Counting seven left-row contacts from the bottom pin14 puts D36.13 immediately above and D36.12 next above. Native crop (1870,2020)-(1930,2140) repeats the short bright neck between those two adjacent pads, corroborating the July F.Cu tie. The crop does not identify a same-hole solder match or the common upstream source. The July coordinates remain the sharper probe centers.",
+  "d36_input_front_bridge_review": {
+    "july_image": "PXL_20260710_200445914.jpg",
+    "july_crop_xyxy": [1800, 1160, 1850, 1290],
+    "may_image": "PXL_20260519_201927098.jpg",
+    "may_crop_xyxy": [1870, 2020, 1930, 2140],
+    "decision": "Two independent native component views support a direct local F.Cu tie of D36.12 and D36.13, consistent with exact .009 sheet 2. This closes the owner-board local tie only. The backside D36 field and the tied input's upstream driver remain unregistered."
+  },
   "disposition": "D37/D39 physical identities and placements corrected; R57 and R46 vertical placements, lead spans, and schematic values closed; electrical nets unchanged"
 }

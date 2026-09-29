@@ -114,6 +114,13 @@ A registered solder close-up also shows no visible B.Cu departure
 from D58.11 and no join to the broad +5 V strip below it; its
 component-side trace and remote driver remain unresolved.
 
+For D36, two native owner component views (`PXL_20260710_200445914.jpg`
+and `PXL_20260519_201927098.jpg`) show a short front-copper neck between
+the physically counted D36.12 and D36.13 pads. This corroborates their
+source-drawn local tie. The seven-contact solder field remains unassigned,
+and the common input's upstream driver is still unknown; see
+`ref/photos/juku-pcb-2/cas-timing-row-registration.json`.
+
 ## Interpretation
 
 - The functional board model has enough traced structure for fabrication
