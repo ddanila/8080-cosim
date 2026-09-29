@@ -95,7 +95,9 @@ cross-side fit now projects that lead near `(874,956)` in solder image
 The prior bare-copper/no-via claim used the wrong front point. The local route
 is photo-supported. Independent D102 and D97 inverse fits search for the far
 annulus near front `(2937,1739)` and `(2905,1736)` respectively, but neither
-has a unique visible drill; the source-drawn VT2-base destination still
+has a unique visible drill. Three adjacent July holes repeat in the May
+component view under a consistent (+26,-935) px local shift; both predicted
+points remain bare there too. The source-drawn VT2-base destination still
 requires continuity. Evidence is in
 `ref/photos/juku-pcb-2/r67-photo-exhaustion.json`.
 

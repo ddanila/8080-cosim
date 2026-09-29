@@ -203,7 +203,7 @@ The D102-local cross-face fit projects it near `(874,956)` in `200522685`,
 within about 5 px of a real solder joint `(869,953)`. A visible B.Cu line
 continues east to open annulus `(1295,958)`, also repeated in overlapping
 `200506061`. This accepts the local two-face R67.2 joint and trace, while the
-far annulus's front counterpart and VT2-base continuity remain open. D102 and neighboring D97 inverse fits place that back hole near front `(2937,1739)` and `(2905,1736)` respectively; neither is a unique visible drill, so nearby front annuli must not be snapped to it.
+far annulus's front counterpart and VT2-base continuity remain open. D102 and neighboring D97 inverse fits place that back hole near front `(2937,1739)` and `(2905,1736)` respectively; neither is a unique visible drill. Three neighboring open holes register between the May and July component views within about 2 px of shift (+26,-935), and the two predicted points are bare in both views. Nearby front annuli must not be snapped to the back hole.
 
 The reviewed package fits also corrected the source placement/orientation of
 D2, D10, D40, D41, D94, D100, and D98. A D11 solder fit corrects endpoint

@@ -61,9 +61,19 @@
     "d102_fit_inverse_front_px_approx": [2937, 1739],
     "d97_local_fit_inverse_front_px_approx": [2905, 1736],
     "d97_fit_basis": "Registered D97 front/solder pins 1,8,9 in local-package-registration.json and endpoints.csv; front (2579,1599)/(2971,1595)/(2969,1427) paired with solder (1615,1097)/(1228,1097)/(1228,1263). This neighboring-package fit is independent of the D102 fit used for R67's lead joint.",
-    "nearest_front_open_annuli_px_approx": [[2945, 1778], [2915, 1838]],
-    "observation": "The D102 and D97 inverse fits disagree by about 32 px in x at this extrapolated site. Neither predicted point contains a uniquely visible front drill in the native component photo; the upper nearby open annulus is roughly 40–58 px from the predictions, and the lower is farther. A nearby resistor joint is also separate. Do not snap the back annulus to one of these front features or infer a VT2-base route from its visual proximity.",
+    "nearest_front_open_annuli_px_approx": [[2860, 1726], [2940, 1779], [2915, 1838]],
+    "observation": "The D102 and D97 inverse fits disagree by about 32 px in x at this extrapolated site. Neither predicted point contains a uniquely visible front drill in the native component photo; the closest open holes are roughly 40–46 px from the respective predictions, and the third is farther. A nearby resistor joint is also separate. Do not snap the back annulus to one of these front features or infer a VT2-base route from its visual proximity.",
     "decision": "The B.Cu joint-to-annulus route is photo-supported; the annulus's through-hole mate and onward front conductor remain a direct owner continuity and local registration task."
+  },
+  "far_annulus_may_cross_date_check": {
+    "may_component_image": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
+    "july_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "july_open_hole_landmarks_px_approx": [[2860, 1726], [2940, 1779], [2915, 1838]],
+    "may_same_holes_px_approx": [[2886, 791], [2967, 844], [2940, 902]],
+    "local_july_to_may_shift_px_approx": [26, -935],
+    "may_search_points_from_d97_d102_px_approx": [[2931, 801], [2963, 804]],
+    "observation": "Three distinctive front open holes in July crop (2820,1680)-(3040,1880) repeat in May crop (2820,730)-(3070,950), each within about 2 px of the same local translation. Applying that registered translation to the D97 and D102 inverse search points for solder (1295,958) lands on unperforated board in the independent May image. The two nearest visible holes are distinct from both predictions.",
+    "decision": "The archived May angle corroborates the July negative drill read at the projected points. Neither package fit supplies a unique same-hole front match for the R67-side far solder annulus."
   },
   "unresolved": ["R67.2 remote net and the far open annulus's exact front-side counterpart"],
   "correction": "Withdraw the former photo-exhausted/no-via conclusion. Its front coordinate (3321,1698) was about 44 px west and 32 px north of the actual upper lead joint, displacing the solder projection onto unrelated bare copper. The corrected point (3365,1730) projects to an observed solder joint within about 5 px.",
