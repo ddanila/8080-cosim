@@ -54,6 +54,17 @@
       "observation": "The overlapping solder tile repeats the narrow run from a filled joint near (555,2410) to an open annulus near (915,2410). These are navigation-grade coordinates from the overlap, not an independent front-to-back fit."
     }
   ],
+  "far_annulus_front_search": {
+    "back_hole_px_approx": [1295, 958],
+    "front_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "front_crop_xyxy": [2850, 1650, 3200, 2300],
+    "d102_fit_inverse_front_px_approx": [2937, 1739],
+    "d97_local_fit_inverse_front_px_approx": [2905, 1736],
+    "d97_fit_basis": "Registered D97 front/solder pins 1,8,9 in local-package-registration.json and endpoints.csv; front (2579,1599)/(2971,1595)/(2969,1427) paired with solder (1615,1097)/(1228,1097)/(1228,1263). This neighboring-package fit is independent of the D102 fit used for R67's lead joint.",
+    "nearest_front_open_annuli_px_approx": [[2945, 1778], [2915, 1838]],
+    "observation": "The D102 and D97 inverse fits disagree by about 32 px in x at this extrapolated site. Neither predicted point contains a uniquely visible front drill in the native component photo; the upper nearby open annulus is roughly 40–58 px from the predictions, and the lower is farther. A nearby resistor joint is also separate. Do not snap the back annulus to one of these front features or infer a VT2-base route from its visual proximity.",
+    "decision": "The B.Cu joint-to-annulus route is photo-supported; the annulus's through-hole mate and onward front conductor remain a direct owner continuity and local registration task."
+  },
   "unresolved": ["R67.2 remote net and the far open annulus's exact front-side counterpart"],
   "correction": "Withdraw the former photo-exhausted/no-via conclusion. Its front coordinate (3321,1698) was about 44 px west and 32 px north of the actual upper lead joint, displacing the solder projection onto unrelated bare copper. The corrected point (3365,1730) projects to an observed solder joint within about 5 px.",
   "next_check": "With power off, confirm R67 upper lead to solder (869,953), the east open annulus (1295,958), and VT2 base/R62.2/R63.2/R64.1 separately. Trace the far annulus's front counterpart before assigning R67.2 to VT2_BASE in the target model."

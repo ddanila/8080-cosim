@@ -93,8 +93,10 @@ cross-side fit now projects that lead near `(874,956)` in solder image
 `(869,953)`. Native copper runs east without a break to open annulus
 `(1295,958)`; overlapping `200506061` repeats the joint-to-annulus pattern.
 The prior bare-copper/no-via claim used the wrong front point. The local route
-is photo-supported, while the far annulus's front counterpart and the
-source-drawn VT2-base destination still require continuity. Evidence is in
+is photo-supported. Independent D102 and D97 inverse fits search for the far
+annulus near front `(2937,1739)` and `(2905,1736)` respectively, but neither
+has a unique visible drill; the source-drawn VT2-base destination still
+requires continuity. Evidence is in
 `ref/photos/juku-pcb-2/r67-photo-exhaustion.json`.
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
