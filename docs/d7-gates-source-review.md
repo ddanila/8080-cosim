@@ -70,9 +70,13 @@ visible brown gap and belongs to a different conductor. The northbound
 conductor aligns with D29.2 at the cropped upper package edge. The saved
 component-grid panorama maps the independently reviewed D29.2 waypoint
 `(2255,2352)` in `200354648` to `(2482,1005)` in `200411500`, within about
-10 px of this same ring. Thus the far B.Cu annulus is the photo-registered
-opposite face of the D29.2 **waypoint**, not an arbitrary gap hole. The white
-cable still hides a short D29.2-to-waypoint segment, and the first
+10 px of this same ring. A direct two-ring fit between the native component
+tiles independently matches this waypoint to `(2480,1015)` and a neighboring
+ring `(2366,1830)` to `(2590,465)`; it projects the separately counted D29.2
+lead to `(2479,54)` at the visible cropped package edge. Thus the far B.Cu
+annulus is the photo-registered opposite face of the D29.2 **waypoint**,
+not an arbitrary gap hole. The white cable still hides a short
+D29.2-to-waypoint segment, and the first
 `(2190,700)` hole remains only a D7.3 same-hole candidate. Verify both ends
 by continuity before promoting the entire owner-board AMW_N path; see
 `ref/photos/juku-pcb-2/d29-pin2-front-chase.json`.
