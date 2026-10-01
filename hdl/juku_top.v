@@ -576,10 +576,12 @@ module juku_top #(
     ir16 U_D43 (.d(rdo[3]), .c(rdo[2]), .b(rdo[1]), .a(rdo[0]),
                 .ld_sh(load_vid), .oc(shift_g), .clk(xtal16m_w), .ser(1'b0), .qd(d43_q), .qa(), .qb(), .qc());
     // D37.13 receives D42.10 and the D35.4 open-collector output. D37.12
-    // arrives on a separate unread tag-3 source; the runnable oracle holds
-    // that input high to retain the prior pixel polarity.
+    // shares numbered rail 3 with D42/D43 CK. The runnable oracle holds
+    // that gate input high until its clock-gated pixel behavior is modeled.
     wire d37_out, d37_i12_tag3;
-`ifndef YOSYS
+`ifdef YOSYS
+    assign d37_i12_tag3 = xtal16m_w;
+`else
     assign d37_i12_tag3 = 1'b1;
 `endif
     la3_gate U_D37 (.a(d37_i12_tag3), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre),

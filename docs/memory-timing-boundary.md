@@ -44,7 +44,7 @@ python3 scripts/report_memory_timing_boundary.py
 | D42/D43 serializer packages retain their source-proved unused parallel outputs | PASS | sheet-2 draws only QD pin10; QA/QB/QC pins13/12/11 are explicit NCs on both packages |
 | D56 one-shot RC networks are guarded | PASS | `D56_CLR`, `D56_RC1/C1`, `D56_RC2/C2` |
 | D56 trigger, clock, and active-output topology is owner-closed | PASS | exact .009 E3 plus owner continuity 2026-07-21: D54.17->D56.10, D55.17->D56.2, D56.12->D55.15/.18, D56.5/.4->D34.9/.10; D57.17 remains separate |
-| D35 frame-interrupt inverter path is source-closed | PASS | exact .009 E3: D55.13 active-low VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23 and D57.18/CLK2; POF drives D35.3/.5 and R39.1, D35.4 joins D42.10/D37.13, D37.12 and D37.11 stay separate, and D35.6/R38.1 drive SHIFT_G |
+| D35 frame-interrupt inverter path is source-closed | PASS | exact .009 E3: D55.13 active-low VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23 and D57.18/CLK2; POF drives D35.3/.5 and R39.1, D35.4 joins D42.10/D37.13, D37.12 shares numbered rail 3 with D42.9/D43.9 while D37.11 stays separate, and D35.6/R38.1 drive SHIFT_G |
 | D30 common asynchronous-control conductor uses the native D38-side status strobe | PASS | exact .009 sheets plus owner continuity: D38.8 STB -> D30.1/.4/.10/.12 and R5 pull-up; W8 still separates the D5-side island |
 
 The original-pixel sheet-2 crop of `PXL_20260718_101911242.jpg` at

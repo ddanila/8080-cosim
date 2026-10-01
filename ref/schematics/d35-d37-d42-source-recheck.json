@@ -1,19 +1,49 @@
 {
   "schema_version": 1,
-  "status": "D35.4/D37.11 and D37.12/D37.13 source ties retracted; D35.4 joins D42.10/D37.13",
+  "status": "D35.4/D37.11 and D37.12/D37.13 source ties retracted; D35.4 joins D42.10/D37.13; D37.12 shares numbered rail 3 with D42/D43 CK",
   "source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101917240.jpg",
   "source_sha256": "cc5355512800c4804523f26e433c98e9218fc296da2e264e2411f6bff52ea642",
-  "native_crops_xyxy": [[1350, 600, 2450, 1250], [1800, 1950, 2750, 3050]],
+  "native_crops_xyxy": [
+    [
+      1350,
+      600,
+      2450,
+      1250
+    ],
+    [
+      1800,
+      1950,
+      2750,
+      3050
+    ],
+    [
+      1350,
+      450,
+      1880,
+      1550
+    ]
+  ],
   "observations": [
     "D42 Q/pin10 runs east to D37 input pin13. The filled dot near (2100,1000) sends that same line south.",
     "D35 output pin4 runs east, bends north near x2175, west near y2080 to x2100, then north to the filled D42.10/D37.13 junction. The full path is visible in the same original-resolution sheet-2 tile.",
     "D37 input pin12 arrives on a distinct upper line marked 3. It bends down and east into pin12 above the pin13 junction; no vertical stroke connects the pin12 elbow to the pin13 dot.",
-    "D37 output pin11 runs east and descends near x2400. It does not turn west to D35.4 in this crop. The descent continues south across the R39/A and D0-D7 rows without a marked join in this tile."
+    "D37 output pin11 runs east and descends near x2400. It does not turn west to D35.4 in this crop. The descent continues south across the R39/A and D0-D7 rows without a marked join in this tile.",
+    "The D37.12 upper input line is marked conductor 3; D42 CK/pin9 is also marked 3 in the same tile, and D43 CK/pin9 is on that established source rail. The vertical upper line crosses other control rows without marked junctions. This is a numbered-rail equivalence, not a drawn local pin-to-pin stroke."
   ],
   "source_nets": {
-    "D42_Q": ["D42.10", "D37.13", "D35.4"],
-    "D37_I12_TAG3": ["D37.12"],
-    "VID_MIX1_boundary": ["D37.11"]
+    "D42_Q": [
+      "D42.10",
+      "D37.13",
+      "D35.4"
+    ],
+    "VID_MIX1_boundary": [
+      "D37.11"
+    ],
+    "XTAL16M_rail3": [
+      "D37.12",
+      "D42.9",
+      "D43.9"
+    ]
   },
-  "physical_limit": "Owner component and solder photos do not close these remote copper paths. Check D35.4 to D42.10/D37.13, D37.12 isolation, and D37.11 isolation with power removed before adopting board equivalence."
+  "physical_limit": "Owner component and solder photos do not close these remote copper paths. Check D35.4 to D42.10/D37.13, D37.12 to the numbered-3 clock rail, and D37.11 isolation with power removed before adopting board equivalence. The OSC-to-XTAL16M physical/source-side merge remains unproved."
 }

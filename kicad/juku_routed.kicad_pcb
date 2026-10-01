@@ -120128,7 +120128,7 @@
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
-			(start 1.040001 -0.000006)
+			(start 1.040001 -0.000007)
 			(end 1.81 0)
 			(stroke
 				(width 0.12)
@@ -120193,7 +120193,7 @@
 		)
 		(fp_poly
 			(pts
-				(xy 1.93 -1.249999) (xy 8.23 -1.250001) (xy 8.23 1.249999) (xy 1.93 1.250007)
+				(xy 1.93 -1.249999) (xy 8.23 -1.250001) (xy 8.23 1.249999) (xy 1.93 1.250008)
 			)
 			(stroke
 				(width 0.1)
@@ -137677,7 +137677,7 @@
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net "D37_I12_TAG3")
+			(net "XTAL16M")
 			(uuid "bd1e0e7d-8dd1-432d-be97-88d8d9e2236c")
 		)
 		(pad "13" thru_hole circle

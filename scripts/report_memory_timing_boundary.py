@@ -302,7 +302,7 @@ def main() -> int:
             and has_nodes(board, "POF", {("D26", "10"), ("D35", "3"), ("D35", "5"), ("R39", "1")})
             and has_nodes(board, "D42_Q", {("D35", "4"), ("D42", "10"), ("D37", "13")})
             and set(nodes(board, "VID_MIX1")) == {("D37", "11")}
-            and set(nodes(board, "D37_I12_TAG3")) == {("D37", "12")}
+            and has_nodes(board, "XTAL16M", {("D37", "12"), ("D42", "9"), ("D43", "9")})
             and has_nodes(board, "SHIFT_G", {("D35", "6"), ("R38", "1"), ("D42", "8"), ("D43", "8")})
             and has_nodes(board, "P5V", {("R38", "2"), ("R39", "2")})
             and set(nodes(board, "VERT_RTR")) == {
@@ -311,7 +311,7 @@ def main() -> int:
             and set(nodes(board, "FRAME_INT")) == {("D35", "8"), ("D10", "23"), ("R60", "1")}
             and all(["D35", pin] in board.get("no_connects", []) for pin in ("1", "2"))
             and all(["D35", pin] not in board.get("no_connects", []) for pin in ("3", "4", "5", "6", "8", "9")),
-            "exact .009 E3: D55.13 active-low VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23 and D57.18/CLK2; POF drives D35.3/.5 and R39.1, D35.4 joins D42.10/D37.13, D37.12 and D37.11 stay separate, and D35.6/R38.1 drive SHIFT_G",
+            "exact .009 E3: D55.13 active-low VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23 and D57.18/CLK2; POF drives D35.3/.5 and R39.1, D35.4 joins D42.10/D37.13, D37.12 shares numbered rail 3 with D42.9/D43.9 while D37.11 stays separate, and D35.6/R38.1 drive SHIFT_G",
         ),
         (
             "D30 common asynchronous-control conductor uses the native D38-side status strobe",
