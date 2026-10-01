@@ -79,6 +79,16 @@ useful validation, but no further D30 continuity measurement is requested.
    D104.10 is owner-closed NC. Record tested endpoints and resistance in both probe polarities
    for any resistive path. See `docs/io-decode-boundary.md`,
    `docs/serial-handoff.md`, and `docs/main-board-unresolved-endpoints.csv`.
+5. **D1.24 WAIT versus measured I/O-cycle net:** the exact .009 sheet draws
+   D1.24 to D105.1, while owner continuity puts D105.1 with D7.8/D6.15.
+   D1.24 and D7.8 are both output pins, so joining both reported paths on
+   one fitted board would create an output-contention risk. With power off,
+   first check D1.24 at its registered solder joint near `(2580,2381)` and
+   its photo-traced open annulus `(1830,2395)` in `200527310`; then test that
+   annulus directly to D105.1, D7.8, and D6.15. If D1 is socketed, repeat
+   ambiguous continuity with it removed to distinguish board copper from
+   a path through the device. Record resistance and probe polarity before
+   merging WAIT with `IO_CYCLE_H` (`ref/photos/juku-pcb-2/d1-wait-source-review.json`).
 
 The generated `docs/owner-measurement-shortlist.md` carries the lower-priority
 timing, control, passive, and value reads with exact starting pins. Take those
