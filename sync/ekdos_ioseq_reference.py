@@ -162,7 +162,10 @@ def main() -> int:
         ("PIC unmask", pic_unmask, "02D6", 30524, 0xDF),
         # 1213h is inside the ROM's 1209h..123Bh hardware-configuration scan,
         # where cosim models the unstrapped/onboard-D11 setting by sampling
-        # PB5 high (0xCF | 0x20). Ordinary keyboard-idle reads stay 0xCF.
+        # PB5 high (0xCF | 0x20) for this EktaSoft 3.7 ROM profile. The
+        # photographed .009 E8 3-4 bridge selects PB4; that board/ROM
+        # revision conflict is a separate physical verification boundary.
+        # Ordinary keyboard-idle reads stay 0xCF.
         ("first keyboard read", first_kbd_read, "1213", 30520, 0xEF),
         ("shifted T keyboard read", first_t_read, "1463", 42543, 0x88),
         ("FDC motor on", first_motor_on, "D7EF", 63085, 0x04),

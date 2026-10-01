@@ -57,8 +57,16 @@ Shifted punctuation is shown after `/`.  Paired national legends separated by
 
 The keyboard drawing contains an eight-position `S21` bank labelled
 `НАСТРОЙКА` (configuration).  During scan positions 8–15 its selected switch
-returns serially on `CONTRDAT` to the mainboard E8.4 selector terminal. The exact .009 sheet-1 drawing sends D26 PB4/pin22 to E8.3 and PB5/pin23 to E8.2; the .009 assembly and owner photo show the 3–4 bridge fitted. The replica netlist now assigns this return to PB4; its routed copper remains open pending A50 hole identification and direct continuity. EktaSoft 3.7 decodes the
-result as follows:
+returns serially on `CONTRDAT` to the mainboard E8.4 selector terminal. The
+exact `.009` sheet-1 drawing sends D26 PB4/pin22 to E8.3 and PB5/pin23 to
+E8.2; the `.009` assembly and owner photo show the 3–4 bridge fitted. The
+replica netlist now assigns this return to PB4; its routed copper remains open
+pending A50 hole identification and direct continuity.
+
+EktaSoft 3.7 decodes the S21 bits as follows, but its archived ROM bytes at
+`1211h..1216h` (`DB 05 2F FB E6 20`) mask **PB5**, not PB4. That ROM profile
+and the photographed `.009` 3–4 bridge therefore disagree on the selected
+input; see `docs/ekta37-netbios-notes.md`.
 
 | switch | configuration bit | NetBios meaning |
 | ---: | ---: | --- |
@@ -66,10 +74,11 @@ result as follows:
 | S21.2–S21.3 | 6–5 | maximum station number: 3, 7, 15, or 31 |
 | S21.4–S21.8 | 4–0 | this station's number |
 
-Consequently a configured physical machine accepts `TN` with no Enter and
-takes its network identity from S21.  Only a zero configuration falls through
-to the ROM's `N=` and `S=` keyboard prompts; cosim deliberately models that
-open-switch fallback and therefore injects `TN0201`.
+In the EktaSoft 3.7 PB5 simulation profile, a nonzero configuration accepts
+`TN` with no Enter and takes network identity from S21. A zero configuration
+falls through to the ROM's `N=` and `S=` keyboard prompts; cosim deliberately
+models that open-switch fallback and therefore injects `TN0201`. The same
+behavior on the `.009` PB4-strapped board remains unverified.
 
 For a later identity-free monitorless ROM, the accepted project plan may
 repurpose this same raw byte as shared ROM/OS machine configuration: logical

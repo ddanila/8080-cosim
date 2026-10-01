@@ -11,7 +11,8 @@ module juku_top #(
     // transfer.  Historical regressions retain the earlier immediate-load
     // abstraction; D55 diagnostic validation enables this parameter.
     parameter integer PIT_CLOCKED_MODE0_LOAD = 0,
-    // SIM-ONLY S21 switch byte, sampled through D26 PB5 at columns 8..15.
+    // SIM-ONLY EktaSoft 3.7 S21 profile samples D26 PB5 at columns 8..15;
+    // the fitted .009 E8 3-4 bridge selects PB4 on the original board.
     parameter [7:0] S21_CONFIG = 8'hFF
 ) (
     input  wire clk,        // board oscillator (crystal Z1 -> D59), feeds the clock subsystem
