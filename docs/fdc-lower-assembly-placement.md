@@ -11,8 +11,10 @@ cable bundle hides neighboring board area, and neither view identifies a C12
 two-lead pad pair. A reflected three-hole pattern in that gap matches component
 open holes near `(2135,1440)`, `(2111,1655)`, `(2164,1655)` in the July view to
 solder open holes near `(1630,1213)`, `(1651,1403)`, `(1605,1403)` in
-`PXL_20260710_200506061.jpg`. The holes' distinct narrow copper departures
-do not identify which two, if any, are C12 landings or their rails. Keep C12's
+`PXL_20260710_200506061.jpg`. A native solder crop traces the upper hole east
+to another open hole near `(1935,1215)` and the lower-right hole west, while
+the lower-left hole has no visible B.Cu departure. These observations do not
+identify which two, if any, are C12 landings or their rails. Keep C12's
 source +5 V/GND bypass and target population
 open; do not use the retired C12 photo seed in the lower FDC tile
 `PXL_20260710_200418174.jpg` as a probe point. The native coordinates and
