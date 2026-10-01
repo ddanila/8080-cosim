@@ -103,6 +103,15 @@ see `ref/photos/juku-pcb-2/d59-orientation-audit.json`.
 | `D39_O8` | `D39.8, D59.11` | scan |
 | `D39Y` | `D39.11, D38.10, D38.13` | scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); formerly provisional, now traced |
 | `D59_O10_TAG10` | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10. The other modeled numeral-10 use is D57.13 SOUND in a distinct bundle domain; no continuous conductor joins them, and merging would short two active TTL outputs. Automatic tag-number chase exhausted, so D59.10 remains a deliberate continuity boundary |
+
+The `.009` assembly wire table also assigns board point **А:10** to the
+insulated conductor D41.13–D50.1 (`W10_QA_SEL`). The sheet-2 detail
+`PXL_20260718_101908284.jpg` draws the numeral 10 at D41.13's
+open-circle departure. That drawing mark agrees with the assembly-wire
+identity; it is not evidence that D59.10 joins D41.13. D41.13 is a shift
+register output already traced to D50.1/D51.1, while D59.10 is a separate
+inverter output. Keep the D59 remote endpoint open until its conductor is
+traced continuously or measured on the target board.
 | `POF` | `D26.10, D35.3, D35.5, R39.1` | exact .009 sheet-2 native R38/D35 frame: POF branches to both D35.3 and D35.5 and the R39.1 pull-up |
 | `VERT_RTR` | `D55.13, D35.9, D57.18` | exact-revision .009 E3 sheet 2 draws D55 OUT1/pin13 as active-low VER RTR with boundary tag2; that conductor continues into D35 К155ЛН5 input pin9 before inversion to FRAME INT and separately clocks D57 channel 2 at pin18 |
 | `FRAME_INT` | `D35.8, D10.23, R60.1` | native sheet-2 draws D35 К155ЛН5 output pin8 as FRAME INT with R60 5.1k pull-up; native sheet-1 draws FRAME INT(2) directly into D10 IR5/pin23 |
