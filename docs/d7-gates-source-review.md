@@ -33,7 +33,7 @@ a distinct northbound front trace in both views. Together with the
 separated solder joints this excludes a visible local two-face bridge at
 the package, while leaving hidden or remote copper as open possibilities for each separate signal.
 
-In component tile `PXL_20260710_200411500.jpg`, D7.3's front copper runs north from the lead and reaches an open plated hole near `(3352,955)`, partly occluded by a white insulated wire. Another front annulus is near `(3420,978)`, on a separate vertical trace. The D7-only component-to-solder affine extrapolation places the first hole near `(2175,666)` in solder tile `200525009`, on a broad trace between distinct drilled holes. A wider crop `(2000,500)–(2400,800)` contains open solder holes near `(2190,700)` and `(2138,732)`, but their separation and offset do not uniquely register them to the two front holes. This is outside the fitted package rows and is not a defensible solder-hole identity. Probe D7.3 to the visible front hole first; identify its opposite-face landing by local inspection or continuity before following the remote trace.
+In component tile `PXL_20260710_200411500.jpg`, D7.3's front copper runs north from the lead and reaches an open plated hole near `(3352,955)`, partly occluded by a white insulated wire. Another front annulus is near `(3420,1008)`, on a separate vertical trace. The D7-only component-to-solder affine extrapolation places the first hole near `(2175,666)` in solder tile `200525009`, on a broad trace between distinct drilled holes. A wider crop `(2000,500)–(2400,800)` contains open solder holes near `(2190,700)` and `(2138,732)`, but their separation and offset do not uniquely register them to the two front holes. That single fit extrapolates beyond the package rows and cannot identify the opposite-face hole by itself. Probe D7.3 to the visible front hole first; use the paired-hole check below to prioritize its possible solder landing.
 
 A second local extrapolation from the independently registered D9 package in
 the same component/solder photo pair narrows that search. The white wire hides
@@ -44,10 +44,19 @@ D9 four-corner fit predicts `(2199,685)`. The hole `(2190,700)` is about
 17–24 px from those predictions, while `(2138,732)` is about 57–77 px away
 and lies on a different narrow parallel run. The independent component tile
 `200415237` crop `(1500,850)–(1850,1230)` repeats a wire-obscured ring on
-the D7.3 northbound trace, distinct from the adjacent pin-2 ring; it still
-does not reveal the drill centre. Probe `(2190,700)` first, but do not
-promote it as D7.3's same hole without continuity: both fits extrapolate well
-beyond their package corners and the front drill centre is cable-covered.
+the D7.3 northbound trace, distinct from the adjacent ring; it still
+does not reveal the drill centre. A native grid recheck corrects that adjacent
+open ring to about `(3420,1008)`, 30 px below the earlier y estimate. The D9
+four-corner reflection projects it to solder `(2136,718)`, near the separate
+open hole `(2138,732)`. That pair gives a local offset of about `(2,14)` px
+beyond the package fit. Applying the same offset to the covered D7.3 ring
+`(3356,975)` projects `(2201,699)`, about 11 px from the preferred solder
+hole `(2190,700)`. This two-hole pattern supports the preferred same-hole
+identity much more strongly than a single extrapolation; the D7.3 drill
+centre remains wire-covered and the pair is still unmeasured. Probe
+`(2190,700)` first, and retain its same-hole identity as conditional until
+continuity or direct inspection confirms it. The paired coordinates and fit
+are recorded in `ref/photos/juku-pcb-2/d7-pin3-via-pair-review.json`.
 
 The native solder strip `(2100,640)–(4080,850)` follows the preferred
 `(2190,700)` hole east on its own narrow conductor. It runs near y700,

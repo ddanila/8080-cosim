@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "status": "D7.3 first solder hole strongly supported by paired-hole geometry; direct continuity open",
+  "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg",
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200525009.jpg",
+  "component_crop_xyxy": [3050, 650, 3600, 1370],
+  "solder_crop_xyxy": [1950, 500, 2500, 1100],
+  "package_fit": "D9 four-corner reflection from ref/photos/juku-pcb-2/local-package-registration.json; D9 front pin1/pin8 near (2977,1318)/(2590,1318) correspond to solder (2574,1030)/(2957,1030), with opposite row near y1480/y1193.",
+  "covered_d7_3_front_ring_px_approx": [3356, 975],
+  "covered_d7_3_predicted_solder_px_approx": [2199, 685],
+  "covered_d7_3_candidate_solder_hole_px_approx": [2190, 700],
+  "adjacent_exposed_front_ring_px_approx": [3420, 1008],
+  "adjacent_predicted_solder_px_approx": [2136, 718],
+  "adjacent_observed_solder_hole_px_approx": [2138, 732],
+  "local_offset_px_approx": [2, 14],
+  "corrected_d7_3_prediction_px_approx": [2201, 699],
+  "observation": "The neighboring exposed ring is on a separate front conductor and is about 30 px lower than an earlier coordinate estimate. Its proposed solder counterpart is on the distinct westbound B.Cu line. Both front-to-solder projections show about the same +14 px y offset from the D9 package fit, which is extrapolated beyond its rows. The locally corrected D7.3 projection lies about 11 px from the open hole at (2190,700), much closer than the other hole at (2138,732).",
+  "electrical_limit": "The D7.3 front drill center is partly covered by the white wire, and neither same-hole pairing has been directly inspected or continuity-tested. Treat (2190,700) as a strong geometric candidate, not a proved D7.3 via or a proved owner-board AMW_N path."
+}
