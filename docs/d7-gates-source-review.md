@@ -35,6 +35,17 @@ the package, while leaving hidden or remote copper as open possibilities for eac
 
 In component tile `PXL_20260710_200411500.jpg`, D7.3's front copper runs north from the lead and reaches an open plated hole near `(3352,955)`, partly occluded by a white insulated wire. Another front annulus is near `(3420,978)`, on a separate vertical trace. The D7-only component-to-solder affine extrapolation places the first hole near `(2175,666)` in solder tile `200525009`, on a broad trace between distinct drilled holes. A wider crop `(2000,500)–(2400,800)` contains open solder holes near `(2190,700)` and `(2138,732)`, but their separation and offset do not uniquely register them to the two front holes. This is outside the fitted package rows and is not a defensible solder-hole identity. Probe D7.3 to the visible front hole first; identify its opposite-face landing by local inspection or continuity before following the remote trace.
 
+A second local extrapolation from the independently registered D9 package in
+the same component/solder photo pair narrows that search. The white wire hides
+the centre of D7.3's front ring; its exposed lower crescent puts a plausible
+centre near `(3356,975)`, about 20 px below the old estimate. Using this
+occluded centre, the D7 four-corner fit predicts solder `(2171,686)` and the
+D9 four-corner fit predicts `(2199,685)`. The hole `(2190,700)` is about
+17–24 px from those predictions, while `(2138,732)` is about 57–77 px away
+and lies on a different broad run. Probe `(2190,700)` first, but do not
+promote it as D7.3's same hole without continuity: both fits extrapolate well
+beyond their package corners and the front drill centre is cable-covered.
+
 ## D7.5 / D29.3 inhibit-input chase
 
 Original-resolution sheet-1 `PXL_20260718_101813438.jpg` crop
