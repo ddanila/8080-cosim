@@ -90,6 +90,23 @@ output comparison. The former P1 X2 PA1/PA5 contact-digit check is retired:
 native `.009` sheet-1 detail `PXL_20260718_101824181.MP.jpg` clearly shows
 D27.3→X2.206 and D27.39→X2.203, matching the board netlist.
 
+## E8 selector and ROM configuration read (P1)
+
+The exact `.009` drawing and the fitted white E8 3–4 wire select D26
+PB4/pin22 for keyboard `CONTRDAT`; five archived Ekta ROMs instead mask PB5
+in their S21 scans. With power removed, check D26.22 to both E8 wire ends,
+the E8.4 end to the proposed full-band solder site 6 near `(2140,2375)` in
+`PXL_20260710_200530933.MP.jpg`, and that site to X9.9/A50. Check D26.23
+to E8.2 and for isolation from the wire. Record the actual A50 hole; the
+15-site photo band alone cannot assign its fourteen cable wires.
+
+If the machine can run a controlled PPI read, select scan columns 8–15 one
+at a time, toggle one S21 switch, and record the Port B byte at each column.
+The changed bit distinguishes PB4 from PB5 without inferring it from a ROM
+version. Record the installed D15/D16 identification or dump alongside the
+readback. See `ref/photos/juku-pcb-2/e8-bridge-photo-review.json` and
+`docs/ektasoft-rombios-lineage.md`.
+
 ## Programmable-parts corroboration (optional, Tier-3)
 
 5. Independent re-reads of the D2/D6/D8/D94 PROMs, and dumps of the D15/D16
