@@ -10,7 +10,7 @@ line at pins 8. That line is the existing `SHIFT_G` timing rail, also joined
 to D41.9. R38's other terminal ends at rail A. POF enters both D35.3 and
 D35.5 and R39's left terminal; R39's right terminal ends at A. D35.4 bends north and reaches the filled D42.10/D37.13 junction. D37.12
 arrives on upper numbered rail 3, shared with D42.9/D43.9/XTAL16M; D37.11 descends separately
-near x2400. D35.1/.2 remain unused in this detail. See
+near x2400, crossing the D0-D7 rows without marked junctions before leaving the native tile. D35.1/.2 remain unused in this detail. See
 `ref/schematics/d35-d37-d42-source-recheck.json`.
 
 The former model instead connected R38.1 to D37.11, D35.4 to R39.1,

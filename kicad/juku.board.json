@@ -834,7 +834,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "К155ЛН5 standard hex-inverter package contract; exact .009 sheet 2 proves POF into pins 3 and 5, pin4 to D37.11, and pin6 to the SHIFT_G pull-up R38.1/D42.8/D43.8; phase sections 11->10 (Φ1) and 13->12 (Φ2/Φ2TTL), plus D55.OUT1/VER RTR -> pin9 -> pin8/FRAME INT, remain separately traced; only section 1->2 is NC."
+        "pins": "К155ЛН5 standard hex-inverter package contract; exact .009 sheet 2 proves POF into pins 3 and 5, pin4 to the filled D42.10/D37.13 junction; D37.11 is on a separate descending conductor, and pin6 to the SHIFT_G pull-up R38.1/D42.8/D43.8; phase sections 11->10 (Φ1) and 13->12 (Φ2/Φ2TTL), plus D55.OUT1/VER RTR -> pin9 -> pin8/FRAME INT, remain separately traced; only section 1->2 is NC."
       }
     },
     {
