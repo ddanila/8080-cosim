@@ -90,6 +90,26 @@ output comparison. The former P1 X2 PA1/PA5 contact-digit check is retired:
 native `.009` sheet-1 detail `PXL_20260718_101824181.MP.jpg` clearly shows
 D27.3→X2.206 and D27.39→X2.203, matching the board netlist.
 
+### D59 timing and oscillator probes (P1)
+
+- The registered `200534267` solder row photo-joins D59.2 and D59.3. Its
+  D59.3 branch reaches an open annulus near `(3160,2200)` through the extra
+  joint near `(2975,2260)`. With power off, test that annulus to both Z1
+  lugs, C73, D40.2, and D39.10 before merging OSC with XTAL16M. The front
+  projection lies under the crystal-can area and is not a registered Z1 hole.
+- In overlapping solder tile `200537608`, D59.11 reaches a separate open
+  annulus near `(610,2350)`, mapped near `(2316,2476)` in `200534267`.
+  Verify the possible front same-hole ring above R38 at `(1453,2380)` in
+  `200452717.MP`, then check the annulus to source-modeled D39.8. The second
+  front view `200443117` repeats that ring near `(1400,2900)` but does not
+  prove the cross-face match.
+- Probe D59.10 at the middle dark lower-row crown near `(2780,2450)` in
+  `200534267` for its tag-10 destination. The visible west/east traces in
+  the overlap belong to neighboring D59.11 and D59.9; keep D59.10 separate
+  from D57.13 SOUND unless direct continuity proves an owner-board change.
+  See `ref/photos/juku-pcb-2/d59-orientation-audit.json` and
+  `ref/photos/juku-pcb-2/d59-pin10-solder-probe-target.json`.
+
 ## E8 selector and ROM configuration read (P1)
 
 The exact `.009` drawing and the fitted white E8 3–4 wire select D26
