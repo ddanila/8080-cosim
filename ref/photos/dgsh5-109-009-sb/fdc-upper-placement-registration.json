@@ -9,9 +9,14 @@
     {"refdes": "D98", "drawing_px": [2248.5, 1255.5], "board_mm": [298.890, 33.590]}
   ],
   "targets": [
-    {"refdes": "C12", "drawing_px": [1444.0, 1252.5], "between": ["D94", "D100"], "observation": "vertical C12 between D94 and D100; owner component view shows the landing area without an unambiguous fitted body"},
+    {"refdes": "C12", "drawing_px": [1444.0, 1252.5], "between": ["D94", "D100"], "observation": "vertical C12 between D94 and D100; independent July and May component views show the exposed between-package body corridor bare at the factory-drawn site; no physical C12 pad pair or board-wide DNP conclusion follows"},
     {"refdes": "C9", "drawing_px": [2011.5, 1271.0], "between": ["D100", "D98"], "observation": "vertical C9 between D100 and D98; owner component view is hidden by the black factory cable"}
   ],
+  "c12_owner_site_review": {
+    "july": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg native crop (2050,1290)-(2220,1640): the gap between the D94 blue socket and D100 package contains exposed front copper and an open via, with no vertical capacitor body at the factory-drawn centre",
+    "may": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg native crop (1740,1110)-(1900,1480): independent angle repeats the same bare gap",
+    "limit": "The upper cable bundle hides part of the surrounding board and no unique two-lead C12 landings are established. This is negative evidence for a body at the drawn site, not proof that C12 was never fitted or that its source bypass circuit is absent. The old C12 endpoint seed in photo 200418174 is outside the upper-D94/D100 view and is not a valid physical C12 probe point."
+  },
   "d94_pullup_value_evidence": {
     "value": "6,2к",
     "resistance_ohms": 6200,

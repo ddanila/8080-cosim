@@ -2,6 +2,17 @@
 
 Status: **FACTORY PLACEMENT EVIDENCE / PARTIAL ELECTRICAL MAPPING**
 
+The upper FDC drawing separately places C12 between D94 and D100. Original
+July component crop `(2050,1290)-(2220,1640)` in
+`PXL_20260710_200402344.jpg` and independent May crop
+`(1740,1110)-(1900,1480)` in `PXL_20260519_201922448.jpg` show the exposed
+between-package corridor bare at that factory-drawn body position. The upper
+cable bundle hides neighboring board area, and neither view identifies a C12
+two-lead pad pair. Keep C12's source +5 V/GND bypass and target population
+open; do not use the retired C12 photo seed in the lower FDC tile
+`PXL_20260710_200418174.jpg` as a probe point. The native coordinates and
+limits are in `ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json`.
+
 The photographed factory assembly drawing is registered to the five package centres
 already fitted in the owner board photograph. D95, D101, and D102 define the affine
 fit; D99 and D97 are independent checks. This establishes reference identity and
