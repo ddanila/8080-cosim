@@ -47,6 +47,13 @@ python3 scripts/report_memory_timing_boundary.py
 | D35 frame-interrupt inverter path is source-closed | PASS | exact .009 E3: D55.13 active-low VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23 and D57.18/CLK2; POF drives D35.3/.5 and R39.1, D35.4 goes to D37.11, and D35.6/R38.1 drive SHIFT_G |
 | D30 common asynchronous-control conductor uses the native D38-side status strobe | PASS | exact .009 sheets plus owner continuity: D38.8 STB -> D30.1/.4/.10/.12 and R5 pull-up; W8 still separates the D5-side island |
 
+The original-pixel sheet-2 crop of `PXL_20260718_101911242.jpg` at
+`(0,1350)–(1000,2700)` also resolves the crossing at approximately
+`(610,1870)`: D38.8 `STB` crosses the vertical `B` supply conductor feeding
+R37/R36 without a junction dot. The +12 V phase pull-up rail must therefore
+stay separate from `STB`; the same crop shows R37 and R36 ending on the
+distinct Ф1 and Ф2 outputs.
+
 ## Compatible D53 Decoder Timing Envelope
 
 | Evidence | Published condition | Maximum | Model use |
