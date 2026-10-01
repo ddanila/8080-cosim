@@ -42,7 +42,10 @@ centre near `(3356,975)`, about 20 px below the old estimate. Using this
 occluded centre, the D7 four-corner fit predicts solder `(2171,686)` and the
 D9 four-corner fit predicts `(2199,685)`. The hole `(2190,700)` is about
 17–24 px from those predictions, while `(2138,732)` is about 57–77 px away
-and lies on a different broad run. Probe `(2190,700)` first, but do not
+and lies on a different narrow parallel run. The independent component tile
+`200415237` crop `(1500,850)–(1850,1230)` repeats a wire-obscured ring on
+the D7.3 northbound trace, distinct from the adjacent pin-2 ring; it still
+does not reveal the drill centre. Probe `(2190,700)` first, but do not
 promote it as D7.3's same hole without continuity: both fits extrapolate well
 beyond their package corners and the front drill centre is cable-covered.
 
