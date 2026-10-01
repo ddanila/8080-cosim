@@ -72,14 +72,14 @@
           "physical_pin": 2,
           "routed_pad_at_same_hole": 22,
           "intended_net_by_pin_number": "KBD_SC2",
-          "routed_net_at_same_hole": "D26_PB4_BOUNDARY",
+          "routed_net_at_same_hole": "KBD_CONTRDAT",
           "net_matches": false
         },
         {
           "physical_pin": 3,
           "routed_pad_at_same_hole": 23,
           "intended_net_by_pin_number": "KBD_SC1",
-          "routed_net_at_same_hole": "KBD_CONTRDAT",
+          "routed_net_at_same_hole": "D26_PB5_E8_2_BOUNDARY",
           "net_matches": false
         },
         {
@@ -211,14 +211,14 @@
         {
           "physical_pin": 22,
           "routed_pad_at_same_hole": 2,
-          "intended_net_by_pin_number": "D26_PB4_BOUNDARY",
+          "intended_net_by_pin_number": "KBD_CONTRDAT",
           "routed_net_at_same_hole": "KBD_SC2",
           "net_matches": false
         },
         {
           "physical_pin": 23,
           "routed_pad_at_same_hole": 3,
-          "intended_net_by_pin_number": "KBD_CONTRDAT",
+          "intended_net_by_pin_number": "D26_PB5_E8_2_BOUNDARY",
           "routed_net_at_same_hole": "KBD_SC1",
           "net_matches": false
         },
