@@ -27,6 +27,24 @@ release sequence. Two RomBios lines are present: **2.43** (serials #0032
 and #0043) and **3.42/3.43** (the other four). The adopted replica image is
 serial #0037, RomBios 3.43m.
 
+## S21 read versus the `.009` E8 bridge
+
+Five archived images read PPI Port B and mask PB5 during their configuration
+scan. The byte sequence `DB 05 2F FB E6 20` begins at `1200h` in #0024,
+`120Ah` in #0032, and `1211h` in #0031, #0035, and #0037. These bytes mean
+`IN 05h`, complement, enable interrupts, then `ANI 20h`; all five select
+PB5. The #0043 image lacks that sequence: its `1214h` read begins
+`DB 05 07 D0` and tests a different condition, consistent with its separate
+RomBios 2.43m line. No archived image in this set supplies evidence for a
+PB4 S21 scan.
+
+The exact `.009 Э3` E8.3/E8.4 drawing, `.009 СБ` 3–4 bridge, and surviving
+board's fitted white wire select PB4 for `CONTRDAT`. The five PB5-reading
+ROMs therefore do not explain S21 operation through that fitted bridge.
+The original board's installed firmware and powered PB4/PB5 behavior remain
+the necessary discriminators; this is a revision boundary, not a reason to
+reinterpret the E8 terminal numbers.
+
 Consequently `ekta43.bin` — the "homebrew" image with the stale block-1
 checksum — is **not built on the newer 3.43 line**. It is a 1990 build of
 the *older* RomBios 2.43 line, sharing its configuration with official

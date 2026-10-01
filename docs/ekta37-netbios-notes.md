@@ -131,6 +131,9 @@ PB4 selector are revision-incompatible as drawn. The simulator retains the
 PB5 behavior for its EktaSoft 3.7 reference runs; the original board's
 firmware/configuration behavior needs a matching ROM readback or a powered
 PB4/PB5 observation before claiming the S21 path works on this revision.
+The four other archived #0024/#0031/#0032/#0035 images use the same PB5
+mask; #0043 has a different read sequence and no evidence for a PB4 S21
+scan (`docs/ektasoft-rombios-lineage.md`).
 
 The regression runs the five vendored clients plus an optional external system
 in parallel and stops before the first
