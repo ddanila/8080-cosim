@@ -85,4 +85,7 @@ Transcription: `ref/schematics/dgsh5-109-009-sb-wire-table.md`.
 - Keep D13/D105 right-facing and preserve R1 as the component-side 2 kΩ X1.107B/H pull-up.
 - Conductor 11 is promoted as A17.1/А:17 to S1:1; conductor 12 is promoted as D98.7/А:18 to S1:2.
 - S1 remains an off-board bracket component and is excluded from generated PCB footprints.
+- The wire table lists only S1:1 and S1:2. The available owner front and back
+  views show S1 edge-on and do not expose its terminal side, so S1.3 remains
+  unassigned; see `ref/photos/juku-pcb-2/s1-third-contact-photo-review.json`.
 - Preserve А:7-А:14 and А:19-А:20 as insulated assembly links; their guarded electrical mapping must not be mistaken for replacement PCB etch.

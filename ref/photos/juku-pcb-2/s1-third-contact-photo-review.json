@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "review_state": "S1.3 physical disposition unresolved",
+  "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg",
+  "assembly_observation": "The top-right .009 СБ placement panel labels S1 on the bracket immediately right of X6. The wire table separately lists only А:17 to S1:1 and А:18 to S1:2; it does not give an S1:3 row.",
+  "owner_front_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
+  "owner_front_crop_xyxy": [3300, 250, 4080, 1650],
+  "owner_back_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
+  "observation": "The right-hand bracket switch in the owner front view is seen edge-on with its red body and at least one white lead below it. The mirrored solder-side overview shows the same bracket hardware along the upper left edge, but does not expose a terminal-side view of the switch. Neither image establishes whether the third switch lug is physically unused or carries a wire outside the two listed factory leads.",
+  "disposition": "Keep S1.3 as a source-risk boundary. The absence of a third wire-table row is evidence about the documented factory harness, not proof of the fitted owner's terminal state.",
+  "next_check": "Photograph the terminal side of the bracket-mounted S1 with the board accessible, or meter S1.3 against S1.1, S1.2, and chassis in both switch positions with power off; record any third wire and its far end."
+}
