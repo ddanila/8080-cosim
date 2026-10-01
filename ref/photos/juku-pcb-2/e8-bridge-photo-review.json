@@ -5,7 +5,8 @@
     "electrical": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101824181.MP.jpg",
     "assembly": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114620466.jpg",
     "owner_front": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
-    "package_fit": "ref/photos/juku-pcb-2/local-package-registration.json"
+    "package_fit": "ref/photos/juku-pcb-2/local-package-registration.json",
+    "owner_front_may": "ref/photos/juku-pcb-2/PXL_20260519_201907078.jpg"
   },
   "owner_front_crop_px": [
     1300,
@@ -18,7 +19,8 @@
     "A white insulated wire runs from a left soldered landing near (1600,2390) to a right soldered landing near (2200,2390), across the E8 marking and aligned with assembly contacts 3 and 4.",
     "The exposed front copper from registered D26 pin22 descends toward the left wire landing; the adjacent E8 contact2 has a separate line from pin23.",
     "Exact .009 assembly depicts the E8 3-4 link below D26; electrical detail puts PB4/pin22 at E8.3 and CONTRDAT at E8.4.",
-    "Native front crop (1450,2200)-(2400,2580) shows a short exposed vertical trace from E8.4 right wire landing near (2200,2390) to one joint in the lower X9-region row around (2200,2450); this is a visible same-face copper continuation."
+    "Native front crop (1450,2200)-(2400,2580) shows a short exposed vertical trace from E8.4 right wire landing near (2200,2390) to one joint in the lower X9-region row around (2200,2450); this is a visible same-face copper continuation.",
+    "Independent 2026-05-19 front photo PXL_20260519_201907078.jpg, crop (1050,2450)-(2650,3072), shows the same fitted white wire soldered at both E8 3-4 landings beneath D26, with E8 and contact 4 markings readable. This predates the July close-up and excludes a July-only temporary placement."
   ],
   "limits": "The photo supports the fitted bridge and local exposed copper. The exact .009 table closes A50 to X9:9, but the physical A50 band hole, hidden solder integrity, and continuity to D26.22 still need confirmation. The replica netlist and pads now follow the .009 source; its PB4-to-A50 copper remains unrouted.",
   "measurement": "With power removed, test D26.22 to both E8 jumper ends, E8.4 to full-band solder site6 near (2140,2375), and that site to the actual X9 CONTRDAT conductor. Test D26.23 to E8 contact2 and for isolation from the jumper. Identify the actual A-number before rerouting.",
@@ -42,5 +44,11 @@
     "before": "KBD_CONTRDAT had 13 copper items on each routed PCB snapshot, forming a D26.23/PB5-to-A50 path: 10 F.Cu tracks, 2 B.Cu tracks, and 1 via. The source PCB had no KBD_CONTRDAT tracks.",
     "after": "Board JSON, schematic, and all three PCB pad sets assign D26.22/PB4 to KBD_CONTRDAT and D26.23/PB5 to D26_PB5_E8_2_BOUNDARY. All 13 wrong-path items were removed from both routed snapshots, leaving PB4-to-A50 open pending physical A50 placement.",
     "verification": "Main-board ERC/parity reports ERC=0, parity=0, unowned=0. KiCad routed-board DRC shows the intended open between A50.1 at (212,262) and D26.22 at (253.595,243.38), with no shorting-items violation. The candidate checker is blocked by pre-existing R9/R10 pad identity mismatch unrelated to E8."
-  }
+  },
+  "owner_front_may_crop_px": [
+    1050,
+    2450,
+    2650,
+    3072
+  ]
 }

@@ -80,7 +80,9 @@ stronger.
   `PXL_20260710_200455512.jpg`, crop `(1300,1750)-(2650,2600)`, visibly has
   the white insulated 3–4 wire fitted. Registered D26 pin22 near `(1610,2270)`
   has a narrow exposed front run toward its left landing near `(1600,2390)`;
-  pin23's contact-2 route stays separate. See
+  pin23's contact-2 route stays separate. An independent May front photo,
+  `PXL_20260519_201907078.jpg` crop `(1050,2450)-(2650,3072)`, also shows
+  both E8 wire ends soldered in place. See
   `ref/photos/juku-pcb-2/e8-bridge-photo-review.json`. Measure both wire
   landings to D26.22 and the X9 `CONTRDAT` landing, plus D26.23 isolation,
   to confirm hidden solder continuity. The former replica PB5 assignment was
