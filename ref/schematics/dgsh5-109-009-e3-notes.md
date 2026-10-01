@@ -103,9 +103,12 @@ stronger.
   overview; D96.11 reaches the D94.2/D99.9/R89.1 island there. Both physical
   branches need continuity checks. D100.9 joins D99.12 Q2_N, while D100.11
   has an unresolved sheet-1 control continuation.
-- D99.10 shares D96.13 and an unread sheet-1 continuation. D99.4 is drawn
-  to D94.14, conflicting with owner D94.14-D101.7 continuity; those physical
-  endpoints need a three-point probe. D101.1 is source-joined to D26.38 on
+- D99.10 shares D96.13 and an unread sheet-1 continuation. The exact sheet-3
+  overview follows D99.4 on the rail above the separate D94.14/D101.7 rail
+  into D93.23 HLT; the earlier D99.4-to-D94.14 two-tile interpretation is
+  retracted (`docs/d99-q1n-a4-conflict-photo-review.md`). Direct D99.4↔D93.23
+  continuity remains unmeasured, while owner continuity already closes
+  D94.14↔D101.7. D101.1 is source-joined to D26.38 on
   the `IMDRG` sheet-1/sheet-3 continuation; physical continuity is pending.
   Sheet 3 joins D101 section-A inputs pins3/4/5/6 at marked dots; owner
   imagery independently closes pin4 to R92/R99, while physical continuity
