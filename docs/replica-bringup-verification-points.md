@@ -11,11 +11,11 @@ visible and actionable before manufacturing and first power-on.
 ## Summary
 
 - Source board JSON: `kicad/juku.board.json`
-- Source board JSON SHA-256: `7b734002670a3f8ca319129ff5f59d7399043cb00aaef40612bb9b4ff250a274`
+- Source board JSON SHA-256: `6524d2cd418a62e683af6cf4ab1ff321fa67f26f49db3b95babc4e2aa541e6fb`
 - Final PCB source: `kicad/juku.kicad_pcb`
-- Final PCB source SHA-256: `50df831a9b6b4565315409c6dd0319751b31fd41ce13c77197dc856bf1184fe0`
+- Final PCB source SHA-256: `ac6f20c0f8e738ec222fe2100ce73534e12f4babcdb20c5d337fa781319ca0ed`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Routed PCB source SHA-256: `9f6fff3fea7eaffa706e7479bc149983a1551b787542241ed8795fb869175158`
+- Routed PCB source SHA-256: `9734515033633cda378c8f21d535c480afa3185baffd62208ff1c7d11903b150`
 - Verification-point nets: `45`
 - Verification-point endpoints checked in PCB: `76`
 - PCB endpoint coverage: `PASS`
@@ -27,8 +27,8 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 18 |
-| memory/decode | 3 |
+| logic | 19 |
+| memory/decode | 2 |
 | sound/analog | 2 |
 | timing/I/O | 5 |
 | video/analog | 14 |
@@ -90,7 +90,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D101_D02_R92_R99` | logic | `D101.3, D101.4, D101.5, D101.6, R92.1, R99.2, ... (+1)` | July-2026 calibrated component photo PXL_20260710_200418174.jpg shows uninterrupted target-board copper joining D101 К555КП12 pin4 D02 to R99.2 and R92.1. Exact .009 Э3 sheet-3... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D14_I2_BOUNDARY` | logic | `D14.2` | factory IC census and owner package identify D14 as К170АП2; pin2 I2 is a package-model role, while exact .009 E3 sheet-1 serial detail has no traceable D14.2 wire. Its remote s... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D14_O7_BOUNDARY` | logic | `D14.7` | factory IC census and owner package identify D14 as К170АП2; pin7 O7 is a package-model role, while exact .009 E3 sheet-1 serial detail has no traceable D14.7 wire. Its remote d... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D26_PB4_BOUNDARY` | logic | `D26.22` | Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg: D26 PB4/pin22 reaches E8.3, PB5/pin23 reaches E8.2, and E8.4 carries CONTRDAT continuation 909 on conductor 50. The .009... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D26_PB5_E8_2_BOUNDARY` | logic | `D26.23` | Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg sends D26 PB5/pin23 to E8.2, distinct from PB4/pin22 at E8.3 and CONTRDAT at E8.4. The .009 assembly and owner front phot... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D26_PC0_D3_I5` | logic | `D26.14, D3.5, R15.1` | direct .009 owner continuity 2026-07-14: D26 PC0/pin14 reaches D3 inverter input pin5 and owner reports a resistor path to +5 V; exact .009 sheet-1 photo PXL_20260718_101809608.... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D26_PC1_D3_I3` | logic | `D26.15, D3.3, R16.1` | direct .009 owner continuity 2026-07-14: D26 PC1/pin15 reaches D3 inverter input pin3 and owner reports a resistor path to +5 V; exact .009 sheet-1 photo PXL_20260718_101809608.... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D34_SIG` | timing/I/O | `D34.11, R63.1` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -106,7 +106,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 | `FDC_MOTOR_EN` | FDC | `D26.16, D99.11` | Exact .009 Э3 sheet 1 MOTOR EN continuation from D26 PC2/pin16 enters D99 CLR2_N/pin11 on sheet 3; D100 A7/pin7 is driven separately by D99 Q2/pin5. Original-board D26.16-D99.11... | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `INHIB_STATUS_BOUNDARY` | memory/decode | `D7.5, D29.3` | Exact .009 sheet-1 crop PXL_20260718_101813438.jpg (850,2900)-(1850,3650): D7 NAND input pin5 joins D29 physical input pin3 at a filled T junction. The shared westbound conducto... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `INT4_RAW` | logic | `X1.114C, D12.6, D12.7` | Exact .009 sheet-1 PXL_20260718_101817644.jpg: -INT4 at X1.114C branches to both D12 LA18 gate inputs pins6 and7; D12.5 open-collector output reaches X2.214/IRQ0 through separat... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `KBD_CONTRDAT` | memory/decode | `D26.23, X9.9, A50.1` | MODEL CONFLICT pending correction: exact .009 sheet-1 detail sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo show E8.3-4 jump... | Probe during ROM/RAM stage; compare address/control timing to twin. |
+| `KBD_CONTRDAT` | logic | `D26.22, X9.9, A50.1` | Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo show E8.3-4 jumper fi... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PHI1_D35` | logic | `D35.10, W7.2, R37.2` | factory wire А:7 D35 clock-source-side copper island D35.10 reaches the candidate A7B plated through-joint under mastic; the W7 insulated-wire termination remains pending confir... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PHI2_D35` | logic | `D35.12, W14.2, R36.2` | factory wire А:14 D35 clock-source-side copper island D35.12 reaches the candidate A14B plated through-joint under mastic; the W14 insulated-wire termination remains pending con... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R67_2_BOUNDARY` | timing/I/O | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Exact .009 E3 sheet-2 frame PXL_20260718_... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

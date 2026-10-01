@@ -57,7 +57,7 @@ Shifted punctuation is shown after `/`.  Paired national legends separated by
 
 The keyboard drawing contains an eight-position `S21` bank labelled
 `НАСТРОЙКА` (configuration).  During scan positions 8–15 its selected switch
-returns serially on `CONTRDAT` to the mainboard E8.4 selector terminal. The exact .009 sheet-1 drawing sends D26 PB4/pin22 to E8.3 and PB5/pin23 to E8.2; the .009 assembly and owner photo show the 3–4 bridge fitted. The replica currently assigns this return to PB5 and needs correction after direct continuity. EktaSoft 3.7 decodes the
+returns serially on `CONTRDAT` to the mainboard E8.4 selector terminal. The exact .009 sheet-1 drawing sends D26 PB4/pin22 to E8.3 and PB5/pin23 to E8.2; the .009 assembly and owner photo show the 3–4 bridge fitted. The replica netlist now assigns this return to PB4; its routed copper remains open pending A50 hole identification and direct continuity. EktaSoft 3.7 decodes the
 result as follows:
 
 | switch | configuration bit | NetBios meaning |

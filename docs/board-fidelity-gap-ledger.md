@@ -84,8 +84,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 2 | 6 |
 | PROM/decode | 0 | 1 |
-| logic/source | 19 | 27 |
-| memory/timing | 0 | 3 |
+| logic/source | 19 | 28 |
+| memory/timing | 0 | 2 |
 | placement/value | 41 | 0 |
 | sound/analog | 0 | 2 |
 | video/analog | 0 | 6 |
@@ -255,7 +255,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D101_D02_R92_R99` | FDC owner-continuity | `D101.3, D101.4, D101.5, D101.6, R92.1, R99.2, ... (+1)` | July-2026 calibrated component photo PXL_20260710_200418174.jpg shows uninterrupted target-board copper joining D101 К555КП12 pin4 D02 to R99.2 and R92.1. Ex... |
 | `D14_I2_BOUNDARY` | logic/source | `D14.2` | factory IC census and owner package identify D14 as К170АП2; pin2 I2 is a package-model role, while exact .009 E3 sheet-1 serial detail has no traceable D14.... |
 | `D14_O7_BOUNDARY` | logic/source | `D14.7` | factory IC census and owner package identify D14 as К170АП2; pin7 O7 is a package-model role, while exact .009 E3 sheet-1 serial detail has no traceable D14.... |
-| `D26_PB4_BOUNDARY` | logic/source | `D26.22` | Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg: D26 PB4/pin22 reaches E8.3, PB5/pin23 reaches E8.2, and E8.4 carries CONTRDAT continuation 909 on co... |
+| `D26_PB5_E8_2_BOUNDARY` | logic/source | `D26.23` | Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg sends D26 PB5/pin23 to E8.2, distinct from PB4/pin22 at E8.3 and CONTRDAT at E8.4. The .009 assembly... |
 | `D26_PC0_D3_I5` | logic/source | `D26.14, D3.5, R15.1` | direct .009 owner continuity 2026-07-14: D26 PC0/pin14 reaches D3 inverter input pin5 and owner reports a resistor path to +5 V; exact .009 sheet-1 photo PXL... |
 | `D26_PC1_D3_I3` | logic/source | `D26.15, D3.3, R16.1` | direct .009 owner continuity 2026-07-14: D26 PC1/pin15 reaches D3 inverter input pin3 and owner reports a resistor path to +5 V; exact .009 sheet-1 photo PXL... |
 | `D34_SIG` | video/analog | `D34.11, R63.1` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
@@ -271,7 +271,7 @@ same fidelity ledger as the chip provenance gaps.
 | `FDC_MOTOR_EN` | FDC owner-continuity | `D26.16, D99.11` | Exact .009 Э3 sheet 1 MOTOR EN continuation from D26 PC2/pin16 enters D99 CLR2_N/pin11 on sheet 3; D100 A7/pin7 is driven separately by D99 Q2/pin5. Original... |
 | `INHIB_STATUS_BOUNDARY` | memory/timing | `D7.5, D29.3` | Exact .009 sheet-1 crop PXL_20260718_101813438.jpg (850,2900)-(1850,3650): D7 NAND input pin5 joins D29 physical input pin3 at a filled T junction. The share... |
 | `INT4_RAW` | logic/source | `X1.114C, D12.6, D12.7` | Exact .009 sheet-1 PXL_20260718_101817644.jpg: -INT4 at X1.114C branches to both D12 LA18 gate inputs pins6 and7; D12.5 open-collector output reaches X2.214/... |
-| `KBD_CONTRDAT` | memory/timing | `D26.23, X9.9, A50.1` | MODEL CONFLICT pending correction: exact .009 sheet-1 detail sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front ph... |
+| `KBD_CONTRDAT` | logic/source | `D26.22, X9.9, A50.1` | Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo s... |
 | `PHI1_D35` | logic/source | `D35.10, W7.2, R37.2` | factory wire А:7 D35 clock-source-side copper island D35.10 reaches the candidate A7B plated through-joint under mastic; the W7 insulated-wire termination re... |
 | `PHI2_D35` | logic/source | `D35.12, W14.2, R36.2` | factory wire А:14 D35 clock-source-side copper island D35.12 reaches the candidate A14B plated through-joint under mastic; the W14 insulated-wire termination... |
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Exact .009 E3 sheet-2... |

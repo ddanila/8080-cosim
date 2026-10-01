@@ -18083,7 +18083,7 @@
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
-			(start 1.040001 -0.000003)
+			(start 1.040001 -0.000004)
 			(end 1.81 0)
 			(stroke
 				(width 0.12)
@@ -18148,7 +18148,7 @@
 		)
 		(fp_poly
 			(pts
-				(xy 1.93 -1.249999) (xy 8.23 -1.250001) (xy 8.23 1.249999) (xy 1.93 1.250004)
+				(xy 1.93 -1.249999) (xy 8.23 -1.250001) (xy 8.23 1.249999) (xy 1.93 1.250005)
 			)
 			(stroke
 				(width 0.1)
@@ -79186,7 +79186,7 @@
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net "D26_PB4_BOUNDARY")
+			(net "KBD_CONTRDAT")
 			(uuid "850a3cd5-f4c5-4a38-9416-287153517c66")
 		)
 		(pad "23" thru_hole circle
@@ -79195,7 +79195,7 @@
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net "KBD_CONTRDAT")
+			(net "D26_PB5_E8_2_BOUNDARY")
 			(uuid "302d4aea-465e-4a18-8897-89d43e5e9f84")
 		)
 		(pad "24" thru_hole circle

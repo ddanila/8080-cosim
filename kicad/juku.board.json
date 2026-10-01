@@ -14572,11 +14572,11 @@
       "wire_link": true
     },
     "KBD_CONTRDAT": {
-      "src": "MODEL CONFLICT pending correction: exact .009 sheet-1 detail sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo show E8.3-4 jumper fitted. .009 SB sheet-2 cable table position 153 conductor 6 directly maps A50 to X9.9. Existing D26.23/PB5 membership is legacy with no recorded direct owner continuity; identify the physical A50 solder-band hole before revising replica copper.",
+      "src": "Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo show E8.3-4 jumper fitted. .009 SB sheet-2 cable table position 153 conductor 6 maps A50 to X9.9. Replica pin assignment corrected from PB5 to PB4; physical A50 solder-band hole and direct continuity remain pending, so routing stays open.",
       "nodes": [
         [
           "D26",
-          "23"
+          "22"
         ],
         [
           "X9",
@@ -16800,12 +16800,12 @@
         ]
       ]
     },
-    "D26_PB4_BOUNDARY": {
-      "src": "Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg: D26 PB4/pin22 reaches E8.3, PB5/pin23 reaches E8.2, and E8.4 carries CONTRDAT continuation 909 on conductor 50. The .009 SB assembly detail PXL_20260711_114620466.jpg draws a 3-4 bridge at E8 below D26; owner front photo PXL_20260710_200455512.jpg shows its white fitted wire and exposed pin22 copper toward the left landing. Direct continuity and X9/A50 identification remain pending; current replica KBD_CONTRDAT incorrectly assigns D26.23 while isolating D26.22.",
+    "D26_PB5_E8_2_BOUNDARY": {
+      "src": "Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg sends D26 PB5/pin23 to E8.2, distinct from PB4/pin22 at E8.3 and CONTRDAT at E8.4. The .009 assembly and owner front photo show E8.3-4 bridge fitted. PB5/E8.2 remote destination and direct PB5-to-CONTRDAT isolation remain pending physical confirmation.",
       "nodes": [
         [
           "D26",
-          "22"
+          "23"
         ]
       ]
     },

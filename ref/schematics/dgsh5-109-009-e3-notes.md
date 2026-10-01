@@ -83,10 +83,12 @@ stronger.
   pin23's contact-2 route stays separate. See
   `ref/photos/juku-pcb-2/e8-bridge-photo-review.json`. Measure both wire
   landings to D26.22 and the X9 `CONTRDAT` landing, plus D26.23 isolation,
-  to confirm hidden solder continuity. The current replica model assigns
-  `KBD_CONTRDAT` to D26.23 and isolates D26.22, contrary to the exact .009
-  source and visible fitted link; the model and routed copper need correction
-  after the X9/A50 physical landing is identified. The exposed E8.4 front
+  to confirm hidden solder continuity. The former replica PB5 assignment was
+  corrected: board JSON, schematic, and all three PCB pad sets now put
+  D26.22 on `KBD_CONTRDAT` and isolate D26.23 as
+  `D26_PB5_E8_2_BOUNDARY`. The thirteen PB5-to-A50 copper items were removed
+  from both routed snapshots. The PB4-to-A50 route remains open until the
+  physical A50 landing is identified. The exposed E8.4 front
   trace descends to one joint in the lower cable row near `(2200,2450)`;
   D26's reflected fit projects it near full-band solder site 6 at
   `(2140,2375)` in `PXL_20260710_200530933.MP.jpg`. This is a useful probe
