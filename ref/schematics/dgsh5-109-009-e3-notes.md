@@ -71,10 +71,14 @@ stronger.
 - Exact sheet-1 detail `PXL_20260718_101824181.MP.jpg` identifies the E8
   terminal landings: D26 PB4/pin22 reaches E8.3, PB5/pin23 reaches E8.2,
   and E8.4 carries `CONTRDAT` on conductor 50 to continuation 909. The
-  photographed drawing shows three open terminal circles and omits the
-  moving switch contact. Its selected position, physical switch identity,
-  and any E8.3/E8.2-to-E8.4 connection therefore remain open; do not join
-  PB4, PB5, or `CONTRDAT` merely by proximity of the E8 terminal circles.
+  electrical drawing shows three open terminal circles and omits the bridge.
+  The exact-revision assembly detail `PXL_20260711_114620466.jpg`, native
+  crop `(700,650)-(1600,1150)`, places E8 below D26 and draws a horizontal
+  3–4 bridge; the 1–2 row has no bridge line. Thus the factory intended
+  E8.3-to-E8.4 selection joins PB4 to `CONTRDAT`, while PB5/E8.2 remains
+  separate in that position. Confirm that the surviving board has the 3–4
+  bridge fitted and measure D26.22↔E8.4/`CONTRDAT` before promoting the
+  factory drawing to measured target-board continuity.
 
 - D96.9 Q2 runs to the joined D101 A0-A3 inputs in the full sheet-3
   overview; D96.11 reaches the D94.2/D99.9/R89.1 island there. Both physical

@@ -11,7 +11,7 @@ visible and actionable before manufacturing and first power-on.
 ## Summary
 
 - Source board JSON: `kicad/juku.board.json`
-- Source board JSON SHA-256: `907490138c925851dc00835ebb36dd8bd80e147b3732207f7a828cf9f25e5282`
+- Source board JSON SHA-256: `6b526d13e28c02fc3301515c1050fb8f22aa73954331a89f597d670e2ccc667a`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Final PCB source SHA-256: `50df831a9b6b4565315409c6dd0319751b31fd41ce13c77197dc856bf1184fe0`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
@@ -90,7 +90,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D101_D02_R92_R99` | logic | `D101.3, D101.4, D101.5, D101.6, R92.1, R99.2, ... (+1)` | July-2026 calibrated component photo PXL_20260710_200418174.jpg shows uninterrupted target-board copper joining D101 К555КП12 pin4 D02 to R99.2 and R92.1. Exact .009 Э3 sheet-3... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D14_I2_BOUNDARY` | logic | `D14.2` | factory IC census and owner package identify D14 as К170АП2; pin2 I2 is a package-model role, while exact .009 E3 sheet-1 serial detail has no traceable D14.2 wire. Its remote s... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D14_O7_BOUNDARY` | logic | `D14.7` | factory IC census and owner package identify D14 as К170АП2; pin7 O7 is a package-model role, while exact .009 E3 sheet-1 serial detail has no traceable D14.7 wire. Its remote d... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D26_PB4_BOUNDARY` | logic | `D26.22` | Exact .009 sheet-1 native detail PXL_20260718_101824181.MP.jpg: D26 PB4/pin22 runs to E8 contact 3, PB5/pin23 separately runs to E8 contact 2, and E8 contact 4 runs to CONTRDAT... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D26_PB4_BOUNDARY` | logic | `D26.22` | Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg: D26 PB4/pin22 reaches E8.3, PB5/pin23 reaches E8.2, and E8.4 carries CONTRDAT continuation 909 on conductor 50. The .009... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D26_PC0_D3_I5` | logic | `D26.14, D3.5, R15.1` | direct .009 owner continuity 2026-07-14: D26 PC0/pin14 reaches D3 inverter input pin5 and owner reports a resistor path to +5 V; exact .009 sheet-1 photo PXL_20260718_101809608.... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D26_PC1_D3_I3` | logic | `D26.15, D3.3, R16.1` | direct .009 owner continuity 2026-07-14: D26 PC1/pin15 reaches D3 inverter input pin3 and owner reports a resistor path to +5 V; exact .009 sheet-1 photo PXL_20260718_101809608.... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D34_SIG` | timing/I/O | `D34.11, R63.1` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
