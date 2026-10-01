@@ -85,5 +85,13 @@
     "r38_west_hole_front_search_limit": "Using the adjacent registered D43 corner rather than the distant D59 corner, solder hole (1155,2390) projects only approximately to component (2555,2285) in PXL_20260710_200452717.MP.jpg: D43.14 front (2500,2410) corresponds to solder (1210,2505), and its reflected package span is about unit scale. Native front crop (2250,2000)-(2800,2550) puts that search point at the crowded right edge of the D43 body/front gap trace, without an isolated open annulus to adopt. The visible solder hole remains the practical bench probe target; do not call a front same-hole match or front-net join from this extrapolation.",
     "limit": "Do not infer owner D59 rail identity from the neighboring D42/D43 strip geometry. Follow the narrow departures across both faces or meter D59.7 to known ground and D59.14 to known +5 V with power off."
   },
-  "disposition": "Do not rotate either routed footprint without a pin-aware reroute and DRC review. D59 orientation and supply-corner solder locations are photo-supported; owner-board supply continuity remains open."
+  "osc_input_local_join_review": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200534267.jpg",
+    "native_crop_xyxy": [2460, 2150, 2800, 2460],
+    "pin2_solder_px_approx": [2590, 2260],
+    "pin3_solder_px_approx": [2650, 2260],
+    "observation": "The registered notch-right D59 field places pin1 at the upper-left solder corner x2530, followed by pin2 at x2590 and pin3 at x2650. A short, uninterrupted bright B.Cu segment joins the adjacent pin2 and pin3 crowns at y2260. Pin3 has a separate narrow departure rising toward the right, but this crop does not trace it to the crystal network or the distinct XTAL16M island.",
+    "decision": "Promote only the local owner-board D59.2-to-D59.3 OSC input tie. The OSC-to-XTAL16M boundary remains open."
+  },
+  "disposition": "Do not rotate either routed footprint without a pin-aware reroute and DRC review. D59 orientation, local pins2/3 OSC tie, and supply-corner solder locations are photo-supported; owner-board supply continuity and OSC-to-XTAL16M remain open."
 }

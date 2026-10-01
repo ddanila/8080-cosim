@@ -66,7 +66,7 @@ distinct Ф1 and Ф2 outputs.
 | --- | --- | --- |
 | D59 remaining timing boundary remains visible | PASS | D59.5/.6 mux-enable inverter is traced; D59.10 tag10 remains distinct from SOUND |
 | D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge | PASS | D36.12, D36.13; tied inputs visible, west source unlabeled in dense bundle |
-| OSC-to-XTAL16M source-side merge remains unproved after native-sheet chase | PASS | OSC and XTAL16M remain distinct source nets pending continuity |
+| OSC-to-XTAL16M source-side merge remains unproved after native-sheet chase | PASS | owner solder copper locally joins D59.2/.3 OSC inputs; OSC and XTAL16M remain distinct source nets pending continuity |
 
 ## Current Timing Nets
 
