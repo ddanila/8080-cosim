@@ -20,7 +20,7 @@
     "Exact .009 assembly depicts the E8 3-4 link below D26; electrical detail puts PB4/pin22 at E8.3 and CONTRDAT at E8.4.",
     "Native front crop (1450,2200)-(2400,2580) shows a short exposed vertical trace from E8.4 right wire landing near (2200,2390) to one joint in the lower X9-region row around (2200,2450); this is a visible same-face copper continuation."
   ],
-  "limits": "The photo supports the fitted bridge and local exposed copper, but hidden solder integrity and X9/A50 numbering need direct continuity. Current board JSON KBD_CONTRDAT assigns D26.23/PB5 and D26_PB4_BOUNDARY isolates D26.22, contrary to the .009 source and observed jumper; retain this as a model correction gate rather than claiming the replica is fixed.",
+  "limits": "The photo supports the fitted bridge and local exposed copper. The exact .009 table closes A50 to X9:9, but the physical A50 band hole, hidden solder integrity, and continuity to D26.22 still need confirmation. Current board JSON KBD_CONTRDAT assigns D26.23/PB5 and D26_PB4_BOUNDARY isolates D26.22, contrary to the .009 source and observed jumper; retain this as a model correction gate rather than claiming the replica is fixed.",
   "measurement": "With power removed, test D26.22 to both E8 jumper ends, E8.4 to full-band solder site6 near (2140,2375), and that site to the actual X9 CONTRDAT conductor. Test D26.23 to E8 contact2 and for isolation from the jumper. Identify the actual A-number before rerouting.",
   "x9_candidate": {
     "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
@@ -31,6 +31,11 @@
       2375
     ],
     "basis": "Reflected D26 local package fit maps the front lower joint near x2200 to solder x≈2150, within about 10 px of full-band site6 x2140; the front trace closes E8.4 to that lower joint. Site numbering is photo band index, not factory A-number.",
-    "limit": "The opposite-face same-hole match and cable wire identity have not been independently proved. The 15-site band includes one extra site relative to fourteen A45-A58 wires, so site6 cannot yet be called A50."
+    "limit": "The opposite-face same-hole match and cable wire identity have not been independently proved. The table identifies A50 to X9:9, but the 15-site band includes one extra site relative to fourteen A45-A58 wires; site6 cannot yet be assigned A50 from position alone."
+  },
+  "factory_connector_path": {
+    "electrical_sheet_1": "E8.4 CONTRDAT conductor 50 continues as 909",
+    "assembly_connection_table": "ДГШ5.109.009 СБ sheet 2, position 153 conductor 6: А:50 -> X9:9",
+    "conclusion": "The drawing destination X9:9 through board point A50 is source-proved; the physical A50 hole in the 15-site owner-photo band is not."
   }
 }

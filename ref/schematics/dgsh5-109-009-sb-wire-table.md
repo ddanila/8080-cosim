@@ -59,6 +59,13 @@ A59->X8.8, A60->X8.3, A61->X8.6/X8.2, and A62->X8.5/X8.1.
 | 13 | А:57 | X9:2 |
 | 14 | А:58 | X9:1 |
 
+Position 6 directly proves `А:50` to `X9:9`. The exact `.009 Э3` sheet-1
+E8.4 `CONTRDAT` continuation is marked `909`, so these two drawings close the
+factory connector destination for the fitted E8 3–4 bridge. The owner-photo
+15-site solder band still lacks a unique A50 hole assignment; its tentative
+site-6 waypoint is recorded in
+`ref/photos/juku-pcb-2/e8-bridge-photo-review.json`.
+
 Native page 1 shows exactly these fourteen position-153 rows, each marked
 30 cm. The table identifies numbered board points and connector contacts;
 it does not name their electrical signals. Keyboard/control/+5 V signal

@@ -91,7 +91,11 @@ stronger.
   D26's reflected fit projects it near full-band solder site 6 at
   `(2140,2375)` in `PXL_20260710_200530933.MP.jpg`. This is a useful probe
   waypoint, not an A50 assignment: the archived band has fifteen sites for
-  fourteen factory A45–A58 wires.
+  fourteen factory A45–A58 wires. The original .009 СБ connection table,
+  sheet 2, position-153 conductor 6, explicitly pairs board point `А:50`
+  with `X9:9`; the sheet-1 `CONTRDAT` continuation `909` therefore has its
+  factory connector endpoint. Only the physical A50 hole within the owner
+  photo band remains unidentified.
 
 - D96.9 Q2 runs to the joined D101 A0-A3 inputs in the full sheet-3
   overview; D96.11 reaches the D94.2/D99.9/R89.1 island there. Both physical

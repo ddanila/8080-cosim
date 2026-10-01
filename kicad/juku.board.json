@@ -14572,7 +14572,7 @@
       "wire_link": true
     },
     "KBD_CONTRDAT": {
-      "src": "MODEL CONFLICT pending correction: exact .009 sheet-1 detail sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo show E8.3-4 jumper fitted. Existing D26.23/PB5 membership is legacy and has no recorded direct owner continuity; identify physical X9/A50 landing before revising replica copper.",
+      "src": "MODEL CONFLICT pending correction: exact .009 sheet-1 detail sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo show E8.3-4 jumper fitted. .009 SB sheet-2 cable table position 153 conductor 6 directly maps A50 to X9.9. Existing D26.23/PB5 membership is legacy with no recorded direct owner continuity; identify the physical A50 solder-band hole before revising replica copper.",
       "nodes": [
         [
           "D26",
