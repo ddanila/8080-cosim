@@ -18,12 +18,20 @@
     "D35_pin4": [
       2240,
       1655
+    ],
+    "D37_pin13": [
+      2187,
+      1253
+    ],
+    "D35_pin4_front_hole": [
+      2178,
+      1655
     ]
   },
-  "component_observation": "The registered bottom-notch D37 field fixes pin 11 as the fourth contact down on its left image column. The marked top-notch D35 field fixes pin 4 as the fourth contact down on its left column. Both have visible local front-copper departures, but no uninterrupted front trace between these contacts can be followed through the white-wire corridor and package region. Nearby via and trace features are not enough to assign a remote connection.",
+  "component_observation": "The registered bottom-notch D37 field fixes pin11 as the fourth and pin13 as the sixth contact down on its left image column. Marked top-notch D35 fixes pin4 as the fourth contact down on its left column. Native 200445914 crop (2070,1200)-(2290,1780) shows D35.4 joined on F.Cu to the adjacent open annulus near (2178,1655). D37.13 departs into a separate nearby vertical corridor near x2140; the white wires hide the intervening region and no visible front junction proves their source-drawn tie. D37.11 is a third, separate local departure; its remote D34.12 route is reviewed independently.",
   "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
-  "solder_observation": "The former D35/D37 overlap shows multiple parallel solder traces; no uninterrupted D35.4-to-D37.11 copper path is visible. A separate cross-face review now registers D37.11 at the solder cap near (2045,2620) in 200522685 and follows its B.Cu line toward D34.12; see d34-pin12-video-via-review.json. D35.13 has a separate search registration in d35-pin13-photo-review.json.",
+  "solder_observation": "The former D35/D37 overlap shows multiple parallel solder traces; no uninterrupted D35.4-to-D37.13 or D35.4-to-D37.11 copper path is established by this crop. The complete D37.11 solder field in 200522685 has seven contacts per column; the broad rail above it is not an eighth pin. A separate cross-face review registers D37.11 near (2045,2620) and follows its B.Cu toward D34.12. The exact D35.4 front-hole backside mate remains unregistered.",
   "decision": "Retain D35.4/D42.10/D37.13, D37.12 numbered clock rail 3, and D37.11/D34.12 as separate source nets. The owner photos now support the D34.12 front via through B.Cu to counted D37.11 pad; electrical continuity and D35/D42/D37.12 groups remain pending.",
-  "next_inspection": "With power removed, meter D34.12/front hole (3418,2985)/solder hole (795,2642) to counted D37.11 solder pad (2045,2620), and verify isolation from D103.11/D57.9/CLK_123M and D35.4/D42.10. Also meter D35.4 to D42.10/D37.13 and D37.12 to D42.9/D43.9. Treat semiconductor-path readings as inconclusive until copper is isolated.",
+  "next_inspection": "With power removed, meter the D35.4-connected front hole near (2178,1655) to counted D37.13 near (2187,1253) and D42.10. Separately meter D34.12/front hole (3418,2985)/solder hole (795,2642) to counted D37.11 solder pad (2045,2620), and verify isolation from D103.11/D57.9/CLK_123M and the D35.4 group. Also meter D37.12 to D42.9/D43.9. Treat semiconductor-path readings as inconclusive until copper is isolated.",
   "d34_pin12_local_photo_review": "ref/photos/juku-pcb-2/d34-pin12-video-via-review.json"
 }
