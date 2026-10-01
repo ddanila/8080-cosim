@@ -70,6 +70,7 @@ jobs:
         run: |
           python3 tools/package-jukuwin-floppy.py
           cp build/win32-repro-a/BUILD.LOG build/jukuwin-floppy/BUILD.LOG
+          cp tools/check-jukuwin-runtime.ps1 build/jukuwin-floppy/
 
       - name: Transfer bundle to Windows runtime check
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -90,14 +91,15 @@ jobs:
           name: jukuwin-staging-${{ github.sha }}
           path: bundle
 
-      - name: Run actual 32-bit Windows executable selftest
+      - name: Check actual Windows worker threads, GUI Listen and persistent logs
         shell: pwsh
         timeout-minutes: 5
         run: |
-          $exe = (Resolve-Path 'bundle/files/JUKUWIN.EXE').Path
-          $process = Start-Process -FilePath $exe -ArgumentList '--selftest' -Wait -PassThru
-          if ($process.ExitCode -ne 0) { throw "JUKUWIN selftest exited $($process.ExitCode)" }
-          'JUKUWIN PE32 selftest passed on Windows Server 2022.' | Set-Content bundle/WINDOWS-CHECK.txt
+          & ./bundle/check-jukuwin-runtime.ps1 -Executable bundle/files/JUKUWIN.EXE `
+            -Media bundle/files/CPM3.IMG -OutputDirectory "$env:RUNNER_TEMP/jukuwin-runtime" |
+            Tee-Object -FilePath bundle/WINDOWS-CHECK.txt
+          Copy-Item "$env:RUNNER_TEMP/jukuwin-runtime/JUKUWIN.LOG" bundle/WINDOWS-CHECK.LOG
+          Remove-Item bundle/check-jukuwin-runtime.ps1
 
       - name: Publish floppy-ready Windows host and full CP/M tools
         id: artifact
@@ -118,14 +120,17 @@ jobs:
           ## Windows host + full CP/M tools
           [Download the bundle]($env:BUNDLE_URL)
 
+          **Upgrading an existing installation:** replace only JUKUWIN.EXE from
+          the bundle, keeping your existing INI and disk images.
+
           Extract the ZIP. Copy the contents of **files/** to a formatted 1.44 MB floppy,
           or write **JUKUWIN.IMG** as a complete FAT12 image. On Windows, copy the files
           to a writable hard-disk folder before running **JUKUWIN.EXE**.
 
           Includes the full development CP/M A: image (33 files), stock/C11/C12 embedded
           boot payloads, and a Stock ROM default configuration. B: is optional and empty.
-          The PE passed its selftest on Windows Server 2022; physical serial and Windows 95
-          qualification remain separate.
+          The PE passed threaded selftest and GUI Listen/log checks on Windows Server 2022.
+          Physical serial and Windows 95 qualification remain separate.
           "@ >> $env:GITHUB_STEP_SUMMARY
 
   release:
@@ -152,10 +157,16 @@ jobs:
           archive="jukuwin-windows-full-cpm.zip"
           (cd bundle && zip -qr "../${archive}" .)
           sha256sum "$archive" > "$archive.sha256"
+          cp bundle/files/JUKUWIN.EXE JUKUWIN.EXE
+          sha256sum JUKUWIN.EXE > JUKUWIN.EXE.sha256
           cat > release-notes.md <<EOF
           Windows host with the full CP/M development image (33 files).
 
           **[Download the bundle](https://github.com/${GH_REPO}/releases/download/${tag}/${archive})** — no GitHub login required.
+
+          **Upgrading an existing installation:** download just
+          [JUKUWIN.EXE](https://github.com/${GH_REPO}/releases/download/${tag}/JUKUWIN.EXE),
+          close the host, and replace the old EXE. Keep your existing INI and disk images.
 
           Extract the ZIP. Copy the contents of **files/** to a formatted 1.44 MB floppy,
           or write **JUKUWIN.IMG** as a complete FAT12 transfer disk image. On Windows,
@@ -167,8 +178,14 @@ jobs:
 
           Automated development build from ${GITHUB_SHA}.
           Reproducible PE, package and disk checks passed, followed by the actual EXE
-          selftest on Windows Server 2022. Physical serial and Windows 95 qualification
+          threaded selftest and GUI Listen/log checks on Windows Server 2022.
+          Physical serial and Windows 95 qualification
           remain separate. These release assets do not have the Actions artifact expiry.
+
+          Version 0.1.1 fixes Listen worker startup on original Windows 95/98,
+          uses the multithreaded C runtime, and records startup and session diagnostics
+          in JUKUWIN.LOG beside the EXE (temporary-folder fallback if unwritable).
+          Worker startup failures now include the Windows error code and description.
 
           Original Windows 95 compatibility includes avoiding unavailable interlocked
           imports, falling back from the MoveFileExA stub, and bounding serial writes
@@ -180,11 +197,13 @@ jobs:
           [Build checks](https://github.com/${GH_REPO}/actions/runs/${GITHUB_RUN_ID})
           EOF
           if gh release view "$tag" >/dev/null 2>&1; then
-            gh release upload "$tag" "$archive" "$archive.sha256" --clobber
+            gh release upload "$tag" "$archive" "$archive.sha256" \
+              JUKUWIN.EXE JUKUWIN.EXE.sha256 --clobber
           else
             gh release create "$tag" "$archive" "$archive.sha256" \
+              JUKUWIN.EXE JUKUWIN.EXE.sha256 \
               --target "$GITHUB_SHA" --prerelease --latest=false \
-              --title "Windows host + full CP/M (${GITHUB_SHA:0:8})" \
+              --title "Windows host 0.1.1 + full CP/M (${GITHUB_SHA:0:8})" \
               --notes-file release-notes.md
           fi
           echo "Public download: https://github.com/${GH_REPO}/releases/tag/${tag}" >> "$GITHUB_STEP_SUMMARY"

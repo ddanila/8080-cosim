@@ -8,7 +8,11 @@ files.
 ## Download the Windows bundle
 
 Open [Releases](https://github.com/ddanila/8080-cosim/releases), select a
-**Windows host + full CP/M** build, and download **jukuwin-windows-full-cpm.zip**.
+**Windows host** build, and download **jukuwin-windows-full-cpm.zip**.
+For an existing installation, download just **JUKUWIN.EXE**, close the host,
+and replace the old EXE. Keep the existing INI, disk images and working snapshots;
+no extra DLLs or boot files are required.
+
 The release page and ZIP are public without signing into GitHub and have no
 automatic expiry. Each development prerelease identifies its source commit
 and includes installation instructions and a ZIP checksum.
@@ -38,8 +42,9 @@ Select C11 or C12 instead if that is the ROM fitted in your machine.
 CI checks the native components, two byte-identical PE builds, the Win95
 import boundary, payload identities, the full-media hash, floppy capacity,
 and byte-for-byte FAT12 readback. It then runs the actual EXE selftest on
-Windows Server 2022 before publishing the final artifact. This does not
-replace physical serial or Windows 95 testing.
+Windows Server 2022, including repeated GUI Listen, worker teardown, early
+failure logging and session logging, before publishing the final artifact.
+This does not replace physical serial or Windows 95 testing.
 
 The [original Windows 95 VM acceptance report](windows-jukuhost-client-win95-acceptance.md)
 records a successful self-test, configuration save, and interactive C12 CP/M
@@ -106,6 +111,19 @@ The left transcript is the N4 CP/M console. Type a command in the input field
 and press **Send**; a carriage return is added automatically. The right pane
 shows host diagnostics and recovery transitions.
 
+Version 0.1.1 creates `JUKUWIN.LOG` beside the EXE as soon as the program
+starts, before loading the INI or creating a worker. If that folder is not
+writable, it uses `JUKUWIN.LOG` in the Windows temporary folder instead. The
+initial diagnostic pane shows the chosen path. The file appends timestamped
+startup, configuration, Listen/Stop, worker failure and session diagnostics,
+flushing every entry. It persists across restarts; you can delete it while the
+host is closed. Send this file when reporting a startup or Listen failure.
+If neither location can be written, the application displays an error.
+
+Listen failures include the Windows error number, description and C runtime
+error number. The Windows 95/98 worker now supplies the required thread-ID
+output and initializes the multithreaded C runtime.
+
 Each run creates a distinct timestamped folder beneath the configured
 `logs` directory containing `JUKUHOST.LOG` and, by default, `JUKUHOST.CAP`.
 The capture is the same CRC-protected byte/event format used by the Linux and
@@ -146,7 +164,8 @@ keep_sessions=20
 ejects B:. `keep_sessions=0` disables automatic evidence retention cleanup.
 
 For automated diagnosis, `JUKUWIN.EXE --selftest` verifies the portable core,
-configuration round trip, and every embedded payload without opening a port.
+configuration round trip, and every embedded payload on two successive worker
+threads without opening a port. It also writes its results to `JUKUWIN.LOG`.
 `JUKUWIN.EXE --headless --config PATH` serves the same configuration without
 creating a window; it is intended for controlled tests and support work.
 `--disk-timeout SECONDS` gives that headless mode a bounded NetDisk test run;

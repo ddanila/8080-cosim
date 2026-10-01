@@ -49,7 +49,7 @@ sources=(
 )
 objects=()
 compile_flags=(
-    -bt=nt -zastd=c99 -ox -s -w4 -we -dJH_WIN32
+    -bt=nt -bm -zastd=c99 -ox -s -w4 -we -dJH_WIN32
     -i="$project_root/host/include"
     -i="$project_root/host/src"
     -i="$project_root/host/windows"

@@ -11,6 +11,7 @@
 
 #include <errno.h>
 #include <limits.h>
+#include <process.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -76,6 +77,9 @@ struct app_state {
     HFONT font;
     HANDLE worker;
     CRITICAL_SECTION input_lock;
+    CRITICAL_SECTION diagnostic_lock;
+    FILE *diagnostic_file;
+    char diagnostic_path[JH_CONFIG_PATH_MAX];
     volatile LONG stop_requested;
     int running;
     int closing;
@@ -113,6 +117,104 @@ static int copy_text(char *target, size_t capacity, const char *source)
     return 0;
 }
 
+/* Independent of session evidence: startup and thread failures happen before
+ * JUKUHOST.LOG exists. Flush each record so a crash still leaves diagnostics. */
+static void diagnostic_log(struct app_state *app, const char *text)
+{
+    SYSTEMTIME now;
+    int failed = 0;
+    size_t length = strlen(text);
+    while (length != 0u && (text[length - 1u] == '\r' ||
+                            text[length - 1u] == '\n')) --length;
+    EnterCriticalSection(&app->diagnostic_lock);
+    if (app->diagnostic_file != NULL) {
+        GetLocalTime(&now);
+        if (fprintf(app->diagnostic_file,
+                "%04u-%02u-%02u %02u:%02u:%02u [%lu] %.*s\n",
+                (unsigned)now.wYear, (unsigned)now.wMonth,
+                (unsigned)now.wDay, (unsigned)now.wHour,
+                (unsigned)now.wMinute, (unsigned)now.wSecond,
+                (unsigned long)GetCurrentThreadId(), (int)length, text) < 0 ||
+                fflush(app->diagnostic_file) != 0) {
+            fclose(app->diagnostic_file);
+            app->diagnostic_file = NULL;
+            failed = 1;
+        }
+    }
+    LeaveCriticalSection(&app->diagnostic_lock);
+    if (failed) {
+        MessageBoxA(NULL, "Cannot write JUKUWIN.LOG; check free disk space.",
+                    APP_TITLE, MB_OK | MB_ICONERROR);
+    }
+}
+
+static void open_diagnostic_log(struct app_state *app)
+{
+    DWORD length = GetModuleFileNameA(NULL, app->diagnostic_path,
+                                     sizeof(app->diagnostic_path));
+    char *name;
+    if (length != 0u && length < sizeof(app->diagnostic_path)) {
+        name = strrchr(app->diagnostic_path, '\\');
+        if (name != NULL && (size_t)(name + 1 - app->diagnostic_path) +
+                sizeof("JUKUWIN.LOG") <= sizeof(app->diagnostic_path)) {
+            memcpy(name + 1, "JUKUWIN.LOG", sizeof("JUKUWIN.LOG"));
+            app->diagnostic_file = fopen(app->diagnostic_path, "a");
+        }
+    }
+    if (app->diagnostic_file == NULL) {
+        length = GetTempPathA(sizeof(app->diagnostic_path),
+                              app->diagnostic_path);
+        if (length != 0u && length + sizeof("JUKUWIN.LOG") <=
+                sizeof(app->diagnostic_path)) {
+            memcpy(app->diagnostic_path + length, "JUKUWIN.LOG",
+                   sizeof("JUKUWIN.LOG"));
+            app->diagnostic_file = fopen(app->diagnostic_path, "a");
+        }
+    }
+    if (app->diagnostic_file == NULL) {
+        MessageBoxA(NULL,
+            "Cannot open JUKUWIN.LOG beside the EXE or in the temporary folder.",
+            APP_TITLE, MB_OK | MB_ICONERROR);
+    }
+    diagnostic_log(app, "Juku Host 0.1.1 starting");
+}
+
+static void close_application(struct app_state *app)
+{
+    diagnostic_log(app, "Juku Host exiting");
+    if (app->diagnostic_file != NULL) fclose(app->diagnostic_file);
+    DeleteCriticalSection(&app->diagnostic_lock);
+    DeleteCriticalSection(&app->input_lock);
+}
+
+/* Use the CRT entry point: the worker uses malloc, errno and stdio. Win9x
+ * also requires a non-NULL thread ID output, unlike modern Windows. */
+static HANDLE start_worker(unsigned (__stdcall *entry)(void *), void *context,
+                           char *message, size_t capacity)
+{
+    unsigned thread_id;
+    HANDLE worker;
+    DWORD error;
+    int crt_error;
+    char detail[160];
+    SetLastError(0u);
+    errno = 0;
+    worker = (HANDLE)_beginthreadex(NULL, 0u, entry, context, 0u, &thread_id);
+    error = GetLastError();
+    crt_error = errno;
+    if (worker == NULL) {
+        detail[0] = '\0';
+        (void)FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM |
+            FORMAT_MESSAGE_IGNORE_INSERTS, NULL, error, 0u, detail,
+            sizeof(detail), NULL);
+        detail[strcspn(detail, "\r\n")] = '\0';
+        (void)snprintf(message, capacity,
+            "Cannot start host worker (Windows error %lu, errno %d): %s",
+            (unsigned long)error, crt_error, detail);
+    }
+    return worker;
+}
+
 static void set_control_font(HWND control, HFONT font)
 {
     SendMessage(control, WM_SETFONT, (WPARAM)font, TRUE);
@@ -143,7 +245,15 @@ static int post_host_event(struct app_state *app, enum event_kind kind,
                            unsigned first, unsigned second)
 {
     struct host_event *event;
+    if (kind == EVENT_LOG || kind == EVENT_STATE) diagnostic_log(app, text);
+    if (kind == EVENT_DONE) {
+        char result[96];
+        (void)snprintf(result, sizeof(result),
+            "Host worker stopped: result %u, requests %u", first, second);
+        diagnostic_log(app, result);
+    }
     if (length >= sizeof(event->text)) length = sizeof(event->text) - 1u;
+    if (app->window == NULL) return 0;
     event = (struct host_event *)malloc(sizeof(*event));
     if (event == NULL) return -1;
     event->kind = kind;
@@ -725,7 +835,7 @@ static int set_disk_identity(struct app_state *app, char *message,
     return 0;
 }
 
-static DWORD WINAPI host_worker(LPVOID opaque)
+static unsigned __stdcall host_worker(void *opaque)
 {
     struct app_state *app = (struct app_state *)opaque;
     struct jh_host_options options;
@@ -734,6 +844,8 @@ static DWORD WINAPI host_worker(LPVOID opaque)
     char message[256];
     char resolved[16];
     int result;
+    int waiting = 0;
+    diagnostic_log(app, "Host worker started");
     if (set_disk_identity(app, message, sizeof(message)) != 0 ||
             make_evidence_paths(app, message, sizeof(message)) != 0) {
         (void)post_host_event(app, EVENT_STATE, message, strlen(message), 0u, 0u);
@@ -768,9 +880,12 @@ static DWORD WINAPI host_worker(LPVOID opaque)
                                   JH_HOST_EXIT_CLEAN, 0u);
             return JH_HOST_EXIT_CLEAN;
         }
-        (void)post_host_event(app, EVENT_STATE,
-            "Waiting for configured serial device",
-            sizeof("Waiting for configured serial device") - 1u, 0u, 0u);
+        if (!waiting) {
+            (void)post_host_event(app, EVENT_STATE,
+                "Waiting for configured serial device",
+                sizeof("Waiting for configured serial device") - 1u, 0u, 0u);
+            waiting = 1;
+        }
         Sleep(250u);
     }
     jh_host_options_init(&options);
@@ -799,7 +914,7 @@ static DWORD WINAPI host_worker(LPVOID opaque)
     result = jh_host_run(&options, &hooks, &summary);
     (void)post_host_event(app, EVENT_DONE, NULL, 0u, (unsigned)result,
                           (unsigned)summary.requests);
-    return (DWORD)result;
+    return (unsigned)result;
 }
 
 static void enable_session_controls(struct app_state *app, int enabled)
@@ -820,8 +935,10 @@ static void start_listening(struct app_state *app)
 {
     char message[256];
     if (app->running) return;
+    diagnostic_log(app, "Listen requested");
     if (controls_to_config(app, message, sizeof(message)) != 0 ||
             save_configuration(app, message, sizeof(message)) != 0) {
+        diagnostic_log(app, message);
         SetWindowTextA(app->status, message);
         MessageBoxA(app->window, message, APP_TITLE, MB_OK | MB_ICONERROR);
         return;
@@ -829,11 +946,12 @@ static void start_listening(struct app_state *app)
     app->run_config = app->config;
     app->console_input_length = 0u;
     SetWindowTextA(app->console, "");
-    SetWindowTextA(app->log, "");
     InterlockedExchange((LONG *)&app->stop_requested, 0L);
-    app->worker = CreateThread(NULL, 0u, host_worker, app, 0u, NULL);
+    app->worker = start_worker(host_worker, app, message, sizeof(message));
     if (app->worker == NULL) {
-        SetWindowTextA(app->status, "Cannot start host worker");
+        diagnostic_log(app, message);
+        append_edit(app->log, message, strlen(message));
+        SetWindowTextA(app->status, message);
         return;
     }
     app->running = 1;
@@ -845,6 +963,7 @@ static void start_listening(struct app_state *app)
 static void stop_listening(struct app_state *app)
 {
     if (!app->running) return;
+    diagnostic_log(app, "Stop requested");
     InterlockedExchange((LONG *)&app->stop_requested, 1L);
     EnableWindow(app->listen, FALSE);
     SetWindowTextA(app->status, "Stopping safely");
@@ -1008,6 +1127,8 @@ static void handle_host_event(struct app_state *app, struct host_event *event)
         break;
     case EVENT_DONE:
         if (app->worker != NULL) {
+            /* EVENT_DONE can arrive before the CRT finishes thread cleanup. */
+            (void)WaitForSingleObject(app->worker, INFINITE);
             CloseHandle(app->worker);
             app->worker = NULL;
         }
@@ -1100,7 +1221,7 @@ static LRESULT CALLBACK window_proc(HWND window, UINT message,
     return DefWindowProcA(window, message, wparam, lparam);
 }
 
-static int application_selftest(void)
+static int core_selftest(void)
 {
     struct jh_jukuwin_config config;
     struct jh_jukuwin_config parsed;
@@ -1123,6 +1244,39 @@ static int application_selftest(void)
     return JH_HOST_EXIT_CLEAN;
 }
 
+static unsigned __stdcall selftest_worker(void *opaque)
+{
+    struct app_state *app = (struct app_state *)opaque;
+    diagnostic_log(app, "Selftest worker started");
+    return (unsigned)core_selftest();
+}
+
+static int application_selftest(struct app_state *app)
+{
+    char message[256];
+    DWORD result;
+    unsigned attempt;
+    /* Exercise CRT thread startup, logging and teardown twice, as Listen does. */
+    for (attempt = 0u; attempt < 2u; ++attempt) {
+        HANDLE worker = start_worker(selftest_worker, app, message,
+                                     sizeof(message));
+        if (worker == NULL) {
+            diagnostic_log(app, message);
+            return JH_HOST_EXIT_ARTIFACT;
+        }
+        if (WaitForSingleObject(worker, 30000u) != WAIT_OBJECT_0) {
+            diagnostic_log(app, "Selftest worker timed out");
+            /* Do not tear down locks while the failed worker may be alive. */
+            ExitProcess(JH_HOST_EXIT_ARTIFACT);
+        }
+        if (!GetExitCodeThread(worker, &result)) result = JH_HOST_EXIT_ARTIFACT;
+        CloseHandle(worker);
+        if (result != JH_HOST_EXIT_CLEAN) return (int)result;
+    }
+    diagnostic_log(app, "Threaded selftest passed");
+    return JH_HOST_EXIT_CLEAN;
+}
+
 static int run_headless(struct app_state *app, unsigned disk_timeout_seconds)
 {
     struct jh_jukuwin_config_error config_error;
@@ -1132,12 +1286,14 @@ static int run_headless(struct app_state *app, unsigned disk_timeout_seconds)
     char message[256];
     char resolved[16];
     if (jh_jukuwin_config_validate(&app->config, &config_error) != JH_OK) {
+        diagnostic_log(app, config_error.message);
         fprintf(stderr, "JUKUWIN: %s\n", config_error.message);
         return JH_HOST_EXIT_COMMAND;
     }
     app->run_config = app->config;
     if (set_disk_identity(app, message, sizeof(message)) != 0 ||
             make_evidence_paths(app, message, sizeof(message)) != 0) {
+        diagnostic_log(app, message);
         fprintf(stderr, "JUKUWIN: %s\n", message);
         return JH_HOST_EXIT_ARTIFACT;
     }
@@ -1146,6 +1302,7 @@ static int run_headless(struct app_state *app, unsigned disk_timeout_seconds)
             resolve_serial_hook(app, app->run_config.serial, resolved,
                                 sizeof(resolved)) != 0) {
         if (errno == EBUSY) {
+            diagnostic_log(app, "Multiple serial adapters match");
             fputs("JUKUWIN: multiple serial adapters match\n", stderr);
             return JH_HOST_EXIT_SERIAL;
         }
@@ -1155,6 +1312,8 @@ static int run_headless(struct app_state *app, unsigned disk_timeout_seconds)
     memset(&hooks, 0, sizeof(hooks));
     hooks.context = app;
     hooks.resolve_serial = resolve_serial_hook;
+    hooks.log = log_hook;
+    hooks.state = state_hook;
     jh_host_options_init(&options);
     if (jh_jukuwin_apply_payloads(
             mode_name(app->run_config.mode),
@@ -1187,33 +1346,38 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command_line,
     memset(&application, 0, sizeof(application));
     application.instance = instance;
     InitializeCriticalSection(&application.input_lock);
+    InitializeCriticalSection(&application.diagnostic_lock);
+    open_diagnostic_log(&application);
     if (strstr(command_line, "--selftest") != NULL) {
-        int result = application_selftest();
-        DeleteCriticalSection(&application.input_lock);
+        int result = application_selftest(&application);
+        close_application(&application);
         return result;
     }
     if (make_config_path(application.config_path, command_line) != 0) {
+        diagnostic_log(&application, "Cannot determine JUKUWIN.INI path");
         MessageBoxA(NULL, "Cannot determine JUKUWIN.INI path", APP_TITLE,
                     MB_OK | MB_ICONERROR);
-        DeleteCriticalSection(&application.input_lock);
+        close_application(&application);
         return JH_HOST_EXIT_COMMAND;
     }
     if (load_configuration(&application, status, sizeof(status)) != 0) {
+        diagnostic_log(&application, status);
         MessageBoxA(NULL, status, APP_TITLE, MB_OK | MB_ICONERROR);
-        DeleteCriticalSection(&application.input_lock);
+        close_application(&application);
         return JH_HOST_EXIT_COMMAND;
     }
+    diagnostic_log(&application, status);
     if (strstr(command_line, "--headless") != NULL) {
         int parsed = command_line_unsigned(command_line, "--disk-timeout",
                                            &headless_disk_timeout);
         int result;
         if (parsed < 0) {
             fputs("JUKUWIN: --disk-timeout requires whole seconds\n", stderr);
-            DeleteCriticalSection(&application.input_lock);
+            close_application(&application);
             return JH_HOST_EXIT_COMMAND;
         }
         result = run_headless(&application, headless_disk_timeout);
-        DeleteCriticalSection(&application.input_lock);
+        close_application(&application);
         return result;
     }
     memset(&window_class, 0, sizeof(window_class));
@@ -1228,17 +1392,23 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command_line,
     window_class.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
     window_class.lpszClassName = APP_CLASS;
     if (!RegisterClassA(&window_class)) {
-        DeleteCriticalSection(&application.input_lock);
+        close_application(&application);
         return JH_HOST_EXIT_COMMAND;
     }
     window = CreateWindowExA(0u, APP_CLASS, APP_TITLE,
         WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
         900, 650, NULL, NULL, instance, NULL);
     if (window == NULL) {
-        DeleteCriticalSection(&application.input_lock);
+        close_application(&application);
         return JH_HOST_EXIT_COMMAND;
     }
     SetWindowTextA(application.status, status);
+    if (application.diagnostic_file != NULL) {
+        char notice[JH_CONFIG_PATH_MAX + 32];
+        (void)snprintf(notice, sizeof(notice), "Application log: %s\r\n",
+                       application.diagnostic_path);
+        append_edit(application.log, notice, strlen(notice));
+    }
     ShowWindow(window, show);
     UpdateWindow(window);
     if (application.config.auto_listen &&
@@ -1251,6 +1421,6 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR command_line,
             DispatchMessageA(&message);
         }
     }
-    DeleteCriticalSection(&application.input_lock);
+    close_application(&application);
     return (int)message.wParam;
 }
