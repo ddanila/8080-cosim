@@ -1,8 +1,28 @@
 # D7 sheet-1 gate-output crossing
 
-Source: exact `.009 Э3` sheet-1 detail `ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg`, native crop `(1180,2550)–(1550,3450)`. A fresh original-pixel read corrects the former gate identity: the lower pin-3 output is **D105.3**, visibly labeled `Д105` in crop `(750,3000)–(1540,3750)`, not D7.3. D7.11 leaves the upper D7 NAND section and follows the right-hand vertical stroke into D105.3. D7.8 joins the separate left-hand stroke at a filled dot. The pin-3 stroke crosses that left-hand stroke without a dot. The exact drawing therefore depicts a D7.11/D105.3 output tie, not the previously reported D7.3/D7.11 tie. Both are outputs, so this unusual source join requires owner continuity before it can enter the model.
+Source: exact `.009 Э3` sheet-1 detail
+`ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg`, native crop
+`(950,3220)–(1600,3760)`. The lower pin-3 output is visibly labeled
+**D105.3**, not D7.3. Its horizontal stroke at y≈3360 turns north near
+`(1398,3360)`. The separate D7.11 output runs east around y≈3590,
+roughly 230 px below that turn; no line or junction joins the two in this
+native crop. The earlier claim of a D7.11/D105.3 output tie was a tracing
+error. The still earlier D7.3/D7.11 tie was also wrong because the lower
+pin-3 gate is D105. No source-drawn local output tie is established here.
+The exact pixel coordinates and model disposition are recorded in
+`ref/schematics/d7-d105-output-crossing-correction.json`.
 
-The owner-board model keeps D7.11 on `PROM_EN` and D105.3 on qualified peripheral `/WR` (`IOWR`). Owner continuity closes D105.3 to D94.13, D29.5, D10.2, D11.10, D26.36, and D27.36, but has not tested D7.11 against D105.3. With power removed, measure D7.11↔D105.3 directly: the counted D105.3 owner contact is near component (1108,1680) in 200439607 / solder (2807,1190) in 200537608, and D7.11 is near solder (2245,1193) in 200525009. See `ref/photos/juku-pcb-2/d105-pin3-photo-review.json`. Then test D7.11↔D94.13 and D105.3↔R17.2 as independent cross-checks. Preserve the separate model nets until that conflict is resolved. D7.3 remains a different source branch to D29.2 as read in the D29 detail below; its upstream continuation is still unresolved.
+The owner-board model already keeps D7.11 on `PROM_EN` and D105.3 on
+qualified peripheral `/WR` (`IOWR`), matching the separate local source
+strokes. Owner continuity closes D105.3 to D94.13, D29.5, D10.2,
+D11.10, D26.36, and D27.36. D7.11 has not been tested directly against
+D105.3, but such a measurement is an optional check for a hidden remote or
+factory-modified path, not a source-required tie. Its probe sites are D7.11
+near solder `(2245,1193)` in `200525009` and D105.3 near component
+`(1108,1680)` in `200439607` / solder `(2807,1190)` in `200537608`.
+Keep the model nets separate; see
+`ref/photos/juku-pcb-2/d105-pin3-photo-review.json`. D7.3 remains a
+different source branch to D29.2 as read in the D29 detail below.
 
 The exact sheet-1 D29 detail in `PXL_20260718_101813438.jpg` crop
 `(1000,3040)–(1740,3540)` adds a readable destination: the D7 NAND
@@ -12,16 +32,16 @@ An independent native crop `(800,2850)–(1900,3730)` keeps the `Д7` label,
 pin-3 output, rising stroke, and D29.2 landing in one view; the preceding
 D105 correction does not change this D7.3→D29.2 read.
 This closes D7.3→D29.2 **on the source drawing**, while owner-board continuity
-and the unusual D7.11/D105.3 source output tie still need direct checks. The
-former D29.5 interpretation remains disproved by owner continuity.
+remains to be checked. The former D29.5 interpretation remains disproved by
+owner continuity.
 
-The component-side board view `ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg` locates the marked D7 and its complete lead rows (pin 3 near `(3338,1320)`, pin 11 near `(3285,1485)`). The pin-3 visible copper runs north; no component-face bridge to pin 11 appears beside the package. This fits their separate source branches but does not prove the D7.11-to-D105.3 remote path. That output tie remains a targeted continuity question, not an adopted net.
+The component-side board view `ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg` locates the marked D7 and its complete lead rows (pin 3 near `(3338,1320)`, pin 11 near `(3285,1485)`). The pin-3 visible copper runs north; no component-face bridge to pin 11 appears beside the package. This fits their separate source branches. Any remote D7.11-to-D105.3 path would need independent physical evidence.
 
-The same owner crop `(3100,1100)–(3500,1650)` reads **КР1533ЛА3** on the populated D7 body (upside down in the photo). This confirms the D7 package identity and a later-series body marking than the generic drawn `ЛА3`. The body marking cannot establish whether D7.11 is physically tied to D105.3.
+The same owner crop `(3100,1100)–(3500,1650)` reads **КР1533ЛА3** on the populated D7 body (upside down in the photo). This confirms the D7 package identity and a later-series body marking than the generic drawn `ЛА3`. The body marking does not establish remote connectivity.
 
 The global panorama transform alone misses the local solder field by hundreds of pixels. A direct local registration in solder tile `PXL_20260710_200525009.jpg` now identifies the complete D7 2×7 field at top-row joints `(2080,1029)`–`(2410,1029)` and bottom-row joints `(2080,1193)`–`(2410,1193)`. It sits immediately left of the 2×8 D9 field and then the 2×8 D8 field, the mirror image of their component-side order. The new fit in `ref/photos/juku-pcb-2/local-package-registration.json` passes all independent pad checks with zero rounded-pixel residual.
 
-Physical D7.3 is the third top joint near `(2190,1029)`; D7.11 is the fourth bottom joint from the left near `(2245,1193)`. A close review of the original solder pixels shows separate annuli and no local solder-face bridge or visible outgoing solder trace from either joint. The component photo likewise shows no local bridge beside the package. These two D7 contacts have no source-drawn tie to each other; their remote connectivity is independently unresolved. The source-drawn output tie to test is D7.11↔D105.3.
+Physical D7.3 is the third top joint near `(2190,1029)`; D7.11 is the fourth bottom joint from the left near `(2245,1193)`. A close review of the original solder pixels shows separate annuli and no local solder-face bridge or visible outgoing solder trace from either joint. The component photo likewise shows no local bridge beside the package. These two D7 contacts have no source-drawn tie to each other; their remote connectivity is independently unresolved. The corrected native sheet also has no local D7.11↔D105.3 tie.
 
 A renewed native crop of component tile `PXL_20260710_200411500.jpg`,
 `(3030,750)–(3630,1750)`, places D7.11 at the fourth bottom-row

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "former D7.11/D105.3 output-tie claim retracted",
+  "source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg",
+  "source_sha256": "40a524d663dc4685a7093782165264524cd70780fb41638a8d1c0cbca0b36216",
+  "native_crop_xyxy": [950, 3220, 1600, 3760],
+  "observations": [
+    "The lower pin-3 NAND gate is labeled D105, not D7.",
+    "D105.3's output line runs east near source y3360 and turns north near (1398,3360).",
+    "D7.11's separate output line runs east near source y3590, roughly 230 px below the D105.3 turn. No local stroke or filled junction joins these two outputs in the native crop.",
+    "The earlier D7.3/D7.11 tie came from misreading the D105 reference; the later D7.11/D105.3 tie came from following the wrong vertical stroke."
+  ],
+  "model_disposition": "Keep D7.11/PROM_EN and D105.3/qualified IOWR separate. A remote or factory-modified join would require independent board continuity; the visible source detail does not demand one.",
+  "physical_limit": "The native crop establishes only local drawn separation. The original board has no recorded direct D7.11-to-D105.3 continuity measurement."
+}

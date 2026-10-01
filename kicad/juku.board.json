@@ -202,7 +202,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "complete sheet-1 full-resolution package census: section12,13->11 forms the PROM_EN strobe, with pin12 on CPU SYNC and pin13 fed back from output pin11 before R17; section1,2->3 consumes the factory-wire-separated MEMR_D7/MEMW_D7P2 inputs and drives the provisional AMW_N boundary at pin3. Exact .009 sheet-1 detail 101813438 draws D7.3 to D29.2, crossing D29.7 without a junction; detail 101805510 draws D7.11 and D105.3 on one continuous stroke despite both being gate outputs. Owner continuity has not tested this unusual tie, so PROM_EN and qualified IOWR remain separate in the model. Owner continuity 2026-07-19 disproves the former D7.3-to-D29.5 interpretation, and D29.5 instead belongs to qualified peripheral IOWR; section5,4->6 drives D25.T, with pin4 joining MEMW at the same T that feeds D29 physical pin1 and pin5 sharing the explicit -INHIB junction at D29 physical pin3; section9,10->8 is IORD/IOWR NAND with output on tag8"
+        "pins": "complete sheet-1 full-resolution package census: section12,13->11 forms the PROM_EN strobe, with pin12 on CPU SYNC and pin13 fed back from output pin11 before R17; section1,2->3 consumes the factory-wire-separated MEMR_D7/MEMW_D7P2 inputs and drives the provisional AMW_N boundary at pin3. Exact .009 sheet-1 detail 101813438 draws D7.3 to D29.2, crossing D29.7 without a junction; detail 101805510 shows D105.3 turning north near (1398,3360) while D7.11 runs separately east around y3590; the earlier source-output tie was a tracing error. PROM_EN and qualified IOWR remain separate in the model. Owner continuity 2026-07-19 disproves the former D7.3-to-D29.5 interpretation, and D29.5 instead belongs to qualified peripheral IOWR; section5,4->6 drives D25.T, with pin4 joining MEMW at the same T that feeds D29 physical pin1 and pin5 sharing the explicit -INHIB junction at D29 physical pin3; section9,10->8 is IORD/IOWR NAND with output on tag8"
       }
     },
     {
@@ -8954,7 +8954,7 @@
       ]
     },
     "PROM_EN": {
-      "src": "traced sheet-1 native 5150x3603 direct-junction review: D7 section 12,13->11 is a SYNC-gated feedback strobe; pin13 loops directly onto output pin11, and that shared node runs east into R17.2 (200R). The old scan link D7.11->D6.14 is refuted-assumed: D6 V1/V2 feed unread [chase]; exact .009 detail 101805510 also draws D7.11 tied to D105.3, but owner continuity has not tested this output-output conflict, so PROM_EN remains separate from qualified IOWR",
+      "src": "traced sheet-1 native 5150x3603 direct-junction review: D7 section 12,13->11 is a SYNC-gated feedback strobe; pin13 loops directly onto output pin11, and that shared node runs east into R17.2 (200R). The old scan link D7.11->D6.14 is refuted-assumed: D6 V1/V2 feed unread [chase]; exact .009 detail 101805510 shows D7.11 and D105.3 on distinct local strokes, correcting the earlier false output-output tie; PROM_EN remains separate from qualified IOWR",
       "nodes": [
         [
           "D7",
@@ -16823,7 +16823,7 @@
       ]
     },
     "AMW_N": {
-      "src": "exact .009 E3 sheet-1 D29 detail 101813438 joins D7.3 output to D29.2 input, crossing D29.7 without a dot. A separate detail draws an unusual D7.11/D105.3 output tie, not a D7.3/D7.11 tie. Owner continuity disproves D29.5 on AMW_N but has not measured D7.3↔D29.2 or D7.11↔D105.3",
+      "src": "exact .009 E3 sheet-1 D29 detail 101813438 joins D7.3 output to D29.2 input, crossing D29.7 without a dot. A separate detail shows D7.11 and D105.3 on distinct local strokes; the former claimed output tie was a tracing error. Owner continuity disproves D29.5 on AMW_N but has not measured D7.3↔D29.2",
       "nodes": [
         [
           "D7",
@@ -18847,7 +18847,7 @@
       ]
     },
     "IOWR": {
-      "src": "owner continuity 2026-07-19: D105 NAND output pin3 is the qualified active-low peripheral write rail. Exact .009 detail 101805510 draws D7.11/PROM_EN onto D105.3, but that unusual output-output join is unmeasured on the owner board and is not merged into this net. Its inputs are D7.8 I/O-cycle-active high and D13.4 CPU-write-active high. Directly confirmed endpoints are D94.13, D29.5, D10.2, D11.10, D26.36, and D27.36; existing sheet-derived PIT write endpoints remain on the same rail. D5.27 is the separate raw IOWR_N source into D7.10",
+      "src": "owner continuity 2026-07-19: D105 NAND output pin3 is the qualified active-low peripheral write rail. Exact .009 detail 101805510 shows D7.11/PROM_EN and D105.3 on distinct local strokes; the former output-output join claim was a tracing error. Its inputs are D7.8 I/O-cycle-active high and D13.4 CPU-write-active high. Directly confirmed endpoints are D94.13, D29.5, D10.2, D11.10, D26.36, and D27.36; existing sheet-derived PIT write endpoints remain on the same rail. D5.27 is the separate raw IOWR_N source into D7.10",
       "nodes": [
         [
           "D105",

@@ -47,9 +47,10 @@ and D7.3 remote join remain unproved.
 Exact sheet-1 detail `(1000,3040)–(1740,3540)` shows D7.3 directly feeding
 D29.2; the riser crosses D29.7 without a dot. The lower continuation puts
 D29.8 on `-MWR`/MEMW, D29.4 on `-IORD`, and D29.5 on `-IOWR`. These
-connections are now modeled. The source-drawn D7.3→D29.2 join and
-separate D7.11/D105.3 source output tie still requires owner-board continuity before physical
-fidelity can be claimed.
+connections are now modeled. The source-drawn D7.3→D29.2 join still requires
+owner-board continuity before physical fidelity can be claimed. Native
+sheet-1 pixels show D7.11 and D105.3 on
+separate local strokes, correcting the earlier claimed output tie.
 
 The old routed copper touching the changed D29/D35 pads caused 30 shorts and
 three clearances. Removing 32 stale track/via items in each routed variant

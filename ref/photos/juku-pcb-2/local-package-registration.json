@@ -397,7 +397,7 @@
         {"pin": "11", "image_px": [2245.0, 1193.0], "use": "check", "observation": "fourth bottom joint from the left, the PROM_EN output"},
         {"pin": "14", "image_px": [2080.0, 1193.0], "use": "fit", "observation": "leftmost bottom joint of the complete seven-joint row"}
       ],
-      "note": "Three consecutive solder fields in this image are 2x7, 2x8, 2x8 from left to right, mirroring the component-photo D7, D9, D8 order. The D7 55-pixel pitch and 164-pixel row separation register all 14 joints. D7.3 and D7.11 are separate local solder joints with no visible short bridge; the corrected exact source ties D7.11 to D105.3, not D7.3, and that remote owner continuity is unmeasured."
+      "note": "Three consecutive solder fields in this image are 2x7, 2x8, 2x8 from left to right, mirroring the component-photo D7, D9, D8 order. The D7 55-pixel pitch and 164-pixel row separation register all 14 joints. D7.3 and D7.11 are separate local solder joints with no visible short bridge; the corrected exact source shows D7.11 and D105.3 on separate local strokes, so no source-required output tie remains."
     },
     {
       "refdes": "D6",

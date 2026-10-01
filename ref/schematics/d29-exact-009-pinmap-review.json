@@ -94,6 +94,6 @@
       "Historical D29.2 singleton corrected to AMW_N with D7.3.",
       "Historical D29.8/IORD assignment corrected to MEMW."
     ],
-    "physical_limits": "The new D7.3-to-D29.2 conclusion is a source-drawing join. Registered owner photos do not yet prove the corresponding board continuity or the separately drawn D7.11/D105.3 output tie."
+    "physical_limits": "The new D7.3-to-D29.2 conclusion is a source-drawing join. Registered owner photos do not yet prove the corresponding board continuity. Native sheet-1 pixels show D7.11 and D105.3 on separate local strokes, correcting the former output-tie claim."
   }
 }

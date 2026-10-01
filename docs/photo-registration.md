@@ -400,8 +400,9 @@ The opposite-face tile `PXL_20260710_200525009.jpg` now registers the same
 decode row directly: D7's complete 2x7 solder field lies immediately left of
 D9's 2x8 and D8's 2x8 fields after mirroring. D7.3 is the top joint near
 `(2190,1029)` and D7.11 the bottom joint near `(2245,1193)`. Their annuli
-are locally separate with no visible solder bridge. The corrected exact drawing ties D7.11 to D105.3, not D7.3;
-that unusual source output tie still requires continuity; see
+are locally separate with no visible solder bridge. The corrected native
+drawing shows D7.11 and D105.3 on separate local strokes; the earlier
+output-tie claim was a tracing error; see
 `docs/d7-gates-source-review.md`.
 
 The complete D8 2x8 solder field is now directly fitted to the right of D9
