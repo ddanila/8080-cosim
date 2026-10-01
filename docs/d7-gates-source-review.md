@@ -99,3 +99,8 @@ An overlap recheck aligns distinctive upper package landmarks across
 `101813438`, `101809608`, and `101805510`, but the lower fold shifts the
 projected conductor by about 14 pixels among parallel control lines. No
 remote pin or unique junction is established by those photo translations.
+The original-pixel `101805510` crops `(0,2850)–(2150,3450)` and
+`(2050,2800)–(3072,3550)` expose D5.25 `/IORD`, D5.27 `/IOWR`, and D5.26
+MWR as distinct nearby departures; their strokes are broken or shifted by
+the vertical fold. None can be assigned to the projected inhibit row from
+these photographs.
