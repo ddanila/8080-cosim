@@ -55,8 +55,17 @@ bends down near x2690, and ends at a second open annulus around `(3065,730)`.
 The separate `(2138,732)` hole is on the neighboring westbound line; the
 bright tinned bar just east of `(3065,730)` has a visible gap from this
 annulus. These are two possible probe sites on one photographed B.Cu run
-**only if** continuity establishes the first hole as D7.3's front via. The
-second annulus has no registered front contact or D29.2 connection yet.
+**only if** continuity establishes the first hole as D7.3's front via.
+
+An independent D9 four-corner reflection in the same two photos projects
+back annulus `(3065,730)` to front `(2481,1020)`; a unique open ring is
+visible at `(2480,1015)` in native front crop `(2350,900)–(2650,1200)`.
+The D7-only fit independently predicts about `(2495,1019)`. The D9 fit is
+within 5 px of the front ring, and the D7 fit within about 16 px despite
+its longer extrapolation. This photo-registers the **second** annulus across
+faces at the ring above the D8/D9 gap. Its front copper descends around the
+gap but has no proved D29.2 landing; the first `(2190,700)` hole remains a
+conditional D7.3 candidate, so the route cannot yet be assigned to AMW_N.
 
 ## D7.5 / D29.3 inhibit-input chase
 
