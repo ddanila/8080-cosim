@@ -8,7 +8,12 @@ July component crop `(2050,1290)-(2220,1640)` in
 `(1740,1110)-(1900,1480)` in `PXL_20260519_201922448.jpg` show the exposed
 between-package corridor bare at that factory-drawn body position. The upper
 cable bundle hides neighboring board area, and neither view identifies a C12
-two-lead pad pair. Keep C12's source +5 V/GND bypass and target population
+two-lead pad pair. A reflected three-hole pattern in that gap matches component
+open holes near `(2135,1440)`, `(2111,1655)`, `(2164,1655)` in the July view to
+solder open holes near `(1630,1213)`, `(1651,1403)`, `(1605,1403)` in
+`PXL_20260710_200506061.jpg`. The holes' distinct narrow copper departures
+do not identify which two, if any, are C12 landings or their rails. Keep C12's
+source +5 V/GND bypass and target population
 open; do not use the retired C12 photo seed in the lower FDC tile
 `PXL_20260710_200418174.jpg` as a probe point. The native coordinates and
 limits are in `ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json`.
