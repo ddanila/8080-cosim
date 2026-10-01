@@ -63,9 +63,19 @@ visible at `(2480,1015)` in native front crop `(2350,900)–(2650,1200)`.
 The D7-only fit independently predicts about `(2495,1019)`. The D9 fit is
 within 5 px of the front ring, and the D7 fit within about 16 px despite
 its longer extrapolation. This photo-registers the **second** annulus across
-faces at the ring above the D8/D9 gap. Its front copper descends around the
-gap but has no proved D29.2 landing; the first `(2190,700)` hole remains a
-conditional D7.3 candidate, so the route cannot yet be assigned to AMW_N.
+faces at the ring above the D8/D9 gap. Native crop
+`(2460,990)–(2600,1420)` shows its own narrow front trace rising north
+under the white cable; a thicker zigzag trace descending beside it has a
+visible brown gap and belongs to a different conductor. The northbound
+conductor aligns with D29.2 at the cropped upper package edge. The saved
+component-grid panorama maps the independently reviewed D29.2 waypoint
+`(2255,2352)` in `200354648` to `(2482,1005)` in `200411500`, within about
+10 px of this same ring. Thus the far B.Cu annulus is the photo-registered
+opposite face of the D29.2 **waypoint**, not an arbitrary gap hole. The white
+cable still hides a short D29.2-to-waypoint segment, and the first
+`(2190,700)` hole remains only a D7.3 same-hole candidate. Verify both ends
+by continuity before promoting the entire owner-board AMW_N path; see
+`ref/photos/juku-pcb-2/d29-pin2-front-chase.json`.
 
 ## D7.5 / D29.3 inhibit-input chase
 

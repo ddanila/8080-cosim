@@ -8,6 +8,7 @@
   "front_waypoint_px_approx": [2255, 2352],
   "native_review_crop_xyxy": [2190, 1350, 2320, 2520],
   "observation": "The exposed component-side copper from D29.2 descends in the parallel lower-row bundle toward the white cable. A collinear copper segment below that cable terminates at the open annulus near (2255,2352). The cable occludes the middle of the proposed local path, so this annulus is a leading power-off probe candidate rather than photo-closed continuity.",
+  "cross_tile_waypoint_registration": "The saved component-grid panorama homographies map this image's D29.2 front waypoint (2255,2352) to approximately (2482,1005) in PXL_20260710_200411500.jpg. That tile shows a unique open ring near (2480,1015), with a narrow front conductor rising north on the D29 lower-row pin-2 column to the package edge; the white cable still masks a short intervening segment. Independently, the D9 package-local front/solder fit in 200411500/200525009 maps the solder open annulus (3065,730) to front (2481,1020), within about 5 px of that same ring; the D7 package fit predicts (2495,1019). Thus the D29.2 waypoint's opposite-face drilled hole is now photo-registered near (3065,730) in 200525009. The D29.2-to-ring copper path remains cable-occluded and unmeasured; do not promote complete electrical continuity from these geometric matches alone.",
   "opposite_face_search": {
     "image": "ref/photos/juku-pcb-2/PXL_20260710_200509593.jpg",
     "basis": "Four D29 corner contacts in component view 200354648 and solder view 200509593 give a local reflected package transform; extrapolation to the front waypoint is about 914 component pixels below the package row, far beyond its fitted anchors.",
@@ -16,5 +17,5 @@
     "observation": "The projection itself falls on bare board without a distinct drill. An exposed solder hole near (2450,2433) is about 40 pixels lower and belongs to a visible narrow trace, so proximity under this long extrapolation does not establish same-hole identity.",
     "disposition": "Do not register an opposite-face waypoint from this fit; use direct same-hole inspection or power-off continuity."
   },
-  "electrical_limit": "The exact .009 sheet-1 drawing joins D7.3 to D29.2, but the cable gap, opposite-face conductor, and remote join remain unproved. Verify D29.2↔waypoint and waypoint↔D7.3 by continuity before promoting owner-board equivalence."
+  "electrical_limit": "The exact .009 sheet-1 drawing joins D7.3 to D29.2. The D29.2 waypoint now has a photo-registered opposite-face hole (3065,730) in 200525009, which lies at the far end of a photographed B.Cu run from the candidate D7.3 via (2190,700). Both package-side cable gaps and the first D7.3 same-hole match remain unproved. Verify D29.2↔waypoint and waypoint↔D7.3 by continuity before promoting owner-board equivalence."
 }
