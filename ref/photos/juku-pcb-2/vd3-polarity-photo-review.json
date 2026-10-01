@@ -12,6 +12,11 @@
       "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
       "dimensions_px": [4080, 3072],
       "inspection_bbox_px": [3260, 1610, 3660, 2210],
+      "front_lap_joint_candidates_px": {
+        "upper_red_end": [3420, 1740],
+        "lower_green_end": [3426, 2028]
+      },
+      "joint_reading_limit": "Original-resolution crop identifies two exposed component-side solder pools for direct probing, approximately 288 px apart vertically. Neither pool is a proved through-hole pad or has a visually continuous path to R67/R66; the upper/red and lower/green descriptions are physical positions only, not cathode assignments.",
       "observation": "The vertical glass diode sits between R67 and R66. Native enlargement (3330,1690)-(3560,2110) shows a red upper end coating, green lower end coating, and a dark feature visible through the glass near the upper end. The dark feature cannot be distinguished confidently from internal structure or reflection and is not a proved external cathode band. The adjacent raised leads and lacquer hide a unique net chase."
     },
     {
