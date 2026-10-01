@@ -86,7 +86,12 @@ stronger.
   to confirm hidden solder continuity. The current replica model assigns
   `KBD_CONTRDAT` to D26.23 and isolates D26.22, contrary to the exact .009
   source and visible fitted link; the model and routed copper need correction
-  after the X9/A50 physical landing is identified.
+  after the X9/A50 physical landing is identified. The exposed E8.4 front
+  trace descends to one joint in the lower cable row near `(2200,2450)`;
+  D26's reflected fit projects it near full-band solder site 6 at
+  `(2140,2375)` in `PXL_20260710_200530933.MP.jpg`. This is a useful probe
+  waypoint, not an A50 assignment: the archived band has fifteen sites for
+  fourteen factory A45–A58 wires.
 
 - D96.9 Q2 runs to the joined D101 A0-A3 inputs in the full sheet-3
   overview; D96.11 reaches the D94.2/D99.9/R89.1 island there. Both physical
