@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "review_state": "D34.12 front-copper first hop closed to a visible annulus; opposite-face hole is a registered candidate; D37.11 continuity remains unmeasured",
+  "front_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+  "front_sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+  "front_crop_xyxy": [
+    3280,
+    2250,
+    3480,
+    3030
+  ],
+  "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+  "solder_sha256": "9007277cfbd17d7d596141558106ab9963eff11cf78443ebcf04499599f6a215",
+  "solder_crop_xyxy": [
+    600,
+    2450,
+    1000,
+    2800
+  ],
+  "package_basis": "The two seven-contact D34 rows and board-edge mounting hole are registered in d34-cross-face-contact-fit.json. Count pin12 as the third contact down on the right component-image column, approximately (3332,2396).",
+  "front_observation": "Uninterrupted exposed front copper leaves D34.12, descends beside the package, bends right below it, and terminates at the open annulus near (3418,2985). The neighboring vertical trace and resistor joints are separate.",
+  "cross_face_registration": {
+    "previous_local_map": "x_solder=4084-0.960*x_front; y_solder=-251+0.963*y_front",
+    "video_via_front_px": [
+      3418,
+      2985
+    ],
+    "video_via_predicted_solder_px": [
+      803,
+      2623
+    ],
+    "video_via_visible_solder_candidate_px": [
+      795,
+      2642
+    ],
+    "nearby_control_front_px": [
+      3528,
+      2918
+    ],
+    "nearby_control_predicted_solder_px": [
+      697,
+      2559
+    ],
+    "nearby_control_visible_solder_candidate_px": [
+      684,
+      2577
+    ],
+    "interpretation": "Both lower holes have similar projected residuals (about -8 to -13 px in x and +18 to +19 px in y), consistent with local extrapolation beyond the D34 contact-row fit. This supports, but does not electrically prove, the same-hole match."
+  },
+  "solder_observation": "The leading open annulus near (795,2642) has a narrow B.Cu line leaving to image right. In the same native solder tile it remains continuous across the sparse corridor and bends into a filled joint near (2045,2635); the identity and opposite-face copper of that terminal are unassigned.",
+  "next_inspection": "With power removed, confirm the front (3418,2985) and solder (795,2642) features are the same drilled hole. Meter both to D34.12, the solder terminal near (2045,2635), and D37.11; check isolation from D103.11/D57.9/CLK_123M. Identify the far joint on the component face before treating it as a D37-side pad.",
+  "solder_trace_crop_xyxy": [
+    750,
+    2520,
+    2350,
+    2730
+  ]
+}

@@ -24,6 +24,12 @@ composite-video stage. The adjacent D103.11 1.23 MHz/tag-13 line stays separate
 from D34.12; the previous clock assignment was a tracing error. Owner-board
 continuity between D37.11 and D34.12 remains to be measured
 (`ref/schematics/d35-d37-d42-source-recheck.json`).
+A native owner front view shows D34.12 reaching an open annulus near
+(3418,2985); a two-feature cross-face fit nominates solder hole (795,2642)
+with B.Cu running to a filled joint near (2045,2635). Confirm the same
+hole and meter this corridor to D37.11 before treating it as the
+original pixel net
+(`ref/photos/juku-pcb-2/d34-pin12-video-via-review.json`).
 
 ## Command
 
