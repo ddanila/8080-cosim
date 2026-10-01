@@ -13,6 +13,7 @@ REPORT = ROOT / "docs/video-analog-boundary.md"
 CORRECTION = ROOT / "ref/photos/juku-pcb-2/c94-endpoint-registration.json"
 
 RETAINED_NETS = {
+    "VID_MIX1": {("D37", "11"), ("D34", "12")},
     "D34_SYNC": {("D34", "8"), ("R62", "1")},
     "D34_SIG": {("D34", "11"), ("R63", "1")},
     "VT2_BASE": {("R62", "2"), ("R63", "2"), ("R64", "1"), ("VT2", "3")},
@@ -178,6 +179,13 @@ def main() -> int:
         "boundaries instead of inheriting superseded `.006` RF nets. The same source",
         "proves C94's +5 V/GND pair while its body and pad mapping stay open. X6 is instead",
         "bracket-mounted: A:3/X6.1 is isolated pending continuity and A:4/X6.2 reaches GND.",
+        "",
+        "The exact `.009` sheet-2 overview and lower-right detail now trace D37.11 to D34.12.",
+        "D34.13 is on rail A (+5 V), and D34.11 drives R63 toward the VT2",
+        "composite-video stage. The adjacent D103.11 1.23 MHz/tag-13 line stays separate",
+        "from D34.12; the previous clock assignment was a tracing error. Owner-board",
+        "continuity between D37.11 and D34.12 remains to be measured",
+        "(`ref/schematics/d35-d37-d42-source-recheck.json`).",
         "",
         "## Command",
         "",

@@ -10,7 +10,7 @@ line at pins 8. That line is the existing `SHIFT_G` timing rail, also joined
 to D41.9. R38's other terminal ends at rail A. POF enters both D35.3 and
 D35.5 and R39's left terminal; R39's right terminal ends at A. D35.4 bends north and reaches the filled D42.10/D37.13 junction. D37.12
 arrives on upper numbered rail 3, shared with D42.9/D43.9/XTAL16M; D37.11 descends separately
-near x2400, crossing the D0-D7 rows without marked junctions before leaving the native tile. D35.1/.2 remain unused in this detail. See
+near x2400, crossing the D0-D7 rows without marked junctions before leaving that tile. The full-sheet overview and lower-right native tile carry it west into D34.12; the nearby 1.23 MHz/tag-13 line stays separate. D35.1/.2 remain unused in this detail. See
 `ref/schematics/d35-d37-d42-source-recheck.json`.
 
 The former model instead connected R38.1 to D37.11, D35.4 to R39.1,
@@ -35,7 +35,7 @@ modeled pad endpoints present on the source PCB; the parity report counts
 these separately from wrong net names.
 
 The revised source topology puts D35.4 on D42_Q with D42.10/D37.13;
-D37.12 shares numbered rail 3 with D42.9/D43.9, while D37.11 remains separate. The runnable pixel oracle retains its
+D37.12 shares numbered rail 3 with D42.9/D43.9, while D37.11 reaches D34.12 on a separate pixel line. The runnable pixel oracle retains its
 separate functional POF clamp and constant shift-enable stimulus; the
 owner-board connectivity and behavior of this source-drawn output junction
 remain unmeasured.
@@ -60,4 +60,4 @@ unmeasured physical-continuity and slot-schedule limits.
 To identify physical R38, read or measure its 1 kOhm body, then with
 power off check one lead against D35.6 and D42.8/D43.8, and the other
 against an independently identified +5 V landing. Do not use D37.11 as an R38 lead target. Probe D35.4 against
-D42.10/D37.13, then D37.12 against D42.9/D43.9/XTAL16M, and D37.11 separately for isolation and remote continuation.
+D42.10/D37.13, then D37.12 against D42.9/D43.9/XTAL16M, and D37.11 against D34.12 while checking isolation from D103.11/D57.9/CLK_123M.

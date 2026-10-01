@@ -18,6 +18,13 @@ boundaries instead of inheriting superseded `.006` RF nets. The same source
 proves C94's +5 V/GND pair while its body and pad mapping stay open. X6 is instead
 bracket-mounted: A:3/X6.1 is isolated pending continuity and A:4/X6.2 reaches GND.
 
+The exact `.009` sheet-2 overview and lower-right detail now trace D37.11 to D34.12.
+D34.13 is on rail A (+5 V), and D34.11 drives R63 toward the VT2
+composite-video stage. The adjacent D103.11 1.23 MHz/tag-13 line stays separate
+from D34.12; the previous clock assignment was a tracing error. Owner-board
+continuity between D37.11 and D34.12 remains to be measured
+(`ref/schematics/d35-d37-d42-source-recheck.json`).
+
 ## Command
 
 ```sh
@@ -33,6 +40,7 @@ python3 scripts/report_video_analog_boundary.py
 | Legacy RF net names are retired | PASS | HF_OUT, RF_RAIL, RF_TANK, RF_TAP, SND_MIX, VT3_BASE, VT3_E, VT4_B, VT4_C, VT4_E |
 | Factory-reused C9/C10/C11/C12/C15 remain generic capacitors | PASS | physical .009 identities retained; .006 RF assignments not carried across |
 | Exact .009 source proves reused capacitors' +5 V/GND pair while pad polarity stays open | PASS | sheet-1 C9...C12/C15 bypass group; physical pad mapping pending |
+| `VID_MIX1` has exactly the target endpoints | PASS | D34.12, D37.11 |
 | `D34_SYNC` has exactly the target endpoints | PASS | D34.8, R62.1 |
 | `D34_SIG` has exactly the target endpoints | PASS | D34.11, R63.1 |
 | `VT2_BASE` has exactly the target endpoints | PASS | R62.2, R63.2, R64.1, VT2.3 |
@@ -62,6 +70,7 @@ python3 scripts/report_video_analog_boundary.py
 
 | Net | Endpoints | Source note |
 | --- | --- | --- |
+| `VID_MIX1` | `D34.12, D37.11` | exact .009 sheet-2 native 101917240 plus full-sheet 101901243 and lower-right 101927794: D37.11 descends past the D0-D7 rows, bends west along the lower video corridor, and turns into D34.12; the 1.23 MHz/tag13 conductor stays separate |
 | `D34_SYNC` | `D34.8, R62.1` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
 | `D34_SIG` | `D34.11, R63.1` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out |
 | `VT2_BASE` | `R62.2, R63.2, R64.1, VT2.3` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible |

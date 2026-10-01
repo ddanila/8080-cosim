@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "D35.4/D37.11 and D37.12/D37.13 source ties retracted; D35.4 joins D42.10/D37.13; D37.12 shares numbered rail 3 with D42/D43 CK",
+  "status": "D35.4 joins D42.10/D37.13; D37.12 shares numbered clock rail 3; D37.11 reaches D34.12 on the pixel-video path, separate from 1.23 MHz tag13",
   "source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101917240.jpg",
   "source_sha256": "cc5355512800c4804523f26e433c98e9218fc296da2e264e2411f6bff52ea642",
   "native_crops_xyxy": [
@@ -35,7 +35,9 @@
     "D37 input pin12 arrives on a distinct upper line marked 3. It bends down and east into pin12 above the pin13 junction; no vertical stroke connects the pin12 elbow to the pin13 dot.",
     "D37 output pin11 runs east and descends near x2400. It does not turn west to D35.4 in this crop. The descent continues south across the R39/A and D0-D7 rows without a marked join in this tile.",
     "The D37.12 upper input line is marked conductor 3; D42 CK/pin9 is also marked 3 in the same tile, and D43 CK/pin9 is on that established source rail. The vertical upper line crosses other control rows without marked junctions. This is a numbered-rail equivalence, not a drawn local pin-to-pin stroke.",
-    "Following D37.11 near x2400 through the bottom of native 101917240, its vertical conductor crosses the D0-D7 horizontal rows without a filled dot; the fold near the D5 row causes a small apparent offset, but the descending stroke resumes below it and leaves the photographed tile. No data-row merge or remote endpoint is established by this image."
+    "Following D37.11 near x2400 through the bottom of native 101917240, its vertical conductor crosses the D0-D7 horizontal rows without a filled dot; the fold near the D5 row causes a small apparent offset, but the descending stroke resumes below it and leaves the photographed tile. No data-row merge or remote endpoint is established by this image.",
+    "The rotated full-sheet overview 101901243 bridges the photo gap: D37.11 bends west below the data rows. The lower-right native tile 101927794 shows that branch entering D34 input pin12; D34.13 is tied to supply A and D34.11 feeds R63 toward VT2 video output.",
+    "The D103.11 line labeled 1,23MHz ends at tag 13 on a separate route; it does not join the D34.12 pixel branch. The former CLK_123M-to-D34.12 assignment was a crossing/tracing error."
   ],
   "source_nets": {
     "D42_Q": [
@@ -43,14 +45,42 @@
       "D37.13",
       "D35.4"
     ],
-    "VID_MIX1_boundary": [
-      "D37.11"
-    ],
     "XTAL16M_rail3": [
       "D37.12",
       "D42.9",
       "D43.9"
+    ],
+    "VID_MIX1": [
+      "D37.11",
+      "D34.12"
+    ],
+    "CLK_123M": [
+      "D103.11",
+      "D57.9"
     ]
   },
-  "physical_limit": "Owner component and solder photos do not close these remote copper paths. Check D35.4 to D42.10/D37.13, D37.12 to the numbered-3 clock rail, and D37.11 isolation with power removed before adopting board equivalence. The OSC-to-XTAL16M physical/source-side merge remains unproved."
+  "physical_limit": "Owner continuity remains unmeasured. With power off, check D37.11 to D34.12 and isolation from D103.11/D57.9/1.23 MHz, plus the D35.4-to-D42.10/D37.13 and D37.12-to-clock-rail-3 groups. The OSC-to-XTAL16M merge remains unproved.",
+  "additional_sources": [
+    {
+      "image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101901243.jpg",
+      "sha256": "1749c3eacf1635692539fa869408420e2b7e0b565f6024f3a7968e9b78aa3974",
+      "orientation": "rotate 90 degrees for schematic reading",
+      "oriented_crop_xyxy": [
+        3450,
+        350,
+        3850,
+        2050
+      ]
+    },
+    {
+      "image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101927794.jpg",
+      "sha256": "a31896156ad7e1bc35e59ee43223babd3d39f40f2a086152d26f76cf14c71aa9",
+      "native_crop_xyxy": [
+        1050,
+        500,
+        2650,
+        2050
+      ]
+    }
+  ]
 }

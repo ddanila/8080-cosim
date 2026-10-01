@@ -6575,7 +6575,7 @@
 	(wire (pts (xy 70.32 880) (xy 70.32 877.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000002163"))
 	(label "CLK_123M" (at 70.32 877.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
 	(wire (pts (xy 75.4 9120) (xy 75.4 9117.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000002164"))
-	(label "CLK_123M" (at 75.4 9117.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
+	(label "VID_MIX1" (at 75.4 9117.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
 	(wire (pts (xy 88.1 880) (xy 88.1 877.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000002165"))
 	(label "SYNC_B" (at 88.1 877.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)))
 	(wire (pts (xy 52.54 11920) (xy 52.54 11917.46)) (stroke (width 0) (type default)) (uuid "00000000-0000-0000-0000-000000002166"))

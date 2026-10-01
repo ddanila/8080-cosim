@@ -4672,7 +4672,7 @@
       "prov": {
         "type": "scan",
         "refdes": "sheet-2 D34 ЛП5: XOR-RC-XOR counter-LD pulse gen",
-        "pins": "scan; gate 1 pin4 reaches top-edge tag 2 while pin5 is grounded and pin6 drives C5/R33; gate 4 is drawn as 1.23MHz on pin12 XOR +5V on pin13, producing SIG on pin11; exact К555ЛП5 datasheet ref/datasheets/k555lp5-eandc.pdf states pin7=GND and pin14=+5 V package supply. The pre-existing pin5 GND and pins1/13 +5 V entries are functional input ties, not supplies"
+        "pins": "scan; gate 1 pin4 reaches top-edge tag 2 while pin5 is grounded and pin6 drives C5/R33; gate 4 is drawn as D37.11 pixel on pin12 XOR +5V on pin13, producing SIG on pin11; the nearby D103.11 1.23MHz/tag13 line remains separate; exact К555ЛП5 datasheet ref/datasheets/k555lp5-eandc.pdf states pin7=GND and pin14=+5 V package supply. The pre-existing pin5 GND and pins1/13 +5 V entries are functional input ties, not supplies"
       }
     },
     {
@@ -13921,11 +13921,15 @@
       ]
     },
     "VID_MIX1": {
-      "src": "exact .009 sheet-2 native 101917240: D37.11 descends separately near x2400; remote endpoint remains unread. The former D35.4 tie was a tracing error",
+      "src": "exact .009 sheet-2 native 101917240 plus full-sheet 101901243 and lower-right 101927794: D37.11 descends past the D0-D7 rows, bends west along the lower video corridor, and turns into D34.12; the 1.23 MHz/tag13 conductor stays separate",
       "nodes": [
         [
           "D37",
           "11"
+        ],
+        [
+          "D34",
+          "12"
         ]
       ]
     },
@@ -18249,7 +18253,7 @@
       ]
     },
     "CLK_123M": {
-      "src": "exact-revision .009 E3 sheet 2: D103.QD (pin 11) -> rail labeled 1,23MHz -> tag 13 -> D57.CLK0/pin9 and D34 gate-4 input pin12; D57.CLK2/pin18 is separately on active-low VER RTR/tag2",
+      "src": "exact-revision .009 E3 sheet 2: D103.QD (pin 11) -> rail labeled 1,23MHz -> tag 13 -> D57.CLK0/pin9. Native 101927794 shows D34.12 on the separate D37.11 pixel conductor; the former CLK_123M D34.12 assignment was a crossing error. D57.CLK2/pin18 is separately on active-low VER RTR/tag2",
       "nodes": [
         [
           "D103",
@@ -18258,10 +18262,6 @@
         [
           "D57",
           "9"
-        ],
-        [
-          "D34",
-          "12"
         ]
       ]
     },
