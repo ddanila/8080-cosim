@@ -49,6 +49,15 @@ does not reveal the drill centre. Probe `(2190,700)` first, but do not
 promote it as D7.3's same hole without continuity: both fits extrapolate well
 beyond their package corners and the front drill centre is cable-covered.
 
+The native solder strip `(2100,640)–(4080,850)` follows the preferred
+`(2190,700)` hole east on its own narrow conductor. It runs near y700,
+bends down near x2690, and ends at a second open annulus around `(3065,730)`.
+The separate `(2138,732)` hole is on the neighboring westbound line; the
+bright tinned bar just east of `(3065,730)` has a visible gap from this
+annulus. These are two possible probe sites on one photographed B.Cu run
+**only if** continuity establishes the first hole as D7.3's front via. The
+second annulus has no registered front contact or D29.2 connection yet.
+
 ## D7.5 / D29.3 inhibit-input chase
 
 Original-resolution sheet-1 `PXL_20260718_101813438.jpg` crop
