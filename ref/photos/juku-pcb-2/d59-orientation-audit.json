@@ -90,8 +90,9 @@
     "native_crop_xyxy": [2460, 2150, 2800, 2460],
     "pin2_solder_px_approx": [2590, 2260],
     "pin3_solder_px_approx": [2650, 2260],
-    "observation": "The registered notch-right D59 field places pin1 at the upper-left solder corner x2530, followed by pin2 at x2590 and pin3 at x2650. A short, uninterrupted bright B.Cu segment joins the adjacent pin2 and pin3 crowns at y2260. Pin3 has a separate narrow departure rising toward the right, but this crop does not trace it to the crystal network or the distinct XTAL16M island.",
-    "decision": "Promote only the local owner-board D59.2-to-D59.3 OSC input tie. The OSC-to-XTAL16M boundary remains open."
+    "observation": "The registered notch-right D59 field places pin1 at the upper-left solder corner x2530, followed by pin2 at x2590 and pin3 at x2650. A short, uninterrupted bright B.Cu segment joins the adjacent pin2 and pin3 crowns at y2260. A wider native crop (2400,1900)-(3250,2500) follows the pin3 branch east, through the separate extra solder joint near (2975,2260) outside D59's seven-contact row, then north/east to an open annulus near (3160,2200). The horizontal trace and its two bends are exposed; the annulus is a physical endpoint in this tile, not an identified Z1 or XTAL16M contact.",
+    "front_search_limit": "The D59 four-corner local reflection roughly projects solder annulus (3160,2200) to front (640,2110) in PXL_20260710_200452717.MP.jpg. That point lies in the crowded crystal-can area and is farther west than the visible upper Z1 lug. Extrapolation by about 250 solder pixels beyond the package does not prove a same-hole match; meter the annulus to both Z1 lugs, C73, D40.2, and D39.10 before naming its remote net.",
+    "decision": "Promote the local owner-board D59.2-to-D59.3 OSC input tie and the pin3-to-open-annulus solder route as physical waypoints. The annulus's front contact and OSC-to-XTAL16M boundary remain open."
   },
   "disposition": "Do not rotate either routed footprint without a pin-aware reroute and DRC review. D59 orientation, local pins2/3 OSC tie, and supply-corner solder locations are photo-supported; owner-board supply continuity and OSC-to-XTAL16M remain open."
 }

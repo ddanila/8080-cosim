@@ -68,6 +68,13 @@ distinct Ф1 and Ф2 outputs.
 | D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge | PASS | D36.12, D36.13; tied inputs visible, west source unlabeled in dense bundle |
 | OSC-to-XTAL16M source-side merge remains unproved after native-sheet chase | PASS | owner solder copper locally joins D59.2/.3 OSC inputs; OSC and XTAL16M remain distinct source nets pending continuity |
 
+In the registered D59 solder field of `PXL_20260710_200534267.jpg`, the
+D59.3 side of that local join runs through a separate joint outside the DIP14
+row near `(2975,2260)` and ends at an open annulus near `(3160,2200)`. The
+front-side projection falls in the crystal-can area, but no same-hole Z1
+contact is identified there. This annulus is the next physical OSC probe;
+see `ref/photos/juku-pcb-2/d59-orientation-audit.json`.
+
 ## Current Timing Nets
 
 | Net | Endpoints | Source note |
