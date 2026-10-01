@@ -76,9 +76,17 @@ stronger.
   crop `(700,650)-(1600,1150)`, places E8 below D26 and draws a horizontal
   3–4 bridge; the 1–2 row has no bridge line. Thus the factory intended
   E8.3-to-E8.4 selection joins PB4 to `CONTRDAT`, while PB5/E8.2 remains
-  separate in that position. Confirm that the surviving board has the 3–4
-  bridge fitted and measure D26.22↔E8.4/`CONTRDAT` before promoting the
-  factory drawing to measured target-board continuity.
+  separate in that position. The owner front photo
+  `PXL_20260710_200455512.jpg`, crop `(1300,1750)-(2650,2600)`, visibly has
+  the white insulated 3–4 wire fitted. Registered D26 pin22 near `(1610,2270)`
+  has a narrow exposed front run toward its left landing near `(1600,2390)`;
+  pin23's contact-2 route stays separate. See
+  `ref/photos/juku-pcb-2/e8-bridge-photo-review.json`. Measure both wire
+  landings to D26.22 and the X9 `CONTRDAT` landing, plus D26.23 isolation,
+  to confirm hidden solder continuity. The current replica model assigns
+  `KBD_CONTRDAT` to D26.23 and isolates D26.22, contrary to the exact .009
+  source and visible fitted link; the model and routed copper need correction
+  after the X9/A50 physical landing is identified.
 
 - D96.9 Q2 runs to the joined D101 A0-A3 inputs in the full sheet-3
   overview; D96.11 reaches the D94.2/D99.9/R89.1 island there. Both physical

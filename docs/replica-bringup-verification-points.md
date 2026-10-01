@@ -11,13 +11,13 @@ visible and actionable before manufacturing and first power-on.
 ## Summary
 
 - Source board JSON: `kicad/juku.board.json`
-- Source board JSON SHA-256: `6b526d13e28c02fc3301515c1050fb8f22aa73954331a89f597d670e2ccc667a`
+- Source board JSON SHA-256: `3040fae00a9dffd9d29c4df2fcabd009d2160776c063853b79c65deae393721d`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Final PCB source SHA-256: `50df831a9b6b4565315409c6dd0319751b31fd41ce13c77197dc856bf1184fe0`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
 - Routed PCB source SHA-256: `9f6fff3fea7eaffa706e7479bc149983a1551b787542241ed8795fb869175158`
-- Verification-point nets: `44`
-- Verification-point endpoints checked in PCB: `74`
+- Verification-point nets: `45`
+- Verification-point endpoints checked in PCB: `76`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2320`
 - All board endpoints checked in routed PCB: `2320`
@@ -28,7 +28,7 @@ visible and actionable before manufacturing and first power-on.
 | --- | ---: |
 | FDC | 3 |
 | logic | 18 |
-| memory/decode | 2 |
+| memory/decode | 3 |
 | sound/analog | 2 |
 | timing/I/O | 5 |
 | video/analog | 14 |
@@ -43,8 +43,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 74/74 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 74/74 net names matched |
+| Risk endpoints present on PCB pads | PASS | 76/76 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 76/76 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -106,6 +106,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 | `FDC_MOTOR_EN` | FDC | `D26.16, D99.11` | Exact .009 Э3 sheet 1 MOTOR EN continuation from D26 PC2/pin16 enters D99 CLR2_N/pin11 on sheet 3; D100 A7/pin7 is driven separately by D99 Q2/pin5. Original-board D26.16-D99.11... | Continuity-check the physical КР1818ВГ93 socket path before drive bring-up. |
 | `INHIB_STATUS_BOUNDARY` | memory/decode | `D7.5, D29.3` | Exact .009 sheet-1 crop PXL_20260718_101813438.jpg (850,2900)-(1850,3650): D7 NAND input pin5 joins D29 physical input pin3 at a filled T junction. The shared westbound conducto... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `INT4_RAW` | logic | `X1.114C, D12.6, D12.7` | Exact .009 sheet-1 PXL_20260718_101817644.jpg: -INT4 at X1.114C branches to both D12 LA18 gate inputs pins6 and7; D12.5 open-collector output reaches X2.214/IRQ0 through separat... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `KBD_CONTRDAT` | memory/decode | `D26.23, X9.9, A50.1` | MODEL CONFLICT pending correction: exact .009 sheet-1 detail sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo show E8.3-4 jump... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `PHI1_D35` | logic | `D35.10, W7.2, R37.2` | factory wire А:7 D35 clock-source-side copper island D35.10 reaches the candidate A7B plated through-joint under mastic; the W7 insulated-wire termination remains pending confir... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PHI2_D35` | logic | `D35.12, W14.2, R36.2` | factory wire А:14 D35 clock-source-side copper island D35.12 reaches the candidate A14B plated through-joint under mastic; the W14 insulated-wire termination remains pending con... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R67_2_BOUNDARY` | timing/I/O | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Exact .009 E3 sheet-2 frame PXL_20260718_... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |

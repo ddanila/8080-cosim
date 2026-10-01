@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "status": "owner front photo supports fitted E8 3-4 jumper and D26.22 local copper; replica pin assignment conflicts",
+  "sources": {
+    "electrical": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101824181.MP.jpg",
+    "assembly": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114620466.jpg",
+    "owner_front": "ref/photos/juku-pcb-2/PXL_20260710_200455512.jpg",
+    "package_fit": "ref/photos/juku-pcb-2/local-package-registration.json"
+  },
+  "owner_front_crop_px": [
+    1300,
+    1750,
+    2650,
+    2600
+  ],
+  "observations": [
+    "Registered D26 lower row begins at component pixel (1550,2270) for pin21, with approximately 60 px pin pitch; pin22 is near (1610,2270).",
+    "A white insulated wire runs from a left soldered landing near (1600,2390) to a right soldered landing near (2200,2390), across the E8 marking and aligned with assembly contacts 3 and 4.",
+    "The exposed front copper from registered D26 pin22 descends toward the left wire landing; the adjacent E8 contact2 has a separate line from pin23.",
+    "Exact .009 assembly depicts the E8 3-4 link below D26; electrical detail puts PB4/pin22 at E8.3 and CONTRDAT at E8.4."
+  ],
+  "limits": "The photo supports the fitted bridge and local exposed copper, but hidden solder integrity and X9/A50 numbering need direct continuity. Current board JSON KBD_CONTRDAT assigns D26.23/PB5 and D26_PB4_BOUNDARY isolates D26.22, contrary to the .009 source and observed jumper; retain this as a model correction gate rather than claiming the replica is fixed.",
+  "measurement": "With power removed, test D26.22 to both E8 jumper ends and X9 CONTRDAT; test D26.23 to E8 contact2 and for isolation from the jumper. Identify the actual X9/A50 landing before rerouting."
+}

@@ -14572,7 +14572,7 @@
       "wire_link": true
     },
     "KBD_CONTRDAT": {
-      "src": "scan sheet-1 (p50 OWNER-MEASURED)",
+      "src": "MODEL CONFLICT pending correction: exact .009 sheet-1 detail sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo show E8.3-4 jumper fitted. Existing D26.23/PB5 membership is legacy and has no recorded direct owner continuity; identify physical X9/A50 landing before revising replica copper.",
       "nodes": [
         [
           "D26",
@@ -16801,7 +16801,7 @@
       ]
     },
     "D26_PB4_BOUNDARY": {
-      "src": "Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg: D26 PB4/pin22 reaches E8.3, PB5/pin23 reaches E8.2, and E8.4 carries CONTRDAT continuation 909 on conductor 50. The .009 SB assembly detail PXL_20260711_114620466.jpg draws a 3-4 bridge at E8 below D26; 1-2 has no bridge line. The factory intended position is therefore 3-4, but the surviving board's fitted E8 bridge and D26.22-to-CONTRDAT continuity remain pending measurement.",
+      "src": "Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg: D26 PB4/pin22 reaches E8.3, PB5/pin23 reaches E8.2, and E8.4 carries CONTRDAT continuation 909 on conductor 50. The .009 SB assembly detail PXL_20260711_114620466.jpg draws a 3-4 bridge at E8 below D26; owner front photo PXL_20260710_200455512.jpg shows its white fitted wire and exposed pin22 copper toward the left landing. Direct continuity and X9/A50 identification remain pending; current replica KBD_CONTRDAT incorrectly assigns D26.23 while isolating D26.22.",
       "nodes": [
         [
           "D26",

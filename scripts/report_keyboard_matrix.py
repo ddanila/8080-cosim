@@ -154,7 +154,7 @@ Shifted punctuation is shown after `/`.  Paired national legends separated by
 
 The keyboard drawing contains an eight-position `S21` bank labelled
 `НАСТРОЙКА` (configuration).  During scan positions 8–15 its selected switch
-returns serially on `CONTRDAT` to mainboard D26 PB5.  EktaSoft 3.7 decodes the
+returns serially on `CONTRDAT` to the mainboard E8.4 selector terminal. The exact .009 sheet-1 drawing sends D26 PB4/pin22 to E8.3 and PB5/pin23 to E8.2; the .009 assembly and owner photo show the 3–4 bridge fitted. The replica currently assigns this return to PB5 and needs correction after direct continuity. EktaSoft 3.7 decodes the
 result as follows:
 
 | switch | configuration bit | NetBios meaning |
@@ -193,6 +193,14 @@ both raw and decoded settings.
   Shift-Up, Shift-Down, and F7 contacts. `85` and `8e` inject Ctrl-Up/Home and
   Ctrl-Down/End outside `KMAP`. These bytes are a cosim test protocol, not
   character encodings exposed to Juku software.
+- `JUKU_KEY_AT_PC=PC:BYTE` begins one of those same mapped contacts at an exact
+  guest instruction boundary and then applies the ordinary hold/release frame
+  timing. `JUKU_KEY_AT_PC_HOLD_FRAMES` can lengthen only that one triggered
+  contact across a slow guest operation without changing queued-key timing;
+  `JUKU_KEY_AT_PC_GATE=ADDRESS:BYTE` can additionally require a guest-memory
+  byte before the one-shot trigger is armed. It is the deterministic raw-poll
+  test interface; it does not return a key value directly or bypass the
+  matrix.
 - The C7 ABI fixture feeds raw bytes `86` and `85` directly through this
   matrix model and requires the public raw-key vector to return column/PB
   pairs `0E/8E` and `0A/6A`. This is an executable regression for the exact

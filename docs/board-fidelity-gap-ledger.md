@@ -26,7 +26,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Nets modeled: `463`
 - Chip-level fidelity gaps: `62`
 - Source-proved passive refs absent from model: `9`
-- Net-level source-risk gaps: `44`
+- Net-level source-risk gaps: `45`
 - Explicitly dispositioned closed net risks: `14`
 - Documented intentional no-connect pins: `63`
 
@@ -85,7 +85,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | FDC owner-continuity | 2 | 6 |
 | PROM/decode | 0 | 1 |
 | logic/source | 19 | 27 |
-| memory/timing | 0 | 2 |
+| memory/timing | 0 | 3 |
 | placement/value | 41 | 0 |
 | sound/analog | 0 | 2 |
 | video/analog | 0 | 6 |
@@ -271,6 +271,7 @@ same fidelity ledger as the chip provenance gaps.
 | `FDC_MOTOR_EN` | FDC owner-continuity | `D26.16, D99.11` | Exact .009 Э3 sheet 1 MOTOR EN continuation from D26 PC2/pin16 enters D99 CLR2_N/pin11 on sheet 3; D100 A7/pin7 is driven separately by D99 Q2/pin5. Original... |
 | `INHIB_STATUS_BOUNDARY` | memory/timing | `D7.5, D29.3` | Exact .009 sheet-1 crop PXL_20260718_101813438.jpg (850,2900)-(1850,3650): D7 NAND input pin5 joins D29 physical input pin3 at a filled T junction. The share... |
 | `INT4_RAW` | logic/source | `X1.114C, D12.6, D12.7` | Exact .009 sheet-1 PXL_20260718_101817644.jpg: -INT4 at X1.114C branches to both D12 LA18 gate inputs pins6 and7; D12.5 open-collector output reaches X2.214/... |
+| `KBD_CONTRDAT` | memory/timing | `D26.23, X9.9, A50.1` | MODEL CONFLICT pending correction: exact .009 sheet-1 detail sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front ph... |
 | `PHI1_D35` | logic/source | `D35.10, W7.2, R37.2` | factory wire А:7 D35 clock-source-side copper island D35.10 reaches the candidate A7B plated through-joint under mastic; the W7 insulated-wire termination re... |
 | `PHI2_D35` | logic/source | `D35.12, W14.2, R36.2` | factory wire А:14 D35 clock-source-side copper island D35.12 reaches the candidate A14B plated through-joint under mastic; the W14 insulated-wire termination... |
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Exact .009 E3 sheet-2... |
