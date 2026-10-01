@@ -29,6 +29,7 @@
     "D14.7": {"component_px_approx": [2754, 1514], "solder_px_approx": [2288, 1376]}
   },
   "pin2_pin7_local_copper_review": "In native solder photo 200506061, D14.2 near (2426,1376) and D14.7 near (2288,1376) are separate solder caps with no readable local solder-face trace departure; the bright east-west traces immediately above and below pass beside them with visible brown gaps. In component photo 200358952, their leads are exposed at the package edges but the body occludes any inward continuation. Do not assign either cap to a neighboring horizontal trace by proximity; remote endpoints remain for continuity testing.",
+  "independent_may_pin7_neighbor_exclusion": "PXL_20260519_201922448.jpg original-pixel crop (850,1070)-(1230,1770) independently shows the marked notch-up К170АП2 D14 with four contacts on each side. A close crop of its right row shows pin7 (second contact below the notch) separated by brown substrate from the adjacent vertical white trace and open annulus to the right. That annulus branches from the vertical trace near the following row; it is not a visible D14.7 front-copper continuation. The left pin2 region remains obscured by the neighboring rail/cable. The May view therefore excludes this tempting near-pad annulus but supplies no remote endpoint for either pin.",
   "fifth_auxiliary_landing": {
     "component_px": [2600, 1668],
     "projected_solder_px": [2424.1, 1512.9],
