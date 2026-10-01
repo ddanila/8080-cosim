@@ -11,13 +11,13 @@ visible and actionable before manufacturing and first power-on.
 ## Summary
 
 - Source board JSON: `kicad/juku.board.json`
-- Source board JSON SHA-256: `fb13ec29d4eb25e572cccc70c260d157fa6d0468c46f1c468c1fd20e8b1a431a`
+- Source board JSON SHA-256: `907490138c925851dc00835ebb36dd8bd80e147b3732207f7a828cf9f25e5282`
 - Final PCB source: `kicad/juku.kicad_pcb`
 - Final PCB source SHA-256: `50df831a9b6b4565315409c6dd0319751b31fd41ce13c77197dc856bf1184fe0`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
 - Routed PCB source SHA-256: `9f6fff3fea7eaffa706e7479bc149983a1551b787542241ed8795fb869175158`
-- Verification-point nets: `46`
-- Verification-point endpoints checked in PCB: `79`
+- Verification-point nets: `44`
+- Verification-point endpoints checked in PCB: `74`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2320`
 - All board endpoints checked in routed PCB: `2320`
@@ -27,7 +27,7 @@ visible and actionable before manufacturing and first power-on.
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 20 |
+| logic | 18 |
 | memory/decode | 2 |
 | sound/analog | 2 |
 | timing/I/O | 5 |
@@ -43,8 +43,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 79/79 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 79/79 net names matched |
+| Risk endpoints present on PCB pads | PASS | 74/74 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 74/74 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -90,11 +90,9 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D101_D02_R92_R99` | logic | `D101.3, D101.4, D101.5, D101.6, R92.1, R99.2, ... (+1)` | July-2026 calibrated component photo PXL_20260710_200418174.jpg shows uninterrupted target-board copper joining D101 К555КП12 pin4 D02 to R99.2 and R92.1. Exact .009 Э3 sheet-3... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D14_I2_BOUNDARY` | logic | `D14.2` | factory IC census and owner package identify D14 as К170АП2; pin2 I2 is a package-model role, while exact .009 E3 sheet-1 serial detail has no traceable D14.2 wire. Its remote s... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D14_O7_BOUNDARY` | logic | `D14.7` | factory IC census and owner package identify D14 as К170АП2; pin7 O7 is a package-model role, while exact .009 E3 sheet-1 serial detail has no traceable D14.7 wire. Its remote d... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D26_PB4_BOUNDARY` | logic | `D26.22` | sheet-1 full-resolution: D26 PB4 pin22 enters the E8 CONTRDAT selector region, but the absent switch symbol prevents a proved remote endpoint, so this remains a measurement boun... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `D26_PB4_BOUNDARY` | logic | `D26.22` | Exact .009 sheet-1 native detail PXL_20260718_101824181.MP.jpg: D26 PB4/pin22 runs to E8 contact 3, PB5/pin23 separately runs to E8 contact 2, and E8 contact 4 runs to CONTRDAT... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D26_PC0_D3_I5` | logic | `D26.14, D3.5, R15.1` | direct .009 owner continuity 2026-07-14: D26 PC0/pin14 reaches D3 inverter input pin5 and owner reports a resistor path to +5 V; exact .009 sheet-1 photo PXL_20260718_101809608.... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D26_PC1_D3_I3` | logic | `D26.15, D3.3, R16.1` | direct .009 owner continuity 2026-07-14: D26 PC1/pin15 reaches D3 inverter input pin3 and owner reports a resistor path to +5 V; exact .009 sheet-1 photo PXL_20260718_101809608.... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D34_RC_DRIVE` | logic | `D34.6, C5.1` | exact .009 sheet-2 PXL_20260718_101911242.jpg: D34 first XOR output pin 6 drives C5.1 in the counter-load pulse shaper; native owner-photo reread separates the D34.6 lower joint from the D34.2/R33-left upper joint... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D34_RC_NODE` | logic | `C5.2, R33.1, D34.2` | exact .009 sheet-2 PXL_20260718_101911242.jpg: C5.2 joins R33.1 and D34 second-XOR input pin 2; native owner-photo reread separates upper D34.2/R33-left joint from lower D34.6 joint; C5 pads still unidentified... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D34_SIG` | timing/I/O | `D34.11, R63.1` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible: D34 sect(12,13->11) = SIG (pixel^REV?) out | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D34_SYNC` | timing/I/O | `D34.8, R62.1` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D36_CAS_IN` | memory/decode | `D36.12, D36.13` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and output pin11 reaches... | Probe during ROM/RAM stage; compare address/control timing to twin. |

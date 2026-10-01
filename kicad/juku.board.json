@@ -16801,7 +16801,7 @@
       ]
     },
     "D26_PB4_BOUNDARY": {
-      "src": "sheet-1 full-resolution: D26 PB4 pin22 enters the E8 CONTRDAT selector region, but the absent switch symbol prevents a proved remote endpoint, so this remains a measurement boundary",
+      "src": "Exact .009 sheet-1 native detail PXL_20260718_101824181.MP.jpg: D26 PB4/pin22 runs to E8 contact 3, PB5/pin23 separately runs to E8 contact 2, and E8 contact 4 runs to CONTRDAT continuation 909 via conductor 50. The moving contact and selected connection are not drawn; E8.3-to-E8.4 continuity and the physical switch identity remain measurement boundaries.",
       "nodes": [
         [
           "D26",
