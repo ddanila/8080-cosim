@@ -186,7 +186,7 @@ module juku_top #(
                      .a2(cas_n), .b2(d36_b2_tag17), .y2(d36_y2),       // 1,2->3 -> D33.11; pin 2 <- rail 17 boundary
                      .a3(memw_n), .b3(d33_o10), .y3(),         // 9,10->8: W-strobe NAND(WR, CAS-delay) -> rail 16 (y3 on the board side of the W16 boundary)
                      .a4(d36_cas_in), .b4(d36_cas_in), .y4()); // 12,13->11 -> R57 -> rail 15 (CAS)
-    wire vert_rtr, frame_int, pof_released, d35_o4;
+    wire vert_rtr, frame_int, pof_released, d35_o4, d42_q, d43_q;
     clk_phase U_D35 (.osc(clkg_d36), .phsel(d40_q[1]), .phi1(phi1_d35), .phi2(phi2_d35), .phi2ttl(phi2ttl_post_r35),
                      .i1(1'bz), .o2(), .i3(ppi0_pc[7]), .o4(d35_o4), .i5(ppi0_pc[7]),
 `ifdef YOSYS
@@ -200,8 +200,8 @@ module juku_top #(
     // The functional phase oracle passes through this structural boundary.
     net_boundary U_R35 (.a(phi2ttl_post_r35), .b(phi2ttl));
 `ifdef YOSYS
-    // The native sheet joins the open-collector D35.4 output to D37.11.
-    assign d37_out = d35_o4;
+    // Native sheet 2 joins D35.4 to D42.10/D37.13 at the filled junction.
+    assign d42_q = d35_o4;
 `endif
     net_boundary U_W7  (.a(phi1_d35), .b(phi1));
     net_boundary U_W14 (.a(phi2_d35), .b(phi2));
@@ -544,7 +544,7 @@ module juku_top #(
     // Driven by the sim `dotclk`. The RUNNABLE demo uses the abstracted 8-bit ir16_sr
     // (U_IR16) -> lp5_xor (U_D34V); the REAL chips D42/D43 (ИР16) are instantiated below for the LVS
     // structure (traced sheet-2 top-right; see board JSON provenance). The 2x4-bit +
-    // D35.4/D37.11 output-tie behavior + the КП14 µP/video arbitration remain physical boundaries.
+    // D35.4/D42.10 output-junction behavior + the КП14 µP/video arbitration remain physical boundaries.
     wire vpixel, vpixel_enabled, vshl_n;
     video_raster U_VRAS (.dotclk(dotclk), .vid_addr(vid_addr), .shl_n(vshl_n));  // raster scan (unmapped)
     ir16_sr U_IR16 (.clk(dotclk), .clk_inh(1'b0), .shl_n(vshl_n), .clr_n(1'b1), .si(1'b0),
@@ -557,9 +557,8 @@ module juku_top #(
     // Real pixel serializers (LVS structure): D42 = high nibble, D43 = low nibble. Parallel data
     // reads the REAL system data bus DB (the bit-sliced РУ5 drives the byte there during a video
     // read); CK joins the dot-clock net; DS = GND; shared load VID_LD; Q feeds D37,
-    // whose output shares the D35.4 conductor. The video-read SLOT timing
+    // whose input pin13 shares the D35.4/D42.10 conductor. The video-read SLOT timing
     // (КП14 µP/video arbitration + РЕ3/АГ3) stays a boundary.
-    wire d42_q, d43_q;
     // D42/D43 = the PIXEL SHIFT REGISTERS (array read, 3rd and geometry-anchored reading of this
     // zone -- supersedes both the "bank-select latch" and "VA-state latch" [finding-24 registry]
     // interpretations, which both fell into the reused-code trap): parallel ins = the РУ5 DO rails
@@ -576,11 +575,14 @@ module juku_top #(
                 .ld_sh(load_vid), .oc(shift_g), .clk(xtal16m_w), .ser(d43_q), .qd(d42_q), .qa(), .qb(), .qc());
     ir16 U_D43 (.d(rdo[3]), .c(rdo[2]), .b(rdo[1]), .a(rdo[0]),
                 .ld_sh(load_vid), .oc(shift_g), .clk(xtal16m_w), .ser(1'b0), .qd(d43_q), .qa(), .qb(), .qc());
-    // D37 (ЛА3) inverts D42's serial output (pins 12,13 tied to D42.Q pin10).
-    // Its output pin 11 shares the source-drawn conductor with D35.4; R38
-    // is the separate D35.6/SHIFT_G pull-up to +5 V.
-    wire d37_out;
-    la3_gate U_D37 (.a(d42_q), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre),
+    // D37.13 receives D42.10 and the D35.4 open-collector output. D37.12
+    // arrives on a separate unread tag-3 source; the runnable oracle holds
+    // that input high to retain the prior pixel polarity.
+    wire d37_out, d37_i12_tag3;
+`ifndef YOSYS
+    assign d37_i12_tag3 = 1'b1;
+`endif
+    la3_gate U_D37 (.a(d37_i12_tag3), .b(d42_q), .y(d37_out), .a2(d41_qb), .b2(d40_q[3]), .y2(d37_latch_pre),
                     .a3(d33_o4), .b3(ram_out_en), .y3(d37_y3), .a4(1'bz), .b4(1'bz), .y4());  // sect3 = RAM-read gate: 5<-~MRD, 4<-RAM OUT EN [WIRE 12], 6 -> D58.OE [sheet-2]; sect4 undrawn/NC
 `ifndef YOSYS
     assign probe_d42_q = d42_q;

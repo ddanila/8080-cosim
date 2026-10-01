@@ -13921,15 +13921,11 @@
       ]
     },
     "VID_MIX1": {
-      "src": "exact .009 sheet-2 native R38/D35/D37 frame: D37.11 descends to D35.4, separate from R38.1/SHIFT_G",
+      "src": "exact .009 sheet-2 native 101917240: D37.11 descends separately near x2400; remote endpoint remains unread. The former D35.4 tie was a tracing error",
       "nodes": [
         [
           "D37",
           "11"
-        ],
-        [
-          "D35",
-          "4"
         ]
       ]
     },
@@ -15036,19 +15032,28 @@
       ]
     },
     "D42_Q": {
-      "src": "scan sheet-2",
+      "src": "exact .009 sheet-2 native 101917240: D42.10 reaches D37.13 and the filled southbound junction to D35.4; D37.12 is on a separate upper tag-3 conductor",
       "nodes": [
         [
           "D42",
           "10"
         ],
         [
-          "D37",
-          "12"
+          "D35",
+          "4"
         ],
         [
           "D37",
           "13"
+        ]
+      ]
+    },
+    "D37_I12_TAG3": {
+      "src": "exact .009 sheet-2 native 101917240: D37.12 arrives on separate upper conductor marked 3; its upstream continuation is unread",
+      "nodes": [
+        [
+          "D37",
+          "12"
         ]
       ]
     },

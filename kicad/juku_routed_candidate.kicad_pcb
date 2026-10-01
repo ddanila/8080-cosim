@@ -35350,7 +35350,7 @@
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net "VID_MIX1")
+			(net "D42_Q")
 			(uuid "8887c852-300e-4b82-83ac-cbfc89e7ee27")
 		)
 		(pad "5" thru_hole circle
@@ -120128,7 +120128,7 @@
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
-			(start 1.040001 -0.000006)
+			(start 1.040001 -0.000007)
 			(end 1.81 0)
 			(stroke
 				(width 0.12)
@@ -120193,7 +120193,7 @@
 		)
 		(fp_poly
 			(pts
-				(xy 1.93 -1.249999) (xy 8.23 -1.250001) (xy 8.23 1.249999) (xy 1.93 1.250007)
+				(xy 1.93 -1.249999) (xy 8.23 -1.250001) (xy 8.23 1.249999) (xy 1.93 1.250008)
 			)
 			(stroke
 				(width 0.1)
@@ -137677,7 +137677,7 @@
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net "D42_Q")
+			(net "D37_I12_TAG3")
 			(uuid "bd1e0e7d-8dd1-432d-be97-88d8d9e2236c")
 		)
 		(pad "13" thru_hole circle
@@ -164938,15 +164938,6 @@
 		(layer "F.Cu")
 		(net "D42_Q")
 		(uuid "c9ccdf2c-85d4-4669-a310-588360cc0fa7")
-	)
-	(segment
-		(start 241.685 185.18)
-		(end 241.685 182.64)
-		(width 0.2)
-		(locked yes)
-		(layer "F.Cu")
-		(net "D42_Q")
-		(uuid "ca235676-a13c-4002-8b8a-79825a52843d")
 	)
 	(segment
 		(start 151 246.5)

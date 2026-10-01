@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "review_state": "source tie closed; owner-board continuity unproved",
+  "review_state": "former source tie retracted; revised source endpoints unmeasured",
   "drawing_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101917240.jpg",
-  "drawing_observation": "D37.11 descends on a conductor separate from R38.1/SHIFT_G and joins D35.4 in the exact sheet-2 frame.",
+  "drawing_observation": "A renewed native sheet-2 read shows D35.4 reaching D42.10/D37.13 at a filled junction. D37.12 is on a separate upper tag-3 line and D37.11 descends independently near x2400. The prior D35.4/D37.11 tie was a tracing error.",
   "owner_component_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
   "review_crop_xyxy_original_pixels": [2040, 900, 2560, 1900],
   "candidate_contacts_px_approx": {
@@ -12,6 +12,6 @@
   "component_observation": "The registered bottom-notch D37 field fixes pin 11 as the fourth contact down on its left image column. The marked top-notch D35 field fixes pin 4 as the fourth contact down on its left column. Both have visible local front-copper departures, but no uninterrupted front trace between these contacts can be followed through the white-wire corridor and package region. Nearby via and trace features are not enough to assign a remote connection.",
   "owner_solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200530933.MP.jpg",
   "solder_observation": "The overlapping tile shows multiple parallel solder traces and two package fields around the projected D35/D37 area. D35.13 has a separate search registration in d35-pin13-photo-review.json, but no independent D37.11-to-D35.4 two-face pad registration or continuous solder path is established here.",
-  "decision": "Retain the exact drawing tie in the source model and keep original-board continuity pending. Do not infer a physical join from the apparent proximity of the two package fields.",
-  "next_inspection": "With power removed, meter D37.11 directly to D35.4 in both polarities, then check either contact against R38.1/SHIFT_G to distinguish the two drawn conductors. Treat a semiconductor-path reading as inconclusive until the copper path is isolated."
+  "decision": "Retain the corrected D35.4/D42.10/D37.13 drawing junction in the source model. Keep its owner-board continuity and the separate D37.12/D37.11 endpoints pending.",
+  "next_inspection": "With power removed, meter D35.4 directly to D42.10 and D37.13 in both polarities; test D37.12 and D37.11 against this junction and R38.1/SHIFT_G separately. Treat a semiconductor-path reading as inconclusive until the copper path is isolated."
 }
