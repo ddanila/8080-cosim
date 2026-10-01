@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_state": "D34.12 front-copper first hop closed to a visible annulus; opposite-face hole is a registered candidate; D37.11 continuity remains unmeasured",
+  "review_state": "photo-supported D34.12-to-D37.11 owner copper route through a registered via and counted D37 solder pad; electrical continuity unmeasured",
   "front_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
   "front_sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
   "front_crop_xyxy": [
@@ -45,14 +45,70 @@
       684,
       2577
     ],
-    "interpretation": "Both lower holes have similar projected residuals (about -8 to -13 px in x and +18 to +19 px in y), consistent with local extrapolation beyond the D34 contact-row fit. This supports, but does not electrically prove, the same-hole match."
+    "interpretation": "Both lower holes have similar projected residuals (about -8 to -13 px in x and +18 to +19 px in y), consistent with local extrapolation beyond the D34 contact-row fit. This supports, but does not electrically prove, the same-hole match.",
+    "six_control_affine": {
+      "front_to_solder_x": "-0.9921866*x - 0.0021004*y + 4192.3604",
+      "front_to_solder_y": "0.0074778*x + 0.9874915*y - 334.9945",
+      "fit_controls": "four D34 corner contacts, independent board-edge mounting hole, and neighboring lower open hole (3528,2918) to (684,2577)",
+      "control_residual_px_range": [
+        4.0,
+        6.5
+      ],
+      "held_out_video_via_prediction_px": [
+        794.8,
+        2638.2
+      ],
+      "visible_candidate_px": [
+        795,
+        2642
+      ],
+      "held_out_residual_px_approx": 3.8,
+      "interpretation": "The six-control fit uses no coordinate from the video via and predicts its solder annulus within about 4 px. This raises the same-hole match from a broad candidate to a strong photo registration, still pending electrical verification."
+    }
   },
-  "solder_observation": "The leading open annulus near (795,2642) has a narrow B.Cu line leaving to image right. In the same native solder tile it remains continuous across the sparse corridor and bends into a filled joint near (2045,2635); the identity and opposite-face copper of that terminal are unassigned.",
-  "next_inspection": "With power removed, confirm the front (3418,2985) and solder (795,2642) features are the same drilled hole. Meter both to D34.12, the solder terminal near (2045,2635), and D37.11; check isolation from D103.11/D57.9/CLK_123M. Identify the far joint on the component face before treating it as a D37-side pad.",
+  "solder_observation": "The open annulus near (795,2642) has uninterrupted narrow B.Cu to the fourth contact down on the right column of the lower-row D37 DIP14 solder field near (2045,2620). No junction with the neighboring parallel traces is visible. The earlier generic filled-joint description missed this identifiable package pad.",
+  "next_inspection": "With power removed, meter D34.12 and front hole (3418,2985) to solder annulus (795,2642) and counted D37.11 solder pad (2045,2620), then check isolation from D103.11/D57.9/CLK_123M and D35.4/D42.10. A semiconductor-path reading is inconclusive without copper isolation.",
   "solder_trace_crop_xyxy": [
     750,
     2520,
     2350,
     2730
-  ]
+  ],
+  "d37_pad_registration": {
+    "full_identity_image": "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg",
+    "full_identity_sha256": "8407dec2631bf99b232052e2fab6687742f349ed81c7c2b4eae81d3e02df3301",
+    "full_identity_crop_xyxy": [
+      2050,
+      900,
+      2450,
+      1380
+    ],
+    "component_overlap_crop_xyxy": [
+      1980,
+      2650,
+      2440,
+      3072
+    ],
+    "solder_field_crop_xyxy": [
+      1790,
+      2350,
+      2210,
+      2860
+    ],
+    "identity_basis": "Both component views show the marked КР1533ЛА3 immediately beside the red-black-black-gold 20-ohm R57. The complete 200445914 view fixes the bottom-facing notch, pin8 on the left top contact, and pin11 as the fourth left contact down. The partial 200418174 view repeats that package and neighboring R57.",
+    "front_pin11_px_approx": [
+      2155,
+      2980
+    ],
+    "solder_columns_px_approx": {
+      "pin8_to_pin14_right_x": 2045,
+      "pin7_to_pin1_left_x": 1875,
+      "top_row_y": 2455,
+      "row_pitch_y": 55,
+      "pin11_y": 2620
+    },
+    "solder_identity_control": "The mirrored field is immediately left of the independently registered D38 solder columns x2078/x2244, matching D37 immediately right of D38 on the component view. The line from D34 terminates at the fourth right-column cap, D37.11.",
+    "remaining_limit": "No DMM continuity across the via or full route has been measured."
+  },
+  "physical_decision": "The archived two-face images support the complete D34.12 front trace -> near via -> B.Cu corridor -> counted D37.11 solder pad. Keep the electrical continuity flag pending until a power-off ohmmeter measurement confirms it and checks isolation from CLK_123M."
 }

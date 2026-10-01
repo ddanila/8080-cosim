@@ -494,8 +494,14 @@ shows red-black-black-gold bands consistent with 20 ohms. D37 is now centred at
 `(245.5,180.1)` mm with the photographed bottom notch represented by a
 180-degree footprint. The same raw frame moves the separately visible vertical
 200-ohm R46 out of that package and into its real D33/D103 gap at
-`(266.6,184.0)` mm, eliminating four source-PCB pad collisions. No lower-row
-solder fit or new electrical continuity is claimed.
+`(266.6,184.0)` mm, eliminating four source-PCB pad collisions. The subsequent July solder-tile review registers a lower D37 two-column
+field near x1875/x2045, top row y2455 and about 55 px row pitch. The
+full bottom-notch component view fixes D37.11 as the fourth left contact
+down; its reflected solder cap is near (2045,2620). A partial second
+component view repeats the marked package beside R57. The B.Cu line from
+the D34.12 via candidate reaches that cap, giving a photo-supported owner
+route; electrical continuity remains unmeasured
+(`ref/photos/juku-pcb-2/d34-pin12-video-via-review.json`).
 `kicad/check_d37_photo_placement.py` guards the source hashes, bracketing
 registration, package fit, R57/R46 values, and all three placements.
 Native July and May component crops also expose a short F.Cu neck joining
