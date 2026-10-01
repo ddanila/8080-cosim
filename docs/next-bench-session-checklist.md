@@ -69,10 +69,15 @@ useful validation, but no further D30 continuity measurement is requested.
    two-sided package-local projection has exhausted the solder photos, and the
    old pins-4–6 scar is a different feature. D15's A2/A1 cut and D14's
    local D32.4/GND-to-D14.1 link are photo-closed (`docs/factory-modification-disposition.md`).
-4. **P0 D7.3 singleton endpoint absent from the grouped asks above:** with power
-   removed, trace D7.3 (`AMW_N`) to its remote load or prove it has none;
-   specifically keep it separate from D29.5, which the 2026-07-19 owner
-   continuity assigned to qualified peripheral `/WR`. The fourth D104 receiver
+4. **P0 D7.3/D29.2 owner path:** with power removed, check D7.3 to its
+   wire-covered front via near (3356,975) in 200411500 and candidate solder
+   hole (2190,700) in 200525009. The visible solder run ends at (3065,730),
+   photo-registered to D29.2's front waypoint near (2480,1015) in 200411500
+   and (2255,2352) in 200354648. Check D29.2 to that waypoint and the
+   waypoint to D7.3; the cable gaps and first same-hole match remain open.
+   Trace any further `AMW_N` loads; keep it separate from D29.5, which the
+   2026-07-19 owner continuity assigned to qualified peripheral `/WR`.
+   The fourth D104 receiver
    input is photo-traced to R30 lower; the source model assigns that lead to
    GND, but the owner rail polarity is not photo-proved. With power removed,
    confirm D104.7 to R30 lower, lower to known GND, and upper to D12.3/OC SOUT;
