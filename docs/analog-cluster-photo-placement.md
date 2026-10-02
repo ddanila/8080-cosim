@@ -186,7 +186,7 @@ on the visible component-side lead arcs and the corresponding four backside
 joints within the D102 registrations' roughly 0.1--0.5 mm photographic read
 uncertainty. Native July and May crops retract the earlier `1Н5` reading:
 C20's early July opposite face reads `±5`, while C22's May face carries
-glyphs resembling `М75`, a candidate temperature-stability group marking
+the `М75` temperature-stability group marking
 ([standard cross-check](../ref/datasheets/gost-m75-capacitor-marking.md)),
 not a complete capacitance code. Two later July angles expose
 bare `22` on both bodies, matching exact sheet 3's 22 pF nominal numerals.

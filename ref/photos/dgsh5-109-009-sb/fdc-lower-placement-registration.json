@@ -452,6 +452,8 @@
     "source_nominal": "22 pF",
     "tolerance_percent": 10,
     "tolerance_marking": "±10",
+    "temperature_stability_marking": "М75",
+    "temperature_coefficient_nominal_ppm_per_c": -75,
     "owner_photo": {
       "source": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
       "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
@@ -465,7 +467,7 @@
         3700,
         700
       ],
-      "observation": "native May angle shows outer-body glyphs resembling М75 and a partial 5 on the inner body; neither is a secure 1Н5 capacitance code. D102 and the inner body still fix the registered column order"
+      "observation": "native May angle clearly reads М75 on outer C22, a ceramic temperature-stability group code, and shows a partial 5 on inner C20; neither is a 1Н5 capacitance code. D102 and the inner body still fix the registered column order"
     },
     "unresolved": [
       "value/unit",
