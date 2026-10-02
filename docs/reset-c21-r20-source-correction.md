@@ -12,6 +12,16 @@ terminating the branch. The former model put
 R20 directly between RESIN and +5 V and C21 directly between RESIN and ground.
 Those two parallel branches contradicted the exact drawing.
 
+For the next source trace, rotate the full-sheet overview 90° counterclockwise
+(upright image size 4080 × 3072). R20's far lead is near `(765,1155)` and
+descends to `(765,1530)`, where it bends right. Follow the wire near
+`(900,1535)` and `(1250,1545)`. It is the upper of the two adjacent wires
+around y=1540–1560 in that span; the lower wire branches from a different
+vertical at about `(770,1550)`. The image fold and intersecting control wires
+to the right prevent a secure downstream pin assignment. In particular,
+neither the nearby D5 control pins nor the WD 19 continuation should be
+assigned to R20 from their apparent proximity in the overview.
+
 The assembly `PXL_20260711_114604420.jpg` labels vertical C21 below R20 and
 left of **D52**. The July owner component image `PXL_20260710_200450127.jpg`
 shows the matching green C21 body beside the marked К555КП14 D52. The owner
