@@ -78,6 +78,15 @@ the exact installed images in each first-article record.
 | D15 | `ref/eprom-images/d15_ekta37_low.bin` | `d6c4ec7418f05e5761ef450e6ee36fb2579d65d9cbf87dce265eaf1c0d077596` | [EPROM split notes](eprom-programming-images.md) |
 | D16 | `ref/eprom-images/d16_ekta37_high.bin` | `35b348ae7c88dc8cb24d1bc9d62a06212fdc2c2f601eddf8e00b233893d92817` | [EPROM split notes](eprom-programming-images.md) |
 
+## Portable review archive
+
+Run `python3 scripts/build_replica_release_evidence_bundle.py` to write
+`fab/evidence/juku-replica-release-evidence.zip`. Run it with `--check`
+to verify every archived member against the current workspace and the
+archive's checksum list. The archive carries this packet, board sources,
+release reports, BOM/backlog CSVs, and programmed-image evidence.
+It is a review snapshot and is never the fabrication upload ZIP.
+
 ## Release holds
 
 - 32 unresolved singleton endpoints require evidence-backed disposition.

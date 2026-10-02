@@ -274,6 +274,13 @@ def build() -> tuple[str, str]:
             lines.append(f"| {ref} | `{item['path']}` | `{item['sha256']}` | "
                          f"[EPROM split notes](eprom-programming-images.md) |")
     lines += ["",
+              "## Portable review archive", "",
+              "Run `python3 scripts/build_replica_release_evidence_bundle.py` to write",
+              "`fab/evidence/juku-replica-release-evidence.zip`. Run it with `--check`",
+              "to verify every archived member against the current workspace and the",
+              "archive's checksum list. The archive carries this packet, board sources,",
+              "release reports, BOM/backlog CSVs, and programmed-image evidence.",
+              "It is a review snapshot and is never the fabrication upload ZIP.", "",
               "## Release holds", ""]
     lines += [f"- {reason}." for reason in hold_reasons]
     lines += ["", "## Closure sequence", "",
