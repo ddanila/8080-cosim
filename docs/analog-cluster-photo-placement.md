@@ -185,11 +185,12 @@ Both spans are 10.00 mm and the columns are 2.54 mm apart. This geometry lands
 on the visible component-side lead arcs and the corresponding four backside
 joints within the D102 registrations' roughly 0.1--0.5 mm photographic read
 uncertainty. Native July and May crops retract the earlier `1Н5` reading:
-C20 exposes only a partial tolerance-like marking, while C22's visible glyphs
-resemble `М75`, not a complete capacitance code. Two later July angles expose
+C20's early July opposite face reads `±5`, while C22's May face carries
+glyphs resembling `М75`, not a complete capacitance code. Two later July angles expose
 bare `22` on both bodies, matching exact sheet 3's 22 pF nominal numerals.
-The closer angle also reads `±10` on outer C22, closing its tolerance;
-C20's tolerance line and both installed units remain unverified. The standard's code mapping is retained only as a generic reference
+The closer angle also reads `±10` on outer C22. Thus the photographed
+tolerances are 5% for C20 and 10% for C22; both installed units remain
+unverified. The standard's code mapping is retained only as a generic reference
 in `ref/datasheets/gost-11076-69-capacitance-code.md`. Sheet 3 still closes
 C20 on D102.6/.7 with R108 and C22 on D102.14/.15 with R102.
 

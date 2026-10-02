@@ -5528,7 +5528,7 @@
       "type": "C_KM",
       "procurement": {
         "action": "circuit-review",
-        "note": "Sheet 3 specifies 22 pF nominal and later owner angles show bare 22 on the body, but the unit is unverified. Confirm capacitance before sourcing."
+        "note": "Sheet 3 specifies 22 pF nominal; owner angles show bare 22 and ±5% on the body, but the unit is unverified. Confirm capacitance before sourcing."
       },
       "pins": {
         "1": "P1",
@@ -5537,7 +5537,7 @@
       "prov": {
         "type": "scan",
         "refdes": "ДГШ5.109.009 СБ plus registered owner component/solder photos",
-        "pins": "electrical sheet 3 closes C20.1 to D102.6 and C20.2 to D102.7/R108.1 and prints 22 pF nominal. Two later owner angles show bare 22, not the former 1Н5 reading; installed unit, tolerance, and voltage remain unproved"
+        "pins": "electrical sheet 3 closes C20.1 to D102.6 and C20.2 to D102.7/R108.1 and prints 22 pF nominal. Later owner angles show bare 22, while the early July opposite face reads ±5% tolerance, not the former 1Н5 claim. Installed unit and voltage remain unproved"
       }
     },
     {

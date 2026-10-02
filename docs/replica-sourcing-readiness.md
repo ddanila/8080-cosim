@@ -71,7 +71,7 @@ against drawings/board photos before ordering final quantities.
 | --- | --- | --- | ---: | --- | --- |
 | circuit-review | AP2 | К170АП2 | 2 | D14, D32 | RS-232/line-driver substitute required; verify +/-12 V interface |
 | circuit-review | C_ELEC | radial electrolytic | 3 | C31, C32, C33 | modern radial electrolytic with matching value/voltage/polarity |
-| circuit-review | C_KM | КМ ceramic capacitor | 1 | C20 | Sheet 3 specifies 22 pF nominal and later owner angles show bare 22 on the body, but the unit is unverified. Confirm capacitance before sourcing. |
+| circuit-review | C_KM | КМ ceramic capacitor | 1 | C20 | Sheet 3 specifies 22 pF nominal; owner angles show bare 22 and ±5% on the body, but the unit is unverified. Confirm capacitance before sourcing. |
 | circuit-review | C_KM | КМ ceramic capacitor | 1 | C22 | Sheet 3 specifies 22 pF nominal; later owner angles show bare 22 and ±10% on the body, but the unit is unverified. Confirm capacitance before sourcing. |
 | circuit-review | C_KM | КМ ceramic capacitor | 9 | C9, C10, C11, C12, C15, C16, C19, C34, C94 | modern ceramic capacitor with matching value/voltage/lead spacing |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | 4 | C38, C42, C46, C50 | Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value. |
