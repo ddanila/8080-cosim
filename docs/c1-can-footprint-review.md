@@ -24,16 +24,20 @@ VD1 polarity. The opposite right contacts are separately visible in the solder
 photo: R4 near `(3115,1398)` departs southwest on a thin trace, with a
 clear gap before the broad strip joining R2 near `(3115,1460)` and VD1 near
 `(3115,1520)`. This reproduces the drawing's local R4 versus R2/VD1
-separation. The R4 trace runs southwest and west to an otherwise
-unidentified solder contact near `(2380,1440)` in the same image. The R2/VD1
-strip descends to the broad east-west trunk near `y≈1600`. The remote identity
-of that R4 contact and the trunk rail polarity remain unverified. The factory
-assembly independently identifies the nearby vertical green body below R20
-as C21. Projecting its lower joint from either July component view misses the
-R4 trace endpoint by roughly 40 pixels horizontally; a D105-local fit
-reduces the vertical offset but leaves that horizontal gap. No C21–R4 join
-is promoted. The source puts R4 right on RESIN and one C21 lead on ground,
-but owner photos do not establish C21 lead polarity or the R20 lead nets. See `ref/photos/juku-pcb-2/c21-r4-crossview-review.json`. R3 is the vertical red body partly hidden behind C1 in the
+separation. The R4 trace runs southwest and west to a solder contact near
+`(2380,1440)`. A local fit around the marked D52 package projects the green
+C21 lower physical lead to `(2381,1447)`, matching that R4 trace endpoint
+within about 8 pixels. The C21 upper physical lead visibly joins the lower
+lead of the R20-position red body on front copper. This matches the exact
+sheet-1 drawing: C21 and R20 form a series branch from the R4/D13.5 RESIN
+junction. The former model's parallel R20 and grounded C21 assignments were
+wrong; R20's remote return still needs tracing. See
+`docs/reset-c21-r20-source-correction.md` for the model and routed-board
+impact. The R2/VD1 strip descends to
+the broad east-west trunk near `y≈1600`, whose supply polarity remains
+unverified. See `ref/photos/juku-pcb-2/c21-r4-crossview-review.json`.
+
+R3 is the vertical red body partly hidden behind C1 in the
 component photo, at the position labelled R3 by the assembly drawing. The
 May photo `PXL_20260519_201940304.jpg` independently shows `100` on
 that body, agreeing with exact sheet 1. Its actual lead holes cannot be

@@ -2684,7 +2684,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "Exact .009 sheet 1 puts one R4 contact on RES_RC. Owner component tile 200450127 shows the horizontal R4 100 body and its left joint near (802,1480); solder tile 200537608 matches that contact to the C1-positive strip near (3365,1398). The opposite right contact near solder (3115,1398) has a separate southwest-going thin trace, visibly isolated from the R2/VD1 right-contact strip; it runs west to an unidentified solder contact near (2380,1440), but its remote RESIN/D13.5 destination remains untraced. See c1-can-polarity-review.json."
+        "pins": "Exact .009 sheet 1 puts one R4 contact on RES_RC. Owner component tile 200450127 shows the horizontal R4 100 body and its left joint near (802,1480); solder tile 200537608 matches that contact to the C1-positive strip near (3365,1398). The opposite right contact near solder (3115,1398) has a separate southwest-going thin trace, visibly isolated from the R2/VD1 right-contact strip; it runs west to an solder contact near (2380,1440), D52-locally matched within about 8 px to the green C21 lower physical lead; D13.5 continuation beyond that photo-closed contact remains untraced. See c1-can-polarity-review.json."
       },
       "value": "100"
     },
@@ -2710,9 +2710,9 @@
         "2": "P2"
       },
       "prov": {
-        "type": "scan",
-        "refdes": "scan",
-        "pins": "scan: reset pull"
+        "type": "exact .009 E3 sheet 1 + assembly/owner photo",
+        "refdes": "assembly 114604420 labels vertical R20 above C21, left of D52; owner 200450127 has matching red body above green C21",
+        "pins": "Exact sheet 1 draws C21 then R20 in series from the R4/D13.5 RESIN junction, not R20 directly between RESIN and +5 V. Owner front copper visibly joins the R20-position lower physical lead to C21 upper lead. R20 remote symbol lead descends to an unresolved continuation; see c21-r4-crossview-review.json."
       },
       "value": "1,5к"
     },
@@ -2744,8 +2744,8 @@
       },
       "prov": {
         "type": "exact .009 sheet 1 + factory assembly + owner photos",
-        "refdes": "assembly 114604420 labels vertical C21 below R20 and left of D96; owner 200439607 and 200450127 show the green dipped body at that unique location",
-        "pins": "Owner front copper joins its upper lead to the lower lead of the R20-position red body. The lower coated lead crosses above C92 right strip and lands separately near D96. C21 lead numbers and rails are not independently measured; a D13-local projection of R4 right's solder endpoint near (2380,1440) misses the green lower joint by roughly 40 px, so do not join them from photos. See c21-r4-crossview-review.json."
+        "refdes": "assembly 114604420 labels vertical C21 below R20 and left of D52; owner 200439607 and 200450127 show the green dipped body at that unique location",
+        "pins": "Exact sheet 1 draws C21 in series with R20 from RESIN. Owner 200450127 places the green lower physical lead near (1740,1530); a D52-local fit projects it within about 8 px of solder (2380,1440), the endpoint of R4 right B.Cu. Its upper physical lead joins the R20-position red body lower lead on visible F.Cu. No installed 24 code or remote R20 return net is proved; see c21-r4-crossview-review.json."
       },
       "value": "24"
     },
@@ -12105,10 +12105,6 @@
           "2"
         ],
         [
-          "C21",
-          "2"
-        ],
-        [
           "D34",
           "5"
         ],
@@ -13215,10 +13211,6 @@
           "1"
         ],
         [
-          "R20",
-          "2"
-        ],
-        [
           "R34",
           "1"
         ],
@@ -13901,7 +13893,7 @@
       ]
     },
     "RESIN": {
-      "src": "scan",
+      "src": "exact .009 sheet-1 PXL_20260718_101801729.jpg reset detail: R4 right and C21 upper symbol lead meet D13.5 at one filled junction; D52-local July two-face registration matches R4-right solder departure to the fitted C21 lower physical lead",
       "nodes": [
         [
           "R4",
@@ -13909,10 +13901,6 @@
         ],
         [
           "C21",
-          "1"
-        ],
-        [
-          "R20",
           "1"
         ],
         [
@@ -19119,6 +19107,28 @@
         [
           "D12",
           "7"
+        ]
+      ]
+    },
+    "C21_R20_SERIES": {
+      "src": "exact .009 sheet-1 PXL_20260718_101801729.jpg draws C21 and R20 in series below the R4/D13.5 RESIN junction; July owner front copper joins C21 upper physical lead to the R20-position red body lower lead",
+      "nodes": [
+        [
+          "C21",
+          "2"
+        ],
+        [
+          "R20",
+          "1"
+        ]
+      ]
+    },
+    "R20_RETURN_SOURCE_HOLD": {
+      "src": "exact .009 sheet-1 PXL_20260718_101801729.jpg shows R20 lower symbol lead descending to a remote horizontal continuation; its destination is not yet identified securely from the available tile overlap, so the former +5 V assignment is withdrawn",
+      "nodes": [
+        [
+          "R20",
+          "2"
         ]
       ]
     }

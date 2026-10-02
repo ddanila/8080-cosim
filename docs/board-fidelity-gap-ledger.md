@@ -23,8 +23,8 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `368`
-- Nets modeled: `463`
-- Chip-level fidelity gaps: `62`
+- Nets modeled: `465`
+- Chip-level fidelity gaps: `63`
 - Source-proved passive refs absent from model: `9`
 - Net-level source-risk gaps: `45`
 - Explicitly dispositioned closed net risks: `14`
@@ -37,7 +37,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | .009 assembly drawing + registered component/solder/value photos + factory BOM | 3 |
 | datasheet | 1 |
 | exact .009 E3 sheet 1 + assembly + registered two-face owner photos | 1 |
-| exact .009 E3 sheet 1 + assembly/owner photo | 2 |
+| exact .009 E3 sheet 1 + assembly/owner photo | 3 |
 | exact .009 E3 sheet 1 + assembly/photo | 3 |
 | exact .009 E3 sheet 1 supply collective | 20 |
 | exact .009 E3 sheet 2 | 3 |
@@ -69,7 +69,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | photo | 1 |
 | prom | 1 |
 | registered owner photo | 1 |
-| scan | 222 |
+| scan | 221 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly drawing | 4 |
 | scan + factory assembly drawing + registered owner photo | 4 |
@@ -86,7 +86,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 2 | 6 |
 | PROM/decode | 0 | 1 |
-| logic/source | 20 | 28 |
+| logic/source | 21 | 28 |
 | memory/timing | 0 | 2 |
 | placement/value | 40 | 0 |
 | sound/analog | 0 | 2 |
@@ -120,6 +120,7 @@ parts placement and Tier-3 reproduction.
 | `D38` | `LA1_GATE` | scan | sheet-2 full-resolution: second ЛА1 section pin5 receives D33.12 LATCH via its filled junction and westward branch, while pins4/2/1 receive numbered rails2/1... |
 | `D41` | `IR16` | scan | complete sheet-2 package census plus Texas Instruments SDLS154 device contract: A-D pins2-5 share ground, SER1/OC8 share +5V rail A, QB12/QA13 are traced, QC... |
 | `D7` | `LA3_GATE` | scan | complete sheet-1 full-resolution package census: section12,13->11 forms the PROM_EN strobe, with pin12 on CPU SYNC and pin13 fed back from output pin11 befor... |
+| `R20` | `R_AXIAL` | exact .009 E3 sheet 1 + assembly/owner photo | assembly 114604420 labels vertical R20 above C21, left of D52; owner 200450127 has matching red body above green C21 Exact sheet 1 draws C21 then R20 in seri... |
 | `R35` | `R_AXIAL` | exact .009 E3 sheet 2 + assembly/photo | R35 RC clock shaper position Source 330 ohms and owner 330R body agree; calibrated owner pad geometry is pending. |
 | `R4` | `R_AXIAL` | scan | Exact .009 sheet 1 puts one R4 contact on RES_RC. Owner component tile 200450127 shows the horizontal R4 100 body and its left joint near (802,1480); solder... |
 | `R67` | `R_AXIAL` | scan | .009 factory identity plus independent registered July/May owner photos; target body reads 4K7 pin1 remains on the source-proved SOUND_CLAMP node. Both the e... |

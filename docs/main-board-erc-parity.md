@@ -17,13 +17,13 @@ missing from a routed variant; off-board connectors are outside both checks.
 | --- | ---: | --- |
 | Raw ERC error violations | 0 | GUARDED |
 | Unexpected ERC/mapping findings | 0 | PASS |
-| Singleton-label ERC mode | suppressed (0 / 34) | PASS |
+| Singleton-label ERC mode | suppressed (0 / 35) | PASS |
 | Source-risk singleton nets | 23 | BLOCK |
 | Other source-risk nets | 22 | BLOCK |
 | PCB/schematic parity issues | 0 | PASS |
 | Board-JSON/source-PCB pad-net mismatches | 0 | PASS |
-| Board-JSON/juku_routed.kicad_pcb pad-net mismatches | 0 | PASS |
-| Board-JSON/juku_routed_candidate.kicad_pcb pad-net mismatches | 0 | PASS |
+| Board-JSON/juku_routed.kicad_pcb pad-net mismatches | 3 | BLOCK |
+| Board-JSON/juku_routed_candidate.kicad_pcb pad-net mismatches | 3 | BLOCK |
 | Source-PCB modeled endpoints missing from juku_routed.kicad_pcb | 4 | BLOCK |
 | Source-PCB modeled endpoints missing from juku_routed_candidate.kicad_pcb | 4 | BLOCK |
 | Explicit board-JSON no-connects | 63 | PASS |
@@ -37,8 +37,8 @@ one-endpoint local-label net or suppress that complete warning class. The
 gate accepts only those two exact modes; partial reporting fails. The
 board-JSON singleton census remains the authoritative modeled boundary
 surface in either mode.
-Of those `34` singleton nets, `23` remain source-risk
-boundaries and `11` have closed or intentional dispositions.
+Of those `35` singleton nets, `23` remain source-risk
+boundaries and `12` have closed or intentional dispositions.
 
 ## Unresolved endpoint priorities
 
@@ -60,6 +60,18 @@ The complete machine-readable singleton-endpoint backlog is
 - None.
 
 ## Release interpretation
+
+Board-JSON/juku_routed.kicad_pcb pad-net mismatches:
+
+- `C21.2`: model `C21_R20_SERIES`, PCB `GND`
+- `R20.1`: model `C21_R20_SERIES`, PCB `RESIN`
+- `R20.2`: model `R20_RETURN_SOURCE_HOLD`, PCB `P5V`
+
+Board-JSON/juku_routed_candidate.kicad_pcb pad-net mismatches:
+
+- `C21.2`: model `C21_R20_SERIES`, PCB `GND`
+- `R20.1`: model `C21_R20_SERIES`, PCB `RESIN`
+- `R20.2`: model `R20_RETURN_SOURCE_HOLD`, PCB `P5V`
 
 Source-PCB modeled endpoints missing from juku_routed.kicad_pcb:
 

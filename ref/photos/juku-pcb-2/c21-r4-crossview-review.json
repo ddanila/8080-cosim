@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_state": "C21 physical identity assembly-and-owner supported; R4 west-endpoint to C21 lower contact remains an unpromoted candidate",
+  "review_state": "C21 assembly/owner identity confirmed; D52-local two-face fit joins C21 lower physical lead to the R4-right solder trace; exact sheet 1 corrects C21/R20 series topology",
   "assembly": {
     "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
     "sha256": "50d4c40734d367c6be98bcf453766084e02891065733180d2c324786744ca6a1",
@@ -10,14 +10,14 @@
       2250,
       3050
     ],
-    "observation": "C21 is explicitly labelled as a vertical part directly below R20, left of D96 and right of D105; R19 is separately labelled farther below."
+    "observation": "C21 is explicitly labelled as a vertical part directly below R20, left of D52 and right of D105; R19 is separately labelled farther below."
   },
   "owner": {
     "component_images": [
       "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
       "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg"
     ],
-    "observation": "Both overlapping July views show the green vertical dipped part between the R20-position red body and D96, matching the C21 assembly footprint. The upper green lead visibly shares F.Cu with the red body lower lead; the coated lower green lead crosses above C92 right strip and lands separately near D96. No legible 24 code or measured capacitor value is available."
+    "observation": "Both overlapping July views show the green vertical dipped part between the R20-position red body and D52, matching the C21 assembly footprint. The upper green lead visibly shares F.Cu with the red body lower lead; the coated lower green lead crosses above C92 right strip and lands separately near D52. No legible 24 code or measured capacitor value is available."
   },
   "r4_endpoint_candidate": {
     "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
@@ -45,8 +45,8 @@
         1439
       ]
     },
-    "limit": "The two D13-based projections and the closer D105 crosscheck leave roughly 37-41 px horizontal separation from the R4 trace endpoint. This is too loose for same-hole promotion outside the package frame. Exact sheet 1 puts R4 right on RESIN and one C21 lead on ground, but the owner photos do not establish which green lead is which or the R20-position body lead polarity. A real R4-to-C21-lower join would require rechecking those assignments against direct continuity, not rejecting the photo candidate by schematic expectation.",
-    "next_test": "With power off, probe R4 right against the actual lower C21 joint and D13.5 separately; if a join appears, verify component and net identities before changing the model.",
+    "limit": "The old D13/D105 projections extrapolated several hundred pixels beyond their packages and missed the R4 endpoint horizontally by about 40 px; they are superseded by the nearer D52-local fit. This confirms the C21 lower physical contact at the R4-right B.Cu endpoint but does not alone close the remote D13.5 route or assign the C21 upper/R20 return rail.",
+    "next_test": "With power off, confirm R4 right at solder (3115,1398) to green C21 lower at solder (2380,1440), then trace that branch to D13.5. Separately test C21 upper to the R20-position lower lead and trace R20 opposite lead to its source return.",
     "D105_local_crosscheck": {
       "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
       "component_D105_anchor_px_approx": {
@@ -90,7 +90,61 @@
         1426
       ],
       "observation": "The closer D105 row improves the projected green-lower-contact vertical match to about 14 px, but leaves roughly 37 px horizontal separation from the R4-route joint (2380,1440). Both fits extrapolate beyond the right edge of D105, so neither proves the same hole."
+    },
+    "D52_local_crosscheck": {
+      "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
+      "package": "marked К555КП14 D52, immediately right of green C21, matching exact .009 assembly label D52",
+      "front_D52_rows_px_approx": {
+        "near_C21": [
+          1805,
+          1210,
+          1635
+        ],
+        "far": [
+          1985,
+          1210,
+          1635
+        ]
+      },
+      "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
+      "solder_D52_rows_px_approx": {
+        "near_C21": [
+          2315,
+          1135,
+          1550
+        ],
+        "far": [
+          2132,
+          1135,
+          1550
+        ]
+      },
+      "approximate_reflected_fit": "x_s=4150.2-1.0167*x_front; y_s=-46.5+0.9765*y_front",
+      "predicted_C21_lower_solder_px_approx": [
+        2381,
+        1447
+      ],
+      "observed_R4_trace_endpoint_solder_px_approx": [
+        2380,
+        1440
+      ],
+      "fit_limit": "The green lower contact is only about 65 front pixels outside D52 near row, and its projection differs from the actual solder crown by about 7 px vertically and 1 px horizontally. Lead bends/crown centres limit drill precision, but the D52-local geometry plus distinctive green lead position supports a same-hole physical match."
     }
   },
-  "decision": "Promote the green body identity to factory C21 by unique assembly position and two owner views. Keep its lead numbers, capacitance marking, lower lead rail, and possible R4 endpoint join open."
+  "decision": "The green C21 body is assembly-identified beside D52. D52-local front/solder registration photo-joins its lower physical lead to R4 right at solder (2380,1440), agreeing with the exact .009 C21-from-RESIN branch. Its upper physical lead joins the R20-position lower lead on visible front copper, agreeing with the exact C21/R20 series pair. The remote R20 return and C21 installed value remain open.",
+  "source_correction": {
+    "image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101801729.jpg",
+    "native_crop_xyxy_original_pixels": [
+      780,
+      1740,
+      1850,
+      2600
+    ],
+    "observation": "A filled junction after R4 feeds D13.5 and the upper plate of C21. The lower plate of C21 enters R20=1,5к in series, then R20 descends to a remote continuation. The prior model incorrectly connected R20 directly to RESIN/+5 V and C21 directly to ground. The far R20 return destination is not yet identified in the available detail overlap.",
+    "model_nets": [
+      "RESIN",
+      "C21_R20_SERIES",
+      "R20_RETURN_SOURCE_HOLD"
+    ]
+  }
 }
