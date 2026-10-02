@@ -123,7 +123,7 @@
     {"ref": "C16", "sheet_literal": "27", "normalized_source_nominal": "27 pF", "reason": "sheet 3 prints 27 at C16 and the owner body shows 27, but the body lacks a complete GOST unit code"},
     {"ref": "C19", "sheet_literal": "22", "normalized_source_nominal": "22 pF", "reason": "sheet 3 prints 22 at C19 and two owner angles show 22, but the body lacks a complete GOST unit code"},
     {"ref": "C20", "sheet_literal": "22", "normalized_source_nominal": "22 pF", "reason": "sheet 3 and two later owner angles both show bare 22; the former 1Н5 reading is unsupported and the installed unit remains unverified"},
-    {"ref": "C22", "sheet_literal": "22", "normalized_source_nominal": "22 pF", "reason": "sheet 3 and two later owner angles both show bare 22; the former 1Н5 reading is unsupported and the installed unit remains unverified"}
+    {"ref": "C22", "sheet_literal": "22", "normalized_source_nominal": "22 pF", "reason": "sheet 3 and two later owner angles both show bare 22; one angle also reads ±10 tolerance, but the installed unit remains unverified"}
   ],
   "retracted_target_reading": "The earlier 1Н5=1.5 nF claims for C20/C22 arose from ambiguous partial glyphs. Two later owner angles instead show bare 22 on both bodies, matching sheet 3's 22 pF design nominal; absent a complete unit code or measurement, installed values remain held.",
   "held": [
@@ -135,7 +135,7 @@
     {"ref": "C16", "reason": "exact .009 sheet 3 specifies 27 pF nominal and the target body reads 27, but its incomplete GOST body code leaves actual installed value unproved"},
     {"ref": "C19", "reason": "exact .009 sheet 3 specifies 22 pF nominal and the target body reads 22, but its incomplete GOST body code leaves actual installed value unproved"},
     {"ref": "C20", "reason": "exact .009 sheet 3 and later owner angles both show bare 22, but no complete unit code or measurement proves installed capacitance"},
-    {"ref": "C22", "reason": "exact .009 sheet 3 and later owner angles both show bare 22, but no complete unit code or measurement proves installed capacitance"},
+    {"ref": "C22", "reason": "exact .009 sheet 3 and later owner angles both show bare 22 and the target tolerance is ±10%, but no complete unit code or measurement proves installed capacitance"},
     {"ref": "C34", "reason": "the native sheet proves the rail endpoints but prints no value"},
     {"ref": "C94", "reason": "the former 680 value was a misread of adjacent three-lead VT2 marked Б/8901; exact .009 sheet 1 proves C94 is a separate +5 V/GND bypass, while its physical population, value, and pad polarity remain unresolved"}
   ]

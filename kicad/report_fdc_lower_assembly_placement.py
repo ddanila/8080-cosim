@@ -89,8 +89,10 @@ if c20_value_evidence.get("unresolved") != ["value/unit", "tolerance", "voltage"
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C20 residual value boundaries are not guarded")
 if c22_value_evidence.get("value") is not None or c22_value_evidence.get("source_nominal") != "22 pF":
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C22 source nominal or installed-value hold")
-if c22_value_evidence.get("unresolved") != ["value/unit", "tolerance", "voltage"]:
+if c22_value_evidence.get("unresolved") != ["value/unit", "voltage"]:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C22 residual value boundaries are not guarded")
+if c22_value_evidence.get("tolerance_percent") != 10 or c22_value_evidence.get("tolerance_marking") != "±10":
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C22 tolerance marking is not guarded")
 if c16_c19_marking_evidence.get("visible_markings") != {"C16": "27", "C19": "22"}:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C16/C19 literal marking evidence")
 for refdes in ("C16", "C19"):
@@ -420,7 +422,7 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, a
           "backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;",
           "the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,",
           "R92.1-R99.2-D101.4, and R99.1-D101.8/GND. The May view likewise literally reads bare `27` on C16; exact sheet 3 specifies `27` (nominal 27 pF) and closes its endpoints to D97.15/.14. The incomplete GOST body code leaves its installed capacitance unproved.",
-          "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Native May/early-July crops retract the former `1Н5` reading: they show partial tolerance/type markings. Two later July angles instead show literal `22` on both bodies, matching exact sheet 3's `22` (nominal 22 pF) for each. The body digits corroborate the sheet, but no complete unit code or capacitance measurement verifies installed values. Sheet 3 closes their D102 timing endpoints.",
+          "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Native May/early-July crops retract the former `1Н5` reading: they show partial tolerance/type markings. Two later July angles instead show literal `22` on both bodies, matching exact sheet 3's `22` (nominal 22 pF) for each. The closer angle also shows `±10` on outer C22, closing its tolerance to 10%; C20's lower line remains obscured. No complete unit code or capacitance measurement verifies either installed value. Sheet 3 closes their D102 timing endpoints.",
           "The original-resolution lower drawing labels the vertical part between D41 and D40 as `C83`.",
           "The owner component view is bracketed by direct fits of both marked packages and contains no fitted C83 body. Two candidate front sites form a plausible span and align with solder crowns under the promoted D41 fit; physical identity still requires continuity.",
           "Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. C83 is present in the logical source model on +5 V/GND, but physical PCB placement and the owner-board pad pair remain unresolved. C63 remains a separate bare inherited DRAM-grid footprint. The unrelated `.006` RF-option C13 is also DNP on the `.009` target.",
