@@ -16,11 +16,12 @@ ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
 REPORT = ROOT / "docs" / "replica-bringup-verification-points.md"
 OFF_BOARD_REFS = {"S1", "S4", "X3", "X4", "X6", "X8", "X9"}
 PLACEMENT_PENDING_REFS = {
-    "C29", "C51", "C52", "C53", "C70", "C71", "C72",
+    "C4", "C29", "C51", "C52", "C53", "C70", "C71", "C72",
     "C74", "C75", "C76", "C77", "C78",
     "C82", "C83", "C84", "C85", "C86", "C87", "C88", "C89", "C90", "C91", "C92", "C93",
     "C95", "C96", "C97", "C98", "C100",
     "R2", "R7", "R15", "R16", "R35", "R36", "R37", "R106",
+    "R21", "R22", "R23", "R24", "R25", "R26", "R27", "R28",
 }
 
 RISK_RE = re.compile(

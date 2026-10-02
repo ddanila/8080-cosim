@@ -11,26 +11,26 @@ visible and actionable before manufacturing and first power-on.
 ## Summary
 
 - Source board JSON: `kicad/juku.board.json`
-- Source board JSON SHA-256: `6524d2cd418a62e683af6cf4ab1ff321fa67f26f49db3b95babc4e2aa541e6fb`
+- Source board JSON SHA-256: `98864ba47523a05d05afea6a7ed11591e68a2c3de7a46e39cf00e60b880fb13c`
 - Final PCB source: `kicad/juku.kicad_pcb`
-- Final PCB source SHA-256: `ac6f20c0f8e738ec222fe2100ce73534e12f4babcdb20c5d337fa781319ca0ed`
+- Final PCB source SHA-256: `c1fbfcdeae9a859f76d9c46f79c570f83e7d1a98a5a136ef60e818d801482b97`
 - Routed PCB source: `kicad/juku_routed.kicad_pcb`
-- Routed PCB source SHA-256: `9734515033633cda378c8f21d535c480afa3185baffd62208ff1c7d11903b150`
-- Verification-point nets: `45`
-- Verification-point endpoints checked in PCB: `76`
+- Routed PCB source SHA-256: `f22f7ba849a6088d7b41e8f2ada8153cda9226c8848bec00128044177643e26a`
+- Verification-point nets: `55`
+- Verification-point endpoints checked in PCB: `271`
 - PCB endpoint coverage: `PASS`
 - All board endpoints checked in source PCB: `2320`
 - All board endpoints checked in routed PCB: `2320`
-- Intentional non-PCB or placement-pending endpoints excluded: `137`
+- Intentional non-PCB or placement-pending endpoints excluded: `155`
 - Full PCB endpoint coverage: `FAIL`
 
 | Category | Nets |
 | --- | ---: |
 | FDC | 3 |
-| logic | 19 |
+| logic | 28 |
 | memory/decode | 2 |
 | sound/analog | 2 |
-| timing/I/O | 5 |
+| timing/I/O | 6 |
 | video/analog | 14 |
 
 ## KiCad PCB Endpoint Coverage
@@ -43,8 +43,8 @@ behind a risk note.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Risk endpoints present on PCB pads | PASS | 76/76 matched a footprint pad net |
-| Risk endpoint net names match board JSON | PASS | 76/76 net names matched |
+| Risk endpoints present on PCB pads | PASS | 271/271 matched a footprint pad net |
+| Risk endpoint net names match board JSON | PASS | 271/271 net names matched |
 
 ## Full Board Endpoint Coverage
 
@@ -61,13 +61,18 @@ fabrication-source coverage gate, not a historical-source proof.
 | PCB | Present | Matching net names | Result |
 | --- | ---: | ---: | --- |
 | `kicad/juku.kicad_pcb` | 2320/2320 | 2320/2320 | PASS |
-| `kicad/juku_routed.kicad_pcb` | 2316/2320 | 2316/2320 | FAIL |
+| `kicad/juku_routed.kicad_pcb` | 2316/2320 | 2313/2320 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 - `INT6_RAW: R10.1`
 - `INT7_RAW: R9.1`
 - `P5V: R9.2`
 - `P5V: R10.2`
+
+Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
+- C21.2: `GND` != `C21_R20_SERIES`
+- R20.1: `RESIN` != `C21_R20_SERIES`
+- R20.2: `P5V` != `R20_RETURN_SOURCE_HOLD`
 
 ## Checklist
 
@@ -77,8 +82,8 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 | `C10_2_BOUNDARY` | video/analog | `C10.2` | .009 C10 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 VT4-base assignment revision-superseded | Scope/capture video or timing node during video bring-up. |
 | `C11_1_BOUNDARY` | video/analog | `C11.1` | .009 C11 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 RF_RAIL assignment revision-superseded | Scope/capture video or timing node during video bring-up. |
 | `C11_2_BOUNDARY` | video/analog | `C11.2` | .009 C11 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 RF tank assignment revision-superseded | Scope/capture video or timing node during video bring-up. |
-| `C12_1_BOUNDARY` | video/analog | `C12.1` | .009 C12 bypass has source-proved +5 V/GND pair; pin1 rail, physical copper, and value pending; .006 RF trimmer identity revision-superseded | Scope/capture video or timing node during video bring-up. |
-| `C12_2_BOUNDARY` | video/analog | `C12.2` | .009 C12 bypass has source-proved +5 V/GND pair; pin2 rail, physical copper, and value pending; .006 RF trimmer identity revision-superseded | Scope/capture video or timing node during video bring-up. |
+| `C12_1_BOUNDARY` | video/analog | `C12.1` | .009 C12 bypass and later July owner photo prove a +5 V/GND lap-lead pair at the factory site (D100.20/D94.8). This provisional replica through-hole pad1 has no proved correspon... | Scope/capture video or timing node during video bring-up. |
+| `C12_2_BOUNDARY` | video/analog | `C12.2` | .009 C12 bypass and later July owner photo prove a +5 V/GND lap-lead pair at the factory site (D100.20/D94.8). This provisional replica through-hole pad2 has no proved correspon... | Scope/capture video or timing node during video bring-up. |
 | `C15_1_BOUNDARY` | video/analog | `C15.1` | .009 C15 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 VT4-collector assignment revision-superseded | Scope/capture video or timing node during video bring-up. |
 | `C15_2_BOUNDARY` | video/analog | `C15.2` | .009 C15 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 VT4-emitter assignment revision-superseded | Scope/capture video or timing node during video bring-up. |
 | `C94_1_BOUNDARY` | video/analog | `C94.1` | .009 sheet-1 supply detail proves C94 is a +5 V/GND bypass pair; May and July owner views show bare board at its locally projected centre, but actual C94 holes and pin1 rail rem... | Scope/capture video or timing node during video bring-up. |
@@ -107,8 +112,18 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 | `INHIB_STATUS_BOUNDARY` | memory/decode | `D7.5, D29.3` | Exact .009 sheet-1 crop PXL_20260718_101813438.jpg (850,2900)-(1850,3650): D7 NAND input pin5 joins D29 physical input pin3 at a filled T junction. The shared westbound conducto... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `INT4_RAW` | logic | `X1.114C, D12.6, D12.7` | Exact .009 sheet-1 PXL_20260718_101817644.jpg: -INT4 at X1.114C branches to both D12 LA18 gate inputs pins6 and7; D12.5 open-collector output reaches X2.214/IRQ0 through separat... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `KBD_CONTRDAT` | logic | `D26.22, X9.9, A50.1` | Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo show E8.3-4 jumper fi... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `P5V` | timing/I/O | `R78.2, D10.16, D1.20, D4.11, D107.11, D44.4, ... (+223)` | scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail A to rail F and C34... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PHI1_D35` | logic | `D35.10, W7.2, R37.2` | factory wire А:7 D35 clock-source-side copper island D35.10 reaches the candidate A7B plated through-joint under mastic; the W7 insulated-wire termination remains pending confir... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `PHI2_D35` | logic | `D35.12, W14.2, R36.2` | factory wire А:14 D35 clock-source-side copper island D35.12 reaches the candidate A14B plated through-joint under mastic; the W14 insulated-wire termination remains pending con... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R20_RETURN_SOURCE_HOLD` | logic | `R20.2` | exact .009 sheet-1 detail PXL_20260718_101801729.jpg plus full-sheet 101754468: R20 far symbol lead descends, crosses D50.5/R29 without a junction, and continues into the lower... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R21_D8_OUTPUT_HOLD` | logic | `R21.2` | R21...R28 collective source output branch; R21 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R22_D8_OUTPUT_HOLD` | logic | `R22.2` | R21...R28 collective source output branch; R22 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R23_D8_OUTPUT_HOLD` | logic | `R23.2` | R21...R28 collective source output branch; R23 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R24_D8_OUTPUT_HOLD` | logic | `R24.2` | R21...R28 collective source output branch; R24 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R25_D8_OUTPUT_HOLD` | logic | `R25.2` | R21...R28 collective source output branch; R25 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R26_D8_OUTPUT_HOLD` | logic | `R26.2` | R21...R28 collective source output branch; R26 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R27_D8_OUTPUT_HOLD` | logic | `R27.2` | R21...R28 collective source output branch; R27 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
+| `R28_D8_OUTPUT_HOLD` | logic | `R28.2` | R21...R28 collective source output branch; R28 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `R67_2_BOUNDARY` | timing/I/O | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Exact .009 E3 sheet-2 frame PXL_20260718_... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `S1_3_BOUNDARY` | logic | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not identified, so it remains... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `SYNC_B` | video/analog | `D57.17` | exact-revision .009 E3 sheet 2 and direct owner continuity 2026-07-21 disprove the older scan chase that joined D57.OUT2/pin17 to both D56 triggers; D57.OUT2 remains the separat... | Scope/capture video or timing node during video bring-up. |
@@ -117,7 +132,7 @@ Missing endpoints in `kicad/juku_routed.kicad_pcb`:
 | `TIMING_TAG2` | logic | `D38.4, D34.4` | Exact .009 sheet-2 PXL_20260718_101911242.jpg draws D34.4 upward to top conductor 2; overlapping exact .009 PXL_20260718_101908284.jpg crop (950,3200)-(2350,4000) shows numbered... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `VT2_BASE` | timing/I/O | `R62.2, R63.2, R64.1, VT2.3` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `X6_A3_BOUNDARY` | sound/analog | `AX603.1, X6.1` | Factory .009 assembly wire table item 151 proves A:3 to bracket X6.1; independent system drawing ДГШ3.031.011 Э6 identifies X6 as the display cable; exact .009 Э3 sheet 2 labels... | Bench-check waveform/current path with speaker disconnected first. |
-| `XTAL16M` | video/analog | `D39.10, D103.2, D42.9, D43.9` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin10. It is separate fr... | Scope/capture video or timing node during video bring-up. |
+| `XTAL16M` | video/analog | `D39.10, D103.2, D42.9, D43.9, D37.12` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin10. It is separate fr... | Scope/capture video or timing node during video bring-up. |
 
 ## Design-release disposition
 

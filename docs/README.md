@@ -152,7 +152,9 @@ findings. Every status applies only to the boundary named by the report.
   the CS00015 A12 fetch/read premise is not physically expressible), and
   `re3-physical-dumps.md` (independent D8/D94 captures from two physical
   boards, reader wiring, and validated content truth).
-- Fabrication package: `replica-manufacturing-readiness.md`,
+- Fabrication package: `replica-release-evidence-package.md` is the generated
+  evidence index and exact-source hash snapshot for the current design hold;
+  `replica-manufacturing-readiness.md`,
   `replica-package-geometry-readiness.md`,
   `replica-fab-drc-disposition.md`, `replica-power-trace-readiness.md`,
   `replica-sourcing-readiness.md`,
