@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_state": "C1 opposite-end owner joints cross-registered; upper joint photo-joined to D13.7/GND; lower positive B.Cu branch followed through three visible joints, contact identities open",
+  "review_state": "C1 upper joint photo-joined to D13.7/GND; lower positive joint photo-joined to R4, R2, and VD1 left contacts on reset RC branch",
   "assembly": {
     "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
     "sha256": "50d4c40734d367c6be98bcf453766084e02891065733180d2c324786744ca6a1",
@@ -80,7 +80,7 @@
     },
     "candidate_board_limit": "The board-mm points transfer the two solder joints through the current source-PCB D13.7=(24.28,201.495) and D13.8=(24.28,209.115) package frame. They are search coordinates only: D13 absolute placement and the C1 same-hole pair still need independent verification before moving PCB copper.",
     "upper_copper": "The upper C1 solder joint near (3200,822) lies on one uninterrupted broad B.Cu strip joining registered D13.7 near (3051,825). D13.7 is GND in the exact-source model, so C1's upper/negative physical joint is photo-closed to GND.",
-    "lower_copper": "The lower C1 joint near (3200,1305), beside the solder-side +, has a continuous B.Cu run east to a column near x=3365, then south through visible joints near (3365,1398), (3365,1460), and (3365,1520) in 200537608. The three joint identities and any continuation beyond the visible strip are unresolved. The source reset-net name is a schematic expectation, not a photo-closed assignment to those joints.",
+    "lower_copper": "The lower C1 joint near (3200,1305), beside the solder-side +, has a continuous B.Cu run east to x~3365, then south through joints near (3365,1398), (3365,1460), and (3365,1520). The independent overlapping component image 200450127 puts the corresponding three left contacts at approximately (802,1480), (802,1540), and (802,1600). Body markings and the exact .009 assembly identify them top-to-bottom as R4=100, R2=20K, and VD1. This photo-closes those four physical contacts on one branch; R3 and the off-board reset-switch path are not traced by this crop.",
     "lower_branch_solder_px_approx": {
       "positive_C1_joint": [
         3200,
@@ -104,6 +104,33 @@
           1520
         ]
       ]
+    },
+    "lower_branch_component_crosscheck": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
+      "sha256": "23d4ca9b4c8f59caf1dd2d09ce80f45676220dc7145cc36c616aa09e3826c651",
+      "crop_xyxy_original_pixels": [
+        600,
+        1200,
+        1100,
+        1900
+      ],
+      "component_left_joint_px_approx": {
+        "R4_100": [
+          802,
+          1480
+        ],
+        "R2_20K": [
+          802,
+          1540
+        ],
+        "VD1": [
+          802,
+          1600
+        ]
+      },
+      "registration": "D13 in the same component tile: pin7 (1084,906), pin1 (1426,906), pin8 (1084,1093); in solder 200537608: pin7 (3051,825), pin1 (2682,825), pin8 (3051,1009). Approximate reflected D13 fit x_s=4220.7-1.079*x_front; y_s=-67+0.984*y_front. It predicts the three left-contact solder sites near (3355,1389), (3355,1448), and (3355,1507), within about 10-16 px of the observed column centres. The ordered three-joint row, contact spacing, component bodies, and assembly labels provide the identity check.",
+      "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+      "assembly_note": "The exact .009 assembly labels the three horizontal rows immediately below C1, top to bottom, R4, R2, VD1."
     }
   },
   "source": {
@@ -117,6 +144,6 @@
     "observation": "The source PCB currently places C1 as a 2 mm pitch radial electrolytic. The opposite-end owner joints cross-register to a roughly 20 mm vertical span, so the current footprint and its position relative to D13 cannot be accepted as traced artwork.",
     "decision": "Hold C1 mechanical sourcing and footprint selection until both owner drill centres are registered and a matching axial part or faithful mounting option is selected."
   },
-  "decision": "The assembly position, matched polarity, two cross-registered joints, and upper B.Cu join to D13.7 identify the fitted can as C1 with its upper physical lead on GND and lower positive lead on a separate branch. The lower B.Cu run reaches three additional visible joints, but their component identities and the remote reset-net destination are not independently registered. Do not connect the nearby R36 trace from proximity alone.",
-  "next_inspection": "Power off: confirm both C1 front-to-solder same holes, upper lead to D13.7/known ground, and which components occupy the lower B.Cu column joints near (3365,1398), (3365,1460), and (3365,1520). Confirm lower positive lead to the source reset RC node and measure the roughly 20 mm physical hole spacing before replacing or relocating the provisional radial footprint. Check the apparent R36-lower-to-can route separately across the white-wire occlusion."
+  "decision": "The assembly position, matched polarity, two cross-registered C1 joints, and upper B.Cu join to D13.7 identify the fitted can as C1 with its upper physical lead on GND. Its lower positive lead shares a continuous B.Cu strip with the left contacts of R4, R2, and VD1. This matches the exact .009 reset RC node grouping for C1/R4/R2/VD1, although the resistor pad numbers and VD1 polarity are not independently established by this registration. R3 and the off-board S1/A17 portion remain untraced in these crops. Do not connect the nearby R36 trace from proximity alone.",
+  "next_inspection": "Power off: confirm both C1 front-to-solder same holes, upper lead to D13.7/known ground, and the lower positive lead to the R4/R2/VD1 left-contact column. Trace the remaining R3 and S1/A17 reset RC branches. Measure the roughly 20 mm physical C1 hole spacing before replacing or relocating the provisional radial footprint. Check the apparent R36-lower-to-can route separately across the white-wire occlusion."
 }

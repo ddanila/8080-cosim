@@ -12,8 +12,15 @@ to solder joints near `(3200,822)` and `(3200,1305)` in
 strip to registered D13.7/GND. A separate `+` is printed beside the lower
 solder joint. Its B.Cu run goes east to about `(3365,1305)`, then south
 through visible joints near `(3365,1398)`, `(3365,1460)`, and `(3365,1520)`
-in the same solder photo. Those three joints lack secure component-side
-identities, so the remote reset-net destination remains untraced. The installed capacitance is still unverified. Exact
+in the same solder photo. The sharper overlapping component image
+`PXL_20260710_200450127.jpg` puts the three corresponding left contacts at
+about `(802,1480)`, `(802,1540)`, and `(802,1600)`. D13-local reflection
+projects them within about 10–16 pixels of that solder column. Their bodies
+and the exact `.009` assembly identify the rows as R4 `100`, R2 `20K`, and
+VD1, top to bottom. C1 positive, R4 left, R2 left, and VD1 left therefore
+share one physical copper branch, matching their `RES_RC` source grouping.
+This registration does not independently establish the resistor pad numbers or
+VD1 polarity. The R3 and off-board S1/A17 branches still need tracing. The installed capacitance is still unverified. Exact
 electrical sheet 1 specifies a 47.0 nominal for C1 in the reset RC network.
 
 The current source PCB uses `CP_Radial_D5.0mm_P2.00mm` for C1, with 2.00 mm

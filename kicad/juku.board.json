@@ -2727,7 +2727,7 @@
       "prov": {
         "type": "exact .009 E3 sheet 1 + assembly/owner photo",
         "refdes": "Exact .009 sheet 1 prints C1=47,0 in the reset RC network; assembly PXL_20260711_114604420.jpg labels the vertical C1 can and lower + end",
-        "pins": "Owner 200439607 shows a fitted opposite-end-lead can with + near its lower lead. D13-local cross-face fit places its upper/lower solder joints near (3200,822)/(3200,1305) in 200537608, about 20 mm apart. Upper joint visibly joins D13.7/GND on B.Cu, matching C1.2; lower marked-positive joint corresponds to C1.1. Its B.Cu runs east to x~3365 then south through joints near y~1398/1460/1520 in 200537608, but the joint identities and remote RES_RC path remain untraced. Current 2 mm radial PCB footprint and position do not match this owner geometry; see c1-can-polarity-review.json."
+        "pins": "Owner 200439607 shows a fitted opposite-end-lead can with + near its lower lead. D13-local cross-face fit places its upper/lower solder joints near (3200,822)/(3200,1305) in 200537608, about 20 mm apart. Upper joint visibly joins D13.7/GND on B.Cu, matching C1.2; lower marked-positive joint corresponds to C1.1. Its B.Cu runs east to x~3365 then south through joints near y~1398/1460/1520 in 200537608, and the sharper 200450127 component tile cross-registers those three joints as left contacts of R4, R2, and VD1, photo-closing the local RES_RC branch. R3 and off-board S1/A17 remain untraced. Current 2 mm radial PCB footprint and position do not match this owner geometry; see c1-can-polarity-review.json."
       },
       "value": "47,0",
       "procurement": {
