@@ -48,6 +48,8 @@ REPORTS = [
     ("First article", "docs/replica-first-article-record.md"),
 ]
 ZIP = "fab/gerbers/upload/juku-replica-gerbers-drill.zip"
+SOURCE_STAMP = "fab/gerbers/source-board.sha256"
+UPLOAD_SUMS = "fab/gerbers/upload/SHA256SUMS.txt"
 PROM_PARTS = {"D2": "d2_037", "D6": "d6_038", "D8": "d8_039", "D94": "d94_092"}
 EPROM_PARTS = {"D15": "d15_ekta37_low.bin", "D16": "d16_ekta37_high.bin"}
 RELEASE_EXPECTED = {
@@ -89,6 +91,14 @@ def display_report_link(name: str, path: str, present: bool) -> str:
         return name
     target = Path(path).name if path.startswith("docs/") else "../" + path
     return f"[{name}]({target})"
+
+
+def upload_checksum_matches(zip_hash: str | None) -> bool:
+    sums = ROOT / UPLOAD_SUMS
+    if not zip_hash or not sums.is_file():
+        return False
+    entries = [line.split(None, 1) for line in sums.read_text().splitlines() if line.strip()]
+    return len(entries) == 1 and entries[0] == [zip_hash, Path(ZIP).name]
 
 
 def bom_counts() -> dict[str, int]:
@@ -178,6 +188,10 @@ def build() -> tuple[str, str]:
         routed_declared and routed_declared.group(1) == source[SOURCES[3]]
     )
     upload_exists = (ROOT / ZIP).is_file()
+    zip_hash = sha(ROOT / ZIP) if upload_exists else None
+    stamp = ROOT / SOURCE_STAMP
+    source_stamp_matches = stamp.is_file() and stamp.read_text().strip() == source[SOURCES[3]]
+    upload_sums_match = upload_checksum_matches(zip_hash)
     hold_reasons = [f"{name}: {reports[name]['status']} (requires {expected})"
                     for name, expected in RELEASE_EXPECTED.items()
                     if reports[name]["status"] != expected]
@@ -194,6 +208,10 @@ def build() -> tuple[str, str]:
         hold_reasons.append("tracked manufacturing report does not identify the current routed PCB SHA256")
     if not upload_exists:
         hold_reasons.append("current Gerber/drill upload ZIP is absent")
+    if not source_stamp_matches:
+        hold_reasons.append("fabrication source-board stamp does not match the routed PCB")
+    if not upload_sums_match:
+        hold_reasons.append("upload checksum file does not match the exact ZIP")
     decision = "DESIGN HOLD" if hold_reasons else "EVIDENCE COMPLETE / OWNER APPROVAL PENDING"
     manifest = {
         "schema_version": 1,
@@ -207,8 +225,9 @@ def build() -> tuple[str, str]:
         "reports": reports,
         "bringup_board_json_hash_matches": bringup_current,
         "manufacturing_routed_pcb_hash_matches": manufacturing_current,
-        "upload_zip": {"path": ZIP, "present": upload_exists,
-                       "sha256": sha(ROOT / ZIP) if upload_exists else None},
+        "upload_zip": {"path": ZIP, "present": upload_exists, "sha256": zip_hash,
+                       "checksum_file": UPLOAD_SUMS, "checksum_matches": upload_sums_match},
+        "fabrication_source_stamp": {"path": SOURCE_STAMP, "matches_routed_pcb": source_stamp_matches},
         "hold_reasons": hold_reasons,
     }
     json_text = json.dumps(manifest, indent=2, ensure_ascii=False) + "\n"
@@ -234,6 +253,8 @@ def build() -> tuple[str, str]:
               f"- Bring-up report board-JSON hash matches current source: **{'yes' if bringup_current else 'no'}**.",
               f"- Manufacturing report routed-PCB hash matches current source: **{'yes' if manufacturing_current else 'no'}**.",
               f"- Current upload ZIP present: **{'yes' if upload_exists else 'no'}**.", "",
+              f"- Fabrication source stamp matches routed PCB: **{'yes' if source_stamp_matches else 'no'}**.",
+              f"- Upload checksum matches exact ZIP: **{'yes' if upload_sums_match else 'no'}**.", "",
               "## Programmed part identity", "",
               "The four small-PROM raw tables and asserted interpretations are separately",
               "preserved. The programming procedure determines which bit polarity to write",

@@ -53,6 +53,9 @@ after any source or report change; use `--check` to detect a stale tracked packe
 - Manufacturing report routed-PCB hash matches current source: **no**.
 - Current upload ZIP present: **no**.
 
+- Fabrication source stamp matches routed PCB: **no**.
+- Upload checksum matches exact ZIP: **no**.
+
 ## Programmed part identity
 
 The four small-PROM raw tables and asserted interpretations are separately
@@ -95,6 +98,8 @@ the exact installed images in each first-article record.
 - fabrication-file inventory gate has not passed.
 - tracked manufacturing report does not identify the current routed PCB SHA256.
 - current Gerber/drill upload ZIP is absent.
+- fabrication source-board stamp does not match the routed PCB.
+- upload checksum file does not match the exact ZIP.
 
 ## Closure sequence
 

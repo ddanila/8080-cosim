@@ -200,7 +200,13 @@
   "upload_zip": {
     "path": "fab/gerbers/upload/juku-replica-gerbers-drill.zip",
     "present": false,
-    "sha256": null
+    "sha256": null,
+    "checksum_file": "fab/gerbers/upload/SHA256SUMS.txt",
+    "checksum_matches": false
+  },
+  "fabrication_source_stamp": {
+    "path": "fab/gerbers/source-board.sha256",
+    "matches_routed_pcb": false
   },
   "hold_reasons": [
     "32 unresolved singleton endpoints require evidence-backed disposition",
@@ -220,6 +226,8 @@
     "Order evidence: TEMPLATE INVALID (requires READY FOR RELEASED ORDER RECORD)",
     "fabrication-file inventory gate has not passed",
     "tracked manufacturing report does not identify the current routed PCB SHA256",
-    "current Gerber/drill upload ZIP is absent"
+    "current Gerber/drill upload ZIP is absent",
+    "fabrication source-board stamp does not match the routed PCB",
+    "upload checksum file does not match the exact ZIP"
   ]
 }
