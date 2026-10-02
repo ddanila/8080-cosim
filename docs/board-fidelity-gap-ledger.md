@@ -183,7 +183,7 @@ parts placement and Tier-3 reproduction.
 | `C67` | `C_KM` | scan | .009 factory drawing omits C67 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled... |
 | `C68` | `C_KM` | scan | .009 factory drawing omits C68 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled... |
 | `C73` | `C_TRIM` | exact .009 E3 sheet 2 + assembly/photo | C73 trimmer is fitted beside Z1 in the exact .009 assembly and owner-board D59 corner Exact .009 sheet-2 PXL_20260718_101908284.jpg draws the Z1+C73 series b... |
-| `C85` | `C_KM` | exact .009 E3 sheet 1 supply collective | C85 is a member of the printed C82...C93 supply-bypass range. No individual C85 assembly callout is securely readable in the archived .009 placement panels;... |
+| `C85` | `C_KM` | exact .009 E3 sheet 1 supply collective | C85 is a member of the printed C82...C93 supply-bypass range. No individual C85 assembly callout is securely readable. An unlabeled two-lead outline between... |
 | `C9` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C9 vertically between D100 and D98; later July owner photo 202708344 shows a green two-lead body at that... |
 | `C94` | `C_KM` | scan | ДГШ5.109.009 СБ; May and July owner views show bare board at the locally projected C94 centre factory drawing identifies a separate two-terminal C94 immediat... |
 

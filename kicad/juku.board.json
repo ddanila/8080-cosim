@@ -6648,7 +6648,7 @@
       },
       "prov": {
         "type": "exact .009 E3 sheet 1 supply collective",
-        "refdes": "C85 is a member of the printed C82...C93 supply-bypass range. No individual C85 assembly callout is securely readable in the archived .009 placement panels; its physical site, pad pair, value, and population are unproved (ref/photos/juku-pcb-2/c85-source-placement-boundary.json). C92 and C93 have separate drawn supply branches, so the collective range alone does not prove each member's individual rails.",
+        "refdes": "C85 is a member of the printed C82...C93 supply-bypass range. No individual C85 assembly callout is securely readable. An unlabeled two-lead outline between D42/D43 and matching bare owner holes are a prioritized candidate, not a proved C85 placement; its physical site, pad pair, value, and population remain unproved (ref/photos/juku-pcb-2/c85-source-placement-boundary.json). C92 and C93 have separate drawn supply branches, so the collective range alone does not prove each member's individual rails.",
         "pins": "Logical pin 1 uses the collective +5 V plate and pin 2 the collective GND plate as a provisional model assignment. The .009 detail gives no individual C85 branch; its actual rails, value, physical lead numbering, population, and footprint remain unproved."
       }
     },
