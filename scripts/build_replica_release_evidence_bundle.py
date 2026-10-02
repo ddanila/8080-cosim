@@ -18,6 +18,13 @@ SUMS_MEMBER = "EVIDENCE-SHA256SUMS.txt"
 README_MEMBER = "EVIDENCE-README.txt"
 
 
+def readme_content(manifest: dict) -> bytes:
+    return ("Juku replica release evidence snapshot\n"
+            f"Decision: {manifest['decision']}\n"
+            "This archive is for review. It is not the Gerber/drill upload ZIP.\n"
+            "Read docs/replica-release-evidence-package.md first.\n").encode()
+
+
 def members(manifest: dict) -> list[str]:
     paths = set(packet.SOURCES)
     paths.update(entry["path"] for entry in manifest["reports"].values()
@@ -64,13 +71,12 @@ def build(output: Path, manifest: dict) -> None:
             data = (ROOT / relative).read_bytes()
             archive.writestr(zip_info(relative), data)
             sums.append(f"{hashlib.sha256(data).hexdigest()}  {relative}")
-        readme = ("Juku replica release evidence snapshot\n"
-                  f"Decision: {manifest['decision']}\n"
-                  "This archive is for review. It is not the Gerber/drill upload ZIP.\n"
-                  "Read docs/replica-release-evidence-package.md first.\n").encode()
+        readme = readme_content(manifest)
         archive.writestr(zip_info(README_MEMBER), readme)
         sums.append(f"{hashlib.sha256(readme).hexdigest()}  {README_MEMBER}")
         archive.writestr(zip_info(SUMS_MEMBER), ("\n".join(sums) + "\n").encode())
+    digest = hashlib.sha256(output.read_bytes()).hexdigest()
+    output.with_suffix(output.suffix + ".sha256").write_text(f"{digest}  {output.name}\n")
 
 
 def verify(output: Path, manifest: dict) -> None:
@@ -94,9 +100,15 @@ def verify(output: Path, manifest: dict) -> None:
             data = archive.read(path)
             if hashlib.sha256(data).hexdigest() != digest:
                 raise SystemExit(f"evidence bundle checksum mismatch: {path}")
+            if path == README_MEMBER and data != readme_content(manifest):
+                raise SystemExit("evidence bundle decision README differs from current packet")
             if path != README_MEMBER and data != (ROOT / path).read_bytes():
                 raise SystemExit(f"evidence bundle differs from current source: {path}")
-    print(f"evidence bundle: {output} ({hashlib.sha256(output.read_bytes()).hexdigest()})")
+    zip_hash = hashlib.sha256(output.read_bytes()).hexdigest()
+    sidecar = output.with_suffix(output.suffix + ".sha256")
+    if not sidecar.is_file() or sidecar.read_text() != f"{zip_hash}  {output.name}\n":
+        raise SystemExit("evidence bundle SHA256 sidecar is missing or stale")
+    print(f"evidence bundle: {output} ({zip_hash})")
 
 
 def main() -> None:
