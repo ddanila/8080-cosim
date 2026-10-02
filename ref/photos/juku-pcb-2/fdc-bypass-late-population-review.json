@@ -20,6 +20,8 @@
       "ref": "C10",
       "rotated_crop_xyxy_px": [2000, 850, 2900, 1800],
       "factory_between": ["D93", "D106"],
+      "raw_portrait_joint_centers_xy_px": {"left": [1440, 2430], "right": [1715, 2430]},
+      "joint_center_uncertainty_px": 20,
       "reading": "One upright green rectangular two-lead body straddles the left side of the neighboring D106 К555ИЕ7 package immediately right of the D93 socket. Its two separate bent leads end at front joints west of D106. The body position matches the factory C10 callout immediately right of D93; it is not a part of D106's package.",
       "disposition": "later-view C10 body identification by factory locality and orientation; no value or lead-to-rail assignment"
     },
@@ -27,6 +29,8 @@
       "ref": "C11",
       "rotated_crop_xyxy_px": [2300, 1450, 3900, 2800],
       "factory_between": ["D95", "D99"],
+      "raw_portrait_joint_centers_xy_px": {"left": [880, 2935], "right": [1150, 2935]},
+      "joint_center_uncertainty_px": 20,
       "reading": "A vertical green rectangular two-lead body occupies the factory C11 corridor between the К555КП12 D95 and К155АГ3 D99; the black cable obscures its right edge, but both leftward lead joints are exposed. Earlier overhead owner views exposed the landings without a secure body read.",
       "disposition": "later-view C11 body population photo-supported; value, rail identity of each lead, and numbered replica-pad correspondence unresolved"
     },
