@@ -30,9 +30,10 @@ strip descends to the broad east-west trunk near `y≈1600`. The remote identity
 of that R4 contact and the trunk rail polarity remain unverified. The factory
 assembly independently identifies the nearby vertical green body below R20
 as C21. Projecting its lower joint from either July component view misses the
-R4 trace endpoint by roughly 40 pixels horizontally, so no C21–R4 join is
-promoted; such a join would also conflict with the drawn RESIN-to-ground
-C21 branch. See `ref/photos/juku-pcb-2/c21-r4-crossview-review.json`. R3 is the vertical red body partly hidden behind C1 in the
+R4 trace endpoint by roughly 40 pixels horizontally; a D105-local fit
+reduces the vertical offset but leaves that horizontal gap. No C21–R4 join
+is promoted. The source puts R4 right on RESIN and one C21 lead on ground,
+but owner photos do not establish C21 lead polarity or the R20 lead nets. See `ref/photos/juku-pcb-2/c21-r4-crossview-review.json`. R3 is the vertical red body partly hidden behind C1 in the
 component photo, at the position labelled R3 by the assembly drawing. The
 May photo `PXL_20260519_201940304.jpg` independently shows `100` on
 that body, agreeing with exact sheet 1. Its actual lead holes cannot be

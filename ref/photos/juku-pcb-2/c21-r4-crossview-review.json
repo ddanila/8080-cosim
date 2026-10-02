@@ -45,8 +45,52 @@
         1439
       ]
     },
-    "limit": "Both D13-based extrapolations land about 37-41 px left of the actual R4 trace endpoint at x~2380; this is too loose for same-hole promotion outside the D13 package frame. The source places one C21 lead on ground and R4 right on RESIN. Given the photographed upper C21-to-R20-position join, the lower lead is the ground candidate; joining it to R4 right would conflict with the source and requires direct board verification.",
-    "next_test": "With power off, probe R4 right against the actual lower C21 joint and D13.5 separately; if a join appears, verify component and net identities before changing the model."
+    "limit": "The two D13-based projections and the closer D105 crosscheck leave roughly 37-41 px horizontal separation from the R4 trace endpoint. This is too loose for same-hole promotion outside the package frame. Exact sheet 1 puts R4 right on RESIN and one C21 lead on ground, but the owner photos do not establish which green lead is which or the R20-position body lead polarity. A real R4-to-C21-lower join would require rechecking those assignments against direct continuity, not rejecting the photo candidate by schematic expectation.",
+    "next_test": "With power off, probe R4 right against the actual lower C21 joint and D13.5 separately; if a join appears, verify component and net identities before changing the model.",
+    "D105_local_crosscheck": {
+      "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
+      "component_D105_anchor_px_approx": {
+        "pin7": [
+          1084,
+          1280
+        ],
+        "pin1": [
+          1426,
+          1280
+        ],
+        "pin8": [
+          1084,
+          1470
+        ],
+        "pin14": [
+          1426,
+          1470
+        ]
+      },
+      "solder_D105_anchor_px": {
+        "pin7": [
+          3051,
+          1192
+        ],
+        "pin1": [
+          2682,
+          1192
+        ],
+        "pin8": [
+          3051,
+          1370
+        ],
+        "pin14": [
+          2682,
+          1370
+        ]
+      },
+      "candidate_projection_px_approx": [
+        2343,
+        1426
+      ],
+      "observation": "The closer D105 row improves the projected green-lower-contact vertical match to about 14 px, but leaves roughly 37 px horizontal separation from the R4-route joint (2380,1440). Both fits extrapolate beyond the right edge of D105, so neither proves the same hole."
+    }
   },
   "decision": "Promote the green body identity to factory C21 by unique assembly position and two owner views. Keep its lead numbers, capacitance marking, lower lead rail, and possible R4 endpoint join open."
 }
