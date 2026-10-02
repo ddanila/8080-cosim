@@ -14,6 +14,68 @@
     "populate_now": 273,
     "leave_empty": 104
   },
+  "programming_evidence": {
+    "D2": {
+      "kind": "validated physical PROM table",
+      "raw_path": "ref/physical-proms/validated/d2_037.raw.bin",
+      "raw_sha256": "953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b",
+      "asserted_path": "ref/physical-proms/validated/d2_037.asserted.bin",
+      "asserted_sha256": "7a0cdb0129e75571811dd193fd99a749ac22d3bb198edc7237071b82d9d5d6db",
+      "dump_manifest": "ref/physical-proms/validated/d2_037.dump.json",
+      "dump_manifest_sha256": "454408f9e61fe0a105a5b7b1aae1588a4caee6b70dbb9b56f668142059b874f7",
+      "capture_count": 8,
+      "independent_capture_count": 6
+    },
+    "D6": {
+      "kind": "validated physical PROM table",
+      "raw_path": "ref/physical-proms/validated/d6_038.raw.bin",
+      "raw_sha256": "c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489",
+      "asserted_path": "ref/physical-proms/validated/d6_038.asserted.bin",
+      "asserted_sha256": "15f600669f45b7d4b2786ee0afe392746244e8affb101ea7d29088636a8e1a52",
+      "dump_manifest": "ref/physical-proms/validated/d6_038.dump.json",
+      "dump_manifest_sha256": "97248630a13f2d0f5128d9eeaf97e9546849e5d2a47b45aa32e5e23a85490849",
+      "capture_count": 3,
+      "independent_capture_count": 3
+    },
+    "D8": {
+      "kind": "validated physical PROM table",
+      "raw_path": "ref/physical-proms/validated/d8_039.raw.bin",
+      "raw_sha256": "345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc",
+      "asserted_path": "ref/physical-proms/validated/d8_039.asserted.bin",
+      "asserted_sha256": "e0f5231c7b24764d729d8d9c397d78a5bf68b899911bd8946be57cd905e72617",
+      "dump_manifest": "ref/physical-proms/validated/d8_039.dump.json",
+      "dump_manifest_sha256": "bbb53cd340059c81e06f37ccf55ef58e40ba7d6ca73d0042571e25b31e1e2306",
+      "capture_count": 6,
+      "independent_capture_count": 3
+    },
+    "D94": {
+      "kind": "validated physical PROM table",
+      "raw_path": "ref/physical-proms/validated/d94_092.raw.bin",
+      "raw_sha256": "bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0",
+      "asserted_path": "ref/physical-proms/validated/d94_092.asserted.bin",
+      "asserted_sha256": "6e45374f1eadd171637e4d47aa1540bd549173eb49d30260e985120f7f001095",
+      "dump_manifest": "ref/physical-proms/validated/d94_092.dump.json",
+      "dump_manifest_sha256": "2fe698f357930cfb7f4f269ac68ee04f518ad9f0b2c7349763d7b770fd5df356",
+      "capture_count": 6,
+      "independent_capture_count": 3
+    },
+    "D15": {
+      "kind": "adopted EktaSoft 3.7 EPROM split",
+      "path": "ref/eprom-images/d15_ekta37_low.bin",
+      "sha256": "d6c4ec7418f05e5761ef450e6ee36fb2579d65d9cbf87dce265eaf1c0d077596",
+      "bytes": 8192
+    },
+    "D16": {
+      "kind": "adopted EktaSoft 3.7 EPROM split",
+      "path": "ref/eprom-images/d16_ekta37_high.bin",
+      "sha256": "35b348ae7c88dc8cb24d1bc9d62a06212fdc2c2f601eddf8e00b233893d92817",
+      "bytes": 8192
+    }
+  },
+  "eprom_source_rom": {
+    "path": "roms/ekta37.bin",
+    "sha256": "fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27"
+  },
   "bom_csv_sha256": "9cf0a370c1915231aadf7bcbd4ae2d6ad751f181c6e3f0dbedebcd2c9dad67e7",
   "unresolved_singleton_endpoints": 32,
   "reports": {
@@ -36,6 +98,21 @@
       "path": "docs/replica-sourcing-readiness.md",
       "sha256": "d96ee48504e6ff2b2160bc72ad325afd62337bd0c39ee2943600b1b6c032fe4b",
       "status": "PARTIAL / PROGRAMMING AND REVIEW BLOCKED"
+    },
+    "Firmware lineage": {
+      "path": "docs/firmware-gap-ledger.md",
+      "sha256": "5908ea5a0d09f42f96600e2d51def00d6450ad9344494cfbd8bef2c040c678a1",
+      "status": "ADOPTED FIRMWARE SET VERIFIED"
+    },
+    "EPROM programming": {
+      "path": "docs/eprom-programming-images.md",
+      "sha256": "6f1b03095dbef68e6b97750fb31673dc0cb9c59f68e53295eab12bcf8648b366",
+      "status": "ADOPTED THIRD-SOURCE EKTA 3.7 IMAGES READY"
+    },
+    "PROM procedure": {
+      "path": "docs/prom-dump-procedure.md",
+      "sha256": "56b85bcc5f127c6cc993874726fbc3b9848e7733374b994d03c39bf08e83e6fc",
+      "status": "NO STATUS FIELD"
     },
     "ERC and parity": {
       "path": "docs/main-board-erc-parity.md",

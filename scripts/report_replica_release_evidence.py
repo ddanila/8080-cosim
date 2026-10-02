@@ -27,6 +27,9 @@ REPORTS = [
     ("Owner checks", "docs/owner-measurement-shortlist.md"),
     ("BOM", "docs/replica-dual-config-bom.md"),
     ("Sourcing", "docs/replica-sourcing-readiness.md"),
+    ("Firmware lineage", "docs/firmware-gap-ledger.md"),
+    ("EPROM programming", "docs/eprom-programming-images.md"),
+    ("PROM procedure", "docs/prom-dump-procedure.md"),
     ("ERC and parity", "docs/main-board-erc-parity.md"),
     ("PPI orientation", "docs/ppi-orientation-audit.md"),
     ("X8 electrolytic geometry", "docs/x8-electrolytic-footprint-audit.md"),
@@ -45,6 +48,8 @@ REPORTS = [
     ("First article", "docs/replica-first-article-record.md"),
 ]
 ZIP = "fab/gerbers/upload/juku-replica-gerbers-drill.zip"
+PROM_PARTS = {"D2": "d2_037", "D6": "d6_038", "D8": "d8_039", "D94": "d94_092"}
+EPROM_PARTS = {"D15": "d15_ekta37_low.bin", "D16": "d16_ekta37_high.bin"}
 RELEASE_EXPECTED = {
     "Sourcing": "SOURCING READY",
     "ERC and parity": "READY",
@@ -97,6 +102,45 @@ def bom_counts() -> dict[str, int]:
     }
 
 
+def programming_evidence() -> dict[str, dict]:
+    items: dict[str, dict] = {}
+    for ref, stem in PROM_PARTS.items():
+        prefix = Path("ref/physical-proms/validated")
+        dump_path = prefix / f"{stem}.dump.json"
+        dump = json.loads((ROOT / dump_path).read_text())
+        raw_path = prefix / f"{stem}.raw.bin"
+        asserted_path = prefix / f"{stem}.asserted.bin"
+        raw_hash, asserted_hash = sha(ROOT / raw_path), sha(ROOT / asserted_path)
+        if raw_hash != dump["raw_pin_level_sha256"] or (
+            asserted_hash != dump["active_low_asserted_sha256"]
+        ):
+            raise SystemExit(f"validated PROM digest differs from dump provenance: {ref}")
+        items[ref] = {
+            "kind": "validated physical PROM table",
+            "raw_path": raw_path.as_posix(), "raw_sha256": raw_hash,
+            "asserted_path": asserted_path.as_posix(), "asserted_sha256": asserted_hash,
+            "dump_manifest": dump_path.as_posix(), "dump_manifest_sha256": sha(ROOT / dump_path),
+            "capture_count": dump["capture_count"],
+            "independent_capture_count": dump["independent_capture_count"],
+        }
+    sum_file = ROOT / "ref/eprom-images/SHA256SUMS"
+    expected = {entry.split(None, 1)[1].strip(): entry.split(None, 1)[0]
+                for entry in sum_file.read_text().splitlines() if entry.strip()}
+    for ref, filename in EPROM_PARTS.items():
+        path = Path("ref/eprom-images") / filename
+        digest = sha(ROOT / path)
+        if digest != expected.get(filename) or (ROOT / path).stat().st_size != 8192:
+            raise SystemExit(f"EPROM image does not match checked 8 KiB split: {ref}")
+        items[ref] = {"kind": "adopted EktaSoft 3.7 EPROM split",
+                      "path": path.as_posix(), "sha256": digest, "bytes": 8192}
+    source_rom = ROOT / "roms/ekta37.bin"
+    joined = b"".join((ROOT / items[ref]["path"]).read_bytes()
+                      for ref in ("D15", "D16"))
+    if joined != source_rom.read_bytes() or sha(source_rom) != expected.get("../../roms/ekta37.bin"):
+        raise SystemExit("D15/D16 split does not reproduce the adopted EktaSoft 3.7 ROM")
+    return items
+
+
 def build() -> tuple[str, str]:
     source = {p: sha(ROOT / p) for p in SOURCES}
     reports = {name: {"path": p,
@@ -104,6 +148,7 @@ def build() -> tuple[str, str]:
                       "status": status(ROOT / p)}
                for name, p in REPORTS}
     bom = bom_counts()
+    programs = programming_evidence()
     modeled_positions = len(json.loads((ROOT / SOURCES[0]).read_text())["chips"])
     if bom["positions"] != modeled_positions or (
         bom["populate_now"] + bom["leave_empty"] != bom["positions"]
@@ -155,6 +200,8 @@ def build() -> tuple[str, str]:
         "decision": decision,
         "sources_sha256": source,
         "bom": bom,
+        "programming_evidence": programs,
+        "eprom_source_rom": {"path": "roms/ekta37.bin", "sha256": sha(ROOT / "roms/ekta37.bin")},
         "bom_csv_sha256": sha(ROOT / "docs/replica-dual-config-bom.csv"),
         "unresolved_singleton_endpoints": len(unresolved),
         "reports": reports,
@@ -187,6 +234,25 @@ def build() -> tuple[str, str]:
               f"- Bring-up report board-JSON hash matches current source: **{'yes' if bringup_current else 'no'}**.",
               f"- Manufacturing report routed-PCB hash matches current source: **{'yes' if manufacturing_current else 'no'}**.",
               f"- Current upload ZIP present: **{'yes' if upload_exists else 'no'}**.", "",
+              "## Programmed part identity", "",
+              "The four small-PROM raw tables and asserted interpretations are separately",
+              "preserved. The programming procedure determines which bit polarity to write",
+              "for the selected device and programmer. D15/D16 are the adopted functional",
+              "EktaSoft 3.7 split; their concatenation matches",
+              f"`roms/ekta37.bin` (`{manifest['eprom_source_rom']['sha256']}`). Record",
+              "the exact installed images in each first-article record.", "",
+              "| Ref | Evidence | SHA256 | Provenance |", "| --- | --- | --- | --- |"]
+    for ref, item in programs.items():
+        if "raw_path" in item:
+            lines.append(f"| {ref} | `{item['raw_path']}` (raw) | `{item['raw_sha256']}` | "
+                         f"{item['independent_capture_count']} independent captures; "
+                         f"[dump record](../{item['dump_manifest']}) |")
+            lines.append(f"| {ref} | `{item['asserted_path']}` (asserted) | "
+                         f"`{item['asserted_sha256']}` | same validated capture set |")
+        else:
+            lines.append(f"| {ref} | `{item['path']}` | `{item['sha256']}` | "
+                         f"[EPROM split notes](eprom-programming-images.md) |")
+    lines += ["",
               "## Release holds", ""]
     lines += [f"- {reason}." for reason in hold_reasons]
     lines += ["", "## Closure sequence", "",

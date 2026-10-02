@@ -25,6 +25,9 @@ after any source or report change; use `--check` to detect a stale tracked packe
 | [Owner checks](owner-measurement-shortlist.md) | READY | `52a53f7d682ca573679a7fd9a7da222f709810f7088a9bd923b1ca9ecf14493d` |
 | [BOM](replica-dual-config-bom.md) | NO STATUS FIELD | `4db20c6612df2f40f9601f94fe03297535be9493f44626a773633443f60d050f` |
 | [Sourcing](replica-sourcing-readiness.md) | PARTIAL / PROGRAMMING AND REVIEW BLOCKED | `d96ee48504e6ff2b2160bc72ad325afd62337bd0c39ee2943600b1b6c032fe4b` |
+| [Firmware lineage](firmware-gap-ledger.md) | ADOPTED FIRMWARE SET VERIFIED | `5908ea5a0d09f42f96600e2d51def00d6450ad9344494cfbd8bef2c040c678a1` |
+| [EPROM programming](eprom-programming-images.md) | ADOPTED THIRD-SOURCE EKTA 3.7 IMAGES READY | `6f1b03095dbef68e6b97750fb31673dc0cb9c59f68e53295eab12bcf8648b366` |
+| [PROM procedure](prom-dump-procedure.md) | NO STATUS FIELD | `56b85bcc5f127c6cc993874726fbc3b9848e7733374b994d03c39bf08e83e6fc` |
 | [ERC and parity](main-board-erc-parity.md) | DESIGN HOLD | `ab316a921c35c8300c56de9b7e76344c7f47d6d43d40a8640788669e8b7f09da` |
 | [PPI orientation](ppi-orientation-audit.md) | HOLD | `e3e22d3e94cbbf2bf4c75f610338b5631312d8634abd5d00512db0528bd28816` |
 | [X8 electrolytic geometry](x8-electrolytic-footprint-audit.md) | HOLD | `afbb3c4431913177cb430fb68711001604b7fc8179793b5a8c8d93ac4fa8ba9a` |
@@ -49,6 +52,28 @@ after any source or report change; use `--check` to detect a stale tracked packe
 - Bring-up report board-JSON hash matches current source: **yes**.
 - Manufacturing report routed-PCB hash matches current source: **no**.
 - Current upload ZIP present: **no**.
+
+## Programmed part identity
+
+The four small-PROM raw tables and asserted interpretations are separately
+preserved. The programming procedure determines which bit polarity to write
+for the selected device and programmer. D15/D16 are the adopted functional
+EktaSoft 3.7 split; their concatenation matches
+`roms/ekta37.bin` (`fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`). Record
+the exact installed images in each first-article record.
+
+| Ref | Evidence | SHA256 | Provenance |
+| --- | --- | --- | --- |
+| D2 | `ref/physical-proms/validated/d2_037.raw.bin` (raw) | `953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b` | 6 independent captures; [dump record](../ref/physical-proms/validated/d2_037.dump.json) |
+| D2 | `ref/physical-proms/validated/d2_037.asserted.bin` (asserted) | `7a0cdb0129e75571811dd193fd99a749ac22d3bb198edc7237071b82d9d5d6db` | same validated capture set |
+| D6 | `ref/physical-proms/validated/d6_038.raw.bin` (raw) | `c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489` | 3 independent captures; [dump record](../ref/physical-proms/validated/d6_038.dump.json) |
+| D6 | `ref/physical-proms/validated/d6_038.asserted.bin` (asserted) | `15f600669f45b7d4b2786ee0afe392746244e8affb101ea7d29088636a8e1a52` | same validated capture set |
+| D8 | `ref/physical-proms/validated/d8_039.raw.bin` (raw) | `345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc` | 3 independent captures; [dump record](../ref/physical-proms/validated/d8_039.dump.json) |
+| D8 | `ref/physical-proms/validated/d8_039.asserted.bin` (asserted) | `e0f5231c7b24764d729d8d9c397d78a5bf68b899911bd8946be57cd905e72617` | same validated capture set |
+| D94 | `ref/physical-proms/validated/d94_092.raw.bin` (raw) | `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0` | 3 independent captures; [dump record](../ref/physical-proms/validated/d94_092.dump.json) |
+| D94 | `ref/physical-proms/validated/d94_092.asserted.bin` (asserted) | `6e45374f1eadd171637e4d47aa1540bd549173eb49d30260e985120f7f001095` | same validated capture set |
+| D15 | `ref/eprom-images/d15_ekta37_low.bin` | `d6c4ec7418f05e5761ef450e6ee36fb2579d65d9cbf87dce265eaf1c0d077596` | [EPROM split notes](eprom-programming-images.md) |
+| D16 | `ref/eprom-images/d16_ekta37_high.bin` | `35b348ae7c88dc8cb24d1bc9d62a06212fdc2c2f601eddf8e00b233893d92817` | [EPROM split notes](eprom-programming-images.md) |
 
 ## Release holds
 
