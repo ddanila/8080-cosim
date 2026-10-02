@@ -62,6 +62,24 @@ def build() -> tuple[str, str]:
     reports = {name: {"path": p, "sha256": sha(ROOT / p), "status": status(ROOT / p)}
                for name, p in REPORTS}
     bom = bom_counts()
+    modeled_positions = len(json.loads((ROOT / SOURCES[0]).read_text())["chips"])
+    if bom["positions"] != modeled_positions or (
+        bom["populate_now"] + bom["leave_empty"] != bom["positions"]
+    ):
+        raise SystemExit(
+            f"BOM census differs from board model: {bom}, modeled positions={modeled_positions}"
+        )
+    bom_report = (ROOT / "docs/replica-dual-config-bom.md").read_text()
+    summary_labels = {
+        "positions": "Board component positions",
+        "populate_now": "Populate for current functional .009 build",
+        "leave_empty": "Do not populate now (empty/DNP/pending)",
+        "lines": "Unique BOM lines",
+    }
+    for key, label in summary_labels.items():
+        match = re.search(rf"^- {re.escape(label)}: (\d+)$", bom_report, re.M)
+        if not match or int(match.group(1)) != bom[key]:
+            raise SystemExit(f"BOM report summary differs from CSV: {label}")
     bringup = (ROOT / "docs/replica-bringup-verification-points.md").read_text()
     declared = re.search(r"Source board JSON SHA-256: `([0-9a-f]{64})`", bringup)
     bringup_current = bool(declared and declared.group(1) == source[SOURCES[0]])
