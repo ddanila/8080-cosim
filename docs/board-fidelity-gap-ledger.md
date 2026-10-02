@@ -26,7 +26,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Nets modeled: `465`
 - Chip-level fidelity gaps: `63`
 - Source-proved passive refs absent from model: `9`
-- Net-level source-risk gaps: `45`
+- Net-level source-risk gaps: `46`
 - Explicitly dispositioned closed net risks: `14`
 - Documented intentional no-connect pins: `63`
 
@@ -86,7 +86,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 2 | 6 |
 | PROM/decode | 0 | 1 |
-| logic/source | 21 | 28 |
+| logic/source | 21 | 29 |
 | memory/timing | 0 | 2 |
 | placement/value | 40 | 0 |
 | sound/analog | 0 | 2 |
@@ -277,6 +277,7 @@ same fidelity ledger as the chip provenance gaps.
 | `KBD_CONTRDAT` | logic/source | `D26.22, X9.9, A50.1` | Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo s... |
 | `PHI1_D35` | logic/source | `D35.10, W7.2, R37.2` | factory wire А:7 D35 clock-source-side copper island D35.10 reaches the candidate A7B plated through-joint under mastic; the W7 insulated-wire termination re... |
 | `PHI2_D35` | logic/source | `D35.12, W14.2, R36.2` | factory wire А:14 D35 clock-source-side copper island D35.12 reaches the candidate A14B plated through-joint under mastic; the W14 insulated-wire termination... |
+| `R20_RETURN_SOURCE_HOLD` | logic/source | `R20.2` | exact .009 sheet-1 detail PXL_20260718_101801729.jpg plus full-sheet 101754468: R20 far symbol lead descends, crosses D50.5/R29 without a junction, and conti... |
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Exact .009 E3 sheet-2... |
 | `S1_3_BOUNDARY` | logic/source | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not ident... |
 | `SYNC_B` | logic/source | `D57.17` | exact-revision .009 E3 sheet 2 and direct owner continuity 2026-07-21 disprove the older scan chase that joined D57.OUT2/pin17 to both D56 triggers; D57.OUT2... |

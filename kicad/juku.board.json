@@ -19124,7 +19124,7 @@
       ]
     },
     "R20_RETURN_SOURCE_HOLD": {
-      "src": "exact .009 sheet-1 PXL_20260718_101801729.jpg shows R20 lower symbol lead descending to a remote horizontal continuation; its destination is not yet identified securely from the available tile overlap, so the former +5 V assignment is withdrawn",
+      "src": "exact .009 sheet-1 detail PXL_20260718_101801729.jpg plus full-sheet 101754468: R20 far symbol lead descends, crosses D50.5/R29 without a junction, and continues into the lower control-wire bundle; final endpoint unresolved, so former +5 V assignment withdrawn",
       "nodes": [
         [
           "R20",

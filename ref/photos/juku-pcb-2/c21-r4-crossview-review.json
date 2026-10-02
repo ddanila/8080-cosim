@@ -140,11 +140,29 @@
       1850,
       2600
     ],
-    "observation": "A filled junction after R4 feeds D13.5 and the upper plate of C21. The lower plate of C21 enters R20=1,5к in series, then R20 descends to a remote continuation. The prior model incorrectly connected R20 directly to RESIN/+5 V and C21 directly to ground. The far R20 return destination is not yet identified in the available detail overlap.",
+    "observation": "A filled junction after R4 feeds D13.5 and the upper plate of C21. The lower plate of C21 enters R20=1,5к in series. R20 far lead descends through the lower control-wire bundle without a local ground or A/+5 termination; the final endpoint remains unresolved. The prior model incorrectly connected R20 directly to RESIN/+5 V and C21 directly to ground.",
     "model_nets": [
       "RESIN",
       "C21_R20_SERIES",
       "R20_RETURN_SOURCE_HOLD"
-    ]
+    ],
+    "return_trace_review": {
+      "detail_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101801729.jpg",
+      "detail_crop_xyxy_original_pixels": [
+        1400,
+        2250,
+        1800,
+        3750
+      ],
+      "overview_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg",
+      "overview_orientation": "rotate 90 degrees counterclockwise for upright drawing",
+      "overview_crop_xyxy_rotated_pixels": [
+        695,
+        1000,
+        900,
+        1620
+      ],
+      "observation": "R20 far lead descends, jogs right around the D50/R29 height, crosses the D50.5/R29 horizontal conductor without a filled junction, then continues separately into the lower sheet-1 wire bundle. The full-sheet overview confirms this is a drawn continuation rather than an isolated lead. Its far endpoint cannot be assigned securely from these parallel crossings; no local ground or A/+5 symbol terminates this branch."
+    }
   }
 }

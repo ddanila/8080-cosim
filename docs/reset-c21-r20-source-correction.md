@@ -4,7 +4,11 @@ The exact `.009` sheet-1 reset detail in
 `ref/photos/dgsh5-109-009-e3/PXL_20260718_101801729.jpg`, native crop
 `(780,1740)–(1850,2600)`, draws **C21=24 in series with R20=1,5к**. A filled
 junction after R4 feeds D13.5 and one plate of C21. The other C21 plate joins
-R20; R20's far lead descends to a remote continuation. The former model put
+R20; R20's far lead descends through the lower control-wire bundle. In the
+detail photo it crosses the D50.5/R29 line without a filled junction; the
+full-sheet `PXL_20260718_101754468.jpg` view confirms a drawn continuation.
+Its final endpoint remains unresolved, with no local ground or A/+5 symbol
+terminating the branch. The former model put
 R20 directly between RESIN and +5 V and C21 directly between RESIN and ground.
 Those two parallel branches contradicted the exact drawing.
 
