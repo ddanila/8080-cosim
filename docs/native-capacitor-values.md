@@ -71,6 +71,8 @@ sheet numerals without independently proving their capacitance unit.
   sheet 1. Its physical population and pad identity still need inspection.
 - Exact `.009` sheet 3 prints C16=`27` and C19/C20/C22=`22`; its bare
   values follow the native picofarad convention. Installed values need
-  independent measurement or complete body markings.
+  independent measurement or complete body markings. GOST 11076-69 §2
+  requires a unit letter for a coded capacitance mark; the visible `±5`
+  and `±10` tolerance lines on C20/C22 do not supply one.
 - The eleven registered holds are target-revision, obscured-body, or incomplete-marking cases. Values
   from the superseded `.006` RF option are deliberately not copied into them.
