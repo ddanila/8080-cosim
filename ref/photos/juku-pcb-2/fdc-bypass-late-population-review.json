@@ -13,6 +13,8 @@
       "ref": "C9",
       "rotated_crop_xyxy_px": [2650, 300, 3420, 900],
       "factory_between": ["D100", "D98"],
+      "raw_portrait_joint_centers_xy_px": {"upper_in_rotated_view": [2640, 2920], "lower_in_rotated_view": [2350, 2925]},
+      "joint_center_uncertainty_px": 25,
       "reading": "One green two-lead body stands in the narrow D100/D98 gap immediately left of the black cable, at the unique factory C9 position. Both end joints are visible, but their complete copper destinations are not. The earlier overhead view hides this gap behind the cable.",
       "disposition": "later-view body population photo-supported; value, rail identity of each lead, and numbered replica-pad correspondence unresolved"
     },
