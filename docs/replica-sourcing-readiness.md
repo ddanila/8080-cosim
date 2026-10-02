@@ -12,18 +12,18 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 120
+- BOM lines: 121
 - Populate-now component positions: 273
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
-- Mechanical/circuit-review lines: 34
+- Mechanical/circuit-review lines: 35
 - Order posture: do not treat as a complete kit until the gated rows below are closed
 
 ## Action Totals
 
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
-| circuit-review | 22 | 27 |
+| circuit-review | 23 | 27 |
 | leave-empty | 3 | 0 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
@@ -73,6 +73,7 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | C_ELEC | radial electrolytic | 3 | C31, C32, C33 | modern electrolytic matching measured body, lead spacing, value, voltage, and polarity |
 | circuit-review | C_KM | КМ ceramic capacitor | 1 | C20 | Sheet 3 specifies 22 pF nominal; owner angles show bare 22 and ±5% on the body, but the unit is unverified. Confirm capacitance before sourcing. |
 | circuit-review | C_KM | КМ ceramic capacitor | 1 | C22 | Sheet 3 specifies 22 pF nominal; later owner angles show bare 22 and ±10% on the body, but the unit is unverified. The May face reads М75, the negative 75 ppm/°C ceramic temperature-stability group. Confirm capacitance before sourcing. |
+| circuit-review | C_KM | КМ ceramic capacitor | 0 | C4 | Fitted gray C4 beside C73; body value, lower lead net, and exact owner holes require measurement. |
 | circuit-review | C_KM | КМ ceramic capacitor | 9 | C9, C10, C11, C12, C15, C16, C19, C34, C94 | modern ceramic capacitor with matching value/voltage/lead spacing |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | 4 | C38, C42, C46, C50 | Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value. |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | 0 | C51, C52, C53, C70, C71, C72 | Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value. |

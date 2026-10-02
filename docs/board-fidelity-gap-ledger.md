@@ -22,10 +22,10 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `376`
-- Nets modeled: `473`
+- Chips modeled: `377`
+- Nets modeled: `474`
 - Chip-level fidelity gaps: `71`
-- Source-proved passive refs absent from model: `1`
+- Source-proved passive refs absent from model: `0`
 - Net-level source-risk gaps: `55`
 - Explicitly dispositioned closed net risks: `14`
 - Documented intentional no-connect pins: `63`
@@ -45,6 +45,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | exact .009 E3 sheet 2 + assembly/owner photo | 2 |
 | exact .009 E3 sheet 2 + assembly/photo | 6 |
 | exact .009 E3 sheet 2 + owner photo | 2 |
+| exact .009 factory assembly + registered owner photos | 1 |
 | exact .009 sheet + factory assembly + owner photo | 2 |
 | exact .009 sheet + owner continuity | 1 |
 | exact .009 sheet 1 + factory assembly + owner photos | 1 |
@@ -195,7 +196,7 @@ inspect components and endpoints already modeled.
 
 | Ref | Source evidence |
 | --- | --- |
-| `C4` | Assembly `PXL_20260711_114604420.jpg` labels C4 immediately left of the circled C73 trimmer near Z1/X8; the power-corner detail is repeated in `PXL_20260711_... |
+| *None* | - |
 
 ## Documented Intentional No-Connects
 

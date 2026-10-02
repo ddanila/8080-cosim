@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_state": "fitted C4 position and upper C73 node photo-closed; C73 lower-to-Z1 lug photo-closed; C4 lower net and value open",
+  "review_state": "fitted C4 and upper C73 shared node source-modeled; lower net, value, and footprint open",
   "assembly_image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
   "owner_component_images": [
     "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
@@ -31,10 +31,24 @@
   "second_view_cross_check": "Owner photo 200450127 repeats the gray body, its bent upper lead, and the uninterrupted horizontal strip to C73's upper terminal. It does not expose a front route from C4's lower joint.",
   "x8_closeup_native_sites": {
     "image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
-    "crop_xyxy_original_pixels": [1300, 1700, 2000, 2550],
-    "c4_upper_joint_px_approx": [1680, 2185],
-    "c73_upper_joint_px_approx": [1890, 2185],
-    "c4_lower_joint_px_approx": [1660, 2440],
+    "crop_xyxy_original_pixels": [
+      1300,
+      1700,
+      2000,
+      2550
+    ],
+    "c4_upper_joint_px_approx": [
+      1680,
+      2185
+    ],
+    "c73_upper_joint_px_approx": [
+      1890,
+      2185
+    ],
+    "c4_lower_joint_px_approx": [
+      1660,
+      2440
+    ],
     "observation": "The first two joints are joined by a continuous exposed front strip; the C4 lower lead curls into a distinct soldered joint with no visible front departure. The trimmer's other terminal has its own downward strip. These are physical sites, not C73 pin-number assignments.",
     "retired_projection_warning": "The older endpoints.csv C73-1/C73-2 component seeds near y1854 in this image fall above the actual trimmer terminals; their corresponding solder seeds were already marked registration-only and do not identify C73 holes. Do not use those numbered seeds to assign C4's shared node."
   },
@@ -42,16 +56,39 @@
     "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg",
     "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
     "registration_basis": "The three installed can pairs in this component image have approximate x 770/1370 and y 1950/2130/2315; their reflected solder pairs have x 3375/2750 and y 1870/2050/2240. This yields a local search map x_s about 4175-1.04*x_c, y_s about y_c-80, with lens/perspective uncertainty. It is not a per-hole fit.",
-    "solder_crop_xyxy_original_pixels": [1900, 1650, 2800, 2550],
-    "upper_candidate_joints_px_approx": [[2235, 2120], [2450, 2120]],
-    "lower_candidate_joints_px_approx": [[2235, 2310], [2450, 2370]],
+    "solder_crop_xyxy_original_pixels": [
+      1900,
+      1650,
+      2800,
+      2550
+    ],
+    "upper_candidate_joints_px_approx": [
+      [
+        2235,
+        2120
+      ],
+      [
+        2450,
+        2120
+      ]
+    ],
+    "lower_candidate_joints_px_approx": [
+      [
+        2235,
+        2310
+      ],
+      [
+        2450,
+        2370
+      ]
+    ],
     "observation": "Native crop (2050,1950)-(2620,2480) resolves the upper large joint near (2235,2120) and small joint near (2450,2120) on one narrow B.Cu trace. A separate lower large joint near (2235,2310) reaches a small joint near (2450,2370) by another narrow B.Cu trace with a downward turn at its right end. The uninterrupted wide horizontal conductor between the two pairs has visible brown clearance to both narrow traces in this crop; neither pair is locally shorted to that wide conductor on B.Cu. The upper pair is consistent with the independently photo-proved C73-upper/C4-upper front strip. The transformed C4 lower search point is near the lower small feature, and the C73 lower search area may include the lower large feature.",
     "fit_check": "Using x_s=4177-1.042*x_c and y_s=y_c-80 from the three can pairs, photographed C4 upper (1680,2185) predicts (2427,2105) versus the upper small solder feature about (2450,2120); C73 upper (1890,2185) predicts (2208,2105) versus its upper large feature about (2235,2120). C4 lower (1660,2440) predicts (2448,2360) versus the lower small feature about (2450,2370). The lower large solder feature (2235,2310) back-projects near component (1864,2390), under the white C73 body/exit region where its plated hole is not directly visible. These residuals support searching that pair, not a certified hole match.",
     "upper_pair_refit_check": "If the two directly visible upper front joints are assigned to the two upper solder features, their x-only local reflection is x_s≈4170−1.024*x_c. Taking their y offset as −65 px and the three-can row scale as approximately one-to-one predicts the C4 lower front joint (1660,2440) near solder (2470,2375), about 21 px from the lower small feature (2450,2370). The lower large feature (2235,2310) back-projects near front (1889,2375), under the C73 body. Both are plausible search locations, but the 21 px residual is larger than a unique-hole match and the C73 lower hole is hidden. This refit does not promote the lower pair or prove C4 parallel to C73.",
-    "limit": "Only the upper pair is cross-checked by the known component-side shared strip. The lower two solder features have not been matched one-to-one to physical C4/C73 terminal holes; nearby can, crystal, and trimmer joints complicate identification. This is a candidate parallel-C4/C73 path, not a proved electrical net or permission to add C4 to the model.",
+    "limit": "Only the upper pair is cross-checked by the known component-side shared strip. The lower two solder features have not been matched one-to-one to physical C4/C73 terminal holes; nearby can, crystal, and trimmer joints complicate identification. This is a candidate parallel-C4/C73 path, not a proved lower electrical net or permission to assign C4.2 to C73.1.",
     "next_inspection": "Power off, meter C4 lower directly to C73 lower while viewing both solder features; also compare each to Z1.2, D40.2, and D59.2/.3 to assign the two oscillator nodes."
   },
-  "decision": "Treat C4's fitted position and upper-to-C73-upper physical node as photo-closed. The distinct C73 lower front trace is independently photo-closed to Z1's lower right lug in two owner views. Together with the exact sheet-2 series Z1-C73 topology, this makes the shared C4-upper/C73-upper strip the opposite, likely OSC-side terminal; this is a source-topology inference, not measured D40/D59 continuity or a numbered C73/Z1 pin registration. Keep C4's capacitance/body code, its lower electrical net, and any connection to C73's lower terminal unassigned. Do not infer a parallel C4/C73 connection without the second-node test.",
+  "decision": "C4 is now source-modeled as a fitted, placement-pending capacitor of unknown value. C4.1 joins C73.2/OSC: owner front copper proves the upper-to-upper join, and exact sheet-2 Z1-C73 series topology identifies the upper C73 terminal as the opposite, OSC side by inference. C4.2 is a singleton C4_RETURN_HOLD; the lower solder-pair candidate does not prove its net or a parallel C4/C73 connection. Owner continuity to D40/D59 and native C73/Z1 pad numbering remain to be measured.",
   "next_inspection": "Power off: confirm C73 lower-to-Z1 lower-right lug and C4 upper-to-C73 upper continuity, then measure the shared upper node to D40.2/D59.2/.3/OSC and the lower node to Z1.2/XTAL_TRIM. Meter C4 lower lead against C73 lower terminal, known +5 V, and ground. Read the gray body under magnification before choosing a value or footprint.",
   "c73_lower_to_z1_photo_route": "Owner original PXL_20260710_200450127.jpg crop (1650,2050)-(2900,3072) and independent overlap PXL_20260710_200439607.jpg crop (1350,2350)-(2700,3072) both expose one uninterrupted tinned F.Cu path from the white C73 trimmer's lower terminal downward, east below the metal-can Z1, then north into Z1's lower right solder lug. It is separate from the upper C73/C4 strip. The lug's package pin number and remote D40/D59 continuation are not proved by these photos.",
   "lower_pair_recheck_after_z1_route": "Native solder crop PXL_20260710_200537608.jpg (1950,1900)-(2750,2600) still shows the lower large/small features on one isolated narrow B.Cu trace. The newly photo-closed C73-lower-to-Z1 front route does not identify which solder feature is C73's lower through-hole: the trimmer body hides the front plated landing, the lower-large projection retains a roughly 30-pixel row residual relative to the upper C73 pair, and no Z1 lug-to-C73 same-hole registration is available in this crop. Therefore the lower B.Cu pair cannot yet prove C4 lower joins C73 lower; meter that pair directly.",
@@ -62,5 +99,12 @@
   "may_cross_date_review": "May 19 close-ups 202054713 and 202052986 show the same gray axial C4 beside the white C73 trimmer from a rotated viewing angle. The exposed C4 lead at the right end of the May image joins a continuous front-copper strip to one visible C73 terminal; this is the same already-registered shared node seen at the upper side in the July orientation, not a second C4-to-C73 connection. The opposite C4 lead curls into a separate joint with no readable front continuation. Enlarged rotated May lettering is partial and does not establish a value or unit.",
   "c4_may_body_marking_limit": "Native May photo PXL_20260519_202052986.jpg crop (2200,800)-(2470,1290), rotated 90 degrees for reading, shows several dark strokes on the gray C4 body, but the white C73 trimmer covers the middle/lower printed line and the remaining strokes do not form an unambiguous value or unit. The neighboring May angle PXL_20260519_202054713.jpg preserves the same occlusion. A new oblique close-up of the exposed reverse side, or an isolated capacitance measurement, is needed before assigning C4's value; image enlargement alone is insufficient.",
   "c73_may_side_marking_review": "Original-resolution May 19 photo PXL_20260519_202052986.jpg, approximately (1880,850)-(2500,1280), shows a clear '8811' on the cylindrical side of the fitted C73 trimmer. Other side characters are partly occluded by curvature and perspective. '8811' is recorded as a body marking only: it is not a readable capacitance range and does not establish the exact .009 value. The July top view PXL_20260710_200450127.jpg shows only the adjustment screw on a blank white face.",
-  "native_pair_spacing_recheck": "Native side-by-side crops 200450127 (1300,1700)-(2050,2700) and 200537608 (1950,1850)-(2800,2650) show the C4 front upper/lower joints about 255 px apart vertically, versus about 250 px between the candidate small solder features (2450,2120)/(2450,2370). This makes the lower small feature a stronger C4-hole candidate than a row selected only by proximity. The reflected x coordinate still misses by about 20 px, and the C73 lower plated landing is hidden under the white trimmer body. Therefore the photographed lower B.Cu pair remains a conditional C4/C73 parallel-path candidate, requiring direct continuity before model promotion."
+  "native_pair_spacing_recheck": "Native side-by-side crops 200450127 (1300,1700)-(2050,2700) and 200537608 (1950,1850)-(2800,2650) show the C4 front upper/lower joints about 255 px apart vertically, versus about 250 px between the candidate small solder features (2450,2120)/(2450,2370). This makes the lower small feature a stronger C4-hole candidate than a row selected only by proximity. The reflected x coordinate still misses by about 20 px, and the C73 lower plated landing is hidden under the white trimmer body. Therefore the photographed lower B.Cu pair remains a conditional C4/C73 parallel-path candidate, requiring direct continuity before model promotion.",
+  "model_disposition": {
+    "chip": "kicad/juku.board.json C4",
+    "proved_physical_join": "C4 upper to C73 upper on F.Cu",
+    "inferred_source_net": "C4.1 to C73.2/OSC from exact Z1-C73 series orientation",
+    "unresolved": "C4.2 remote net, body value, exact hole registration, footprint",
+    "guard": "Do not merge C4_RETURN_HOLD with XTAL_TRIM or choose a value from the partial body code."
+  }
 }

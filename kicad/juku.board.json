@@ -7027,6 +7027,25 @@
         "refdes": "Assembly R28..R21 left-to-right bank above D8; R28 position fixed by factory order and July/May owner photos",
         "pins": "Exact sheet 1 draws eight 1k branches from D8 output pins 1-7,9 to supply A. The source labels the bank collectively R21...R28 but gives no per-ref output assignment. Owner solder photo proves the eight upper leads share a bar; its +5V identity is not independently measured. Individual lower joins remain unresolved; see r21-r28-bank-pin-order-review.json."
       }
+    },
+    {
+      "ref": "C4",
+      "type": "C_KM",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "value": "",
+      "pcb_placement_pending": true,
+      "procurement": {
+        "action": "circuit-review",
+        "note": "Fitted gray C4 beside C73; body value, lower lead net, and exact owner holes require measurement."
+      },
+      "prov": {
+        "type": "exact .009 factory assembly + registered owner photos",
+        "refdes": "Assembly 114604420 labels C4 left of C73; July and May owner views show fitted gray body at that position",
+        "pins": "July owner F.Cu joins C4 upper lead to C73 upper terminal. Independent views show C73 lower terminal reaching Z1; exact sheet-2 Z1-C73 series topology makes the shared upper terminal the inferred OSC side. C4 lower lead has no proved remote net. See c4-c73-shared-node-review.json."
+      }
     }
   ],
   "nets": {
@@ -9375,9 +9394,13 @@
         [
           "C73",
           "2"
+        ],
+        [
+          "C4",
+          "1"
         ]
       ],
-      "src": "scan sheet-2: D59.2/D59.3 oscillator node, through C73+Z1 series branch to OSC_FB"
+      "src": "scan sheet-2: D59.2/D59.3 oscillator node, through C73+Z1 series branch to OSC_FB; July owner front copper visibly joins fitted C4 upper lead to C73 upper lead, opposite the photo-traced C73-to-Z1 terminal; C4-to-OSC follows exact sheet-2 Z1-C73 topology conditionally"
     },
     "OSC_FB": {
       "src": "scan sheet-2: D59.9 input feedback node joins R31.1, R32.1, and Z1.1",
@@ -19384,6 +19407,15 @@
       "nodes": [
         [
           "R28",
+          "2"
+        ]
+      ]
+    },
+    "C4_RETURN_HOLD": {
+      "src": "C4 is factory-labelled and fitted beside C73. July owner views prove only its upper join to C73 upper; lower physical lead has no secure remote net or value, and possible lower solder-pair match is not same-hole registered. Do not assume C4 parallels C73.",
+      "nodes": [
+        [
+          "C4",
           "2"
         ]
       ]

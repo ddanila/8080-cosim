@@ -191,8 +191,6 @@ def source_proved_omissions(board: dict) -> list[tuple[str, str]]:
                 continue
             seen.add(ref)
             rows.append((ref, cells[1]))
-    if not rows:
-        raise SystemExit("passive omission census has no proved rows")
     return rows
 
 
@@ -370,6 +368,8 @@ def main() -> int:
     )
     for ref, evidence in sorted(omission_rows, key=lambda item: (item[0][0], int(item[0][1:]))):
         lines.append(table_row([f"`{ref}`", short(evidence)]))
+    if not omission_rows:
+        lines.append("| *None* | - |")
 
     pin_gap_rows = [
         row
