@@ -20,7 +20,12 @@ and the exact `.009` assembly identify the rows as R4 `100`, R2 `20K`, and
 VD1, top to bottom. C1 positive, R4 left, R2 left, and VD1 left therefore
 share one physical copper branch, matching their `RES_RC` source grouping.
 This registration does not independently establish the resistor pad numbers or
-VD1 polarity. R3 is the vertical red body partly hidden behind C1 in the
+VD1 polarity. The opposite right contacts are separately visible in the solder
+photo: R4 near `(3115,1398)` departs southwest on a thin trace, with a
+clear gap before the broad strip joining R2 near `(3115,1460)` and VD1 near
+`(3115,1520)`. This reproduces the drawing's local R4 versus R2/VD1
+separation. The R4 trace destination and the shared R2/VD1 rail polarity
+remain unverified. R3 is the vertical red body partly hidden behind C1 in the
 component photo, at the position labelled R3 by the assembly drawing. The
 May photo `PXL_20260519_201940304.jpg` independently shows `100` on
 that body, agreeing with exact sheet 1. Its actual lead holes cannot be
