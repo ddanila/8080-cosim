@@ -87,7 +87,7 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | R_AXIAL 330 | axial resistor 330 | 0 | R35 | Source 330 ohms and owner 330R body agree; calibrated owner pad geometry is pending. |
 | circuit-review | R_AXIAL 360 | axial resistor 360 | 0 | R36, R37 | Exact .009 360-ohm phase pull-up; owner body begins 360, but pad nets and isolated value need measurement. |
 | circuit-review | R_AXIAL 470 | axial resistor 470 | 1 | R104 | Exact .009 R104 470-ohm D12.5 open-collector pull-up; owner photos close both local D12 links and locate the footprint; installed resistance, known +5 V rail, and remote X2 continuity pending. |
-| circuit-review | R_AXIAL 620 | axial resistor 620 | 1 | R33 | Source and apparent owner marking agree on 620 ohms, but native photos separate the D34.2/R33-left upper joint from the D34.6 lower joint. Meter R33 and inspect the bare C5 site before fitting the pulse shaper. |
+| circuit-review | R_AXIAL 620 | axial resistor 620 | 1 | R33 | Exact source and two independent К62 owner marking reads agree on 620 ohms, but native photos separate the D34.2/R33-left upper joint from the D34.6 lower joint. Meter R33 and inspect the bare C5 site before fitting the pulse shaper. |
 | circuit-review | R_AXIAL 910 | axial resistor 910 | 0 | R106 | Exact source prints 910 ohms; owner body in this position reads 510R on two dates. Measure before physical-value adoption. |
 | circuit-review | UP2 | К170УП2 | 1 | D104 | RS-232/line-receiver substitute required; verify +/-12 V interface |
 | mechanical-review | DISPLAY_CONN | bracket display connector X6; exact mechanical fit pending | 1 | X6 | select exact substitute after circuit review |

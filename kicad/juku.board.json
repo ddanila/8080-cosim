@@ -4717,12 +4717,12 @@
       "prov": {
         "type": "exact .009 E3 sheet 2",
         "refdes": "PXL_20260718_101911242.jpg prints R33=620 ohm in the D34 counter-load pulse shaper",
-        "pins": "exact .009 detail draws R33 from the C5.2/D34.2 RC node to ground; May PXL_20260519_202100511.jpg reads apparent К62 on the fitted owner body. Native July crops separate the upper R33-left/D34.2 gap joint from the lower D34.6 gap joint on both faces, retracting the alleged bridge. C5 pad identity, population history, and R33 right-hand rail remain open (d34-pin2-pin6-c5-bridge-review.json)"
+        "pins": "exact .009 detail draws R33 from the C5.2/D34.2 RC node to ground; May PXL_20260519_202100511.jpg and July PXL_20260710_200418174.jpg independently read К62 on the fitted owner body. Native July crops separate the upper R33-left/D34.2 gap joint from the lower D34.6 gap joint on both faces, retracting the alleged bridge. C5 pad identity, population history, and R33 right-hand rail remain open (d34-pin2-pin6-c5-bridge-review.json)"
       },
       "value": "620",
       "procurement": {
         "action": "circuit-review",
-        "note": "Source and apparent owner marking agree on 620 ohms, but native photos separate the D34.2/R33-left upper joint from the D34.6 lower joint. Meter R33 and inspect the bare C5 site before fitting the pulse shaper."
+        "note": "Exact source and two independent К62 owner marking reads agree on 620 ohms, but native photos separate the D34.2/R33-left upper joint from the D34.6 lower joint. Meter R33 and inspect the bare C5 site before fitting the pulse shaper."
       }
     },
     {

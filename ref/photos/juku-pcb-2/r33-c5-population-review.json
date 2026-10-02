@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_state": "R33 position and apparent К62 body photo-closed; no separate C5 body in May/July views; alleged D34.2/D34.6 photo bridge retracted",
+  "review_state": "R33 position and К62 body marking closed in independent May/July photos; no separate C5 body in May/July views; alleged D34.2/D34.6 photo bridge retracted",
   "sources": [
     {
       "path": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114611058.jpg",
@@ -44,10 +44,16 @@
     }
   ],
   "assembly_observation": "The .009 assembly labels horizontal R33 above D39 and D34, and vertical C5 between those package outlines at package height; C82 is the separate neighboring vertical outline.",
-  "owner_observation": "Two overlapping July owner photos and one May oblique close-up show a horizontal red axial body at the R33 assembly position above D39/D34. Its rotated marking is partial and cannot establish an isolated resistance. The inter-package strip at the C5 drawn height shows exposed copper and individual joints but no separate fitted capacitor body. The yellow molded body higher above D34 is at a different height and cannot be used as C5.",
+  "owner_observation": "Two overlapping July owner photos and one May oblique close-up show a horizontal red axial body at the R33 assembly position above D39/D34. Both May and July native crops read its К62 marking, but photographs cannot establish an isolated resistance. The inter-package strip at the C5 drawn height shows exposed copper and individual joints but no separate fitted capacitor body. The yellow molded body higher above D34 is at a different height and cannot be used as C5.",
   "source_boundary": "Exact .009 sheet 2 PXL_20260718_101911242.jpg prints R33=620 ohm and C5=560 (nominal pF by native bare-value convention) in the D34 pulse shaper. These source values do not prove what is fitted on the owner board.",
-  "decision": "Retain R33=620 ohm and C5=560 pF as source circuit values. Treat the R33-position body as visibly fitted with a May body marking photo-consistent with 620 ohms but without isolated resistance measurement. Keep C5's owner population history and through-hole pair open; no separate body is visible at the factory position in the two July views or the May close-up. Do not infer factory DNP or assign the higher yellow body to C5.",
+  "decision": "Retain R33=620 ohm and C5=560 pF as source circuit values. Treat the R33-position body as visibly fitted with independent May/July К62 marking reads consistent with 620 ohms, but without isolated resistance measurement. Keep C5's owner population history and through-hole pair open; no separate body is visible at the factory position in the two July views or the May close-up. Do not infer factory DNP or assign the higher yellow body to C5.",
   "next_inspection": "Power off: meter R33-left/front gap joint (3098,2345)/solder (1110,2007) to D34.6 and D34.2 separately, and meter R33 right to ground/+5 V/D34.1 separately. Inspect the bare C5 site for cut, removal, or jumper; see r33-d34-pin6-source-conflict.json.",
+  "july_value_cross_check": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+    "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+    "body_bbox_px": [2840, 2020, 3310, 2390],
+    "observation": "Native July crop reads К62 on the factory-position R33 body, independently confirming the rotated May read and exact .009 620-ohm nominal; isolated resistance remains unmeasured."
+  },
   "may_value_cross_check": "In the independent May 19 oblique close-up, the R33-position red body rotated 180 degrees presents a marking that reads К62. Contemporary resistor notation uses K as the decimal marker in kilohms, so К62 denotes 0.62 kΩ = 620 ohms. The 1989 Soviet parts catalog also lists К62 (620 Ом). This visually corroborates the exact .009 R33=620 drawing, but no isolated resistance has been measured.",
   "marking_reference": "https://djvu.online/file/7ommtfONcYFYr (1989 Soviet radio-parts catalog: К62 = 620 Ом)",
   "may_gap_cross_date": {

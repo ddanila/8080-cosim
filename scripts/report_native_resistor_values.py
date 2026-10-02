@@ -88,8 +88,8 @@ for group in evidence["groups"]:
         expected[refdes] = value
         source_sheet[refdes] = group["source_sheet"]
         group_name[refdes] = group["name"]
-if len(expected) != 25:
-    fail(f"expected 25 promoted values, found {len(expected)}")
+if len(expected) != 26:
+    fail(f"expected 26 promoted values, found {len(expected)}")
 
 board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
 chips = {chip["ref"]: chip for chip in board["chips"]}
@@ -170,6 +170,9 @@ lines.extend(
         "  promoting the target part's still-unresolved pin-2 destination.",
         "- R78's exact-sheet connectivity, factory pair identity, registered owner",
         "  joints, and directly readable `10K` marking close its value and placement.",
+        "- Exact `.009` sheet 2 prints R33=620 Ω, and independent May and July",
+        "  owner views read `К62` on its fitted body. Isolated resistance and",
+        "  the hidden R33 right-hand rail still need measurement.",
         "- R48's `8,2 Ом` label is independently corroborated by the traced beeper",
         "  boundary. No modeled axial resistor remains unvalued.",
         "",

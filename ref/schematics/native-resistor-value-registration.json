@@ -55,9 +55,36 @@
       "sheet": ".009 owner board May",
       "regions_px": {"r65_body": [3000, 790, 60, 230], "r67_body": [3260, 730, 150, 330], "r66_body": [3450, 790, 80, 300]},
       "observation": "An independent angle again shows 1K0 on R66 beside glass VD3. Rotating the R65 crop 270 degrees reveals the same К43 marking, despite a reflection across the body. This corroborates the fitted 430-ohm value but is not an isolated resistance measurement."
+    },
+    {
+      "path": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101911242.jpg",
+      "sha256": "d30b527eeef67ebc587014909b6f8ac347174f594c2bde236a7b3fcf92f0e1b8",
+      "sheet": 2,
+      "revision": ".009 exact",
+      "observation": "The D34 counter-load pulse shaper prints R33=620 ohms."
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "sheet": ".009 owner board July",
+      "regions_px": {"r33_body": [2840, 2020, 470, 370]},
+      "observation": "Native July crop directly reads К62 on the factory-position R33 body, independently of the May oblique view; this is a marking read, not an isolated resistance measurement."
+    },
+    {
+      "path": "ref/photos/juku-pcb-2/PXL_20260519_202100511.jpg",
+      "sha256": "c5c3c9ae8dd778f4a1766e2b736842427e8f75d30c644a837353447f2dcdfb49",
+      "sheet": ".009 owner board May",
+      "regions_px": {"r33_body": [0, 1900, 1250, 950]},
+      "observation": "Rotating the May oblique view 180 degrees independently reveals the К62 marking on the same R33-position body."
     }
   ],
   "groups": [
+    {
+      "name": "sheet-2 D34 counter-load pulse shaper",
+      "source_sheet": 2,
+      "refs": {"R33": "620"},
+      "observation": "Exact .009 sheet 2 prints R33=620 ohms; independent May and July target photos read К62 on its fitted body. Physical resistance and the hidden right-hand rail remain measurement holds."
+    },
     {
       "name": "sheet-1 decode open-collector pullups",
       "source_sheet": 1,
