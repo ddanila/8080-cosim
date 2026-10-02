@@ -26,10 +26,20 @@ after any source or report change; use `--check` to detect a stale tracked packe
 | [BOM](replica-dual-config-bom.md) | NO STATUS FIELD | `4db20c6612df2f40f9601f94fe03297535be9493f44626a773633443f60d050f` |
 | [Sourcing](replica-sourcing-readiness.md) | PARTIAL / PROGRAMMING AND REVIEW BLOCKED | `d96ee48504e6ff2b2160bc72ad325afd62337bd0c39ee2943600b1b6c032fe4b` |
 | [ERC and parity](main-board-erc-parity.md) | DESIGN HOLD | `ab316a921c35c8300c56de9b7e76344c7f47d6d43d40a8640788669e8b7f09da` |
+| [PPI orientation](ppi-orientation-audit.md) | HOLD | `e3e22d3e94cbbf2bf4c75f610338b5631312d8634abd5d00512db0528bd28816` |
+| [X8 electrolytic geometry](x8-electrolytic-footprint-audit.md) | HOLD | `afbb3c4431913177cb430fb68711001604b7fc8179793b5a8c8d93ac4fa8ba9a` |
+| [Factory wire construction](factory-wire-route-fidelity.md) | FACTORY WIRE LANDING EVIDENCE HOLD | `43d4df115a36177b1bfd175afbbb69d7bb3e09aba558d3b8cc96b88abafc8ee4` |
 | [DRC disposition](replica-fab-drc-disposition.md) | REVIEW REQUIRED | `5ba24f33db02dd84cd0214a103aa174969244d9ee380409ecc2bccae64c1a331` |
+| [Power trace](replica-power-trace-readiness.md) | NOT READY | `69d0d9265a712e2cc0280ef337b9a67043d5b8bfb067289e75923c0c059cc2c1` |
+| [Package geometry](replica-package-geometry-readiness.md) | READY | `5dc3277b3ea24511eabebc5a676bc235bf4d01198fc12e24b07d8d7503449aba` |
 | [Bring-up coverage](replica-bringup-verification-points.md) | ENDPOINT COVERAGE FAILED / RISKS UNRESOLVED | `13c0a06a002981f838314fd3d1f8a2789079671e51d6c6f9620b188d3447bb4f` |
+| Order readiness | MISSING | - |
+| [External Gerber review](../fab/gerbers/external-gerber-review.md) | NOT READY | `2d8795e43d05532f38807e8fa8a8fe244f1d903480fdfac2ee3fe36c73aeb735` |
+| [Review waivers](../fab/gerbers/review-waivers.md) | NOT ACCEPTED | `5d930e4c1af8cbce1dd6b6292d94029cbd16537f454c7e6f277b230431fbf47b` |
+| [Fabrication inventory](../fab/gerbers/fab-readiness.md) | NOT READY | `3b0d9142b8db01051f2b66c535c063d3439ce4dbfbeb08fed82b88056b035021` |
 | [Manufacturing](replica-manufacturing-readiness.md) | DESIGN HOLD / PACKAGE REGENERATION REQUIRED | `f384cf55f43f55a1547a7e372d210e15476c99c50bc1d14d71115272fd1d6033` |
 | [Upload procedure](replica-order-upload-runbook.md) | PACKAGE INVALID | `dd56728932a724e32d8cf1863737e132b98e7f3d9680b7def357aac9369722f0` |
+| [Order evidence](replica-order-evidence-template.md) | TEMPLATE INVALID | `e42749037b3c621c4fc97634e03548ae8afa8054bc3a159955711740fd950296` |
 | [First article](replica-first-article-record.md) | TEMPLATE / NO PHYSICAL UNIT AUTHORIZED | `fa41b7bee490ebbf3f785bfa4ba3d65714298a89888c471b660bee7c74686b75` |
 
 ## BOM snapshot
@@ -42,9 +52,22 @@ after any source or report change; use `--check` to detect a stale tracked packe
 
 ## Release holds
 
-- MAIN-P0 owner continuity and board-fidelity gaps remain open.
-- routed-board ERC/parity, DRC, and bring-up coverage remain on hold.
-- sourcing and physical acceptance are not signed off.
+- 32 unresolved singleton endpoints require evidence-backed disposition.
+- Sourcing: PARTIAL / PROGRAMMING AND REVIEW BLOCKED (requires SOURCING READY).
+- ERC and parity: DESIGN HOLD (requires READY).
+- PPI orientation: HOLD (requires READY).
+- X8 electrolytic geometry: HOLD (requires READY).
+- Factory wire construction: FACTORY WIRE LANDING EVIDENCE HOLD (requires FACTORY WIRE CONSTRUCTION PRESERVED).
+- DRC disposition: REVIEW REQUIRED (requires READY).
+- Power trace: NOT READY (requires READY).
+- Bring-up coverage: ENDPOINT COVERAGE FAILED / RISKS UNRESOLVED (requires DESIGN RELEASE RISKS CLOSED).
+- Order readiness: MISSING (requires RELEASED FOR ORDER).
+- External Gerber review: NOT READY (requires READY).
+- Review waivers: NOT ACCEPTED (requires ACCEPTED).
+- Manufacturing: DESIGN HOLD / PACKAGE REGENERATION REQUIRED (requires RELEASED FOR UPLOAD).
+- Upload procedure: PACKAGE INVALID (requires PACKAGE VERIFIED / DESIGN RELEASE SEPARATE).
+- Order evidence: TEMPLATE INVALID (requires READY FOR RELEASED ORDER RECORD).
+- fabrication-file inventory gate has not passed.
 - tracked manufacturing report does not identify the current routed PCB SHA256.
 - current Gerber/drill upload ZIP is absent.
 
