@@ -27,6 +27,8 @@ def readme_content(manifest: dict) -> bytes:
 
 def members(manifest: dict) -> list[str]:
     paths = set(packet.SOURCES)
+    paths.update(path for path, digest in manifest["supporting_files_sha256"].items()
+                 if digest)
     paths.update(entry["path"] for entry in manifest["reports"].values()
                  if entry["sha256"])
     paths.update({

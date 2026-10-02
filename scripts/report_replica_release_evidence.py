@@ -22,6 +22,13 @@ SOURCES = [
     "kicad/juku_routed.kicad_pcb",
     "kicad/juku_routed_candidate.kicad_pcb",
 ]
+SUPPORT_FILES = [
+    "docs/main-board-unresolved-endpoints.csv",
+    "docs/ppi-physical-pin-mapping.json",
+    "fab/gerbers/juku_routed-drc.json",
+    "fab/audit/main-board-erc.json",
+    "fab/audit/main-board-parity-drc.json",
+]
 REPORTS = [
     ("Fidelity", "docs/board-fidelity-gap-ledger.md"),
     ("Owner checks", "docs/owner-measurement-shortlist.md"),
@@ -153,6 +160,8 @@ def programming_evidence() -> dict[str, dict]:
 
 def build() -> tuple[str, str]:
     source = {p: sha(ROOT / p) for p in SOURCES}
+    support = {p: sha(ROOT / p) if (ROOT / p).is_file() else None
+               for p in SUPPORT_FILES}
     reports = {name: {"path": p,
                       "sha256": sha(ROOT / p) if (ROOT / p).is_file() else None,
                       "status": status(ROOT / p)}
@@ -197,6 +206,12 @@ def build() -> tuple[str, str]:
                     if reports[name]["status"] != expected]
     with (ROOT / "docs/main-board-unresolved-endpoints.csv").open(newline="") as f:
         unresolved = list(csv.DictReader(f))
+    drc_raw = json.loads((ROOT / "fab/gerbers/juku_routed-drc.json").read_text())
+    drc_report = (ROOT / "docs/replica-fab-drc-disposition.md").read_text()
+    drc_count = len(drc_raw.get("unconnected_items", []))
+    drc_rendered = re.search(r"^\| `unconnected_items` \| (\d+) \|", drc_report, re.M)
+    if not drc_rendered or int(drc_rendered.group(1)) != drc_count:
+        raise SystemExit("DRC disposition unconnected count differs from raw DRC JSON")
     if unresolved:
         hold_reasons.insert(0, f"{len(unresolved)} unresolved singleton endpoints require evidence-backed disposition")
     inventory = (ROOT / "fab/gerbers/fab-readiness.md").read_text()
@@ -217,6 +232,7 @@ def build() -> tuple[str, str]:
         "schema_version": 1,
         "decision": decision,
         "sources_sha256": source,
+        "supporting_files_sha256": support,
         "bom": bom,
         "programming_evidence": programs,
         "eprom_source_rom": {"path": "roms/ekta37.bin", "sha256": sha(ROOT / "roms/ekta37.bin")},
@@ -242,6 +258,11 @@ def build() -> tuple[str, str]:
         "| File | SHA256 |", "| --- | --- |",
     ]
     lines += [f"| `{p}` | `{digest}` |" for p, digest in source.items()]
+    lines += ["", "## Machine-readable supporting evidence", "",
+              "| File | SHA256 |", "| --- | --- |"]
+    lines += [f"| `{p}` | {display_hash(digest)} |" for p, digest in support.items()]
+    lines += ["", f"The raw routed DRC lists {drc_count} unconnected items, matching the",
+              "tracked DRC disposition count."]
     lines += ["", "## Evidence index", "", "| Evidence | Status in report | SHA256 |",
               "| --- | --- | --- |"]
     lines += [f"| {display_report_link(name, p, bool(entry['sha256']))} | {entry['status']} | "

@@ -17,6 +17,19 @@ after any source or report change; use `--check` to detect a stale tracked packe
 | `kicad/juku_routed.kicad_pcb` | `f22f7ba849a6088d7b41e8f2ada8153cda9226c8848bec00128044177643e26a` |
 | `kicad/juku_routed_candidate.kicad_pcb` | `d9b6da67c37985697403f6896b91256226ba4e8678e4f07b0392e194c642d8f9` |
 
+## Machine-readable supporting evidence
+
+| File | SHA256 |
+| --- | --- |
+| `docs/main-board-unresolved-endpoints.csv` | `8048d1afc5e01e862a46f435110b6f1330318ada8ffa20ce22c06e2d4cff8f56` |
+| `docs/ppi-physical-pin-mapping.json` | `68e4f7b0c27553a0575ce62aab2470aef26618ff797dc69c0f6d74e8e765c08f` |
+| `fab/gerbers/juku_routed-drc.json` | `0be7d5fc7ce83a3e4cbaab80b172fd5d51c4e43a1cd79d685d533306fa149cd8` |
+| `fab/audit/main-board-erc.json` | `1f5d68e0112f50cc3b72f5c465088c251d3a607bb86941850154135aa9fa525e` |
+| `fab/audit/main-board-parity-drc.json` | `c6152dd81014728e21baee7ad017102b8e5841aa138919d05cee1b9c04b02751` |
+
+The raw routed DRC lists 54 unconnected items, matching the
+tracked DRC disposition count.
+
 ## Evidence index
 
 | Evidence | Status in report | SHA256 |
