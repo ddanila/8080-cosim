@@ -82,6 +82,19 @@ Implication:
 - RAS/CAS/refresh and RF/video adjustment data still need to come from another
   adjustment document in the Baltijets set, not this parts-list PDF.
 
+### Passive-designator search boundary (2026-10-02)
+
+Visually checked all eight pages of `006 Parts list.pdf` and pages 18–22 of
+`010 Parts list.pdf` for a `.009` processor-board reference-designator list.
+Doc 006 is an E5104 system procurement/kit list (`ДГШ3.031.011ВП`), with
+component types and destination assemblies but no per-board C/R designators.
+Doc 010 pages 18–19 are group lists by component type; pages 20–22 are another
+group kit list that names `.009` as a destination for IC types. These pages
+do not assign C85 to the unlabeled D42/D43 two-hole site or map individual
+R21–R28 resistors to D8 outputs. The `.009` schematic/element list and board
+photos remain the relevant sources for those mappings; neither factory packet
+is a substitute for a physical continuity check at the C85 candidate site.
+
 ## Doc 003 adjustment-instructions pass
 
 `003 Adjustment instructions.pdf` is the expected E5104 adjustment/check packet
