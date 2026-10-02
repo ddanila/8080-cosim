@@ -22,11 +22,11 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 ## Summary
 
 - Board JSON: `kicad/juku.board.json`
-- Chips modeled: `368`
-- Nets modeled: `465`
-- Chip-level fidelity gaps: `63`
-- Source-proved passive refs absent from model: `9`
-- Net-level source-risk gaps: `46`
+- Chips modeled: `376`
+- Nets modeled: `473`
+- Chip-level fidelity gaps: `71`
+- Source-proved passive refs absent from model: `1`
+- Net-level source-risk gaps: `55`
 - Explicitly dispositioned closed net risks: `14`
 - Documented intentional no-connect pins: `63`
 
@@ -39,6 +39,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | exact .009 E3 sheet 1 + assembly + registered two-face owner photos | 1 |
 | exact .009 E3 sheet 1 + assembly/owner photo | 3 |
 | exact .009 E3 sheet 1 + assembly/photo | 3 |
+| exact .009 E3 sheet 1 + factory assembly + owner photos | 8 |
 | exact .009 E3 sheet 1 supply collective | 20 |
 | exact .009 E3 sheet 2 | 3 |
 | exact .009 E3 sheet 2 + assembly/owner photo | 2 |
@@ -84,9 +85,9 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
-| FDC owner-continuity | 2 | 6 |
+| FDC owner-continuity | 2 | 7 |
 | PROM/decode | 0 | 1 |
-| logic/source | 21 | 29 |
+| logic/source | 29 | 37 |
 | memory/timing | 0 | 2 |
 | placement/value | 40 | 0 |
 | sound/analog | 0 | 2 |
@@ -121,6 +122,14 @@ parts placement and Tier-3 reproduction.
 | `D41` | `IR16` | scan | complete sheet-2 package census plus Texas Instruments SDLS154 device contract: A-D pins2-5 share ground, SER1/OC8 share +5V rail A, QB12/QA13 are traced, QC... |
 | `D7` | `LA3_GATE` | scan | complete sheet-1 full-resolution package census: section12,13->11 forms the PROM_EN strobe, with pin12 on CPU SYNC and pin13 fed back from output pin11 befor... |
 | `R20` | `R_AXIAL` | exact .009 E3 sheet 1 + assembly/owner photo | assembly 114604420 labels vertical R20 above C21, left of D52; owner 200450127 has matching red body above green C21 Exact sheet 1 draws C21 then R20 in seri... |
+| `R21` | `R_AXIAL` | exact .009 E3 sheet 1 + factory assembly + owner photos | Assembly R28..R21 left-to-right bank above D8; R21 position fixed by factory order and July/May owner photos Exact sheet 1 draws eight 1k branches from D8 ou... |
+| `R22` | `R_AXIAL` | exact .009 E3 sheet 1 + factory assembly + owner photos | Assembly R28..R21 left-to-right bank above D8; R22 position fixed by factory order and July/May owner photos Exact sheet 1 draws eight 1k branches from D8 ou... |
+| `R23` | `R_AXIAL` | exact .009 E3 sheet 1 + factory assembly + owner photos | Assembly R28..R21 left-to-right bank above D8; R23 position fixed by factory order and July/May owner photos Exact sheet 1 draws eight 1k branches from D8 ou... |
+| `R24` | `R_AXIAL` | exact .009 E3 sheet 1 + factory assembly + owner photos | Assembly R28..R21 left-to-right bank above D8; R24 position fixed by factory order and July/May owner photos Exact sheet 1 draws eight 1k branches from D8 ou... |
+| `R25` | `R_AXIAL` | exact .009 E3 sheet 1 + factory assembly + owner photos | Assembly R28..R21 left-to-right bank above D8; R25 position fixed by factory order and July/May owner photos Exact sheet 1 draws eight 1k branches from D8 ou... |
+| `R26` | `R_AXIAL` | exact .009 E3 sheet 1 + factory assembly + owner photos | Assembly R28..R21 left-to-right bank above D8; R26 position fixed by factory order and July/May owner photos Exact sheet 1 draws eight 1k branches from D8 ou... |
+| `R27` | `R_AXIAL` | exact .009 E3 sheet 1 + factory assembly + owner photos | Assembly R28..R21 left-to-right bank above D8; R27 position fixed by factory order and July/May owner photos Exact sheet 1 draws eight 1k branches from D8 ou... |
+| `R28` | `R_AXIAL` | exact .009 E3 sheet 1 + factory assembly + owner photos | Assembly R28..R21 left-to-right bank above D8; R28 position fixed by factory order and July/May owner photos Exact sheet 1 draws eight 1k branches from D8 ou... |
 | `R35` | `R_AXIAL` | exact .009 E3 sheet 2 + assembly/photo | R35 RC clock shaper position Source 330 ohms and owner 330R body agree; calibrated owner pad geometry is pending. |
 | `R4` | `R_AXIAL` | scan | Exact .009 sheet 1 puts one R4 contact on RES_RC. Owner component tile 200450127 shows the horizontal R4 100 body and its left joint near (802,1480); solder... |
 | `R67` | `R_AXIAL` | scan | .009 factory identity plus independent registered July/May owner photos; target body reads 4K7 pin1 remains on the source-proved SOUND_CLAMP node. Both the e... |
@@ -187,14 +196,6 @@ inspect components and endpoints already modeled.
 | Ref | Source evidence |
 | --- | --- |
 | `C4` | Assembly `PXL_20260711_114604420.jpg` labels C4 immediately left of the circled C73 trimmer near Z1/X8; the power-corner detail is repeated in `PXL_20260711_... |
-| `R21` | Sheet-1 detail `PXL_20260718_101805510.jpg` draws eight 1 kΩ branches from D8 outputs D0–D7 to the `A` supply arrow. The printed D8 output-pin order is 1, 2,... |
-| `R22` | Sheet-1 detail `PXL_20260718_101805510.jpg` draws eight 1 kΩ branches from D8 outputs D0–D7 to the `A` supply arrow. The printed D8 output-pin order is 1, 2,... |
-| `R23` | Sheet-1 detail `PXL_20260718_101805510.jpg` draws eight 1 kΩ branches from D8 outputs D0–D7 to the `A` supply arrow. The printed D8 output-pin order is 1, 2,... |
-| `R24` | Sheet-1 detail `PXL_20260718_101805510.jpg` draws eight 1 kΩ branches from D8 outputs D0–D7 to the `A` supply arrow. The printed D8 output-pin order is 1, 2,... |
-| `R25` | Sheet-1 detail `PXL_20260718_101805510.jpg` draws eight 1 kΩ branches from D8 outputs D0–D7 to the `A` supply arrow. The printed D8 output-pin order is 1, 2,... |
-| `R26` | Sheet-1 detail `PXL_20260718_101805510.jpg` draws eight 1 kΩ branches from D8 outputs D0–D7 to the `A` supply arrow. The printed D8 output-pin order is 1, 2,... |
-| `R27` | Sheet-1 detail `PXL_20260718_101805510.jpg` draws eight 1 kΩ branches from D8 outputs D0–D7 to the `A` supply arrow. The printed D8 output-pin order is 1, 2,... |
-| `R28` | Sheet-1 detail `PXL_20260718_101805510.jpg` draws eight 1 kΩ branches from D8 outputs D0–D7 to the `A` supply arrow. The printed D8 output-pin order is 1, 2,... |
 
 ## Documented Intentional No-Connects
 
@@ -275,9 +276,18 @@ same fidelity ledger as the chip provenance gaps.
 | `INHIB_STATUS_BOUNDARY` | memory/timing | `D7.5, D29.3` | Exact .009 sheet-1 crop PXL_20260718_101813438.jpg (850,2900)-(1850,3650): D7 NAND input pin5 joins D29 physical input pin3 at a filled T junction. The share... |
 | `INT4_RAW` | logic/source | `X1.114C, D12.6, D12.7` | Exact .009 sheet-1 PXL_20260718_101817644.jpg: -INT4 at X1.114C branches to both D12 LA18 gate inputs pins6 and7; D12.5 open-collector output reaches X2.214/... |
 | `KBD_CONTRDAT` | logic/source | `D26.22, X9.9, A50.1` | Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo s... |
+| `P5V` | FDC owner-continuity | `R78.2, D10.16, D1.20, D4.11, D107.11, D44.4, ... (+223)` | scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail... |
 | `PHI1_D35` | logic/source | `D35.10, W7.2, R37.2` | factory wire А:7 D35 clock-source-side copper island D35.10 reaches the candidate A7B plated through-joint under mastic; the W7 insulated-wire termination re... |
 | `PHI2_D35` | logic/source | `D35.12, W14.2, R36.2` | factory wire А:14 D35 clock-source-side copper island D35.12 reaches the candidate A14B plated through-joint under mastic; the W14 insulated-wire termination... |
 | `R20_RETURN_SOURCE_HOLD` | logic/source | `R20.2` | exact .009 sheet-1 detail PXL_20260718_101801729.jpg plus full-sheet 101754468: R20 far symbol lead descends, crosses D50.5/R29 without a junction, and conti... |
+| `R21_D8_OUTPUT_HOLD` | logic/source | `R21.2` | R21...R28 collective source output branch; R21 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds... |
+| `R22_D8_OUTPUT_HOLD` | logic/source | `R22.2` | R21...R28 collective source output branch; R22 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds... |
+| `R23_D8_OUTPUT_HOLD` | logic/source | `R23.2` | R21...R28 collective source output branch; R23 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds... |
+| `R24_D8_OUTPUT_HOLD` | logic/source | `R24.2` | R21...R28 collective source output branch; R24 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds... |
+| `R25_D8_OUTPUT_HOLD` | logic/source | `R25.2` | R21...R28 collective source output branch; R25 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds... |
+| `R26_D8_OUTPUT_HOLD` | logic/source | `R26.2` | R21...R28 collective source output branch; R26 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds... |
+| `R27_D8_OUTPUT_HOLD` | logic/source | `R27.2` | R21...R28 collective source output branch; R27 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds... |
+| `R28_D8_OUTPUT_HOLD` | logic/source | `R28.2` | R21...R28 collective source output branch; R28 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds... |
 | `R67_2_BOUNDARY` | video/analog | `R67.2` | .009 factory identity and owner population retain R67, but the .006 continuation into the DNP VT3/VT4 RF option is revision-superseded. Exact .009 E3 sheet-2... |
 | `S1_3_BOUNDARY` | logic/source | `S1.3` | ДГШ5.109.009 СБ and owner photos establish bracket-mounted SPDT S1 contacts 1 and 2; contact3 belongs to the off-board symbol union but its wire is not ident... |
 | `SYNC_B` | logic/source | `D57.17` | exact-revision .009 E3 sheet 2 and direct owner continuity 2026-07-21 disprove the older scan chase that joined D57.OUT2/pin17 to both D56 triggers; D57.OUT2... |

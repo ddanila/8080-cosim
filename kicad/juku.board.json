@@ -6875,6 +6875,158 @@
         "refdes": "C100 appears in the printed C100 +5 V/GND bypass group; any individual assembly locality does not prove its owner-board pad pair",
         "pins": "Logical pin 1 is the upper +5 V plate and pin 2 the lower GND plate of the collective bypass symbol. No individual value, physical lead numbering, owner-board population, or footprint is inferred."
       }
+    },
+    {
+      "ref": "R21",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "value": "1к",
+      "pcb_placement_pending": true,
+      "procurement": {
+        "action": "circuit-review",
+        "note": "Eight owner bodies read 1K0; individual R-to-D8 output mapping and common bar rail need continuity."
+      },
+      "prov": {
+        "type": "exact .009 E3 sheet 1 + factory assembly + owner photos",
+        "refdes": "Assembly R28..R21 left-to-right bank above D8; R21 position fixed by factory order and July/May owner photos",
+        "pins": "Exact sheet 1 draws eight 1k branches from D8 output pins 1-7,9 to supply A. The source labels the bank collectively R21...R28 but gives no per-ref output assignment. Owner solder photo proves the eight upper leads share a bar; its +5V identity is not independently measured. Individual lower joins remain unresolved; see r21-r28-bank-pin-order-review.json."
+      }
+    },
+    {
+      "ref": "R22",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "value": "1к",
+      "pcb_placement_pending": true,
+      "procurement": {
+        "action": "circuit-review",
+        "note": "Eight owner bodies read 1K0; individual R-to-D8 output mapping and common bar rail need continuity."
+      },
+      "prov": {
+        "type": "exact .009 E3 sheet 1 + factory assembly + owner photos",
+        "refdes": "Assembly R28..R21 left-to-right bank above D8; R22 position fixed by factory order and July/May owner photos",
+        "pins": "Exact sheet 1 draws eight 1k branches from D8 output pins 1-7,9 to supply A. The source labels the bank collectively R21...R28 but gives no per-ref output assignment. Owner solder photo proves the eight upper leads share a bar; its +5V identity is not independently measured. Individual lower joins remain unresolved; see r21-r28-bank-pin-order-review.json."
+      }
+    },
+    {
+      "ref": "R23",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "value": "1к",
+      "pcb_placement_pending": true,
+      "procurement": {
+        "action": "circuit-review",
+        "note": "Eight owner bodies read 1K0; individual R-to-D8 output mapping and common bar rail need continuity."
+      },
+      "prov": {
+        "type": "exact .009 E3 sheet 1 + factory assembly + owner photos",
+        "refdes": "Assembly R28..R21 left-to-right bank above D8; R23 position fixed by factory order and July/May owner photos",
+        "pins": "Exact sheet 1 draws eight 1k branches from D8 output pins 1-7,9 to supply A. The source labels the bank collectively R21...R28 but gives no per-ref output assignment. Owner solder photo proves the eight upper leads share a bar; its +5V identity is not independently measured. Individual lower joins remain unresolved; see r21-r28-bank-pin-order-review.json."
+      }
+    },
+    {
+      "ref": "R24",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "value": "1к",
+      "pcb_placement_pending": true,
+      "procurement": {
+        "action": "circuit-review",
+        "note": "Eight owner bodies read 1K0; individual R-to-D8 output mapping and common bar rail need continuity."
+      },
+      "prov": {
+        "type": "exact .009 E3 sheet 1 + factory assembly + owner photos",
+        "refdes": "Assembly R28..R21 left-to-right bank above D8; R24 position fixed by factory order and July/May owner photos",
+        "pins": "Exact sheet 1 draws eight 1k branches from D8 output pins 1-7,9 to supply A. The source labels the bank collectively R21...R28 but gives no per-ref output assignment. Owner solder photo proves the eight upper leads share a bar; its +5V identity is not independently measured. Individual lower joins remain unresolved; see r21-r28-bank-pin-order-review.json."
+      }
+    },
+    {
+      "ref": "R25",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "value": "1к",
+      "pcb_placement_pending": true,
+      "procurement": {
+        "action": "circuit-review",
+        "note": "Eight owner bodies read 1K0; individual R-to-D8 output mapping and common bar rail need continuity."
+      },
+      "prov": {
+        "type": "exact .009 E3 sheet 1 + factory assembly + owner photos",
+        "refdes": "Assembly R28..R21 left-to-right bank above D8; R25 position fixed by factory order and July/May owner photos",
+        "pins": "Exact sheet 1 draws eight 1k branches from D8 output pins 1-7,9 to supply A. The source labels the bank collectively R21...R28 but gives no per-ref output assignment. Owner solder photo proves the eight upper leads share a bar; its +5V identity is not independently measured. Individual lower joins remain unresolved; see r21-r28-bank-pin-order-review.json."
+      }
+    },
+    {
+      "ref": "R26",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "value": "1к",
+      "pcb_placement_pending": true,
+      "procurement": {
+        "action": "circuit-review",
+        "note": "Eight owner bodies read 1K0; individual R-to-D8 output mapping and common bar rail need continuity."
+      },
+      "prov": {
+        "type": "exact .009 E3 sheet 1 + factory assembly + owner photos",
+        "refdes": "Assembly R28..R21 left-to-right bank above D8; R26 position fixed by factory order and July/May owner photos",
+        "pins": "Exact sheet 1 draws eight 1k branches from D8 output pins 1-7,9 to supply A. The source labels the bank collectively R21...R28 but gives no per-ref output assignment. Owner solder photo proves the eight upper leads share a bar; its +5V identity is not independently measured. Individual lower joins remain unresolved; see r21-r28-bank-pin-order-review.json."
+      }
+    },
+    {
+      "ref": "R27",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "value": "1к",
+      "pcb_placement_pending": true,
+      "procurement": {
+        "action": "circuit-review",
+        "note": "Eight owner bodies read 1K0; individual R-to-D8 output mapping and common bar rail need continuity."
+      },
+      "prov": {
+        "type": "exact .009 E3 sheet 1 + factory assembly + owner photos",
+        "refdes": "Assembly R28..R21 left-to-right bank above D8; R27 position fixed by factory order and July/May owner photos",
+        "pins": "Exact sheet 1 draws eight 1k branches from D8 output pins 1-7,9 to supply A. The source labels the bank collectively R21...R28 but gives no per-ref output assignment. Owner solder photo proves the eight upper leads share a bar; its +5V identity is not independently measured. Individual lower joins remain unresolved; see r21-r28-bank-pin-order-review.json."
+      }
+    },
+    {
+      "ref": "R28",
+      "type": "R_AXIAL",
+      "pins": {
+        "1": "P1",
+        "2": "P2"
+      },
+      "value": "1к",
+      "pcb_placement_pending": true,
+      "procurement": {
+        "action": "circuit-review",
+        "note": "Eight owner bodies read 1K0; individual R-to-D8 output mapping and common bar rail need continuity."
+      },
+      "prov": {
+        "type": "exact .009 E3 sheet 1 + factory assembly + owner photos",
+        "refdes": "Assembly R28..R21 left-to-right bank above D8; R28 position fixed by factory order and July/May owner photos",
+        "pins": "Exact sheet 1 draws eight 1k branches from D8 output pins 1-7,9 to supply A. The source labels the bank collectively R21...R28 but gives no per-ref output assignment. Owner solder photo proves the eight upper leads share a bar; its +5V identity is not independently measured. Individual lower joins remain unresolved; see r21-r28-bank-pin-order-review.json."
+      }
     }
   ],
   "nets": {
@@ -12811,7 +12963,7 @@
       ]
     },
     "P5V": {
-      "src": "scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail A to rail F and C34.1; exact .009 sheet 3 adds the R93/R95 conditioner pull-ups; exact .009 E3 sheet-1 R9/R10 2k INT7/INT6 pull-up rail A; exact .009 sheet-2 power table labels A(+5) and native R38/R39 frame terminates both resistors at A",
+      "src": "scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail A to rail F and C34.1; exact .009 sheet 3 adds the R93/R95 conditioner pull-ups; exact .009 E3 sheet-1 R9/R10 2k INT7/INT6 pull-up rail A; exact .009 sheet-2 power table labels A(+5) and native R38/R39 frame terminates both resistors at A; exact .009 E3 sheet-1 D8 resistor-bank detail terminates each R21...R28 1k branch at supply arrow A (+5 V), while owner bar identity awaits continuity",
       "power": true,
       "nodes": [
         [
@@ -13697,6 +13849,38 @@
         [
           "D34",
           "14"
+        ],
+        [
+          "R21",
+          "1"
+        ],
+        [
+          "R22",
+          "1"
+        ],
+        [
+          "R23",
+          "1"
+        ],
+        [
+          "R24",
+          "1"
+        ],
+        [
+          "R25",
+          "1"
+        ],
+        [
+          "R26",
+          "1"
+        ],
+        [
+          "R27",
+          "1"
+        ],
+        [
+          "R28",
+          "1"
         ]
       ]
     },
@@ -19128,6 +19312,78 @@
       "nodes": [
         [
           "R20",
+          "2"
+        ]
+      ]
+    },
+    "R21_D8_OUTPUT_HOLD": {
+      "src": "R21...R28 collective source output branch; R21 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending continuity; source proves the set of eight joins, not this specific pair.",
+      "nodes": [
+        [
+          "R21",
+          "2"
+        ]
+      ]
+    },
+    "R22_D8_OUTPUT_HOLD": {
+      "src": "R21...R28 collective source output branch; R22 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending continuity; source proves the set of eight joins, not this specific pair.",
+      "nodes": [
+        [
+          "R22",
+          "2"
+        ]
+      ]
+    },
+    "R23_D8_OUTPUT_HOLD": {
+      "src": "R21...R28 collective source output branch; R23 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending continuity; source proves the set of eight joins, not this specific pair.",
+      "nodes": [
+        [
+          "R23",
+          "2"
+        ]
+      ]
+    },
+    "R24_D8_OUTPUT_HOLD": {
+      "src": "R21...R28 collective source output branch; R24 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending continuity; source proves the set of eight joins, not this specific pair.",
+      "nodes": [
+        [
+          "R24",
+          "2"
+        ]
+      ]
+    },
+    "R25_D8_OUTPUT_HOLD": {
+      "src": "R21...R28 collective source output branch; R25 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending continuity; source proves the set of eight joins, not this specific pair.",
+      "nodes": [
+        [
+          "R25",
+          "2"
+        ]
+      ]
+    },
+    "R26_D8_OUTPUT_HOLD": {
+      "src": "R21...R28 collective source output branch; R26 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending continuity; source proves the set of eight joins, not this specific pair.",
+      "nodes": [
+        [
+          "R26",
+          "2"
+        ]
+      ]
+    },
+    "R27_D8_OUTPUT_HOLD": {
+      "src": "R21...R28 collective source output branch; R27 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending continuity; source proves the set of eight joins, not this specific pair.",
+      "nodes": [
+        [
+          "R27",
+          "2"
+        ]
+      ]
+    },
+    "R28_D8_OUTPUT_HOLD": {
+      "src": "R21...R28 collective source output branch; R28 physical position fixed by assembly, but individual D8 output pin among 1-7,9 unresolved. This singleton holds the mapping pending continuity; source proves the set of eight joins, not this specific pair.",
+      "nodes": [
+        [
+          "R28",
           "2"
         ]
       ]

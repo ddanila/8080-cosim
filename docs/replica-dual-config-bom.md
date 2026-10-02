@@ -15,10 +15,10 @@ readiness report.
 
 ## Summary
 
-- Board component positions: 368
+- Board component positions: 376
 - Populate for current functional .009 build: 273
-- Do not populate now (empty/DNP/pending): 95
-- Unique BOM lines: 119
+- Do not populate now (empty/DNP/pending): 103
+- Unique BOM lines: 120
 
 ## Sockets
 
@@ -32,8 +32,8 @@ IC into the socket rather than soldering it to the board:
 
 | Action | Count basis |
 | --- | ---: |
-| circuit-review | 42 |
-| leave-empty | 95 |
+| circuit-review | 50 |
+| leave-empty | 103 |
 | mechanical-review | 17 |
 | program/dump | 6 |
 | source-now | 223 |
@@ -55,6 +55,7 @@ IC into the socket rather than soldering it to the board:
 | circuit-review | Q_KT13 | КТ315 | modern E-C-B transistor selected for the video role and KT-13 pad row | 1 | 1 | 0 | VT2 | - |
 | circuit-review | Q_KT27 | КТ972 | modern E-C-B TO-126 transistor selected for the beeper role | 1 | 1 | 0 | VT1 | - |
 | circuit-review | R_AXIAL 12к | axial resistor 12к | modern axial resistor, matching value and power rating | 2 | 0 | 2 | R15, R16 | Source 12 kOhm and ground return; owner return rail and isolated body value require measurement. |
+| circuit-review | R_AXIAL 1к | axial resistor 1к | modern axial resistor, matching value and power rating | 8 | 0 | 8 | R21, R22, R23, R24, R25, R26, R27, R28 | Eight owner bodies read 1K0; individual R-to-D8 output mapping and common bar rail need continuity. |
 | circuit-review | R_AXIAL 20к | axial resistor 20к | modern axial resistor, matching value and power rating | 1 | 0 | 1 | R2 | PCB pad locations and target-body continuity are pending; exact .009 value and drawn branch are captured in the source model. |
 | circuit-review | R_AXIAL 2к | axial resistor 2к | modern axial resistor, matching value and power rating | 1 | 0 | 1 | R7 | PCB pad locations and target-body continuity are pending; exact .009 value and drawn branch are captured in the source model. |
 | circuit-review | R_AXIAL 330 | axial resistor 330 | modern axial resistor, matching value and power rating | 1 | 0 | 1 | R35 | Source 330 ohms and owner 330R body agree; calibrated owner pad geometry is pending. |

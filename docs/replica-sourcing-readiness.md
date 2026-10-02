@@ -12,18 +12,18 @@ review before being treated as build-ready.
 
 ## Summary
 
-- BOM lines: 119
+- BOM lines: 120
 - Populate-now component positions: 273
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
-- Mechanical/circuit-review lines: 33
+- Mechanical/circuit-review lines: 34
 - Order posture: do not treat as a complete kit until the gated rows below are closed
 
 ## Action Totals
 
 | Action | BOM lines | Populate-now positions |
 | --- | ---: | ---: |
-| circuit-review | 21 | 27 |
+| circuit-review | 22 | 27 |
 | leave-empty | 3 | 0 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
@@ -82,6 +82,7 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | Q_KT13 | КТ315 | 1 | VT2 | modern E-C-B transistor selected for the video role and KT-13 pad row |
 | circuit-review | Q_KT27 | КТ972 | 1 | VT1 | modern E-C-B TO-126 transistor selected for the beeper role |
 | circuit-review | R_AXIAL 12к | axial resistor 12к | 0 | R15, R16 | Source 12 kOhm and ground return; owner return rail and isolated body value require measurement. |
+| circuit-review | R_AXIAL 1к | axial resistor 1к | 0 | R21, R22, R23, R24, R25, R26, R27, R28 | Eight owner bodies read 1K0; individual R-to-D8 output mapping and common bar rail need continuity. |
 | circuit-review | R_AXIAL 20к | axial resistor 20к | 0 | R2 | PCB pad locations and target-body continuity are pending; exact .009 value and drawn branch are captured in the source model. |
 | circuit-review | R_AXIAL 2к | axial resistor 2к | 0 | R7 | PCB pad locations and target-body continuity are pending; exact .009 value and drawn branch are captured in the source model. |
 | circuit-review | R_AXIAL 330 | axial resistor 330 | 0 | R35 | Source 330 ohms and owner 330R body agree; calibrated owner pad geometry is pending. |
