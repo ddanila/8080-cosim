@@ -121,7 +121,8 @@ C16 is therefore restored at `(267.094,101.055)` mm on a 12.50 mm horizontal
 span, with pads at `(260.844,101.055)` and `(273.344,101.055)` mm. R92 is at
 `(253.869,101.194)` mm and R99 at `(241.207,103.467)` mm, each on a 10.16 mm
 horizontal span. An oblique May component view directly resolves bare `27` on
-C16's exposed face. GOST 11076-69 Table 1 nevertheless requires a unit/decimal
+C16's exposed face; the independent July angle repeats `27`, but D97 hides
+the lower body line. GOST 11076-69 Table 1 nevertheless requires a unit/decimal
 letter for a complete coded capacitance, and no such glyph is unambiguously
 readable; `27` is
 therefore registered literally without promoting a value. The broad nearby
