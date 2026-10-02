@@ -14,6 +14,14 @@ The recovered ДГШ5.109.009 Э3 sheet 3 closes the target board's write-data d
 | Clears/triggers | WREQ_N → D97.3/.11 and D102.3/.11; D97.1/.9, D102.1/.9 and D101.13/.15 → GND |
 | Timing networks | C16 on D97.15/.14; C19/R100 on D97.7/.6; C20/R108 on D102.6/.7; C22/R102 on D102.14/.15; timing resistor rail → +5 V |
 
+Sheet-3 detail tiles `_101644861` and `_101648508` print C16=`27` and
+C19/C20/C22=`22`, giving schematic nominals of 27 pF and 22 pF under the
+native bare-number convention. The target C16/C19 bodies show matching digits
+but incomplete unit codes, so their installed values remain unverified.
+Target C20/C22 bodies each read `1Н5` (1.5 nF), a direct conflict with the
+sheet's `22`; the installed values in the board model follow those body
+markings. See `docs/native-capacitor-values.md`.
+
 ## Conflict resolution
 
 Two overlapping exact .009 sheet-3 detail frames independently print `R99 4,7к`: `PXL_20260718_101644861.jpg` beside D97 timing network (native crop about (1390,1230)-(2260,1540)) and `PXL_20260718_101648508.jpg` beside D101 Q0/pin7 (native crop (1250,390)-(1780,1050)). The duplicated designator is legible in both originals, although the assembly has one R99. Target component and solder views instead close physical R99 between D101.4/R92.1 and D101.8/GND. That observed target topology is retained.
