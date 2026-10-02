@@ -5545,7 +5545,7 @@
       "type": "C_KM",
       "procurement": {
         "action": "circuit-review",
-        "note": "Sheet 3 specifies 22 pF nominal; later owner angles show bare 22 and ±10% on the body, but the unit is unverified. Confirm capacitance before sourcing."
+        "note": "Sheet 3 specifies 22 pF nominal; later owner angles show bare 22 and ±10% on the body, but the unit is unverified. The May face has a candidate М75 temperature-stability group mark. Confirm capacitance and the marking before sourcing."
       },
       "pins": {
         "1": "P1",
