@@ -338,6 +338,21 @@
       },
       "observation": "oblique target-board view directly resolves 27 on C16 and 22 on C19; no unit, decimal, tolerance, or voltage glyph is unambiguously readable on either exposed face"
     },
+    "c19_opposite_angle": {
+      "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
+      "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
+      "dimensions_px": [
+        4080,
+        3072
+      ],
+      "body_bbox_px": [
+        3270,
+        995,
+        3400,
+        1250
+      ],
+      "observation": "July component angle views the opposite side of C19 from the oblique May frame and again exposes only 22; the glare line and body curvature do not reveal a unit or decimal letter"
+    },
     "marking_standard": {
       "source": "ref/datasheets/gost-11076-69-capacitance-code.md",
       "standard": "\u0413\u041e\u0421\u0422 11076-69",

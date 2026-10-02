@@ -161,6 +161,19 @@ for refdes, bbox in c16_c19_photo.get("body_bboxes_px", {}).items():
     if (refdes not in {"C16", "C19"} or len(bbox) != 4 or
             not (0 <= bbox[0] < bbox[2] <= width and 0 <= bbox[1] < bbox[3] <= height)):
         raise SystemExit(f"FDC LOWER ASSEMBLY PLACEMENT: invalid {refdes} literal-marking body box")
+c19_opposite = c16_c19_marking_evidence.get("c19_opposite_angle", {})
+c19_opposite_path = ROOT / c19_opposite.get("source", "")
+if (not c19_opposite_path.is_file() or
+        hashlib.sha256(c19_opposite_path.read_bytes()).hexdigest() != c19_opposite.get("sha256")):
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C19 opposite-angle source mismatch")
+with Image.open(c19_opposite_path) as c19_opposite_image:
+    if list(c19_opposite_image.size) != c19_opposite.get("dimensions_px"):
+        raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C19 opposite-angle dimensions mismatch")
+    width, height = c19_opposite_image.size
+bbox = c19_opposite.get("body_bbox_px", [])
+if (len(bbox) != 4 or
+        not (0 <= bbox[0] < bbox[2] <= width and 0 <= bbox[1] < bbox[3] <= height)):
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: invalid C19 opposite-angle body box")
 c16_c19_standard = ROOT / c16_c19_marking_evidence.get("marking_standard", {}).get("source", "")
 if not c16_c19_standard.is_file() or "bare numeric" not in c16_c19_standard.read_text(encoding="utf-8"):
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C16/C19 marking-standard guard missing")
@@ -391,7 +404,7 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, a
           "the factory drawing shows its intended outline, while the owner photo shows no body in the D41/D40 gap. Two candidate front sites align with solder crowns under the promoted D41 fit, pending same-hole continuity. The separately photo-registered inherited DRAM-grid landing at `(176.1,145.6)` mm remains fabricated as bare common artwork.",
           "Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;",
           "that corroborates population and orientation. Two independent component angles read R100/R102/R108=`12К` and R86=`4К7`. Recovered `.009` Э3 sheet 3 closes the common right-hand rail to +5 V, R102.1 to C22.2/D102.15, R108.1 to C20.2/D102.7, and the C19/R100 side to D97.7. Target copper closes C19.2/R86.1 to D97.6 and overrides the sheet's conflicting R86=470 reset annotation. The registered solder view",
-          "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints; cross-side review corrects their recorded order to upper pad1 `(875,712)` and lower pad2 `(823,893)`. The July view also registers all four resistor pin-1 joints. An oblique May view literally reads `22` on C19's exposed face, but no unambiguous unit/decimal glyph; its value/unit remains a boundary. The same owner views",
+          "`PXL_20260710_200522685.jpg` exposes C19's two distinct joints; cross-side review corrects their recorded order to upper pad1 `(875,712)` and lower pad2 `(823,893)`. The July view also registers all four resistor pin-1 joints. An oblique May view literally reads `22` on C19's exposed face; the opposite July angle repeats only `22`. Neither exposes an unambiguous unit/decimal glyph, so its value/unit remains a boundary. The same owner views",
           "also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and",
           "backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;",
           "the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,",
