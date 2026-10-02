@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "question": "Which .009 FDC bypass bodies are visible in the later owner component view?",
+  "factory_placement_sources": [
+    "ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json",
+    "ref/photos/dgsh5-109-009-sb/fdc-lower-placement-registration.json"
+  ],
+  "owner_photo": "ref/photos/juku-pcb-2/PXL_20260710_202708344.jpg",
+  "owner_photo_sha256": "3a9238ec5a89035774b45d7490182b6dea25e6f716914de764f0a3110683532f",
+  "view_transform": "Raw 3072x4080 portrait image rotated 90 degrees counterclockwise for inspection only; rotated (x,y) corresponds to raw (3071-y,x). Crops below use rotated coordinates.",
+  "observations": [
+    {
+      "ref": "C9",
+      "rotated_crop_xyxy_px": [2650, 300, 3420, 900],
+      "factory_between": ["D100", "D98"],
+      "reading": "One green two-lead body stands in the narrow D100/D98 gap immediately left of the black cable, at the unique factory C9 position. Both end joints are visible, but their complete copper destinations are not. The earlier overhead view hides this gap behind the cable.",
+      "disposition": "later-view body population photo-supported; value, rail identity of each lead, and numbered replica-pad correspondence unresolved"
+    },
+    {
+      "ref": "C10",
+      "rotated_crop_xyxy_px": [2000, 850, 2900, 1800],
+      "factory_between": ["D93", "D106"],
+      "reading": "One upright green rectangular two-lead body straddles the left side of the neighboring D106 К555ИЕ7 package immediately right of the D93 socket. Its two separate bent leads end at front joints west of D106. The body position matches the factory C10 callout immediately right of D93; it is not a part of D106's package.",
+      "disposition": "later-view C10 body identification by factory locality and orientation; no value or lead-to-rail assignment"
+    },
+    {
+      "ref": "C11",
+      "rotated_crop_xyxy_px": [2300, 1450, 3900, 2800],
+      "factory_between": ["D95", "D99"],
+      "reading": "A vertical green rectangular two-lead body occupies the factory C11 corridor between the К555КП12 D95 and К155АГ3 D99; the black cable obscures its right edge, but both leftward lead joints are exposed. Earlier overhead owner views exposed the landings without a secure body read.",
+      "disposition": "later-view C11 body population photo-supported; value, rail identity of each lead, and numbered replica-pad correspondence unresolved"
+    }
+  ],
+  "exclusions": [
+    "Do not use the green C9/C10/C11 body color or bypass function to assign individual lead nets without a continuous trace or meter reading.",
+    "Do not infer C15 population from the green sliver beneath the cable beside a К155АГ3 body; the relevant source position is insufficiently exposed.",
+    "C12 is reviewed separately in ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json; its two visible later-view lap leads reach D100.20/+5 V and D94.8/GND."
+  ]
+}

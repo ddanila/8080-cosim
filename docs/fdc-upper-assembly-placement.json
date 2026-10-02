@@ -47,7 +47,7 @@
         -0.0,
         0.0
       ],
-      "observation": "vertical C9 between D100 and D98; owner component view is hidden by the black factory cable",
+      "observation": "vertical C9 between D100 and D98; earlier overhead owner view is cable-hidden, but later July image 202708344 exposes a green two-lead body in this gap; value and individual rail joins remain open",
       "electrical_evidence": false
     }
   ],

@@ -10,7 +10,7 @@ D100 within `1.309` mm.
 | Ref | Bracket | Fraction | Projected x,y mm | Current x,y mm | Delta mm | Observation |
 | --- | --- | ---: | ---: | ---: | ---: | --- |
 | C12 | D94/D100 | 0.486906 | 253.218, 33.954 | 253.218, 33.954 | -0.000, +0.000 | vertical C12 between D94 and D100; May and early July views show a bare gap, but later July owner image 202708344 shows a fitted green axial body in that exact gap, with one lead to D100.20/+5 V and the other to D94.8/GND; its value and permanent population history remain open |
-| C9 | D100/D98 | 0.561111 | 285.807, 33.590 | 285.807, 33.590 | -0.000, +0.000 | vertical C9 between D100 and D98; owner component view is hidden by the black factory cable |
+| C9 | D100/D98 | 0.561111 | 285.807, 33.590 | 285.807, 33.590 | -0.000, +0.000 | vertical C9 between D100 and D98; earlier overhead owner view is cable-hidden, but later July image 202708344 exposes a green two-lead body in this gap; value and individual rail joins remain open |
 
 Neither owner-photo site exposes a complete electrical path: C12 has no
 unambiguous visible body and C9 is cable-obscured. These remain placement-only

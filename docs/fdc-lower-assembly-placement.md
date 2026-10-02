@@ -2,26 +2,11 @@
 
 Status: **FACTORY PLACEMENT EVIDENCE / PARTIAL ELECTRICAL MAPPING**
 
-The upper FDC drawing separately places C12 between D94 and D100. May owner
-photo `PXL_20260519_201922448.jpg` and early July photo
-`PXL_20260710_200402344.jpg` show the exposed gap bare. The later July
-`PXL_20260710_202708344.jpg`, rotated counterclockwise for inspection,
-shows a fitted green axial two-lead body at the exact factory C12 position.
-Its upper lead reaches D100's top-left contact, pin20/+5 V; its lower lead
-reaches D94's lower-right socket contact, pin8/GND. Both packages have their
-notches to the left in the rotated view. This is a photographed +5 V/GND
-bypass at the C12 site, without a legible value or evidence for when it was
-installed. The earlier bare views and later fitted view must not be flattened
-into a single population claim.
-
-The early July component view also has three open holes near `(2135,1440)`,
-`(2111,1655)`, and `(2164,1655)`, matched across faces to solder holes near
-`(1630,1213)`, `(1651,1403)`, and `(1605,1403)` in
-`PXL_20260710_200506061.jpg`. These are not the visible late C12 lap-lead
-landings; the upper hole runs east to another open hole, the lower-right runs
-west, and the lower-left has no visible B.Cu departure. The retired C12 photo
-seed in lower FDC tile `PXL_20260710_200418174.jpg` is likewise not a probe
-point. The chronology, source hashes, and crop coordinates are in
+The upper FDC drawing places C12 between D94 and D100. May and early July
+owner photos show that gap bare, while later July photo `PXL_20260710_202708344.jpg`
+shows a fitted green bypass there with visible lap leads to D100.20/+5 V and
+D94.8/GND. Its value and fitting history are unknown; the three matched open
+holes in the earlier photo are not the visible lap-lead landings. See
 `ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json`.
 
 The photographed factory assembly drawing is registered to the five package centres
@@ -47,8 +32,8 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | R95 | 282.852, 54.319 | 282.852, 54.319 | +0.000, +0.000 | right member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 2-kohm pull-up to the wired D28.10/.12 conditioner output |
 | R78 | 267.999, 68.177 | 267.999, 68.177 | +0.000, +0.000 | left member of the factory-overlapped R78/R98 pair between D106 and D28; exact sheet 3 assigns the D106 preset/UP pull-up and the owner body directly reads 10K |
 | R98 | 270.485, 68.177 | 270.485, 68.177 | +0.000, +0.000 | right member of the factory-overlapped R78/R98 pair between D106 and D28; electrical sheet 3 assigns its 4.7-kohm pull-up to -D.SEL1. Owner joints supersede the folded-drawing affine centre |
-| C10 | 252.361, 73.163 | 252.361, 73.163 | +0.000, -0.000 | vertical C10 immediately right of D93; replaces the former lower-row collision with D102 |
-| C11 | 268.232, 93.540 | 268.232, 93.540 | +0.000, +0.000 | vertical capacitor between D95 and D99; owner component view shows its landings but no unambiguous body |
+| C10 | 252.361, 73.163 | 252.361, 73.163 | +0.000, -0.000 | vertical C10 immediately right of D93; later July owner photo 202708344 exposes a green two-lead body at this position over neighboring D106; value and individual rail joins remain open; replaces the former lower-row collision with D102 |
+| C11 | 268.232, 93.540 | 268.232, 93.540 | +0.000, +0.000 | vertical C11 between D95 and D99; earlier owner view shows landings without a secure body read, while later July image 202708344 exposes a green two-lead body there under the cable edge; value and individual rail joins remain open |
 | C16 | 267.094, 101.055 | 267.094, 101.055 | +0.000, +0.000 | horizontal capacitor between the upper and lower IC rows |
 | C15 | 280.230, 110.120 | 280.230, 110.120 | +0.000, -0.000 | vertical capacitor between D97 and D102; owner component view is cable-obscured |
 | C19 | 292.893, 93.574 | 292.893, 93.574 | +0.000, -0.000 | vertical capacitor immediately right of D99; upper pad1 shares R100.1 and lower pad2 shares R86.1 |
@@ -83,6 +68,7 @@ read C20=`1Н5`, and an independent May angle directly reads the outer C22 body 
 The original-resolution lower drawing labels the vertical part between D41 and D40 as `C83`.
 The owner component view is bracketed by direct fits of both marked packages and contains no fitted C83 body. Two candidate front sites form a plausible span and align with solder crowns under the promoted D41 fit; physical identity still requires continuity.
 Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. C83 is present in the logical source model on +5 V/GND, but physical PCB placement and the owner-board pad pair remain unresolved. C63 remains a separate bare inherited DRAM-grid footprint. The unrelated `.006` RF-option C13 is also DNP on the `.009` target.
-The owner component view does not expose a complete electrical path at either corrected
-site: C11's landings are visible without an unambiguous body, while C15 is hidden by the
-factory cable. Neither placement is connectivity evidence.
+The later July owner image `PXL_20260710_202708344.jpg` exposes green two-lead
+bodies at the factory C10 and C11 positions. Their values and lead rails remain
+unproved; the earlier C11 view only exposed landings. C15 remains cable-hidden.
+See `ref/photos/juku-pcb-2/fdc-bypass-late-population-review.json`.

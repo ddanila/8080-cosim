@@ -362,6 +362,12 @@ OUTPUT_JSON.write_text(json.dumps({"schema_version": 1,
                                   "checks": checks, "targets": targets}, indent=2) + "\n")
 lines = ["# FDC lower assembly placement", "",
          "Status: **FACTORY PLACEMENT EVIDENCE / PARTIAL ELECTRICAL MAPPING**", "",
+         "The upper FDC drawing places C12 between D94 and D100. May and early July",
+         "owner photos show that gap bare, while later July photo `PXL_20260710_202708344.jpg`",
+         "shows a fitted green bypass there with visible lap leads to D100.20/+5 V and",
+         "D94.8/GND. Its value and fitting history are unknown; the three matched open",
+         "holes in the earlier photo are not the visible lap-lead landings. See",
+         "`ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json`.", "",
          "The photographed factory assembly drawing is registered to the five package centres",
          "already fitted in the owner board photograph. D95, D101, and D102 define the affine",
          "fit; D99 and D97 are independent checks. This establishes reference identity and",
@@ -395,9 +401,10 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, a
           "The original-resolution lower drawing labels the vertical part between D41 and D40 as `C83`.",
           "The owner component view is bracketed by direct fits of both marked packages and contains no fitted C83 body. Two candidate front sites form a plausible span and align with solder crowns under the promoted D41 fit; physical identity still requires continuity.",
           "Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. C83 is present in the logical source model on +5 V/GND, but physical PCB placement and the owner-board pad pair remain unresolved. C63 remains a separate bare inherited DRAM-grid footprint. The unrelated `.006` RF-option C13 is also DNP on the `.009` target.",
-          "The owner component view does not expose a complete electrical path at either corrected",
-          "site: C11's landings are visible without an unambiguous body, while C15 is hidden by the",
-          "factory cable. Neither placement is connectivity evidence."]
+          "The later July owner image `PXL_20260710_202708344.jpg` exposes green two-lead",
+          "bodies at the factory C10 and C11 positions. Their values and lead rails remain",
+          "unproved; the earlier C11 view only exposed landings. C15 remains cable-hidden.",
+          "See `ref/photos/juku-pcb-2/fdc-bypass-late-population-review.json`."]
 OUTPUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 image = Image.open(ROOT / document["source_image"]).convert("RGB")
