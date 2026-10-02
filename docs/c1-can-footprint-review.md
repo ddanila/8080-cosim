@@ -10,8 +10,10 @@ lower lead. D13-local registration projects the owner's upper and lower joints
 to solder joints near `(3200,822)` and `(3200,1305)` in
 `PXL_20260710_200537608.jpg`. The upper joint has an uninterrupted solder-side
 strip to registered D13.7/GND. A separate `+` is printed beside the lower
-solder joint, which follows an eastbound trace; its remote reset-net
-continuation remains untraced. The installed capacitance is still unverified. Exact
+solder joint. Its B.Cu run goes east to about `(3365,1305)`, then south
+through visible joints near `(3365,1398)`, `(3365,1460)`, and `(3365,1520)`
+in the same solder photo. Those three joints lack secure component-side
+identities, so the remote reset-net destination remains untraced. The installed capacitance is still unverified. Exact
 electrical sheet 1 specifies a 47.0 nominal for C1 in the reset RC network.
 
 The current source PCB uses `CP_Radial_D5.0mm_P2.00mm` for C1, with 2.00 mm
