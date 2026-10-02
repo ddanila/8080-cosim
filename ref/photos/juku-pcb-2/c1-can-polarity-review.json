@@ -145,5 +145,17 @@
     "decision": "Hold C1 mechanical sourcing and footprint selection until both owner drill centres are registered and a matching axial part or faithful mounting option is selected."
   },
   "decision": "The assembly position, matched polarity, two cross-registered C1 joints, and upper B.Cu join to D13.7 identify the fitted can as C1 with its upper physical lead on GND. Its lower positive lead shares a continuous B.Cu strip with the left contacts of R4, R2, and VD1. This matches the exact .009 reset RC node grouping for C1/R4/R2/VD1, although the resistor pad numbers and VD1 polarity are not independently established by this registration. The red vertical R3 body appears partly behind C1 in 200450127, matching the assembly position, but its actual lead holes are occluded and cannot be matched securely to the solder view. R3 and the off-board S1/A17 portion remain untraced in these crops. Do not connect the nearby R36 trace from proximity alone.",
-  "next_inspection": "Power off: confirm both C1 front-to-solder same holes, upper lead to D13.7/known ground, and the lower positive lead to the R4/R2/VD1 left-contact column. Trace the remaining R3 and S1/A17 reset RC branches. Measure the roughly 20 mm physical C1 hole spacing before replacing or relocating the provisional radial footprint. Check the apparent R36-lower-to-can route separately across the white-wire occlusion."
+  "next_inspection": "Power off: confirm both C1 front-to-solder same holes, upper lead to D13.7/known ground, and the lower positive lead to the R4/R2/VD1 left-contact column. Trace the remaining R3 and S1/A17 reset RC branches. Measure the roughly 20 mm physical C1 hole spacing before replacing or relocating the provisional radial footprint. Check the apparent R36-lower-to-can route separately across the white-wire occlusion.",
+  "r3_independent_may_view": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260519_201940304.jpg",
+    "sha256": "cae004e177067ae3317c330d0eea723dfa397ef2c649f50104b2d36d95f263d4",
+    "crop_xyxy_original_pixels": [
+      3250,
+      2180,
+      3850,
+      2580
+    ],
+    "observation": "May component view independently shows the same C1-position can and adjacent red R3-position body. The exposed R3 body marking includes a legible 100, agreeing with exact .009 sheet 1. The body is partly beneath the can; neither R3 lead-hole centre can be securely cross-registered to the solder image from this view.",
+    "limit": "Value/body identification only; no physical R3-to-RES_RC continuity or C1 fitted capacitance claim."
+  }
 }

@@ -2670,7 +2670,7 @@
       "prov": {
         "type": "exact .009 E3 sheet 1 + assembly/owner photo",
         "refdes": "Exact .009 sheet 1 labels R3=100 on the reset RC series branch; assembly PXL_20260711_114604420.jpg places R3 vertically immediately left of C1",
-        "pins": "Owner component tile PXL_20260710_200450127.jpg shows the red vertical body in the assembly R3 position, partly hidden by the C1 can. Its actual lead joints are not exposed securely enough for a same-hole solder registration; the R3-to-RES_RC physical path remains open. See c1-can-polarity-review.json."
+        "pins": "Owner component tile PXL_20260710_200450127.jpg shows the red vertical body in the assembly R3 position, partly hidden by C1. Independent May tile 201940304 exposes a 100 marking on that body, agreeing with the source value. Its actual lead joints are not exposed securely enough for a same-hole solder registration; the R3-to-RES_RC physical path remains open. See c1-can-polarity-review.json."
       },
       "value": "100"
     },
