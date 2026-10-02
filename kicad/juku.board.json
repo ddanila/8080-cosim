@@ -2684,7 +2684,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "Exact .009 sheet 1 puts one R4 contact on RES_RC. Owner component tile 200450127 shows the horizontal R4 100 body and its left joint near (802,1480); solder tile 200537608 matches that contact to the C1-positive strip near (3365,1398). The opposite right contact near solder (3115,1398) has a separate southwest-going thin trace, visibly isolated from the R2/VD1 right-contact strip; its remote RESIN destination remains untraced. See c1-can-polarity-review.json."
+        "pins": "Exact .009 sheet 1 puts one R4 contact on RES_RC. Owner component tile 200450127 shows the horizontal R4 100 body and its left joint near (802,1480); solder tile 200537608 matches that contact to the C1-positive strip near (3365,1398). The opposite right contact near solder (3115,1398) has a separate southwest-going thin trace, visibly isolated from the R2/VD1 right-contact strip; it runs west to an unidentified solder contact near (2380,1440), but its remote RESIN/D13.5 destination remains untraced. See c1-can-polarity-review.json."
       },
       "value": "100"
     },
@@ -6445,7 +6445,7 @@
       "prov": {
         "type": "exact .009 source + owner photo",
         "refdes": "factory assembly and owner component photo",
-        "pins": "Exact .009 sheet-1 PXL_20260718_101801729.jpg: 20 kOhm from rail A (+5 V) to the R3/C1/VD1 reset RC node. July owner tile 200450127 shows the R2 20K body with left joint near (802,1540), registered to the C1-positive solder strip near (3365,1460) in 200537608. Its right joint near solder (3115,1460) shares a broad B.Cu strip with VD1 right near (3115,1520), while R4 right is visibly separate. The common strip rail polarity and absolute PCB coordinates remain unregistered; see c1-can-polarity-review.json."
+        "pins": "Exact .009 sheet-1 PXL_20260718_101801729.jpg: 20 kOhm from rail A (+5 V) to the R3/C1/VD1 reset RC node. July owner tile 200450127 shows the R2 20K body with left joint near (802,1540), registered to the C1-positive solder strip near (3365,1460) in 200537608. Its right joint near solder (3115,1460) shares a broad B.Cu strip with VD1 right near (3115,1520), while R4 right is visibly separate. The common strip descends to the broad east-west trunk near y~1600, but its +5 V polarity and absolute PCB coordinates remain unregistered; see c1-can-polarity-review.json."
       },
       "procurement": {
         "action": "circuit-review",

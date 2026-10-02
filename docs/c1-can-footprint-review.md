@@ -24,8 +24,10 @@ VD1 polarity. The opposite right contacts are separately visible in the solder
 photo: R4 near `(3115,1398)` departs southwest on a thin trace, with a
 clear gap before the broad strip joining R2 near `(3115,1460)` and VD1 near
 `(3115,1520)`. This reproduces the drawing's local R4 versus R2/VD1
-separation. The R4 trace destination and the shared R2/VD1 rail polarity
-remain unverified. R3 is the vertical red body partly hidden behind C1 in the
+separation. The R4 trace runs southwest and west to an otherwise
+unidentified solder contact near `(2380,1440)` in the same image. The R2/VD1
+strip descends to the broad east-west trunk near `y≈1600`. The remote identity
+of that R4 contact and the trunk rail polarity remain unverified. R3 is the vertical red body partly hidden behind C1 in the
 component photo, at the position labelled R3 by the assembly drawing. The
 May photo `PXL_20260519_201940304.jpg` independently shows `100` on
 that body, agreeing with exact sheet 1. Its actual lead holes cannot be
