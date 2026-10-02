@@ -12,9 +12,13 @@ D100 within `1.309` mm.
 | C12 | D94/D100 | 0.486906 | 253.218, 33.954 | 253.218, 33.954 | -0.000, +0.000 | vertical C12 between D94 and D100; May and early July views show a bare gap, but later July owner image 202708344 shows a fitted green axial body in that exact gap, with one lead to D100.20/+5 V and the other to D94.8/GND; its value and permanent population history remain open |
 | C9 | D100/D98 | 0.561111 | 285.807, 33.590 | 285.807, 33.590 | -0.000, +0.000 | vertical C9 between D100 and D98; earlier overhead owner view is cable-hidden, but later July image 202708344 exposes a green two-lead body in this gap; value and individual rail joins remain open |
 
-Neither owner-photo site exposes a complete electrical path: C12 has no
-unambiguous visible body and C9 is cable-obscured. These remain placement-only
-records and do not validate the inherited `.006` analog net assignments.
+The later owner image `PXL_20260710_202708344.jpg` resolves the earlier
+population uncertainty: green two-lead bodies occupy both gaps. C12's visible
+leads reach D100.20/+5 V and D94.8/GND. C9 is still partly obscured by the
+cable, so its individual lead-to-rail assignment and both values remain open.
+The `.009` sheet-1 bypass symbols establish +5 V/GND function for both refs;
+neither site validates the inherited `.006` analog net assignments or the
+replica's numbered pad mapping.
 
 ## D94 pull-up row
 
