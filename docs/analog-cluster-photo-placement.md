@@ -186,9 +186,9 @@ on the visible component-side lead arcs and the corresponding four backside
 joints within the D102 registrations' roughly 0.1--0.5 mm photographic read
 uncertainty. Native July and May crops retract the earlier `1Н5` reading:
 C20 exposes only a partial tolerance-like marking, while C22's visible glyphs
-resemble `М75`, not a complete capacitance code. Exact electrical sheet 3
-prints 22 pF as the nominal value of each, but the installed values remain
-unverified. The standard's code mapping is retained only as a generic reference
+resemble `М75`, not a complete capacitance code. Two later July angles expose
+bare `22` on both bodies, matching exact sheet 3's 22 pF nominal numerals.
+The installed unit remains unverified. The standard's code mapping is retained only as a generic reference
 in `ref/datasheets/gost-11076-69-capacitance-code.md`. Sheet 3 still closes
 C20 on D102.6/.7 with R108 and C22 on D102.14/.15 with R102.
 

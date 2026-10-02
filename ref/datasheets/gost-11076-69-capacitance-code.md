@@ -15,8 +15,9 @@ not reproduce the standard.
   code.
 
 This mapping would apply to a clearly photographed `1Н5` marking. Native crops
-of C20 and C22 do not show that complete code. The former assignment of
-1.5 nF to those two parts is retracted; their installed values remain open.
+of C20 and C22 do not show that complete code. Two later angles show bare `22`
+on each body, matching exact sheet 3's design numerals. The former assignment
+of 1.5 nF to those two parts is retracted; their installed units remain open.
 
 The same table does **not** justify treating a bare numeric face marking as a
 complete coded capacitance. Every printed coded example includes the letter

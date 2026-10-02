@@ -38,11 +38,12 @@ python3 scripts/report_native_capacitor_values.py
 | --- | ---: | ---: | --- |
 | `C16` | `27` | 27 pF | sheet 3 prints 27 at C16 and the owner body shows 27, but the body lacks a complete GOST unit code |
 | `C19` | `22` | 22 pF | sheet 3 prints 22 at C19 and two owner angles show 22, but the body lacks a complete GOST unit code |
-| `C20` | `22` | 22 pF | sheet 3 prints 22 at C20; the former owner-body 1Н5 reading is unsupported by native crops, so the installed value remains unverified |
-| `C22` | `22` | 22 pF | sheet 3 prints 22 at C22; the former owner-body 1Н5 reading is unsupported by native crops, so the installed value remains unverified |
+| `C20` | `22` | 22 pF | sheet 3 and two later owner angles both show bare 22; the former 1Н5 reading is unsupported and the installed unit remains unverified |
+| `C22` | `22` | 22 pF | sheet 3 and two later owner angles both show bare 22; the former 1Н5 reading is unsupported and the installed unit remains unverified |
 
 The former C20/C22 `1Н5` (1.5 nF) installed-value claim is retracted:
-native owner crops do not show a complete `1Н5` code.
+two later owner angles show bare `22` on both bodies, matching the
+sheet numerals without independently proving their capacitance unit.
 
 ## Deliberate holds
 
@@ -55,8 +56,8 @@ native owner crops do not show a complete `1Н5` code.
 | `C15` | the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair and two later July views show a green body edge between D97/D102 at the factory site. The cable hides most of the body and second lead; two-lead identity, value, individual rail joins, and replica pad mapping remain open |
 | `C16` | exact .009 sheet 3 specifies 27 pF nominal and the target body reads 27, but its incomplete GOST body code leaves actual installed value unproved |
 | `C19` | exact .009 sheet 3 specifies 22 pF nominal and the target body reads 22, but its incomplete GOST body code leaves actual installed value unproved |
-| `C20` | exact .009 sheet 3 specifies 22 pF nominal, but the prior 1Н5 body reading is unsupported by native crop; installed value unproved |
-| `C22` | exact .009 sheet 3 specifies 22 pF nominal, but the prior 1Н5 body reading is unsupported by native crop; installed value unproved |
+| `C20` | exact .009 sheet 3 and later owner angles both show bare 22, but no complete unit code or measurement proves installed capacitance |
+| `C22` | exact .009 sheet 3 and later owner angles both show bare 22, but no complete unit code or measurement proves installed capacitance |
 | `C34` | the native sheet proves the rail endpoints but prints no value |
 | `C94` | the former 680 value was a misread of adjacent three-lead VT2 marked Б/8901; exact .009 sheet 1 proves C94 is a separate +5 V/GND bypass, while its physical population, value, and pad polarity remain unresolved |
 

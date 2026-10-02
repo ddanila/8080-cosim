@@ -180,7 +180,8 @@ for refdes, item in target_held_nominals.items():
     lines.append(f"| `{refdes}` | `{item['sheet_literal']}` | {item['normalized_source_nominal']} | {item['reason']} |")
 
 lines += ["", "The former C20/C22 `1Н5` (1.5 nF) installed-value claim is retracted:",
-          "native owner crops do not show a complete `1Н5` code."]
+          "two later owner angles show bare `22` on both bodies, matching the",
+          "sheet numerals without independently proving their capacitance unit."]
 
 lines += [
     "",

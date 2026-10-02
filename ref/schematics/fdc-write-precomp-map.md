@@ -18,8 +18,10 @@ Sheet-3 detail tiles `_101644861` and `_101648508` print C16=`27` and
 C19/C20/C22=`22`, giving schematic nominals of 27 pF and 22 pF under the
 native bare-number convention. The target C16/C19 bodies show matching digits
 but incomplete unit codes, so their installed values remain unverified.
-The former C20/C22 `1Н5` reading is unsupported by native owner crops; their
-installed values are now held, while 22 pF remains the drawing nominal. See
+The former C20/C22 `1Н5` reading is unsupported by native owner crops. Two
+later owner angles instead show bare `22` on both bodies, matching the drawing
+numerals without independently proving the unit. Installed values remain held;
+22 pF is the drawing nominal. See
 `docs/native-capacitor-values.md`.
 
 ## Conflict resolution

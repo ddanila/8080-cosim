@@ -1111,7 +1111,8 @@ Every ask below is queued with exact deliverables in
    continuity and reduces the true D101 asks to pins 1, 3, 5, and 6
    (`docs/d101-reconstruction-constraints.md`).
    A native crop recheck retracts the former C20/C22 `1Н5`/1.5 nF reading:
-   exact sheet 3 prints 22 pF nominal for each, while the installed values,
+   exact sheet 3 prints 22 pF nominal for each and two later owner angles
+   show bare `22` on both bodies, while the installed units,
    tolerances, and voltages remain explicit boundaries; sheet 3 closes their D102 endpoints. In the adjacent right-edge
    passive column, two independent target-board angles close R100, R102, and
    R108 as `12К`, and R86 as `4К7`. Uninterrupted component copper joins
