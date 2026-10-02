@@ -9,12 +9,19 @@
     {"refdes": "D98", "drawing_px": [2248.5, 1255.5], "board_mm": [298.890, 33.590]}
   ],
   "targets": [
-    {"refdes": "C12", "drawing_px": [1444.0, 1252.5], "between": ["D94", "D100"], "observation": "vertical C12 between D94 and D100; independent July and May component views show the exposed between-package body corridor bare at the factory-drawn site; no physical C12 pad pair or board-wide DNP conclusion follows"},
+    {"refdes": "C12", "drawing_px": [1444.0, 1252.5], "between": ["D94", "D100"], "observation": "vertical C12 between D94 and D100; May and early July views show a bare gap, but later July owner image 202708344 shows a fitted green axial body in that exact gap, with one lead to D100.20/+5 V and the other to D94.8/GND; its value and permanent population history remain open"},
     {"refdes": "C9", "drawing_px": [2011.5, 1271.0], "between": ["D100", "D98"], "observation": "vertical C9 between D100 and D98; owner component view is hidden by the black factory cable"}
   ],
   "c12_owner_site_review": {
-    "july": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg native crop (2050,1290)-(2220,1640): the gap between the D94 blue socket and D100 package contains exposed front copper and an open via, with no vertical capacitor body at the factory-drawn centre",
+    "early_july": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg native crop (2050,1290)-(2220,1640): the gap between the D94 blue socket and D100 package contains exposed front copper and an open via, with no vertical capacitor body at the factory-drawn centre",
     "may": "ref/photos/juku-pcb-2/PXL_20260519_201922448.jpg native crop (1740,1110)-(1900,1480): independent angle repeats the same bare gap",
+    "later_july_fitted_body": {
+      "image": "ref/photos/juku-pcb-2/PXL_20260710_202708344.jpg",
+      "sha256": "3a9238ec5a89035774b45d7490182b6dea25e6f716914de764f0a3110683532f",
+      "orientation": "The raw 3072x4080 portrait image was rotated 90 degrees counterclockwise for inspection only; rotated crop (1950,280)-(2300,850) corresponds to raw portrait rectangle approximately (2221,1950)-(2791,2300).",
+      "observation": "A green axial two-lead body occupies the factory C12 gap between the D94 blue socket and D100 КР580ВА87. Its upper bent lead reaches the front solder pool above D100's top-left package contact, which has continuous front copper to physical pin20/VCC. Its lower bent lead reaches the D94 socket's lower-right contact, physical pin8/GND. The package notches point left in the rotated view: DIP pin20 is upper-left on D100, and DIP pin8 is lower-right on D94. No component value is legible. The earlier May and 20:04 July views show the same exposed gap bare; the later 20:27 July view proves later population, not when or why the part was fitted.",
+      "classification": "factory-position C12 identification and late-view +5 V/GND lead topology photo-supported; no power-off continuity measurement or value"
+    },
     "local_three_hole_match": {
       "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200402344.jpg",
       "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200506061.jpg",
@@ -22,7 +29,7 @@
       "solder_open_holes_xy_px_in_matching_order": [[1630, 1213], [1651, 1403], [1605, 1403]],
       "observation": "The upper hole and the lower two-hole pair retain their geometry under cross-face reflection. All three are open/unfilled in both faces. This matches hole positions locally but does not identify any pair as C12 leads. Native solder crop (1450,1150)-(1760,1480) shows the upper hole's narrow B.Cu line heading east to another open hole near (1935,1215); the reflected lower-right hole at (1651,1403) descends to a westbound line; the lower-left hole at (1605,1403) has no visible B.Cu departure. Front copper and source rail identities remain unresolved."
     },
-    "limit": "The upper cable bundle hides part of the surrounding board and no unique two-lead C12 landings are established. This is negative evidence for a body at the drawn site, not proof that C12 was never fitted or that its source bypass circuit is absent. The old C12 endpoint seed in photo 200418174 is outside the upper-D94/D100 view and is not a valid physical C12 probe point."
+    "limit": "The bare-site claim applies only to the May and early-July snapshots. The later July photo identifies a fitted C12-position body and its visible +5 V/GND lap-lead paths, but gives no value, insertion history, or numbered through-hole C12 pad pair. The three matched open holes should not be treated as this part's landings. The old C12 endpoint seed in photo 200418174 is outside the upper-D94/D100 view and is not a valid physical C12 probe point."
   },
   "d94_pullup_value_evidence": {
     "value": "6,2к",

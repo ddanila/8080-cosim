@@ -92,8 +92,8 @@ python3 scripts/report_video_analog_boundary.py
 | `C10_2_BOUNDARY` | `C10.2` | .009 C10 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 VT4-base assignment revision-superseded |
 | `C11_1_BOUNDARY` | `C11.1` | .009 C11 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 RF_RAIL assignment revision-superseded |
 | `C11_2_BOUNDARY` | `C11.2` | .009 C11 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 RF tank assignment revision-superseded |
-| `C12_1_BOUNDARY` | `C12.1` | .009 C12 bypass has source-proved +5 V/GND pair; pin1 rail, physical copper, and value pending; .006 RF trimmer identity revision-superseded |
-| `C12_2_BOUNDARY` | `C12.2` | .009 C12 bypass has source-proved +5 V/GND pair; pin2 rail, physical copper, and value pending; .006 RF trimmer identity revision-superseded |
+| `C12_1_BOUNDARY` | `C12.1` | .009 C12 bypass and later July owner photo prove a +5 V/GND lap-lead pair at the factory site (D100.20/D94.8). This provisional replica through-hole pad1 has no proved correspondence to either lap lead; pad mapping and value pending. .006 RF trimmer identity revision-superseded |
+| `C12_2_BOUNDARY` | `C12.2` | .009 C12 bypass and later July owner photo prove a +5 V/GND lap-lead pair at the factory site (D100.20/D94.8). This provisional replica through-hole pad2 has no proved correspondence to either lap lead; pad mapping and value pending. .006 RF trimmer identity revision-superseded |
 | `C15_1_BOUNDARY` | `C15.1` | .009 C15 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 VT4-collector assignment revision-superseded |
 | `C15_2_BOUNDARY` | `C15.2` | .009 C15 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 VT4-emitter assignment revision-superseded |
 

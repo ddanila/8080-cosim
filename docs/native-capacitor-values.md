@@ -38,7 +38,7 @@ python3 scripts/report_native_capacitor_values.py
 | `C9` | the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value, physical pad polarity, and cable-hidden population remain open |
 | `C10` | the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value and physical pad polarity remain open |
 | `C11` | the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value, physical pad polarity, and body population remain open |
-| `C12` | the .009 target refdes replaces the .006 trimmer identity; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value and physical pad polarity remain open |
+| `C12` | the .009 target refdes replaces the .006 trimmer identity; exact .009 sheet 1 proves a +5 V/GND bypass pair. May and early July owner views show the drawn site bare, but later July photo 202708344 shows a green axial body there with visible leads to D100.20/+5 V and D94.8/GND. Its value, insertion history, and mapping to the replica's numbered through-hole pads remain open |
 | `C15` | the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value and cable-obscured pad polarity remain open |
 | `C16` | target body reads bare 27 without a unit or decimal letter, which is incomplete under GOST 11076-69 |
 | `C19` | target body reads bare 22 without a unit or decimal letter, which is incomplete under GOST 11076-69 |

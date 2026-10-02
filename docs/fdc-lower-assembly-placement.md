@@ -2,23 +2,27 @@
 
 Status: **FACTORY PLACEMENT EVIDENCE / PARTIAL ELECTRICAL MAPPING**
 
-The upper FDC drawing separately places C12 between D94 and D100. Original
-July component crop `(2050,1290)-(2220,1640)` in
-`PXL_20260710_200402344.jpg` and independent May crop
-`(1740,1110)-(1900,1480)` in `PXL_20260519_201922448.jpg` show the exposed
-between-package corridor bare at that factory-drawn body position. The upper
-cable bundle hides neighboring board area, and neither view identifies a C12
-two-lead pad pair. A reflected three-hole pattern in that gap matches component
-open holes near `(2135,1440)`, `(2111,1655)`, `(2164,1655)` in the July view to
-solder open holes near `(1630,1213)`, `(1651,1403)`, `(1605,1403)` in
-`PXL_20260710_200506061.jpg`. A native solder crop traces the upper hole east
-to another open hole near `(1935,1215)` and the lower-right hole west, while
-the lower-left hole has no visible B.Cu departure. These observations do not
-identify which two, if any, are C12 landings or their rails. Keep C12's
-source +5 V/GND bypass and target population
-open; do not use the retired C12 photo seed in the lower FDC tile
-`PXL_20260710_200418174.jpg` as a probe point. The native coordinates and
-limits are in `ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json`.
+The upper FDC drawing separately places C12 between D94 and D100. May owner
+photo `PXL_20260519_201922448.jpg` and early July photo
+`PXL_20260710_200402344.jpg` show the exposed gap bare. The later July
+`PXL_20260710_202708344.jpg`, rotated counterclockwise for inspection,
+shows a fitted green axial two-lead body at the exact factory C12 position.
+Its upper lead reaches D100's top-left contact, pin20/+5 V; its lower lead
+reaches D94's lower-right socket contact, pin8/GND. Both packages have their
+notches to the left in the rotated view. This is a photographed +5 V/GND
+bypass at the C12 site, without a legible value or evidence for when it was
+installed. The earlier bare views and later fitted view must not be flattened
+into a single population claim.
+
+The early July component view also has three open holes near `(2135,1440)`,
+`(2111,1655)`, and `(2164,1655)`, matched across faces to solder holes near
+`(1630,1213)`, `(1651,1403)`, and `(1605,1403)` in
+`PXL_20260710_200506061.jpg`. These are not the visible late C12 lap-lead
+landings; the upper hole runs east to another open hole, the lower-right runs
+west, and the lower-left has no visible B.Cu departure. The retired C12 photo
+seed in lower FDC tile `PXL_20260710_200418174.jpg` is likewise not a probe
+point. The chronology, source hashes, and crop coordinates are in
+`ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json`.
 
 The photographed factory assembly drawing is registered to the five package centres
 already fitted in the owner board photograph. D95, D101, and D102 define the affine

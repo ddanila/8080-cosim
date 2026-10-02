@@ -5440,7 +5440,7 @@
       "prov": {
         "type": "scan",
         "refdes": "ДГШ5.109.009 СБ FDC quadrant",
-        "pins": "factory drawing places target C12 vertically between D94 and D100; exact .009 sheet-1 supply detail groups C9...C12 as +5 V-to-ground bypasses; physical pin1/pin2 rail assignment and copper continuity remain pending, and the .006 trimmer identity is superseded"
+        "pins": "factory drawing places target C12 vertically between D94 and D100; exact .009 sheet-1 supply detail groups C9...C12 as +5 V-to-ground bypasses. Later July owner photo 202708344 shows a fitted green axial body at this site: upper bent lead visibly joins D100.20/+5 V, lower bent lead D94.8/GND. Earlier May and July photos show the gap bare. The replica's provisional numbered through-hole pads do not yet represent those lap leads, so C12.1/C12.2 pad mapping, value, and population-history disposition remain pending. The .006 trimmer identity is superseded."
       }
     },
     {
@@ -18003,7 +18003,7 @@
       ]
     },
     "C12_1_BOUNDARY": {
-      "src": ".009 C12 bypass has source-proved +5 V/GND pair; pin1 rail, physical copper, and value pending; .006 RF trimmer identity revision-superseded",
+      "src": ".009 C12 bypass and later July owner photo prove a +5 V/GND lap-lead pair at the factory site (D100.20/D94.8). This provisional replica through-hole pad1 has no proved correspondence to either lap lead; pad mapping and value pending. .006 RF trimmer identity revision-superseded",
       "nodes": [
         [
           "C12",
@@ -18012,7 +18012,7 @@
       ]
     },
     "C12_2_BOUNDARY": {
-      "src": ".009 C12 bypass has source-proved +5 V/GND pair; pin2 rail, physical copper, and value pending; .006 RF trimmer identity revision-superseded",
+      "src": ".009 C12 bypass and later July owner photo prove a +5 V/GND lap-lead pair at the factory site (D100.20/D94.8). This provisional replica through-hole pad2 has no proved correspondence to either lap lead; pad mapping and value pending. .006 RF trimmer identity revision-superseded",
       "nodes": [
         [
           "C12",

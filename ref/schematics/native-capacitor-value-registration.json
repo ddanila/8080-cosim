@@ -109,7 +109,7 @@
     {"ref": "C9", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value, physical pad polarity, and cable-hidden population remain open"},
     {"ref": "C10", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value and physical pad polarity remain open"},
     {"ref": "C11", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value, physical pad polarity, and body population remain open"},
-    {"ref": "C12", "reason": "the .009 target refdes replaces the .006 trimmer identity; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value and physical pad polarity remain open"},
+    {"ref": "C12", "reason": "the .009 target refdes replaces the .006 trimmer identity; exact .009 sheet 1 proves a +5 V/GND bypass pair. May and early July owner views show the drawn site bare, but later July photo 202708344 shows a green axial body there with visible leads to D100.20/+5 V and D94.8/GND. Its value, insertion history, and mapping to the replica's numbered through-hole pads remain open"},
     {"ref": "C15", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair, while the value and cable-obscured pad polarity remain open"},
     {"ref": "C16", "reason": "target body reads bare 27 without a unit or decimal letter, which is incomplete under GOST 11076-69"},
     {"ref": "C19", "reason": "target body reads bare 22 without a unit or decimal letter, which is incomplete under GOST 11076-69"},

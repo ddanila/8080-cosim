@@ -25,7 +25,7 @@
         -0.0,
         0.0
       ],
-      "observation": "vertical C12 between D94 and D100; owner component view shows the landing area without an unambiguous fitted body",
+      "observation": "vertical C12 between D94 and D100; May and early July views show a bare gap, but later July owner image 202708344 shows a fitted green axial body in that exact gap, with one lead to D100.20/+5 V and the other to D94.8/GND; its value and permanent population history remain open",
       "electrical_evidence": false
     },
     {
