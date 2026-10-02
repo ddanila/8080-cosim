@@ -42,33 +42,53 @@
   "visible_copper_limit": "The red body's left joint runs into a front trace that bends left under the neighboring upper can area; its right joint joins a vertical front trace. A separate open annulus near (1230,2090) caps the wide strip from D105's bottom-right contact, which is pin 14 with the visible notch-right orientation and +5 V in the source board netlist. The red left joint near (1225,2145) is about 55 px below that annulus with a visible front-side copper gap; do not merge the two by proximity. The adjacent can's visible terminal lead runs below the C92-left horizontal trace with brown clearance; any hidden under-body contact is unproved. The component side proves neither red-body joint to the source C92 rails GND and -12 V.",
   "right_joint_front_strip_review": {
     "image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
-    "native_crop_xyxy": [1400, 1750, 1530, 2420],
+    "native_crop_xyxy": [
+      1400,
+      1750,
+      1530,
+      2420
+    ],
     "observation": "The C92 right solder joint near (1465,2145) lies directly on a continuous narrow F.Cu vertical strip ending at an open annulus below the red body. At native crop (1430,1860)-(1570,2020), the green dipped body's near/lower lead is coated green as it bends across that strip, then continues as a dark wire to a separate round solder joint toward the IC. No solder bridge to the strip is visible at the crossing. The earlier claim that the strip reaches the green lead is retracted; their continuity remains unproved.",
     "next_test": "With power off, probe C92's right lead to the lower open annulus, then test the green body's actual near/lower round joint to that C92 strip separately. Test C92's strip against X8 -12 V and ground without inferring a green-body join from the insulated crossing."
   },
   "may_red_green_crosscheck": {
     "image": "ref/photos/juku-pcb-2/PXL_20260519_202052986.jpg",
-    "native_crop_xyxy": [2600, 1400, 3500, 2700],
+    "native_crop_xyxy": [
+      2600,
+      1400,
+      3500,
+      2700
+    ],
     "observation": "The independent oblique May view shows the same red C92-position body and green dipped body beside the marked IC. In native crop (2810,1760)-(3260,2550), the green near/lower lead arches above the narrow strip from the red joint and lands at a separate round solder pool toward the IC; the strip continues behind the coated lead without a visible junction. The green opposite lead lands at another distinct joint. This corroborates the July separation, not the former shared-node claim; neither green lead reaches a marked -12 V or ground terminal within this crop.",
     "body_marking_limit": "A native May enlargement exposes dark strokes on the red curved body, but they do not form a reliable capacitance or resistor code and cannot by themselves distinguish C92 from a nearby resistor if the assembly-to-photo placement is wrong. Keep the C92 physical identity assembly-supported and value open until endpoint measurement or a clearer marking view."
   },
-  "green_body_reference_exclusion": "The green dipped body crossing above C92's right front strip is the rectangular part beside the neighboring DIP in May photo 202052986. It is distinct from the small green axial body between C32 and C33 that the exact .009 assembly and July power-corner crop identify as C93; see c93-power-corner-candidate-review.json. The broader .009 assembly puts R19 to C92's right, but this rectangular body's posture and photographed offset do not by themselves establish R19. Keep its reference, value, and both lead nets unassigned.",
+  "green_body_reference_exclusion": "The green dipped body crossing above C92 right front strip is distinct from C93 in the power corner. Exact .009 assembly 114604420 explicitly draws C21 vertically below R20 and left of D96, matching this green body beside the owner D96 package in both July views. This supersedes the earlier tentative R19 reading based on proximity to C92. C21 body value and individual lead-net assignments remain unproved.",
   "r19_source_discriminator_without_photo_join": {
     "source_image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101827714.jpg",
-    "source_crop_xyxy": [1180, 750, 2450, 1800],
-    "source_observation": "Exact .009 sheet 1 puts C92's lower plate and R19=470 ohm upper/input lead on the same -12 V conductor with filled junctions. R19's opposite lead reaches the -5 V derived node at VD5 before its grounded zener return. This source topology is closed, but it does not identify the nearby green owner component.",
-    "photo_limit": "May and July native crops show the green near/lower lead arched above the C92 strip and terminating at a separate round joint. The prior claimed red/green F.Cu join was a false crossing read. Assembly proximity and partial body print alone do not establish that this green part is R19.",
-    "discriminator": "If testing the green part as a possible R19, probe its two actual round lead joints independently to X8 -12 V and to VD5.2/D1.11/E5.1 derived -5 V; check isolated resistance for 470 ohms if both endpoints agree. Separately probe C92's own right strip to -12 V. The newly traced upper-lead-to-R20-position resistor path is source-incompatible with R19 if that resistor is indeed R20; test that alternative first. Do not use the insulated lead-over-strip crossing as a common probe point."
+    "source_crop_xyxy": [
+      1180,
+      750,
+      2450,
+      1800
+    ],
+    "source_observation": "Exact .009 sheet 1 puts C92 lower plate and R19=470 ohm upper/input lead on the same -12 V conductor with filled junctions. R19 opposite lead reaches the -5 V derived node at VD5 before its grounded zener return. This source topology is closed; the assembly independently identifies the nearby green body as C21.",
+    "photo_limit": "May and July native crops show the C21-position green lower lead arched above the C92 strip and terminating at a separate round joint. The prior claimed red/green F.Cu join was a false crossing read. The factory C21 position supersedes the older green-as-R19 proximity guess, while its actual rail continuity is still unmeasured.",
+    "discriminator": "With power off, test the green C21-position upper lead to the R20-position lower lead and D13.5/RESIN, and test its lower lead independently to ground. Test the C92 strip separately to -12 V; the coated C21 lead crossing is not a contact. Locate R19 at its separate assembly position and test it against -12 V and the VD5/D1.11/E5.1 -5 V network."
   },
   "green_upper_to_r20_position_route": {
     "image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
-    "native_crop_xyxy": [1400, 1150, 1650, 1820],
+    "native_crop_xyxy": [
+      1400,
+      1150,
+      1650,
+      1820
+    ],
     "observation": "The green body's upper/far lead is soldered at a large oval joint on an uninterrupted vertical F.Cu strip leading north to the lower lead joint of the vertical red axial body immediately east of registered D13. This is the opposite green lead from the coated lower lead that merely arches over C92's strip. The exact .009 assembly places vertical R20 to D13's right, matching the red body's location and posture; its owner body code is not fully legible in this crop.",
     "may_cross_view_limit": "The oblique May owner photo PXL_20260519_202052986.jpg, native crop (2500,1150)-(3500,2700), contains the same red resistor and green body. It shows the red resistor's lower joint continuing on a pale strip toward the green body, but perspective and the coated lead obscure the strip-to-green joint there. Use July for the visible joint and May only for component placement; neither view establishes the R20 reference or rail net without probing.",
     "red_body_marking_recheck": "Rotated native crops of the red axial body, July (1490,1360)-(1565,1630) and May (2850,1560)-(3220,1760), show dark hand-applied characters on different visible faces. The July view includes a shape like a 9 or 6 and a short upright stroke; the May view begins with a 1-like stroke. Glare, curvature and the different face angles prevent a unique 1K5 or 470 reading. Neither photo independently confirms the source R20=1.5 kilohm value, so retain R20 as a placement candidate rather than a value identification.",
-    "source_context": "The source model places R20=1.5 kilohms between +5 V and RESIN. R19=470 ohms instead spans -12 V to the derived -5 V node. If the red body is R20 and the visible shared oval is one R20 lead, the green upper node is incompatible with the source R19 endpoints; this does not identify the green part's own reference or its lower-lead net.",
-    "next_test": "With power off, verify green upper/far joint to the red resistor's lower joint, then test that red resistor's two leads separately to known +5 V and D13.5/RESIN. Test green lower/near joint to C92's right strip independently; identify the green part only after its two nets and value are known."
+    "source_context": "Exact .009 sheet 1 places R20=1.5 kilohms between +5 V and RESIN and C21=24 from RESIN to ground. The factory assembly identifies the adjacent green body as C21 and vertical red body as R20 by position. Their visible joined owner contacts are consistent with a RESIN-side shared node, but source names do not substitute for a D13.5 same-net measurement; the lower C21 lead remains untraced.",
+    "next_test": "With power off, verify C21 upper/far joint to the R20-position lower joint and D13.5/RESIN; probe C21 lower/near joint separately to ground and the C92 right strip. Check R20 opposite lead to +5 V, and keep the lower C21 lead separate from the R4 right solder route until same-hole registration or continuity proves a join."
   },
   "decision": "The red molded axial body is the fitted component at the unique C92 assembly position, right of R4/R2/VD1 and above C31, corroborated by two overlapping owner views. Register its physical C92 position. Its unreadable marking and both rail joins remain open; if continuity contradicts the exact C92 ground/-12 V branch, investigate a board change or misregistration before assigning the replica pads. Do not classify C92 as DNP.",
-  "next_inspection": "With power removed, meter the C92-position red body leads near (1225,2145)/(1465,2145) to known ground and -12 V at X8. Check its right strip to its lower open annulus, then check the green body's separate near/lower round joint against that strip and against X8 -12 V. Verify the green far/upper oval joint to the lower lead of the R20-position red resistor, then test that resistor to +5 V and D13.5/RESIN; only use VD5.2/D1.11/E5.1 as a separate R19 alternative if the R20 identification fails. Check C92's left lead against D105.14/+5 V at the nearby annulus (1230,2090); the visible front gap does not prove through-board isolation. Test the leftward trace against the adjacent can lead rather than assuming they join under its body. Read the red and green markings under better light or magnification."
+  "next_inspection": "With power removed, meter the C92-position red body leads near (1225,2145)/(1465,2145) to known ground and -12 V at X8. Check its right strip to its lower open annulus, then check the C21-position green body's separate near/lower round joint against that strip and against X8 -12 V. Verify the green far/upper oval joint to the lower lead of the R20-position red resistor, then test that resistor to +5 V and D13.5/RESIN; do not use the obsolete green-as-R19 proximity hypothesis without contradictory continuity. Check C92's left lead against D105.14/+5 V at the nearby annulus (1230,2090); the visible front gap does not prove through-board isolation. Test the leftward trace against the adjacent can lead rather than assuming they join under its body. Read the red R20-position and green C21-position markings under better light or magnification."
 }

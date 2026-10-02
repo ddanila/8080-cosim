@@ -2743,9 +2743,9 @@
         "2": "P2"
       },
       "prov": {
-        "type": "scan",
-        "refdes": "scan",
-        "pins": "scan: reset RC"
+        "type": "exact .009 sheet 1 + factory assembly + owner photos",
+        "refdes": "assembly 114604420 labels vertical C21 below R20 and left of D96; owner 200439607 and 200450127 show the green dipped body at that unique location",
+        "pins": "Owner front copper joins its upper lead to the lower lead of the R20-position red body. The lower coated lead crosses above C92 right strip and lands separately near D96. C21 lead numbers and rails are not independently measured; a D13-local projection of R4 right's solder endpoint near (2380,1440) misses the green lower joint by roughly 40 px, so do not join them from photos. See c21-r4-crossview-review.json."
       },
       "value": "24"
     },

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "review_state": "C21 physical identity assembly-and-owner supported; R4 west-endpoint to C21 lower contact remains an unpromoted candidate",
+  "assembly": {
+    "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+    "sha256": "50d4c40734d367c6be98bcf453766084e02891065733180d2c324786744ca6a1",
+    "crop_xyxy_original_pixels": [
+      900,
+      1850,
+      2250,
+      3050
+    ],
+    "observation": "C21 is explicitly labelled as a vertical part directly below R20, left of D96 and right of D105; R19 is separately labelled farther below."
+  },
+  "owner": {
+    "component_images": [
+      "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200450127.jpg"
+    ],
+    "observation": "Both overlapping July views show the green vertical dipped part between the R20-position red body and D96, matching the C21 assembly footprint. The upper green lead visibly shares F.Cu with the red body lower lead; the coated lower green lead crosses above C92 right strip and lands separately near D96. No legible 24 code or measured capacitor value is available."
+  },
+  "r4_endpoint_candidate": {
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
+    "solder_joint_px_approx": [
+      2380,
+      1440
+    ],
+    "component_candidate_px_approx": {
+      "200439607_green_lower": [
+        1520,
+        1900
+      ],
+      "200450127_green_lower": [
+        1740,
+        1530
+      ]
+    },
+    "D13_local_projected_solder_px_approx": {
+      "from_200439607": [
+        2339,
+        1417
+      ],
+      "from_200450127": [
+        2343,
+        1439
+      ]
+    },
+    "limit": "Both D13-based extrapolations land about 37-41 px left of the actual R4 trace endpoint at x~2380; this is too loose for same-hole promotion outside the D13 package frame. The source places one C21 lead on ground and R4 right on RESIN. Given the photographed upper C21-to-R20-position join, the lower lead is the ground candidate; joining it to R4 right would conflict with the source and requires direct board verification.",
+    "next_test": "With power off, probe R4 right against the actual lower C21 joint and D13.5 separately; if a join appears, verify component and net identities before changing the model."
+  },
+  "decision": "Promote the green body identity to factory C21 by unique assembly position and two owner views. Keep its lead numbers, capacitance marking, lower lead rail, and possible R4 endpoint join open."
+}

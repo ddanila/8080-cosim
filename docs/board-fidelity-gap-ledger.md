@@ -46,6 +46,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | exact .009 E3 sheet 2 + owner photo | 2 |
 | exact .009 sheet + factory assembly + owner photo | 2 |
 | exact .009 sheet + owner continuity | 1 |
+| exact .009 sheet 1 + factory assembly + owner photos | 1 |
 | exact .009 source + owner photo | 2 |
 | exact .009 source + registered owner photos | 2 |
 | factory .009 assembly wire table + system cable map + registered owner photos | 1 |
@@ -68,7 +69,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | photo | 1 |
 | prom | 1 |
 | registered owner photo | 1 |
-| scan | 223 |
+| scan | 222 |
 | scan + assembly drawing + registered owner photo | 2 |
 | scan + factory assembly drawing | 4 |
 | scan + factory assembly drawing + registered owner photo | 4 |
