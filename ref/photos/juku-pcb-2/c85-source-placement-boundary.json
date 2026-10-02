@@ -33,7 +33,7 @@
     }
   },
   "decision": "Keep C85 source-modeled with provisional collective +5 V/GND rails and PCB placement pending. The unlabeled D42/D43 assembly outline and matching owner bare-hole pair are a prioritized C85 candidate, not a proved refdes assignment. Do not place its footprint or mark DNP from this geometry. A factory refdes/BOM or continuity plus a unique assembly attribution is required.",
-  "next_inspection": "With power off, register the D42/D43 gap holes across both faces and meter each candidate near (2055,2235)/(2055,2475) in 200452717 to known +5 V, GND, +12 V, and -12 V anchors. Look for a higher-resolution labelled factory overlay or parts list to establish whether the unlabeled outline is C85 before assigning its PCB footprint.",
+  "next_inspection": "With power off, probe the owner bare gap pair near (2055,2235)/(2055,2475) in 200452717.MP. First confirm each same-hole counterpart in solder 200534267 near (1688,2320) and the lower +5 V strip around (1684,2570); then meter separately to D42.7/D43.7/GND and D42.14/D43.14/+5 V, checking isolation. Obtain a labelled factory overlay or parts list to establish whether the unlabeled outline is C85 before assigning a PCB footprint.",
   "owner_d42_d43_gap_candidate": {
     "component_images": [
       "ref/photos/juku-pcb-2/PXL_20260710_200452717.MP.jpg",
@@ -60,6 +60,29 @@
       ]
     ],
     "observation": "Both independent July component views show two solder-filled round through-hole features at the midpoint of the D42/D43 inter-package gap. Their common centerline and approximately 240-pixel spacing match the two-lead assembly outline after orienting the factory panel to the owner package row. No capacitor body bridges them in either view. They are candidate original landing holes, not independently proved C85 holes or power-rail joins.",
-    "limit": "The body outline is unlabeled, no per-hole two-face registration or continuity has been made, and solder crowns alone do not identify population history or the electrical rails."
+    "limit": "The body outline is unlabeled, no per-hole two-face registration or continuity has been made, and solder crowns alone do not identify population history or the electrical rails.",
+    "solder_face_search": {
+      "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200534267.jpg",
+      "crop_xyxy_original_pixels": [
+        1540,
+        2180,
+        1820,
+        2660
+      ],
+      "registered_package_anchors": "D42/D43 pin14 front contacts about (1970,2410)/(2500,2410) in 200452717.MP correspond to solder (1775,2505)/(1210,2505) in 200534267; the pin7 row is about front y2220 to solder y2320. A local approximate reflection is x_s=3875-1.066*x_front, y_s=y_front+95..100. These hand-read package anchors are a search fit, not a hole-level affine calibration.",
+      "projected_holes_solder_px_approx": [
+        [
+          1684,
+          2330
+        ],
+        [
+          1684,
+          2570
+        ]
+      ],
+      "upper_observation": "Near the first projection, a solder crown around (1688,2320) has a short vertical stem into the broad upper B.Cu bar. Registered D42.7 and D43.7 contacts on this bar, and D58.10, are modeled and visibly traced as GND in d42-d43-orientation-audit.json. The crown is a strong upper-hole search candidate, but its front same-hole identity remains unproved.",
+      "lower_observation": "The second projection falls on the broad lower B.Cu bar around y2575, visibly tied to D42.14/D43.14 and D58.20 and modeled +5 V. No distinct lower crown can be singled out at x about 1684 in this tile; copper width and solder glare obscure a through-hole match. Do not claim the lower owner front pad is on +5 V until same-hole registration or continuity.",
+      "assessment": "If both projected features are the two front bare holes, their opposite GND/+5 V bars fit a bypass capacitor. This strengthens the unlabeled outline as a C85 candidate but still does not prove its reference, pad polarity, population, or exact solder holes."
+    }
   }
 }
