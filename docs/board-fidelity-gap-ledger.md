@@ -24,7 +24,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `368`
 - Nets modeled: `463`
-- Chip-level fidelity gaps: `61`
+- Chip-level fidelity gaps: `62`
 - Source-proved passive refs absent from model: `9`
 - Net-level source-risk gaps: `45`
 - Explicitly dispositioned closed net risks: `14`
@@ -85,7 +85,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | --- | ---: | ---: |
 | FDC owner-continuity | 2 | 6 |
 | PROM/decode | 0 | 1 |
-| logic/source | 19 | 28 |
+| logic/source | 20 | 28 |
 | memory/timing | 0 | 2 |
 | placement/value | 40 | 0 |
 | sound/analog | 0 | 2 |
@@ -120,6 +120,7 @@ parts placement and Tier-3 reproduction.
 | `D41` | `IR16` | scan | complete sheet-2 package census plus Texas Instruments SDLS154 device contract: A-D pins2-5 share ground, SER1/OC8 share +5V rail A, QB12/QA13 are traced, QC... |
 | `D7` | `LA3_GATE` | scan | complete sheet-1 full-resolution package census: section12,13->11 forms the PROM_EN strobe, with pin12 on CPU SYNC and pin13 fed back from output pin11 befor... |
 | `R35` | `R_AXIAL` | exact .009 E3 sheet 2 + assembly/photo | R35 RC clock shaper position Source 330 ohms and owner 330R body agree; calibrated owner pad geometry is pending. |
+| `R4` | `R_AXIAL` | scan | Exact .009 sheet 1 puts one R4 contact on RES_RC. Owner component tile 200450127 shows the horizontal R4 100 body and its left joint near (802,1480); solder... |
 | `R67` | `R_AXIAL` | scan | .009 factory identity plus independent registered July/May owner photos; target body reads 4K7 pin1 remains on the source-proved SOUND_CLAMP node. Both the e... |
 | `RUNK1` | `R_AXIAL` | registered owner photo | local evidence placeholder only; historical reference remains unidentified populated 220-ohm body below-left of D98 retained at its photographed position aft... |
 | `S1` | `SW` | factory assembly drawing + owner photo | ДГШ5.109.009 СБ sheets 1-5; PXL_20260710_200402344.jpg SPDT bracket switch contract declares contacts 1-3; wire-table rows 11/12 identify А:17->S1.1 and А:18... |

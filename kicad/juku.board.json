@@ -2598,7 +2598,7 @@
       "prov": {
         "type": "scan + registered owner photos",
         "refdes": "native sheet-1 reset circuit + target-board component registration",
-        "pins": "native sheet-1 draws VD1 from +5 V cathode to the R3/C1/R4 reset-RC junction anode; the May target view directly reads КД521В and registered July coverage independently proves the previously omitted populated body/position"
+        "pins": "native sheet-1 draws VD1 from +5 V cathode to the R3/C1/R4 reset-RC junction anode; the May target view directly reads КД521В. July tile 200450127 and solder tile 200537608 cross-register its left contact near (802,1600)/(3365,1520) to the C1-positive strip. This contact match does not independently establish diode polarity; see c1-can-polarity-review.json."
       }
     },
     {
@@ -2669,8 +2669,8 @@
       },
       "prov": {
         "type": "exact .009 E3 sheet 1 + assembly/owner photo",
-        "refdes": "Exact .009 sheet 1 prints C1=47,0 in the reset RC network; assembly PXL_20260711_114604420.jpg labels the vertical C1 can and lower + end",
-        "pins": "Owner PXL_20260710_200439607.jpg shows a fitted can in the same R3/D13/D105 neighborhood with + near its lower lead. The physical numbered pads and their reset-net continuity remain unproved; see c1-can-polarity-review.json."
+        "refdes": "Exact .009 sheet 1 labels R3=100 on the reset RC series branch; assembly PXL_20260711_114604420.jpg places R3 vertically immediately left of C1",
+        "pins": "Owner component tile PXL_20260710_200450127.jpg shows the red vertical body in the assembly R3 position, partly hidden by the C1 can. Its actual lead joints are not exposed securely enough for a same-hole solder registration; the R3-to-RES_RC physical path remains open. See c1-can-polarity-review.json."
       },
       "value": "100"
     },
@@ -2684,7 +2684,7 @@
       "prov": {
         "type": "scan",
         "refdes": "scan",
-        "pins": "scan: reset RC"
+        "pins": "Exact .009 sheet 1 puts one R4 contact on RES_RC. Owner component tile 200450127 shows the horizontal R4 100 body and its left joint near (802,1480); solder tile 200537608 matches that contact to the C1-positive strip near (3365,1398). The physical right-contact route remains untraced; see c1-can-polarity-review.json."
       },
       "value": "100"
     },
@@ -6445,7 +6445,7 @@
       "prov": {
         "type": "exact .009 source + owner photo",
         "refdes": "factory assembly and owner component photo",
-        "pins": "Exact .009 sheet-1 PXL_20260718_101801729.jpg: 20 kOhm from rail A (+5 V) to the R3/C1/VD1 reset RC node; July owner body in assembly R2 position reads 20K. Physical pads not registered."
+        "pins": "Exact .009 sheet-1 PXL_20260718_101801729.jpg: 20 kOhm from rail A (+5 V) to the R3/C1/VD1 reset RC node. July owner tile 200450127 shows the R2 20K body with left joint near (802,1540), registered to the C1-positive solder strip near (3365,1460) in 200537608. Its right joint and absolute PCB coordinates remain unregistered; see c1-can-polarity-review.json."
       },
       "procurement": {
         "action": "circuit-review",

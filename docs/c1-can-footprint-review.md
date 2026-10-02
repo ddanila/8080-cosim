@@ -20,7 +20,10 @@ and the exact `.009` assembly identify the rows as R4 `100`, R2 `20K`, and
 VD1, top to bottom. C1 positive, R4 left, R2 left, and VD1 left therefore
 share one physical copper branch, matching their `RES_RC` source grouping.
 This registration does not independently establish the resistor pad numbers or
-VD1 polarity. The R3 and off-board S1/A17 branches still need tracing. The installed capacitance is still unverified. Exact
+VD1 polarity. R3 is the vertical red body partly hidden behind C1 in the
+component photo, at the position labelled R3 by the assembly drawing. Its
+actual lead holes cannot be matched securely in the solder view, so the R3
+and off-board S1/A17 branches still need tracing. The installed capacitance is still unverified. Exact
 electrical sheet 1 specifies a 47.0 nominal for C1 in the reset RC network.
 
 The current source PCB uses `CP_Radial_D5.0mm_P2.00mm` for C1, with 2.00 mm
