@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "review_state": "factory C1 position and lower positive end corroborated by owner can; numbered pad and net identity remain open",
+  "assembly": {
+    "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
+    "sha256": "50d4c40734d367c6be98bcf453766084e02891065733180d2c324786744ca6a1",
+    "crop_xyxy_original_pixels": [950, 2050, 1450, 2600],
+    "observation": "The exact .009 assembly draws C1 vertically immediately right of R3 and left of D13/D105, with a + sign beside its lower lead."
+  },
+  "owner": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg",
+    "sha256": "a009a302bf045ebe6fde6cc081afec748f633650e3a92741bb1fff99574fe252",
+    "crop_xyxy_original_pixels": [470, 1240, 750, 1900],
+    "observation": "A fitted vertical metal can occupies the same R3/D13/D105 neighborhood. Its case shows a + marking near the lower bent lead, matching the assembly polarity. The opposite upper lead is separately visible. The can's capacity and voltage text cannot be read securely from this face."
+  },
+  "source": {
+    "image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101801729.jpg",
+    "observation": "Exact .009 sheet 1 assigns C1=47,0 to the reset RC network; this source value does not establish the fitted can's measured capacitance or physical pad nets."
+  },
+  "replica_footprint_check": {
+    "source_pcb": "kicad/juku.kicad_pcb",
+    "current_footprint": "CP_Radial_D5.0mm_P2.00mm",
+    "current_pad_pitch_mm": 2.0,
+    "observation": "The source PCB currently places C1 as a 2 mm pitch radial electrolytic. The photographed metal can has one lead leaving each opposite end and mounted on a longer vertical span. The current footprint cannot be accepted as a traced copy of those owner holes.",
+    "decision": "Hold C1 mechanical sourcing and footprint selection until both owner drill centres are registered and a matching axial part or faithful mounting option is selected."
+  },
+  "decision": "Use the assembly-to-owner position and polarity match to identify the fitted can as the leading C1 body. Preserve the lower-positive physical orientation as photo evidence, but do not number its pads or connect the nearby R36 trace from proximity alone.",
+  "next_inspection": "Power off: confirm each C1 lead's same-hole solder counterpart, lower marked-positive lead to the source-positive reset node, and upper lead to the other reset RC node. Measure the physical hole spacing before replacing the provisional radial footprint. Check the apparent R36-lower-to-can route separately across the white-wire occlusion."
+}

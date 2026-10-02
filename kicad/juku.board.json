@@ -2668,9 +2668,9 @@
         "2": "P2"
       },
       "prov": {
-        "type": "scan",
-        "refdes": "scan",
-        "pins": "scan: reset RC"
+        "type": "exact .009 E3 sheet 1 + assembly/owner photo",
+        "refdes": "Exact .009 sheet 1 prints C1=47,0 in the reset RC network; assembly PXL_20260711_114604420.jpg labels the vertical C1 can and lower + end",
+        "pins": "Owner PXL_20260710_200439607.jpg shows a fitted can in the same R3/D13/D105 neighborhood with + near its lower lead. The physical numbered pads and their reset-net continuity remain unproved; see c1-can-polarity-review.json."
       },
       "value": "100"
     },
@@ -2719,16 +2719,21 @@
     {
       "ref": "C1",
       "type": "C_ELEC",
+      "marking": "opposite-end-lead metal-can electrolytic (owner candidate)",
       "pins": {
         "1": "P1",
         "2": "P2"
       },
       "prov": {
-        "type": "scan",
-        "refdes": "scan",
-        "pins": "scan: reset RC"
+        "type": "exact .009 E3 sheet 1 + assembly/owner photo",
+        "refdes": "Exact .009 sheet 1 prints C1=47,0 in the reset RC network; assembly PXL_20260711_114604420.jpg labels the vertical C1 can and lower + end",
+        "pins": "Owner PXL_20260710_200439607.jpg shows a fitted opposite-end-lead can in the same R3/D13/D105 neighborhood with + near its lower lead. The physical numbered pads and their reset-net continuity remain unproved; the current 2 mm radial PCB footprint does not match the photographed construction. See c1-can-polarity-review.json."
       },
-      "value": "47,0"
+      "value": "47,0",
+      "procurement": {
+        "action": "mechanical-review",
+        "note": "Owner C1 candidate is an opposite-end-lead metal can with + near its lower lead; source PCB still uses a 2 mm radial footprint. Register the owner holes, confirm polarity/net identities, and select a matching footprint and part before sourcing."
+      }
     },
     {
       "ref": "C21",

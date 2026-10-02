@@ -34,16 +34,16 @@ IC into the socket rather than soldering it to the board:
 | --- | ---: |
 | circuit-review | 42 |
 | leave-empty | 95 |
-| mechanical-review | 16 |
+| mechanical-review | 17 |
 | program/dump | 6 |
-| source-now | 224 |
+| source-now | 223 |
 
 ## BOM Lines
 
 | Action | Type | Authentic part | Functional substitute | Positions | Populate now | Empty | Refs | Notes |
 | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- |
 | circuit-review | AP2 | К170АП2 | RS-232/line-driver substitute required; verify +/-12 V interface | 2 | 2 | 0 | D14, D32 | - |
-| circuit-review | C_ELEC | radial electrolytic | modern radial electrolytic with matching value/voltage/polarity | 3 | 3 | 0 | C31, C32, C33 | - |
+| circuit-review | C_ELEC | radial electrolytic | modern electrolytic matching measured body, lead spacing, value, voltage, and polarity | 3 | 3 | 0 | C31, C32, C33 | - |
 | circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 31 | 9 | 22 | C9, C10, C11, C12, C15, C16, C19, C34, C74, C75, C76, C77, C78, C82, C83, C84, C85, C86, ... (+13) | - |
 | circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C20 | Sheet 3 specifies 22 pF nominal; owner angles show bare 22 and ±5% on the body, but the unit is unverified. Confirm capacitance before sourcing. |
 | circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C22 | Sheet 3 specifies 22 pF nominal; later owner angles show bare 22 and ±10% on the body, but the unit is unverified. The May face reads М75, the negative 75 ppm/°C ceramic temperature-stability group. Confirm capacitance before sourcing. |
@@ -66,6 +66,7 @@ IC into the socket rather than soldering it to the board:
 | leave-empty | C_KM 0,047 | КМ ceramic capacitor 0,047 | modern ceramic capacitor with matching value/voltage/lead spacing | 28 | 0 | 28 | C35, C36, C37, C39, C40, C41, C43, C44, C45, C47, C48, C49, C54, C55, C56, C57, C58, C59, ... (+10) | Target-assembly DNP; retain schematic intent and the fabricated footprint, but do not fit the part. |
 | leave-empty | EPROM8K | К573РФ6 | 2764 / 27C64 / M2764 EPROM, programmed per ROM split | 1 | 0 | 1 | D19 | Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets. |
 | leave-empty | RU5 | К565РУ5Г / 565РУ5Г | Mostek MK4564-12 dual-in-line option; E4 2-3/+5 V required; bench-test received parts | 24 | 0 | 24 | D60, D61, D62, D63, D64, D65, D66, D67, D68, D69, D70, D71, D72, D73, D74, D75, D76, D77, ... (+6) | D84-D91 are populated for the 64 KB .158/.009 target; D60-D83 are empty expansion sockets. The guarded MK4564-12 static contract is package/electrically eligible only with E4 2-3/+5 V; receipt and board timing tests remain. |
+| mechanical-review | C_ELEC 47,0 | opposite-end-lead metal-can electrolytic (owner candidate) 47,0 | modern electrolytic matching measured body, lead spacing, value, voltage, and polarity | 1 | 1 | 0 | C1 | Owner C1 candidate is an opposite-end-lead metal can with + near its lower lead; source PCB still uses a 2 mm radial footprint. Register the owner holes, confirm polarity/net identities, and select a matching footprint and part before sourcing. |
 | mechanical-review | DISPLAY_CONN | bracket display connector X6; exact mechanical fit pending | select exact substitute after circuit review | 1 | 1 | 0 | X6 | - |
 | mechanical-review | EXPANSION_CONN | СНП59-96 Р-20-2-В | select exact substitute after circuit review | 1 | 1 | 0 | X1 | - |
 | mechanical-review | JUMPER2 | wire/link | select exact substitute after circuit review | 1 | 1 | 0 | E5 | - |
@@ -88,7 +89,6 @@ IC into the socket rather than soldering it to the board:
 | source-now | CLK_PHASE | К155ЛН5 | 74LS04/74LS14-class inverter; verify phase/timing use | 1 | 1 | 0 | D35 | - |
 | source-now | CPU8080 | КР580ИК80А | Intel 8080A / compatible 8080 CPU | 1 | 1 | 0 | D1 | - |
 | source-now | CT16_CTR | КР531ИЕ17 | 74F/74S163-class fast counter; verify timing | 1 | 1 | 0 | D40 | - |
-| source-now | C_ELEC 47,0 | radial electrolytic 47,0 | modern radial electrolytic with matching value/voltage/polarity | 1 | 1 | 0 | C1 | - |
 | source-now | C_ELEC_AXIAL | C_ELEC_AXIAL | select exact substitute after circuit review | 2 | 2 | 0 | C17, C18 | - |
 | source-now | C_KM 15 нФ | КМ ceramic capacitor 15 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C8 | - |
 | source-now | C_KM 160 | КМ ceramic capacitor 160 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C99 | - |

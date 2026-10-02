@@ -16,7 +16,7 @@ review before being treated as build-ready.
 - Populate-now component positions: 273
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
-- Mechanical/circuit-review lines: 32
+- Mechanical/circuit-review lines: 33
 - Order posture: do not treat as a complete kit until the gated rows below are closed
 
 ## Action Totals
@@ -25,9 +25,9 @@ review before being treated as build-ready.
 | --- | ---: | ---: |
 | circuit-review | 21 | 27 |
 | leave-empty | 3 | 0 |
-| mechanical-review | 11 | 16 |
+| mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
-| source-now | 79 | 224 |
+| source-now | 78 | 223 |
 
 ## Buy Early / Acceptance-Test First
 
@@ -70,7 +70,7 @@ against drawings/board photos before ordering final quantities.
 | Action | Type | Authentic part | Populate now | Refs | Note |
 | --- | --- | --- | ---: | --- | --- |
 | circuit-review | AP2 | К170АП2 | 2 | D14, D32 | RS-232/line-driver substitute required; verify +/-12 V interface |
-| circuit-review | C_ELEC | radial electrolytic | 3 | C31, C32, C33 | modern radial electrolytic with matching value/voltage/polarity |
+| circuit-review | C_ELEC | radial electrolytic | 3 | C31, C32, C33 | modern electrolytic matching measured body, lead spacing, value, voltage, and polarity |
 | circuit-review | C_KM | КМ ceramic capacitor | 1 | C20 | Sheet 3 specifies 22 pF nominal; owner angles show bare 22 and ±5% on the body, but the unit is unverified. Confirm capacitance before sourcing. |
 | circuit-review | C_KM | КМ ceramic capacitor | 1 | C22 | Sheet 3 specifies 22 pF nominal; later owner angles show bare 22 and ±10% on the body, but the unit is unverified. The May face reads М75, the negative 75 ppm/°C ceramic temperature-stability group. Confirm capacitance before sourcing. |
 | circuit-review | C_KM | КМ ceramic capacitor | 9 | C9, C10, C11, C12, C15, C16, C19, C34, C94 | modern ceramic capacitor with matching value/voltage/lead spacing |
@@ -90,6 +90,7 @@ against drawings/board photos before ordering final quantities.
 | circuit-review | R_AXIAL 620 | axial resistor 620 | 1 | R33 | Exact source and two independent К62 owner marking reads agree on 620 ohms, but native photos separate the D34.2/R33-left upper joint from the D34.6 lower joint. Meter R33 and inspect the bare C5 site before fitting the pulse shaper. |
 | circuit-review | R_AXIAL 910 | axial resistor 910 | 0 | R106 | Exact source prints 910 ohms; owner body in this position reads 510R on two dates. Measure before physical-value adoption. |
 | circuit-review | UP2 | К170УП2 | 1 | D104 | RS-232/line-receiver substitute required; verify +/-12 V interface |
+| mechanical-review | C_ELEC 47,0 | opposite-end-lead metal-can electrolytic (owner candidate) 47,0 | 1 | C1 | Owner C1 candidate is an opposite-end-lead metal can with + near its lower lead; source PCB still uses a 2 mm radial footprint. Register the owner holes, confirm polarity/net identities, and select a matching footprint and part before sourcing. |
 | mechanical-review | DISPLAY_CONN | bracket display connector X6; exact mechanical fit pending | 1 | X6 | select exact substitute after circuit review |
 | mechanical-review | EXPANSION_CONN | СНП59-96 Р-20-2-В | 1 | X1 | select exact substitute after circuit review |
 | mechanical-review | JUMPER2 | wire/link | 1 | E5 | select exact substitute after circuit review |

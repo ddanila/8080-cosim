@@ -143,7 +143,7 @@ FUNCTIONAL_SUBSTITUTE = {
     "AP2": "RS-232/line-driver substitute required; verify +/-12 V interface",
     "UP2": "RS-232/line-receiver substitute required; verify +/-12 V interface",
     "C_KM": "modern ceramic capacitor with matching value/voltage/lead spacing",
-    "C_ELEC": "modern radial electrolytic with matching value/voltage/polarity",
+    "C_ELEC": "modern electrolytic matching measured body, lead spacing, value, voltage, and polarity",
     "R_AXIAL": "modern axial resistor, matching value and power rating",
     "R_TRIM": "modern vertical trimmer matching footprint/value",
     "C_TRIM": "modern trimmer capacitor matching footprint/value",
