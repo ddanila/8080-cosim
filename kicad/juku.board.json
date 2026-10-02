@@ -2727,12 +2727,12 @@
       "prov": {
         "type": "exact .009 E3 sheet 1 + assembly/owner photo",
         "refdes": "Exact .009 sheet 1 prints C1=47,0 in the reset RC network; assembly PXL_20260711_114604420.jpg labels the vertical C1 can and lower + end",
-        "pins": "Owner PXL_20260710_200439607.jpg shows a fitted opposite-end-lead can in the same R3/D13/D105 neighborhood with + near its lower lead. The physical numbered pads and their reset-net continuity remain unproved; the current 2 mm radial PCB footprint does not match the photographed construction. See c1-can-polarity-review.json."
+        "pins": "Owner 200439607 shows a fitted opposite-end-lead can with + near its lower lead. D13-local cross-face fit places its upper/lower solder joints near (3200,822)/(3200,1305) in 200537608, about 20 mm apart. Upper joint visibly joins D13.7/GND on B.Cu, matching C1.2; lower marked-positive joint corresponds to C1.1 but its remote RES_RC path remains untraced. Current 2 mm radial PCB footprint and position do not match this owner geometry; see c1-can-polarity-review.json."
       },
       "value": "47,0",
       "procurement": {
         "action": "mechanical-review",
-        "note": "Owner C1 candidate is an opposite-end-lead metal can with + near its lower lead; source PCB still uses a 2 mm radial footprint. Register the owner holes, confirm polarity/net identities, and select a matching footprint and part before sourcing."
+        "note": "Owner C1 is an opposite-end-lead metal can with about 20 mm vertical joint span; upper lead photo-joins D13.7/GND, lower lead is marked +. Source PCB still uses a 2 mm radial footprint. Confirm hole coordinates and lower reset-net path, then select a matching footprint and part before sourcing."
       }
     },
     {

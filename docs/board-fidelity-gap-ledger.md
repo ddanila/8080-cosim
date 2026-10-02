@@ -24,7 +24,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Board JSON: `kicad/juku.board.json`
 - Chips modeled: `368`
 - Nets modeled: `463`
-- Chip-level fidelity gaps: `60`
+- Chip-level fidelity gaps: `61`
 - Source-proved passive refs absent from model: `9`
 - Net-level source-risk gaps: `45`
 - Explicitly dispositioned closed net risks: `14`
@@ -87,7 +87,7 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 | PROM/decode | 0 | 1 |
 | logic/source | 19 | 28 |
 | memory/timing | 0 | 2 |
-| placement/value | 39 | 0 |
+| placement/value | 40 | 0 |
 | sound/analog | 0 | 2 |
 | video/analog | 0 | 6 |
 
@@ -133,6 +133,7 @@ parts placement and Tier-3 reproduction.
 
 | Ref | Type | Provenance | Note |
 | --- | --- | --- | --- |
+| `C1` | `C_ELEC` | exact .009 E3 sheet 1 + assembly/owner photo | Exact .009 sheet 1 prints C1=47,0 in the reset RC network; assembly PXL_20260711_114604420.jpg labels the vertical C1 can and lower + end Owner 200439607 sho... |
 | `C10` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C10 vertically immediately right of D93; later July owner photo 202708344 shows an upright green two-lead... |
 | `C11` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C11 vertically between D95 and D99; later July owner photo 202708344 shows a green two-lead body there un... |
 | `C12` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places target C12 vertically between D94 and D100; exact .009 sheet-1 supply detail groups C9...C12 as +5 V-to-g... |

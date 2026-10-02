@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_state": "factory C1 position and lower positive end corroborated by owner can; numbered pad and net identity remain open",
+  "review_state": "C1 opposite-end owner joints cross-registered; upper joint photo-joined to D13.7/GND, lower positive reset-net continuation remains open",
   "assembly": {
     "image": "ref/photos/dgsh5-109-009-sb/PXL_20260711_114604420.jpg",
     "sha256": "50d4c40734d367c6be98bcf453766084e02891065733180d2c324786744ca6a1",
@@ -13,6 +13,24 @@
     "crop_xyxy_original_pixels": [470, 1240, 750, 1900],
     "observation": "A fitted vertical metal can occupies the same R3/D13/D105 neighborhood. Its case shows a + marking near the lower bent lead, matching the assembly polarity. The opposite upper lead is separately visible. The can's capacity and voltage text cannot be read securely from this face."
   },
+  "cross_face_registration": {
+    "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200537608.jpg",
+    "solder_sha256": "b43f1a1cf7620d08d3450eb08e7fbcbe34f7da1f49499e86836da5d505e252a3",
+    "solder_crop_xyxy_original_pixels": [3080, 750, 3340, 1370],
+    "basis": "D13 local package contacts: owner component photo 200439607 pin7 (866,1321), pin1 (1205,1321), pin8 (866,1501); reflected solder photo 200537608 pin7 (3051,825), pin1 (2682,825), pin8 (3051,1009). See local-package-registration.json. This is a local search fit, not a whole-board transform.",
+    "approximate_transform": "x_s = 3993.6 - 1.0885*x_front; y_s = -525.4 + 1.0222*y_front",
+    "owner_joint_px_approx": {"upper_negative": [735, 1315], "lower_marked_positive": [720, 1810]},
+    "solder_joint_px_approx": {"upper_negative": [3200, 822], "lower_marked_positive": [3200, 1305]},
+    "predicted_solder_px_approx": {"upper_negative": [3194, 819], "lower_marked_positive": [3210, 1325]},
+    "fit_limit": "Upper match is within about 7 px; lower match is within about 23 px after extrapolating beyond D13's contact frame, less than half the local 61.5 px DIP contact pitch. The same vertical joint pair and printed + beside the lower solder joint support its identity; power-off same-hole confirmation remains useful.",
+    "solder_span_px_approx": 483,
+    "solder_span_mm_approx": 20.0,
+    "span_method": "D13's two 7-contact solder rows are 184 px apart across a 7.62 mm DIP width, giving about 24.15 px/mm locally; C1's joint-centre difference is about 483 px. This photo-derived span is approximate and should be measured directly before fabrication.",
+    "candidate_board_mm_from_current_d13": {"upper_C1_2_GND": [18.13, 201.37], "lower_C1_1_RES_RC": [18.13, 221.37]},
+    "candidate_board_limit": "The board-mm points transfer the two solder joints through the current source-PCB D13.7=(24.28,201.495) and D13.8=(24.28,209.115) package frame. They are search coordinates only: D13 absolute placement and the C1 same-hole pair still need independent verification before moving PCB copper.",
+    "upper_copper": "The upper C1 solder joint near (3200,822) lies on one uninterrupted broad B.Cu strip joining registered D13.7 near (3051,825). D13.7 is GND in the exact-source model, so C1's upper/negative physical joint is photo-closed to GND.",
+    "lower_copper": "The lower C1 joint near (3200,1305), beside the solder-side +, has a separate eastbound B.Cu run. Its remote reset-net continuation is not exposed in this crop."
+  },
   "source": {
     "image": "ref/photos/dgsh5-109-009-e3/PXL_20260718_101801729.jpg",
     "observation": "Exact .009 sheet 1 assigns C1=47,0 to the reset RC network; this source value does not establish the fitted can's measured capacitance or physical pad nets."
@@ -21,9 +39,9 @@
     "source_pcb": "kicad/juku.kicad_pcb",
     "current_footprint": "CP_Radial_D5.0mm_P2.00mm",
     "current_pad_pitch_mm": 2.0,
-    "observation": "The source PCB currently places C1 as a 2 mm pitch radial electrolytic. The photographed metal can has one lead leaving each opposite end and mounted on a longer vertical span. The current footprint cannot be accepted as a traced copy of those owner holes.",
+    "observation": "The source PCB currently places C1 as a 2 mm pitch radial electrolytic. The opposite-end owner joints cross-register to a roughly 20 mm vertical span, so the current footprint and its position relative to D13 cannot be accepted as traced artwork.",
     "decision": "Hold C1 mechanical sourcing and footprint selection until both owner drill centres are registered and a matching axial part or faithful mounting option is selected."
   },
-  "decision": "Use the assembly-to-owner position and polarity match to identify the fitted can as the leading C1 body. Preserve the lower-positive physical orientation as photo evidence, but do not number its pads or connect the nearby R36 trace from proximity alone.",
-  "next_inspection": "Power off: confirm each C1 lead's same-hole solder counterpart, lower marked-positive lead to the source-positive reset node, and upper lead to the other reset RC node. Measure the physical hole spacing before replacing the provisional radial footprint. Check the apparent R36-lower-to-can route separately across the white-wire occlusion."
+  "decision": "The assembly position, matched polarity, two cross-registered joints, and upper B.Cu join to D13.7 identify the fitted can as C1 with its upper physical lead on GND and lower positive lead on the separate reset branch. The lower branch's remote destination is still untraced; do not connect the nearby R36 trace from proximity alone.",
+  "next_inspection": "Power off: confirm both C1 front-to-solder same holes, upper lead to D13.7/known ground, and lower positive lead to the source reset RC node. Measure the roughly 20 mm physical hole spacing before replacing or relocating the provisional radial footprint. Check the apparent R36-lower-to-can route separately across the white-wire occlusion."
 }

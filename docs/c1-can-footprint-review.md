@@ -6,16 +6,27 @@ vertically right of R3 and left of D13/D105, with `+` beside its lower lead.
 The owner component view
 `ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg` shows a fitted metal can
 in the same neighborhood. One lead exits each end; its case has `+` near the
-lower lead. The marked can is the leading physical C1 identification, while
-its numbered pad nets and installed capacitance are still unverified. Exact
+lower lead. D13-local registration projects the owner's upper and lower joints
+to solder joints near `(3200,822)` and `(3200,1305)` in
+`PXL_20260710_200537608.jpg`. The upper joint has an uninterrupted solder-side
+strip to registered D13.7/GND. A separate `+` is printed beside the lower
+solder joint, which follows an eastbound trace; its remote reset-net
+continuation remains untraced. The installed capacitance is still unverified. Exact
 electrical sheet 1 specifies a 47.0 nominal for C1 in the reset RC network.
 
 The current source PCB uses `CP_Radial_D5.0mm_P2.00mm` for C1, with 2.00 mm
-between pads. That footprint does not represent the photographed opposite-end
-lead arrangement. Hold C1 footprint and part selection until the two owner
-drill centres are registered. Then confirm the marked lower positive lead's
-reset-net identity and choose a matching physical footprint. The nearby R36
+between pads. The photographed solder joints are about 483 pixels apart;
+the registered D13 DIP row spacing gives an approximate **20 mm vertical hole
+span**. This is a photo estimate, not a fabrication measurement. Hold C1
+footprint and part selection until the two owner holes and their board
+coordinates are confirmed. Then choose a matching physical footprint. The nearby R36
 trace disappears under a white wire; the photograph does not close it to C1.
+
+Transferring the two solder joints through the *current* source-PCB D13 package
+frame gives search points near `(18.13,201.37)` mm for C1.2/GND and
+`(18.13,221.37)` mm for the marked C1.1/positive end. These coordinates depend
+on D13's absolute placement and must be checked against a separate board
+registration before changing copper.
 
 Source crops, hashes, and remaining checks are recorded in
 `ref/photos/juku-pcb-2/c1-can-polarity-review.json`.
