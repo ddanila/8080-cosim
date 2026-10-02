@@ -35,7 +35,7 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | C10 | 252.361, 73.163 | 252.361, 73.163 | +0.000, -0.000 | vertical C10 immediately right of D93; later July owner photo 202708344 exposes a green two-lead body at this position over neighboring D106; value and individual rail joins remain open; replaces the former lower-row collision with D102 |
 | C11 | 268.232, 93.540 | 268.232, 93.540 | +0.000, +0.000 | vertical C11 between D95 and D99; earlier owner view shows landings without a secure body read, while later July image 202708344 exposes a green two-lead body there under the cable edge; value and individual rail joins remain open |
 | C16 | 267.094, 101.055 | 267.094, 101.055 | +0.000, +0.000 | horizontal capacitor between the upper and lower IC rows |
-| C15 | 280.230, 110.120 | 280.230, 110.120 | +0.000, -0.000 | vertical capacitor between D97 and D102; owner component view is cable-obscured |
+| C15 | 280.230, 110.120 | 280.230, 110.120 | +0.000, -0.000 | vertical C15 between D97 and D102; later July views 202734776/202744232 show a green component edge at this factory position, but the cable hides most of the body and second lead; two-lead identity, value, and individual rail joins remain open |
 | C19 | 292.893, 93.574 | 292.893, 93.574 | +0.000, -0.000 | vertical capacitor immediately right of D99; upper pad1 shares R100.1 and lower pad2 shares R86.1 |
 | R92 | 253.869, 101.194 | 253.869, 101.194 | +0.000, +0.000 | horizontal resistor below D95 |
 | R99 | 241.207, 103.467 | 241.207, 103.467 | +0.000, -0.000 | horizontal resistor below-left of D95 |
@@ -70,5 +70,7 @@ The owner component view is bracketed by direct fits of both marked packages and
 Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. C83 is present in the logical source model on +5 V/GND, but physical PCB placement and the owner-board pad pair remain unresolved. C63 remains a separate bare inherited DRAM-grid footprint. The unrelated `.006` RF-option C13 is also DNP on the `.009` target.
 The later July owner image `PXL_20260710_202708344.jpg` exposes green two-lead
 bodies at the factory C10 and C11 positions. Their values and lead rails remain
-unproved; the earlier C11 view only exposed landings. C15 remains cable-hidden.
+unproved; the earlier C11 view only exposed landings. Two later views show
+a green C15-position body edge between D97/D102, but the cable hides its
+second lead, so component identity and rails remain candidate evidence.
 See `ref/photos/juku-pcb-2/fdc-bypass-late-population-review.json`.

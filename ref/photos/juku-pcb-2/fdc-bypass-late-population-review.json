@@ -29,11 +29,21 @@
       "factory_between": ["D95", "D99"],
       "reading": "A vertical green rectangular two-lead body occupies the factory C11 corridor between the К555КП12 D95 and К155АГ3 D99; the black cable obscures its right edge, but both leftward lead joints are exposed. Earlier overhead owner views exposed the landings without a secure body read.",
       "disposition": "later-view C11 body population photo-supported; value, rail identity of each lead, and numbered replica-pad correspondence unresolved"
+    },
+    {
+      "ref": "C15",
+      "factory_between": ["D97", "D102"],
+      "additional_owner_photos": [
+        {"path": "ref/photos/juku-pcb-2/PXL_20260710_202734776.jpg", "sha256": "8a4ca7e888f3c048df702ff1a58951a9b92cde9a7ac33635c28d7025ef682dbc"},
+        {"path": "ref/photos/juku-pcb-2/PXL_20260710_202744232.jpg", "sha256": "8140cd77116afcd5932b40d0ae5d416ee802a35d3925eaab8c926a7263018dc2", "native_crop_xyxy_px": [2500, 650, 3550, 1120]}
+      ],
+      "reading": "Two later angles show the same green component edge protruding beside the black cable in the gap between the adjacent К155АГ3 D97/D102 packages at the factory C15 callout. The cable masks most of the body and its lower lead; the upper visible metal feature cannot be traced to a unique rail.",
+      "disposition": "factory-position C15 body candidate supported by two views; two-lead identity, value, individual rails, and replica-pad mapping unresolved"
     }
   ],
   "exclusions": [
     "Do not use the green C9/C10/C11 body color or bypass function to assign individual lead nets without a continuous trace or meter reading.",
-    "Do not infer C15 population from the green sliver beneath the cable beside a К155АГ3 body; the relevant source position is insufficiently exposed.",
+    "Do not promote the C15 green edge to a proved two-lead capacitor or individual rail assignment while the cable hides its body and second lead.",
     "C12 is reviewed separately in ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json; its two visible later-view lap leads reach D100.20/+5 V and D94.8/GND."
   ]
 }

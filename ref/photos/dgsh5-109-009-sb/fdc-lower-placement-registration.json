@@ -721,7 +721,7 @@
         2268.5,
         2541.5
       ],
-      "observation": "vertical capacitor between D97 and D102; owner component view is cable-obscured"
+      "observation": "vertical C15 between D97 and D102; later July views 202734776/202744232 show a green component edge at this factory position, but the cable hides most of the body and second lead; two-lead identity, value, and individual rail joins remain open"
     },
     {
       "refdes": "C19",

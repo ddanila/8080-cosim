@@ -5453,7 +5453,7 @@
       "prov": {
         "type": "scan",
         "refdes": "ДГШ5.109.009 СБ FDC quadrant",
-        "pins": "factory drawing places C15 vertically between D97 and D102; exact .009 sheet-1 supply detail puts C15 on the +5 V-to-ground bypass branch; physical pin1/pin2 rail assignment and copper continuity remain pending, while .006 RF use is superseded"
+        "pins": "factory drawing places C15 vertically between D97 and D102; later July owner views 202734776/202744232 show a green component edge there, but the cable hides most of its body and second lead. Exact .009 sheet-1 supply detail puts C15 on the +5 V-to-ground bypass branch; two-lead identity, each physical lead rail, provisional replica pad mapping, and value remain pending. .006 RF use is superseded"
       }
     },
     {

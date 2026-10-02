@@ -135,7 +135,7 @@ parts placement and Tier-3 reproduction.
 | `C10` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C10 vertically immediately right of D93; later July owner photo 202708344 shows an upright green two-lead... |
 | `C11` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C11 vertically between D95 and D99; later July owner photo 202708344 shows a green two-lead body there un... |
 | `C12` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places target C12 vertically between D94 and D100; exact .009 sheet-1 supply detail groups C9...C12 as +5 V-to-g... |
-| `C15` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C15 vertically between D97 and D102; exact .009 sheet-1 supply detail puts C15 on the +5 V-to-ground bypa... |
+| `C15` | `C_KM` | scan | ДГШ5.109.009 СБ FDC quadrant factory drawing places C15 vertically between D97 and D102; later July owner views 202734776/202744232 show a green component ed... |
 | `C20` | `C_KM` | scan | ДГШ5.109.009 СБ plus registered owner component/solder photos and ГОСТ 11076-69 electrical sheet 3 closes C20.1 to D102.6 and C20.2 to D102.7/R108.1. Owner e... |
 | `C22` | `C_KM` | scan | ДГШ5.109.009 СБ plus independent owner component angle/registered solder photo and ГОСТ 11076-69 electrical sheet 3 closes C22.1 to D102.14 and C22.2 to D102... |
 | `C34` | `C_KM` | scan | sheet-2 power corner native sheet-2 C34 bypass from grounded rail E to +5 V rail F; connected nets GND/P5V carry direct crop evidence physical placement unre... |

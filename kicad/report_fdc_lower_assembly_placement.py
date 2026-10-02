@@ -403,7 +403,9 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, a
           "Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. C83 is present in the logical source model on +5 V/GND, but physical PCB placement and the owner-board pad pair remain unresolved. C63 remains a separate bare inherited DRAM-grid footprint. The unrelated `.006` RF-option C13 is also DNP on the `.009` target.",
           "The later July owner image `PXL_20260710_202708344.jpg` exposes green two-lead",
           "bodies at the factory C10 and C11 positions. Their values and lead rails remain",
-          "unproved; the earlier C11 view only exposed landings. C15 remains cable-hidden.",
+          "unproved; the earlier C11 view only exposed landings. Two later views show",
+          "a green C15-position body edge between D97/D102, but the cable hides its",
+          "second lead, so component identity and rails remain candidate evidence.",
           "See `ref/photos/juku-pcb-2/fdc-bypass-late-population-review.json`."]
 OUTPUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
