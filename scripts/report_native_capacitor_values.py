@@ -84,11 +84,10 @@ source_only = {item["ref"]: item for item in evidence["source_nominal_without_fo
 if set(source_only) != {"C29"}:
     fail(f"source-only set drifted: {sorted(source_only)}")
 target_held_nominals = {item["ref"]: item for item in evidence["source_nominal_target_value_held"]}
-if {ref: item["sheet_literal"] for ref, item in target_held_nominals.items()} != {"C16": "27", "C19": "22"}:
+if {ref: item["sheet_literal"] for ref, item in target_held_nominals.items()} != {"C16": "27", "C19": "22", "C20": "22", "C22": "22"}:
     fail("sheet-3 target-held nominal set drifted")
-conflicts = evidence["source_target_conflicts"]
-if len(conflicts) != 1 or conflicts[0]["refs"] != ["C20", "C22"] or conflicts[0]["sheet_literal"] != "22":
-    fail("sheet-3 versus target timing-capacitor conflict drifted")
+if "1Н5" not in evidence.get("retracted_target_reading", ""):
+    fail("C20/C22 retracted marking claim is missing")
 
 board = json.loads(BOARD_JSON.read_text(encoding="utf-8"))
 chips = {chip["ref"]: chip for chip in board["chips"]}
@@ -114,8 +113,6 @@ if not held <= unvalued:
     fail(f"registered holds unexpectedly valued: {sorted(held - unvalued)}")
 if not set(target_held_nominals) <= held:
     fail("source nominal is no longer guarded as an installed-value hold")
-if any(chips[ref].get("value") != "1,5 нФ" for ref in conflicts[0]["refs"]):
-    fail("target-marked C20/C22 values no longer override sheet 3")
 
 physical_values = pcb_values(PCB)
 for refdes, item in closed.items():
@@ -131,13 +128,13 @@ for refdes in source_only:
 lines = [
     "# Native schematic capacitor values",
     "",
-    "Status: **5 PLACED VALUES SOURCE-CLOSED / 3 ADDITIONAL SOURCE NOMINALS / 9 REGISTERED TARGET HOLDS**",
+    "Status: **5 PLACED VALUES SOURCE-CLOSED / 5 ADDITIONAL SOURCE NOMINALS / 11 REGISTERED TARGET HOLDS**",
     "",
     "The retained native circuits print five registered capacitor values.",
     "This report checksum-guards the source scans and requires the board JSON",
     "and source PCB to preserve those literals.",
     "C29 has a source nominal but no registered footprint or owner-board value.",
-    "Sheet 3 also supplies C16/C19 nominals; their installed values remain held.",
+    "Sheet 3 also supplies C16/C19/C20/C22 nominals; their installed values remain held.",
     "Its hold list covers only the registered cases below; other unvalued capacitors",
     "in the expanded board model are tracked in the board-fidelity ledger.",
     "",
@@ -182,15 +179,8 @@ lines += [
 for refdes, item in target_held_nominals.items():
     lines.append(f"| `{refdes}` | `{item['sheet_literal']}` | {item['normalized_source_nominal']} | {item['reason']} |")
 
-lines += [
-    "",
-    "## Sheet 3 versus target conflict",
-    "",
-    "| Refs | Sheet nominal | Installed body marking | Decision |",
-    "| --- | ---: | ---: | --- |",
-]
-for item in conflicts:
-    lines.append(f"| {', '.join(item['refs'])} | {item['normalized_source_nominal']} | `{item['target_body_code']}` = {item['target_value']} | {item['decision']} |")
+lines += ["", "The former C20/C22 `1Н5` (1.5 nF) installed-value claim is retracted:",
+          "native owner crops do not show a complete `1Н5` code."]
 
 lines += [
     "",
@@ -213,9 +203,9 @@ lines += [
     "- C99's `160` label and grounded far plate are both shown on exact `.009`",
     "  sheet 1. Its physical population and pad identity still need inspection.",
     "- Exact `.009` sheet 3 prints C16=`27` and C19/C20/C22=`22`; its bare",
-    "  values follow the native picofarad convention. Owner C20/C22 body codes",
-    "  directly conflict and control the installed-value model.",
-    "- The nine registered holds are target-revision, obscured-body, or incomplete-marking cases. Values",
+    "  values follow the native picofarad convention. Installed values need",
+    "  independent measurement or complete body markings.",
+    "- The eleven registered holds are target-revision, obscured-body, or incomplete-marking cases. Values",
     "  from the superseded `.006` RF option are deliberately not copied into them.",
     "",
 ]
@@ -223,6 +213,6 @@ lines += [
 REPORT.write_text("\n".join(lines), encoding="utf-8")
 print(
     "NATIVE CAPACITOR VALUES: PASS — 5 literal scan values agree across "
-    "evidence, board JSON, and source PCB; C29/C16/C19 nominals recorded; "
-    "C20/C22 source conflict guarded; 9 registered target values remain held"
+    "evidence, board JSON, and source PCB; C29/C16/C19/C20/C22 nominals recorded; "
+    "C20/C22 false marking retracted; 11 registered target values remain held"
 )

@@ -27,7 +27,7 @@ EXPECTED_RESISTOR_VALUES = {
     "R92": "1,3к", "R93": "10к", "R94": "10к", "R95": "2к", "R98": "4,7к", "R99": "4,7к", "R100": "12к",
     "R97": "47к", "R102": "12к", "R103": "47к", "R108": "12к",
 }
-EXPECTED_CAPACITOR_VALUES = {"C17": "120 мкФ", "C18": "47 мкФ", "C20": "1,5 нФ", "C22": "1,5 нФ"}
+EXPECTED_CAPACITOR_VALUES = {"C17": "120 мкФ", "C18": "47 мкФ", "C20": "", "C22": ""}
 
 
 def solve_3x3(matrix: list[list[float]], values: list[float]) -> list[float]:
@@ -82,13 +82,13 @@ if right_edge_value_evidence.get("values") != {"R100": "12к", "R102": "12к", "
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad right-edge resistor value evidence")
 if right_edge_value_evidence.get("unresolved") != []:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: closed right-edge values unexpectedly unresolved")
-if c20_value_evidence.get("value") != "1,5 нФ" or c20_value_evidence.get("marking") != "1Н5":
-    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C20 value evidence")
-if c20_value_evidence.get("unresolved") != ["tolerance", "voltage"]:
+if c20_value_evidence.get("value") is not None or c20_value_evidence.get("source_nominal") != "22 pF":
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C20 source nominal or installed-value hold")
+if c20_value_evidence.get("unresolved") != ["value/unit", "tolerance", "voltage"]:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C20 residual value boundaries are not guarded")
-if c22_value_evidence.get("value") != "1,5 нФ" or c22_value_evidence.get("marking") != "1Н5":
-    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C22 value evidence")
-if c22_value_evidence.get("unresolved") != ["tolerance", "voltage"]:
+if c22_value_evidence.get("value") is not None or c22_value_evidence.get("source_nominal") != "22 pF":
+    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C22 source nominal or installed-value hold")
+if c22_value_evidence.get("unresolved") != ["value/unit", "tolerance", "voltage"]:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C22 residual value boundaries are not guarded")
 if c16_c19_marking_evidence.get("visible_markings") != {"C16": "27", "C19": "22"}:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: bad C16/C19 literal marking evidence")
@@ -132,9 +132,6 @@ with Image.open(c20_image_path) as c20_image:
 c20_bbox = c20_photo.get("body_bbox_px", [])
 if len(c20_bbox) != 4 or c20_bbox[0] >= c20_bbox[2] or c20_bbox[1] >= c20_bbox[3]:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: invalid C20 value-source body box")
-c20_standard = ROOT / c20_value_evidence.get("marking_standard", {}).get("source", "")
-if not c20_standard.is_file() or "1Н5" not in c20_standard.read_text(encoding="utf-8"):
-    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C20 marking-standard evidence missing")
 c22_photo = c22_value_evidence.get("owner_photo", {})
 c22_image_path = ROOT / c22_photo.get("source", "")
 if not c22_image_path.is_file() or hashlib.sha256(c22_image_path.read_bytes()).hexdigest() != c22_photo.get("sha256"):
@@ -145,9 +142,6 @@ with Image.open(c22_image_path) as c22_image:
 c22_bbox = c22_photo.get("body_bbox_px", [])
 if len(c22_bbox) != 4 or c22_bbox[0] >= c22_bbox[2] or c22_bbox[1] >= c22_bbox[3]:
     raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: invalid C22 value-source body box")
-c22_standard = ROOT / c22_value_evidence.get("marking_standard", {}).get("source", "")
-if not c22_standard.is_file() or "1Н5" not in c22_standard.read_text(encoding="utf-8"):
-    raise SystemExit("FDC LOWER ASSEMBLY PLACEMENT: C22 marking-standard evidence missing")
 c16_c19_photo = c16_c19_marking_evidence.get("owner_photo", {})
 c16_c19_image_path = ROOT / c16_c19_photo.get("source", "")
 if (not c16_c19_image_path.is_file() or
@@ -385,7 +379,7 @@ lines = ["# FDC lower assembly placement", "",
          "already fitted in the owner board photograph. D95, D101, and D102 define the affine",
          "fit; D99 and D97 are independent checks. This establishes reference identity and",
          "placement only, except where the owner-evidence records below explicitly close",
-         "R79-R85/R93/R94/R95/R98 plus R92/R99/R100/R102/R108/R86/C20/C22 values or visible copper connectivity.", "",
+         "R79-R85/R93/R94/R95/R98 plus R92/R99/R100/R102/R108/R86 values or visible copper connectivity.", "",
          f"Held-out errors: D99 `{next(x['error_mm'] for x in checks if x['refdes']=='D99'):.3f}` mm; "
          f"D97 `{next(x['error_mm'] for x in checks if x['refdes']=='D97'):.3f}` mm.", "",
          "| Ref | Projected x,y mm | Current x,y mm | Delta mm | Drawing observation |", 
@@ -409,8 +403,7 @@ lines += ["", "D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, a
           "backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;",
           "the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,",
           "R92.1-R99.2-D101.4, and R99.1-D101.8/GND. The May view likewise literally reads bare `27` on C16; exact sheet 3 specifies `27` (nominal 27 pF) and closes its endpoints to D97.15/.14. The incomplete GOST body code leaves its installed capacitance unproved.",
-          "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Enhanced July pixels",
-          "read C20=`1Н5`, and an independent May angle directly reads the outer C22 body as `1Н5`; GOST 11076-69 Table 1 maps both codes exactly to 1500 pF / 1.5 nF, now adopted for both parts. Exact sheet 3 instead prints `22` (nominal 22 pF) for each; the installed body markings supersede that nominal. Sheet 3 closes their D102 timing endpoints; only tolerances and voltages remain unpromoted.",
+          "Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Native crops retract the former `1Н5` reading: the inner body exposes a partial tolerance-like glyph and the outer body has glyphs resembling `М75`, neither a complete capacitance code. Exact sheet 3 prints `22` (nominal 22 pF) for each; installed values remain unverified. Sheet 3 closes their D102 timing endpoints.",
           "The original-resolution lower drawing labels the vertical part between D41 and D40 as `C83`.",
           "The owner component view is bracketed by direct fits of both marked packages and contains no fitted C83 body. Two candidate front sites form a plausible span and align with solder crowns under the promoted D41 fit; physical identity still requires continuity.",
           "Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. C83 is present in the logical source model on +5 V/GND, but physical PCB placement and the owner-board pad pair remain unresolved. C63 remains a separate bare inherited DRAM-grid footprint. The unrelated `.006` RF-option C13 is also DNP on the `.009` target.",

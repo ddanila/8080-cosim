@@ -1,7 +1,7 @@
 # GOST 11076-69 capacitance-code evidence
 
-This is a narrow provenance note for interpreting the photographed `1Н5`
-markings on Juku capacitors C20 and C22. It does not reproduce the standard.
+This is a narrow provenance note for the capacitor marking convention. It does
+not reproduce the standard.
 
 - Primary source: `ГОСТ 11076-69`, *Конденсаторы и резисторы. Обозначения
   величин емкости и сопротивления* (official 1977 reprint of the
@@ -14,14 +14,13 @@ markings on Juku capacitors C20 and C22. It does not reproduce the standard.
   marking `1Н5`. The same table identifies `Н` as the nanofarad decimal/unit
   code.
 
-Therefore the photographed C20 and C22 markings `1Н5` are unambiguously
-`1.5 nF` (`1500 pF`). The marking does not establish tolerance, voltage rating,
-or either electrical endpoint, so those properties remain separate evidence
-boundaries for each part.
+This mapping would apply to a clearly photographed `1Н5` marking. Native crops
+of C20 and C22 do not show that complete code. The former assignment of
+1.5 nF to those two parts is retracted; their installed values remain open.
 
 The same table does **not** justify treating a bare numeric face marking as a
 complete coded capacitance. Every printed coded example includes the letter
 that identifies the unit and decimal position (`П`, `Н`, or `М`). Consequently,
 the photographed bare `27` on C16 and bare `22` on C19 are registered as literal
-visible glyphs only; their values remain unresolved until another face, a type
-marking, or a capacitance measurement supplies the missing unit context.
+visible glyphs only. Exact `.009` sheet 3 supplies 27 pF and 22 pF design
+nominals, but installed values require confirmation.

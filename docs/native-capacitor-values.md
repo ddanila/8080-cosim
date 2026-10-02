@@ -1,12 +1,12 @@
 # Native schematic capacitor values
 
-Status: **5 PLACED VALUES SOURCE-CLOSED / 3 ADDITIONAL SOURCE NOMINALS / 9 REGISTERED TARGET HOLDS**
+Status: **5 PLACED VALUES SOURCE-CLOSED / 5 ADDITIONAL SOURCE NOMINALS / 11 REGISTERED TARGET HOLDS**
 
 The retained native circuits print five registered capacitor values.
 This report checksum-guards the source scans and requires the board JSON
 and source PCB to preserve those literals.
 C29 has a source nominal but no registered footprint or owner-board value.
-Sheet 3 also supplies C16/C19 nominals; their installed values remain held.
+Sheet 3 also supplies C16/C19/C20/C22 nominals; their installed values remain held.
 Its hold list covers only the registered cases below; other unvalued capacitors
 in the expanded board model are tracked in the board-fidelity ledger.
 
@@ -36,14 +36,13 @@ python3 scripts/report_native_capacitor_values.py
 
 | Ref | Sheet literal | Source nominal | Why the installed value remains held |
 | --- | ---: | ---: | --- |
-| `C16` | `27` | 27 pF | sheet 3 prints 27 at C16 and the owner body shows 27, but the body lacks a complete GOST unit code; adjacent timing parts C20/C22 prove source and installed values can diverge |
-| `C19` | `22` | 22 pF | sheet 3 prints 22 at C19 and two owner angles show 22, but the body lacks a complete GOST unit code; adjacent timing parts C20/C22 prove source and installed values can diverge |
+| `C16` | `27` | 27 pF | sheet 3 prints 27 at C16 and the owner body shows 27, but the body lacks a complete GOST unit code |
+| `C19` | `22` | 22 pF | sheet 3 prints 22 at C19 and two owner angles show 22, but the body lacks a complete GOST unit code |
+| `C20` | `22` | 22 pF | sheet 3 prints 22 at C20; the former owner-body 1Н5 reading is unsupported by native crops, so the installed value remains unverified |
+| `C22` | `22` | 22 pF | sheet 3 prints 22 at C22; the former owner-body 1Н5 reading is unsupported by native crops, so the installed value remains unverified |
 
-## Sheet 3 versus target conflict
-
-| Refs | Sheet nominal | Installed body marking | Decision |
-| --- | ---: | ---: | --- |
-| C20, C22 | 22 pF | `1Н5` = 1.5 nF | retain the directly marked installed values; do not propagate the sheet-3 22 pF nominal into target PCB or sourcing |
+The former C20/C22 `1Н5` (1.5 nF) installed-value claim is retracted:
+native owner crops do not show a complete `1Н5` code.
 
 ## Deliberate holds
 
@@ -54,8 +53,10 @@ python3 scripts/report_native_capacitor_values.py
 | `C11` | the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair and later July owner photo 202708344 shows a green body between D95/D99 under the cable edge. Its value, individual lead rails, and replica pad mapping remain open |
 | `C12` | the .009 target refdes replaces the .006 trimmer identity; exact .009 sheet 1 proves a +5 V/GND bypass pair. May and early July owner views show the drawn site bare, but later July photo 202708344 shows a green axial body there with visible leads to D100.20/+5 V and D94.8/GND. Its value, insertion history, and mapping to the replica's numbered through-hole pads remain open |
 | `C15` | the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair and two later July views show a green body edge between D97/D102 at the factory site. The cable hides most of the body and second lead; two-lead identity, value, individual rail joins, and replica pad mapping remain open |
-| `C16` | exact .009 sheet 3 specifies 27 pF nominal and the target body reads 27, but its incomplete GOST body code and nearby C20/C22 source/target conflict leave actual installed value unproved |
-| `C19` | exact .009 sheet 3 specifies 22 pF nominal and the target body reads 22, but its incomplete GOST body code and nearby C20/C22 source/target conflict leave actual installed value unproved |
+| `C16` | exact .009 sheet 3 specifies 27 pF nominal and the target body reads 27, but its incomplete GOST body code leaves actual installed value unproved |
+| `C19` | exact .009 sheet 3 specifies 22 pF nominal and the target body reads 22, but its incomplete GOST body code leaves actual installed value unproved |
+| `C20` | exact .009 sheet 3 specifies 22 pF nominal, but the prior 1Н5 body reading is unsupported by native crop; installed value unproved |
+| `C22` | exact .009 sheet 3 specifies 22 pF nominal, but the prior 1Н5 body reading is unsupported by native crop; installed value unproved |
 | `C34` | the native sheet proves the rail endpoints but prints no value |
 | `C94` | the former 680 value was a misread of adjacent three-lead VT2 marked Б/8901; exact .009 sheet 1 proves C94 is a separate +5 V/GND bypass, while its physical population, value, and pad polarity remain unresolved |
 
@@ -68,7 +69,7 @@ python3 scripts/report_native_capacitor_values.py
 - C99's `160` label and grounded far plate are both shown on exact `.009`
   sheet 1. Its physical population and pad identity still need inspection.
 - Exact `.009` sheet 3 prints C16=`27` and C19/C20/C22=`22`; its bare
-  values follow the native picofarad convention. Owner C20/C22 body codes
-  directly conflict and control the installed-value model.
-- The nine registered holds are target-revision, obscured-body, or incomplete-marking cases. Values
+  values follow the native picofarad convention. Installed values need
+  independent measurement or complete body markings.
+- The eleven registered holds are target-revision, obscured-body, or incomplete-marking cases. Values
   from the superseded `.006` RF option are deliberately not copied into them.

@@ -420,8 +420,9 @@
     "non_promotion_basis": "two component angles and the registered solder field do not expose a complete, uniquely attributable remote path beyond these local joints"
   },
   "c20_value_evidence": {
-    "value": "1,5 нФ",
-    "marking": "1Н5",
+    "value": null,
+    "marking": null,
+    "source_nominal": "22 pF",
     "owner_photo": {
       "source": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
       "sha256": "494365aa5c54a40ef14f129b59a798a44a92ce586fb8a530c67b87daf214d11a",
@@ -435,24 +436,19 @@
         3680,
         1730
       ],
-      "observation": "registered target-board component view reads the C20 body marking 1Н5 after rotation and contrast enhancement"
-    },
-    "marking_standard": {
-      "source": "ref/datasheets/gost-11076-69-capacitance-code.md",
-      "standard": "ГОСТ 11076-69",
-      "printed_page": 2,
-      "table": 1,
-      "mapping": "1Н5 = 1500 пФ = 1,5 нФ"
+      "observation": "native crop of the inner body shows a tolerance-like glyph followed by 5; the former 1Н5 reading is not supported"
     },
     "unresolved": [
+      "value/unit",
       "tolerance",
       "voltage"
     ],
-    "promotion_basis": "the owner-board marking is literal and the contemporary primary marking standard maps it exactly to 1500 pF"
+    "retraction": "the prior 1Н5/1.5 nF promotion confused a partial body marking with a complete capacitance code; sheet 3 specifies 22 pF nominal, but the installed value needs independent verification"
   },
   "c22_value_evidence": {
-    "value": "1,5 нФ",
-    "marking": "1Н5",
+    "value": null,
+    "marking": null,
+    "source_nominal": "22 pF",
     "owner_photo": {
       "source": "ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg",
       "sha256": "2f54c43cfd026b4f9fdfe10ae9aa7121d4a106980636657e8a4ed6b5b06d69fb",
@@ -466,20 +462,14 @@
         3700,
         700
       ],
-      "observation": "independent target-board angle directly reads 1Н5 on the outer C22 body; D102 and the inner C20 body fix the already registered column order"
-    },
-    "marking_standard": {
-      "source": "ref/datasheets/gost-11076-69-capacitance-code.md",
-      "standard": "ГОСТ 11076-69",
-      "printed_page": 2,
-      "table": 1,
-      "mapping": "1Н5 = 1500 пФ = 1,5 нФ"
+      "observation": "native May angle shows outer-body glyphs resembling М75 and a partial 5 on the inner body; neither is a secure 1Н5 capacitance code. D102 and the inner body still fix the registered column order"
     },
     "unresolved": [
+      "value/unit",
       "tolerance",
       "voltage"
     ],
-    "promotion_basis": "the independent owner-board angle exposes the literal outer-body marking and the contemporary primary marking standard maps it exactly to 1500 pF"
+    "retraction": "the prior 1Н5/1.5 nF promotion is unsupported by the native crop; sheet 3 specifies 22 pF nominal, but the installed value needs independent verification"
   },
   "targets": [
     {

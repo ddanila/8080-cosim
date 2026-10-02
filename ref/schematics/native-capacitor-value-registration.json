@@ -64,7 +64,7 @@
       "sha256": "ef04482bdd7f15a20e132034709bb7b6dfab54d6ac9d4efe2f6510575b4aa641",
       "sheet": 3,
       "crop_xyxy_original_pixels": [800, 1370, 2320, 2050],
-      "observation": "exact .009 D97.2/D102 timing branch prints bare 22 beside each of C19, C20, and C22; owner C20/C22 markings instead read 1Н5"
+      "observation": "exact .009 D97.2/D102 timing branch prints bare 22 beside each of C19, C20, and C22; native owner crops do not establish C20/C22 installed values"
     }
   ],
   "closed": [
@@ -120,20 +120,22 @@
     }
   ],
   "source_nominal_target_value_held": [
-    {"ref": "C16", "sheet_literal": "27", "normalized_source_nominal": "27 pF", "reason": "sheet 3 prints 27 at C16 and the owner body shows 27, but the body lacks a complete GOST unit code; adjacent timing parts C20/C22 prove source and installed values can diverge"},
-    {"ref": "C19", "sheet_literal": "22", "normalized_source_nominal": "22 pF", "reason": "sheet 3 prints 22 at C19 and two owner angles show 22, but the body lacks a complete GOST unit code; adjacent timing parts C20/C22 prove source and installed values can diverge"}
+    {"ref": "C16", "sheet_literal": "27", "normalized_source_nominal": "27 pF", "reason": "sheet 3 prints 27 at C16 and the owner body shows 27, but the body lacks a complete GOST unit code"},
+    {"ref": "C19", "sheet_literal": "22", "normalized_source_nominal": "22 pF", "reason": "sheet 3 prints 22 at C19 and two owner angles show 22, but the body lacks a complete GOST unit code"},
+    {"ref": "C20", "sheet_literal": "22", "normalized_source_nominal": "22 pF", "reason": "sheet 3 prints 22 at C20; the former owner-body 1Н5 reading is unsupported by native crops, so the installed value remains unverified"},
+    {"ref": "C22", "sheet_literal": "22", "normalized_source_nominal": "22 pF", "reason": "sheet 3 prints 22 at C22; the former owner-body 1Н5 reading is unsupported by native crops, so the installed value remains unverified"}
   ],
-  "source_target_conflicts": [
-    {"refs": ["C20", "C22"], "sheet_literal": "22", "normalized_source_nominal": "22 pF", "target_body_code": "1Н5", "target_value": "1.5 nF", "decision": "retain the directly marked installed values; do not propagate the sheet-3 22 pF nominal into target PCB or sourcing"}
-  ],
+  "retracted_target_reading": "The earlier 1Н5=1.5 nF claims for C20/C22 arose from ambiguous partial glyphs; native owner crops show no complete 1Н5 code. Both installed values are held, while 22 pF remains the sheet-3 design nominal.",
   "held": [
     {"ref": "C9", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair and later July owner photo 202708344 shows a green body between D100/D98 beside the cable. Its value, individual lead rails, and replica pad mapping remain open"},
     {"ref": "C10", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair and later July owner photo 202708344 shows a green body beside D93/over D106. Its value, individual lead rails, and replica pad mapping remain open"},
     {"ref": "C11", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair and later July owner photo 202708344 shows a green body between D95/D99 under the cable edge. Its value, individual lead rails, and replica pad mapping remain open"},
     {"ref": "C12", "reason": "the .009 target refdes replaces the .006 trimmer identity; exact .009 sheet 1 proves a +5 V/GND bypass pair. May and early July owner views show the drawn site bare, but later July photo 202708344 shows a green axial body there with visible leads to D100.20/+5 V and D94.8/GND. Its value, insertion history, and mapping to the replica's numbered through-hole pads remain open"},
     {"ref": "C15", "reason": "the .009 target reuses this .006 RF-option refdes in the FDC quadrant; exact .009 sheet 1 proves a +5 V/GND bypass pair and two later July views show a green body edge between D97/D102 at the factory site. The cable hides most of the body and second lead; two-lead identity, value, individual rail joins, and replica pad mapping remain open"},
-    {"ref": "C16", "reason": "exact .009 sheet 3 specifies 27 pF nominal and the target body reads 27, but its incomplete GOST body code and nearby C20/C22 source/target conflict leave actual installed value unproved"},
-    {"ref": "C19", "reason": "exact .009 sheet 3 specifies 22 pF nominal and the target body reads 22, but its incomplete GOST body code and nearby C20/C22 source/target conflict leave actual installed value unproved"},
+    {"ref": "C16", "reason": "exact .009 sheet 3 specifies 27 pF nominal and the target body reads 27, but its incomplete GOST body code leaves actual installed value unproved"},
+    {"ref": "C19", "reason": "exact .009 sheet 3 specifies 22 pF nominal and the target body reads 22, but its incomplete GOST body code leaves actual installed value unproved"},
+    {"ref": "C20", "reason": "exact .009 sheet 3 specifies 22 pF nominal, but the prior 1Н5 body reading is unsupported by native crop; installed value unproved"},
+    {"ref": "C22", "reason": "exact .009 sheet 3 specifies 22 pF nominal, but the prior 1Н5 body reading is unsupported by native crop; installed value unproved"},
     {"ref": "C34", "reason": "the native sheet proves the rail endpoints but prints no value"},
     {"ref": "C94", "reason": "the former 680 value was a misread of adjacent three-lead VT2 marked Б/8901; exact .009 sheet 1 proves C94 is a separate +5 V/GND bypass, while its physical population, value, and pad polarity remain unresolved"}
   ]

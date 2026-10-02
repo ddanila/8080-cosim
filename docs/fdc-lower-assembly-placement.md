@@ -13,7 +13,7 @@ The photographed factory assembly drawing is registered to the five package cent
 already fitted in the owner board photograph. D95, D101, and D102 define the affine
 fit; D99 and D97 are independent checks. This establishes reference identity and
 placement only, except where the owner-evidence records below explicitly close
-R79-R85/R93/R94/R95/R98 plus R92/R99/R100/R102/R108/R86/C20/C22 values or visible copper connectivity.
+R79-R85/R93/R94/R95/R98 plus R92/R99/R100/R102/R108/R86 values or visible copper connectivity.
 
 Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 
@@ -63,8 +63,7 @@ also show populated grey horizontal C16 between the IC rows and the red horizont
 backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;
 the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,
 R92.1-R99.2-D101.4, and R99.1-D101.8/GND. The May view likewise literally reads bare `27` on C16; exact sheet 3 specifies `27` (nominal 27 pF) and closes its endpoints to D97.15/.14. The incomplete GOST body code leaves its installed capacitance unproved.
-Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Enhanced July pixels
-read C20=`1Н5`, and an independent May angle directly reads the outer C22 body as `1Н5`; GOST 11076-69 Table 1 maps both codes exactly to 1500 pF / 1.5 nF, now adopted for both parts. Exact sheet 3 instead prints `22` (nominal 22 pF) for each; the installed body markings supersede that nominal. Sheet 3 closes their D102 timing endpoints; only tolerances and voltages remain unpromoted.
+Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Native crops retract the former `1Н5` reading: the inner body exposes a partial tolerance-like glyph and the outer body has glyphs resembling `М75`, neither a complete capacitance code. Exact sheet 3 prints `22` (nominal 22 pF) for each; installed values remain unverified. Sheet 3 closes their D102 timing endpoints.
 The original-resolution lower drawing labels the vertical part between D41 and D40 as `C83`.
 The owner component view is bracketed by direct fits of both marked packages and contains no fitted C83 body. Two candidate front sites form a plausible span and align with solder crowns under the promoted D41 fit; physical identity still requires continuity.
 Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. C83 is present in the logical source model on +5 V/GND, but physical PCB placement and the owner-board pad pair remain unresolved. C63 remains a separate bare inherited DRAM-grid footprint. The unrelated `.006` RF-option C13 is also DNP on the `.009` target.

@@ -71,10 +71,10 @@ against drawings/board photos before ordering final quantities.
 | --- | --- | --- | ---: | --- | --- |
 | circuit-review | AP2 | К170АП2 | 2 | D14, D32 | RS-232/line-driver substitute required; verify +/-12 V interface |
 | circuit-review | C_ELEC | radial electrolytic | 3 | C31, C32, C33 | modern radial electrolytic with matching value/voltage/polarity |
+| circuit-review | C_KM | КМ ceramic capacitor | 2 | C20, C22 | Sheet 3 specifies 22 pF nominal, but the installed body value is unread. Confirm capacitance before sourcing. |
 | circuit-review | C_KM | КМ ceramic capacitor | 9 | C9, C10, C11, C12, C15, C16, C19, C34, C94 | modern ceramic capacitor with matching value/voltage/lead spacing |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | 4 | C38, C42, C46, C50 | Factory placement/population is closed, but exact target capacitance, tolerance, and voltage remain unread; do not source the final part from the functional 0,047 model value. |
 | circuit-review | C_KM 0,047 | КМ ceramic capacitor 0,047 | 0 | C51, C52, C53, C70, C71, C72 | Target placement, population, capacitance, tolerance, and voltage remain unresolved; do not fabricate or source this position from the retired fit-to-space coordinate or functional 0,047 model value. |
-| circuit-review | C_KM 1,5 нФ | КМ ceramic capacitor 1,5 нФ | 2 | C20, C22 | Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone. |
 | circuit-review | C_KM 56 | КМ ceramic capacitor 56 | 0 | C29 | Exact source prints bare 56 without a unit; the native-sheet convention reads values below 1000 as pF, giving nominal 56 pF. Owner population and pads remain open. |
 | circuit-review | C_KM 560 | КМ ceramic capacitor 560 | 1 | C5 | Exact source nominal 560 pF; no body is visible at the factory C5 site in May/July owner photos, and native photo reread separates the upper D34.2/R33-left and lower D34.6 joints. Identify C5 pads and population history before fitting. |
 | circuit-review | C_TRIM | trimmer capacitor | 1 | C73 | modern trimmer capacitor matching footprint/value |

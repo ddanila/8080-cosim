@@ -184,15 +184,13 @@ registered solder view exposes both pairs of joints. Relative to D102's exact
 Both spans are 10.00 mm and the columns are 2.54 mm apart. This geometry lands
 on the visible component-side lead arcs and the corresponding four backside
 joints within the D102 registrations' roughly 0.1--0.5 mm photographic read
-uncertainty. Rotation and contrast enhancement makes C20's marking legible as
-`1Н5`. GOST 11076-69 Table 1 maps that code exactly to 1500 pF / 1.5 nF, so
-the source model now adopts C20=`1,5 нФ`. An independent May component
-angle directly exposes `1Н5` on the outer C22 body too, fixed by D102 and the
-inner C20 body against the already registered column order; C22 therefore also
-adopts `1,5 нФ`. The narrow standard provenance is recorded in
-`ref/datasheets/gost-11076-69-capacitance-code.md`. Electrical sheet 3 closes
-C20 on D102.6/.7 with R108 and C22 on D102.14/.15 with R102. Only tolerance
-and voltage remain unread.
+uncertainty. Native July and May crops retract the earlier `1Н5` reading:
+C20 exposes only a partial tolerance-like marking, while C22's visible glyphs
+resemble `М75`, not a complete capacitance code. Exact electrical sheet 3
+prints 22 pF as the nominal value of each, but the installed values remain
+unverified. The standard's code mapping is retained only as a generic reference
+in `ref/datasheets/gost-11076-69-capacitance-code.md`. Sheet 3 still closes
+C20 on D102.6/.7 with R108 and C22 on D102.14/.15 with R102.
 
 The R65/R67 increment removed their false D102-pad collisions. A later
 full-source DRC audit correctly exposed ten unique pairs caused by the remaining

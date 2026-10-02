@@ -56,9 +56,12 @@ for node in ("D97.13", "D102.4"):
         raise SystemExit(f"FDC PRECOMP: sheet-omitted output {node} is not NC")
 
 for ref, value in {"R92": "1,3к", "R99": "4,7к", "R100": "12к", "R102": "12к",
-                   "R108": "12к", "R86": "4,7к", "C20": "1,5 нФ", "C22": "1,5 нФ"}.items():
+                   "R108": "12к", "R86": "4,7к"}.items():
     if COMPONENTS[ref].get("value") != value:
         raise SystemExit(f"FDC PRECOMP: {ref} value drift")
+for ref in ("C20", "C22"):
+    if COMPONENTS[ref].get("value"):
+        raise SystemExit(f"FDC PRECOMP: {ref} installed value is not verified")
 
 obsolete = {"C19_1_R100_1_BOUNDARY", "C19_2_R86_1_BOUNDARY",
             "RIGHT_EDGE_RESISTOR_RAIL_BOUNDARY", "R102_1_BOUNDARY", "R108_1_BOUNDARY",

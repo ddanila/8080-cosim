@@ -503,7 +503,7 @@ def main():
         fp = pcbnew.FootprintLoad(SHARED + lib, fpn)
         if fp is None: raise RuntimeError(f"no passive footprint {fpn} for {ref}")
         # Keep a photographed case marking visible when no interpreted BOM
-        # value exists. C20/C22 `1Н5` are source-closed as 1.5 nF by GOST 11076-69.
+        # value exists. C20/C22 have no secure installed-value marking.
         fp.SetReference(ref); fp.SetValue(c.get('value', c.get('prov', {}).get('marking', '')))
         apply_population_flags(fp, c)
         fp.SetPosition(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))

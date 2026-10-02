@@ -5526,10 +5526,9 @@
     {
       "ref": "C20",
       "type": "C_KM",
-      "value": "1,5 нФ",
       "procurement": {
         "action": "circuit-review",
-        "note": "Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone."
+        "note": "Sheet 3 specifies 22 pF nominal, but the installed body value is unread. Confirm capacitance before sourcing."
       },
       "pins": {
         "1": "P1",
@@ -5537,18 +5536,16 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "ДГШ5.109.009 СБ plus registered owner component/solder photos and ГОСТ 11076-69",
-        "marking": "1Н5",
-        "pins": "electrical sheet 3 closes C20.1 to D102.6 and C20.2 to D102.7/R108.1. Owner evidence and GOST 11076-69 close the 1Н5 marking to 1500 pF / 1.5 nF; tolerance and voltage remain unread"
+        "refdes": "ДГШ5.109.009 СБ plus registered owner component/solder photos",
+        "pins": "electrical sheet 3 closes C20.1 to D102.6 and C20.2 to D102.7/R108.1 and prints 22 pF nominal. Native owner crop does not support the former 1Н5 reading; installed value, tolerance, and voltage remain unproved"
       }
     },
     {
       "ref": "C22",
       "type": "C_KM",
-      "value": "1,5 нФ",
       "procurement": {
         "action": "circuit-review",
-        "note": "Capacitance is source-closed, but tolerance and voltage rating remain unread; do not source the final part from value alone."
+        "note": "Sheet 3 specifies 22 pF nominal, but the installed body value is unread. Confirm capacitance before sourcing."
       },
       "pins": {
         "1": "P1",
@@ -5556,9 +5553,8 @@
       },
       "prov": {
         "type": "scan",
-        "refdes": "ДГШ5.109.009 СБ plus independent owner component angle/registered solder photo and ГОСТ 11076-69",
-        "marking": "1Н5",
-        "pins": "electrical sheet 3 closes C22.1 to D102.14 and C22.2 to D102.15/R102.1. Owner evidence and GOST 11076-69 close the 1Н5 marking to 1500 pF / 1.5 nF; tolerance and voltage remain unread"
+        "refdes": "ДГШ5.109.009 СБ plus independent owner component angle/registered solder photo",
+        "pins": "electrical sheet 3 closes C22.1 to D102.14 and C22.2 to D102.15/R102.1 and prints 22 pF nominal. Native owner crop does not support the former 1Н5 reading; installed value, tolerance, and voltage remain unproved"
       }
     },
     {

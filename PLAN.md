@@ -1110,9 +1110,9 @@ Every ask below is queued with exact deliverables in
    D94.1/D0-to-D101.1 `/OE0` feedback possibility conditional on chip-removed
    continuity and reduces the true D101 asks to pins 1, 3, 5, and 6
    (`docs/d101-reconstruction-constraints.md`).
-   The adjacent C20 and outer C22 body markings are now independently photo-read
-   as `1Н5` and source-closed by GOST 11076-69 Table 1 as 1.5 nF; their
-   tolerances and voltages remain explicit boundaries; sheet 3 closes their D102 endpoints. In the adjacent right-edge
+   A native crop recheck retracts the former C20/C22 `1Н5`/1.5 nF reading:
+   exact sheet 3 prints 22 pF nominal for each, while the installed values,
+   tolerances, and voltages remain explicit boundaries; sheet 3 closes their D102 endpoints. In the adjacent right-edge
    passive column, two independent target-board angles close R100, R102, and
    R108 as `12К`, and R86 as `4К7`. Uninterrupted component copper joins
    all four right-hand pin-2 leads to one common perimeter rail; sheet 3 closes
