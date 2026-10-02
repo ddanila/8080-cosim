@@ -41,7 +41,7 @@
       "factory_between": ["D97", "D102"],
       "additional_owner_photos": [
         {"path": "ref/photos/juku-pcb-2/PXL_20260710_202734776.jpg", "sha256": "8a4ca7e888f3c048df702ff1a58951a9b92cde9a7ac33635c28d7025ef682dbc"},
-        {"path": "ref/photos/juku-pcb-2/PXL_20260710_202744232.jpg", "sha256": "8140cd77116afcd5932b40d0ae5d416ee802a35d3925eaab8c926a7263018dc2", "native_crop_xyxy_px": [2500, 650, 3550, 1120]}
+        {"path": "ref/photos/juku-pcb-2/PXL_20260710_202744232.jpg", "sha256": "8140cd77116afcd5932b40d0ae5d416ee802a35d3925eaab8c926a7263018dc2", "native_crop_xyxy_px": [2500, 650, 3550, 1120], "visible_upper_joint_center_xy_px": [3045, 775], "joint_center_uncertainty_px": 25}
       ],
       "reading": "Two later angles show the same green component edge protruding beside the black cable in the gap between the adjacent К155АГ3 D97/D102 packages at the factory C15 callout. The cable masks most of the body and its lower lead; the upper visible metal feature cannot be traced to a unique rail.",
       "disposition": "factory-position C15 body candidate supported by two views; two-lead identity, value, individual rails, and replica-pad mapping unresolved"
