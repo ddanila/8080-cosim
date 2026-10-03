@@ -10,8 +10,9 @@ display electronics.
 
 The exact same "ADDR DATA" format is emitted by the simulation twin
 (hdl/vjuga_juku_top.v, +capture=<file>), so this tool is validated against the
-verified twin before any board exists (see sim/vjuga_readback_check.sh). A later
-bench mismatch therefore indicts the chip under test, not this script.
+verified twin before any board exists (see sim/vjuga_readback_check.sh). A
+physical mismatch also requires checking analyzer sampling, wiring, write
+coverage and initial state before identifying a faulty component.
 
 Usage:  reassemble.py <capture-stream> <framebuffer-out.bin>
 """

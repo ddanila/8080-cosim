@@ -7,8 +7,9 @@
 // where a socketed chip diverges.
 //
 // Clock: install the J96 shunt to tri-state the canned oscillator (U50), then
-//   wire CLOCK_PIN -> J92.10 (CLK). The Z80/82C55 are static CMOS; hold time is
-//   unbounded, so a hand-clocked or serial-paced clock is fine.
+//   wire CLOCK_PIN -> J92.10 (CLK). Confirm the fitted CPU/support parts permit
+//   the waveform and pauses. Stepping does not maintain DRAM retention; qualify
+//   refresh and WAIT behavior before using a RAM-dependent trace.
 //
 // Bus capture: four 74HC165 parallel-in/serial-out registers chained QH->SER,
 //   parallel-loaded from the board and read into a 32-bit snapshot. Wire the
