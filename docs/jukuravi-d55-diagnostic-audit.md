@@ -5,7 +5,7 @@ Verdict: **T15/T16/T31 D55 results are not valid evidence that either D55
 package is bad. T34 corrects the clocking error and reports a D55 functional
 path, not a package identity.**
 
-## Bottom line
+## Diagnostic scope
 
 The earlier register predicate had the right data-polarity idea but an invalid
 timing assumption. It programmed each 8253 counter in binary Mode 0, wrote an
@@ -92,7 +92,13 @@ policy, but changes the PIT diagnostic as follows:
    not eliminate the clocked count-register-to-counting-element load. Therefore
    D55 channel 0's low OUT/GATE state does not invalidate the channel-1/2
    register predicates.
-4. D57 is then tested using its independent direct clock sources.
+4. T34 retains the legacy D57 predicates. Channels 0/1 have direct clocks,
+   but channel 2 is driven by D55.13 `/VER RTR`, approximately 49.92 Hz.
+   The builder does not wait for that frame clock before sampling channel 2.
+   T34 corrects D55 coverage; its D57 channel-2 result is not a reliable
+   package or path discriminator. Use the corrected `D57S` v2 probe with
+   raster setup and settling described in
+   [the D57 timing correction](cs00024-t36-diagnosis.md#d57-channel-2-timing-correction).
 
 The image is T34, ROM version `1Ch`, self-CRC16 `A637`, SHA-256
 `63f69281e632324083bd5e7040d19a7939936b98a4d5cb245e008ea491d45cb5`.
@@ -128,8 +134,11 @@ clocks. It also proves why the result must not be labeled “D55 package bad.”
 There is **no longer sufficient desk evidence to call D55 bad or marginal**.
 T15, T16, T31 and T32 all inherit the unclocked predicate. The repeatable T16
 code 3 remains useful historical behavior, but it is not a valid channel-2
-package localization. No substitution result was recorded. CS00015 is now
-classified as **D55 path unverified; rerun T34 before component substitution**.
+package localization. No D55 substitution result was recorded. Later corrected
+raster setup and D57 channel-2 sampling passed 8/8 on CS00015, physically
+validating D55.13 `/VER RTR` and its D57 clock path. Other D55 counter
+predicates remain unverified; rerun T34 before component substitution. See
+[the service record](cs00015-service-record.md#post-diagnostic-restoration-and-ekta4401-service-rom).
 
 ### CS00024
 
@@ -141,20 +150,20 @@ as **D55 functional path clean in four T34 boots and both T36 sessions; no
 D55 package-fault evidence**. The T36 `1E/C617` capture also cleared D57 and
 both compact RAM predicates before every uploaded CPU/address probe passed.
 
-D57 was not stable across the T34 boots: the first bitmap was `00`, and the
-next three were `10`; both later T36 boot bitmaps were `00`. The expanded T36
-raw test nevertheless returned channel 2 as `99/99` after both high and low
-programming in eight repetitions. The boot predicate's low test covers only
-channel 0, so this is a separate D57 coverage/path finding and does not weaken
-the corrected D55 result. Long seven-vote loader PROBE commands also repeated a
-strong-CRC parser-buffer result, while a short seven-vote CONFIG followed by
-the same PROBE at one vote passed exactly. Later same-process marker tests
-proved an idle RAM/refresh failure: regular roughly five-second accesses kept
-the tested state exact, while an untouched interval between roughly 5 and 17
-seconds destroyed mutable loader state. Those are separate D57/refresh
-findings and do not weaken the corrected D55 result. Exact captures and limits
-are recorded in
-[`../spinoffs/jukuravi/CS00024-PHYSICAL.md`](../spinoffs/jukuravi/CS00024-PHYSICAL.md).
+The first T34 bitmap was `00`, and the next three were `10`; both later
+T36 boot bitmaps were `00`. Legacy T36 raw tests returned channel 2 as
+`99/99` after both high and low programming in eight repetitions. Those
+samples did not guarantee a `/VER RTR` edge and cannot establish a D57
+fault. CS00024 still needs the corrected `D57S` v2 rerun; CS00015 supplies
+the positive control.
+
+Separate same-process marker tests found that regular roughly five-second
+accesses kept mutable loader state exact, while an untouched interval between
+roughly 5 and 17 seconds destroyed it. Later T36 software refresh completed
+the full 32 KiB RAM proof, but did not validate normal raster refresh.
+The remaining retention and parser-margin investigations are summarized in
+[the current CS00024 diagnosis](cs00024-t36-diagnosis.md); raw captures remain
+in [the physical record](../spinoffs/jukuravi/CS00024-PHYSICAL.md).
 
 ## What a future result means
 
