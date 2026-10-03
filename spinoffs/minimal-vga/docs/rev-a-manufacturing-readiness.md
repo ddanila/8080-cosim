@@ -1,168 +1,66 @@
 # VJUGA Rev A manufacturing readiness
 
-Status date: 2026-07-23.
-
 Status: **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**.
 
-The ignored fabrication directory contains the last 200x200 mm bare-PCB
-package generated with stable KiCad 10.0.5. It predates the U20/U21
-active-low address-mux enable correction and the U22 refresh-counter cascade
-correction, and is **stale; do not upload or order it**. Its superseded upload
-archive was:
+Rev A remains the monolithic workbench design. The current order target is the
+[Rev B five-board system](rev-b-five-board-order-plan.md). This report does not
+authorize fabrication of either design.
 
-`fab/minimal-vga/upload/vjuga-rev-a-gerbers-drill.zip`
+## Source and package identity
 
+The recorded Rev A PCB is four-layer, 200×200 mm, with 119 refs / 133 nets
+and 2,887 F.Cu/B.Cu tracks (segments plus vias), with
+filled In1.Cu GND and In2.Cu VCC planes:
+
+- Source: `spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb`
+- SHA-256: `1326703605818b168dff3fd9f0879d36f8494393e8f8567ca7894061c7419650`
+- [Recorded source DRC](rev-a-drc-readiness.md): KiCad 10.0.5, zero error-level
+  violations and zero unconnected items after saved inner-plane fills.
+
+The retained fabrication export is stale; do not upload or order it. It predates
+source corrections to the U20/U21 mux enables and U22 refresh counter.
+
+- Superseded archive: `fab/minimal-vga/upload/vjuga-rev-a-gerbers-drill.zip`
 Superseded SHA256:
 
 `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`
 
-The current source PCB SHA-256 is
-`1326703605818b168dff3fd9f0879d36f8494393e8f8567ca7894061c7419650`.
-The retained package's `order-readiness.md` and `SHA256SUMS.txt` only prove the
-identity and internal coherence of the superseded export. A new guarded export
-must replace them before vendor preview. No checksum is permission to upload
-or order the board.
+Its checksum and export checks identify that historical package only. A new guarded export and independent review are required before vendor preview.
 
-The 2026-07-17 compact reroute and 2026-07-23 D1 correction superseded the
-earlier 285x285 package. The later U20/U21 enable correction in turn
-superseded that post-D1 package, and the U22 refresh-counter correction
-superseded it again.
+## Implemented checks
 
-## Current source and superseded-package facts
+Real-ROM T80/tv80 boot comparisons at 6000 writes are guarded by
+`sim/boot_check.sh` and `sim/vjuga_boot_check.sh`. The two decode modes and
+framebuffer capture replay also have executable gates.
+U24's Gray-coded DRAM timing contract passes the modeled CPU, refresh, video
+and collision checks at 4 MHz (`sim/u24_dram_timing_check.sh`). Nine physical LVS slices
+are recorded in [the coverage guide](rev-a-lvs-coverage.md); whole-board coverage
+is incomplete. Simulation and source/route checks do not establish physical
+boot, signal integrity or programmed-GAL behavior.
 
-- The source PCB is four-layer, 200x200 mm, and routed.
-- Current stable KiCad 10.0.5 checks report zero error-level DRC violations, zero
-  unconnected items after refilling and saving both inner planes.
-- For the superseded export, Gerber/drill membership, deterministic ZIP
-  metadata, checksums, drill count, and external rendering passed. The ZIP had
-  11 deterministic-metadata members; Tracespace reported a 200000x200000
-  outline.
-- That superseded integrated export contained all ten Gerber/job files, one
-  Excellon drill file with 887 matching PCB pad/via features, and all 119
-  position rows.
-- Draft BOM/CPL, manual-install, socket-insertion, orientation, and review
-  artifacts exist.
-- The current routed board is 119 refs / 133 nets, filled In1.Cu GND and In2.Cu VCC
-  planes, 30 factory BOM rows, 96 CPL placements, 23 manual placements, and 21
-  post-assembly socket insertions. U23 remains a factory-mounted spare socket
-  but is explicitly DNP and absent from the owner IC-insertion list. The
-  committed copper has 2,887 tracks/vias
-  after the 200x200 reroute, bounded D1 clearance correction, and bounded U22
-  cascade route.
-- The behavioral aggregate passes both real-ROM CPU
-  implementations, dual decode modes, framebuffer readback, U24 timing, LVS,
-  physical-model, footprint, PCB, and DRAM guards. The current-source full DRC
-  and D1-specific static guard also pass. The current mux-enable and U22
-  refresh-counter source/route guards and full DRC pass; fabrication-package
-  gates have not yet been rerun.
+The source uses grounded U20/U21 active-low enables and U22 active-high resets,
+with U22.6 cascaded to U22.13. The exact-part candidates for
+[USB-C](rev-a-usb-c-candidate.md), [PTC](rev-a-ptc-candidate.md) and
+[TVS](rev-a-tvs-candidate.md) have static contracts. First-article orientation,
+thermal/load and surge qualification remain separate.
 
-## Release blockers
+## Remaining release requirements
 
-- T80 and tv80 VJUGA tops boot the patched real Juku firmware and match cosim's
-  framebuffer at 6000 writes (`sim/boot_check.sh` and
-  `sim/vjuga_boot_check.sh`); physical-board boot remains untested.
-- The current routed copper includes every Phase 3 socket/header and retains
-  filled GND/VCC inner planes. The current post-D1 source passes full KiCad
-  10.0.5 DRC at zero violations/unconnected items as well as the
-  dedicated static clearance/continuity guard. U20/U21 enables are now tied to
-  GND instead of their former floating island. U22's active-high reset pins
-  are tied to GND and its low-half Q3 output is routed to the high-half clock,
-  forming the intended 8-bit refresh-row counter. The retained Gerber package
-  no longer matches this route and must be regenerated before vendor preview;
-  independent human review remains open.
-- U24's Gray-coded DRAM timing contract passes CPU read/write, RAS-only refresh,
-  CPU/refresh collision handling, video arbitration, and vendored MK4564-12
-  timing guards at 4 MHz. The tv80 real-ROM path uses those controls and remains
-  framebuffer-identical to cosim. U5/U24 still need device-specific compilation,
-  programmed-device tests, and review.
-- Real firmware framebuffer contents are proven byte-for-byte without display
-  hardware; VGA timing/activity remains synthetic and physical video output is
-  untested.
-- The schematic, selected-part pinouts, copper, power/return strategy, and
-  Gerbers have not received the independent design review needed for release.
+1. Finish remaining physical LVS groups, or record an explicit owner waiver
+   supported by independent schematic, selected-part pinout and copper review.
+2. Compile U5/U24 for the selected GAL devices; retain fuse identities and
+   independent programmed-device readbacks, then validate their timing.
+3. Resolve the physical video acceptance scope. The framebuffer oracle checks
+   captured memory writes; it does not qualify an electrical VGA output.
+4. Review socket orientation, connector fit, selected-part compatibility,
+   power/return paths and protection limits. Recheck stock and assembly support
+   at order time.
+5. Regenerate Gerber/drill and assembly outputs from the accepted source; rerun
+   package integrity/render checks, record new hashes, and complete independent
+   review and vendor DFM/preview.
+6. Perform staged physical acceptance using [the Rev A bench procedure](phase4-bench-bringup.md).
 
-## Order-readiness checklist (bare PCB)
-
-What is left before ordering an empty (bare, unpopulated) Rev-A PCB, in order.
-Copper-blocking items must be closed; de-risking items are reprogrammable after
-fab but their pinouts freeze in copper, so decide them first.
-
-**Copper-blocking**
-
-1. **Route the PCB (Phase 3 step f) — DONE (re-laid-out + rerouted 2026-07-17).**
-   All 119 refs are placed and collision-clean on the compact 200x200 board (grid-
-   aligned parts and block frames, caps at chip short sides, 5 mm edge keepout);
-   every modeled pin lands on a real pad. The board was regenerated and fully
-   rerouted (freerouting fork, all 357 nets, 0 unrouted / 0 violations), then
-   received the bounded D1 clearance detour and the bounded U22 refresh
-   cascade (eight segments and two vias), giving 2,887 F.Cu/B.Cu tracks
-   (segments plus vias) with filled In1.Cu GND and In2.Cu VCC planes. The
-   current saved fills pass full KiCad 10.0.5 DRC with zero error-level
-   violations or unconnected items. The router runs on Linux and macOS (fork
-   jar + JDK 25).
-2. **Footprint / pinout validation.** DONE for land-pattern correctness:
-   `check_rev_a_footprints.sh` confirms every modelled pin lands on a real pad
-   and DIP pad counts match, across all 119 parts (it caught the USB-C shield
-   S1/SH and RES_TH slips). The exact HRO TYPE-C-31-M-17/C283540 J3 candidate
-   is now checksum- and geometry-guarded by `rev-a-usb-c-candidate.md`,
-   including all six contacts, four shell tabs, body outline, and power-only
-   CC/VBUS/GND contract. The exact Bourns MF-RG300-0-14/C3761779 F1 candidate
-   is likewise checksum-, electrical-, topology-, and static-fit-guarded by
-   `rev-a-ptc-candidate.md`. The exact Littelfuse P4KE6.8A-B/C1666224 D1
-   candidate is checksum-, polarity-, topology-, geometry-, and local
-   routed-clearance-guarded by `rev-a-tvs-candidate.md`. STILL REVIEW ITEMS:
-   physical pin-1 orientation of the socketed parts; F1 thermal/load
-   qualification; D1 surge-environment qualification; and order-time stock,
-   process, orientation, and first-article checks for J3/F1/D1.
-
-**De-risking (freeze before copper, even though reprogrammable)**
-
-3. **U24 DRAM-timing GAL (README gate 4).** **Simulation DONE:**
-   `sim/u24_dram_timing_check.sh` guards the corrected GAL22V10 pin contract and
-   slower MK4564-12 minima at 4 MHz. REMAINING: compile U5/U24 into the exact
-   chosen GAL device format, preserve fuse checksums, program, and bench-test.
-4. **VGA path (README gate 3) needs an explicit owner decision.** It is deferred
-   for the workbench purpose and the framebuffer-readback oracle replaces it, but
-   the gate still lists it. Recommendation: formally waive/re-scope it for the
-   bench-fixture Rev-A here rather than leave it as an open blocker.
-
-**Human gate + paperwork**
-
-5. **Independent review (README gate 6):** current schematic/copper and the
-   regenerated Gerber/drill and power-return strategy.
-6. **Regenerate + freeze the fab package (README gate 7) — REOPENED
-   2026-07-23:** the last stable KiCad 10.0.5 export passed every machine gate,
-   but the later U20/U21 enable and U22 refresh-counter corrections invalidated
-   it. Regenerate the package, rerun every export/integrity/render gate, and
-   record the new ZIP SHA-256. Then perform vendor DFM/preview plus live stock
-   and assembly-capability review at order time.
-Nine independently authored physical-LVS stages pass. Stage 1 covers all POWER
-and CLOCK_RESET placement refs, J93, and the U1 clock/reset/power boundary (17
-refs / 9 partitions). Stage 2 closes all 22 decode socket/glue parts plus six
-exact non-power boundary projections (28 refs / 37 partitions / 5 NC pads).
-Stage 3 closes every U1 Z80 and U2 ROM pin plus C1/C2, with all endpoints on 36
-non-power core nets included (35 mapped refs / 38 partitions / 2 NC pads).
-Stage 4 closes U10-U17 and C6-C13, with all endpoints on 19 non-power DRAM-bank
-nets included (25 mapped refs / 21 partitions / 8 NC pads). Stage 5 closes
-U20/U21 and C14/C15, including both grounded active-low enables and every
-endpoint on 25 non-power address-mux nets (19 mapped refs / 27 partitions).
-Stage 6 closes every U22/C16 pin, including both grounded active-high resets
-and the low-to-high-half cascade, plus every endpoint on CLK and the eight
-refresh-row nets (11 mapped refs / 11 partitions). Stage 7 closes every U23/C17
-pin, all eight counter-output NC declarations, the grounded resets/second
-clock, and every endpoint on CLK (9 mapped refs / 3 partitions / 8 NC pads).
-Stage 8 closes every U24/C18 pin, its three state-feedback NC declarations,
-and every endpoint on all 19 refresh-arbitration/DRAM-timing nets (31 mapped
-refs / 21 partitions / 3 NC pads). Stage 9 closes every U30/C19 PPI pin, its
-ten unused-port NC declarations, and every endpoint on all 28
-bus/decode/mode/keyboard-boundary nets (32 mapped refs / 30 partitions /
-10 NC pads). Every stage requires mutation controls; exact scope is
-`rev-a-lvs-coverage.md`. Before order, finish the remaining staged full-board
-LVS groups (twin ↔ board), or record a specific owner waiver backed by
-independent schematic, selected-part pinout, and copper review. This is exactly
-the check that catches a mis-bound pin before it is etched; the nine stages
-and narrower direct contracts do not make the remaining coverage optional.
-
-Regenerate the package after every source change. Only change this status to a
-release state after the functional and review gates in `../README.md` are
-closed. Until then: **do not upload, order, or pay for this board**.
+Follow [fabrication notes](../kicad/fab-notes.md) for the export workflow and
+[the sourcing policy](rev-a-sourcing-plan.md) for assembly responsibilities.
+Until the functional and review gates are closed: **do not upload, order, or
+pay for this board**.
