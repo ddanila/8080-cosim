@@ -170,59 +170,25 @@ plain-MAX232 mismatch, but its independent effect is not isolated because the
 selector orientation was corrected in the same revisit. The historical
 failure was therefore hardware configuration, not a host-parser defect.
 
-### Earlier Juku comparison (August 22–23)
+### Earlier comparison evidence
 
-Two fixed-host `0.3.1-m6` attempts were retained:
+Before the selector correction, both cable data orders produced zero received
+bytes. The retained direct/crossed logs are from
+[August 22](evidence/juku-serial/cs00000-ek37-ft232-20260822T185556Z.log),
+[August 22 crossed](evidence/juku-serial/cs00000-ek37-ft232-crossed-20260822T192424Z.log),
+[August 23](evidence/juku-serial/cs00000-ek37-ft232-direct-20260823T193804Z.log), and
+[August 23 crossed](evidence/juku-serial/cs00000-ek37-ft232-crossed-20260823T195054Z.log).
+Those runs did not isolate a faulty component. Their `tx=0` is expected:
+the stock host waits for a valid Janet request before replying, so `rx=0`
+also prevents transmission.
 
-| Arrangement | Target result | Host result |
-| --- | --- | --- |
-| documented data order | EK37 stayed in `Wait` | timeout, `rx=0`; no reply attempted |
-| data pair swapped | EK37 stayed in `Wait` | timeout, `rx=0`; no reply attempted |
-
-The raw captures and logs begin at
-[`cs00000-ek37-ft232-20260822T185556Z.log`](evidence/juku-serial/cs00000-ek37-ft232-20260822T185556Z.log)
-and
-[`cs00000-ek37-ft232-crossed-20260822T192424Z.log`](evidence/juku-serial/cs00000-ek37-ft232-crossed-20260822T192424Z.log).
-Receiving zero raw bytes rules out Janet framing, parity interpretation, and
-the higher-level host parser as the immediate failure mechanism.
-
-On 2026-08-23 the owner confirmed that both complete mappings had each been
-tried twice: DB9.2 to X3.4 plus DB9.3 to X3.9, and DB9.2 to X3.9 plus DB9.3 to
-X3.4. A separate raw 9,600/8O1 receiver was armed with POSIX `INPCK|PARMRK`
-and without `IGNPAR` before RESET and `TN`. It received neither valid bytes nor
-parity/framing/break markers. Two matching-artifact production-host attempts
-then again ended with `rx=0`; their logs are retained as
-[`cs00000-ek37-ft232-direct-20260823T193804Z.log`](evidence/juku-serial/cs00000-ek37-ft232-direct-20260823T193804Z.log)
-and
-[`cs00000-ek37-ft232-crossed-20260823T195054Z.log`](evidence/juku-serial/cs00000-ek37-ft232-crossed-20260823T195054Z.log).
-
-The `tx=0` field is not evidence that the adapter-to-Juku direction also
-failed. The stock host deliberately waits for a checksum-valid Janet request
-before writing its first response; zero receive therefore causes zero transmit
-by construction. Only the Juku-to-adapter receive direction is isolated by
-these host sessions.
-
-With the cable disconnected from the Diymore module while Juku displayed
-`Wait`, the FTDI-facing cable end measured 0 V on DB9.2 and approximately -9 V
-on DB9.3 relative to DB9.5. This identifies the Juku transmitter at pin 3 for
-that particular assembled mapping and confirms a valid idle magnitude at the
-unloaded cable end. It does not show the positive level during a byte, the
-level under the MAX232 receiver load, or the ground reference after the two
-devices are joined. The cable was crossed afterward but not remeasured before
-the bench session ended; the repeated full mappings above remain the stronger
-direction evidence.
-
-A temporary FT232BL-to-known-CP2102/MAX3232 cross-test received zero bytes in
-both directions at 9,600/8O1, 19,200/8N1, and 19,200/8O1, under both attempted
-data orders. Ground and line levels were not captured while that temporary join
-was assembled, so it is useful negative evidence but not sufficient to assign
-the fault to a particular driver, receiver, selector, or conductor.
-
-Finally the known CP2102 + MAX3232 chain was restored without changing the
-Juku, ROM, Juku-side cable, or host artifacts. It immediately completed the
-stock/JF15 path, reached `A>`, and served 30 disk reads / 90 records with zero
-retries or UART errors. Evidence begins at
-[`cs00000-ek37-cp2102-control-20260822T202538Z.boot.json`](evidence/juku-serial/cs00000-ek37-cp2102-control-20260822T202538Z.boot.json).
+The unchanged Juku, ROM, cable, and host artifacts worked with the known
+CP2102/MAX3232 control: stock/JF15 reached `A>` and served 30 reads / 90 records
+without retries or UART errors. The
+[control boot record](evidence/juku-serial/cs00000-ek37-cp2102-control-20260822T202538Z.boot.json)
+preserves its artifact identities. Unloaded voltage readings and temporary
+adapter cross-tests did not capture loaded waveforms or joined-device ground
+references; they do not establish a MAX232 incompatibility.
 
 ## Datasheet compatibility check
 
