@@ -25,7 +25,11 @@ Confirm the cathode lead and both lead nets together before remapping pads.
 
 Targeted owner check: the original-resolution July view exposes the upper/red VD3 solder pool near `(3420,1740)` and lower/green pool near `(3426,2028)` in `PXL_20260710_200418174.jpg`. These coordinates identify accessible component-side probe points, not cathode or numbered-pad identities. Identify the marked cathode end of VD3, then test it against R66.2/R67.1 and the opposite end against ground. Test X6 A:3 separately against both VD3 ends, VT2 emitter, and R65. Record the results before changing the KiCad footprint orientation or pad numbers.
 
-The source drawing establishes the electrical joins above. The owner-board photos separately identify VT2 and its emitter/R65.1 landing; they do not resolve every hidden pad or prove the connector's physical numbering from this sheet alone. The current model retains VIDEO_OUT at VT2.1/R65.1 and identifies the bracket display connector as X6 through A:3/A:4. The factory assembly and system cable drawings support X6; no physical X7 is modeled. A:3's exact copper path to the stage remains a target-board continuity boundary; see [the X6/R67 continuity review](x6-a3-video-source-conflict-review.md).
+The model retains `VIDEO_OUT` at VT2.1/R65.1. Assembly and system drawings
+identify bracket connector X6 through A:3/A:4; no physical X7 is modeled.
+A:3's copper path to the stage remains a target-board continuity hold. See
+[the X6/R67 review](x6-a3-video-source-conflict-review.md) for cable identity
+and the required measurements.
 
 ## Model verification
 
