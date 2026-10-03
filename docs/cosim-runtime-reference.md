@@ -103,77 +103,34 @@ second short-ROM convention. Its D15-only diagnostic reserves `0x000A`, starts
 framed protocol tables at `0x0800`, and recomputes all 2,037 covered bytes at
 runtime before touching the USART or RAM.
 
-## Why it references cosim, not a second Verilog model
+## Bus and DRAM model boundary
 
-Until 2026-07-14 this guard locked `juku_top` against a second Verilog model, `juku_struct` (a
-behavioral oracle). Comparing two independently-timed Verilog models made the verdict depend on
-sub-cycle event ordering, which Icarus resolves differently across versions — the guard "passed on
-Linux, failed on Mac" for the same commit. Referencing `cosim` removes the second model: every
-divergence is now a real `juku_top`-vs-reference difference, reproducible on any host. The
-`juku_struct` oracle and the old `cosim_diff_tb.v` were retired.
+The default 130,000-event run requires `BTRACE-END` with matching event types,
+addresses and data, including the BIOS RAM test at `D300h`. A malformed or
+short reference trace, absent default event class, mismatch or missing verdict
+fails the gate. Stack pushes write high byte first, matching the 8080 bus order.
 
-## Current state
+The functional DRAM model holds RAS through the CAS column phase. It latches
+row/column addresses at their strobes and strobes DIN on the later falling
+edge of CAS or WE, covering early and delayed writes. A sub-nanosecond settling
+delta handles the zero-delay address mux; it does not model real DRAM access
+latency. `hdl/sim/dram_unit_tb.v` checks control-edge ordering, read-after-write,
+physical row permutation and non-aliasing addresses through `sync/boot_check.sh`.
+The timing reference is the vendored
+[Mostek MK4564 datasheet](../ref/datasheets/mk4564-64kx1-dram.pdf), interpreted
+for the К565РУ5Г bank in `ref/datasheets/k565ru5-pinout.txt`.
 
-The default 130,000-event run reaches `BTRACE-END`: `juku_top` matches `cosim` in event type,
-address, and data throughout the bounded trace, including the BIOS RAM test at `0xD300`. There is
-no accepted divergence baseline; a malformed/short reference trace, absent default event class,
-mismatch, or missing verdict fails `sync/cosim_check.sh`.
-
-Promoting the guard from reads alone to the complete typed bus immediately found a previously
-invisible oracle defect: the C core produced the right final stack bytes but wrote the low byte
-before the high byte. The 8080 actually decrements SP and writes high first, then decrements and
-writes low. `i8080_push_stack` now follows that bus order, which is also pinned by the independent
-CPU conformance test.
-
-The previously reported read #115878 mismatch was real but its first diagnosis was incomplete.
-Signal-level instrumentation established that CAS did pulse on the failing read. Two zero-delay
-modeling errors made the result depend on simulator event ordering instead:
-
-- the behavioral D53 scaffold asserted RAS only during Φ1 and released it before the Φ2/CAS column
-  phase, whereas a 4164-class transaction keeps RAS active through CAS; and
-- the РУ5 model committed writes on an unrelated synthetic `sclk` edge while CAS and WE happened
-  to be low. When control transitions shared a timestep, the sampled condition varied with event
-  order.
-
-The corrected functional transaction holds RAS from the row phase through the CAS column pulse.
-The РУ5 model now implements the asynchronous-DRAM rule directly: the latter falling edge of CAS
-or WE strobes DIN, covering both early writes (WE first) and delayed/read-modify writes (CAS first).
-The synthetic DRAM sampling-clock pin is gone. `hdl/sim/dram_unit_tb.v` exercises early, delayed,
-and coincident control edges, immediate read-after-write, the physical row permutation, and
-non-aliasing addresses; `sync/boot_check.sh` runs it in CI.
-
-The write-strobe rule comes from the contemporary Mostek MK4564 64K×1 DRAM data sheet,
-“Data Input/Output”: the later negative transition of WRITE or CAS strobes the DIN register;
-early-write timing references CAS, while delayed-write timing references WRITE. That data sheet is
-now vendored locally as the 4164-class AC-timing reference for the К565РУ5Г bank
-(`ref/datasheets/mk4564-64kx1-dram.pdf`, interpretation in `ref/datasheets/k565ru5-pinout.txt`)
-([manufacturer data sheet scan](https://www.minuszerodegrees.net/memory/4164/datasheet_MK4564-12.pdf)).
-
-One further zero-delay hazard survived until it was traced with Icarus 13.0 (the newer local
-toolchain; CI’s older Icarus scheduled around it, so the guard passed on Linux while dropping BIOS
-RAM-test writes on this host). The row/column address is multiplexed onto the shared MA lines by a
-zero-delay mux (D48–D51, `sel = phi1`), so MA can switch in the same timestep that RAS/CAS assert.
-Sampling *live* MA at the raw strobe therefore captured a half-settled column whose value depended
-on event ordering — writes and reads of the same cell used inconsistent columns, so the `AA` half of
-the `0xD300` checkerboard read back the stale `55`. The РУ5 model now honours the data sheet’s
-address/data set-up contract (tASR/tASC = 0, hold > 0: the address is valid *at* its strobe): it
-latches the row at RAS and the column at CAS, and strobes DIN on the later of CAS/WE, capturing the
-**settled** address/data a sub-nanosecond delta after each strobe. That delta only outlasts the
-zero-delay settling and stays far inside the compressed phase; it is not the real 120–200 ns access.
-The result is simulator-independent — the 130,000-event guard now reaches `BTRACE-END` on both Icarus
-generations. See `hdl/devices.v` `dram_64kx1`.
-
-This closes the runnable CPU-memory timing defect, not the complete historical video-slot timing.
-The exact D36.12/.13 source, D36/R57 propagation delay, CPU/video arbitration schedule, and precise
-DOUT turn-off point remain evidence boundaries. Until those conductors are traced, the zero-delay
-functional model keeps the sampled bit available through the access window and the runnable video
-path retains its simulation-only second port. Those limitations are tracked separately in
-`docs/memory-timing-boundary.md` and `docs/video-slot-timing-audit.md`.
+This model does not prove the complete historical video-slot timing, D36/R57
+propagation delay or precise DOUT turn-off. The runnable video path retains
+its simulation-only second port. See
+[memory timing](memory-timing-boundary.md) and
+[video-slot timing](video-slot-timing-audit.md) for the remaining evidence.
+Resolved simulator-ordering defects and the retired Verilog oracle are
+recorded in Git history.
 
 ## Real-time pacing (`JUKU_REALTIME_HZ`)
 
-By default `cosim` runs as fast as the host allows — roughly 270x a real Juku
-on an M4 Pro — which is what the test suite wants. Set `JUKU_REALTIME_HZ` to a
+By default `cosim` runs as fast as the host allows. Set `JUKU_REALTIME_HZ` to a
 cycle rate (or the shorthand `1`, meaning the nominal 2 MHz clock from
 `ref/juku-machine-facts.json`) and the run is paced so that **wall-clock time
 equals machine time**. The pacer sleeps only when simulated time has run ahead
@@ -182,24 +139,12 @@ hide a model that is lagging. `tests/cosim_realtime_test.py` guards the
 default, both spellings of the rate, proportionality at 10x, and rejection of
 a malformed value.
 
-Two distinct uses:
-
-- **Measuring machine time without waiting for it.** Run unpaced and divide
-  the reported `cyc=` at the stop point by the clock. A native Janet netboot
-  of `EKDOS230.BIN` stops at `CA00h` after 187,686,174 cycles, i.e. **93.8 s of
-  machine time**, produced in 5.5 s of wall clock.
-- **Reproducing host/machine interaction faithfully.** Unpaced, every
-  real-world latency on the host side (Python scheduling, `select` granularity,
-  USB-UART turnaround) is charged against a machine running ~270x too fast, so
-  a 10 ms host hiccup costs seconds of simulated time and trips protocol
-  timeouts that hardware never sees. Pacing removes that distortion. The same
-  netboot paced: 92.0 s wall against 92.4 s modeled, with rejects falling from
-  45 to 28 and transmitted frames from 420 to 386 — closer to the physical
-  CS00014 baseline of 334 frames and zero rejects.
-
-Pacing is therefore the honest way to compare a simulated session against a
-stopwatch on the bench, and the right mode for any experiment whose result
-depends on host and machine agreeing about time.
+For machine-time measurement, run unpaced and divide the reported `cyc=` by
+the selected clock rate. For experiments involving host scheduling, serial
+turnaround or a bench stopwatch, enable pacing: otherwise host latency is
+charged against a guest executing faster than the physical machine. A slow
+host can still lag the requested rate; inspect modeled and wall times before
+comparing results.
 
 An interactive tool may instead need maximum CPU speed while retaining a
 native helper process on the emulated USART. Set `JUKU_USART_HOST_SYNC_MS` to
@@ -226,9 +171,7 @@ opt-in, single-line, and 256-entry bounds.
 Set `JUKU_WATCH_ADDRESS` to one numeric address or an inclusive `start-end`
 range, for example `0xC600-0xC63F`. Cosim logs each memory read and write in
 that range with value, PC, and cycle count. It is observation-only and disabled
-by default. This is intentionally much narrower than a complete bus trace: it
-was added to prove that a CP/M native disk workspace was overwriting service
-code and, after its first relocation, the resident NetDisk cache.
+by default. Use it to observe a specific memory boundary without a complete bus trace.
 
 Every checkpoint also records a cumulative `watch_write_count` and the
 address, value, PC, and emulated cycle of the previous and last watched writes.
@@ -309,8 +252,7 @@ tools/juku_run.py --disk ../cpmish/juku-net-mode2-system.bin \
 
 It also turns cosim's bank-switch logging off and deletes its run directory
 on exit. The Juku switches memory banks constantly -- hundreds of thousands
-of times a minute -- so an interactive session left running writes gigabytes
-of stderr; one session here reached 52 GB and filled the disk. `--keep-logs`
+of times a minute -- so long sessions can produce large stderr logs. `--keep-logs`
 retains both the logging and the directory when that detail is wanted.
 
 Type boot keys **one at a time with a beat between them**: the emulated
