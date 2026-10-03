@@ -1,8 +1,8 @@
 # Juku ROM monitor command reference
 
-Status: hand-written analysis, 2026-08-11. Byte-verified against the pinned
-images; semantics decoded from the ekta37 handlers and applied to the
-EktaSoft family (identical rebuilds); jmon33 shares the command set but its
+Byte-verified against the pinned images; semantics decoded from the ekta37
+handlers and applied to the EktaSoft family by their shared command structure.
+The images differ in code and handler addresses; jmon33 shares the command set but its
 handlers are not independently decoded. All handler labels live in the
 [`../disasm/`](../disasm/README.md) control files.
 
@@ -12,7 +12,8 @@ After the banner/configuration screen, the ROM waits at a command prompt —
 nothing boots without input (a keyless cosim boot idles indefinitely, and
 the CI boot automation must type `TDD` to reach EKDOS). The command set is
 a classic machine-code monitor, dispatched through a `[letter][address]`
-table that every EktaSoft image and Monitor 3.3 carry identically:
+table. Every EktaSoft image and Monitor 3.3 carries the same command letters;
+handler addresses vary:
 
 | Command | Decoded behavior (from ekta37 handler code) |
 | --- | --- |

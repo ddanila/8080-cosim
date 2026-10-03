@@ -1,8 +1,9 @@
 # EktaSoft serial/RomBios lineage notes
 
-Status: hand-written analysis of the vendored images, 2026-08-11. Every
-claim below is a static observation of the pinned binaries and is
-reproducible with the snippet at the end. This complements the generated
+This analysis combines static observations of the pinned binaries with
+the cited drawing and owner-photo evidence. The snippet at the end reproduces
+serial/version strings and a selected boot-raster comparison; it does not
+reproduce every analysis below or verify physical compatibility. This complements the generated
 [`d15-d16-firmware-lineage.md`](d15-d16-firmware-lineage.md), which
 establishes archival identity for the adopted pair; this note explains how
 the vendored EktaSoft images relate to each other.
@@ -74,8 +75,9 @@ IBM AT keyboard. The 53x24 screen, TapeBios, and card-mounted FDC are the
 2.43-line configuration, not homebrew additions. #0043 therefore offers our
 `.009` board nothing over the adopted 3.43m image: the board's FDC is on
 the motherboard, its keyboard is the original matrix, and the network BIOS
-exists only in the 3.4x line. #0037 matches the `.009` hardware on every
-axis, which independently validates its adoption. The NetBios boot path
+exists only in the 3.4x line. #0037's banner matches those broad target
+features, supporting its adoption; the unresolved PB4/PB5 S21 boundary above
+prevents claiming complete firmware-to-board compatibility. The NetBios boot path
 itself is analyzed in [`ekta37-netbios-notes.md`](ekta37-netbios-notes.md).
 
 ## Content kinship
