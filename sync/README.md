@@ -1,8 +1,8 @@
 # Verification entry points
 
 `sync/` contains the LVS comparison, fast behavioral regressions, and focused
-subsystem/deep diagnostics. Reports under `docs/` are evidence outputs, not
-independent specifications.
+subsystem/deep diagnostics. Generated reports under `docs/` record evidence from their source data and
+checks; use the subsystem guides for implementation contracts.
 
 ## Connectivity
 
@@ -88,8 +88,10 @@ developer-invoked `sync/jukuhost_win32_wine_e2e.sh` maps Wine `COM1` through a
 PTY bridge and runs the actual PE against stock/JF17, C11, and C12 co-simulation; it
 is deliberately outside the ordinary CI gate. See
 `docs/windows-jukuhost-client-wine-acceptance.md` and
-`docs/windows-jukuhost-client-desk-acceptance.md`; real Windows, the physical
-adapter, CS00000, and Windows 95 remain separate qualification boundaries.
+`docs/windows-jukuhost-client-desk-acceptance.md`.
+[Windows 95 guest execution](../docs/windows-jukuhost-client-win95-acceptance.md)
+has also passed against the simulator. Physical serial qualification on
+Windows still requires the real adapter and board.
 
 ```sh
 sync/boot_check.sh
@@ -119,59 +121,17 @@ sync/network_first_rom_abi_check.sh
 sync/network_first_rom_hdl_check.sh
 ```
 
-These cover the real-ROM boot/framebuffer path, an independent and mostly
-exhaustive 8080 ALU/flag/control guard (`i8080_check.sh`), a one-instruction
-C/vm80a differential over every opcode and architectural flag combination
-(`i8080_vm80a_diff_check.sh`), typed
-memory/I/O bus-event agreement between `juku_top` and the C emulator
-(`cosim_check.sh`, cosim-referenced), focused end-to-end `CD low high` interrupt
-acknowledge agreement (`inta_bus_check.sh`), raw disk geometry, and a generated C/HDL
-FDC differential over deterministic command/event vectors with isolated writable
-images.  The five [`JukuPoly`](../spinoffs/jukupoly/README.md) guards build and
-cycle-qualify the simple chord, compiled-pattern player, and reusable disk-song
-library player; lock the OPL work's hot-loop, cycle, memory, file-size, and WAV
-baseline; then render the
-chord's D57 Mode-0 writes into a
-deterministic 16-bit WAV whose format, duration, pulse level, and staggered
-voice entrances are checked without committing generated audio.
-That FDC differential includes exact read/write DRQ boundaries, normal/deleted
-single and multiple writes, Read Address, and complete Read/Write Track streams.
-The bounded WD1793
-subset also includes Type-I physical-head,
-update/verify/status, D95-selected 3/6/10/15 or 6/12/20/30 ms step timing plus
-15/30 ms settle timing, and
-15-idle-index head-unload semantics plus the Type-II/III E-flag 15 ms delay and Type-II multi-record,
-streaming one-byte DRQ/LOST-DATA service semantics, completion/status and all Type-IV Force Interrupt event semantics, Read Address, and reconstructed
-one-revolution MFM Read Track plus index-gated, preloaded writable-track formatting
-and optional cross-run deleted-mark companion metadata,
-raster/serializer behavior,
-the Jukuravi stack-free D0 diagnostic ladder (including injected CPU-bad and
-stuck-TX paths), its host-session round trip, guarded DTR restart, bounded
-pre-banner retry policy, and the Nano bridge's byte-transparent bounded
-pump, rollover-safe isolated startup reset, active-low D5 hold/reassert gate,
-optional exact AVR compile, and the cumulative D2 loader's guarded chunk/write/
-readback/run API plus real host-CLI file orchestration through cosim, including
-exact upload logs, versioned/consecutive post-RUN heartbeat acceptance, and
-bounded heartbeat-timeout evidence; its host-control unit separately proves
-default-off real-port recovery budgets and non-retry boundaries. The same
-Nano/host guards cover default-off rollover-safe RESET/clock/`-MRDC`
-observation, exact liveness framing, durable decoding, and the evidence-bearing
-no-banner boundary, plus beeper and USART slices,
-the full standard К555ИЕ7/74LS193 asynchronous
-load/clear, bidirectional-count, terminal-pulse and cascade contract, and the
-К555ИЕ10/74LS161 direct-clear/synchronous-load contract plus D103's traced
-`0011`-preset modulo-13 feedback loop, and the BASIC cartridge window.
-The focused АГ3 guard covers the dual К155АГ3/74123 trigger/clear/complement,
-retrigger-inhibit and pulse-extension contract plus D56's photo-proved grounded
-A inputs and traced board RC timing parameters.
-`d2_ready_path_check.sh` separately guards the physical `.037` open-collector
-raw polarity through the D30 READY latch; it does not claim complete WAIT timing.
-`network_first_rom_abi_check.sh` rebuilds and checks the exact historical
-images through C8 plus the C9/C10 ABI 1.4 transport, telemetry, locale and boot
-matrices. `network_first_rom_hdl_check.sh` boots the exact C4 production ROM
-to its target-ready marker, retains its structural boundaries, and also proves
-the C9/C10 ABI, the dedicated C9-blank/C10-visible POF boundary, and one
-CRC-checked NetDisk-v3 DMA record in structural HDL.
+The checks above cover these boundaries:
+
+| Area | Coverage |
+| --- | --- |
+| CPU and boot | Real-ROM boot/framebuffer; independent 8080 ALU, flag and control checks; C/vm80a instruction differential; C/HDL bus-event and interrupt-acknowledge agreement. |
+| Disk and FDC | Raw geometry and deterministic C/HDL command/event comparisons, including DRQ/lost-data boundaries, Type-I timing, Force Interrupt, deleted records and track streams. See [FDC readiness](../docs/fdc-readiness.md) for model limits. |
+| Video and device slices | Raster/readout, beeper, USART, IE7/IE10 counters, AG3 trigger/timing and BASIC cartridge behavior. |
+| Jukuravi | D0 fault/session checks, Nano transport/reset/liveness guards, optional AVR compile, and D2 upload/readback/run and heartbeat handling. See [Jukuravi](../spinoffs/jukuravi/README.md) for the hardware boundary. |
+| JukuPoly | Chord, compiled-pattern and library players; cycle/memory/file-size baselines and deterministic WAV checks. See [JukuPoly](../spinoffs/jukupoly/README.md). |
+| READY path | Physical D2 `.037` open-collector polarity through the D30 latch; this does not establish complete WAIT timing. |
+| Network ROM | Artifact freshness and ABI, locale, transport, telemetry, video and boot checks through C12. Structural HDL checks include C4 boot, C9–C12 ABI, the C9/C10 POF boundary and a CRC-checked NetDisk-v3 DMA record; bounded CI profiles run a subset. See [network ROM](../spinoffs/jukuravi/network-rom/README.md). |
 
 `sync/cosim_check.sh` is slower than the others (it drives `juku_top` to ~20 ms
 of simulated boot); see `docs/cosim-runtime-reference.md`. Activate the tracked
@@ -181,12 +141,8 @@ the deep cosim guard when `hdl/`, `cosim/`, or `roms/` changed. `CI_GATE=off`
 overrides only the remote-CI check; `git push --no-verify` bypasses the complete
 hook and should be reserved for a deliberate, documented exception.
 
-CI is split by relevance: `ci.yml` (always-on, syntax + doc consistency),
-`reports.yml` (report-freshness + PROM/photo validation, gated on generator and
-data paths), and `hdl.yml` (LVS + behavioral boot, gated on `hdl/`, `cosim/`,
-`roms/`, `sync/`, `media/`, and the board JSON).
-Hosted jobs are capped at ten minutes and shell steps normally at five; see the
-[CI budgets and local-only coverage](../ci/README.md) for the bounded profiles.
+See [CI budgets and local-only coverage](../ci/README.md) for workflow
+selectors, bounded profiles, and checks that require a local run.
 
 After changing `kicad/juku.board.json`, timing-relevant HDL, or any
 `report_*.py`, run `scripts/regen_all.sh`; add `--deep` when HDL/cosim behavior
@@ -246,7 +202,9 @@ reset-to-prompt reports are the stronger evidence where both exist.
 The FDC, USART, PIT/PPI/PIC, memory timing, and video helpers are scoped to
 guarded Juku behavior. They are not complete drop-in models of every original
 chip. Most importantly, behavioral success cannot supply the remaining D94
-wiring or the functional connectivity of the 3 still-open FDC-support ICs; those are
-fabrication-release blockers tracked in `PLAN.md`. D2 itself is no longer
+wiring or the remaining connectivity of D96, D99, D100 and D101; those are
+fabrication-release blockers tracked in [the FDC handoff](../docs/fdc-hardware-handoff.md)
+and `PLAN.md`. D2 itself is no longer
 missing: its validated physical table and measured D0/READY path are adopted,
-and native/.009 evidence now closes D30 section B's X1.107B/R1 `H` handoff.
+and the X1.107B/R1 `H` handoff belongs to D105/D13. D30 provides the
+common asynchronous `STB` path to D38, with R5.
