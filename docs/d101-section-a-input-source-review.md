@@ -35,5 +35,21 @@ With D96 and D101 removed and power off, check D96.9 and each of D101.3,
 D101.5, and D101.6 against D101.4, R92.1, and R99.2. Record the meter
 readings separately.
 Until then, the section-A input topology is source-closed and physically
-unconfirmed; the runnable HDL keeps this half of D101 outside active precomp
-behavior. The independent D101.7/.9 output-tie conflict also remains open.
+unconfirmed. The structural Yosys view instantiates D101 with the joined
+inputs and `IMDRG` enable. Runnable HDL omits the D97/D102/D101 precompensation
+chain and holds D94 A4 (`d94_a4_d101_q0`) high; it does not simulate that
+source-drawn section-A path.
+
+D101.7 and D101.9 are separate in the exact drawing and canonical model;
+owner continuity closes D101.7 to D94.14. Physical pin-7-to-pin-9 isolation
+remains a useful check. See [the output review](d101-output-tie-photo-review.md).
+
+## Model guard
+
+```sh
+python3 kicad/check_fdc_precomp_network.py
+```
+
+The guard checks the JSON input/output nets, resistor connections and values,
+and structural HDL/LVS markers. It does not prove physical continuity or
+runnable precompensation timing.
