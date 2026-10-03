@@ -28,8 +28,6 @@ JUKU_TOP_FDC_TIMEOUT=420 \
 sync/juku_top_fdc_probe.sh
 ```
 
-Recorded HDL probe values: `DISK=media/disks/JUKU1.CPM SIM=verilator KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=0 FRAMEPHASE=49891 FRAMEMCYC=50761 TRACEPROGRESS=10000 VRAMSTOP_SYNC=0 TRACEIO=0 TRACECHK=0 TRACEPPI=0 TRACEIRQ=0 TRACEFDC=0 STOPIO=0 MAXVRAM=100000 TIMECAP=12000000000 STOPFDC=0 STOPFDCDATA=0 STOPPIC=0 STOPPPI=0 STOPPROMPT=1 STOPPC=none STOPPC_SKIP=0 TIMEOUT=420`.
-
 ## Boundary
 
 | Signal | juku_top Verilator report |
@@ -47,25 +45,6 @@ Recorded HDL probe values: `DISK=media/disks/JUKU1.CPM SIM=verilator KEYAT=42000
 | FDC track/sector/data | `0x02` / `0x06` / `0xE5` |
 | decoded FDC reads/writes | `10854` / `71` (`10925` ios) |
 | FDC data-register reads | `10752` |
-
-## HDL Report Anchors
-
-- Disk line: `FDC-1793: loaded raw disk media/disks/JUKU1.CPM (2 sides)`
-- First VRAM line: `[VRAM] first video write @0xd800 mcyc=25011`
-- Last VRAM progress line: `[VRAM] progress writes=70000 mcyc=2381003`
-- VRAM stop line: `none`
-- First PIC line: `[PIC] OUT port=0x00 reg=0 data=0xd6 mcyc=776238 vram=30520 ios=1`
-- First IRQ line: `none`
-- First PPI key-read line: `none`
-- First PPI line: `none`
-- First FDC line: `none`
-- FDC stop line: `none`
-- FDC data-stop line: `none`
-- EKDOS prompt line: `[PROMPT] EKDOS A> prompt reached x=0 y=70 mcyc=2701313 vram=73405 pc=0x097a`
-- CPU line: `[CPU] pc=0x097a sp=0xd2e8 instr=0x77 ba=0xe431 db=0xff mcyc=2701313 vram=73405 memr_n=1 memw_n=1 iord_n=1 iowr_n=1 inta_n=1 sync=0 intr=0 xchg_dh=1`
-- State line: `[STATE] pc=097a sp=d2e8 a=00 b=02 c=28 d=d4 e=97 h=e4 l=31 sf=0 zf=0 hf=1 pf=0 cf=0 iff=1 mode=0 portc=04 kbd_col=00 pic_icw1=d6 pic_icw2=fe pic_mask=df pic_expect_icw2=0 fdc_motor_on=1 fdc_status=00 fdc_track=02 fdc_sector=06 fdc_data=e5 fdc_command=80 fdc_buffer_pos=0 fdc_buffer_len=0`
-- I/O summary line: `[IO] raw_ios=22945 raw_reads=16765 raw_writes=6180 pic_ios=190 pic_reads=0 pic_writes=190 ppi_ios=11613 ppi_reads=5847 ppi_writes=5766 ppi_key_reads=552 fdc_ios=10925 fdc_reads=10854 fdc_writes=71 frame_ticks=53 intr_edges=32 inta_edges=96`
-- FDC state line: `[FDCSTATE] data_reads=10752 buffer_pos=0 buffer_len=0`
 
 ## Scope
 
