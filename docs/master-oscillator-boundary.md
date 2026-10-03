@@ -1,7 +1,5 @@
 # Master oscillator boundary
 
-Status date: 2026-07-23.
-
 Status: **SCHEMATIC OSCILLATOR TOPOLOGY GUARDED; C4 PHYSICAL GAP**
 
 The sheet-2 16 MHz oscillator around D59 matches its drawn endpoints in
@@ -15,7 +13,7 @@ target board and the exact `.009` drawing.
 The same exact tile prints R32=`1,3к`; the overlapping owner photo
 `PXL_20260710_200439607.jpg` directly reads `1K3` on the horizontal
 body above the КР531ЛН1 package. The older `.006` scan has `1,2к`.
-An enlarged July owner view now appears to join the photographed R32 left
+An enlarged July owner view appears to join the photographed R32 left
 lead to physical D59.4 and its right lead to D59.14 and a nearby pale R38=1K0
 left lead on continuous front copper. The exact `.009` sheet-2 drawing
 instead places R32 between D59.9 and D59.4; neither endpoint is D59.14.
@@ -39,7 +37,7 @@ The original-resolution `.009` sheet-2 oscillator frame
 `PXL_20260718_101908284.jpg` draws Z1 and C73 without a C4 branch.
 The `.009` assembly `PXL_20260711_114604420.jpg` and owner photos
 show a fitted C4 beside C73. One C4 lead visibly shares the upper C73
-terminal. Two native owner views now show the separate C73 lower terminal
+terminal. Two native owner views show the separate C73 lower terminal
 running on uninterrupted front copper to Z1's lower right lug. Under the
 sheet-2 Z1–C73 series topology, the shared C4-upper/C73-upper strip is
 therefore the likely opposite `OSC` side; Z1 lug numbering and remote
@@ -51,16 +49,25 @@ or footprint (`ref/photos/juku-pcb-2/c4-c73-shared-node-review.json`).
 The separate `XTAL16M` rail remains deliberately unmerged: its suspected
 continuation from `OSC` still needs the pending sheet-2 bundle-tag read.
 
+## Verification scope
+
+The generator reads canonical board JSON. It requires the listed
+endpoint subsets (additional members are allowed), axial R31/R32 types,
+Z1/C73 pin membership, selected value/provenance markers, and D59 mux
+enable endpoints. It does not hash or reread images, inspect PCB copper,
+verify oscillator startup, or measure frequency. Photo findings above
+are reviewed evidence summaries, not results recomputed by this guard.
+
 ## Checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| `OSC_FB` preserves every sheet-2 endpoint | PASS | D59.9, R31.1, R32.1, Z1.1 |
-| `OSC_PRE` preserves every sheet-2 endpoint | PASS | D59.1, D59.8, R31.2 |
-| `XTAL_TRIM` preserves every sheet-2 endpoint | PASS | C73.1, Z1.2 |
-| `OSC` preserves every sheet-2 endpoint | PASS | C73.2, D40.2, D59.2, D59.3 |
-| `PST_CLK` preserves every sheet-2 endpoint | PASS | D44.5, D59.4, R32.2 |
-| R31/R32 are modeled as physical oscillator parts | PASS | R31=1к; R32=1,3к |
+| `OSC_FB` contains the required transcribed endpoints | PASS | D59.9, R31.1, R32.1, Z1.1 |
+| `OSC_PRE` contains the required transcribed endpoints | PASS | D59.1, D59.8, R31.2 |
+| `XTAL_TRIM` contains the required transcribed endpoints | PASS | C73.1, Z1.2 |
+| `OSC` contains the required transcribed endpoints | PASS | C4.1, C73.2, D40.2, D59.2, D59.3 |
+| `PST_CLK` contains the required transcribed endpoints | PASS | D44.5, D59.4, R32.2 |
+| R31/R32 use axial-resistor model types | PASS | R31=1к; R32=1,3к |
 | Crystal and trimmer have no omitted endpoint | PASS | Z1.1/Z1.2 and C73.1/C73.2 are assigned |
 | R31 exact-revision value agrees with owner body | PASS | `.009` sheet 2: 1к; owner board #2: 1K0; older `.006` scan: 820 ohm |
 | R32 exact-revision value agrees with owner body | PASS | `.009` sheet 2: 1,3к; owner board #2: 1K3; older `.006` scan: 1,2к |
