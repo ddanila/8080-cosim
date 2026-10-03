@@ -23,7 +23,10 @@ disk media through the bounded FDC model, reaches EKDOS `A>`, and reaches disk
 BASIC `READY`. The exact ROMBIOS `0xA0/0xA2` write-sector path can also stream
 512 bytes to an explicitly writable disk copy and read them back; tracked media
 remains read-only by default. Monitor 3.3 reset/cursor and selected command
-paths also have HDL oracles.
+paths also have HDL oracles. The full-prompt results include recorded deep
+runs; current reruns have the
+[Verilator compatibility limitation](../sync/README.md#simulator-compatibility).
+Use each owning report for its inputs, scope, and reproduction command.
 
 The CPU, memory/ROM paging, populated bit-sliced DRAM bank, PPI/PIT/PIC/USART
 behavior, FDC boot subset, serializer, and raster helper are functional models.
@@ -73,21 +76,12 @@ the Juku-specific HDL clocks remain authoritative for count progression.
 - D7's physical pin12=`SYNC`, pin13=pin11 feedback strobe is retained in the
   structural/LVS path; runnable zero-delay simulation uses the explicit
   IOWR/IORD activity oracle instead of evaluating the propagation-delay loop.
-- Factory wire A:7 separates the D35.10 clock-source landing from the
-  D1.22/D48.1/D49.1/E2.3 PHI1 consumer island; W7 is the only modeled closure.
-- Factory wire A:8 is a mapped `net_boundary` instance between the separate
-  D38.8/A8B and D5.1/A8A PCB islands. It is electrically transparent in the
-  runnable model but cannot collapse back into routed PCB copper unnoticed.
-- Factory wire A:10 similarly separates D41.13/A10A from the shared
-  D50.1/D51.1/A10B select island while remaining zero-delay in simulation.
-- Factory wire A:11 separates the global D92.13/A11B MEMR island from
-  D7.1/A11A; W11 preserves the physical closure as another mapped boundary.
-- Factory wire A:14 separates the D35.12/A14B clock-source island from the
-  D1.15/E3.3/A14A PHI2 consumer island; W14 is the only modeled closure.
-- Factory wire A:19 similarly separates global MEMW/D5.26/A19A from the
-  D7.2/A19B landing, with W19 as the only modeled closure.
-- Factory wire A:20 separates D3.10/A20B from the co-located A20A/A23.1/X3.3
-  cable island; W20 remains transparent in HDL while preserving that assembly.
+- Seven factory wires (W7, W8, W10, W11, W14, W19, W20) use mapped
+  boundaries between separate PCB islands and are transparent in runnable
+  simulation. Three other wire positions remain modeled as copper
+  substitutions. [Factory-wire fidelity](../docs/factory-wire-route-fidelity.md)
+  owns the endpoint, routing, and landing-fit checks; HDL transparency does
+  not establish physical construction.
 - 55 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
@@ -97,8 +91,9 @@ the Juku-specific HDL clocks remain authoritative for count progression.
   formerly missed D59 5->6 inverter is now wired locally: D59.5 reaches the
   E14/video /G link and D59.6 reaches the E13/CPU /G link. Owner continuity on
   2026-07-22 proves D59.5 is driven by the D40.11 1 MHz slot rail, shared with
-  D92.2/.3 and D95.5/.6. The runnable HDL, JSON, schematic, and both zero-open
-  PCB representations now preserve that single-driver net; see
+  D92.2/.3 and D95.5/.6. The runnable HDL, JSON, schematic, and both routed
+  PCB representations preserve that modeled single-driver net; this does not
+  imply zero open connections across either board. See
   `docs/d40-d59-d92-d95-1mhz-route.md`. Yosys/LVS applies its complementary
   enables to D48-D51; runnable simulation keeps CPU MA selected while the
   SIM-ONLY video port remains in use, because the D41/D53 slot schedule is
