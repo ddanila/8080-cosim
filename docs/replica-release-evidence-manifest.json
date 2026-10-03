@@ -183,7 +183,7 @@
     },
     "Manufacturing": {
       "path": "docs/replica-manufacturing-readiness.md",
-      "sha256": "35fca65bd21e409b487131ebe4f47636ff782469dfe681e7c123194282aed337",
+      "sha256": "f6a5be87f3e090e813a8db0d6967ecf0c50825d1b7c60bcef713a2b44c06cb5f",
       "status": "DESIGN HOLD / PACKAGE REGENERATION REQUIRED"
     },
     "Upload procedure": {
