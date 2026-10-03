@@ -98,15 +98,6 @@ CLR2_N/pin11 to the separate D26 MOTOR EN continuation; physical
 continuity and powered timing remain to be checked.
 The 4 still-open support devices are D96, D99, D100, and D101.
 
-The Juku
-cluster contains two К555КП12 muxes and three К155АГ3 one-shots, whereas
-Figure 11 contains no mux and only one half of a single 74123. The owner
-photos identify the packages but the recovered Juku sheet, not the generic
-reference circuit, closes D95 and D106 completely plus D96's exact wiring.
-D96 section-1 restart phase remains undefined; D96.9-to-D101 continuity is physically pending,
-D96.11-to-D94.2 continuity remains unmeasured,
-and the D99.10-joined pin13 sheet-1 source remains a verification gate.
-
 ## Soviet VG93 Circuit Cross-Check
 
 The original 1986 КР1818ВГ93 paper confirms that this is the actual Soviet
@@ -116,14 +107,11 @@ collects period VG93 support circuits. Its Figure 16 shows a second
 useful comparison circuit, but its preset and clear straps are not reused
 where the primary Juku sheet differs.
 
-Factory `.009` sheet 1 resolves the apparent crossing: D106.7 reaches
-D28.9, D28.8 clocks D96.3, and D96.5 supplies D93.26 RCLK. The older
-photograph-only interpretation of a direct D106.7-D93.26 net is retired.
-Recovered sheet 3 proves D97.4/D93.27 RAW READ also drives D106.11 /LOAD,
-while D106.14 CLR is grounded; the older photo-only D106.14-D93.33 and
-hidden-handoff meter candidates are retired. Sheet 3 also proves D93.24 is driven
-by D95.7 from the selected 1/2 MHz rail, while D95.9 independently supplies
-D106.4 with selected 4/8 MHz; D106 Q3 is not a D93.24 source.
+Factory `.009` sheet 1 joins D106.7 to D28.9; D28.8 clocks
+D96.3, and D96.5 supplies D93.26 RCLK. Sheet 3 joins D97.4/D93.27
+RAW READ to D106.11 /LOAD and grounds D106.14 CLR.
+D95.7 supplies D93.24 with selected 1/2 MHz, while D95.9 independently
+supplies D106.4 with selected 4/8 MHz. D106 Q3 is not a D93.24 source.
 See `ref/schematics/fdc-clock-mux-map.md` and
 `ref/schematics/fdc-recovery-counter-map.md` plus
 `ref/schematics/fdc-read-clock-toggle-map.md` for the exact tables.
