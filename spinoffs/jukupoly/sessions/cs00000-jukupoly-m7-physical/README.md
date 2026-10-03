@@ -40,23 +40,14 @@ replacement, and an absent console as separate faults.
 | `IMPREAR.COM` | Loaded and began on the physical target, then failed to return.  The screen showed garbage and neither the expected end nor a remotely queued Escape restored CP/M.  The host was stopped more than three minutes into the recovered session. |
 | `IMPDET.COM` | Not run after the `IMPREAR` failure. |
 
-The exact `IMPREAR.COM` still passes the instruction-level 8080 standalone
-test offline: 1,500 frames, 29.863 seconds, PIT silence, restored stack, and
-restored interrupt state.  Therefore no score/player change is justified yet.
-The next hardware gate must start from a cold clean boot and run `IMPREAR`
-alone before attempting any sequence test.  If it passes alone, repeat
-`IMPV1` then `IMPREAR` while capturing the first divergent program counter or
-memory write.  If it fails alone, the target-vs-emulator boundary is already
-isolated.  Keep Imp v1 in the library and do not run `IMPDET` until this is
-resolved.
+The failed `IMPREAR.COM` passed the lightweight flat-RAM audio harness, but
+that harness did not model the write-protected high-ROM overlay. The complete
+system diagnosis below supersedes that result as evidence of correct startup.
 
-The comparison disk used in this historical run claimed Escape support, but
-its three standalone COM builds did not contain the library player's keyboard
-poll.  The queued remote Escape consequently provides no standalone-player
-evidence.  That medium was superseded by a standalone `-P8=1` build which
-asserted both emitted poll sites and cycle-tested all normal and injected-
-Escape returns.  The first such disk was SHA-256
-`55c99c0ba265dc06d9e45a6d721a79032959c0daa92527775982900d12c1b1ee`.
+The historical comparison disk also claimed Escape support without including
+the standalone keyboard poll. The queued remote Escape therefore supplies no
+standalone-player evidence. Current comparison builds use `-P8=1` and check
+both emitted poll sites and normal/injected-Escape returns.
 
 ## 2026-09-02 cold retest and root cause
 
@@ -74,7 +65,7 @@ quality verdict.
 The same old COM then reproduced the failure under the complete C10 ROM,
 CP/M, bank map, N4, and NetDisk cosim.  Its post-failure checkpoint wandered
 at `PC=00AAh`, `SP=FFFEh` with interrupts disabled, after repeatedly crossing
-the transient and PIT code.  This ruled out a CS00000 hardware fault and
+the transient and PIT code.  This reproduced the failure without physical hardware and
 exposed the lightweight audio harness's false assumption.
 
 The standalone JPS-v2 startup set `SP=0000h` for tone channel 3 and only then
@@ -94,20 +85,17 @@ system, caused the expected A: warm-boot/CCP reads, and accepted a subsequent
 B: `DIR`; the host recorded 22 reads, zero retries, zero boot restarts, and
 zero UART errors.
 
-The repaired-startup three-way disk was SHA-256
-`3e79d3cf2bbab4a9855f830a88f87ff44fd3660cddd753a02d5bdf6caf2005b8`.
-The repaired-startup OLD/NEW target-shape disk was SHA-256
-`aea4ec6549a3b7f4b383c8efa95fce953b375eb854aa1b06a7a93520098e56d2`.
-Physical listening of the latter remains pending; no broken standalone image
-should be used for that gate.
-
 The later host-side equal-phase member grouping correction changes the music
 payloads without changing this startup fix. Its current three-way disk is
 SHA-256
 `00c7c66b20a1d567271f93e66b16f239d4d9f58ccb2bad3972c6e6e702c87870`;
 its current OLD/NEW disk is SHA-256
 `f092375387b9047ab0739e3a6fa8d62b82bc495e8f24a595af29704e8253affd`.
-These newest images have not yet been run on CS00000.
+These images have not yet been run on CS00000. Their identities and build
+settings are recorded in [the three-way comparison report](../../OPL-IMP-M7-PHYSICAL-AB.json)
+and [the OLD/NEW report](../../OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json).
+Physical A/B remains pending; keep Imp v1 as the delivered library selection
+until the corrected candidates have listening evidence.
 
 ## Retained local evidence
 
