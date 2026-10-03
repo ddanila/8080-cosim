@@ -68,7 +68,7 @@ def main() -> int:
         "## Summary",
         "",
         f"- Board SHA256: `{hashlib.sha256(BOARD.read_bytes()).hexdigest()}`",
-        f"- Total violations: `{len(violations)}`",
+        f"- DRC violations excluding unconnected items: `{len(violations)}`",
         f"- Unconnected items: `{len(report.get('unconnected_items', []))}`",
         f"- Short violations: `{len(shorts)}`",
         f"- Copper-clearance violations: `{len(clearances)}`",
