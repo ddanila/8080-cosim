@@ -9,6 +9,7 @@ part column and a functional substitute column. It is generated from the
 current KiCad board source and keeps the .009 populated-vs-expansion-socket
 distinction explicit.
 
+Regenerate with `python3 kicad/report_dual_config_bom.py`.
 Run `python3 kicad/report_replica_sourcing_readiness.py` after regenerating this
 BOM to refresh the source-early, programming-gated, and review-before-buying
 readiness report.
@@ -22,9 +23,10 @@ readiness report.
 
 ## Sockets
 
-These parts are socketed on the original board -- order 11 DIP
-sockets (matching each part's pin count) in addition to the ICs, and fit the
-IC into the socket rather than soldering it to the board:
+The model explicitly flags 11 positions as socketed:
+this is a metadata inventory, not a complete original-board socket census.
+Confirm socket quantities, widths, and the chosen assembly configuration
+before ordering, including any additional sockets required for bring-up.
 
 - D2, D6, D8, D15, D16, D17, D18, D19, D20, D21, D22
 
@@ -167,6 +169,6 @@ IC into the socket rather than soldering it to the board:
 ## Use
 
 - `source-now` and `source-populated-now` rows are planning candidates, not an approved shopping cart.
-- `program/dump` rows need firmware/PROM contents before they are build-ready.
+- `program/dump` rows require device selection and programming/readback evidence. Validated PROM tables and the adopted EPROM split are indexed in [release evidence](replica-release-evidence-package.md).
 - The `Empty` count includes fabricated leave-empty positions and evidence-held positions with no current footprint; the row action/note distinguishes DNP, empty-socket, and placement-pending cases.
 - `mechanical-review` and `circuit-review` rows need exact part drawing, footprint, or circuit-role confirmation before order.
