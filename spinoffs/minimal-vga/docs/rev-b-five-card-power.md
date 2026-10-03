@@ -1,8 +1,9 @@
 # VJUGA rev B five-card power and VGA output — R5.V2 / R5.I7
 
-Status: **PASS / R5.I7 SYSTEM MODEL FROZEN** on 2026-08-29. The desk budget,
-routed-board voltage drop, exact normal supply, protected inputs and assembled
-clearance are now one machine-checked contract.
+Status: **PASS / R5.I7 SYSTEM MODEL FROZEN; PHYSICAL ACCEPTANCE PENDING.**
+The desk budget, routed-board voltage drop, exact normal supply, protected inputs
+and modeled assembly clearance form one machine-checked contract. Current draw,
+supply ripple and assembled-board behavior still require physical acceptance.
 
 ## Video bypass and bulk capacitance
 
@@ -66,10 +67,6 @@ A regulated 5 V, 2 A design limit leaves 345 mA (17.25%) planning headroom. The 
 4 A adapter therefore has 2.345 A of nameplate headroom. The production
 backplane has no USB power branch and must not be presented as USB-powered. First
 power-up still uses a current limit and staged card insertion.
-
-The original R5.V2 desk placeholder allowed 30 mA for the oscillator. R5.V4 selected
-the exact `ECS-100A-251.7`; its datasheet permits 70 mA at 24–69.999 MHz, so this table
-was conservatively raised by 40 mA rather than preserving the obsolete placeholder.
 
 ## R5.V6 protected normal input and supply
 
