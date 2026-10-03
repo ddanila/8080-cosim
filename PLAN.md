@@ -1308,7 +1308,7 @@ Every ask below is queued with exact deliverables in
    pin/net, and remote endpoints; this remains the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   48 source-risk nets and 62 chip-level fidelity gaps remain, including 4
+   46 source-risk nets and 62 chip-level fidelity gaps remain, including 4
    official FDC devices with untraced functional pins. X2's PA1/PA5
    contact digits are closed from native `.009` sheet 1 (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
@@ -1547,8 +1547,8 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 Neither source nor routed PCB has an endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-641 observations have dispositions, 47 rows are accepted evidence, eight rows
-are rejected (including the former R94 assignment and two D30 solder projections), and the other 586 remain
+641 observations have dispositions, 37 rows are accepted evidence, six rows
+are rejected (including the former R94 assignment and two D94.5-D93.1 claims), and the other 598 remain
 measurement requests
 (`docs/photo-registration.md`).
 

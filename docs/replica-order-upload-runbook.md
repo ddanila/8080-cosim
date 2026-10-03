@@ -60,9 +60,9 @@ kicad/check_replica_manufacturing_ready.sh
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3375 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2005 | FAIL |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 17520 | PASS |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 11610 | PASS |
-| Factory wire construction | `docs/factory-wire-route-fidelity.md` | 16288 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 17334 | PASS |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 12380 | PASS |
+| Factory wire construction | `docs/factory-wire-route-fidelity.md` | 16311 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 0 | FAIL |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 4029 | PASS |
 

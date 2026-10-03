@@ -11,9 +11,9 @@
   "supporting_files_sha256": {
     "docs/main-board-unresolved-endpoints.csv": "8048d1afc5e01e862a46f435110b6f1330318ada8ffa20ce22c06e2d4cff8f56",
     "docs/ppi-physical-pin-mapping.json": "68e4f7b0c27553a0575ce62aab2470aef26618ff797dc69c0f6d74e8e765c08f",
-    "fab/gerbers/juku_routed-drc.json": "0be7d5fc7ce83a3e4cbaab80b172fd5d51c4e43a1cd79d685d533306fa149cd8",
-    "fab/audit/main-board-erc.json": "1f5d68e0112f50cc3b72f5c465088c251d3a607bb86941850154135aa9fa525e",
-    "fab/audit/main-board-parity-drc.json": "c6152dd81014728e21baee7ad017102b8e5841aa138919d05cee1b9c04b02751"
+    "fab/gerbers/juku_routed-drc.json": "e481218638993cc4271ed6f62bbecdceceaa513bb245971845c239cc056190ba",
+    "fab/audit/main-board-erc.json": "8dc45308c5a0d1bbffa0afe564add62a29878af0992873933846a30bedca8525",
+    "fab/audit/main-board-parity-drc.json": "1629f10fb0768282ed95e783cb9e4fbf379965cce456c80aea82dee18405ecc6"
   },
   "bom": {
     "lines": 121,
@@ -138,12 +138,12 @@
     },
     "Factory wire construction": {
       "path": "docs/factory-wire-route-fidelity.md",
-      "sha256": "43d4df115a36177b1bfd175afbbb69d7bb3e09aba558d3b8cc96b88abafc8ee4",
+      "sha256": "e91d8438bb044daf10cb01517be646b96ac6d039f4e9d4e43ced9a9f9ffc2514",
       "status": "FACTORY WIRE LANDING EVIDENCE HOLD"
     },
     "DRC disposition": {
       "path": "docs/replica-fab-drc-disposition.md",
-      "sha256": "5ba24f33db02dd84cd0214a103aa174969244d9ee380409ecc2bccae64c1a331",
+      "sha256": "a91fef3ec0535b69eca21afd233158347ec60fab5c1ea1f419afe65555a5a296",
       "status": "REVIEW REQUIRED"
     },
     "Power trace": {
@@ -173,12 +173,12 @@
     },
     "Review waivers": {
       "path": "fab/gerbers/review-waivers.md",
-      "sha256": "5d930e4c1af8cbce1dd6b6292d94029cbd16537f454c7e6f277b230431fbf47b",
+      "sha256": "0e570fe2d26d579c57bcaf16812500084196831df61c5b6275644d27d702c1da",
       "status": "NOT ACCEPTED"
     },
     "Fabrication inventory": {
       "path": "fab/gerbers/fab-readiness.md",
-      "sha256": "3b0d9142b8db01051f2b66c535c063d3439ce4dbfbeb08fed82b88056b035021",
+      "sha256": "d3f4a8d848dce234f9bfcbe1b08d3c37ded3dcb42e08e7cdb372917f29ad571a",
       "status": "NOT READY"
     },
     "Manufacturing": {
@@ -188,12 +188,12 @@
     },
     "Upload procedure": {
       "path": "docs/replica-order-upload-runbook.md",
-      "sha256": "dd56728932a724e32d8cf1863737e132b98e7f3d9680b7def357aac9369722f0",
+      "sha256": "33e84af7c9ada80c31f240c26789947222d4fba946e186d0e7b12a479cb44400",
       "status": "PACKAGE INVALID"
     },
     "Order evidence": {
       "path": "docs/replica-order-evidence-template.md",
-      "sha256": "e42749037b3c621c4fc97634e03548ae8afa8054bc3a159955711740fd950296",
+      "sha256": "5c937f9f975ebc765f11773304a41c679d96232f1599cc33fc33b624e4e5e130",
       "status": "TEMPLATE INVALID"
     },
     "First article": {

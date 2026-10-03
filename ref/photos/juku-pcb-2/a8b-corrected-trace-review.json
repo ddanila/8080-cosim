@@ -4,12 +4,25 @@
   "component_image": "ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg",
   "solder_image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
   "component_candidate_white_joint_px": [1810.0, 2696.0],
+  "component_joint_native_review": {
+    "crop_xyxy_original_pixels": [1720, 2610, 1890, 2780],
+    "observation": "Native crop (1760,2210)-(1900,2760) shows the white insulated wire ending in a round solder pool between two long vertical F.Cu strips. Brown clearance remains visible between the pool and the right strip; the left strip approaches the pool but its final contact is hidden by solder and insulation. The centre of the solder pool is also covered, so no drilled annulus is independently visible. A front-only lap joint and a covered through-hole both remain possible.",
+    "consequence": "Do not assign either neighboring front strip or a solder-side hole to the wire joint from visual proximity. Meter the wire tip against each adjacent strip, the nearby solder candidate, and D38.8 separately."
+  },
+  "overlap_angle_review": {
+    "images": [
+      "ref/photos/juku-pcb-2/PXL_20260710_200415237.jpg",
+      "ref/photos/juku-pcb-2/PXL_20260710_200445914.jpg"
+    ],
+    "observation": "Both overlap tiles show adjacent board corridors, but their D38 entries in endpoints.csv are registration-only search projections in parallel-trace fields, not independently visible package contacts. Transferring the 200418174 white-wire point using those projected D38 coordinates lands on unrelated copper in 200445914, so it is not an independent joint match. Neither angle resolves a drilled centre beneath the solder pool.",
+    "decision": "Use 200418174 as the sole direct front-joint view; do not upgrade the A8B candidate from an uncalibrated overlap projection."
+  },
   "cross_face_projection": {
     "method": "affine map through corrected D38 pins 1, 7, and 14 on both faces; extrapolated outside package field",
     "projected_candidate_solder_px": [2402.911, 2363.356],
     "corrected_d38_pin8_solder_px": [2077.0, 2287.5],
     "candidate_to_pin8_solder_distance_px": 334.630,
-    "observation": "Projected candidate lies near the region bearing a printed 9, but no exact counterpart joint or uninterrupted copper path to D38.8 has been established. The long extrapolation does not prove A8 versus A9 wire identity."
+    "observation": "Original-pixel crop (1950,2100)-(2550,2550) puts the projected candidate on bare substrate near (2400,2370), beside a solder joint around (2380,2345). That nearby joint has a visible B.Cu departure toward the upper left, separated by brown clearance from the registered D38.8 joint at (2077,2288). The offset and long extrapolation do not identify it as the white-wire hole or prove an A8 versus A9 wire identity; no uninterrupted solder-face path to D38.8 is visible."
   },
   "independent_cross_package_check": {
     "package_centers": ["D38", "D41", "D92", "D39"],
@@ -19,5 +32,5 @@
     "difference_from_d38_local_projection_px": 17.133,
     "limit": "The wider fit supports the same solder search area, but package-center registration cannot identify a wire joint or copper continuity."
   },
-  "decision": "Retain A8B board coordinate and D38.8 copper assignment as unknown pending direct trace or continuity."
+  "decision": "Retain A8B board coordinate and D38.8 copper assignment as unknown. With power off, test the component white-wire joint near (1810,2696) against both adjacent front strips and D38.8; separately check whether it shares a hole or net with the solder candidate around (2380,2345). Do not promote the nearby joint or either strip from projection alone."
 }

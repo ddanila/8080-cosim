@@ -30,6 +30,14 @@
     "cross_check": "ref/photos/juku-pcb-2/c29-landing-pair-review.json",
     "next_measurement": "Power off: corroborate the photo-closed R35-lower/R106-upper/C29-upper node to D35.13; test R35 upper against PHI2TTL and R106 lower against a known ground contact; confirm the C29 middle candidate against ground. Measure R106 out of circuit to resolve the 910-ohm source versus 510R owner marking and inspect C29 population/value."
   },
+  "r35_input_solder_chase": {
+    "image": "ref/photos/juku-pcb-2/PXL_20260710_200522685.jpg",
+    "crop_xyxy_original_pixels": [1780, 1950, 2260, 2080],
+    "projected_r35_upper_joint_px_approx": [1830, 2010],
+    "east_open_annulus_px_approx": [2190, 2037],
+    "observation": "The solder joint at the projected R35 upper site has an uninterrupted B.Cu run east through an intermediate solder joint, then a short southeast bend into the open annulus. The adjacent upper and lower long traces have visible brown clearances and are distinct. A local mirrored projection of the annulus into component photo PXL_20260710_200418174.jpg falls beneath the D38 package body, roughly (1980–2010,2380), where no front conductor or matching hole can be inspected. This closes only the local solder-face run from that joint to the annulus; the component-side same-hole match to R35's upper lead and the annulus's onward conductor are not established by the crops.",
+    "next_measurement": "Confirm the projected joint is R35's upper lead, then meter that lead and the open annulus to D29.1/PHI2TTL with power off. Keep the adjacent long traces separate."
+  },
   "value_variant_implication": {
     "basis": "The source prints R106=910 ohms and C29=56 without an explicit unit; the native-sheet capacitor convention establishes nominal 56 pF (ref/schematics/native-capacitor-value-registration.json). The owner R106-position body is marked 510R, while owner C29 population is unproved. Using the source nominal C29 only for comparison, the R106-C29 products are 50.96 ns (source resistor value) and 28.56 ns (owner-marked resistor value).",
     "source_rc_ns_if_56_pf": 50.96,

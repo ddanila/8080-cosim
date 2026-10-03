@@ -17,7 +17,7 @@ silently.
 | `lib_footprint_issues` | 0 | Pass |
 | `shorting_items` | 0 | Pass |
 | `tracks_crossing` | 0 | Pass |
-| `unconnected_items` | 54 | Fix before order |
+| `unconnected_items` | 56 | Fix before order |
 
 ## Review-Only Classes
 
@@ -53,7 +53,7 @@ Visual disposition failures: 5
 
 ## Failures
 
-- Blocking DRC class `unconnected_items` is nonzero: 54
+- Blocking DRC class `unconnected_items` is nonzero: 56
 - Unexpected DRC class without disposition: `track_dangling`=24
 - Unexpected DRC class without disposition: `via_dangling`=1
 - Review-only DRC count changed for `courtyards_overlap`: expected 107, got 108

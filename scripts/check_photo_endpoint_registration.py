@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reject endpoint seed coordinates that contradict promoted package anchors."""
+"""Check promoted photo anchors and candidate nets against the board model."""
 
 import csv
 import json
@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRATION = ROOT / "ref/photos/juku-pcb-2/local-package-registration.json"
 ENDPOINTS = ROOT / "ref/photos/juku-pcb-2/endpoints.csv"
+BOARD = ROOT / "kicad/juku.board.json"
 MAX_ANCHOR_ERROR_PX = 10.0
 MAX_GRID_ERROR_PX = 3.0
 MAX_CROSS_PACKAGE_COLLISION_PX = 10.0
@@ -37,6 +38,7 @@ def promoted_grid(ref: str, side: str, pin: int) -> tuple[float, float] | None:
 
 def main() -> int:
     packages = json.loads(REGISTRATION.read_text(encoding="utf-8"))["packages"]
+    board_nets = json.loads(BOARD.read_text(encoding="utf-8"))["nets"]
     with ENDPOINTS.open(newline="", encoding="utf-8") as handle:
         endpoints = list(csv.DictReader(handle))
     by_key = {
@@ -80,6 +82,11 @@ def main() -> int:
                 failures.append(f"{row['endpoint_id']}: {error:.1f} px")
     grid_checked = 0
     for row in endpoints:
+        if row["candidate_net"]:
+            net = row["candidate_net"]
+            pad = [row["refdes"], row["pin"]]
+            if pad not in board_nets.get(net, {}).get("nodes", []):
+                failures.append(f"{row['endpoint_id']}: candidate {net} omits {row['refdes']}.{row['pin']} in board model")
         endpoint_id = row["endpoint_id"]
         if not endpoint_id.startswith(("seed-component-", "seed-solder-")):
             continue

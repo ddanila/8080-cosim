@@ -57,8 +57,8 @@ routed-snapshot change to regenerate the guarded current-result table.
 <!-- routed-refresh-current:start -->
 | Item | Count |
 | --- | ---: |
-| Source PCB SHA-256 | `8bf322d4790e5fd9cc115eac56243c2c7e3b4e3d0fe4d5212f4549859185b34c` |
-| Routed-snapshot PCB SHA-256 | `40ecf0550c44bb205ebb8cfb547d34613b698dc6ba14323a5560348ccfc42c3c` |
+| Source PCB SHA-256 | `50df831a9b6b4565315409c6dd0319751b31fd41ce13c77197dc856bf1184fe0` |
+| Routed-snapshot PCB SHA-256 | `9f6fff3fea7eaffa706e7479bc149983a1551b787542241ed8795fb869175158` |
 | Source footprints | 324 |
 | Routed-snapshot footprints | 322 |
 | Source-only footprints | 2 |
@@ -66,15 +66,15 @@ routed-snapshot change to regenerate the guarded current-result table.
 | Routed copper nets classified by the refresh | 405 |
 | Nets with currently reusable routed copper | 286 |
 | Routed nets currently quarantined | 119 |
-| Reusable non-duplicate track/via items | 15,236 |
+| Reusable non-duplicate track/via items | 15,245 |
 | Quarantined/duplicate track/via items | 15,123 |
 | Common-pad net mismatches requiring reroute | 0 |
 <!-- routed-refresh-current:end -->
 
-The promoted board contains the same 322 footprints and 2,436 pads as the
-source, with no source-only or routed-only footprints and no common-pad net
-mismatches. All 409 nets carrying routed copper pass the refresh classifier;
-three route items are duplicate geometry rather than quarantined topology.
+The current source has 324 footprints and the routed snapshot has 322;
+two footprints exist only on the source. Of 405 routed copper nets classified,
+286 have reusable copper and 119 are quarantined. Common-pad net names match,
+but this does not make the older routing snapshot placement-compatible.
 
 ### Historical live-source salvage baseline
 
@@ -1489,11 +1489,10 @@ $(scripts/find-kicad-python.sh) kicad/check_routed_candidate.py
 The preserved candidate remains routing-convergence evidence, not a claim of
 production parity. A fresh source/candidate pad comparison finds 2,440 source
 pad identities and 2,436 candidate identities: the four R9/R10 pads exist only
-on the source PCB. Among common pads it finds 1 changed pad-net assignment and 8 pads
-whose coordinates moved by more than 50 nm. D57.18 is `VERT_RTR` in
-the source and `CLK_123M` in the historical candidate; all eight D12 pads
-still occupy older coordinates in that candidate. The factory-wire report records this live
-comparison. The earlier 2,383/2,393-pad, 265-net, 224-moved snapshot has been
+on the source PCB. Among common pads it finds 0 changed pad-net assignments and 210 pads
+whose coordinates moved by more than 50 nm. The factory-wire report
+records this live comparison. The earlier 2,383/2,393-pad, 265-net,
+224-moved snapshot has been
 superseded by subsequent source and candidate updates and must not be used
 as a current parity result. Refresh/reroute still waits on the remaining
 factory-wire islands and functional P0 netlist freeze.

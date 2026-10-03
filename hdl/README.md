@@ -88,7 +88,7 @@ the Juku-specific HDL clocks remain authoritative for count progression.
   D7.2/A19B landing, with W19 as the only modeled closure.
 - Factory wire A:20 separates D3.10/A20B from the co-located A20A/A23.1/X3.3
   cable island; W20 remains transparent in HDL while preserving that assembly.
-- 48 modeled nets still carry source-risk annotations requiring
+- 46 modeled nets still carry source-risk annotations requiring
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
   Physical D41/D42/D43 and mux/decode instances exist. Their ИР16 falling-edge
