@@ -161,8 +161,8 @@ findings. Every status applies only to the boundary named by the report.
   `replica-candidate-parts-readiness.md` (guarded MK4564-12/FD1793B-01
   static compatibility with physical acceptance still held).
   Package readiness is not design release.
-- Routed-board refresh: `routed-refresh-audit.md` — reproducible history from
-  the stale candidate through the promoted exact-source zero-open route.
+- Routed-board refresh: `routed-refresh-audit.md` — current source/routed
+  differences, reusable copper and remaining routing holds.
 - Factory-wire routing: `factory-wire-route-fidelity.md` — distinguishes seven
   explicit wire/island splits from the three promoted-route copper substitutions
   still held on A9/A12/A13, and separately guards landing registration/fitting.

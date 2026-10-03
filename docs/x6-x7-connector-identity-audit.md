@@ -6,4 +6,7 @@ The original-resolution factory assembly sheet-1 view `ref/photos/dgsh5-109-009-
 
 The photographed A:3 joint is beside VT2/R65 and clearly separate from VD3; its exact copper path to VT2 emitter/R65.1 remains unmeasured. Keep A:3's physical continuity boundary until the board joint is tested or traceable in a registered solder-side image. The corrected model keeps VIDEO_OUT at VT2.1/R65.1, classifies X6 as the off-board `DISPLAY_CONN`, and removes X7 from the board JSON, generated source PCB, both routed snapshots, and BOM. The two short routed VIDEO_OUT segments between VT2.1 and R65.1 remain; 172 obsolete X7-route copper items and its four-segment ground spur were removed from each routed snapshot. Resolve the conductor-to-stage join only with direct board evidence. The legacy route-repair script still names X7 inside a provenance-hashed historical recipe and must not be replayed on the current board.
 
-KiCad loads all three corrected PCB files. Source-board DRC reports zero shorts/clearances; both routed boards report zero electrical shorts/clearances/tracks crossing and 49 unconnected items after the later R38/D35, D104.7/R30, exact D29 source-map, R101/R104/D12, and R18/R104 placement corrections. `./sync/check.sh` passes with 316 matched nets and zero HDL/KiCad differences.
+Current routed/source parity and DRC remain held; see
+[the routed audit](routed-refresh-audit.md) and
+[factory-wire fidelity](factory-wire-route-fidelity.md).
+The connector correction does not establish whole-board routing readiness.

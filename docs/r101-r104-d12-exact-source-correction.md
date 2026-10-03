@@ -72,9 +72,9 @@ which the model already connects to D10 IR0 and R105. D12 pins 5–7 and
 X1.114C have been assigned these nets in the source and both routed PCB
 variants. The HDL and synchronization map now include the second gate.
 
-After the footprint correction, both routed variants have zero electrical
-shorts, clearances, and track crossings, with 49 unconnected items.
-Schematic ERC and source-PCB endpoint parity report zero errors. The
+The correction does not establish whole-board routed parity or DRC readiness.
+Current findings are in [the routed audit](routed-refresh-audit.md) and
+[factory-wire fidelity](factory-wire-route-fidelity.md). The
 R104 installed value, remote D12/X1 continuity, and rerouting remain
 open. The prior routing DSN predates this source correction and must be
 regenerated before use.

@@ -4,18 +4,16 @@ The exact .009 drawing and owner photo identify R10 as the outer-left and R9 as 
 
 ## Temporary insertion trial
 
-The unmodified R9/R10 footprint blocks from `kicad/juku.kicad_pcb` were inserted into a temporary copy of `kicad/juku_routed.kicad_pcb`. Neither routed board was changed by this trial. KiCad 10 error-only DRC without zone refill reported 176 violations and 61 unconnected items before insertion, versus 241 violations and 64 unconnected items after insertion. The 65 added violations comprise 22 shorts, 22 solder-mask bridges, 10 copper clearances, 6 hole clearances, 3 plated-hole/courtyard collisions, and 2 courtyard overlaps.
+The retained placement-only trial inserted the source R9/R10 footprints into
+an isolated routed-board copy, remapping pad nets by name. It added 65 DRC
+violations and three open items: 22 shorts, 22 solder-mask bridges, 10 copper
+clearances, six hole clearances, three plated-hole/courtyard collisions and
+two courtyard overlaps. Neither tracked routed board was changed.
 
-Those first unconnected-item counts are historical. The same two unmodified
-source footprints were duplicated into a fresh temporary copy of the current
-routed board with their pad nets remapped by name. Error-only, no-refill
-`kicad-cli pcb drc` now reports **176 violations / 54 unconnected** before
-insertion and **241 violations / 57 unconnected** after it. The current
-delta is again 65 violations and three open items, with exactly the same
-category breakdown above. The temporary board is
-`/tmp/juku_r9_r10_current_trial.kicad_pcb`; neither tracked routed board
-was changed. This reproduces the collision diagnosis against the present
-power-route state, but is still a placement-only trial rather than a reroute.
+These counts describe that trial, not a fresh current-board DRC run. Current
+whole-board findings belong to [factory-wire fidelity](factory-wire-route-fidelity.md).
+The concrete conflicts below explain why copying the footprints alone is
+insufficient; routing needs a reviewed local copper correction.
 
 The source footprint positions are R10.1 `INT6_RAW` `(211.204,93.578)` mm, R10.2 `P5V` `(211.204,83.418)`, R9.1 `INT7_RAW` `(214.319,94.881)`, and R9.2 `P5V` `(214.319,84.721)`. Representative trial conflicts:
 
@@ -26,7 +24,7 @@ The source footprint positions are R10.1 `INT6_RAW` `(211.204,93.578)` mm, R10.2
 | R9.1 | INTA F.Cu/B.Cu and via `(213.5,95.25)`; P12V F.Cu near `(214.25,94.75)` | Multiple direct shorts and hole clearance failures |
 | R9.2 | INTA via `(214.5,84.5)` and IR7 B.Cu | Direct shorts |
 
-The current temporary trial's 22 shorting-item DRC records group into
+The retained trial's 22 shorting-item DRC records group into
 eight net pairs. Some records refer to the same via on two copper layers,
 so these are report counts rather than 22 independent places to move:
 
@@ -41,7 +39,7 @@ so these are report counts rather than 22 independent places to move:
 | `P5V` / `WREQ_N` | 2 | R10.2 and WREQ_N back tracks near `(210.5,83.25)` |
 | `INT6_RAW` / `P5V` | 1 | R10.1 and +5 V front diagonal |
 
-This list comes from the fresh temporary DRC JSON, with each record
+This list comes from the placement-trial DRC JSON, with each record
 requiring local copper inspection before any track is removed.
 
 ## Cause and correction boundary
