@@ -53,9 +53,11 @@ def main() -> int:
         "",
         f"Status: **{status}**",
         "",
-        "This report parses KiCad's `violations` array. `shorting_items` is a",
-        "violation type, not a top-level JSON member; checking",
-        "`report.get('shorting_items')` incorrectly reports zero.",
+        "The command runs fresh KiCad DRC on the source PCB. PASS and exit 0 mean",
+        "only that shorting_items, clearance, and tracks_crossing violations are",
+        "absent. Unconnected items, courtyard, silkscreen, and other violation",
+        "types do not fail this placement gate. It does not check routed variants",
+        "or authorize fabrication; see [manufacturing readiness](replica-manufacturing-readiness.md).",
         "",
         "## Command",
         "",
@@ -79,7 +81,8 @@ def main() -> int:
         "| --- | ---: |",
     ]
     lines.extend(f"| `{name}` | {count} |" for name, count in sorted(counts.items()))
-    lines += ["", "## Unique short collisions", "", "| Nets | Items |", "| --- | --- |"]
+    if unique:
+        lines += ["", "## Unique short collisions", "", "| Nets | Items |", "| --- | --- |"]
     for violation in unique.values():
         description = str(violation.get("description", "")).replace("|", "/")
         items = "; ".join(str(item.get("description", "")).replace("|", "/")
@@ -93,8 +96,8 @@ def main() -> int:
         "",
         "## Revision disposition",
         "",
-        "The former ten collision pairs came from placing the `.006` dashed VT3/VT4 RF option",
-        "on top of independently registered `.009` FDC parts. Complete `.009` assembly-drawing",
+        "The `.006` dashed VT3/VT4 RF option is excluded from this `.009` target.",
+        "Complete `.009` assembly-drawing",
         "coverage and the owner-board component tiles show only VT1/VT2, while the archived group",
         "BOM assigns the adjustable trimmer and extra RF transistors to `.006`. The legacy-only",
         "population is therefore DNP on this target; reused C9/C10/C11/C12/C15 retain their `.009`",
@@ -111,7 +114,7 @@ def main() -> int:
         "0.80 mm drills preserves a 0.35 mm annulus and provides 0.221 mm copper clearance without",
         "moving either component.",
         "",
-        f"- Guarded legacy-DNP references: `{len(legacy_dnp)}`",
+        f"- Recorded legacy-DNP references: `{len(legacy_dnp)}`",
         f"- Current collision references: `{', '.join(collision_refs) if collision_refs else 'none'}`",
         "- Evidence: `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`",
     ]
@@ -119,7 +122,7 @@ def main() -> int:
         lines += [
             "",
             "The source PCB is not eligible for routed-copper adoption while any short remains.",
-            "New collisions must be fixed from target-revision placement evidence, not waived.",
+            "Fix new collisions using target-revision placement evidence.",
         ]
     else:
         lines += ["", "The source PCB has no copper short, clearance, or track-crossing violation and passes this gate."]

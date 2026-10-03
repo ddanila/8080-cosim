@@ -2,9 +2,11 @@
 
 Status: **PASS**
 
-This report parses KiCad's `violations` array. `shorting_items` is a
-violation type, not a top-level JSON member; checking
-`report.get('shorting_items')` incorrectly reports zero.
+The command runs fresh KiCad DRC on the source PCB. PASS and exit 0 mean
+only that shorting_items, clearance, and tracks_crossing violations are
+absent. Unconnected items, courtyard, silkscreen, and other violation
+types do not fail this placement gate. It does not check routed variants
+or authorize fabrication; see [manufacturing readiness](replica-manufacturing-readiness.md).
 
 ## Command
 
@@ -32,15 +34,10 @@ python3 kicad/report_source_pcb_drc.py
 | `silk_overlap` | 199 |
 | `text_thickness` | 199 |
 
-## Unique short collisions
-
-| Nets | Items |
-| --- | --- |
-
 ## Revision disposition
 
-The former ten collision pairs came from placing the `.006` dashed VT3/VT4 RF option
-on top of independently registered `.009` FDC parts. Complete `.009` assembly-drawing
+The `.006` dashed VT3/VT4 RF option is excluded from this `.009` target.
+Complete `.009` assembly-drawing
 coverage and the owner-board component tiles show only VT1/VT2, while the archived group
 BOM assigns the adjustable trimmer and extra RF transistors to `.006`. The legacy-only
 population is therefore DNP on this target; reused C9/C10/C11/C12/C15 retain their `.009`
@@ -57,7 +54,7 @@ nearest pads are 1.721 mm centre-to-centre; using 1.50 mm copper around the orig
 0.80 mm drills preserves a 0.35 mm annulus and provides 0.221 mm copper clearance without
 moving either component.
 
-- Guarded legacy-DNP references: `15`
+- Recorded legacy-DNP references: `15`
 - Current collision references: `none`
 - Evidence: `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`
 
