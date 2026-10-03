@@ -10,8 +10,7 @@ Target: processor module `7.102.158`, 50 owner photographs taken in 2026.
   establish a video-timing role; adopted D8/D94 tables and roles are recorded
   in [the physical PROM archive](../../physical-proms/README.md).
 - `PXL_20260710_200402344.jpg` clearly shows a populated **КР1818ВГ93**.
-  The processor visible elsewhere on the board is not evidence that the FDC is
-  absent. The earlier non-FDC classification is withdrawn.
+
 - The July component-side grid clearly shows a populated eight-chip
   **КР565РУ5** bank, consistent with D84-D91, while the other DRAM expansion
   positions are empty.
@@ -28,9 +27,7 @@ Target: processor module `7.102.158`, 50 owner photographs taken in 2026.
   `КД521В`: the direct designation face plus corroborating populated position
   for VD1 in the reset-RC corner, and the direct designation plus independent
   grade-В reverse face for VD4 in the traced beeper clamp.
-  VD1 is visibly populated at the sheet-1 +5 V/reset-RC position; this corrects
-  its former omission from the board model rather than treating the empty model
-  as target-board evidence.
+  VD1 is visibly populated at the sheet-1 +5 V/reset-RC position.
 - The nominally "missing" ЛЕ4 package is present but decapped, with die and
   bond wires visible.
 - The clock/video corner visibly includes ИЕ17/74S169-class, ИР16, ЛП5, ЛА3,
@@ -72,12 +69,16 @@ mislabel; the 30-contact СНП59 is X2's parallel connector).
 
 ## Limitations
 
-Photo sighting alone did not establish D2/D94 contents; repeated programmer
-reads now preserve the byte-level truth for both devices independently of this
-survey. The July grid remains applicable physical evidence for the populated
-FDC board, but refdes-to-pad registration and end-to-end trace extraction must
-be completed before using it to assign the remaining functional nets of D99 or D101.
-D28/D97/D98/D102/D106 are source-closed by exact-revision sheet 3. Traces hidden by sockets, solder, glare, or crossings still
-require continuity measurements. The exact C35-C72 per-position capacitor
-values and other READY/WAIT source-risk boundaries remain open; the measured
-D30 section-B and D105 handoff routes are adopted in the board model.
+Programmer reads, rather than photo sightings, preserve the adopted D2/D94
+byte-level truth. The July grid documents the populated FDC board; it does not
+close every refdes-to-pad match or hidden conductor. The current
+[functional-pin inventory](../../../docs/unmodeled-footprint-inventory.md)
+identifies remaining holds on D96, D99, D100 and D101. D101's selected
+write-data path is source-closed, while its other listed pins and physical
+continuity retain separate boundaries. D28/D97/D98/D102/D106 are source-closed
+by exact-revision sheet 3.
+
+Traces hidden by sockets, solder, glare or crossings require continuity
+measurements. C35-C72 per-position capacitor values and other READY/WAIT
+source-risk boundaries remain open; the measured D30 section-B and D105
+handoff routes are adopted in the board model.
