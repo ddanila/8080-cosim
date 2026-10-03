@@ -4,7 +4,7 @@ Status: **PASS**
 
 This guard generates a cosim checkpoint at 30,000
 framebuffer writes on the vendored `media/disks/JUKU1.CPM` `TDD` path.
-This diagnostic stop precedes the first PIC/PPI setup window at
+This diagnostic stop precedes the later PIC/configuration-scan window at
 30,520 writes. The [uninterrupted HDL prompt run](juku-top-fdc-verilator-probe.md)
 records execution through the EKDOS `A>` prompt at 73,405 writes.
 
