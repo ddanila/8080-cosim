@@ -2,8 +2,9 @@
 
 Status: **VIDEO RASTER GEOMETRY GUARDED**
 
-This check pins the runnable video raster geometry against the vendored MAME
-Juku reference and the local `video_raster` HDL block.
+This check requires the vendored MAME active geometry to be 320 × 241
+pixels and tests the local `video_raster` active-area scan. Porches and
+periods below are parsed reference values, not simulated blanking intervals.
 
 ## Command
 
@@ -44,6 +45,8 @@ VIDEO-RASTER-GEOMETRY: PASS cols=40 rows=241 bytes=9640 dots=77120 wrap_addr=0xd
 
 ## Boundary
 
-This does not close the faithful shared-DRAM video slot timing. The still-open
-work is the РЕ3/АГ3-driven CPU/video arbitration schedule and replacement of
-the sim-only video read port with that real slot timing.
+The test instantiates the raster block rather than the complete board. It
+does not measure physical frame timing or validate the CPU/video DRAM slot
+schedule. The sim-only video read port still needs replacement with measured
+shared-DRAM timing. The separate autonomous PIT timing test is documented in
+[ROM-programmed timing](video-pit-timing.md).
