@@ -9,15 +9,23 @@ factory drawings / photos / dumps / measurements
              kicad/juku.board.json
                  /             \
                 v               v
-      generated KiCad       structural HDL
-      schematic + PCB       hdl/juku_top.v
-                \               /
-                 \---- LVS ----/
-                         |
-                         v
-             behavioral regression
-             vs cosim and MAME
+      generated KiCad       source/routed PCB
+         schematic          physical audits
+                |
+                v
+       schematic netlist ---- LVS ---- structural HDL
+       (or board JSON)                  hdl/juku_top.v
+                                             |
+                                             v
+                                  behavioral regression
+                                         vs cosim
 ```
+
+The structural HDL is maintained independently from the board model. MAME is
+a behavioral reference for interpreting the machine, rather than a runtime
+participant in these comparisons. PCB copper and placement require separate
+physical audits; the LVS path above does not inspect them.
+
 
 Historical sources are authoritative; `board.json` is the machine-readable
 working model. The generated KiCad schematic and the structural HDL are not two
