@@ -1,4 +1,4 @@
-# Remaining T32 serial probes for CS00015
+# CS00015 CPU increment-fault evidence
 
 Status: **COMPLETED 2026-08-05; no re-burn was required**
 
@@ -6,7 +6,7 @@ The already-burned T32 ROM is version `1Bh`, CRC16 `D62B`, SHA-256
 `61832807cd7e52c02384844649776efa75bb3ef25795a8124d795230ed5b5ce2`.
 All commands use its loader API v2 through X3 at 2400 baud.
 
-## Established physical signature
+## Supporting physical signature
 
 Correct absolute-address initialization has already covered:
 
@@ -16,12 +16,7 @@ Correct absolute-address initialization has already covered:
 - SHLD: the second write aliases;
 - `0FFF -> 1000` and `2FFF -> 3000`: carry can assert A12 correctly.
 
-The earlier `ram-a12-alias-regions-4000.asm` run is not a valid seeded-memory
-matrix because setup used `INX D`. It instead provides the strongest D1 clue:
-after INX, the odd byte was stored at the A12-low alias in all four regions,
-despite intervening CALL, stack, instruction-fetch, and RET cycles.
-
-## 1. Direct register-increment result — completed
+## Direct register-increment result
 
 This probe copies register results to low-A12 RAM without making any
 high-address memory access. Its predicted low aliases cannot be explained by
@@ -58,27 +53,20 @@ The source and clean/fault expectations are guarded by
 The helper handles a fresh T32 boot by default; pass `--attach-loader` only
 when the board is already silent with loader API v2 resident.
 
-## 2. Exact ROM WAIT comparison — completed
+## ROM WAIT comparison
 
 The exact ROM-mode pairs close the documentation caveat that all-RAM mode
 changes WREQ. `rom-read-pair-4000.asm` was run at `1000`, `1100`, `1200`, and
 `1400`.
 
-| Target | Correct | Predicted physical pair |
-| --- | --- | --- |
-| `1000h` | `00 C0` | `00 0B` |
-| `1100h` | `3E 11` | `3E 17` |
-| `1200h` | `3E 12` | `3E 02` |
-| `1400h` | `3E 14` | `3E E6` |
+All sixteen samples at each target returned the predicted alias:
 
-All sixteen samples in every row returned the predicted alias:
-
-| Target | D2 class | Physical pair |
-| --- | --- | --- |
-| `1000h` | CAS-gated | `00 0B` |
-| `1100h` | CAS-gated | `3E 17` |
-| `1200h` | no wait | `3E 02` |
-| `1400h` | always wait | `3E E6` |
+| Target | D2 class | Correct pair | Physical pair |
+| --- | --- | --- | --- |
+| `1000h` | CAS-gated | `00 C0` | `00 0B` |
+| `1100h` | CAS-gated | `3E 11` | `3E 17` |
+| `1200h` | no wait | `3E 12` | `3E 02` |
+| `1400h` | always wait | `3E 14` | `3E E6` |
 
 Evidence is under `sessions/t32-rom-read-pair-{1000,1100,1200,1400}-physical/`.
 No reconstructed wait class masks the CPU fault.
