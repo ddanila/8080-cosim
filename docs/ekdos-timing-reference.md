@@ -5,13 +5,19 @@ Status: **PASS**
 This is the fast cosim timing reference for the factory `TDD` path with
 vendored `media/disks/JUKU1.CPM`. It records where ROMBIOS first touches
 the PIC/PPI/FDC ports relative to CPU cycles and framebuffer writes, so
-`juku_top` diagnostics can target the right post-banner window.
+`juku_top` diagnostics can target the corresponding execution windows.
 
 ## Command
 
 ```sh
 sync/ekdos_timing_reference.py
 ```
+
+Normal runs compare the configured first-access records and first three
+frame IRQs with `sync/ekdos_timing_expected.json`. This is modeled CPU
+timing, not measured hardware timing. `--update` replaces that baseline
+with the new observations; review the underlying change and resulting
+diff before using it to establish new expectations.
 
 ## First I/O Accesses
 
@@ -43,4 +49,4 @@ sync/ekdos_timing_reference.py
 ## Disposition
 
 - This report is a CI guard for the cosim timing reference, not a gate for HDL prompt readiness.
-- The HDL top-level probe should not expect PPI/FDC activity before the post-banner window shown above.
+- PPI configuration accesses occur before framebuffer drawing; PIC setup and FDC commands occur in the later windows shown above.
