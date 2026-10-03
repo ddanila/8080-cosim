@@ -98,8 +98,11 @@ cd ref/eprom-images && sha256sum -c SHA256SUMS
 Source image: `roms/{SOURCE.name}` ({len(source)} bytes), SHA256
 `{sha256(source)}`.
 
-The exporter verifies that concatenating D15 then D16 reproduces the source
-byte-for-byte. The socket order follows `hdl/juku_top.v`: D15 is the low 8 KiB
+The exporter checks the source length and that concatenating D15 then D16
+reproduces it byte-for-byte. It derives the manifest hashes from the current
+source; it does not compare that source to a fixed adopted hash, rerun boot
+validation, or verify programmed chips. Independent content identity belongs
+to [the firmware ledger](firmware-gap-ledger.md). The socket order follows `hdl/juku_top.v`: D15 is the low 8 KiB
 and D16 is the high 8 KiB. Program each file into a compatible 2764/M2764 or
 electrically suitable 27C64-class device after confirming programmer support,
 pinout, blank check, and device voltage requirements; perform a programmer
@@ -121,8 +124,9 @@ programmer selection match the same read-mode pinout and supply limits.
 | 27 | /PGM | +5 V (`P5V`) for read mode |
 | 28 | VCC | +5 V (`P5V`) |
 
-The exporter guards these five power/programming pins for all eight physical
-D15-D22 sockets, not only the two populated devices. Pins 2-13, 15-19, 21,
+The exporter guards these five pin names and rail assignments in board JSON
+for all eight D15-D22 positions. It does not inspect PCB pads or measure
+physical socket continuity. Pins 2-13, 15-19, 21,
 23-25 retain the standard A0-A12/D0-D7 mapping recorded in
 `kicad/juku.board.json`. Programming voltage and pulse requirements come from
 the exact device selected in the programmer and must never be applied through
