@@ -29,9 +29,9 @@ This D13 caveat does not leave D2's board-used output ambiguous. D2 D0/pin12
 was sampled on Nano D10 with its own external pull-up; only D3 used Nano D13,
 and D2 D3 is an intentional board no-connect. Direct continuity also places
 D0 on D30.2 and R6. The executable guard `sync/d2_ready_path_check.sh` therefore
-pins D2 raw `0` as READY low and raw `F`/disabled as pulled-up READY high while
-the corrected-reader session was therefore able to expose D6's channel-order
-error without changing the already validated D2 table.
+pins D2 raw `0` as READY low and raw `F`/disabled as pulled-up READY high.
+The corrected-reader session exposed D6's channel-order error without changing
+the already validated D2 table.
 
 ## Earlier revision-2 wiring
 
@@ -144,9 +144,12 @@ The output retains both interpretations:
 
 The validator proves internal capture consistency, not reader wiring, device
 identity, output polarity, or historical provenance. Those require the physical
-records above. A sound repeated D2 dump would close the `.037` content gap but
-would not resolve any still-untraced board output branch. D94 `.092` requires a
-separate К155РЕ3 reader plus the outstanding continuity work.
+records above. D2 `.037` and D6 `.038` content is already validated; new reads
+corroborate those artifacts without resolving untraced board output branches.
+D8 `.039` and D94 `.092` also have validated physical captures, acquired with
+the separate К155РЕ3 reader described in
+[RE3 physical dumps](re3-physical-dumps.md). D94's hidden D0 load remains a
+continuity boundary independently of its recovered contents.
 
 Self-test:
 
