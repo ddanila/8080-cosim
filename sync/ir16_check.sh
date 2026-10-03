@@ -28,7 +28,7 @@ def endpoints(name):
     return {tuple(node) for node in board["nets"][name]["nodes"]}
 
 checks = [
-    ("К555ИР16 equivalence is pinned", contract["equivalent"] == "SN74LS295B",
+    ("Contract records К555ИР16 equivalence", contract["equivalent"] == "SN74LS295B",
      f"{contract['primary_document']}; PDF SHA256 `{contract['source_pdf_sha256']}`"),
     ("Clock transition is high-to-low", contract["clock_edge"] == "high-to-low",
      "standalone HDL test rejects a rising-edge state change"),
@@ -38,7 +38,7 @@ checks = [
     ("OC is active-high three-state control", contract["modes"]["oc_high"] == "outputs enabled"
      and "high impedance" in contract["modes"]["oc_low"],
      "OC=0 produces Z while sequential state continues"),
-    ("D41 output control is physically high", ("D41", "8") in endpoints("P5V"),
+    ("D41 output control is modeled on +5 V", ("D41", "8") in endpoints("P5V"),
      "D41.8 is on P5V"),
     ("D42/D43 output control remains one explicit rail", endpoints("SHIFT_G")
      == {("D41", "9"), ("D42", "8"), ("D43", "8"), ("D35", "6"), ("R38", "1")},
@@ -51,7 +51,7 @@ lines = [
     "Status: **DATASHEET-EXACT ИР16 PRIMITIVE GUARDED / BOARD CONTROL SOURCES OPEN**"
     if ok else "Status: **ИР16 PRIMITIVE CHECK FAILED**",
     "",
-    "This guard corrects the shared D41/D42/D43 device primitive without",
+    "This guard tests the shared D41/D42/D43 device primitive without",
     "claiming the unresolved board timing rails. The device is the SN74LS295B-",
     "equivalent four-bit register: it changes state on the falling clock edge,",
     "loads when LD/SH is high, shifts right when LD/SH is low, and uses pin 8",
@@ -63,6 +63,10 @@ lines = [
     "sync/ir16_check.sh",
     "```",
     "",
+    "The Icarus test exercises the standalone register. The script separately",
+    "checks device-contract metadata and selected canonical JSON endpoints.",
+    "It does not hash the PDF, inspect PCB pads or copper, or run a complete",
+    "video pipeline. The PDF hash below is recorded metadata.", "",
     "## Checks",
     "",
     "| Check | Result | Evidence |",
@@ -76,14 +80,16 @@ lines.extend([
     "",
     "## Physical consequence",
     "",
-    "- `SHIFT_G` is now correctly classified as the D42/D43 output-control rail;",
-    "  it is not a serializer clock or clock-inhibit input.",
+    "- `SHIFT_G` controls the D42/D43 outputs.",
     "- D41 uses that same rail as its clock while its own OC pin is tied high.",
-    "- D42/D43 still receive their separate clock on `XTAL16M` and their mode",
+    "- D42/D43 receive their separate clock on `XTAL16M` and their mode",
     "  input on `LOAD_VID`.",
     "- The exact sheet-2 frame closes `SHIFT_G` through D35.6 and R38.1;",
     "  its owner-board continuity and the remote `TIMING_TAG17` source remain",
-    "  evidence gaps, so this correction does not claim a physical DRAM slot schedule or pixels.",
+    "  evidence gaps. Measured slot timing and pixel output remain unverified.",
+    "",
+    "See [video readout](video-readout-readiness.md) for the complete pipeline",
+    "boundary and current control-source evidence.",
     "",
     f"Source document: [{contract['primary_document']}]({contract['source_url']}).",
     "",
