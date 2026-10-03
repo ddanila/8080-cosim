@@ -1,7 +1,5 @@
 # Decoupling capacitor value fidelity
 
-Status date: 2026-09-28.
-
 Status: **DRAM OPTIONAL FOOTPRINT ARTWORK REOPENED / VALUES AND NON-FIELD PLACEMENTS PENDING**
 
 This generated report isolates the C35-C72 decoupling-capacitor
@@ -33,90 +31,69 @@ dispositions and all factory capacitance values remain open.
 
 ## Current Board Model
 
-| Ref | Model value | Target population | Pin 1 net | Pin 2 net | Provenance note |
-| --- | --- | --- | --- | --- | --- |
-| C35 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C35 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly explicitly labels C35 above D67 at the first-column/first-row inherited grid site, and the target owner board shows that bare grid pair; the absolute target millimetre placement remains assumed; the grid spacing fit does not verify absolute board millimetres, and the current PCB C35 pads project onto unperforated board in the independent D9-local photo frame; D67 shows a matching group offset, and D67-local projection of the current C35 pads to solder (2678,1415)/(2570,1415) and overlapping component photo 200415237 near (1142,1792)/(1250,1792) both show no drill annuli; the physical C35 pair remains unidentified |
-| C36 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C36 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D75; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C37 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C37 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D83; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C38 | 0,047 | populate (factory drawing) | RAIL_G | GND | .009 factory drawing directly places C38 above D91 in the populated D91-D84 DRAM bank; the owner photo shows no capacitor body, and its bright marks continue to D91.1/RAIL_H and D91.16/GND package contacts rather than a source-consistent C38 RAIL_G/GND pair. Separate capacitor pads and later removal remain unproved. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending |
-| C39 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C39 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D65; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C40 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C40 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D73; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C41 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C41 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D81; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C42 | 0,047 | populate (factory drawing) | RAIL_G | GND | .009 factory drawing directly places C42 above D89 in the populated D91-D84 DRAM bank; the owner photo shows no capacitor body, and its bright marks continue to D89.1/RAIL_H and D89.16/GND package contacts rather than a source-consistent C42 RAIL_G/GND pair. Separate capacitor pads and later removal remain unproved. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending |
-| C43 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C43 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D63; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C44 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C44 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D71; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C45 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C45 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D79; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C46 | 0,047 | populate (factory drawing) | RAIL_G | GND | .009 factory drawing directly places C46 above D87 in the populated D91-D84 DRAM bank; the owner photo shows no capacitor body, and its bright marks continue to D87.1/RAIL_H and D87.16/GND package contacts rather than a source-consistent C46 RAIL_G/GND pair. Separate capacitor pads and later removal remain unproved. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending |
-| C47 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C47 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D61; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C48 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C48 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D69; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C49 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND | .009 factory drawing omits C49 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic RAIL_G<->GND bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D77; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C50 | 0,047 | populate (factory drawing) | RAIL_G | GND | .009 factory drawing directly places C50 above D85 in the populated D91-D84 DRAM bank; the owner photo shows no capacitor body, and its bright marks continue to D85.1/RAIL_H and D85.16/GND package contacts rather than a source-consistent C50 RAIL_G/GND pair. Separate capacitor pads and later removal remain unproved. Populate for the factory replica; BOM/DSN value 0,047 remains a functional model value and the exact factory capacitance is pending |
-| C51 | 0,047 | placement/population pending / no current PCB footprint | RAIL_G | GND | BOM/DSN value 0,047 and RAIL_G<->GND bypass intent remain schematic-only. The former near-D26 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
-| C52 | 0,047 | placement/population pending / no current PCB footprint | RAIL_G | GND | BOM/DSN value 0,047 and RAIL_G<->GND bypass intent remain schematic-only. The former near-D27 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
-| C53 | 0,047 | placement/population pending / no current PCB footprint | RAIL_G | GND | BOM/DSN value 0,047 and RAIL_G<->GND bypass intent remain schematic-only. The former near-D54 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
-| C54 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C54 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D66; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C55 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C55 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D74; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C56 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C56 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D82; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C57 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C57 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D90; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C58 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C58 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D64; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C59 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C59 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D72; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C60 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C60 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D80; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C61 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C61 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D88; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C62 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C62 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D62; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C63 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | BOM/DSN value 0,047 and intended array-power bypass role GND<->RAIL_H are retained. The older .006 assembly labels C63 in the inherited grid, but the apparent photo-grid pair at (176.1,145.6) mm matches neighboring DRAM package contacts and does not prove capacitor holes. The separate factory callout between D41/D40 reads C83, not C63. Assembly DNP with the modeled footprint retained provisionally until distinct capacitor holes are identified. |
-| C64 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C64 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D78; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C65 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C65 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D86; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C66 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C66 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D60; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C67 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C67 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D68; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C68 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C68 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. Schematic GND<->RAIL_H bypass intent remains modeled; the older .006 assembly labels this inherited grid site above D76; its exact target board-millimetre placement remains assumed pending a local package-to-grid fit |
-| C69 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H | .009 factory drawing omits C69 from the target DRAM assembly and the owner photo shows no body at its inherited grid position; assembly DNP with the modeled footprint retained provisionally because independent capacitor holes are unverified. The older .006 assembly labels C69 in the eighth column of the fourth DRAM row; the model midpoint (198.4,195.8) mm and former 3.9 mm DRC workaround do not establish separate capacitor holes. Schematic GND<->RAIL_H bypass intent remains modeled Assembly DNP with the modeled footprint retained provisionally; independent capacitor holes are unverified against neighboring DRAM package contacts. |
-| C70 | 0,047 | placement/population pending / no current PCB footprint | GND | RAIL_H | BOM/DSN value 0,047 and GND<->RAIL_H bypass intent remain schematic-only. The former near-D71 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
-| C71 | 0,047 | placement/population pending / no current PCB footprint | GND | RAIL_H | BOM/DSN value 0,047 and GND<->RAIL_H bypass intent remain schematic-only. The former near-D79 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
-| C72 | 0,047 | placement/population pending / no current PCB footprint | GND | RAIL_H | BOM/DSN value 0,047 and GND<->RAIL_H bypass intent remain schematic-only. The former near-D87 coordinate was an early fit-to-space assumption, not drawing/photo evidence; omit the PCB footprint until target placement and population are registered |
+Per-refdes provenance is retained in [the board model](../kicad/juku.board.json).
 
-## Evidence Reconciliation
+| Ref | Model value | Target population | Pin 1 net | Pin 2 net |
+| --- | --- | --- | --- | --- |
+| C35 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C36 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C37 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C38 | 0,047 | populate (factory drawing) | RAIL_G | GND |
+| C39 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C40 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C41 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C42 | 0,047 | populate (factory drawing) | RAIL_G | GND |
+| C43 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C44 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C45 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C46 | 0,047 | populate (factory drawing) | RAIL_G | GND |
+| C47 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C48 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C49 | 0,047 | assembly DNP / footprint retained | RAIL_G | GND |
+| C50 | 0,047 | populate (factory drawing) | RAIL_G | GND |
+| C51 | 0,047 | placement/population pending / no current PCB footprint | RAIL_G | GND |
+| C52 | 0,047 | placement/population pending / no current PCB footprint | RAIL_G | GND |
+| C53 | 0,047 | placement/population pending / no current PCB footprint | RAIL_G | GND |
+| C54 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C55 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C56 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C57 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C58 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C59 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C60 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C61 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C62 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C63 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C64 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C65 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C66 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C67 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C68 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C69 | 0,047 | assembly DNP / footprint retained | GND | RAIL_H |
+| C70 | 0,047 | placement/population pending / no current PCB footprint | GND | RAIL_H |
+| C71 | 0,047 | placement/population pending / no current PCB footprint | GND | RAIL_H |
+| C72 | 0,047 | placement/population pending / no current PCB footprint | GND | RAIL_H |
 
-- The native .009 sheet-2 power corner in
-  `ref/photos/dgsh5-109-009-e3/PXL_20260718_101901243.jpg` draws
-  C35-C53 between E4-selected rail G and E/GND, and C54-C72 between
-  rail H/-5 V and E/GND. Board JSON preserves these two branch groups.
-  The source PCB does
-  not fabricate C51-C53/C70-C72 until their target positions are proved.
-- C34 is separately source-closed across rail E/GND and rail F/+5 V;
-  the former `RAIL_H`-to-GND assignment was a scan-reading error.
-- The current BOM/model value for these 38 positions is uniform
-  `0,047`, which is suitable for the functional replica's modeled
-  bypass role. C63 is not populated in the .009 assembly; its modeled
-  inherited pad pair remains physically unverified. The separate D41/D40 callout is C83.
-- The `.009` drawing directly labels C38, C42, C46, and C50 above
-  D91, D89, D87, and D85 respectively. The owner component photo
-  has no visible capacitor bodies at those four regions, but the bright
-  marks at all four sites lead to DRAM pin1/RAIL_H and
-  pin16/GND rather than the modeled RAIL_G/GND capacitor pairs.
-  Populate the four in
-  the factory replica as drawn; owner-board removal remains unproved.
-- The same complete target view omits the other 28 positions in the
-  older `.006` 4x8 zigzag. The owner view shows no optional bodies,
-  but regular hole pairs are confounded by adjacent DRAM package contacts.
-  The 28 modeled PCB footprints are provisional, assembly DNP, and
-  excluded from the populate-now BOM until their holes are proved.
-- The retained factory and owner-photo evidence includes aggregate
-  mixed-value capacitor counts, but no defensible mapping from those
-  counts to individual C35-C72 positions.
-- C51-C53 and C70-C72 still require target-revision placement/population
-  disposition. Their former near-chip coordinates were early fit-to-space
-  assumptions and are now retired from the generator and source PCB. Exact
-  target-artwork placement of those six remains unresolved. The apparent
-  4x8 measurements have valid internal spacing, but the registered
-  features are DRAM package contacts. They establish no independent
-  capacitor-pad identity for C63, C69, or the other optional sites.
+## Evidence and boundary
 
-## Boundary
-
-- Do not silently promote the old mixed-value census into C35-C72
-  values; it is a board-authenticity lead, not a per-refdes map.
-- Do not treat the uniform `0,047` model as Tier-3 factory value
-  proof. It is a functional and currently routed BOM/model value.
-- The next data-unlocking action is a macro-photo/value read or a
-  matching specification page that maps values to individual
-  C35-C72 refdes positions.
+- The `.009` power corner puts C35-C53 between E4-selected rail G and
+  E/GND, and C54-C72 between rail H/-5 V and E/GND. C34 separately joins
+  E/GND to F/+5 V. The model preserves these source branch groups.
+- The `.009` assembly labels C38/C42/C46/C50 above D91/D89/D87/D85.
+  These are the factory population targets, but their independent pad
+  identities remain open. Bright owner-photo marks reach DRAM pin1/RAIL_H
+  and pin16/GND; they do not prove capacitor pads or owner-board removal.
+- The other 28 inherited grid references are assembly DNP. Their modeled
+  footprints remain provisional and excluded from the populate-now BOM.
+  Registered lattice features are DRAM package contacts, not proof of
+  independent capacitor holes.
+- C51-C53/C70-C72 remain absent from the source PCB until target placement
+  and population are proved. C63's inherited grid slot is unverified and
+  distinct from the `.009` C83 callout between D41/D40.
+- Uniform `0,047` is a model/BOM assignment. This guard checks its consistency;
+  it does not establish factory capacitance or electrical suitability.
+  Aggregate mixed-value counts do not supply a per-refdes value map.
+- Close the holds with identified capacitor holes, macro value reads or a
+  matching factory specification. Keep pad identity, population and value
+  evidence separate. Detailed registration evidence is linked by the board
+  provenance and retained under `ref/photos/dgsh5-109-009-sb/`.
