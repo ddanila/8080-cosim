@@ -57,10 +57,10 @@ cat > "$REPORT" <<EOF
 
 Status: **PACKAGE BEHAVIOR AND D56 TRIGGER GROUNDING GUARDED**
 
-The \`ag3_oneshot\` primitive now implements the two К155АГ3/74123
-retriggerable monostable sections instead of releasing all four outputs as
-high-impedance placeholders. D56 uses the traced R59/C8 and R47/C7 timing
-networks, giving typical modeled pulses of about 223 us and 5.04 us.
+The \`ag3_oneshot\` primitive implements two К155АГ3/74123 retriggerable
+monostable sections. Its default pulse parameters are 223000 ns and 5040 ns,
+chosen from the traced D56 R59/C8 and R47/C7 timing networks. They are fixed
+model parameters, not values computed from board JSON at runtime.
 
 ## Primary specification
 
@@ -70,12 +70,13 @@ Multivibrators*, SDLS043, December 1983, revised March 1988:
 
 <https://www.ti.com/lit/ds/symlink/sn74ls123.pdf>
 
-The guard covers:
+The Icarus test uses shortened pulse widths of 100/40 ns and retrigger
+inhibit intervals of 10/5 ns. It checks:
 
 - active-low overriding clear and complementary Q/Q-bar outputs;
 - B rising with A low, A falling with B high, and valid clear-release triggers;
-- independent dual sections and parameterized RC pulse durations;
-- retrigger extension after the documented 0.22-Cext inhibit interval; and
+- independent dual sections and the configured test pulse durations;
+- retrigger extension after the configured inhibit interval; and
 - immediate clear termination and cancellation of stale delayed completions.
 
 ## Installed-board trigger closure
@@ -88,8 +89,7 @@ inputs are therefore grounded. Exact-revision .009 E3 sheet 2 and direct owner
 continuity on 2026-07-21 close the active-high trigger inputs separately:
 D54.17 H.SYNC DSL drives D56.10/B2, while D55.17 VERT SYNC DSL drives D56.2/B.
 D56.12/Q2_N drives the tied D55.15/CLK1 and D55.18/CLK2 inputs. D57.17/SYNC B
-is a separate boundary, correcting the older scan chase that merged both D56
-triggers onto it. The position-159 callout material itself remains held.
+is a separate boundary. The position-159 callout material itself remains held.
 
 ## Command
 
@@ -104,6 +104,11 @@ $pass_line
 \`\`\`
 
 ## Evidence boundary
+
+The script also checks selected D56 JSON nets and no-connect entries, plus
+registration metadata for the two photographed ground observations. It does
+not recheck photo hashes, inspect copper, or simulate D56 in the complete
+board. The shortened device test does not verify the default D56 pulse widths.
 
 The RC-derived widths are datasheet-typical behavioral values, not a substitute
 for measuring the installed К155АГ3 across component tolerance and temperature.
