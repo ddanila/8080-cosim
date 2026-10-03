@@ -112,8 +112,10 @@ stronger.
 - X4.2–.5 retain revision/cable disposition because target sheet 3 omits them;
   X4.1–.6 are grouped returns on the НГМД side but unseen cable conductors are
   not invented.
-- The factory sheet's reset label polarity and physical FDC clock/analog edge
-  quality remain bring-up measurements, not missing transcription.
+- Owner continuity closes active-high RESET through D13.9/.8 to active-low
+  D93 MR_N. Reset timing and physical FDC clock/analog edge quality remain
+  bring-up measurements; the outer-bus reset contact code still requires
+  X1 orientation reconciliation.
 
 These are external-evidence boundaries. All source-visible `.009` corrections
 are represented or explicitly dispositioned; this audit supplies no authority
