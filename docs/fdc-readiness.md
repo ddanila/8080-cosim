@@ -74,7 +74,9 @@ physical D93/D94 wiring.
   motion still executes while its status reports NOT READY. Raising READY clears
   that live status indication. The C functional harness defaults the external
   input high, matching `juku_top`'s explicit behavioral-FDC tie; neither choice
-  claims the still-untraced physical source at D93.32.
+  establishes physical D93.32 continuity or its waveform. The drawing assigns
+  READY through D28.6 and the E11 2-3 selection with R84; the fitted selector
+  and board path require the checks in [the hardware handoff](fdc-hardware-handoff.md).
 - C and HDL now share the WD1793 interrupt contract for the modeled commands:
   loading a command clears pending INTRQ, normal/error completion raises it,
   and reading status acknowledges it. Type-IV Force Interrupt `0xD0` terminates
