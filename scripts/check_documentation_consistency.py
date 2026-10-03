@@ -228,7 +228,7 @@ def main() -> int:
     if "A3 consumes the owner-closed D105.3" not in read("docs/d94-reconstruction-constraints.md"):
         failures.append("D94 report does not preserve the owner-closed D105.3 runtime source")
     d101_report = read("docs/d101-reconstruction-constraints.md")
-    if "Status: **D101 FIRST HALF LOGIC-CONSTRAINED / FOUR SOURCE JOINS MEASUREMENT-GATED**" not in d101_report:
+    if "Status: **D101 FIRST HALF LOGIC-CONSTRAINED / FIVE SOURCE JOINS MEASUREMENT-GATED**" not in d101_report:
         failures.append("D101 first-half reconstruction constraints are missing or failed")
     for marker in ("D101.1-D26.38 IMDRG continuity", "**not** join those pins", "R92=1.3 kΩ"):
         if marker not in d101_report:

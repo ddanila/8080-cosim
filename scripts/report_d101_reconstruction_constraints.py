@@ -156,13 +156,13 @@ def main() -> int:
         ("D101 all-pin board mapping matches the measured/source model", pin_map_ok),
         ("D101 section-A inputs share the exact sheet-3 marked junctions", input_tie_ok),
         ("D101 Q0, D02 ladder, and EARLY/LATE selects preserve exact closed endpoints", closed_local_nodes_ok),
-        ("R92/R99 physical values remain 1.3 kΩ / 4.7 kΩ", resistor_values_ok),
+        ("R92/R99 modeled values match 1.3 kΩ / 4.7 kΩ", resistor_values_ok),
         ("Local pinout interpretation separates source and physical D101 evidence", pinout_ok),
-        ("HDL and exhaustive test preserve select order and high-impedance disable", hdl_ok),
+        ("HDL/test contains selected select-order and disable markers", hdl_ok),
         ("Physical D94 register-3 rows obey the exact A4 steering contract", d94_logic_ok),
     ]
     passed = all(ok for _, ok in checks)
-    status = "D101 FIRST HALF LOGIC-CONSTRAINED / FOUR SOURCE JOINS MEASUREMENT-GATED" if passed else "D101 CONSTRAINT REPORT FAILED"
+    status = "D101 FIRST HALF LOGIC-CONSTRAINED / FIVE SOURCE JOINS MEASUREMENT-GATED" if passed else "D101 CONSTRAINT REPORT FAILED"
 
     lines = [
         "# D101 first-half reconstruction constraints",
@@ -173,7 +173,7 @@ def main() -> int:
         "Its Q1 write-precompensation half is source-closed. This report narrows",
         "the separate Q0 half that drives D94 A4. The drawing closes /OE0",
         "to D26 PA6/IMDRG and joins D96.9 Q2 to all four section-A data inputs. Physical",
-        "continuity of D96.9 and three data-input branches remains unmeasured.",
+        "continuity of IMDRG, D96.9, and three data-input branches remains unmeasured.",
         "",
         "## Command",
         "",
@@ -182,6 +182,13 @@ def main() -> int:
         "sync/kp12_check.sh",
         "```",
         "",
+        "The generator checks the pinned PDF/image hashes, JSON pin/net/value",
+        "invariants, selected pinout and HDL/test text markers, and eight D94",
+        "register-3 image rows. It does not execute the mux simulation or inspect",
+        "physical components. Run `sync/kp12_check.sh` separately for simulation.", "",
+        "CLOSED below means represented by source or owner evidence; it does not",
+        "certify every physical joint. SOURCE-CLOSED / MEASURE flags the listed",
+        "D101 pins awaiting direct continuity, with D96.9 checked separately.", "",
         "## Evidence checks",
         "",
         "| Check | Result |",
@@ -200,7 +207,7 @@ def main() -> int:
             "| ---: | --- | --- | --- |",
         ]
     )
-    open_pins = {"3", "5", "6"}
+    open_pins = {"1", "3", "5", "6"}
     for pin in sorted(EXPECTED_PIN_NETS, key=int):
         actual = pin_nets[pin]
         state = "SOURCE-CLOSED / MEASURE" if pin in open_pins else "CLOSED"
@@ -279,8 +286,10 @@ def main() -> int:
             "",
             "## Reconstruction boundary",
             "",
-            "Closed automatically: device truth table, select order, Q0 destination,",
-            "D02 ladder, D94 register-3 steering truth, and exact probe states.",
+            "Derived constraints: mux select order and the eight D94 register-3 rows.",
+            "The canonical model records the source and owner connections above.",
+            "Runnable HDL omits the D97/D102/D101 precompensation chain and holds",
+            "D94 A4 high; these Q0 constraints describe the structural/source path.",
             "Still physical: D101.1-D26.38 IMDRG continuity, input ties at",
             "D96.9 and D101.3/.5/.6, the D94 D0 hidden-load disposition, and",
             "powered analog behavior.",

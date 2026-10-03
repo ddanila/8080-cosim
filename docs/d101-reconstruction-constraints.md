@@ -1,12 +1,12 @@
 # D101 first-half reconstruction constraints
 
-Status: **D101 FIRST HALF LOGIC-CONSTRAINED / FOUR SOURCE JOINS MEASUREMENT-GATED**
+Status: **D101 FIRST HALF LOGIC-CONSTRAINED / FIVE SOURCE JOINS MEASUREMENT-GATED**
 
 D101 is the target-board К555КП12 / SN74LS253 dual 4:1 multiplexer.
 Its Q1 write-precompensation half is source-closed. This report narrows
 the separate Q0 half that drives D94 A4. The drawing closes /OE0
 to D26 PA6/IMDRG and joins D96.9 Q2 to all four section-A data inputs. Physical
-continuity of D96.9 and three data-input branches remains unmeasured.
+continuity of IMDRG, D96.9, and three data-input branches remains unmeasured.
 
 ## Command
 
@@ -14,6 +14,15 @@ continuity of D96.9 and three data-input branches remains unmeasured.
 python3 scripts/report_d101_reconstruction_constraints.py
 sync/kp12_check.sh
 ```
+
+The generator checks the pinned PDF/image hashes, JSON pin/net/value
+invariants, selected pinout and HDL/test text markers, and eight D94
+register-3 image rows. It does not execute the mux simulation or inspect
+physical components. Run `sync/kp12_check.sh` separately for simulation.
+
+CLOSED below means represented by source or owner evidence; it does not
+certify every physical joint. SOURCE-CLOSED / MEASURE flags the listed
+D101 pins awaiting direct continuity, with D96.9 checked separately.
 
 ## Evidence checks
 
@@ -23,9 +32,9 @@ sync/kp12_check.sh
 | D101 all-pin board mapping matches the measured/source model | PASS |
 | D101 section-A inputs share the exact sheet-3 marked junctions | PASS |
 | D101 Q0, D02 ladder, and EARLY/LATE selects preserve exact closed endpoints | PASS |
-| R92/R99 physical values remain 1.3 kΩ / 4.7 kΩ | PASS |
+| R92/R99 modeled values match 1.3 kΩ / 4.7 kΩ | PASS |
 | Local pinout interpretation separates source and physical D101 evidence | PASS |
-| HDL and exhaustive test preserve select order and high-impedance disable | PASS |
+| HDL/test contains selected select-order and disable markers | PASS |
 | Physical D94 register-3 rows obey the exact A4 steering contract | PASS |
 
 ## Exact pin disposition
@@ -35,7 +44,7 @@ The TI truth table calls physical pin 2 select `B` and pin 14 select
 
 | Pin | Device role | Board net | State |
 | ---: | --- | --- | --- |
-| 1 | /OE0 | `FDC_IMDRG` | CLOSED |
+| 1 | /OE0 | `FDC_IMDRG` | SOURCE-CLOSED / MEASURE |
 | 2 | select B / EARLY | `FDC_EARLY_SEL` | CLOSED |
 | 3 | D03 | `D101_D02_R92_R99` | SOURCE-CLOSED / MEASURE |
 | 4 | D02 | `D101_D02_R92_R99` | CLOSED |
@@ -125,8 +134,10 @@ separately. Do not merge D94 D0 and IMDRG from functional resemblance.
 
 ## Reconstruction boundary
 
-Closed automatically: device truth table, select order, Q0 destination,
-D02 ladder, D94 register-3 steering truth, and exact probe states.
+Derived constraints: mux select order and the eight D94 register-3 rows.
+The canonical model records the source and owner connections above.
+Runnable HDL omits the D97/D102/D101 precompensation chain and holds
+D94 A4 high; these Q0 constraints describe the structural/source path.
 Still physical: D101.1-D26.38 IMDRG continuity, input ties at
 D96.9 and D101.3/.5/.6, the D94 D0 hidden-load disposition, and
 powered analog behavior.
