@@ -23,8 +23,7 @@ SCHEMATIC_LEADS = {
     "4": ("VIDEO_CYCLE", "sheet 1 label `VIDEO CYCLE` enters D2 A3/pin 4"),
     "2": ("IORC_N", "sheet 1 label `-XACK` enters D2 A5/pin 2 at X1/D29 `-IORC` coordinate 106C"),
     "15": ("WREQ_N", "sheet 1 arrow labels `-WREQ` from X1 coordinate 107C into D2 A7/pin 15"),
-    # The saved DSN still contains the older D2_WAIT_RAW interpretation, but
-    # direct owner continuity supersedes it in the authoritative source model.
+    # Direct owner continuity closes the READY latch input.
     "12": ("READY_D", "owner continuity: D2 D0/pin 12 enters D30 pin 2 and R6"),
     "13": ("GND", "sheet 1 D2 V1/pin 13 is tied low"),
     "14": ("GND", "sheet 1 D2 V2/pin 14 is tied low"),
@@ -151,6 +150,7 @@ def main() -> int:
     pin_roles: dict[str, str] = chip.get("pins", {})
     board_type = str(chip.get("type", ""))
     prov = chip.get("prov", {})
+    capture_count = json.loads((ROOT / "ref/physical-proms/validated/d2_037.dump.json").read_text())["independent_capture_count"]
     dsn_nets = dsn_pin_nets("D2")
     pcb_nets = pcb_pin_nets("D2")
     intentional_nc = {str(pin) for ref, pin in board.get("no_connects", []) if ref == "D2"}
@@ -172,7 +172,8 @@ def main() -> int:
         else:
             name, src = net
             signal_nets.append(name)
-            pin_rows.append(table_row([pin, role, f"`{name}`", src or "-"]))
+            local_source = "sheet-1 D2 enable tied low" if pin in {"13", "14"} else src or "-"
+            pin_rows.append(table_row([pin, role, f"`{name}`", local_source]))
 
     dsn_rows: list[str] = []
     for pin, role in sorted(pin_roles.items(), key=role_key):
@@ -307,6 +308,8 @@ def main() -> int:
         "",
         "## Board JSON Pins",
         "",
+        "Full per-net provenance is retained in [the board model](../kicad/juku.board.json).",
+        "",
         table_row(["Pin", "Role", "Net", "Source"]),
         table_row(["---:", "---", "---", "---"]),
     ]
@@ -328,17 +331,16 @@ def main() -> int:
             "owner-observed values without rewriting this historical constraint file.",
             "",
             "The named schematic leads above are pin-level source evidence where",
-            "cited, not a claim that the D2 truth table is known. The five address",
+            "cited; the captured programming table is separate evidence. The five address",
             "labels with scan provenance still need an exact .009 route chase.",
             "D2 pads are registered, while five former D2-to-D4",
             "photo-route claims are withdrawn after correcting the D4 row and",
-            "column assignment. Three validated owner captures, including a",
+            f"column assignment. {capture_count} independent accepted acquisitions, including a",
             "separate power cycle, now establish the physical raw table.",
             "",
             "## KiCad DSN Cross-check",
             "",
-            "The saved routed DSN predates the five source-assigned address inputs.",
-            "Its missing rows are a reroute boundary, not missing source evidence.",
+            "This checks saved DSN pin assignments, not routed copper connectivity.",
             "",
             table_row(["Pin", "Role", "DSN Net", "Result"]),
             table_row(["---:", "---", "---", "---"]),
@@ -457,9 +459,9 @@ def main() -> int:
             "  originally deferred the other five input nets.",
             "- Direct owner continuity supersedes the false D2.12->D105.9 path:",
             "  D2.12 joins D30.2 and R6 in the READY latch input.",
-            "- Two complete same-session reads matched at every address with zero",
-            "  unstable rows; all four outputs agreed. A third separately power-cycled",
-            "  capture validates to the same authoritative raw SHA256.",
+            f"- The validated manifest records {capture_count} independent accepted acquisitions,",
+            "  including power-cycled reads, agreeing on the authoritative raw table.",
+            "  Filename aliases do not count as additional read events.",
             "- The used D0 channel was read on unloaded Nano D10, not the D13 LED",
             "  channel. The open-collector HDL and focused D30 guard execute raw 0",
             "  as READY low and raw F/disabled as pulled-up READY high.",
@@ -476,7 +478,7 @@ def main() -> int:
             "  edge-bus `H`; R1 is 2 kΩ to +5 V. H gates CPU DBIN through D105",
             "  into D5 and is not the −5 V supply.",
             "- Known: `ref/physical-proms/validated/d2_037.raw.bin` is the 256-byte",
-            "  authoritative raw low-nibble image, reproduced from all three captures.",
+            f"  authoritative raw low-nibble image, reproduced from {capture_count} independent acquisitions.",
             "- Remaining closure is complete cycle timing around the now-closed `H`",
             "  edge plus historical corroboration, not D2 content or raw",
             "  electrical polarity.",

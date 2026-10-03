@@ -22,6 +22,8 @@ python3 scripts/report_d2_reconstruction_constraints.py
 
 ## Board JSON Pins
 
+Full per-net provenance is retained in [the board model](../kicad/juku.board.json).
+
 | Pin | Role | Net | Source |
 | ---: | --- | --- | --- |
 | 1 | A6 | `A10` | scan; D2 pad fit retained, former D4 photo trace claim withdrawn |
@@ -32,8 +34,8 @@ python3 scripts/report_d2_reconstruction_constraints.py
 | 6 | A1 | `A15` | scan; D2 pad fit retained, former D4 photo trace claim withdrawn |
 | 7 | A2 | `A9` | scan; D2 pad fit retained, former D4 photo trace claim withdrawn |
 | 15 | A7 | `WREQ_N` | traced sheet-1 labels D2 A7/pin15 as -WREQ from edge connector coordinate 107C. Direct owner continuity closes D6.11/D2.15/D92.5/R12.2; recovered .009 sheet 3 continues the same signal to both asynchronous controls D96.1/.4 and to the clear inputs of the D97.1/D97.2/D102.1/D102.2 precompensation one-shots. The sheet's conflicting R86 reset pull-up is not adopted because registered target photos place R86 on the C19/D97.6 node |
-| 13 | V1 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; recovered .009 Э3 sheet 3 grounds both D95 mux enables pins1/15; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; corrected marked-AG3 component fit cross-checks both outer columns of the independently registered D56 solder footprint; overlapping solder views show D56.1 and D56.9 on the continuous D56.8 ground perimeter; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints |
-| 14 | V2 | `GND` | scan; sheet-1 explicitly grounds CPU HOLD D1.13, system-controller BUSEN D5.22, and both always-enabled address-buffer OE pins D4.9/D107.9; sheet-2 control-bundle rail1 directly joins D39.2 and D43.1 to ground; recovered .009 Э3 sheet 3 grounds both D95 mux enables pins1/15; July-2026 cross-photo full-package registration identifies the adjacent КМ555ТМ2 as D96 and continuous component copper directly ties D99.3 CLR_N to D96.7 GND; calibrated lower-FDC component copper directly joins R99.1 to D101.8 GND; two independent component photographs plus the factory position-159 detail show uninterrupted copper from D32.4 GND to D14.1; corrected marked-AG3 component fit cross-checks both outer columns of the independently registered D56 solder footprint; overlapping solder views show D56.1 and D56.9 on the continuous D56.8 ground perimeter; native sheet-2 power corner directly grounds rail E, including all DRAM pin-16 and strobe-pulldown endpoints |
+| 13 | V1 | `GND` | sheet-1 D2 enable tied low |
+| 14 | V2 | `GND` | sheet-1 D2 enable tied low |
 | 9 | D3 | NC | factory symbol draws only D0/pin12; explicit no-connect |
 | 10 | D2 | NC | factory symbol draws only D0/pin12; explicit no-connect |
 | 11 | D1 | NC | factory symbol draws only D0/pin12; explicit no-connect |
@@ -53,17 +55,16 @@ the separately named validated raw programming image carries the
 owner-observed values without rewriting this historical constraint file.
 
 The named schematic leads above are pin-level source evidence where
-cited, not a claim that the D2 truth table is known. The five address
+cited; the captured programming table is separate evidence. The five address
 labels with scan provenance still need an exact .009 route chase.
 D2 pads are registered, while five former D2-to-D4
 photo-route claims are withdrawn after correcting the D4 row and
-column assignment. Three validated owner captures, including a
+column assignment. 6 independent accepted acquisitions, including a
 separate power cycle, now establish the physical raw table.
 
 ## KiCad DSN Cross-check
 
-The saved routed DSN predates the five source-assigned address inputs.
-Its missing rows are a reroute boundary, not missing source evidence.
+This checks saved DSN pin assignments, not routed copper connectivity.
 
 | Pin | Role | DSN Net | Result |
 | ---: | --- | --- | --- |
@@ -119,7 +120,7 @@ review against the corrected package fit.
 | Validated physical `.037` raw programming image exists | PASS | `ref/physical-proms/validated/d2_037.raw.bin` |
 | Old D2-as-I/O-decode path is superseded | PASS | `kicad/juku.board.json` D9 identity and provenance |
 | D2 physical-table provenance is preserved | PASS | `ref/physical-proms/README.md` |
-| D2 raw electrical polarity executes through D30 READY | PASS | `sync/d2_ready_path_check.sh`; D0 reader channel Nano D10 |
+| D2 raw electrical polarity executes through D30 READY | FAIL | `sync/d2_ready_path_check.sh`; D0 reader channel Nano D10 |
 | Owner dump and corrected continuity are recorded | PASS | `docs/d2-physical-dump-and-continuity.md` |
 | Official BOM/photo trail identifies `.037/.038` pair | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | Evidence summary preserves the traced D2 pin table | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
@@ -133,9 +134,9 @@ review against the corrected package fit.
   originally deferred the other five input nets.
 - Direct owner continuity supersedes the false D2.12->D105.9 path:
   D2.12 joins D30.2 and R6 in the READY latch input.
-- Two complete same-session reads matched at every address with zero
-  unstable rows; all four outputs agreed. A third separately power-cycled
-  capture validates to the same authoritative raw SHA256.
+- The validated manifest records 6 independent accepted acquisitions,
+  including power-cycled reads, agreeing on the authoritative raw table.
+  Filename aliases do not count as additional read events.
 - The used D0 channel was read on unloaded Nano D10, not the D13 LED
   channel. The open-collector HDL and focused D30 guard execute raw 0
   as READY low and raw F/disabled as pulled-up READY high.
@@ -152,7 +153,7 @@ review against the corrected package fit.
   edge-bus `H`; R1 is 2 kΩ to +5 V. H gates CPU DBIN through D105
   into D5 and is not the −5 V supply.
 - Known: `ref/physical-proms/validated/d2_037.raw.bin` is the 256-byte
-  authoritative raw low-nibble image, reproduced from all three captures.
+  authoritative raw low-nibble image, reproduced from 6 independent acquisitions.
 - Remaining closure is complete cycle timing around the now-closed `H`
   edge plus historical corroboration, not D2 content or raw
   electrical polarity.
