@@ -65,10 +65,6 @@ def main() -> int:
     status = "JMON33 INTERRUPT PATH READY" if passed else "JMON33 INTERRUPT PATH NOT READY"
 
     irq_lines = [line for line in proc.stderr.splitlines() if line.startswith("[IRQ]")]
-    first_reads = [
-        line for line in proc.stderr.splitlines()
-        if line.startswith("[IN ] first read") or line.startswith("[OUT] first write")
-    ][:24]
     stopped = next((line for line in proc.stderr.splitlines() if line.startswith("stopped ")), "")
 
     REPORT.write_text("\n".join([
@@ -77,8 +73,9 @@ def main() -> int:
         f"Status: **{status}**",
         "",
         "This probe exercises the interrupt-driven Juku Monitor 3.3 ROM in cosim.",
-        "Unlike ekta37, jmon33 depends on frame interrupts and keyboard/serial",
-        "service paths before it becomes useful as an interactive monitor.",
+        "It runs for a fixed cycle budget and checks initial PIC writes, a logged",
+        "frame IRQ, keyboard-port reads, and write-density activity on DB00/DC00.",
+        "It does not inject serial traffic or verify interactive command completion.",
         "",
         "## Command",
         "",
@@ -88,30 +85,26 @@ def main() -> int:
         "",
         "Environment overrides:",
         "",
-        f"- `JMON33_PROBE_MAX_CYCLES` default `{max_cycles}`",
-        f"- `JMON33_PROBE_FRAME_CYCLES` default `{frame_cycles}`",
+        "- `JMON33_PROBE_MAX_CYCLES` default `5000000`",
+        "- `JMON33_PROBE_FRAME_CYCLES` default `200000`",
+        "",
+        f"This run requested `{max_cycles}` cycles and a `{frame_cycles}`-cycle frame interval.",
         "",
         "## Evidence",
         "",
         "| Check | Result |",
         "| --- | --- |",
-        f"| jmon33 ROM loaded | {'PASS' if checks['rom_loaded'] else 'FAIL'} |",
-        f"| 8259 programmed for MCS-80 vectoring | {'PASS' if checks['pic_programmed'] else 'FAIL'} |",
-        f"| Frame interrupt taken at `0xFF54` | {'PASS' if checks['frame_irq_taken'] else 'FAIL'} |",
+        f"| ROM load reports 16384 bytes (explicit `roms/jmon33.bin` input) | {'PASS' if checks['rom_loaded'] else 'FAIL'} |",
+        f"| Initial PIC writes are `00h=56h`, `01h=FFh` | {'PASS' if checks['pic_programmed'] else 'FAIL'} |",
+        f"| First frame IRQ logged; trace contains vector `FF54h` | {'PASS' if checks['frame_irq_taken'] else 'FAIL'} |",
         f"| Keyboard matrix ports read | {'PASS' if checks['keyboard_scan'] else 'FAIL'} |",
-        f"| Monitor writes video RAM | {'PASS' if checks['vram_written'] else 'FAIL'} |",
+        f"| Positive write-density count on page `DB00h` or `DC00h` | {'PASS' if checks['vram_written'] else 'FAIL'} |",
         "",
         "## Trace Highlights",
         "",
         "```text",
         *(irq_lines[:4] or ["<no IRQ lines observed>"]),
         stopped or "<no stopped line observed>",
-        "```",
-        "",
-        "First I/O activity:",
-        "",
-        "```text",
-        *(first_reads or ["<no first I/O lines observed>"]),
         "```",
         "",
         "## Remaining Boundary",

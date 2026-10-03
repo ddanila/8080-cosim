@@ -3,8 +3,9 @@
 Status: **JMON33 INTERRUPT PATH READY**
 
 This probe exercises the interrupt-driven Juku Monitor 3.3 ROM in cosim.
-Unlike ekta37, jmon33 depends on frame interrupts and keyboard/serial
-service paths before it becomes useful as an interactive monitor.
+It runs for a fixed cycle budget and checks initial PIC writes, a logged
+frame IRQ, keyboard-port reads, and write-density activity on DB00/DC00.
+It does not inject serial traffic or verify interactive command completion.
 
 ## Command
 
@@ -17,15 +18,17 @@ Environment overrides:
 - `JMON33_PROBE_MAX_CYCLES` default `5000000`
 - `JMON33_PROBE_FRAME_CYCLES` default `200000`
 
+This run requested `5000000` cycles and a `200000`-cycle frame interval.
+
 ## Evidence
 
 | Check | Result |
 | --- | --- |
-| jmon33 ROM loaded | PASS |
-| 8259 programmed for MCS-80 vectoring | PASS |
-| Frame interrupt taken at `0xFF54` | PASS |
+| ROM load reports 16384 bytes (explicit `roms/jmon33.bin` input) | PASS |
+| Initial PIC writes are `00h=56h`, `01h=FFh` | PASS |
+| First frame IRQ logged; trace contains vector `FF54h` | PASS |
 | Keyboard matrix ports read | PASS |
-| Monitor writes video RAM | PASS |
+| Positive write-density count on page `DB00h` or `DC00h` | PASS |
 
 ## Trace Highlights
 
@@ -34,32 +37,6 @@ Environment overrides:
 [IRQ] frame #2 g_vw=196 cyc=800001 pc=2ECD irq=5 icw1=56 icw2=FF mask=DF vec=FF54
 [IRQ] frame #3 g_vw=200 cyc=1400004 pc=FC90 irq=5 icw1=56 icw2=FF mask=DF vec=FF54
 stopped pc=0xFF54 cyc=5000001 halted=0 iff=0 mode=1 switches=31
-```
-
-First I/O activity:
-
-```text
-[OUT] first write port 0x13 = 0x15
-[OUT] first write port 0x17 = 0x35
-[OUT] first write port 0x1B = 0x1F
-[OUT] first write port 0x10 = 0x64
-[OUT] first write port 0x14 = 0x12
-[OUT] first write port 0x18 = 0x32
-[OUT] first write port 0x1A = 0xFF
-[OUT] first write port 0x0F = 0x9B
-[OUT] first write port 0x07 = 0x82
-[IN ] first read  port 0x06
-[OUT] first write port 0x06 = 0x01
-[OUT] first write port 0x11 = 0x24
-[OUT] first write port 0x12 = 0x08
-[OUT] first write port 0x15 = 0x72
-[OUT] first write port 0x16 = 0x25
-[OUT] first write port 0x00 = 0x56
-[OUT] first write port 0x01 = 0xFF
-[OUT] first write port 0x04 = 0x27
-[IN ] first read  port 0x04
-[IN ] first read  port 0x05
-[IN ] first read  port 0x1A
 ```
 
 ## Remaining Boundary
