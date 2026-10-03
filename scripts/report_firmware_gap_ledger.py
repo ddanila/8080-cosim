@@ -95,7 +95,7 @@ def main() -> int:
     ) and exists("scripts/export_eprom_pair.py")
     eprom_lineage_ok = marker(
         "docs/d15-d16-firmware-lineage.md",
-        "Status: **THIRD-SOURCE ARCHIVAL EKTA 3.7 PAIR ADOPTED**",
+        "Status: **ARCHIVE-0037 ROMBIOS 3.43m PAIR ADOPTED**",
         "project adopts that pair as replica content truth",
         "not a content gate",
     )

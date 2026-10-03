@@ -1,6 +1,6 @@
 # D15/D16 firmware lineage
 
-Status: **THIRD-SOURCE ARCHIVAL EKTA 3.7 PAIR ADOPTED**
+Status: **ARCHIVE-0037 ROMBIOS 3.43m PAIR ADOPTED**
 
 This generated audit keeps four different evidence claims separate. The
 factory parts list names programmed drawings, the preservation archive
@@ -24,7 +24,7 @@ images, or rerun boot/cosim tests.
 
 ## Exact archival identity
 
-The status shorthand “Ekta 3.7” refers to serial #0037, whose embedded
+The `ekta37.bin` filename refers to serial #0037, whose embedded
 banner is `RomBios 3.43m`; it is not a BIOS version number.
 
 `ref/firmware/JUKUROM0.HEX` and `JUKUROM1.HEX` are raw binary despite

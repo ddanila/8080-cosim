@@ -342,7 +342,7 @@ def main() -> int:
     )
 
     status = (
-        "FIRMWARE PROFILES PROVED / EKTA 3.7 DIRECT-BUS PROFILE ADOPTED"
+        "FIRMWARE PROFILES PROVED / ARCHIVE-0037 DIRECT-BUS PROFILE ADOPTED"
         if not failures
         else "FDC BUS POLARITY AUDIT FAILED"
     )
@@ -397,8 +397,8 @@ def main() -> int:
             "## Preserved firmware profiles",
             "",
             "The Ekta filenames identify serial numbers, not BIOS versions; versions below",
-            "are the embedded `RomBios` banners. The status label “Ekta 3.7” is the repository",
-            "shorthand for `ekta37.bin`, whose banner is `RomBios 3.43m`.",
+            "are the embedded `RomBios` banners. The adopted `ekta37.bin` comes from",
+            "archive serial #0037 and has the banner `RomBios 3.43m`.",
             "",
             "| Firmware | Opcode beside every recognized VG93 transfer pattern | Write patterns | Read patterns | Required data path |",
             "| --- | --- | ---: | ---: | --- |",

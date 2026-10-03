@@ -1,6 +1,6 @@
 # FDC data-bus polarity audit
 
-Status: **FIRMWARE PROFILES PROVED / EKTA 3.7 DIRECT-BUS PROFILE ADOPTED**
+Status: **FIRMWARE PROFILES PROVED / ARCHIVE-0037 DIRECT-BUS PROFILE ADOPTED**
 
 The listed firmware contains two VG93 I/O byte-pattern profiles: CMA beside
 each recognized register-transfer pattern, or NOP at those same boundaries.
@@ -39,8 +39,8 @@ restores logical `0x44`.
 ## Preserved firmware profiles
 
 The Ekta filenames identify serial numbers, not BIOS versions; versions below
-are the embedded `RomBios` banners. The status label “Ekta 3.7” is the repository
-shorthand for `ekta37.bin`, whose banner is `RomBios 3.43m`.
+are the embedded `RomBios` banners. The adopted `ekta37.bin` comes from
+archive serial #0037 and has the banner `RomBios 3.43m`.
 
 | Firmware | Opcode beside every recognized VG93 transfer pattern | Write patterns | Read patterns | Required data path |
 | --- | --- | ---: | ---: | --- |

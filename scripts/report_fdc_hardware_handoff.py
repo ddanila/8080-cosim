@@ -224,7 +224,7 @@ def main() -> int:
     failures: list[str] = []
     if (
         not BUS_POLARITY_REPORT.is_file()
-        or "Status: **FIRMWARE PROFILES PROVED / EKTA 3.7 DIRECT-BUS PROFILE ADOPTED**"
+        or "Status: **FIRMWARE PROFILES PROVED / ARCHIVE-0037 DIRECT-BUS PROFILE ADOPTED**"
         not in BUS_POLARITY_REPORT.read_text(encoding="utf-8")
     ):
         failures.append("firmware-profile/direct-D93-bus audit is absent or stale")
