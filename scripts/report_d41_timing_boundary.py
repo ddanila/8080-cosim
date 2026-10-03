@@ -133,7 +133,7 @@ def main() -> int:
         (
             "D41 package landing is locally registered on both sides",
             d41_photo_fit_ok,
-            "validated notch-right component fit plus reflected solder fit in `docs/photo-registration/local-packages/report.json`",
+            "component `similarity` and solder `similarity_reflected` entries in `docs/photo-registration/local-packages/report.json`",
         ),
     ]
     ok = all(result for _, result, _ in checks)
@@ -141,8 +141,6 @@ def main() -> int:
 
     lines = [
         "# D41 timing boundary",
-        "",
-        "Status date: 2026-07-23.",
         "",
         f"Status: **{status}**",
         "",
@@ -189,18 +187,17 @@ def main() -> int:
             "",
             "## Interpretation",
             "",
-            "- D41 is not a generic unresolved video chip anymore: its output-side",
-            "  effects are modeled and route-checked.",
-            "- The corrected two-sided package fits replace global projections",
-            "  that landed in the parallel-rail field left/right of the actual IC.",
-            "- A-D are grounded, DS/G are tied high, and QC/QD have no external",
-            "  stubs. LD joins numbered timing rail 17; CK joins numbered rail 8.",
-            "- Sheet-2 conductor tag 7 closes D40 QD/pin11 and D37.2 to the tied",
-            "  D54 CLK0/CLK1/CLK2 pins 9/15/18 on the labeled 1 MHz rail; recovered",
-            "  sheet 3 and owner continuity extend it through D59.5/D92.2/.3 to",
-            "  D95 clock-mux pins 5 and 6.",
-            "- The complete D41 package pin disposition is now source-closed. The remote",
-            "  origin of rail 17 remains a wider timing-chain boundary at D36.2/D41.6.",
+            "- This guard checks source-model endpoints, provenance markers and the",
+            "  presence of two photo-fit records with the expected sides and models.",
+            "  It does not inspect routed copper, rerun image registration, or measure",
+            "  dynamic timing. See the [video-slot audit](video-slot-timing-audit.md)",
+            "  for the remaining arbitration boundary.",
+            "- The source model grounds A-D, ties DS/G high, and leaves QC/QD",
+            "  unconnected. LD joins rail 17 and CK rail 8. The remote origin of",
+            "  rail 17 remains unresolved at D36.2/D41.6.",
+            "- The 1 MHz source-net check preserves the factory tag-7 and owner",
+            "  continuity attribution. The [clock-route report](d40-d59-d92-d95-1mhz-route.md)",
+            "  owns the corresponding source/routed migration evidence.",
             "",
         ]
     )
