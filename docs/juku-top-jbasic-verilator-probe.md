@@ -2,11 +2,12 @@
 
 Status: **HDL JUKU_TOP JBASIC READY REACHED**
 
-This bounded diagnostic runs the LVS-checked `juku_top` with the vendored
-Juku disk image, frame interrupts, and the fixed ROMBIOS `TDD` keyboard
-sequence enabled. The default simulator is Icarus Verilog, matching the CI
-toolchain. Set `JUKU_TOP_FDC_SIM=verilator` for a faster local/deep reset
-run through the same testbench and stop hooks.
+This report records a bounded `juku_top` run with the vendored disk image,
+frame interrupts and ROMBIOS `TDD` keyboard sequence. Its status describes
+that recorded run; checking the committed report does not rerun current HDL.
+The harness defaults to Icarus and also accepts Verilator. See
+[simulator compatibility](../sync/README.md#simulator-compatibility) before
+attempting a Verilator rerun.
 
 ## Command
 
@@ -87,8 +88,6 @@ Current values: `SIM=verilator KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=0 F
 ## Stop State
 
 - Disk line: `FDC-1793: loaded raw disk media/disks/JUKPROG2.CPM (2 sides)`
-- Build summary line: `- Verilator: Walltime 16.387 s (elab=0.025, cvt=0.249, bld=16.049); cpu 0.338 s on 1 threads; alloced 23.672 MB`
-- Verilator walltime line: `- Verilator: $finish at 709ms; walltime 78.890 s; speed 8.990 ms/s`
 - First VRAM line: `[VRAM] first video write @0xd800 mcyc=25011`
 - Last VRAM progress line: `[VRAM] progress writes=70000 mcyc=2381003`
 - VRAM stop line: `none`

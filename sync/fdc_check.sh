@@ -373,12 +373,13 @@ physical D93/D94 wiring.
   EktaSoft 3.7 and the direct-bus/NOP profile. The former remains an unmapped
   diagnostic inversion adjunct (`JUKU_FDC_BUS_INVERT=1`), while physical D100
   is source-proved as the drive-output buffer.
-- The committed uninterrupted Verilator report
-  `docs/juku-top-fdc-verilator-probe.md` drains all 10,752 FDC data-register
-  reads and reaches the EKDOS `A>` bitmap; `sync/juku_top_fdc_prompt_check.sh`
-  checks that evidence and can opt into the expensive rerun.
-- `docs/juku-top-fdc-alignment.md` summarizes the current reset-to-prompt
-  boundary against the C oracle.
+- The recorded uninterrupted Verilator run in
+  `docs/juku-top-fdc-verilator-probe.md` drained 10,752 FDC data-register reads
+  and reached the EKDOS `A>` bitmap. `sync/juku_top_fdc_prompt_check.sh`
+  normally checks that committed evidence; its deep option reruns the HDL.
+  See [simulator compatibility](../sync/README.md#simulator-compatibility).
+- `docs/juku-top-fdc-alignment.md` summarizes the recorded reset-to-prompt
+  boundary. Report checks do not establish execution of the current source.
 
 ## Write-path provenance
 

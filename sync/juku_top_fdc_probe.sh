@@ -53,15 +53,41 @@ BUILD_OUT="$TMP/build.txt"
 OLD_VRAM="$TMP/vram_top.old"
 if [ -f hdl/sim/vram_top.bin ]; then cp hdl/sim/vram_top.bin "$OLD_VRAM"; fi
 
+build_failed() {
+  local build_rc=$1
+  local errors
+  errors=$(sed -n '/^%Error/p' "$BUILD_OUT")
+  if [ -z "$errors" ]; then errors=$(tail -n 10 "$BUILD_OUT"); fi
+  cat > "$REPORT" <<EOF
+# $REPORT_TITLE
+
+Status: **HDL JUKU_TOP BUILD BLOCKED**
+
+The $SIMULATOR build exited with code $build_rc. No simulation ran.
+
+## Build errors
+
+\`\`\`text
+$errors
+\`\`\`
+
+Resolve the simulator build failure before treating a prompt boundary as
+verified for the current source. See the simulator compatibility section in
+sync/README.md.
+EOF
+  printf '%s\n' "$errors" >&2
+  exit "$build_rc"
+}
+
 case "$SIMULATOR" in
   icarus)
-    iverilog -g2012 -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_tb.v >"$BUILD_OUT" 2>&1
+    iverilog -g2012 -o "$SIM" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_tb.v >"$BUILD_OUT" 2>&1 || build_failed $?
     ;;
   verilator)
     command -v verilator >/dev/null || { echo "verilator not found"; exit 2; }
     verilator --binary --timing -Wno-fatal --top-module juku_top_tb \
       -Mdir "$TMP/obj" \
-      hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_tb.v >"$BUILD_OUT" 2>&1
+      hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/juku_top_tb.v >"$BUILD_OUT" 2>&1 || build_failed $?
     SIM="$TMP/obj/Vjuku_top_tb"
     ;;
   *)
@@ -168,8 +194,6 @@ cpu_line=$(grep -m1 '^\[CPU\]' "$OUT" || true)
 state_line=$(grep -m1 '^\[STATE\]' "$OUT" || true)
 pc_stop=$(grep -m1 '^\[PC\] stop' "$OUT" || true)
 disk_line=$(grep -m1 '^FDC-1793: loaded raw disk' "$OUT" || true)
-verilator_report=$(grep -m1 '^- Verilator: .*walltime' "$OUT" || true)
-build_summary=$(tail -1 "$BUILD_OUT" || true)
 fdc_lines=$(grep -c '^\[FDC\]' "$OUT" || true)
 chk_lines=$(grep -c '^\[CHKHDL' "$OUT" || true)
 kbd_lines=$(grep -c '^\[KBD\]' "$OUT" || true)
@@ -207,11 +231,12 @@ cat > "$REPORT" <<EOF
 
 Status: **$status**
 
-This bounded diagnostic runs the LVS-checked \`juku_top\` with the vendored
-Juku disk image, frame interrupts, and the fixed ROMBIOS \`TDD\` keyboard
-sequence enabled. The default simulator is Icarus Verilog, matching the CI
-toolchain. Set \`JUKU_TOP_FDC_SIM=verilator\` for a faster local/deep reset
-run through the same testbench and stop hooks.
+This report records a bounded \`juku_top\` run with the vendored disk image,
+frame interrupts and ROMBIOS \`TDD\` keyboard sequence. Its status describes
+that recorded run; checking the committed report does not rerun current HDL.
+The harness defaults to Icarus and also accepts Verilator. See
+[simulator compatibility](../sync/README.md#simulator-compatibility) before
+attempting a Verilator rerun.
 
 ## Command
 
@@ -292,8 +317,6 @@ Current values: \`SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$
 ## Stop State
 
 - Disk line: \`${disk_line:-none}\`
-- Build summary line: \`${build_summary:-none}\`
-- Verilator walltime line: \`${verilator_report:-none}\`
 - First VRAM line: \`${first_vram:-none}\`
 - Last VRAM progress line: \`${last_progress:-none}\`
 - VRAM stop line: \`${vram_stop:-none}\`

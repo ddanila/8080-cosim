@@ -149,6 +149,19 @@ After changing `kicad/juku.board.json`, timing-relevant HDL, or any
 changed. Commit every resulting artifact, and use `--check` for a CI-style
 nonzero exit when generated `docs/` or `ref/` output drifts.
 
+## Simulator compatibility
+
+The current `juku_top_tb` build fails under the installed Verilator 5.032:
+`hdl/devices.v` uses named-fork `disable` statements in the AG3 pulse
+scheduler that this simulator rejects. This affects the reset-driven cursor,
+EKDOS and JBASIC reruns. The [cursor report](../docs/jmon33-hdl-cursor-probe.md)
+records the build error. The Icarus first-write guard still passes; it does
+not establish either full prompt boundary.
+
+Committed Verilator prompt reports retain their recorded runtime evidence.
+The ordinary prompt guards check those reports; use their deep options to
+verify current-source execution after resolving simulator compatibility.
+
 ## Current user-visible oracles
 
 - `ekdos_fdc_probe.py` — ROMBIOS `TDD` to EKDOS `A>` in the C oracle.
