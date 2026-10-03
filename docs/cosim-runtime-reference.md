@@ -174,12 +174,14 @@ opt-in, single-line, and 256-entry bounds.
 ## Address watchpoint (`JUKU_WATCH_ADDRESS`)
 
 Set `JUKU_WATCH_ADDRESS` to one numeric address or an inclusive `start-end`
-range, for example `0xC600-0xC63F`. Cosim logs each memory read and write in
+range, for example `0xC600-0xC63F`. Cosim logs each memory read (including opcode fetches) and attempted write in
 that range with value, PC, and cycle count. It is observation-only and disabled
 by default. Use it to observe a specific memory boundary without a complete bus trace.
 
 Every checkpoint also records a cumulative `watch_write_count` and the
 address, value, PC, and emulated cycle of the previous and last watched writes.
+Writes are recorded before ROM protection or injected write faults are applied;
+these fields prove attempted bus writes, not that RAM accepted the values.
 These bounded fields make short intervals that occur entirely between two
 host checkpoints observable without relying on stdio flush timing. They are
 zero when no watched write has occurred and do not alter the existing textual
@@ -241,8 +243,14 @@ paced with a console PTY, optionally attaches a floppy image
 `jukuhost` on a second PTY, and prints the device to attach to (or bridges the
 current terminal with `--attach`). It builds `build/jukuhost` on demand,
 retains a text log plus raw capture when `--keep-logs` is selected, and has no
-Python-host fallback. Every path it hands to cosim is resolved first, because
-cosim runs in its own working directory.
+Python-host fallback. The launcher resolves ROM and disk-image paths before starting cosim in its
+run directory. Supply an absolute path for `--trace`: that prebuilt executable
+path is passed unchanged. Other inherited path-valued cosim settings also
+resolve from the run directory, so use absolute paths for them.
+
+The launcher defaults to NetDisk protocol 2 at 9600 baud; the standalone
+`jukuhost` defaults to protocol 3 at 19200. Select the protocol and baud required
+by the served system explicitly when using another profile.
 
 For a CP/Mish dual-network-drive session, `--drive-b` accepts a physical
 800 KiB `.JUK` image. A: remains the 386 KiB host volume and may be made
