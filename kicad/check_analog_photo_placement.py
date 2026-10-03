@@ -177,12 +177,13 @@ def main() -> None:
     r67 = json.loads(R67_EVIDENCE.read_text(encoding="utf-8"))
     if (r67.get("refdes") != "R67" or r67.get("endpoint") != "2" or
             r67.get("value") != "4,7к" or r67.get("visible_marking") != "4K7" or
-            r67.get("unresolved") != ["R67.2 remote destination"]):
+            r67.get("unresolved") != ["R67.2 remote net and the far open annulus's exact front-side counterpart"]):
         errors.append("R67 value/endpoint evidence does not preserve 4K7 and the R67.2 boundary")
     if board.FindFootprintByReference("R67").GetValue() != "4,7к":
         errors.append("R67 source-PCB value is not the photo-read 4,7к")
     cross_side = r67.get("cross_side_registration", {})
-    if (cross_side.get("projected_solder_joint_px") != [916, 988] or
+    if (cross_side.get("component_joint_px") != [3365, 1730] or
+            cross_side.get("projected_solder_joint_px") != [873.5, 955.6] or
             cross_side.get("max_anchor_residual_px", 1) > 0.001):
         errors.append("R67 D102-local cross-side registration is stale")
     endpoint_rows = {}
@@ -207,9 +208,9 @@ def main() -> None:
         transform, *_ = np.linalg.lstsq(component_points, solder_points, rcond=None)
         residual = float(np.linalg.norm(component_points @ transform - solder_points, axis=1).max())
         recorded = np.array(cross_side.get("transform", []))
-        projected = np.array([3321.0, 1698.0, 1.0]) @ transform
+        projected = np.array([3365.0, 1730.0, 1.0]) @ transform
         if (recorded.shape != (6,) or not np.allclose(recorded, transform.flatten(), atol=1e-6) or
-                residual > 0.001 or not np.allclose(projected, [916, 988], atol=0.5)):
+                residual > 0.001 or not np.allclose(projected, [873.5, 955.6], atol=0.1)):
             errors.append("R67 cross-side transform no longer reproduces its D102 anchors/projection")
     r67_items = [*r67.get("component_observations", []), *r67.get("solder_observations", [])]
     if len(r67.get("component_observations", [])) != 2 or len(r67.get("solder_observations", [])) != 2:

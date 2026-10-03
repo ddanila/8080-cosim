@@ -82,19 +82,13 @@ target-continuity boundaries. R67.2 and X6 A:3 remain such boundaries; the
 factory table still closes A:3/A:4 to X6 independently of the superseded RF nets. The
 yellow `Б / 8901` part is the retained VT2; C94 remains separately bounded.
 
-R67.2's July upper-lead coordinate is about `(3365,1730)` in `200418174`. Both July and May views read `4K7` on the
-factory-identified body, superseding the printed 2 kΩ value. The D102-local
-cross-side fit now projects that lead near `(874,956)` in solder image
-`PXL_20260710_200522685.jpg`, about 5 px from an actual solder joint
-`(869,953)`. Native copper runs east without a break to open annulus
-`(1295,958)`; overlapping `200506061` repeats the joint-to-annulus pattern.
-The local route is photo-supported. Independent D102 and D97 inverse fits search for the far
-annulus near front `(2937,1739)` and `(2905,1736)` respectively, but neither
-has a unique visible drill. Three adjacent July holes repeat in the May
-component view under a consistent (+26,-935) px local shift; both predicted
-points remain bare there too. The source-drawn VT2-base destination still
-requires continuity. Evidence is in
-`ref/photos/juku-pcb-2/r67-photo-exhaustion.json`.
+Two owner views read `4K7` on the factory-identified R67 body, superseding
+the printed 2 kΩ value. The corrected cross-side registration identifies its
+upper lead's solder joint and an uninterrupted backside trace to an open
+annulus. The annulus's front-side counterpart and the source-drawn VT2-base
+destination remain unproved; direct continuity is required. Coordinates,
+photo hashes and search limits are retained in
+[the R67 registration evidence](../ref/photos/juku-pcb-2/r67-photo-exhaustion.json).
 
 `kicad/check_analog_photo_placement.py` prevents regeneration from restoring
 the former assembly-grid approximations for `VT2`/`R65`/`R67`/`VD3`/`R66`/`C94`, and
