@@ -49,6 +49,7 @@ run python3 scripts/report_native_resistor_values.py
 run python3 scripts/report_native_capacitor_values.py
 run python3 scripts/report_native_semiconductors.py
 run python3 scripts/report_d41_timing_boundary.py
+run python3 scripts/report_video_slot_timing_audit.py
 run python3 scripts/report_memory_timing_boundary.py
 run python3 scripts/report_io_decode_boundary.py
 run python3 scripts/report_video_analog_boundary.py
@@ -66,8 +67,6 @@ run python3 scripts/export_wd1772_pla.py
 run python3 scripts/report_wd1772_pla_inspection.py
 run python3 scripts/report_d2_reconstruction_constraints.py
 run python3 scripts/report_d94_reconstruction_constraints.py
-run python3 scripts/report_d41_timing_boundary.py
-run python3 scripts/report_video_slot_timing_audit.py
 run python3 scripts/report_fdc_bus_polarity.py
 run python3 scripts/report_d101_reconstruction_constraints.py
 run python3 scripts/report_d99_reconstruction_constraints.py
@@ -76,6 +75,7 @@ run python3 scripts/report_fdc_hardware_handoff.py
 run python3 scripts/report_serial_handoff.py
 run python3 scripts/report_decap_value_fidelity.py
 run python3 scripts/report_d41_timing_boundary.py
+run python3 scripts/report_video_slot_timing_audit.py
 run python3 scripts/report_memory_timing_boundary.py
 run python3 scripts/report_io_decode_boundary.py
 run python3 scripts/report_video_analog_boundary.py
