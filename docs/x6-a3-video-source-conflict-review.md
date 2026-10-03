@@ -2,14 +2,36 @@
 
 Exact `.009` assembly wire table `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`, PDF page 2 / drawing sheet 3, item 151, assigns conductor 1 from board point A:3 to X6 and conductor 2 from A:4 to X6's marked return terminal. Both are 12 cm. This proves connector and cable identity, not A:3's electrical net.
 
-The existing `ref/photos/juku-pcb-2/x6-cable-registration.json` places A:3 at original July component-photo pixel `(3036,1816)` in `PXL_20260710_200418174.jpg` and calls it coincident with VD3.2/SOUND_CLAMP. Direct review of the original image rejects that coincidence. In original crop `(2800,1500)`–`(3650,2300)`, A:3 is the braided cable joint beside the yellow three-lead VT2 and its adjacent red resistor; the distinct glass VD3 body is around original x≈3440, roughly 400 pixels to the right. The same separated arrangement appears in `PXL_20260519_201927098.jpg`. The A:4 return still appears to terminate on a wide bare ground strip, but the A:3-to-VD3.2 claim has no visible shared landing.
+## Photo registration and model
 
-The D102-local owner-pixel-to-board affine in `ref/photos/juku-pcb-2/c94-endpoint-registration.json` maps the recorded A:3 pixel to `(280.233,123.791)` mm and A:4 `(3154,1788)` to `(285.606,122.617)` mm. Their former PCB positions `(299.551,124.391)` and `(305.182,123.141)` mm were displaced by about 19 mm into the VD3/R66 region. After assigning A:3 its own net, KiCad exposed a real VD3 pad collision at the old footprint position. Both surface pads are now at the affine-derived positions; the corrected source PCB has zero short and clearance violations.
+The current [cable registration](../ref/photos/juku-pcb-2/x6-cable-registration.json)
+places A:3 at July component pixel `(3036,1816)` in `200418174`, beside
+VT2/R65. VD3 is a distinct glass body about 400 pixels to the right; the
+registration rejects an A:3-to-VD3.2/SOUND_CLAMP assignment. The May view
+`201927098` corroborates that separation. A:4 at `(3154,1788)` appears on
+a separate wide ground strip.
 
-The routed copies also remove the obsolete SOUND_CLAMP connection and old A:4 ground spur. Their former long VIDEO_OUT route led to an unsupported X7 footprint and would have crossed the isolated A:3 surface pad. The X7 footprint, long route, and its ground spur have now been removed; the local VT2.1-to-R65.1 VIDEO_OUT connection remains. After the X6 correction, routed DRC reported zero electrical shorts, zero clearance or dangling-copper findings, and 16 unconnected items. The later R38/D35 source correction removes wrong-net copper and leaves 23 unconnected items on each routed board; a subsequent D104.7/R30 ground assignment raises the count to 24. None of these results proves the A:3-to-VT2/R65 copper join.
+The D102-local transform in
+[c94-endpoint-registration.json](../ref/photos/juku-pcb-2/c94-endpoint-registration.json)
+places the surface joints at A:3 `(280.233,123.791)` mm and A:4
+`(285.606,122.617)` mm. The source PCB represents them as AX603.1 on
+`X6_A3_BOUNDARY` and AX604.1 on GND. X6 is off-board; no physical X7 is modeled.
+The local VT2.1/R65.1 net remains `VIDEO_OUT`, separate from A:3 until measured.
+Current routing holds and DRC totals belong in
+[factory-wire fidelity](factory-wire-route-fidelity.md).
 
 Exact `.009` Э3 sheet 2 `PXL_20260718_101927794.jpg` independently draws R67 (printed 2 kΩ) from the R66/VD3 junction to the **VT2 base / R62.2 / R63.2 / R64.1** junction. The current target model leaves R67.2 as a physical continuity boundary because the owner board has a 4.7 kΩ body and its far solder landing has no uniquely visible onward copper. That boundary remains appropriate until measured, but the drawing's remote endpoint must be stated correctly.
 
-The sheet-2 output continuation in `PXL_20260718_101932581.jpg` labels VIDEO at contact 3 / connection 601 and ground at contact 4 / connection 602. The assembly table connects A:3/A:4 to X6, and the independent system cable map (`ДГШ3.031.011 Э6`, transcribed in `ref/schematics/system-bus-connector-map.md`) identifies X6 as the two-conductor connection to display A5 МС6105.09. Together these establish X6's display-video role and make A:3 the documented video conductor and A:4 its return. They do not show the exact copper path from the photographed A:3 joint to VT2/R65. The unsupported separate physical X7 footprint and BOM line have been removed; keep A:3's target-board continuity open. The former A:3-to-VD3.2/SOUND_CLAMP assignment is rejected.
+The sheet-2 output continuation in `PXL_20260718_101932581.jpg` labels VIDEO at contact 3 / connection 601 and ground at contact 4 / connection 602. The assembly table connects A:3/A:4 to X6, and the independent system cable map (`ДГШ3.031.011 Э6`, transcribed in `ref/schematics/system-bus-connector-map.md`) identifies X6 as the two-conductor connection to display A5 МС6105.09. Together these establish X6's display-video role and make A:3 the documented video conductor and A:4 its return. They do not show the exact copper path from the photographed A:3 joint to VT2/R65. Keep A:3's target-board continuity open.
 
 Next physical checks: A:3 to VT2 emitter, R65's two ends, VD3's two ends, and X6 center contact; A:4 to ground and X6 return. Separately confirm R67’s upper far lead at front (3365,1730) to solder joint (869,953) and the east open annulus (1295,958), then test that local route to the VT2 base/R62.2/R63.2/R64.1 junction. Keep the signal and return measurements distinct.
+
+## Model guard
+
+```sh
+python3 kicad/check_x6_offboard_landings.py
+```
+
+The guard checks source-PCB pad centres, nets, surface-pad attributes, JSON
+cable endpoints, and registration mapping metadata. It does not inspect
+photos, check routed variants or DRC, or measure cable continuity.
