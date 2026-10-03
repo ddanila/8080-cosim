@@ -6,7 +6,14 @@ This generated report extracts BASIC-relevant CP/M files from the
 vendored Arti Juku disk images. The directory-backed extractor uses the
 visible directory window at `0x5000`, 4 KiB allocation blocks, a
 four-side-track system area, and the `TRANS` sector order from
-`ref/ekdos-source/EKDOS30.ASM`.
+`ref/ekdos-source/EKDOS30.ASM`. Raw candidates are fixed-offset slices;
+their allocation mapping is not resolved by this extractor.
+
+## Command
+
+```sh
+python3 scripts/extract_basic_disk_files.py
+```
 
 ## Generated artifacts
 
@@ -25,18 +32,17 @@ four-side-track system area, and the `TRANS` sector order from
 | JUKPROG2.CPM | raw 0x2DE00 | `JBASIC.COM live-load candidate` | 8320 | - | `c3 05 01 86 1c 31 ff b3` | `BASIC`@0x05AD, `READY`@0x0576, `ERROR`@0x0569 | b1ae68b464c245a888c8e6bbf07037960f5a92d4e968c956c6205a1de6cfc545 |
 | JUKU1.CPM | raw 0x67000 | `JBASIC.COM candidate` | 8320 | - | `c3 05 01 86 1c 31 ff b3` | `BASIC`@0x05AD, `READY`@0x0576, `ERROR`@0x0569 | 85522b5b662b8c353c2aad8167bea0b5fc4a94ec71cc87ea91a7a2c551255c4d |
 
-## Disposition
+## Scope
 
-- `JUKPROG2_JBASIC.COM` remains a conservative directory-backed
-  extraction lead.
-- `JUKPROG2_JBASIC_live_candidate.COM` is now the strongest current
-  disk BASIC executable candidate because the live EKDOS command probe
-  loads this payload shape into RAM.
-- The `JUKU1.CPM` directory entry for `JBASIC.COM` remains important
-  catalog evidence, but this extractor maps it to erased bytes. The raw
-  candidate at `0x67000` has a CP/M jump header plus `BASIC`, `READY`,
-  and `ERROR` strings, so it is preserved separately and explicitly
-  marked as a candidate.
-- This extraction report only preserves payload candidates; the visible
-  BASIC prompt oracle is guarded separately by
-  `docs/ekdos-jbasic-command-probe.md`.
+- `JUKPROG2_JBASIC.COM` is the directory-backed extraction. It differs
+  from the separately preserved raw live-load candidate; the directory/raw
+  allocation mapping remains unresolved.
+- The [launch probe](ekdos-jbasic-command-probe.md) checks the raw
+  JUKPROG2 candidate's entry prefix (at least six bytes), BASIC-related
+  RAM strings and the visible `READY` oracle. It does not require an
+  exact whole-file comparison against loaded RAM.
+- The JUKU1 directory entry maps to erased bytes under this extractor.
+  Its raw candidate has a jump header and BASIC-related strings; those
+  signatures alone do not establish that it is a working executable.
+- Artifact hashes identify the emitted bytes, not a validated CP/M
+  allocation mapping or physical-disk qualification.

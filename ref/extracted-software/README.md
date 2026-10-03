@@ -5,8 +5,13 @@ raw CP/M images in `media/disks/`.
 
 - `JUKPROG2_JBASIC.COM` is the conservative directory-backed
   extraction from `JUKPROG2.CPM`.
-- `JUKPROG2_JBASIC_live_candidate.COM` is the raw payload shape
-  loaded by the live EKDOS `JBASIC` command probe.
+- `JUKPROG2_JBASIC_live_candidate.COM` is the 8,320-byte raw slice at
+  `JUKPROG2.CPM` offset `0x2DE00`, compared with the live BASIC launch.
 - `JUKU1_JBASIC_raw_candidate.COM` is a raw-offset candidate from
   `JUKU1.CPM`; its directory entry currently maps to erased bytes
   under the same extractor.
+
+See [extraction evidence](../../docs/basic-disk-extraction.md) for hashes
+and the unresolved directory/raw allocation mapping. The
+[launch probe](../../docs/ekdos-jbasic-command-probe.md) checks an entry
+prefix, RAM strings and screen output; it does not compare a full loaded file.
