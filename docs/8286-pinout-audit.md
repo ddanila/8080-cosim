@@ -10,8 +10,8 @@ D29 row transcription is in `ref/schematics/d29-exact-009-pinmap-review.json`;
 the command rows match the exact .009 source map. Other checked
 pad endpoints and per-instance LVS maps use ordered logical buses.
 Factory sheets 1 and 3 prove that D100 instead buffers eight
-floppy-drive outputs; its paired pads and shared pins 9/11 control
-continuation are guarded here independently of the data-bus devices.
+floppy-drive outputs. Its paired channels and separate pin-9 OE_N and
+pin-11 T nets are guarded independently of the data-bus devices.
 
 Primary pinout source:
 `https://www.silicon-ark.co.uk/datasheets/m8286-m8287-datasheet-intel.pdf`

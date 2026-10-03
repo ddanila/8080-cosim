@@ -8,9 +8,7 @@ R20; R20's far lead descends through the lower control-wire bundle. In the
 detail photo it crosses the D50.5/R29 line without a filled junction; the
 full-sheet `PXL_20260718_101754468.jpg` view confirms a drawn continuation.
 Its final endpoint remains unresolved, with no local ground or A/+5 symbol
-terminating the branch. The former model put
-R20 directly between RESIN and +5 V and C21 directly between RESIN and ground.
-Those two parallel branches contradicted the exact drawing.
+terminating the branch.
 
 For the next source trace, rotate the full-sheet overview 90° counterclockwise
 (upright image size 4080 × 3072). R20's far lead is near `(765,1155)` and
@@ -33,7 +31,7 @@ the lower lead of the R20-position red body on front copper. This matches the
 source series branch. R4-right-to-D13.5 remote continuity and the far R20
 return remain to be checked on the board.
 
-The source model and unrouted source PCB now carry `RESIN` at R4.2/C21.1/D13.5,
+The source model and unrouted source PCB carry `RESIN` at R4.2/C21.1/D13.5,
 `C21_R20_SERIES` at C21.2/R20.1, and a one-pad
 `R20_RETURN_SOURCE_HOLD` at R20.2. The last name marks an unresolved source
 continuation; it is not a claim that the original board has an open resistor.
@@ -42,8 +40,13 @@ The generated connectivity schematic uses the same three nets.
 The routed and candidate PCBs still have the former C21 and R20 pad nets and
 tracks built for the parallel interpretation. They require a copper-aware
 correction and fresh DRC before fabrication. Relabelling those pads alone
-would leave the old copper attached to ground, +5 V, and RESIN. The fitted C21
-value and physical hole spacing also remain unmeasured.
+would leave the old copper attached to ground, +5 V, and RESIN. The installed C21
+value and physical hole spacing also remain unmeasured. The drawing numeral
+`24` supplies a nominal value, not an installed-value measurement.
 
 Photo coordinates, hashes, fit anchors, and contact limits are in
 `ref/photos/juku-pcb-2/c21-r4-crossview-review.json`.
+
+See [the routed refresh audit](routed-refresh-audit.md) for the current
+C21/R20 pad-net mismatches and quarantined copper. That audit checks model
+and routing state; the remote R20 return still needs source or owner evidence.
