@@ -2,14 +2,14 @@
 
 Status: **DECODE + DRAM TIMING SIMULATED / PROGRAMMING UNVALIDATED**.
 
-The U5 decode is now backed by test vectors from the verified simulation twin
+The U5 decode is backed by test vectors from the verified simulation twin
 (both jumper modes boot byte-identical to cosim — see the U5 section). These
 equations are still not a released programming file: they must be converted to a
 device-specific source format, programmed, and independently reviewed. The U24
-reference below is now simulation-validated against the slower vendored
+reference below is simulation-validated against the slower vendored
 MK4564-12 timing limits at the selected 4 MHz clock.
 
-## U5 Address/control Decode GAL22V10 (dual-mode: Phase 3)
+## U5 address/control decode GAL22V10
 
 The decode GAL is **dual-mode**, selected by the `MODE_B` jumper (J94):
 
@@ -31,11 +31,11 @@ Pinout (a real 22V10: 12 inputs on pins 1-11+13, 10 macrocells on 14-23):
 | 6 | A14 | input |
 | 7 | A15 | input |
 | 8 | MODE_B | input (J94 jumper) |
-| 9 | DEC_ROM_N | input (U3 РТ4 O1 = rom_n) |
-| 10 | DEC_RAM_N | input (U3 РТ4 O2 = ram_n) |
-| 11 | DEC_REV | input (U3 РТ4 O3 = rev) |
+| 9 | DEC_ROM_N | input (U3 physical D0/pin12) |
+| 10 | DEC_RAM_N | input (U3 physical D1/pin11) |
+| 11 | DEC_REV | input (U3 physical D2/pin10) |
 | 12 | GND | power |
-| 13 | DEC_ROE_N | input (U3 РТ4 O4 = roe_n) |
+| 13 | DEC_ROE_N | input (U3 physical D3/pin9) |
 | 14 | ROM_CE_N | output |
 | 15 | RAM_CE_N | output |
 | 16 | PPI_CS_N | output |
@@ -57,7 +57,7 @@ READ_CYCLE  = /RD_N
 WRITE_CYCLE = /WR_N
 
 ; ---- ROM/RAM decision, selected by the MODE_B jumper ----
-; Mode A: coarse western-parts baseline -- ROM is the low 32 KiB (A15=0 & A14=0).
+; Mode A: coarse western-parts baseline -- ROM is the low 16 KiB (A15=0 & A14=0).
 ROM_A       = /A15 & /A14
 ; Mode B: the real К556РТ4 (U3) drives it. Corrected reader-3 packing proves
 ; DEC_ROM_N is physical D0/pin12 and ROM is selected when that signal is LOW.
@@ -85,8 +85,8 @@ These are generated from the same decode the simulation proves byte-identical to
 cosim (`hdl/vjuga_juku_top.v` + the real `.038` РТ4 table via `decode_prom`).
 `ROM_CE_N` is active-low (0 = ROM selected). Mode B matches the reference memory
 overlay in **every** memory-map mode; Mode A reproduces **mode 0** (the boot
-path — `sim/vjuga_boot_check.sh` proves both modes boot identically, and the
-ekta37 boot stays in mode 0):
+path checked by `sim/vjuga_boot_check.sh`; later firmware operations may
+select other overlay modes):
 
 | Cycle (MREQ_N=0) | mode | Mode A `ROM_CE_N` | Mode B `ROM_CE_N` | reference |
 |---|---|---|---|---|
@@ -99,21 +99,21 @@ ekta37 boot stays in mode 0):
 
 The "A-only ≠ref" rows are why Mode A is a **bring-up baseline** (mode 0), not a
 full memory-map model: reproducing modes 1-3 needs the Port C mode bits, which is
-exactly the job the real РТ4 does in Mode B. Regenerate the table with
-`sim/vjuga_boot_check.sh` (both modes) plus the РТ4 `.038` dump.
+the role of the real РТ4 in Mode B. Run `sim/vjuga_boot_check.sh` for
+the two-mode boot comparison; the table summarizes the decode equations.
 
 Notes:
 
-- `PPI_SEL` is a bring-up placeholder and should be tightened when the final
-  I/O map is frozen.
+- `PPI_CS_N` selects all I/O cycles in this coarse bring-up contract; it is
+  not a complete production port decoder.
 - U5 does not share a push-pull `WAIT_N` net with U24. Its pin 22 feeds only
   U24.13 as `DECODE_WAIT_N`; U24.18 is the sole CPU/header WAIT driver.
-- `DEC_RAM_N` (O2) and `DEC_ROE_N` (O4) are brought into the GAL for cross-check
-  and future use; `RAM_CE_N` is derived as the complement of `ROM_SEL` so a
-  single stuck РТ4 output does not silently corrupt RAM select.
-- The previously reserved data-bus-buffer pins are dropped: Rev A routes the
-  direct Z80 data bus, and the freed macrocells now carry the real decode
-  outputs plus `REV_OUT`.
+- `DEC_RAM_N` and `DEC_ROE_N` are brought into the GAL for cross-check
+  and future use; `RAM_CE_N` is derived as the complement of `ROM_SEL` rather than
+  independently using the PROM RAM output. A stuck ROM-select output can
+  still select the wrong memory; this is not fault-tolerant decode.
+- Rev A routes the direct Z80 data bus; U5 provides decode outputs and
+  `REV_OUT`.
 
 ## U24 DRAM Timing Sequencer GAL22V10
 
