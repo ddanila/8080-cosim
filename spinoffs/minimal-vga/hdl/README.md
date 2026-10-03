@@ -17,7 +17,7 @@ Use `T80se` first:
 - `CLKEN => '1'` for the first simple simulation.
 - Keep `RFSH_n` visible, but do not use it as the primary DRAM refresh source.
 
-The planned top-level shape is:
+The retained VHDL smoke-test structure is:
 
 ```text
 T80se
@@ -26,9 +26,8 @@ T80se
   -> ROM / DRAM timing / keyboard / VGA bridge
 ```
 
-`z80_native_adapter` is deliberately disposable. The later option-2 adapter
-should replace it with Z80-to-Juku/8080-style cycle generation without changing
-the DRAM timing or VGA bridge blocks.
+The Verilog tv80 twin and modular Rev B models are separate maintained paths;
+see [simulation checks](../sim/README.md) for their entry points and scope.
 
 ## Source Order
 
@@ -83,5 +82,6 @@ The RAM path now goes through an explicit DRAM sequencer:
 - Periodic video fetches arbitrate for the same DRAM sequencer and count
   successful reads from the framebuffer window.
 
-This is still a functional timing scaffold, not the final transistor-level Juku
-timing PROM behavior.
+This is a functional timing scaffold. It does not establish the original
+Juku shared-DRAM slot schedule or propagation delays. See the root
+[video-slot audit](../../../docs/video-slot-timing-audit.md) for that boundary.
