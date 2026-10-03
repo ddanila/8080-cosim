@@ -74,10 +74,10 @@ all divider states, all 32 address classes, four memory modes, reset and read/wr
 ownership. The timing simulations prove the fetch collision and six-frame spacing,
 and the integrated TTL-card boot remains byte-identical to cosim.
 
-R5.V5 adds a source-local 33 ohm clock resistor (6.56 mm pre-resistor route), bounds
-the seven-load clock tree to 184.54 mm over the solid return plane, and physically
-co-locates U19/U22/U23 so the two-net pixel chain is 59.16 mm. The routed-board gate
-also caps every ACT-to-RGB-resistor path at 20 mm.
+The routed-board gate checks the source-local 33 ohm clock resistor, bounds the
+seven-load clock tree to 200 mm and the `PIXEL`/`VID_PIXEL` routes to 30/45 mm,
+and caps every ACT-to-RGB-resistor path at 20 mm. Current measured CAD route
+lengths are recorded in the [Video PCB guide](rev-b-video-pcb.md).
 
 ## Primary datasheets
 

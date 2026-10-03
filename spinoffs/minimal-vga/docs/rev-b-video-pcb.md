@@ -1,8 +1,9 @@
 # VJUGA rev B Video PCB — R5.V5
 
-Status: **PASS / ROUTED SOURCE FROZEN 2026-08-28.** This closes the individual
-Video-card layout task; it does not authorize fabrication. Five-card mechanical,
-power-input and voltage-drop closure passed R5.V6; the JLCPCB gates remain.
+Status: **PASS / ROUTED SOURCE FROZEN; PHYSICAL ACCEPTANCE PENDING.**
+This qualifies the individual Video-card layout, not fabrication authorization.
+The [five-board release plan](rev-b-five-board-order-plan.md) controls current
+package, factory and order gates.
 
 ## Physical result
 
@@ -19,22 +20,21 @@ power-input and voltage-drop closure passed R5.V6; the JLCPCB gates remain.
   plane.
 - All 23 bypass capacitors have their VCC pad within 12.85 mm of the corresponding
   IC supply pad. C5, C7-C11 and C21 are mounted on B.Cu between their front-side
-  socket rows; R5.V6 includes them in the populated STEP envelope and proves 4.16 mm
+  socket rows; the populated STEP model reports 4.16 mm
   minimum adjacent-card clearance. The other bypass parts and 47 uF bulk capacitor
   are front-side.
 - `R_CLK` is a 33 ohm source resistor 6.27 mm from oscillator U1.8. Its pre-resistor
   `DOTCLK_RAW` route is 6.56 mm; the seven-load `DOTCLK` tree is 174.05 mm over the
   continuous return plane.
-- The active pixel chain remains within its audited bounds after the earlier
-  package-identical U3/U22 swap: `PIXEL` is 25.28 mm and `VID_PIXEL` is
+- The active pixel chain remains within its audited bounds: `PIXEL` is
+  25.28 mm and `VID_PIXEL` is
   41.77 mm. The three ACT-to-RGB-resistor routes are 15.84, 11.03 and 14.40 mm.
 - R5.J2 makes the adjacent U22.9/U22.10 `V_END` tie a deterministic 2.54-mm F.Cu
   under-socket strap. This preserves the exact DRC-clean route intent and prevents
   the global router from consuming that trivial local channel.
 
-The final clean route completed on FreeRouting attempt 1 with its reported final
-score 949.83. The score is informational; acceptance comes from KiCad 10.0.5 DRC:
-**0 violations and 0 unconnected items**. Full Video structural LVS remains in sync
+Recorded KiCad 10.0.5 DRC: **0 violations and 0 unconnected items**.
+Full Video structural LVS remains in sync
 at 23 mapped instances and 106 matched nets.
 
 ## Machine-enforced contract
