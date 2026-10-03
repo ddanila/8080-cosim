@@ -8,7 +8,9 @@ set together covers the whole drawing. The board outline carries the same
 `7.102.158` marking as the owner board photographed in
 `ref/photos/juku-pcb-2/`.
 
-The JPEGs are Git LFS objects. Run `git lfs pull` after cloning; pointer stubs
+The JPEGs are Git LFS objects. Materialize this catalog with
+`git lfs pull --include="ref/photos/dgsh5-109-009-sb/*.jpg" --exclude=""`
+from the repository root; pointer stubs
 do not count as available visual evidence, and `sync/reference_artifact_check.sh`
 rejects them.
 
@@ -22,8 +24,7 @@ What the drawing is authoritative for:
   bodies, and both values read `12K`; exact Э3 sheet 1 supplies their PIC-input
   pull-down connectivity.
 - The upper-FDC view identifies the three populated vertical pull-ups immediately
-  left of D94 as R87/R88/R89. Registered component and reflected solder views
-  were initially misassigned from photo geometry. Owner continuity on 2026-07-19
+  left of D94 as R87/R88/R89. Owner continuity on 2026-07-19
   maps them respectively to D94.4/D93.2, D94.3/D93.4, and D94.2/D99.9; their
   opposite pads enter the common +5 V rail.
 - Edge-connector and cable positions `X1`–`X9`, `S1`, and the off-board cable
@@ -75,7 +76,7 @@ Photo index (`PXL_20260711_*`):
 | `114615300` | Lower-left power/analog placement: `C31`–`C33`/`C93`, `X8` cable exit, «Установка VT1», and «Установка Z1» |
 | `114617677` | Lower-centre: `Z1`, `D59` with `R31`/`R32` and adjacent `R38`, `D42`/`D43`/`D58`, `C98`, «Установка VT2» |
 | `114620466` | Lower-right: `D26`/`D54`/`D55`, `E8` wire fan, `X9` ribbon detail, «Установка C73/C98,C100» |
-| `114626340` | «Вид В» solder-side detail: trace cuts at `D56`, patches at `D15`/`D14`/`D11` |
+| `114626340` | «Вид В» solder-side detail at `D56`/`D15`/`D14`/`D11`; only the D15 cut is explicitly labelled |
 | `114633498` | Enlarged «Разрезать» cut detail at `D15` |
 | `114638730.MP` | «Вид В» full detail, callouts 150/159, «сторона монтажа» |
 | `114649169` | Technical requirements, items 1–14 |
@@ -107,29 +108,26 @@ with two independent component photographs and one reflected solder view. It
 closes the A2/A1 net partition while explicitly withholding the auxiliary-hole
 centres from fabrication use.
 
-`dram-decap-placement-registration.json` preserves the .006 4×8 refdes order
-and the .009 factory callouts C38/C42/C46/C50. The former claim that the
-panoramas prove 32 independent capacitor landing pairs has been withdrawn:
-the four historical row centres coincide with four DRAM top-contact rows,
-and the first proposed C35 midpoint matches adjacent D67.16/D66.1 package
-contacts. The bright marks at the four factory callouts continue to the
-top contacts of D91/D89/D87/D85. The .009 drawing omits the other 28 older
-refdes from factory population, but their current PCB footprints remain
-provisional until distinct holes are identified. The separate `.009` C83
-callout between D41/D40 is bare and remains distinct from the older C63
-grid label. No individual capacitance value is proved. The same record
-separately holds C51-C53/C70-C72 out
-of PCB fabrication: their former coordinates came from an early fit-to-space
-pass rather than registered source evidence. Their schematic rail-bypass intent
-is retained, but placement and target-revision population remain unresolved;
-the hold is not an assembly-DNP classification.
+`dram-decap-placement-registration.json` records the `.006` 4×8 refdes order
+and `.009` factory callouts C38/C42/C46/C50. The four registered row centres
+coincide with DRAM top-contact rows, and the proposed C35 midpoint matches
+D67.16/D66.1 package contacts. These marks do not prove independent capacitor
+holes. The `.009` drawing omits the other 28 older field refdes from factory
+population; their inherited footprints remain provisional until distinct
+holes are identified. C83 between D41/D40 is a separate, bare `.009` callout,
+unrelated to the older C63 grid label. No individual capacitance is proved.
+
+C51-C53/C70-C72 have no current source-PCB footprints: their target placement
+and population remain unresolved. Schematic rail-bypass intent is retained;
+this hold does not classify them as assembly DNP. See
+[decoupling fidelity](../../../docs/decap-value-fidelity.md) for the guarded
+model, population and pad-identity boundaries.
 
 The common `.006` assembly artwork and registered target-board panoramas also
 close the adjacent R49-R56 RAS resistor bank. The target retains the vertical
 top-to-bottom order R56/R52, R55/R51, R54/R50, R53/R49. Red R49-R52 bodies
 read `75Ω`; tan R53-R56 bodies read `5K1`. The durable target-photo fit is
-stored in `../juku-pcb-2/ras-resistor-bank-registration.json` and supersedes
-the earlier two-horizontal-row placement seed and unverified 100-ohm note.
+stored in `../juku-pcb-2/ras-resistor-bank-registration.json`.
 
 `pic-ir01-placement-registration.json` registers R105/R107 from the assembly
 drawing into the existing D10-local owner-photo frame. It records placement,
