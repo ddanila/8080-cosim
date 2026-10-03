@@ -1,6 +1,6 @@
 # D40/D59/D92/D95 1 MHz route review
 
-Owner continuity: 2026-07-23.
+Owner continuity: 2026-07-22 (as recorded in the canonical `LATCH_B` provenance).
 
 Status: **OWNER-CONTINUITY CLOSED / CURRENT ROUTING RELEASE HELD**
 
