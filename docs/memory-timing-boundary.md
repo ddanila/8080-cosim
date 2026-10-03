@@ -1,7 +1,5 @@
 # Memory timing boundary
 
-Status date: 2026-09-27.
-
 Status: **MEMORY TIMING GUARDED / CAS SOURCE BOUNDARY PENDING**
 
 This generated report narrows the remaining DRAM/clock timing risks.
@@ -109,16 +107,16 @@ branches into D38.5, while D39.3 and D39.4 join numbered rail 4;
 D38.4 follows rail 2. The connectivity JSON reflects this source
 correction. All three PCB variants assign D38.5 to LATCH; the
 routed variants remove its obsolete rail-4 branch and route it to
-D39.9 LATCH with no new KiCad DRC violations or unconnected items.
+D39.9 LATCH. This local correction is not a whole-board DRC verdict.
 A registered solder close-up also shows no visible B.Cu departure
 from D58.11 and no join to the broad +5 V strip below it; its
 component-side trace and remote driver remain unresolved.
 
 ## Interpretation
 
-- The functional board model has enough traced structure for fabrication
-  and staged bring-up: RAS/CAS ladder endpoints, the DRAM write rail,
-  and the key PHI2TTL/D56 support nets are guarded.
+- RAS/CAS ladder endpoints, the DRAM write rail and PHI2TTL/D56
+  support nets are guarded. Fabrication remains on DESIGN HOLD;
+  these connectivity checks do not release the board.
 - Physical D53 is guarded as КР531ИД7 with its traced 16-pin decoder
   contract. The preserved primary TI SN54S138 sheet supplies a 12 ns
   compatible-device maximum only at 5 V, 25 C, RL=280 ohm, CL=15 pF.
@@ -146,8 +144,10 @@ component-side trace and remote driver remain unresolved.
   path remains an explicit timing abstraction, not a copper uncertainty.
 - The promoted route preserves W11 as an explicit assembly wire between
   the separately routed `MEMR` and `MEMR_D7` copper islands; it does not
-  restore the former etched bridge. Exact source-pad parity and stable
-  KiCad DRC report zero opens or electrical blockers.
+  restore the former etched bridge. Whole-board parity and DRC remain
+  held; see [the routed audit](routed-refresh-audit.md) and
+  [factory-wire fidelity](factory-wire-route-fidelity.md) for current
+  mismatches, moved pads and unconnected items.
 - The exact CAS-driver input source (`D36_CAS_IN`) is still not
   historical-source-complete. D36.12/.13 were
   rechecked across the native 5140x3563 sheet on 2026-07-13; their common
