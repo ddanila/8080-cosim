@@ -2,8 +2,8 @@
 
 ## Offline render set (2026-09-02)
 
-Both pinned vgmrips DOOM packs now have a complete offline JukuPoly
-collection: 44 finite reusable-player executions, 44 48 kHz mono WAV files,
+The recorded render set for both pinned vgmrips DOOM packs contains
+44 finite reusable-player executions, 44 48 kHz mono WAV files,
 and 44 tagged MP3 files. The library delivers 23 guarded JPS v2 envelope
 tracks and 21 explicit generic JPS v1 fallbacks. It contains no song-name,
 track-number, source-hash, OPL-signature, or renderer exception.
@@ -70,6 +70,10 @@ the old DOOM-title signature-ID list while rejecting the usual wide-pitch
 kick/snare/cymbal cluster.
 
 ## Reproduction
+
+Run from the repository root with Python 3.10+, a C compiler, cpmtools,
+and FFmpeg with `libmp3lame`. Initialize submodules for Nuked OPL3 and zmac;
+the player builder builds zmac with `make` if needed, or uses `ZMAC`.
 
 Build the pinned oracle, candidates, library, and renders with:
 
