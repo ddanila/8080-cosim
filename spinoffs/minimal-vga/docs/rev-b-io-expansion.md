@@ -1,10 +1,10 @@
 # VJUGA rev B D57 and POST contract
 
-Status: **R5.I1 CONTRACT FROZEN / R5.I2 TWIN PASS / R5.I4-I5 PHYSICAL PASS**.
+Status: **CONTRACT FROZEN / HDL AND PCB MODEL QUALIFIED / BENCH ACCEPTANCE PENDING**.
 
-This document is the pin-level review record for R5.I1 in
-`rev-b-five-board-order-plan.md`. The machine-readable authority is
-`../kicad/revb/io-expansion.json`; run its exhaustive arithmetic and decode check
+This is the pin-level contract for the expanded I/O card in
+[the five-board order plan](rev-b-five-board-order-plan.md). The machine-readable
+authority is [io-expansion.json](../kicad/revb/io-expansion.json); run its exhaustive arithmetic and decode check
 with:
 
 ```sh
@@ -57,9 +57,10 @@ The LED latch does not depend on the PIT or USART.
 
 The conservative expansion allowance is 304 mA, raising the I/O-card allowance
 from 150 mA to 454 mA and the five-card allowance from 1,351 mA to 1,655 mA.
-That leaves 345 mA on the already-qualified 2 A design limit. R5.I7 must replace
-this desk allowance with the final exact-population calculation and rerun the
-distribution/voltage-drop model.
+That leaves 345 mA under the 2 A design limit. Completed R5.I7 qualification
+binds the exact populated set and routed voltage-drop model in
+[the five-card power contract](rev-b-five-card-power.md). These modeled margins
+do not establish measured board current or physical supply acceptance.
 
 R5.I4 implements this contract in the generated board source, including the
 socket, one local 100 nF capacitor per U1--U9, defined gates, all clock/output
@@ -68,16 +69,24 @@ test points, both jumpers, POST bit labels, and sound network. R5.I5 retains the
 front-side capacitors preserve a measured 3.24 mm card-stack clearance, and the
 reviewed top/bottom renders carry complete GOST reference plus value/role silk.
 
-Executable physical evidence is `check_revb_io_board_expansion.py --self-test`,
+Executable PCB-model evidence is `check_revb_io_board_expansion.py --self-test`,
 `check_revb_io_pcb.py --self-test`, `sync/revb_lvs.sh io`, the total KiCad DRC
 gate, and the generated `rev-b-mating-report.md`.
 
 ## R5.I2 executable evidence
 
-`sim/revb_io_expansion_check.sh` runs the machine contract and five physical-rate
+`sim/revb_io_expansion_check.sh` runs the machine contract and five hardware-rate
 HDL cases. PIT normal, direct 19,200 and direct 9,600 must pass. A wrong U7 tap
 and a POST address alias must fail. The positive cases program and latch D57
 channel 0, measure count-four output, measure a full 5,102-clock channel-1 mode-3
 period, prove POST reset/retention/read silence and M1 exclusion, and loop byte
 `A6h` through the real root 8251 model. The retained per-card, 47-byte bring-up,
 two decode-mode EKTA, chip-level TTL-video and serial-console checks also pass.
+
+## Physical acceptance
+
+Order authorization and assembled-board acceptance remain separate from HDL,
+CAD, DRC and STEP checks. Record measured PIT clocks, POST stages, serial
+loopback, sound and power behavior with the board identity in
+[the bench record](rev-b-b1-bench-log.md). The R5.R1 order hold is controlled by
+the five-board plan; this contract does not authorize an order.
