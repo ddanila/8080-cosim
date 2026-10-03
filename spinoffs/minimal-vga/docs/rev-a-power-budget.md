@@ -14,11 +14,12 @@ frozen.
 - ROM: 27C256-class EPROM/EEPROM.
 - PPI: 82C55/8255-compatible DIP.
 - GALs: two GAL22V10-class DIP devices.
-- Decode PROMs (Mode B only): the two original Juku **bipolar** PROMs — U3
+- Decode PROMs (when fitted): the two original Juku **bipolar** PROMs — U3
   К556РТ4 (256×4) and U4 К155РЕ3 (32×8). Bipolar fusible-link PROMs draw far
   more than the CMOS parts: budget ~130 mA each. They are socketed and only
-  drawing current when inserted for a chip test; the Mode-A western baseline
-  runs with these sockets empty.
+  powered whenever inserted, regardless of the decode-mode jumper. The western
+  baseline has both sockets empty; a Mode A D8 observation test still adds its
+  fitted PROM load.
 - Mode-bit inverter: one 74HC04 (U6), negligible CMOS load.
 - VGA output: worst case assumes RGB outputs can source current through the
   series resistors into a 75 ohm monitor load.
@@ -34,13 +35,13 @@ frozen.
 | 82C55/8255 PPI | 1 | 100 mA | 100 mA |
 | GAL22V10 | 2 | 90 mA | 180 mA |
 | 74HCT/HC glue logic (incl. U6 inverter) | 10 | 10 mA | 100 mA |
-| Bipolar decode PROMs U3 РТ4 + U4 РЕ3 (Mode B only) | 2 | 130 mA | 260 mA |
+| Bipolar decode PROMs U3 РТ4 + U4 РЕ3 (both fitted) | 2 | 130 mA | 260 mA |
 | Oscillator | 1 | 25 mA | 25 mA |
 | Reset supervisor and pullups | 1 | 5 mA | 5 mA |
 | Diagnostic LEDs | 6 | 2 mA | 12 mA |
 | VGA RGB load | 3 | 10 mA | 30 mA |
 | Margin / sourcing variation | - | - | 250 mA |
-| **Total planning budget (Mode B, PROMs inserted)** |  |  | **1.81 A** |
+| **Total planning budget (both PROMs fitted)** |  |  | **1.81 A** |
 
 ## Fuse Choice
 
@@ -56,8 +57,10 @@ committed fit are guarded by `rev-a-ptc-candidate.md`.
 - Role on Rev A: gross short / wiring fault protection, not precise load
   limiting.
 
-At the datasheet's 23 C point this is 1.66x the 1.81 A planning budget (Mode B,
-with both bipolar PROMs inserted; the Mode-A baseline is ~1.55 A). The margin
+At the datasheet's 23 C point this is 1.66x the 1.81 A planning budget with
+both bipolar PROMs inserted. With both sockets empty, the budget is ~1.55 A;
+one fitted PROM adds ~130 mA. These estimates depend on population, not Mode A/B.
+The margin
 falls to 1.44x at 40 C and 1.16x at 60 C, so ambient/board temperature is a real
 qualification gate rather than an implicit room-temperature assumption. The
 part should avoid nuisance trips during room-temperature bring-up and remains
