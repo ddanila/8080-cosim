@@ -1,6 +1,6 @@
 # FDC DRQ/INTRQ conditioner map
 
-Full-resolution `ДГШ5.109.009 Э3` sheet 3 draws the previously omitted
+Full-resolution `ДГШ5.109.009 Э3` sheet 3 draws the
 fifth and sixth D28 open-collector inverters and the second half of D96.
 The unambiguous local circuit is:
 
@@ -27,7 +27,9 @@ The earlier direct D93.38/.39-to-D10.19/.18 assignment came from MAME and is
 now retired. D10 IR0/IR1 remain explicit boundaries until owner continuity
 identifies their actual joins. Registered component and solder views fix the
 D96.9/.11 pad locations and show that
-neither pad departs on B.Cu; the visible F.Cu is package/component-obscured.
+D96.9 has no exposed local B.Cu departure. A later D96.11 solder review
+finds a conditional route toward D28.11/DRQ, conflicting with the separate
+source nets; direct continuity must resolve it before either net is changed.
 That exhausted photo chase is recorded in
 `ref/photos/juku-pcb-2/d96-irq-photo-exhaustion.json`.
 
@@ -44,8 +46,9 @@ The primary SN74LS74A truth table does not support calling the locally drawn
 D96 half a complete conditioner. Because D96.10 `/PRE2` and D96.12 D2 share
 the same node, a low node asynchronously sets Q2 and a rising CLK2 edge while
 the node is high samples D2=1. Once set, Q2 cannot return low through either
-documented input. Only `/CLR2` can clear it, but sheet 3 draws pin13
-unconnected. Direct continuity of pins9, 11, and 13 plus a powered capture of
+documented input. Only `/CLR2` can clear it. Sheet 3 joins pin13 to D99.10,
+but their remote clear source is unread. Direct continuity of pins9, 11,
+and 13 plus a powered capture of
 pins8-13 is therefore required. The exact board transcription remains intact;
 no missing clear net is inferred from the functional contradiction.
 

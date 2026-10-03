@@ -1,6 +1,6 @@
 # FDC read-clock toggle map
 
-This is the reviewed transcription of D96.1 (КМ555ТМ2 / 74LS74 section 1)
+This is the reviewed transcription of D96 section 1 (КМ555ТМ2 / 74LS74 section 1)
 from ДГШ5.109.009 Э3 sheet 3. It closes the toggle between the D106/D28
 recovery counter and the КР1818ВГ93 read-clock input.
 
@@ -23,8 +23,7 @@ photo-proved one-sided component test landing. A full-resolution re-read of
 marked junction; the common sheet-1 source is still unread.
 
 Tying WREQ_N to both `/CLR1` and `/PRE1` invokes the SN74LS74A simultaneous-
-assertion row: Q1 and `/Q1` are both high while WREQ_N is low. The old HDL
-clear-priority reset was not device-accurate and is retired. Simultaneous
+assertion row: Q1 and `/Q1` are both high while WREQ_N is low. Simultaneous
 release does not define restart phase; once a recovered-clock edge resolves
 the state, `/Q1` feedback still provides phase-independent divide-by-two
 behavior.
