@@ -219,29 +219,33 @@ non-release outputs:
 spinoffs/minimal-vga/kicad/export_fab.sh
 ```
 
-## Release gate
+## Rev A release gate
 
-Before this experiment can become an order candidate it must, at minimum:
+This gate applies to the monolithic Rev A bench fixture. The modular Rev B
+order criteria are in the [five-board order plan](docs/rev-b-five-board-order-plan.md).
 
-1. ~~boot the intended real Juku ROM on the VJUGA T80 top~~ **done**
-   (`sim/boot_check.sh`, framebuffer-identical to cosim at 6000 video writes);
-2. ~~match the intended memory and I/O behavior with an explicit oracle~~
-   ~~and fold it into the Rev A physical top + GAL decode~~ **done** — the Rev A
-   decode sockets the real РТ4/РЕ3 and both jumper modes boot byte-identical to
-   cosim (`sim/vjuga_boot_check.sh`);
-3. ~~render a deterministic real-ROM display result through the VGA path~~
-   **waived for Rev A's bench-fixture scope** — the guarded framebuffer-capture
-   path is the physical boot oracle; VGA remains an experimental output and is
-   not required to test РУ5/РТ4/РЕ3 parts;
-4. **decode and U24 DRAM-timing equations are simulated** (item 2 and
-   `sim/u24_dram_timing_check.sh`); still compile, program, and review them on
-   the exact chosen GAL22V10 devices;
-5. validate DRAM, reset, clock, power, connector, and socket pinouts against
-   selected parts;
-6. receive an independent schematic, copper, Gerber, drill, and power-return
-   review, plus full-board LVS or an explicit owner waiver that names this
-   independent review as compensating evidence; and
-7. regenerate all package artifacts after the design is frozen.
+Established simulation evidence:
+
+- `sim/boot_check.sh` matches the cosim framebuffer at 6000 video writes.
+- `sim/vjuga_boot_check.sh` matches both jumper modes through the Rev A top
+  using the РТ4/РЕ3 decode models.
+- Decode and U24 DRAM-timing equations are simulated; see
+  `sim/u24_dram_timing_check.sh`.
+
+VGA output is waived for Rev A's bench-fixture scope: the guarded framebuffer
+capture is its boot oracle for testing РУ5/РТ4/РЕ3 parts. This waiver does not
+apply to the five-board Rev B order target.
+
+Before Rev A can become an order candidate:
+
+1. Compile, program and review the equations on the exact chosen GAL22V10
+   devices.
+2. Validate DRAM, reset, clock, power, connector and socket pinouts against
+   selected parts.
+3. Obtain an independent schematic, copper, Gerber, drill and power-return
+   review, plus full-board LVS or an explicit owner waiver naming that
+   independent review as compensating evidence.
+4. Regenerate all package artifacts after the design is frozen.
 
 Until then, work on VJUGA must not distract from the main replica's P0 closure
 items in the repository-root `PLAN.md`.
