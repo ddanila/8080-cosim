@@ -42,11 +42,10 @@ for name, nodes in expected.items():
     passed = net is not None and not missing
     ok = ok and passed
     rows.append(
-        "| `{}` | {} | {} | {} |".format(
+        "| `{}` | {} | {} |".format(
             name,
             "PASS" if passed else "FAIL",
             ", ".join(f"`{ref}.{pin}`" for ref, pin in nodes),
-            (net or {}).get("src", "missing net"),
         )
     )
 
@@ -56,10 +55,12 @@ if not ok:
 lines = [
     "# Beeper readiness",
     "",
-    "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**",
+    "Status: **STANDALONE SOUND TOGGLE AND JSON HANDOFF GUARDED**",
     "",
-    "This guard proves the runnable digital source of the Juku beeper path and",
-    "cross-checks the traced board handoff into the analog driver.",
+    "The Icarus test instantiates D57's PIT primitive, writes control 76h and",
+    "count 4 to channel 1, and requires at least two SOUND transitions during",
+    "40 input clocks. It does not verify tone frequency, complete CPU I/O",
+    "decoding, analog drive, or audible output.",
     "",
     "- D57 is the third 8253 PIT (`0x18..0x1B`), and channel 1 / `OUT1` is the",
     "  traced `SOUND` source.",
@@ -80,13 +81,16 @@ lines = [
     "",
     "| Check | Result |",
     "| --- | --- |",
-    "| D57 channel 1 accepts control/data writes | PASS |",
-    "| D57 `OUT1` / `SOUND` toggles after programming | PASS |",
+    "| D57 `OUT1` / `SOUND` has at least two transitions after programming | PASS |",
     "",
     "## Board Handoff Evidence",
     "",
-    "| Net | Result | Required nodes | Source |",
-    "| --- | --- | --- | --- |",
+    "The JSON check requires the nodes below and VD4's modeled value КД521В.",
+    "Additional net members are allowed. It does not inspect photo hashes,",
+    "PCB pads, routed copper, or installed diode polarity. Detailed source",
+    "annotations remain in `kicad/juku.board.json`.", "",
+    "| Net | Result | Required nodes |",
+    "| --- | --- | --- |",
 ]
 lines.extend(rows)
 lines.extend(
@@ -94,9 +98,10 @@ lines.extend(
         "",
         "## Remaining Boundary",
         "",
-        "- This is a digital source plus board-handoff guard, not an analog speaker",
-        "  model. Physical bring-up still needs the speaker unit and a level/current",
-        "  check on real hardware; clamp part identity and drawn polarity are closed.",
+        "Physical bring-up needs the speaker unit and level/current checks on real",
+        "hardware. Photo evidence establishes the clamp part designation; the",
+        "retained drawing supplies polarity. Those records are distinct from",
+        "physical continuity and powered audio verification.",
         "",
     ]
 )
