@@ -45,12 +45,12 @@ after the prompt text:
 
 | Image | Table (ROM) | `D` | Second source |
 | --- | --- | --- | --- |
-| ekta24 | `1976h` | `FF50h` | `N` -> `EA93h` (NetBios) |
-| ekta31 | `1976h` | `FF50h` | `N` -> `EAA1h` (NetBios) |
-| ekta32 | `197Dh` | `FF50h` | `T` -> `EC2Ch` (TapeBios) |
-| ekta35 | `1983h` | `FF50h` | `N` -> `EAAEh` (NetBios) |
-| ekta37 | `1977h` | `FF50h` | `N` -> `EAA2h` (NetBios) |
-| ekta43 | `197Eh` | `FF50h` | `T` -> `EC2Dh` (TapeBios) |
+| ekta24 | `19C4h` | `FF50h` | `N` -> `EA93h` (NetBios) |
+| ekta31 | `19C4h` | `FF50h` | `N` -> `EAA1h` (NetBios) |
+| ekta32 | `19CDh` | `FF50h` | `T` -> `EC2Ch` (TapeBios) |
+| ekta35 | `19D1h` | `FF50h` | `N` -> `EAAEh` (NetBios) |
+| ekta37 | `19C5h` | `FF50h` | `N` -> `EAA2h` (NetBios) |
+| ekta43 | `19CEh` | `FF50h` | `T` -> `EC2Dh` (TapeBios) |
 
 `D` is universal: every build jumps to **`FF50h`** — the monitor cold/boot
 vector documented in `EKDOS30.ASM` (`ROM EQU 0FF50H`), which enters the
