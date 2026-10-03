@@ -65,7 +65,7 @@ were freshly verified. Run the manufacturing gate for release checks.
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 1798 | FAIL |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1889 | FAIL |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 2632 | FAIL |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3375 | FAIL |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3564 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2005 | FAIL |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20412 | PASS |

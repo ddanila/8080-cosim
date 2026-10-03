@@ -6,7 +6,11 @@ Status: **REVIEW REQUIRED**
 This generated report is the tracked disposition record for the main-board
 fabrication DRC findings. It deliberately fails if a count changes or a new
 DRC class appears, so the order package cannot carry an old waiver forward
-silently.
+silently. It reads the saved JSON; it does not rerun KiCad DRC or verify
+that the input describes the current PCB. Count equality preserves a
+recorded disposition but does not compare the geometry of individual findings.
+
+Regenerate with `python3 kicad/report_replica_drc_disposition.py`.
 
 ## Machine Blockers
 
@@ -23,8 +27,8 @@ silently.
 
 | DRC type | Count | Expected | Highest-repeat references | Disposition |
 | --- | ---: | ---: | --- | --- |
-| `courtyards_overlap` | 108 | 107 | D97, C17, C20, R33, R84, R97, VT1, A22 | Waived as dense authentic placement after visual assembly-fit review. |
-| `pth_inside_courtyard` | 68 | 0 | R1, D97, D105, D13, D35, D51, E14, R84 | Waived as dense through-hole/socket proximity after visual assembly-fit review. |
+| `courtyards_overlap` | 108 | 107 | D97, C17, C20, R33, R84, R97, VT1, A22 | HOLD: count differs from the accepted baseline; fresh review required. |
+| `pth_inside_courtyard` | 68 | 0 | R1, D97, D105, D13, D35, D51, E14, R84 | HOLD: count differs from the accepted baseline; fresh review required. |
 | `silk_over_copper` | 199 | 199 | X1, X2, R1, E14, E13, D105, D13, D35 | Cosmetic silkscreen clipping; order-time preview must confirm labels remain usable. |
 | `silk_overlap` | 199 | 199 | VD4, D35, R90, VT1, R39, D34, E13, R91 | Cosmetic silkscreen overlap in dense labels/outlines; order-time preview must confirm labels remain usable. |
 | `text_thickness` | 199 | 199 | VD3, VD4, C1, C18, C21, C5, C73, R1 | GOST/TrueType stroke warning; manufacturing-readability item, not copper geometry. |
@@ -43,11 +47,15 @@ silently.
 - `docs/replica-power-trace-readiness.md`: routed power-trace DFM envelope.
 - `docs/replica-order-upload-runbook.md`: final deterministic Gerber/drill upload archive and checksum command.
 
-## Resolved Items
+## Layout constraints
 
-- `lib_footprint_issues`: resolved by vendoring stable-KiCad-compatible `juku:CONN_X1`, `CONN_X2`, `CONN_X3`, `CONN_X8`, `CONN_X9`, and factory-wire footprints under `kicad/juku.pretty/` with the project `kicad/fp-lib-table`.
-- `copper_edge_clearance` and `silk_edge_clearance`: resolved by deferring the two conflicting generated cutouts at `(104.0,251.4)` and `(300.3,138.1)` until the exact non-rectangular outline can be re-read.
-- Review-only DRC classes are accepted only at the exact counts above; changed counts require a fresh disposition.
+- Project connector/factory-wire footprints are retained under
+  `kicad/juku.pretty/` with `kicad/fp-lib-table`.
+- The two generated cutouts at `(104.0,251.4)` and `(300.3,138.1)` remain
+  deferred pending exact outline evidence. A clear edge DRC does not prove
+  the rectangular outline reproduces every original cutout.
+- Review dispositions apply only when `Count` equals `Expected`; changed
+  counts remain held. Current failures below block order readiness.
 
 Visual disposition failures: 5
 
