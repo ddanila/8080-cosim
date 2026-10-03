@@ -87,10 +87,12 @@ and operator discipline—not an unproved mechanical interlock—prevent reversa
 
 ## Memory map
 
-ROM/RAM overlay selected by 8255 Port C bits[1:0] via MODE0/1. "ROM" = served by
-the ROM overlay; everything else is RAM. The **framebuffer at 0xD800 (9640 bytes,
-40×241 mono bitmap) is owned by the Video card** — the Memory card must not
-respond in that window.
+ROM/RAM overlay is selected by 8255 Port C bits[1:0] via MODE0/1.
+In modes 0 and 3, Video owns RAM accesses in `0xD800–0xFFFF`; Memory must not
+respond there. In modes 1 and 2, Memory serves the upper ROM overlay and Video
+does not drive CPU reads or accept CPU writes in that window. Scanout continues
+from Video-local SRAM independently. The empty cartridge region reads as `0xFF`
+and rejects writes.
 
 | Mode (MODE1:MODE0) | ROM regions | Notes |
 |---|---|---|
@@ -115,10 +117,14 @@ Low 8 address bits. Each card decodes only its own ports.
 | 0x07 | 8255 control | I/O | mode-set / Port C bit set-reset |
 | 0x08 | 8251-class USART (D11) | I/O | A0=0: TX/RX data |
 | 0x09 | 8251-class USART (D11) | I/O | A0=1: mode/command, status (TxRDY/RxRDY/TxEMPTY) |
-| 0x1C-0x1F | ВГ93/WD1793 FDC | FDC | port&3 = cmd/status, track, sector, data |
+| 0x18-0x1B | D57-compatible 8253/82C54 PIT | I/O | channels 0–2 and control; serial clock and sound |
+| 0x1C-0x1F | Reserved for ВГ93/WD1793 FDC | Future FDC | outside the first article; port&3 = cmd/status, track, sector, data |
+| 0x20-0x23 | POST latch | I/O | write-only stage byte; reads do not drive the bus |
 
 USART decoded window: **0x08-0x0B** (data 0x08, control/status 0x09). This is the
 minimum-tier console; the bring-up ROM (B1) talks only through it.
+The complete decode groups, reserved ports and interrupt-acknowledge exclusion
+are specified in the [D57 and POST contract](rev-b-io-expansion.md).
 
 ## PIC interrupt assignments
 

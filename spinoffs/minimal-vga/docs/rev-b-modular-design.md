@@ -30,8 +30,10 @@ All slots share the extension. This is not the vanilla 40-pin connector layout.
 
 - CPU owns address/control and write data. Only the selected card drives read
   data; bus-conflict assertions check decode overlap and refresh behavior.
-- Video owns the framebuffer at `0xD800`, 9640 bytes in 40×241 geometry. Memory
-  must not answer in the Video window. Scanout stays on the Video card's SRAM.
+- Video owns RAM accesses at `0xD800–0xFFFF` in modes 0 and 3, with a
+  9640-byte, 40×241 framebuffer. Memory serves the upper ROM overlay in modes
+  1 and 2; Video does not answer CPU accesses then. Scanout stays on Video-local
+  SRAM in every mode.
 - Video asserts open-drain `/WAIT` for CPU accesses that collide with scanout
   fetches. Phase sweeps and integrated CPU checks verify access completion.
 - Video supplies `FRAME_TICK`; I/O supplies overlay MODE0/1. Backplane defaults
