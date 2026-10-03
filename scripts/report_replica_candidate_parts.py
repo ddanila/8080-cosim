@@ -133,7 +133,7 @@ def build() -> tuple[list[dict[str, str | bool]], list[str]]:
     )
     add_check(
         checks,
-        "DRAM source and routed footprints accept the dual-in-line candidate",
+        "DRAM source and routed footprint names match the candidate package",
         all(
             footprint_name(pcb_texts[path], ref) == "DIP-16_W7.62mm"
             for path in (SOURCE_PCB, ROUTED_PCB)
@@ -209,17 +209,17 @@ def build() -> tuple[list[dict[str, str | bool]], list[str]]:
     )
     add_check(
         checks,
-        "Board rails and D95 provide the FD1793 operating configuration",
+        "Modeled FD1793 rails and clock reference match the candidate requirements",
         ("D93", "20") in nodes(board, "GND")
         and ("D93", "21") in nodes(board, "P5V")
         and ("D93", "40") in nodes(board, "P12V")
         and nodes(board, "FDC_CLK") == {("D93", "24"), ("D95", "7")}
         and "`5″/8″=0` -> controller 1 MHz" in clock_text,
-        "D93 has GND/+5 V/+12 V and D95 selects the source-proved 1 MHz mini-drive clock",
+        "D93 is assigned GND/+5 V/+12 V and FDC_CLK from D95.7; the clock reference specifies 1 MHz with 5″/8″=0",
     )
     add_check(
         checks,
-        "FDC source and routed footprints accept the plastic candidate",
+        "FDC source and routed footprint names match the candidate package",
         all(
             footprint_name(pcb_texts[path], "D93") == "DIP-40_W15.24mm"
             for path in (SOURCE_PCB, ROUTED_PCB)
@@ -240,13 +240,13 @@ def write_report(checks: list[dict[str, str | bool]], holds: list[str]) -> None:
     lines = [
         "# Replica candidate-part readiness",
         "",
-        "Status date: **2026-07-23**.",
-        "",
         "Status: **DATA-SHEET COMPATIBILITY GUARDED / E4, RECEIPT, AND BENCH ACCEPTANCE OPEN**.",
         "",
-        "This report closes the static pinout, voltage, clock/refresh, speed-grade,",
-        "and package questions for two functional-build candidates. It is not a",
-        "vendor cart, stock claim, received-part test, or authorization to seat parts.",
+        "This report checks modeled pin/rail assignments, footprint names, pinned",
+        "data-sheet hashes, and interpreted reference-text markers for two candidates.",
+        "It does not rerun timing analysis, measure pad geometry, validate received",
+        "parts, or authorize installation. Socket voltages, clocks, refresh, and",
+        "physical fit still require bench acceptance.",
         "",
         "## Command",
         "",

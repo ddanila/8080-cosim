@@ -1,12 +1,12 @@
 # Replica candidate-part readiness
 
-Status date: **2026-07-23**.
-
 Status: **DATA-SHEET COMPATIBILITY GUARDED / E4, RECEIPT, AND BENCH ACCEPTANCE OPEN**.
 
-This report closes the static pinout, voltage, clock/refresh, speed-grade,
-and package questions for two functional-build candidates. It is not a
-vendor cart, stock claim, received-part test, or authorization to seat parts.
+This report checks modeled pin/rail assignments, footprint names, pinned
+data-sheet hashes, and interpreted reference-text markers for two candidates.
+It does not rerun timing analysis, measure pad geometry, validate received
+parts, or authorize installation. Socket voltages, clocks, refresh, and
+physical fit still require bench acceptance.
 
 ## Command
 
@@ -22,11 +22,11 @@ python3 scripts/report_replica_candidate_parts.py
 | All populated DRAM sockets retain the JEDEC 4164 pin classes | PASS | pins 2/3/4/14/15/16 = DIN/WE/RAS/DOUT/CAS/GND; pins 5-7,9-13 = MA0-MA7 |
 | DRAM option rails preserve the required conditional +5 V configuration | PASS | E4.1=+12 V, E4.2=DRAM pin-8 rail, E4.3=+5 V; 4164 requires E4 2-3 |
 | MK4564 primary artifact and interpreted eligibility facts are pinned | PASS | Mostek MK4564-12: JEDEC 64Kx1, single +5 V, 120 ns access, 220 ns cycle, refresh on 128 A0-A6 combinations |
-| DRAM source and routed footprints accept the dual-in-line candidate | PASS | D84-D91 use 16-pin, 7.62 mm-row, 2.54 mm-pitch DIP footprints |
+| DRAM source and routed footprint names match the candidate package | PASS | D84-D91 use 16-pin, 7.62 mm-row, 2.54 mm-pitch DIP footprints |
 | D93 carries the complete FD1793 pin contract | PASS | all 40 host, drive, separator, status, clock, and supply pins match |
 | FD179X primary artifact and interpreted supply/clock facts are pinned | PASS | FD1793: pin20 GND, pin21 +5 V, pin40 +12 V, 1 MHz mini-drive clock |
-| Board rails and D95 provide the FD1793 operating configuration | PASS | D93 has GND/+5 V/+12 V and D95 selects the source-proved 1 MHz mini-drive clock |
-| FDC source and routed footprints accept the plastic candidate | PASS | FD1793B-01 plastic package: 40 pins, 0.600-inch rows, 0.100-inch pitch |
+| Modeled FD1793 rails and clock reference match the candidate requirements | PASS | D93 is assigned GND/+5 V/+12 V and FDC_CLK from D95.7; the clock reference specifies 1 MHz with 5″/8″=0 |
+| FDC source and routed footprint names match the candidate package | PASS | FD1793B-01 plastic package: 40 pins, 0.600-inch rows, 0.100-inch pitch |
 
 ## Eligible functional-build candidates
 
