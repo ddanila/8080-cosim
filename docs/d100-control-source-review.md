@@ -7,10 +7,9 @@ separates D100's two control inputs. D99 section-2 `Q_N`/pin12 runs
 downward, turns left, and enters D100 `OE_N`/pin9. D100 `T`/pin11 runs
 left to its own quoted sheet-1 continuation. Near source pixels
 `x≈915, 975, 1028; y≈2300`, the T line crosses three descending
-conductors without junction dots. The earlier transcription that joined
-D100.9 to D100.11 was wrong.
+conductors without junction dots.
 
-The board model now puts D100.9 on `D99_Q2N_BOUNDARY` with D99.12 and
+The board model puts D100.9 on `D99_Q2N_BOUNDARY` with D99.12 and
 keeps D100.11 alone on `D100_CONTROL_SHEET1_BOUNDARY`. The remote sheet-1
 source of T is still unread. Original-board D99.12↔D100.9 continuity and
 D100.11's remote source need direct measurement. The nearby D96.13/D99.10
@@ -29,14 +28,9 @@ The matching annotation style does not join those two conductors: their
 separate arrowheads terminate different drawn lines, and no common local
 junction is drawn. It does rule out treating either two-stroke mark as a
 unique D100 pin-11 identifier.
-An OCR-assisted search of the native sheet-1 tiles found two prominent `11`
-readings in `PXL_20260718_101813438.jpg`, near `(1511,1583)` and
-`(1518,3551)`. Original-pixel crops show those are the printed pin-11 labels
-of the separate D23 and D29 `T` buffer sections, each pointing to the `A`
-rail. They are not matching continuation marks for D100.11. The
-sheet-1 remote-source identification therefore remains open.
+## Physical probe locations
 
-A native owner-solder recheck also leaves the proposed join unproved. In
+In
 `PXL_20260710_200522685.jpg`, crop `(950,490)–(1540,1020)`, the
 registered D99.10/B2 joint is near `(1290,738)`; D99.12/Q2_N is a
 different joint near `(1180,737)`. This crop does not show an identifiable
@@ -68,7 +62,7 @@ those legs.
 | Probe pair | What the result establishes |
 | --- | --- |
 | D100.11 T ↔ D99.10 B2 | Continuity would join the two similarly annotated sheet-3 continuations on the physical board. An open reading leaves their source arrows independent. |
-| D100.11 T ↔ D100.9 OE_N | Checks the former replica short directly. The exact sheet-3 drawing has no local junction here, so any continuity needs a separate physical path to explain it. |
+| D100.11 T ↔ D100.9 OE_N | Checks isolation between the separate control inputs. The exact sheet-3 drawing has no local junction here, so any continuity needs a separate physical path to explain it. |
 | D100.9 OE_N ↔ D99.12 Q2_N | Checks the drawn local connection independently of T. |
 | D99.10 B2 ↔ D96.13 CLR2_N | Checks the other drawn local junction before following its sheet-1 continuation. |
 
@@ -76,8 +70,14 @@ Neither a matching-looking arrow annotation nor an open reading at one probe
 pair identifies D100.11's remote driver. Trace that driver from D100.11 only
 after recording these four pair results.
 
-The routed replica previously had eleven track segments on the false
-D100.9/.11 common net. Those segments were removed from the routed and
-candidate PCBs when the pads were split; retaining them would preserve
-the wrong join. KiCad DRC now reports a D99.12-to-D100.9 open and no new
-short. Routing and fabrication remain on hold.
+## Model guard and routing status
+
+```sh
+python3 kicad/check_d99_source_paths.py
+```
+
+This guard checks the canonical JSON and structural HDL connections,
+including the separation of D100.9 and D100.11. It does not measure the
+original board or validate routed copper. Current routing and fabrication
+holds are recorded in [factory-wire fidelity](factory-wire-route-fidelity.md)
+and [the routed audit](routed-refresh-audit.md).
