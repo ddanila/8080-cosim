@@ -237,60 +237,17 @@ physical D93/D94 wiring.
   restores ordinary RAM before returning `0xFF`; with RAM present it writes
   the 12-byte `RamDisk` signature plus 63 `0xE5` directory-entry markers,
   preserves BC, restores bank 6, and reopens a signed drive without formatting.
-- The fixture checkpoint now comes from the real disk-backed `TDD` boot at the
-  EKDOS `A>` prompt boundary (`14,200,002` cycles), so the installed BIOS jump
-  table is present in RAM. Public cold `BOOT=0xCA00` runs to its non-returning
-  `CCP=0xB400` handoff: it installs `JMP 0xCA03` and the exact `0xBC06` BDOS
-  vector at low memory, sets DMA `0x0080`, clears the three cache fields,
-  selects drive 0, formats a blank cloned RAM drive with its signature and 63
-  directory markers, performs exactly 10,240 framebuffer writes through 144
-  installed monitor-trampoline entries, and issues no FDC command.
-  Public `WBOOT=0xCA03` is separately executed through the source-defined
-  resident-BDOS branch by changing only the pointed high byte from `0xBC` to
-  nonzero `0xB5`; it reaches the same CCP handoff, preserves `0xB506` in the
-  low-memory BDOS vector, and performs no framebuffer or FDC work. The default
-  `WRetry` branch is independently guarded after poisoning `0xB400..0xBDFF`:
-  the Monitor's low-stack dispatcher writes its `0xFEE8` return frame into RAM
-  beneath the low ROM read overlay, restores `SP=0x0100`, and START issues five
-  exact `0x80` commands for physical sectors `3,2,4,6,5`. It consumes 2,560
-  data bytes through 40 monitor trampolines, reloads system sectors 2..6 at
-  their address-numbered 512-byte slots, and reaches CCP with the exact final
-  bytes after the source-defined three-byte `CCPExit` patch. Public `HOME` at
-  `0xCA18` is executed with both
-  cache states: it always sets `SEKTRK=0`, clears `HSTACT` when `HSTWRT=0`,
-  and preserves the active cache when `HSTWRT=1`, so dirty data is not lost.
-  Public `LISTST` at `0xCA2D` starts with `A=0xA5` and executes source target
-  `POLLPT`, returning `A=0` because the printer-status device is unimplemented.
-  Public `PUNCH=0xCA12` and `READER=0xCA15` are both executed from nonzero A;
-  the prompt checkpoint proves they share the same `XRA A; RET` target, and
-  each returns unavailable as `A=0` without inventing auxiliary hardware.
-  Public `CONST=0xCA06` traverses `DoFunction` to exact ROM monitor entry
-  `CONSTA=0xFF98`; with the established released-matrix input `0xCF` and the
-  prompt key buffer empty, it returns `A=0` (no character ready).
-  Public `CONIN=0xCA09` traverses `DoFunction` to exact monitor entry
-  `RDCHR=0xFFD3` and waits on the monitor's interrupt-fed keyboard buffer.
-  The fixture drives the source-faithful shifted-`T` matrix position
-  (column 4, encoder bit 3) while delivering the established 200,000-cycle
-  frame IRQ at exact ROM vector `0xFED4`. Two frame services perform 34 matrix
-  reads, sample the active `0x88` encoding twice, and return exact ASCII
-  `T=0x54` through the public BIOS vector and installed `D7E7` trampoline.
-  Public `CONOUT=0xCA0C` traverses `DoFunction` to exact monitor entry
-  `WRCHR=0xFFD9`. At the prompt checkpoint, input `C='C'` renders the exact
-  ten-scanline character cell at byte column 2 / rows 70..79: blank top row,
-  glyph bytes `1C 22 20 20 20 22 1C`, and two blank bottom rows. The guard
-  requires exactly ten framebuffer writes, advances the monitor cursor from
-  byte column 2 to 3, and observes the installed `D7E7` trampoline. Its
-  precondition accepts either uniform `00` or `FF` for the Monitor's ten-byte
-  blinking cursor phase, then normalizes the cell before the glyph check;
-  realistic FDC polling changes elapsed blink phase, not character output.
-  Public `LIST=0xCA0F` traverses exact `PrintCh=0xFFEE`, whose ROM jump reaches
-  the boot-installed `D7F1->E2A2` USART service. With transmitter-ready bit 3
-  asserted at status port `0x0E`, input `C='L'` is emitted exactly at data port
-  `0x0C`. This path uses the installed direct service jump rather than `D7E7`.
-  Public `SELDSK` at `0xCA1B` runs through its
-  `DoFunction`/ROMBIOS trampoline: drives A/B/C return contiguous 16-byte DPHs,
-  unavailable C and invalid drive 3 return zero, invalid selection preserves
-  the prior drive, and present C selects `SEKDSK=2` without a synthetic write.
+- The BIOS fixture starts at the real disk-backed `TDD` boot's EKDOS `A>`
+  prompt, with the installed RAM jump table. It executes public cold BOOT,
+  both WBOOT branches, HOME, and the console, printer, auxiliary, and drive
+  selection vectors through exact ROM/installed monitor services. Guards
+  check the CCP handoff and vectors, cache preservation, system-sector reload,
+  interrupt-fed keyboard input, framebuffer character rendering, USART output,
+  and unavailable-device returns. The default WBOOT retry reloads sectors
+  `3,2,4,6,5` and checks the final bytes after the `CCPExit` patch.
+  These are behavioral fixtures in
+  [the ROMBIOS test](../tests/rombios_fdc_write_test.c), not physical-device
+  qualification. Printer status and auxiliary input/output remain unimplemented.
 - All 24 RAM-drive endpoint writes and 24 reads now enter through installed
   EKDOS BIOS vectors `SETTRK=0xCA1E`, `SETSEC=0xCA21`, `SETDMA=0xCA24`,
   `READ=0xCA27`, and `WRITE=0xCA2A`. Setter effects are checked in the shared
@@ -415,9 +372,9 @@ sync/ekdos_fdc_probe.py
 sync/juku_top_fdc_prompt_check.sh
 ```
 
-Checkpoint tools remain available for narrowing a regression, but their old
-intermediate reports are not milestones now that uninterrupted reset-to-prompt
-evidence exists.
+Checkpoint tools can narrow regressions. The reset-to-prompt reports record
+historical execution; use the deep prompt check to test current HDL, subject
+to the simulator compatibility limits linked above.
 
 ## Remaining boundaries
 
@@ -438,15 +395,18 @@ evidence exists.
   D93.19 plus the outer-bus rightmost middle-row contact (top view). INTRQ and
   the clock waveform still require bench calibration
   checks in `docs/fdc-hardware-handoff.md`. D100's drive-output channels are
-  source-proved; shared pins 9/11 continue to an unresolved sheet-1 conductor,
-  and the pin-6 write-data input is source-closed to D101.9.
+  source-proved. Pin 9 (`OE_N`) joins D99.12; pin 11 (`T`) has a separate
+  unresolved sheet-1 source. Pin 6 receives write data from D101.9. See
+  [D100 control review](d100-control-source-review.md).
 - D94 `.092` uses the validated physical table. All five address inputs are
   owner/source-closed: BA0, BA1, IORD, qualified IOWR from D105.3, and D101.7
   Q0. D1 drives D99.9 through its pull-up, while D2/D3 drive D93 `/RE` and
-  `/WE`; D4-D7 are owner/drawing-closed no-connects. The runnable model consumes
-  those physical paths. Remaining board-release boundaries are the upstream
-  source beyond the local D94.15/D93.3 enable join and D0's hidden load beyond
-  its measured R8 pull-up.
+  `/WE`; D4-D7 are owner/drawing-closed no-connects. CS7 is source-closed
+  from D9.7 to D94.15/D93.3. Structural HDL connects D101 Q0 to A4;
+  runnable HDL omits the precompensation chain and holds A4 high with
+  `supply1`, so its decoded-bus tests do not prove D101 Q0 behavior.
+  D0's hidden load beyond its measured R8 pull-up remains a board-release
+  boundary. See [D101 section A](d101-section-a-input-source-review.md).
 - Adopt a larger upstream controller core only if a concrete required command
   or timing behavior exceeds this guarded scope; re-evaluate license and
   adapter cost at that time.
