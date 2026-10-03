@@ -1,7 +1,7 @@
 # Annotated ROM disassemblies
 
 SkoolKit-based, round-trip-guarded disassemblies of the vendored Juku ROMs —
-all nine CPU images are covered. The maintained artifact is the **control
+all eight CPU ROM images and the BASIC cartridge are covered. The maintained artifact is the **control
 file** (`.ctl`): labels, comments, and code/data boundaries accumulate
 there. The `.skool` file is generated from it and vendored for browsing; it
 must always regenerate identically and reassemble to the exact pinned ROM
@@ -13,9 +13,10 @@ bytes `08/10/18/20/28/30/38/CB/D9/DD/ED/FD` have *different lengths* on
 Z80 (JR family, prefixes). A `c` block whose tail reaches one of these
 makes the Z80 decoder consume bytes past the block boundary, producing
 overlapping entries — the round-trip guard then fails with a shifted,
-longer binary. Real 8080 code never executes these bytes; if one shows up
-as an opcode, the region is data or the block is misaligned. The seed
-generators stop code discovery at these bytes for exactly this reason.
+longer binary. An 8080 may execute these undocumented bytes with semantics
+that differ from Z80; encountering one is not proof that the region is data.
+The seed generators conservatively stop discovery there. Establish code
+boundaries with the 8080 decoder and execution evidence before extending them.
 
 ## ekta37 (EktaSoft '88 Serial #0037, RomBios 3.43m)
 
@@ -110,7 +111,7 @@ for their identity and configuration matrix.
   [`jbasic11/jbasic11.skool`](jbasic11/jbasic11.skool)
 
 The cartridge's physical runtime mapping is an explicitly open boundary
-(PLAN.md, "cartridge BASIC loading"): under an org-0 reading its apparent
+([the cartridge boundary](../docs/cartridge-basic-boundary.md)): under an org-0 reading its apparent
 entry jump targets data (ASCII), so **this seed asserts no code at all** —
 addresses are file offsets, everything is data blocks with titled
 landmarks. The BASIC body at offset `0100h` is byte-identical to the
@@ -125,16 +126,16 @@ the mapping boundary closes.
 python3 -m venv ~/.venvs/skoolkit && ~/.venvs/skoolkit/bin/pip install skoolkit==10.0
 
 # After editing the ctl, regenerate the vendored skool:
-sna2skool.py --hex --org 0 --start 0 --end 16384 \
+~/.venvs/skoolkit/bin/sna2skool.py --hex --org 0 --start 0 --end 16384 \
   --ctl disasm/ekta37/ekta37.ctl roms/ekta37.bin > disasm/ekta37/ekta37.skool
 
 # Guard (also runs in generic CI):
-sync/ekta37_disasm_check.sh
+sync/disasm_check.sh
 ```
 
-The guard asserts three identities: the pinned `roms/ekta37.bin` SHA256, the
-vendored skool regenerating byte-identically from the ctl, and
-`skool2bin.py` reassembling the skool to the exact ROM bytes.
+For each of the nine images, the guard checks the pinned ROM SHA256,
+byte-identical regeneration of its vendored skool from the ctl, and exact
+ROM-byte reassembly with `skool2bin.py`.
 
 ## Caveats
 
