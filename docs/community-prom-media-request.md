@@ -23,14 +23,14 @@ board-variant detection, not because the adopted PROM/EPROM set is incomplete:
   physical tables from two `.009` boards. Independent reads or original
   programming-disk files would provide optional further provenance. D94's
   D0 hidden load remains incomplete; exact `.009` sheets close its `CS7` enable source.
-- The third-source archival `JUKUROM0/1` pair is adopted as the D15/D16 EktaSoft
-  3.7 content. Further EPROM reads may expose a board variant but are not a
+- The third-source archival `JUKUROM0/1` pair is adopted as the D15/D16 archive-37
+  RomBios 3.43m content. Further EPROM reads may expose a board variant but are not a
   content or release gate.
 - Disk-side `JBASIC.COM` now reaches a visible `READY` prompt in cosim and
   uninterrupted HDL, but the public 8 KiB removable-memory BASIC cartridge
-  remains a Monitor 3.3 compatibility boundary. Current probes show the body is
-  copied, then the runtime bootstrap needs bytes beyond the public payload and
-  simple tail/entry patches do not reach BASIC.
+  remains a Monitor 3.3 compatibility boundary: its bootstrap needs bytes
+  beyond the public payload. A complete image or confirmed launch procedure
+  is still useful.
 - The public Monitor 2.2 image has damaged physical chips 7 and 8. The upstream
   catalog records a couple of errors in chip 7 and 50 divergences across seven
   chip-8 reads, but the public ZIP and Git history retain only the final
@@ -45,7 +45,6 @@ Supporting records:
 - [Cartridge BASIC boundary](cartridge-basic-boundary.md)
 - [Monitor 2.2 reconstruction](jmon22-reconstruction.md)
 - [Baltijets sources](../ref/baltijets-tech-docs/README.md)
-- [Replica BOM](replica-dual-config-bom.md)
 
 ## Exact Ask
 
