@@ -88,7 +88,7 @@ The guard creates synthetic single- and double-sided images, validates CHS
 sector reads, checks default session reset and explicit-sidecar reopen
 persistence, and checks out-of-range addressing failures. It also runs C FDC,
 serial and timing tests. Its final ROMBIOS write test uses a RAM checkpoint
-from EktaSoft 3.7 with the vendored `media/disks/JUKU1.CPM` mounted; this is
+from RomBios 3.43m with the vendored `media/disks/JUKU1.CPM` mounted; this is
 selected runtime coverage, not a full filesystem or archival-integrity audit.
 `sync/fdc_check.sh` separately writes the sidecar in one HDL process and
 reloads it read-only in another.

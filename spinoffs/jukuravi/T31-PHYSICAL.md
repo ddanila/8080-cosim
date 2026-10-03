@@ -43,7 +43,7 @@ Evidence: `sessions/t31-real/20260803T150916.115911Z.json`.
 
 A separate AT28C64B in the Willem programmer was prepared as reusable T31
 host-driven diagnostic media. It has not been installed in CS00015; the board
-remains fitted with the EK37/EktaSoft 3.7 D15/D16 pair recorded in the service
+remains fitted with the EK37/RomBios 3.43m D15/D16 pair recorded in the service
 record.
 
 Before writing, two independent reads after correcting the programmer's J2

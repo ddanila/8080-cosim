@@ -45,7 +45,7 @@ see
 
 ## Current machine configuration
 
-CS00015 was restored on 2026-08-08 with **EK37 / EktaSoft 3.7**, received the
+CS00015 was restored on 2026-08-08 with **EK37 / RomBios 3.43m**, received the
 project's frozen Ekta4401 D15/D16 service-ROM pair on 2026-08-11, and was
 upgraded to Ekta4402 on 2026-08-16. Ekta4402 provided direct `N` fastboot plus
 the inherited Jukuravi API-v2 `J` entry and is now a frozen preceding baseline.

@@ -13,7 +13,7 @@ It must not be conflated with Danila Sukharev's separate reference board.
 ### D15 firmware
 
 Repeated reads established that three bytes in the fitted D15 EPROM differ
-from the adopted official EktaSoft 3.7 low image, `ref/firmware/JUKUROM0.HEX`
+from the adopted official RomBios 3.43m low image, `ref/firmware/JUKUROM0.HEX`
 (SHA-256
 `d6c4ec7418f05e5761ef450e6ee36fb2579d65d9cbf87dce265eaf1c0d077596`).
 This is a machine-specific observation, not a replacement for the repository's
@@ -123,7 +123,7 @@ provenance only and must not be read as a diagnosis of the original D6.
 ## Post-diagnostic restoration and Ekta4401 service ROM
 
 On 2026-08-08, after the diagnostic work was completed, the owner restored
-CS00015 to its normal firmware configuration with **EK37 / EktaSoft 3.7**
+CS00015 to its normal firmware configuration with **EK37 / RomBios 3.43m**
 (repository firmware profile `ekta37`) in the D15/D16 positions. The T31/T32
 diagnostic firmware is no longer the fitted machine configuration; its images,
 hashes, and physical results remain retained as diagnostic evidence.
@@ -201,7 +201,7 @@ with its stock ROM, and CS00000 is the other home-lab diagnostic candidate; see
 
 | Location | Finding | Confidence / next discriminator |
 | --- | --- | --- |
-| D15 diagnostic-era fitted EPROM | Three bytes differed from the adopted official EktaSoft 3.7 low image | Repeat-read historical observation; retain raw dumps and exact byte diff |
+| D15 diagnostic-era fitted EPROM | Three bytes differed from the adopted official RomBios 3.43m low image | Repeat-read historical observation; retain raw dumps and exact byte diff |
 | D55/D57 vertical timing path | Historical T15/T16/T31/T32 D55 bits used an unclocked predicate; corrected Ekta raster plus D57 channel-2 sampling passed 8/8 | D57 channel 2 and D55.13 `/VER RTR` output path are physically validated; this does not independently exercise every D55 counter predicate |
 | D1 16-bit increment path | The original D1 lost an already-high A12 during INX; carry and DAD worked | Confirmed and repaired: the fault repeated immediately before replacement and the unchanged probe passed immediately afterward |
 | Currently fitted firmware | JukuNet C8 / ABI 1.3 D15/D16 pair | Repeated automatic 19,200-baud V16 boot, NetDisk-v3/N4, diagnostics, keyboard, sound, write/warm-boot/soak, and live reconnect passed blind qualification. On 2026-08-21 a native arm64 macOS host additionally passed a cold `STATUS`/`DIAG ALL`/`N4BULK`/`SOAK` run. Subsequent two-monitor testing found stable sync but no pixels in S21 40x24, 53x24, or 80x24. A raw `55h`/`AAh` framebuffer write/read passed on CS00015 but remained invisible; the identical corrected probe produced stable visible stripes on stock-ROM CS00014. This isolates a CS00015 board-local video-data fault after CPU-visible framebuffer storage; see the CP/M Plus physical record. |

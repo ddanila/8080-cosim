@@ -82,7 +82,7 @@ alternative causes.
 
 - Perform **five cold-power T34 runs**. All five must report D55 clear while
   retaining clean D54 and D57 results.
-- Run the standard EKTA 3.7 or JMON 3.3 configuration and verify its normal
+- Run the standard RomBios 3.43m or JMON 3.3 configuration and verify its normal
   video/frame behavior. This is a functional regression, not the package
   discriminator by itself.
 - Preserve raw serial/video evidence and one written row per run. Do not

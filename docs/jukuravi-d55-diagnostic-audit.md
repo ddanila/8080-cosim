@@ -56,7 +56,7 @@ The following sources agree:
 
 ## Standard Juku ROM use
 
-EKTA 3.7 is independent evidence that all three D55 channels are operationally
+RomBios 3.43m is independent evidence that all three D55 channels are operationally
 used. `scripts/report_video_pit_timing.py` extracts this exact sequence from
 `roms/ekta37.bin` offsets `01D4h..0222h`:
 

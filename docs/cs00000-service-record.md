@@ -42,7 +42,7 @@ until the supply and board rails/reset/clock behavior are measured.
 ### EK37 ROM-swap discriminator
 
 Later on 2026-08-22, the owner replaced the stock `#0031` pair with the known
-EktaSoft 3.7 / Serial `#0037` ROM pair. CS00000 then started normally and
+RomBios 3.43m / Serial `#0037` ROM pair. CS00000 then started normally and
 produced a correct display. Subsequent repeated cold starts remained 100%
 successful at the time of reporting; the exact run count was not recorded.
 

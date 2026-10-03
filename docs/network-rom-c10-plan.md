@@ -41,13 +41,13 @@ acceptance remain required after installation.
 The following sequence isolates the fault without inference from the screen
 alone:
 
-1. CS00000 displays correctly with EKTA 3.7 and the latest CP/M Plus 3.1 in
+1. CS00000 displays correctly with RomBios 3.43m and the latest CP/M Plus 3.1 in
    MODX mode. This controls the monitor, video hardware, framebuffer path,
    CP/M renderer, and MODX timer overrides.
 2. The exact C9 pair boots the same machine, reaches CP/M, and passes its N4
    and disk workloads. Sync is present, but the local display remains entirely
    blank during a 60-second `VIDTEST`: no clear, border, text, or cursor.
-3. EKTA 3.7 initially sets PPI0 PC7 with BSR byte `0Fh`, then resets it with
+3. RomBios 3.43m initially sets PPI0 PC7 with BSR byte `0Fh`, then resets it with
    BSR byte `0Eh` after POST and before installing the screen console. C9 sets
    `0Fh` but never emits the matching `0Eh`; its successful runtime Port C is
    therefore `81h` instead of `01h`.
@@ -168,7 +168,7 @@ hashes above and record built-in programmer verification.
 On CS00000, require cold local video before network load, visible CP/M/MODX
 output, attended `VIDTEST`, exact Port C `01h`, and the retained C9 workloads
 with zero clean-path target retries/UART errors. The five-byte discriminator
-cannot substitute for a correct C10 boot. The known-working EKTA 3.7/C8 pairs
+cannot substitute for a correct C10 boot. The known-working RomBios 3.43m/C8 pairs
 remain rollback paths.
 
 Later C11/C12 features and their physical scope are described in the

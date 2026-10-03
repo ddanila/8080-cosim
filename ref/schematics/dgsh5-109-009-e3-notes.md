@@ -110,9 +110,9 @@ stronger.
   with `X9:9`; the sheet-1 `CONTRDAT` continuation `909` therefore has its
   factory connector endpoint. Only the physical A50 hole within the owner
   photo band remains unidentified. A separate revision conflict remains:
-  archived EktaSoft 3.7 ROM bytes at `1211h..1216h` read PPI Port B and mask
+  archived RomBios 3.43m ROM bytes at `1211h..1216h` read PPI Port B and mask
   PB5 (`DB 05 2F FB E6 20`), whereas the fitted `.009` E8 3–4 bridge selects
-  PB4. The HDL's PB5 stimulus is an EktaSoft 3.7 compatibility profile, not
+  PB4. The HDL's PB5 stimulus is an RomBios 3.43m compatibility profile, not
   proof that S21 configuration works through this board's fitted bridge.
 
 - D96.9 Q2 runs to the joined D101 A0-A3 inputs in the full sheet-3
