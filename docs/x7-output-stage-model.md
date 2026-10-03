@@ -1,13 +1,11 @@
 # VIDEO_OUT output-stage static model
 
-Status date: **2026-07-23**.
-
 Status: **TOPOLOGY + DATA-BACKED LS86 COMPARISON DRIVER GUARDED / EXACT D34 CURVE + HARDWARE CALIBRATION OPEN**.
 
-This generated report is the second evidence-bounded part of CVBS-plan WP4.
+This report records the static output-stage model for CVBS-plan WP4.
 It solves the traced VIDEO_OUT emitter-follower topology with the official TI
-SN74LS86A PSpice model's supply-dependent output resistances instead of fixed
-D34 pin voltages. TI describes that driver as data-sheet-generated typical
+SN74LS86A PSpice model's supply-dependent output resistances.
+TI describes that driver as data-sheet-generated typical
 25 C behavior. It is comparison evidence, not proof of exact К555ЛП5 I/V
 behavior, a physical D34 waveform, monitor timing, edge shape, or the installed
 КТ315Б parameters.
@@ -58,8 +56,7 @@ corroborates those values but does not supply К555ЛП5 curves.
 TI's official SDLM061 SN74LS86A PSpice package is data-sheet-generated
 typical 25 C behavior. Its push-pull output is VCC through 5,000–4,878 Ω
 when high and ground through 62.5–43.75 Ω when low across 4.5–5.5 V.
-This model now participates in the coupled KCL solve, so D34 pin voltage
-droops with load instead of remaining artificially fixed. It remains an
+The coupled KCL solve models D34 pin-voltage droop under load. This is an
 explicit comparison driver, not К555ЛП5 equivalence evidence.
 
 | State | Pin | Mode | Relevant current (mA) | Fanout-derived limit (mA) | Result |
@@ -102,7 +99,7 @@ The unterminated diagnostic evaluates **432**
 corners per state with only fitted R65 loading the emitter.
 
 The two final columns count corners that exceed the exact sheet's
-fanout-derived loads. The comparison driver now predicts its own resistive
+fanout-derived loads. The comparison driver predicts resistive
 droop, but those warnings still mark operation outside the exact device's
 stated same-family load envelope.
 
@@ -127,9 +124,8 @@ The following are deliberately not inferred by this result:
 - physical D34 logic polarity and video timing
 - installed-part calibration
 
-The data-backed TI SN74LS86A comparison driver replaces the fixed TTL
-pin-voltage approximation, but it is not an exact nonlinear К555ЛП5 output
-model. Beta and VBE are sensitivity bounds; only beta endpoints are exact-grade
+The TI SN74LS86A driver is a comparison model. Beta and VBE are sensitivity
+bounds; only beta endpoints are exact-grade
 data, not installed-part measurements.
 C94 remains absent. Consequently the
 stepped fixture has ideal discontinuities and must not be used as evidence of
