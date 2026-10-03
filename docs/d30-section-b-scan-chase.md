@@ -48,15 +48,18 @@ reaches D29.7. The latter supersedes the prior raw-IOWR assignment at D29.7.
 | R5 provenance records agreement between the exact sheet and target board | PASS |
 | Measured /CLR path from D105.11 is kept separate | PASS |
 
-## Additional source observations
+## Photo probe sites
 
-The owner component photo seeds have been corrected to the marked right-notched
-D30 2×7 package. In `200439607`, D30.8/.11 are lower-row contacts near
-`(875,1230)/(1040,1230)`; the former component seeds were above the chip
-under a cable. The former solder seeds in `200537608` are on an unrelated
-broad rail. Rechecking the native image exposed a D13 registration that
-crossed into D105's package. With that corrected, D30 occupies the distinct
-2×7 solder field at y≈540/730; D30.8/.11 are the lower-row joints near
-`(3040,730)/(2860,730)`. These are visual probe pads; the chip-removed
-owner measurement remains the net evidence. See
-`ref/photos/juku-pcb-2/d30-pin8-pin11-photo-registration.json`.
+The right-notched D30 2×7 package in component photo `200439607` has
+D30.8/.11 on the lower row near `(875,1230)/(1040,1230)`.
+In solder photo `200537608`, the corresponding lower-row joints are near
+`(3040,730)/(2860,730)`. These registrations identify visual probe sites;
+the independent chip-removed owner measurement proves the net continuity.
+See `ref/photos/juku-pcb-2/d30-pin8-pin11-photo-registration.json` for the
+image identities, registration evidence, and rejected earlier coordinates.
+
+Reproduce the model checks and this report with:
+
+```sh
+python3 scripts/report_d30_section_b_scan_chase.py
+```
