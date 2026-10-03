@@ -1,8 +1,8 @@
 # Replica parts and PROM inventory template
 
 Copy this checklist into the private build record when parts are ordered,
-received, tested, and programmed. Do not mark the parts/programming milestone complete until the received
-inventory, bench tests, and PROM/EPROM programming records below are filled
+received, tested, and programmed. Do not mark the parts/programming milestone
+complete until the received inventory, bench tests, and programming records are filled
 with real evidence.
 
 Source gates:
@@ -12,7 +12,8 @@ Source gates:
 - `docs/replica-candidate-parts-readiness.md`
 - `docs/replica-bringup-verification-points.md`
 - `docs/prom-dump-procedure.md`
-- `docs/community-prom-media-request.md`
+- [Validated firmware evidence](replica-release-evidence-package.md)
+- [D15/D16 programming images](eprom-programming-images.md)
 
 ## Kit Summary
 
@@ -39,7 +40,7 @@ Source gates:
 | Connectors/switches | exact mechanical fit reviewed for X1/X2/X3/X6/X8/X9/S1/S3/S4 |  |
 | Sockets | DIP socket quantities and widths checked against footprints before IC seating |  |
 | PROM/EPROM blanks | received D2/D6 RT4-class, D8/D94 RE3-class, and D15/D16 EPROM blanks |  |
-| Programmed firmware | D15/D16 EPROMs and D2/D6/D8/D94 PROMs programmed or dumped/reconstructed with checksums |  |
+| Programmed firmware | D2/D6/D8/D94 verified against validated physical tables and D15/D16 against the adopted EktaSoft 3.7 split; installed-device readbacks and provenance recorded |  |
 
 ## Received Parts Ledger
 
@@ -53,6 +54,11 @@ Source gates:
 | sockets |  |  |  |  | footprint check |  |  |
 
 ## PROM / EPROM Programming Ledger
+
+Record the selected device, programmer settings, adapter, and input/readback
+representation for each row. Raw PROM pin levels and active-low asserted
+complements are distinct artifacts; record any conversion so hashes can be
+compared in the same format. Follow the device-specific programming procedure.
 
 | Ref | Device class | Source of contents | Input file SHA256 | Program/readback SHA256 | Programmer/method | Result |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -71,7 +77,7 @@ Source gates:
 - [ ] FDC choice is recorded as КР1818ВГ93 or guarded FD1793B-01 plastic DIP; D96/D99/D100/D101 gates and socket clocks/strobes are verified before seating.
 - [ ] Mechanical connector rows are fit-checked against the fabricated board before soldering.
 - [ ] PROM/EPROM contents have provenance and readback checksums.
-- [ ] `docs/replica-bringup-verification-points.md` has been copied into the build record with owner/measured dispositions for source-risk nets touched by early bring-up.
+- [ ] `docs/replica-bringup-verification-points.md` has been copied into the build record with released design-risk dispositions and per-unit verification evidence.
 - [ ] Sockets and passives are installed before any IC is seated.
 - [ ] Power rails are checked with no ICs seated.
 
