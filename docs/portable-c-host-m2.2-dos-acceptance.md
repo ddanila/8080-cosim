@@ -143,8 +143,9 @@ a real serial line.
 DOSBox-X's mounted-directory backend returns `ENOENT` for DOS commit
 `INT 21h/AH=68h` after successfully writing a file. The DOS platform accepts
 only that exact error and still closes the file; every other commit error
-remains fatal. A physical DOS implementation therefore retains the stronger
-commit behavior. DOSBox-X may also report several RX overruns before the host
+remains fatal. This exception applies to every DOS build; the code does not
+detect DOSBox-X. Successful commit and close behavior on physical DOS remains
+part of M2.3 qualification. DOSBox-X may also report several RX overruns before the host
 opens COM1 because the simulator emits early readiness bytes while the slow
 emulated CPU authenticates artifacts; COM1 open clears that stale FIFO and the
 host's final UART error count must remain zero.
