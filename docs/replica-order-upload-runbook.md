@@ -61,7 +61,7 @@ were freshly verified. Run the manufacturing gate for release checks.
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 3030 | PASS |
+| Order readiness | `fab/gerbers/order-readiness.md` | 3406 | PASS |
 | Fabrication readiness | `fab/gerbers/fab-readiness.md` | 2255 | FAIL |
 | Review waiver | `fab/gerbers/review-waivers.md` | 1967 | FAIL |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 3259 | FAIL |

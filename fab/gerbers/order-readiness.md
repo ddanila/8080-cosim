@@ -7,6 +7,8 @@ Status: **NOT READY**
 This gate separates machine-checkable fabrication blockers from dense
 placement and silkscreen findings that require human visual review or
 explicit waiver before placing an order.
+Run `python3 kicad/report_order_readiness.py` to refresh this report.
+The command reruns DRC and the package checks; it does not export the PCB.
 
 ## Machine Blockers
 
@@ -59,7 +61,10 @@ explicit waiver before placing an order.
 ## Design Release Gate
 
 Package integrity and DRC are necessary but do not authorize fabrication.
-The following functional-design checks must all pass:
+The following evidence files must contain their configured release-status
+markers. This command reads those reports; it does not rerun their
+functional or physical verification. Confirm their evidence is current
+before relying on a passing marker.
 
 | Check | Evidence | Result |
 | --- | --- | --- |
@@ -94,4 +99,4 @@ The following functional-design checks must all pass:
 
 ## Disposition
 
-Do not order until all machine blockers and unknown DRC classes above are resolved or deliberately reclassified.
+Do not order. Resolve or deliberately reclassify the machine blockers and unknown DRC classes, then pass every package and design-release gate above.
