@@ -9,6 +9,7 @@ the four timing parts.
 | D99 endpoint | Exact connection |
 | --- | --- |
 | 1 `A_N`, 3 `CLR_N` | GND |
+| 9 `A2_N` | owner continuity joins D94.2/D1 and R89.1; R89.2 reaches +5 V. The drawing extends this island to D96.11 CLK2, whose board continuity remains pending |
 | 10 `B2` | marked junction with D96.13 `/CLR2`; shared continuation to sheet 1, remote source unresolved |
 | 11 `CLR2_N` | marked junction on the `MOTOR EN (1)` rail across the overlapping sheet-3 detail frames; modeled with D26.16, original-board continuity unmeasured |
 | 4 `Q1_N` | full sheet-3 overview shows its westbound rail immediately above the distinct D94.14/D101.7 rail, descending into D93 HLT/pin23; original-board continuity remains unmeasured |
