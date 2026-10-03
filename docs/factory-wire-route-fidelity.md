@@ -9,6 +9,15 @@ separates those two claims. Source/routed parity and electrical DRC are held,
 but factory-construction release remains held until all ten links are
 represented as explicit assembly wires between split copper islands.
 
+## Command and scope
+
+Run `/usr/bin/python3 kicad/report_factory_wire_route_fidelity.py`
+with KiCad Python bindings available. It reruns the landing evidence
+guards and DRC on both routed variants, then compares source pad
+identities, nets, and centers. A successful exit means the invoked
+evidence guards passed; release additionally requires the report status
+and every parity, DRC, and construction condition below to be ready.
+
 ## Guarded state
 
 - Logical endpoint check: `PASS`
@@ -79,7 +88,7 @@ photograph closes the unresolved joints:
    net into its two original copper islands joined by an explicit wire-link
    assembly object.
 2. Add W9/W12/W13 assembly footprints, split their island net names, reroute
-   only the affected islands, and retain zero electrical/unconnected DRC
+   only the affected islands, and achieve zero electrical/unconnected DRC
    findings.
 3. Regenerate the fabrication package and emit a wire cut/installation table
    with the factory lengths before design release.

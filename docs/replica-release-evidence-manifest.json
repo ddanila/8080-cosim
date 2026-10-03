@@ -138,7 +138,7 @@
     },
     "Factory wire construction": {
       "path": "docs/factory-wire-route-fidelity.md",
-      "sha256": "e9380926595982bd88dd5eb52a439c1e8410f6ce3f802619fea01b1b953f0c71",
+      "sha256": "fec2ea0b300497fc616977671bb098d34c66ba3b9a93a6da1e31e0bd03ac500a",
       "status": "FACTORY WIRE LANDING EVIDENCE HOLD"
     },
     "DRC disposition": {
@@ -188,7 +188,7 @@
     },
     "Upload procedure": {
       "path": "docs/replica-order-upload-runbook.md",
-      "sha256": "ffeb73514b7ae6546761594fff802814b69470df22dc0de6ac43ff84f9a44adb",
+      "sha256": "98c31e35ba5a4dc4bb6c74325ff82c3e286d87f3529cd92ad01b7b81ffcd3608",
       "status": "PACKAGE INVALID"
     },
     "Order evidence": {
