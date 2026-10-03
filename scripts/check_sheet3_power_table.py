@@ -67,8 +67,15 @@ def main() -> int:
         "# Exact .009 sheet-3 IC power-table audit", "",
         f"Source: `{SOURCE}`, original pixels `(1200,2890)-(2700,3470)`.", "",
         f"Result: **{'FAIL' if missing else 'PASS'}** — {len(EXPECTED)} fitted devices, {count} table endpoints, checked in board JSON and all three PCB variants; {len(missing)} mismatches.", "",
+        "## Command", "", "```sh", "/usr/bin/python3 scripts/check_sheet3_power_table.py", "```", "",
         "| Ref | Model type | Table pin:rail entries |", "| --- | --- | --- |",
-        *rows, "", "This checks source rail assignments and pad net names. It does not prove touching copper or physical-board continuity.", "",
+        *rows, "", "## Scope boundary", "",
+        "The script checks the 12 fixed references and 25 transcribed endpoints",
+        "against board JSON nodes and pad net names in `juku.kicad_pcb`,",
+        "`juku_routed.kicad_pcb`, and `juku_routed_candidate.kicad_pcb`.",
+        "Model types are displayed, not validated. The source image is cited for",
+        "the transcription; its pixels and hash are not checked here.",
+        "The audit does not prove copper connectivity or physical-board continuity.", "",
     ]
     if missing:
         lines += ["## Mismatches", "", *[f"- {item}" for item in missing], ""]

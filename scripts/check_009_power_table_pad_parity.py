@@ -60,9 +60,14 @@ def main() -> int:
         "# Exact .009 power-table PCB pad parity", "",
         "Sources: sheet-1 `PXL_20260718_101827714.jpg`, sheet-2 `PXL_20260718_101927794.jpg`, and sheet-3 `PXL_20260718_101633062.jpg` in `ref/photos/dgsh5-109-009-e3/`.", "",
         f"Result: **{'FAIL' if failed else 'PASS'}** — {sheet_counts[0]} sheet-1, {sheet_counts[1]} sheet-2, and {sheet_counts[2]} sheet-3 adopted table entries; {len(expected)} unique package pads after overlap, {len(conflicts)} conflicting source assignments.", "",
+        "## Command", "", "```sh", "/usr/bin/python3 scripts/check_009_power_table_pad_parity.py", "```", "",
         "| PCB | Matching pads | Mismatches |", "| --- | ---: | ---: |",
         *[f"| `{name}` | {len(expected) - len(mismatches)} | {len(mismatches)} |" for name, mismatches in board_results],
-        "", "This checks adopted table entries against pad net names in the saved PCB files. Sheet-1 D104.16 and sheet-2 ИР16/РУ4 conflicts remain outside the adopted entry sets. The reports for each sheet document those limits. Pad names do not establish track contact or original-board continuity.", "",
+        "", "Sheet-1 and sheet-2 entries are selected by the current board JSON chip types;",
+        "sheet-3 entries use a fixed reference list. This check imports those",
+        "transcriptions without running the individual sheet audits. It does not",
+        "validate JSON rail nodes, enforce the full chip census, or hash the images.", "",
+        "This checks adopted table entries against pad net names in the saved PCB files. Sheet-1 D104.16 and sheet-2 ИР16/РУ4 conflicts remain outside the adopted entry sets. The reports for each sheet document those limits. Pad names do not establish track contact or original-board continuity.", "",
     ]
     if conflicts or any(mismatches for _, mismatches in board_results):
         lines += ["## Mismatches", "", *[f"- source {item}" for item in conflicts]]

@@ -4,6 +4,12 @@ Source: `ref/photos/dgsh5-109-009-e3/PXL_20260718_101927794.jpg`; original pixel
 
 Result: **PASS** for the unambiguous mapped columns — 54 modeled positions (30 factory-fitted ICs and 24 empty expansion sockets), 108 audited rail endpoints, 0 missing model endpoints. The ИР16 and РУ4 columns remain outside this pass.
 
+## Command
+
+```sh
+python3 scripts/check_sheet2_power_table.py
+```
+
 | Ref | Population | Model type | Table pin:rail entries | Model |
 | --- | --- | --- | --- | --- |
 | `D60` | empty socket | `RU5` | `16:GND, 8:RAIL_G` | PASS |
@@ -62,6 +68,14 @@ Result: **PASS** for the unambiguous mapped columns — 54 modeled positions (30
 | `D106` | factory-fitted | `IE7_CTR` | `16:P5V, 8:GND` | PASS |
 
 ## Scope boundary
+
+The script compares hard-coded table transcriptions with board JSON nodes
+for every chip whose model type is listed in its `PIN_RAILS` map. It does
+not enforce a fixed reference census: a removed chip or an unmapped type
+can disappear from the report without causing failure. Population labels
+are assigned from reference names, not checked against physical hardware.
+The source image is cited for the transcription; this script neither
+reads its pixels nor checks its hash.
 
 Only unambiguous table columns with a direct model-type mapping are checked. The photographed table's `К581РУ4` column lists pin 9 on A and pin 1 on H. No К581РУ4 appears in the guarded .009 factory IC census; the eight fitted owner-bank devices D84–D91 are К565РУ5Г. The RU5 socket pin 9 carries MA7, so the table's RU4 pin-9 supply must not be applied to that bank. This resolves the fitted-bank interpretation of that column, but does not establish why the drawing retained it or whether a rewired RU4 variant existed. The table's G row is a +12/+5 selector, so `RAIL_G` is intentional rather than a fixed +5 V node. This checks JSON node names, not copper connectivity.
 

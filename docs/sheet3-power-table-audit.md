@@ -4,6 +4,12 @@ Source: `ref/photos/dgsh5-109-009-e3/PXL_20260718_101633062.jpg`, original pixel
 
 Result: **PASS** — 12 fitted devices, 25 table endpoints, checked in board JSON and all three PCB variants; 0 mismatches.
 
+## Command
+
+```sh
+/usr/bin/python3 scripts/check_sheet3_power_table.py
+```
+
 | Ref | Model type | Table pin:rail entries |
 | --- | --- | --- |
 | `D28` | `LN3_OC_INV` | `7:GND, 14:P5V` |
@@ -19,4 +25,11 @@ Result: **PASS** — 12 fitted devices, 25 table endpoints, checked in board JSO
 | `D102` | `AG3_ONESHOT` | `8:GND, 16:P5V` |
 | `D106` | `IE7_CTR` | `8:GND, 16:P5V` |
 
-This checks source rail assignments and pad net names. It does not prove touching copper or physical-board continuity.
+## Scope boundary
+
+The script checks the 12 fixed references and 25 transcribed endpoints
+against board JSON nodes and pad net names in `juku.kicad_pcb`,
+`juku_routed.kicad_pcb`, and `juku_routed_candidate.kicad_pcb`.
+Model types are displayed, not validated. The source image is cited for
+the transcription; its pixels and hash are not checked here.
+The audit does not prove copper connectivity or physical-board continuity.

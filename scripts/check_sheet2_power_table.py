@@ -46,11 +46,19 @@ def main() -> int:
         "# Exact .009 sheet-2 IC power-table audit", "",
         f"Source: `{SOURCE}`; original pixels `(0,2150)-(3072,3920)`. Row labels also appear in `PXL_20260718_101924004.jpg`.", "",
         f"Result: **{'FAIL' if missing else 'PASS'}** for the unambiguous mapped columns — {len(rows)} modeled positions ({fitted_count} factory-fitted ICs and {empty_count} empty expansion sockets), {count} audited rail endpoints, {len(missing)} missing model endpoints. The ИР16 and РУ4 columns remain outside this pass.", "",
+        "## Command", "", "```sh", "python3 scripts/check_sheet2_power_table.py", "```", "",
         "| Ref | Population | Model type | Table pin:rail entries | Model |", "| --- | --- | --- | --- | --- |",
     ]
     lines += [f"| `{ref}` | {'empty socket' if ref in EMPTY_DRAM_SOCKETS else 'factory-fitted'} | `{kind}` | `{entries}` | {result} |" for ref, kind, entries, result in rows]
     lines += [
         "", "## Scope boundary", "",
+        "The script compares hard-coded table transcriptions with board JSON nodes",
+        "for every chip whose model type is listed in its `PIN_RAILS` map. It does",
+        "not enforce a fixed reference census: a removed chip or an unmapped type",
+        "can disappear from the report without causing failure. Population labels",
+        "are assigned from reference names, not checked against physical hardware.",
+        "The source image is cited for the transcription; this script neither",
+        "reads its pixels nor checks its hash.", "",
         "Only unambiguous table columns with a direct model-type mapping are checked. The photographed table's `К581РУ4` column lists pin 9 on A and pin 1 on H. No К581РУ4 appears in the guarded .009 factory IC census; the eight fitted owner-bank devices D84–D91 are К565РУ5Г. The RU5 socket pin 9 carries MA7, so the table's RU4 pin-9 supply must not be applied to that bank. This resolves the fitted-bank interpretation of that column, but does not establish why the drawing retained it or whether a rewired RU4 variant existed. The table's G row is a +12/+5 selector, so `RAIL_G` is intentional rather than a fixed +5 V node. This checks JSON node names, not copper connectivity.", "",
         "The full header in the overlapping original-pixel table tile explicitly prints `555 ИР16` in its +5 pin-16 / ground pin-8 group. The official census calls D41–D43 К555ИР16, the owner D41 photo registration has a seven-contact row, an independent lower-centre owner crop shows marked D42/D43 with seven contacts per side, and the preserved 14-pin device contract assigns supply pins 14/7. This is a confirmed package-width error in the table for those fitted devices. Do not move their supply nets to nonexistent pads 16/8. See `ref/schematics/sheet2-ir16-power-table-conflict.json` for the images and remaining owner continuity check.", "",
     ]
