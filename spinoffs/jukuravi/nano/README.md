@@ -1,10 +1,10 @@
 # Jukuravi Nano firmware
 
-Status: the Stage D1 serial bridge, isolated startup-reset/hold driver, and
+Status: the serial bridge, isolated startup-reset/hold driver, and
 default-off Nano-side liveness observation/report are implemented and guarded.
 Juku-side liveness testpoints and conditioning remain measurement-gated.
 
-## Serial bridge checkpoint
+## Serial bridge
 
 `jukuravi_bridge/jukuravi_bridge.ino` targets a classic 5 V, 16 MHz,
 ATmega328P Arduino Nano. It leaves D0/RX and D1/TX on the Nano's hardware UART
@@ -17,7 +17,9 @@ full-duplex operation.
 
 The main host CLI defaults to the current direct 2400-baud adapter. Use
 `--baud 115200` when deliberately running through this Nano bridge, and ensure
-the sketch's Juku-side `SoftwareSerial` rate matches the installed ROM.
+the sketch's Juku-side `SoftwareSerial` rate matches the installed ROM. The
+committed 9600-baud sketch does not match T31/T36's 2400-baud default; using
+those images requires a deliberate sketch-rate change and rebuild.
 
 TTL-side wiring:
 
@@ -46,7 +48,7 @@ The onboard D13 LED latches on if the Juku-side `SoftwareSerial` receive FIFO
 overflows. Nothing is injected into the USB stream because that would corrupt
 the host's framed evidence. Power-cycle or reset the Nano to clear the LED.
 
-## Default-off liveness checkpoint
+## Default-off liveness observation
 
 The Nano-side roles are fixed without assigning any Juku net:
 
@@ -89,7 +91,7 @@ Continuity must first identify accessible target-revision nodes; voltage,
 polarity, bandwidth, loading, and isolation must then be measured and designed.
 Until that closes, leave D7 open and all three signal inputs disconnected.
 
-## Isolated startup reset checkpoint
+## Isolated startup reset and hold
 
 Nano D4 is the low-voltage reset-drive output. Wire D4 through a 1 kOhm series
 resistor to the optocoupler LED anode, return its cathode to Nano GND, and fit a
@@ -135,8 +137,7 @@ optocoupler input state before connecting the isolated board-side contact. The
 existing D4 pull-down deliberately leaves that contact open during Nano reset
 or bootloader intervals.
 
-This is a firmware and isolated-input checkpoint, not permission to attach the
-board side. S1 is SPDT: current evidence identifies S1.1 with `RES_RC` and
+Firmware tests do not establish readiness of the board-side harness. S1 is SPDT: current evidence identifies S1.1 with `RES_RC` and
 S1.2 with the D98/D97 read-data branch, while S1.3 remains unresolved. Measure
 which pair closes in the reset position and its polarity/voltage before placing
 the isolated contact across any pair.
@@ -166,7 +167,7 @@ arduino-cli compile --fqbn arduino:avr:nano:cpu=atmega328 \
 Some clone Nanos require `cpu=atmega328old` for upload; that changes only the
 bootloader/upload protocol, not this sketch's compiled ATmega328P behavior.
 
-## Remaining D1 hardware work
+## Remaining physical harness qualification
 
 The reset driver cannot make a bench session safe or unattended until the real
 S1 contact pair is measured and the isolated harness is built. Session-start
@@ -180,10 +181,10 @@ their board-side target nodes and conditioning may be assigned only after
 continuity identifies accessible points and voltage/polarity/loading are
 measured.
 
-Before physical connection, the root Jukuravi README's **Physical harness
-release packet** must name the exact MAX3232-family device/capacitors, isolated
-reset part and resistor, connectors/cable, probe conditioners, power/grounding
-arrangement, firmware hashes, and expected disconnected measurements. The
+Before physical connection, record the exact MAX3232-family device and
+capacitors, isolated reset part and resistor, connectors/cable, probe
+conditioners, power/grounding arrangement, firmware hashes and expected
+disconnected measurements with the bench harness evidence. The
 implemented Juku-side `SoftwareSerial` rate is fixed at nominal 9600 baud; the
 `0x55` training bytes are a measurement/check pattern, not an auto-baud
 implementation. Any different measured rate requires a deliberate code change,
