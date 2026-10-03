@@ -2,7 +2,7 @@
 
 Status: hand-written analysis of the pinned `roms/ekta37.bin` (EktaSoft '88
 Serial #0037, RomBios 3.43m, SHA256
-`fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`),
+`fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`).
 Byte-level claims are verified against the image and
 reproducible with the commands at the end; interpretations are labeled.
 Sibling identity/context is in
@@ -341,8 +341,8 @@ and CS00015.
 Period NetBios ran on exactly the components the Jukuravi diagnostics
 exercise: the 8251 through X3, clocked by D57 counter 0. The Jukuravi
 "upload over the 8251 and execute" service model is functionally a
-re-creation of the machine's own production network-boot path. Channel 0's health is therefore both a diagnostic-link and a period-function
-concern. The legacy CS00024 channel-2 `99/99` samples do not establish a D57
+re-creation of the machine's own production network-boot path. Channel 0's
+health is therefore both a diagnostic-link and a period-function concern. The legacy CS00024 channel-2 `99/99` samples do not establish a D57
 fault: they were read before a guaranteed vertical-retrace clock edge.
 [The corrected D57 probe](cs00024-t36-diagnosis.md#d57-channel-2-timing-correction)
 has a positive control on CS00015 and still requires a CS00024 rerun.
