@@ -183,7 +183,9 @@ The complete-ROM diagnostic selector checks the independently balanced
 resident `D800h..FFFFh` span. POST failure tones use SSL, SLS, SLL, LSS and
 LSL for C1 through C5, with short intra-series gaps and a long repeat pause.
 
-ABI 1.4 retains that selector vector and the ABI 1.3 two-byte state prefix,
+ABI 1.4 bounds resident host-service transmit, receive and reply-prefix waits;
+these bounds do not apply to the boot loader's accepted payload loop. It
+retains that selector vector and the ABI 1.3 two-byte state prefix,
 then appends negotiation flags and the failed operation. Its reason values
 distinguish TX timeout, RX timeout, prefix budget, sequence, integrity, and
 host status. The C9 implementation resides at `F800h`; the public low-RAM gate

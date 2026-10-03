@@ -12,7 +12,12 @@ C9 is retained as physical evidence, not a promotion candidate. The separate
 [network-ROM overview](../spinoffs/jukuravi/network-rom/README.md) describes
 later releases and their qualification scope.
 
-## Implemented transport contract
+## Implemented resident transport contract
+
+These limits belong to the resident host-service routines in
+`third_party/juku-common/platform/rom-host-services.asm`. They do not bound
+the reset loader's accepted payload receive loop; see
+[boot recovery limits](c11-session-recovery.md).
 
 - Transmitter readiness is bounded to 8,192 polls per byte, receiver readiness
   to 65,535 polls per byte, and reply-prefix scanning to 256 received bytes.
