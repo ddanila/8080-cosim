@@ -110,10 +110,14 @@ runtime before touching the USART or RAM.
 
 ## Bus and DRAM model boundary
 
-The default 130,000-event run requires `BTRACE-END` with matching event types,
-addresses and data, including the BIOS RAM test at `D300h`. A malformed or
-short reference trace, absent default event class, mismatch or missing verdict
-fails the gate. Stack pushes write high byte first, matching the 8080 bus order.
+The C reference must contain exactly the requested event count (130,000 by
+default) and all four default event classes. The HDL gate accepts either
+`BTRACE-END` when that trace is exhausted or `BTRACE-OK` when the configured
+simulation window ends after matching the compared prefix. A passing window
+verdict therefore does not require all reference events, or the BIOS RAM test
+at `D300h`, to have been reached. Inspect the verdict and compared-event count
+when using the result as coverage evidence. A malformed or short reference
+trace, absent default event class, mismatch or missing verdict fails the gate. Stack pushes write high byte first, matching the 8080 bus order.
 
 The functional DRAM model holds RAS through the CAS column phase. It latches
 row/column addresses at their strobes and strobes DIN on the later falling
