@@ -4,7 +4,9 @@ Status: **5 PLACED VALUES SOURCE-CLOSED / 5 ADDITIONAL SOURCE NOMINALS / 11 REGI
 
 The retained native circuits print five registered capacitor values.
 This report checksum-guards the source scans and requires the board JSON
-and source PCB to preserve those literals.
+and source PCB to preserve those literals. Here, placed means that a source-PCB
+footprint exists; it does not establish the physical pad pair or population.
+The guard does not measure installed capacitance or qualify circuit timing.
 C29 has a source nominal but no registered footprint or owner-board value.
 Sheet 3 also supplies C16/C19/C20/C22 nominals; their installed values remain held.
 Its hold list covers only the registered cases below; other unvalued capacitors
@@ -41,8 +43,7 @@ python3 scripts/report_native_capacitor_values.py
 | `C20` | `22` | 22 pF | sheet 3 and later owner angles both show bare 22, while the opposite face reads ±5 tolerance; the installed unit remains unverified |
 | `C22` | `22` | 22 pF | sheet 3 and two later owner angles both show bare 22; one angle also reads ±10 tolerance, but the installed unit remains unverified |
 
-The former C20/C22 `1Н5` (1.5 nF) installed-value claim is retracted:
-two later owner angles show bare `22` on both bodies, matching the
+Owner views show bare `22` on both C20/C22 bodies, matching the
 sheet numerals without independently proving their capacitance unit.
 
 ## Deliberate holds

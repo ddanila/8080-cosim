@@ -125,10 +125,10 @@ lines = [
     "",
     f"Status: **{len(expected)} VALUES SOURCE-CLOSED / {len(held)} TARGET HOLD**",
     "",
-    f"The native electrical sheets and target-board photos close {len(expected)} values that",
-    "were formerly blank in the machine-readable board model. This report checksum-guards those sources,",
-    "checks the board JSON and generated source PCB agree, and keeps ambiguous or",
-    "revision-sensitive values out of the promoted set.",
+    f"The native electrical sheets and target-board photos supply {len(expected)} registered values.",
+    "This report checksum-guards those sources and checks that the registered literals",
+    "agree with the board JSON and source PCB. It also checks the complete set of",
+    "modeled axial resistors for missing values.",
     "",
     "## Command",
     "",
@@ -153,17 +153,20 @@ if evidence["held"]:
     for item in evidence["held"]:
         lines.append(f"| `{item['ref']}` | {item['reason']} |")
 else:
-    lines.append("None. Every modeled axial resistor now has literal source evidence.")
+    lines.append("None. Every modeled axial resistor has a value; this report validates the 26 registered literals above.")
 
 lines.extend(
     [
         "",
         "## Evidence boundary",
         "",
+        "The guard checks source hashes and registered value fields. It does not",
+        "measure installed resistance, verify physical continuity, or run PCB DRC.",
+        "",
         "- Sheet 1 closes R11-R14 and R17 directly; these are not values inferred",
         "  from open-collector behavior.",
-        "- Sheet 2 closes the R40-R45 common 15 kΩ group, correcting stale 13 kΩ",
-        "  prose, plus the D56, FRAME_INT, video-summing, and beeper networks.",
+        "- Sheet 2 closes the R40-R45 common 15 kΩ group, plus the D56,",
+        "  FRAME_INT, video-summing, and beeper networks.",
         "- The factory-identified target R67 body reads `4K7` independently in July",
         "  and May views. This supersedes the 2 kΩ R67 value printed on both",
         "  the `.006` and exact `.009` sheet-2 drawings without",

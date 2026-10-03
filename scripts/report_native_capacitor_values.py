@@ -132,7 +132,9 @@ lines = [
     "",
     "The retained native circuits print five registered capacitor values.",
     "This report checksum-guards the source scans and requires the board JSON",
-    "and source PCB to preserve those literals.",
+    "and source PCB to preserve those literals. Here, placed means that a source-PCB",
+    "footprint exists; it does not establish the physical pad pair or population.",
+    "The guard does not measure installed capacitance or qualify circuit timing.",
     "C29 has a source nominal but no registered footprint or owner-board value.",
     "Sheet 3 also supplies C16/C19/C20/C22 nominals; their installed values remain held.",
     "Its hold list covers only the registered cases below; other unvalued capacitors",
@@ -179,8 +181,7 @@ lines += [
 for refdes, item in target_held_nominals.items():
     lines.append(f"| `{refdes}` | `{item['sheet_literal']}` | {item['normalized_source_nominal']} | {item['reason']} |")
 
-lines += ["", "The former C20/C22 `1Н5` (1.5 nF) installed-value claim is retracted:",
-          "two later owner angles show bare `22` on both bodies, matching the",
+lines += ["", "Owner views show bare `22` on both C20/C22 bodies, matching the",
           "sheet numerals without independently proving their capacitance unit."]
 
 lines += [
