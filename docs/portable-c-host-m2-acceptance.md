@@ -6,8 +6,9 @@ This report closes the native-Linux parity and Python-host-retirement gate in
 the [portable C host plan](portable-c-host-plan.md). Its exact Linux build has
 since passed physical M2.1 on CS00015; that evidence is retained in
 [portable-c-host-m2.1-physical-acceptance.md](portable-c-host-m2.1-physical-acceptance.md).
-Pocket8086/DOS, macOS, Wine, Win32, and physical Windows 95 remain outside this
-M2 report, and all future platforms use the same admitted C core.
+This is a revision-qualified M2 record. DOS, macOS, Wine and Windows evidence
+belongs to their separate acceptance records, indexed by
+[the current host contract](portable-c-host-plan.md).
 
 ## Accepted identities
 
@@ -26,7 +27,7 @@ M2 report, and all future platforms use the same admitted C core.
 | --- | --- | --- | --- |
 | Stock Janet bootstrap and retry behavior | `sync/janet_netboot_check.sh`: all five archived systems and automatic identity | `sync/jukuhost_stock_cosim_check.sh`: the same five images and learned identity through `jukuhost` | pass |
 | Checksums, frame parsing, image preparation, Fastboot and disk semantics | immutable M0 vector plus frozen Fastboot and disk fixture tests | strict-C99 core test under signed/unsigned `char`, GCC, Clang and sanitizers | pass |
-| Current C8/JR16 and Fastboot V16 | frozen readiness, framing, CRC and recovery expectations | complete C8 boot to CP/M, missed-ready recovery and reset-mid-stream restart | pass |
+| M2 C8/JR16 and Fastboot V16 | frozen readiness, framing, CRC and recovery expectations | complete C8 boot to CP/M, missed-ready recovery and reset-mid-stream restart | pass |
 | N3 A:/B: and N4 | frozen raw/compact/read-ahead/write, duplicate and console fixtures | PTY and C8 sessions cover native B:, writes, duplicate replay, capabilities and bidirectional N4 | pass |
 | Host loss and replacement | frozen reconnect and resume outcomes | named-PTY reopen, live host replacement, target reset and resumed requests | pass |
 | Writable-media safety | frozen mutation and failure cases | portable crash-point matrix plus real POSIX journal rollback and cleanup | pass |
@@ -37,18 +38,20 @@ The comparison is against observable bytes, state transitions, media outcomes,
 and recovery behavior. It deliberately does not preserve Python tracebacks,
 object layouts, or JSON as a runtime dependency.
 
-## Post-M2 stock-ROM compatibility extension
+## Subsequent stock-ROM compatibility
 
 The accepted single-host architecture is unchanged. Version `0.3.0-m6` adds
 the exact JF15 stock-assisted CP/M Plus path to the same C executable after a
 CS00000 experiment proved the retired wrapper's fixed core-probe window was
-too short. V1-V14 remain rejected. Focused regressions delay the V15 core for
+too short. The C host rejects retired JF1–JF14 stages. Focused regressions delay the V15 core for
 five seconds and boot stock Ekta4401 through V15 to `A>`; the full Linux gate
 and Open Watcom DOS build pass. A retained 2026-08-22 CS00000/EK37 run then
 physically passed the same native C state machine through `A>` and 22 clean
 NetDisk requests with zero retries or UART errors. See
 [portable-c-host-implementation.md](portable-c-host-implementation.md) and
-[cs00000-service-record.md](cs00000-service-record.md).
+[cs00000-service-record.md](cs00000-service-record.md). Current recoverable
+stock sessions use the separately implemented JF17 profile; see
+[stock bootstrap and recovery](janet-fastboot.md).
 
 ## Reproducible gate
 
@@ -74,22 +77,14 @@ sync/network_first_rom_hdl_check.sh
 sync/serial_check.sh
 ```
 
-GitHub CI was green for `8080-cosim` commit `6724d33b`, including generic,
-report, HDL, and smoke-kit workflows. CP/M Plus commit `e186603` passed its
-digest-pinned distribution and network-smoke CI.
+## Related-repository boundary
 
-## Related-repository closure
-
-| Repository | Accepted change | Publication |
-| --- | --- | --- |
-| `cpm-plus-juku` | physical acceptance invokes C; obsolete C4 runner removed; simulator imports frozen fixtures; CI consumes smoke-kit v2 | `master` through `e186603`, pushed |
-| `cpmish` | operational documentation invokes C; historical cosim imports frozen fixtures | `juku` through `33575ef`, pushed |
-| `vc8080` | interactive launcher invokes C; system regression imports frozen fixtures | local `main` through `09c381b`; this checkout has no configured remote |
-
-The CP/M Plus network smoke reached `A>`, executed `DIR`, and verified `VER`.
-The CP/Mish 51K RAM-BIOS smoke passed its polled-keyboard `DIR` workload. The
-focused VC system session passed through the fixture import after its launcher
-had already moved to C.
+The M2 retirement moved the CP/M Plus physical runner and VC interactive
+launcher to the C executable, while retaining Python-era fixtures for tests.
+CP/Mish historical simulator imports likewise use frozen fixtures.
+The accepted source checkpoints are `cpm-plus-juku` `e186603`, `cpmish`
+`33575ef` and `vc8080` `09c381b`. Their later branch, publication and CI state
+are not established by this historical acceptance record.
 
 ## Single-host audit
 
@@ -105,13 +100,13 @@ The independent Jukuravi probe/upload laboratory remains Python by explicit
 plan scope; it is a different diagnostic protocol and is not an alternative
 Janet/Fastboot/NetDisk/N4 production host.
 
-## Exit decision
+## Acceptance scope
 
-M2 is complete. The C executable is the sole supported production network
-host on Linux, and its frozen specifications, vectors, captures, and test
-fixtures no longer require a runnable Python server. M2.1 has subsequently
-qualified this exact executable on CS00015, and the M2.2 desk port now builds
-and simulator-qualifies the same core for Pocket8086/DOS. M2.3 next validates
-that DOS host against the physical M2.1 baseline. Only after it passes may the
-pinned Open Watcom Windows 95 and headless-Wine M3 work begin; see
-[portable-c-host-m2.2-dos-acceptance.md](portable-c-host-m2.2-dos-acceptance.md).
+M2 closes the Linux production-host parity and Python-host-retirement gate
+for the identities above. M2.1 separately qualifies the named executable on
+CS00015. DOS desk/emulator qualification is recorded in
+[the M2.2 report](portable-c-host-m2.2-dos-acceptance.md); physical DOS
+qualification remains open independently of Windows development. Windows
+build, Wine and Windows 95 guest results are already implemented and recorded
+in their platform guides, with physical serial qualification still separate.
+These later results do not retroactively widen the exact M2 hardware claim.
