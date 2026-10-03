@@ -38,14 +38,14 @@ RETAINED_EVIDENCE = [
 ]
 
 ORDER_CHECKS = [
-    "Confirm `fab/gerbers/order-readiness.md` says `RELEASED FOR ORDER`; while it says `DESIGN HOLD`, do not upload anything.",
+    "Confirm `fab/gerbers/order-readiness.md` says `RELEASED FOR ORDER`; do not upload while it reports any unreleased status.",
     "After release, upload only `upload/juku-replica-gerbers-drill.zip` for PCB fabrication.",
     "Confirm vendor preview matches `docs/replica-package-geometry-readiness.md`: 2-layer board, 310 mm x 266 mm Edge.Cuts box, and one mixed-plating Excellon drill file.",
     "Confirm top/bottom copper, soldermask, silkscreen, and edge-cuts all render with the same orientation as `fab/gerbers/review/tracespace/`.",
     "Select 1.6 mm FR-4 unless deliberately changed after DFM review.",
     "Select standard soldermask/silkscreen colors that keep the dense silkscreen readable.",
     "Do not request impedance control or stackup changes; this is the intentional 2-layer authenticity build.",
-    "Review the 704 accepted courtyard/silk/text findings against the vendor preview before payment.",
+    "Review the current findings and acceptance status in `docs/replica-fab-drc-disposition.md` against the vendor preview before payment.",
     "Review `docs/replica-bringup-verification-points.md` and confirm no listed residual source-risk net blocks PCB fabrication.",
     "Save vendor preview screenshots, quoted options, order number, and final ZIP checksum using `docs/replica-order-evidence-template.md`.",
 ]
@@ -286,6 +286,11 @@ def build_report(fab_dir, report_path):
     lines.extend([
         "",
         "## Retained Evidence",
+        "",
+        "Here `PASS` means a nonempty file contains its configured text marker",
+        "(or exists when no marker is configured). Some markers are only titles:",
+        "this table does not establish that every report is ready or its contents",
+        "were freshly verified. Run the manufacturing gate for release checks.",
         "",
         "| Purpose | File | Bytes | Status |",
         "| --- | --- | ---: | --- |",
