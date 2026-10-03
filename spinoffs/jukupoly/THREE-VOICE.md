@@ -14,21 +14,13 @@ the speaker, rather than the Spectrum's directly toggled beeper bit.
 
 [qchan]: https://habr.com/ru/companies/ruvds/articles/843206/
 
-## Why this belongs here
+## Project scope
 
-JukuPoly is currently a small Jukuravi subproject rather than a separate
-repository.  Its useful claims depend on facilities already maintained here:
-
-- the strict Intel 8080 assembler path;
-- the cycle-level 8080 model and Juku's measured effective RAM execution rate;
-- the documented D57 speaker path;
-- JukuNet/C10, `jukuhost`, and CP/M Plus for repeatable physical delivery;
-- the repository's physical-session evidence conventions.
-
-A separate repository would make sense if JukuPoly grows into a tracker,
-song-data format, reusable playback library, or a multi-machine beeper engine.
-The current demonstration is better kept beside the machine model that makes
-it reproducible.
+JukuPoly is a standalone experiment under `spinoffs/jukupoly`, using this
+repository's strict-8080 assembler, calibrated cycle model, D57 speaker path
+and physical evidence conventions. Jukuravi supplied early delivery tooling;
+it is not a runtime dependency. The compiled-pattern player, importers and
+library are described in [the project overview](README.md).
 
 ## Signal generation
 

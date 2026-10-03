@@ -4,7 +4,9 @@ Date: 2026-09-05
 
 ## Result
 
-Short speech is practical on the stock 1.70 MHz Juku when it is played alone.
+The calibrated 1.70 MHz cycle model demonstrates intelligible standalone speech.
+This record contains render/recognition evidence, not a physical speaker listening
+qualification.
 The dedicated player uses the D57 channel-1 mode-0 output as a pulse-width DAC,
 stores two 4-bit samples per byte, and emits 8,056.872 samples/s.  Its hot loop
 is strict Intel 8080 code and takes 422 cycles per packed pair.  The generic

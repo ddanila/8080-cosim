@@ -1,8 +1,8 @@
 # Generic full-pack DOOM renders
 
-## Result (2026-09-02)
+## Offline render set (2026-09-02)
 
-Both pinned vgmrips DOOM packs now have a complete current-best JukuPoly
+Both pinned vgmrips DOOM packs now have a complete offline JukuPoly
 collection: 44 finite reusable-player executions, 44 48 kHz mono WAV files,
 and 44 tagged MP3 files. The library delivers 23 guarded JPS v2 envelope
 tracks and 21 explicit generic JPS v1 fallbacks. It contains no song-name,
@@ -26,37 +26,20 @@ every candidate, timing choice, delivery gate, and fallback reason;
 [`DOOM-FULL-RENDERS.json`](DOOM-FULL-RENDERS.json) records every JPS, WAV,
 and MP3 hash plus the complete cycle-render profile.
 
-## The apparent Imp regression
+## Qualification boundary
 
-An intermediate directory named
-`out/jukupoly-doom-full-renders-generic-20260902/` was rendered from the
-all-v1 control library. Its catalog truthfully identifies Imp as
-`unchanged-v1`, capability `00h`; that old reduction is known to omit the
-opening low lead. Pointing to that directory as the full-pack result was a
-workflow/artifact-selection mistake, not a regression in the enhanced
-converter.
+This offline render set contains 23 capability-01 envelope candidates and 21
+JPS1 fallbacks. It is separate from the physically exercised M6 mixed library
+with four enhanced tracks and 40 fallbacks, recorded in
+[OPL-PLAN-STATUS.json](OPL-PLAN-STATUS.json). The offline count does not expand
+physical listening qualification. Corrected M7 Imp candidates still require
+CS00000 A/B before promotion.
 
-The independently generated generic full Imp candidate has no melodic
-signature override. It starts three detuned members in frame zero, retains
-all 506 protected onsets, and has the same row commands as the previously
-working DETNEW excerpt through frame 1411 (28.22 seconds). The first later
-difference is expected: the complete-source envelope fitter can see beyond
-the old 30-second excerpt boundary. After generic host calibration, Imp uses
-141 samples per frame and a 7,054 Hz phase table; C-cosim measures 7,053.08
-samples/s, 50.0218 music frames/s, and 157.431 seconds. Its 11,705-byte JPS
-SHA-256 is
-`78bab88bbfd3bb14d6326c2299c19419c1ad3ddb922a4b323c4b3a19f0a5ca48`.
-The final MP3 is:
-
-`out/jukupoly-doom-full-renders-current-best-20260902/mp3/03-doom1-03-the-imp-s-song.mp3`
-
-It has SHA-256
-`3e9a70288857344841343b15d2a168e16e9433b952f74985b5c069e05fb4c464`;
-after the intentional 250 ms lead silence, measured audio begins at 250.27 ms.
-
-`render_jukupoly_library.py --minimum-enhanced-tracks N` is the workflow
-guard added after this mistake. A current-best render now refuses an all-v1
-control catalog before executing or encoding any track.
+`render_jukupoly_library.py --minimum-enhanced-tracks N` rejects an all-v1
+control catalog when an enhanced render set is requested. Exact JPS and render
+identities are in the linked JSON reports; directory names alone do not identify
+a qualified payload. WAVs are cycle-model references, not an analogue model of
+the physical speaker or enclosure.
 
 ## Generic conversion and fallback policy
 

@@ -54,9 +54,8 @@ python3 spinoffs/jukupoly/tools/build_normalization_ab.py \
   --output build/jukupoly-normalization-ab
 ```
 
-Use Python 3.10+ for the preceding full DOOM library builder. On this macOS
-machine the cpmtools binaries without libdsk autodetection are under
-`../cpm-plus-juku/build/cpmtools-install/bin`; prepend that directory to PATH.
+Use Python 3.10+ for the preceding full DOOM library builder. Provide `mkfs.cpm`, `cpmcp` and `cpmls` on PATH; use the project disk definitions
+for native media generation.
 The resulting `normalization-ab.cpm` is a read-only native B: disk. The exact
 [prepared disk](sessions/cs00014-normalization-ab/normalization-ab.cpm) is also
 retained for use without rebuilding. Warm-boot
