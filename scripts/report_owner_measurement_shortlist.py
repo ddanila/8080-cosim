@@ -587,9 +587,9 @@ def main() -> int:
         (
             "P2",
             "factory insulated-wire lengths",
-            "Directly measure the paths and cut lengths for W7, W8, W11, W14, and W19. Photo review places the D1-side W7/W14 starts at visible surface joints, but their D35-side printed solder joints remain candidates under mastic; expose or continuity-check those terminations. Chords to the candidate joints are 213.303/201.046 mm against approximate 24/23 cm cut lengths. W7.1/W14.1 replica pads still require relocation. W11's registered 119.177 mm chord also exceeds its approximate 11.5 cm entry. Record insulation path, routing side, slack, and any sleeve or strain relief. Re-read the A8 length entry if its original is available",
+            "Directly measure the paths and cut lengths for W7, W8, W11, W14, and W19. Photo review places the D1-side W7/W14 starts at visible surface joints, but their D35-side printed solder joints remain candidates under mastic; expose or continuity-check those terminations. Chords to the candidate joints are 213.303/201.046 mm against approximate 24/23 cm source readings; these are not qualified replacement cut lengths. W7.1/W14.1 replica pads still require relocation. W11's registered 119.177 mm chord also exceeds its approximate 11.5 cm entry. Record insulation path, routing side, slack, and any sleeve or strain relief. A8's final 19 cm source reading is retained; establish its remote landing and measure the installed lead before qualifying a replacement length",
             "`docs/factory-wire-route-fidelity.md`; `kicad/juku.board.json` W7/W8/W11/W14/W19 provenance; `docs/assembly-drawing-extraction.md`",
-            "closes cut-length and construction fidelity without re-opening the established wire endpoints",
+            "qualifies replacement lengths after unresolved physical landings are identified; logical package endpoints remain unchanged",
         ),
     ]
     handoff_rows = gap_handoff_rows(
