@@ -2,7 +2,9 @@
 
 This repository uses the raw MAME Juku disk image layout as the cosim disk
 backend target. MAME software-list images often use `.juk`; the vendored Arti
-images use `.CPM`, but the byte layout is the same and is validated by size.
+images use `.CPM`. The loader accepts either extension and infers geometry
+from size; it does not validate filesystem contents, provenance or sector
+ordering from the file name or length.
 
 Source: MAME `src/lib/formats/juku_dsk.cpp` (`FLOPPY_JUKU_FORMAT`) at commit
 `40d8c5c343efc497524832d59a6d0e2b8e59376b`,
@@ -84,11 +86,14 @@ sync/juk_disk_check.sh
 
 The guard creates synthetic single- and double-sided images, validates CHS
 sector reads, checks default session reset and explicit-sidecar reopen
-persistence, and checks out-of-range addressing failures. `sync/fdc_check.sh`
-also writes the sidecar in one HDL process and reloads it read-only in another.
-It does not ship or validate any copyrighted EKDOS image.
+persistence, and checks out-of-range addressing failures. It also runs C FDC,
+serial and timing tests. Its final ROMBIOS write test uses a RAM checkpoint
+from EktaSoft 3.7 with the vendored `media/disks/JUKU1.CPM` mounted; this is
+selected runtime coverage, not a full filesystem or archival-integrity audit.
+`sync/fdc_check.sh` separately writes the sidecar in one HDL process and
+reloads it read-only in another.
 
-## Next Use
+## Using the backend
 
 `cosim/juku_fdc.c` consumes this loader for the disk-backed WD1793 model. Use
 `sync/ekdos_fdc_probe.py` for the ROMBIOS boot-path probe; it defaults to the
