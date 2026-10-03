@@ -4,9 +4,18 @@ Package: `fab/gerbers`
 Viewer: `@tracespace/cli` via `npx --yes @tracespace/cli --quiet`
 Status: **NOT READY**
 
-This report records an independent render pass over the exported Gerber
-and Excellon drill files. It is a visual-review aid and parser sanity
-check; it does not replace final vendor upload review.
+This report records the result of an attempted Tracespace render and
+Chrome/Chromium screenshot capture of the fabrication inputs. `NOT READY`
+means the attempt or an output check failed; it does not record a successful
+visual review. The script checks SVG structure/viewBox and PNG size/signature,
+not board geometry, layer correctness, readable labels, or vendor acceptance.
+
+Regenerate with `python3 kicad/report_external_gerber_review.py`.
+It requires `npx`, Tracespace, Chrome/Chromium, and the listed Gerber/drill files.
+Output rows describe files present after the attempt. If rendering cannot
+start, existing outputs may remain; a row's `PASS` alone does not prove a
+fresh render. PNG table rows check size; capture/signature failures appear
+in the failure list. Input hashes and PCB identity are not verified here.
 
 ## Inputs
 
