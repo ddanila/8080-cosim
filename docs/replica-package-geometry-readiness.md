@@ -1,35 +1,20 @@
 # Replica package geometry readiness
 
 Fabrication package: `fab/gerbers`
-Status: **READY**
+Status: **NOT READY**
 
-This report checks the vendor-visible geometry exported in the Gerber job,
-Edge.Cuts Gerber, and Excellon drill file. It turns the order-time
-preview dimensions and drill-file expectations into a reproducible local gate.
+Package geometry cannot be measured until the required exports exist.
+Regenerate the fabrication package from the reviewed board, then run:
 
-## Board Geometry
+```sh
+python3 kicad/report_replica_package_geometry.py
+```
 
-| Source | Measurement | Expected | Status |
-| --- | --- | --- | --- |
-| Gerber job size | 310.150 x 266.150 mm | 310.150 x 266.150 mm | PASS |
-| Edge.Cuts coordinate box | 310.000 x 266.000 mm | 310.000 x 266.000 mm | PASS |
-| Edge.Cuts min/max | (0.000, -266.000) .. (310.000, 0.000) | (0.000, -266.000) .. (310.000, 0.000) | PASS |
-| Layer count | 2 | 2 | PASS |
-| Board thickness | 1.600 mm | 1.600 mm | PASS |
-| Copper files | 2 | 2 | PASS |
-| Profile files | 1 | 1 | PASS |
+## Missing or empty inputs
 
-## Drill File
+- `fab/gerbers/juku_routed-job.gbrjob`
+- `fab/gerbers/juku_routed-Edge_Cuts.gm1`
+- `fab/gerbers/juku_routed.drl`
 
-| Tool | Diameter mm | Hits | Expected hits | Status |
-| --- | ---: | ---: | ---: | --- |
-| T1 | 0.300 | 2940 | 2940 | PASS |
-| T2 | 0.800 | 2326 | 2326 | PASS |
-| T3 | 1.000 | 85 | 85 | PASS |
-| T4 | 1.200 | 8 | 8 | PASS |
-
-## Upload Implications
-
-- Vendor preview should show a 2-layer board.
-- Vendor preview should show the 310 mm x 266 mm Edge.Cuts coordinate box; a 310.15 mm x 266.15 mm rendered job size is the 0.15 mm profile aperture envelope.
-- Vendor preview should ingest one mixed-plating Excellon drill file with the four tool groups above.
+Expected dimensions and drill counts remain configured in the generator;
+they are acceptance criteria, not measurements of the current package.

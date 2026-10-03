@@ -90,6 +90,22 @@ def build_report(fab_dir):
     edge_path = fab_dir / "juku_routed-Edge_Cuts.gm1"
     drill_path = fab_dir / "juku_routed.drl"
 
+    missing = [path for path in (job_path, edge_path, drill_path) if not path.is_file() or path.stat().st_size == 0]
+    if missing:
+        lines = [
+            "# Replica package geometry readiness", "",
+            f"Fabrication package: `{repo_relative(fab_dir)}`",
+            "Status: **NOT READY**", "",
+            "Package geometry cannot be measured until the required exports exist.",
+            "Regenerate the fabrication package from the reviewed board, then run:", "",
+            "```sh", "python3 kicad/report_replica_package_geometry.py", "```", "",
+            "## Missing or empty inputs", "",
+            *[f"- `{repo_relative(path)}`" for path in missing], "",
+            "Expected dimensions and drill counts remain configured in the generator;",
+            "they are acceptance criteria, not measurements of the current package.", "",
+        ]
+        return "\n".join(lines), False
+
     job = json.loads(job_path.read_text())
     specs = job.get("GeneralSpecs", {})
     size = specs.get("Size", {})
@@ -122,6 +138,8 @@ def build_report(fab_dir):
         min_x, min_y, max_x, max_y = bbox
         edge_width = max_x - min_x
         edge_height = max_y - min_y
+        if not (near(min_x, 0.0) and near(min_y, -266.0) and near(max_x, 310.0) and near(max_y, 0.0)):
+            failures.append("Edge.Cuts min/max coordinates changed")
         if not near(edge_width, EXPECTED_EDGE_WIDTH_MM) or not near(edge_height, EXPECTED_EDGE_HEIGHT_MM):
             failures.append(f"Edge.Cuts coordinate box changed: {edge_width:.3f} x {edge_height:.3f} mm")
     else:
@@ -148,6 +166,8 @@ def build_report(fab_dir):
         "This report checks the vendor-visible geometry exported in the Gerber job,",
         "Edge.Cuts Gerber, and Excellon drill file. It turns the order-time",
         "preview dimensions and drill-file expectations into a reproducible local gate.",
+        "It does not verify PCB/export identity, connectivity, or manufacturing release.",
+        "Run `python3 kicad/report_replica_package_geometry.py` to refresh it.",
         "",
         "## Board Geometry",
         "",

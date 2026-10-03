@@ -66,7 +66,7 @@ were freshly verified. Run the manufacturing gate for release checks.
 | Review waiver | `fab/gerbers/review-waivers.md` | 1967 | FAIL |
 | External Gerber review | `fab/gerbers/external-gerber-review.md` | 3259 | FAIL |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3564 | FAIL |
-| Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |
+| Package geometry | `docs/replica-package-geometry-readiness.md` | 583 | FAIL |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 2005 | FAIL |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20412 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 13453 | PASS |
@@ -108,6 +108,7 @@ were freshly verified. Run the manufacturing gate for release checks.
 - review-waivers.md does not contain expected marker `Status: **ACCEPTED**`
 - external-gerber-review.md does not contain expected marker `Status: **READY**`
 - docs/replica-fab-drc-disposition.md does not contain expected marker `Status: **READY**`
+- docs/replica-package-geometry-readiness.md does not contain expected marker `Status: **READY**`
 - docs/replica-power-trace-readiness.md does not contain expected marker `Status: **READY**`
 - missing or empty evidence file: SHA256SUMS
 - upload ZIP was not created
