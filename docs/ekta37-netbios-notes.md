@@ -149,19 +149,10 @@ in parallel and stops before the first
 | `EKDOSVSW.BIN` | 6,784 exact bytes | 6,656 exact bytes | `CA00h` |
 | optional `JUKU_NETBOOT_SYSTEM` | 6,784 exact bytes | 6,656 exact bytes | `CA00h` |
 
-Run the vendored proof with `sync/janet_netboot_check.sh`. For the CP/Mish Juku
-branch, first build its system and add it as the sixth case:
-
-```sh
-JUKU_NETBOOT_SYSTEM=../cpmish/juku-system.bin sync/janet_netboot_check.sh
-```
-
-On 2026-08-12 that six-system run passed byte-exactly. This proves the stock
-NetBios bootstrap transport and `CA00h` handoff. The CP/Mish diskless mode then
-takes over the 8251, retains D57 counter-0 divisor 8 (nominal 9,600 baud), and
-exchanges checksummed 128-byte CP/M disk records with a host-backed A: image.
-Keeping the proven 9600/8O1 rate avoids modifying the ROM protocol while the
-filesystem phase remains independently retried.
+Run the vendored proof with `sync/janet_netboot_check.sh`. Optional
+`JUKU_NETBOOT_SYSTEM` must name a compatible 52K system-track image with
+`B400h` load and `CA00h` entry. This fixed-layout regression does not cover
+the host's separate `JUKU51`, `JUKURM1`, or ordinary executable formats.
 
 The native C `jukuhost` retains compatibility with the historical NetDisk-v1
 handoff described here when explicitly selected with `--disk-protocol 1` and
@@ -204,17 +195,9 @@ writes, verified its 8 KiB test file after close/reopen, deleted it, and emitted
 remaining diagnosis to clock edge/duty sensitivity; it does not identify a
 faulty component or qualify the same setup on CS00015.
 
-The [serial investigation](juku-serial-19200-investigation.md) owns the detailed
+The [serial investigation](juku-serial-19200-investigation.md) owns the
 physical results, capture identities, electrical analysis and scope decision
-tree. Earlier capture names in the sibling `cpmish` checkout remain useful
-for interpreting the controls:
-
-| Control | Capture |
-| --- | --- |
-| CS00015 initial/revised 19,200 sweep | `cs00015-baudtest-19200-sweep.json`, `cs00015-baudtest-19200-revised.json` |
-| CS00014 stock-rate control | `cs00014-baudtest-9600-control.json` |
-| CS00014 initialization-gap and parity controls | `cs00014-baudtest-19200-control-gaps.json`, `cs00014-baudtest-19200-8n1.json` |
-| CS00014 replacement-cable controls | `cs00014-baudtest-9600-cable-control.json`, `cs00014-baudtest-19200-x16-new-cable.json` |
+tree. Use that record for the detailed baud controls.
 
 Current recoverable stock-ROM sessions use **JF17 at 9600/8O1 throughout**;
 see [the bootstrap guide](janet-fastboot.md). The mode-2 results above describe
@@ -286,37 +269,19 @@ image booted through the stock 9600-baud loader, ran its Janet A: disk at
 Requests through sequence `90` completed with status zero and the prior
 vertical-line display corruption did not recur.
 
-The old handoff is now reproducible without hardware. CP/Mish builds a
-simulator-only negative image which deliberately omits the early interrupt
-exclusion, NetBios service-vector detach, and coherent PIC hardware/shadow
-update. It reaches the normal initial prompt, but matrix input `DIR` is neither
-echoed nor executed and network reads remain at the 32 startup directory
-records. The corrected RomBios control immediately accepts the same input and
-reaches 35 reads. The negative checkpoint still contains the original
-`D79Fh = E3 22 56 D4 E1` dispatcher prefix. This isolates the stale NetBios
-registrations as sufficient to reproduce the dead keyboard; the separately
-observed interim D79F overwrite remains an additional architectural violation
-associated with the physical video corruption.
+A historical simulator negative control omitted interrupt exclusion,
+service-vector detach, and the coherent PIC update. It reached the initial
+prompt but could not echo or execute `DIR`; the corrected control accepted
+that input. The negative checkpoint retained the original `D79Fh` dispatcher,
+so stale NetBios registrations were sufficient to reproduce the dead keyboard.
+Preserving `D79Fh` alone is therefore insufficient.
 
-This result defined the safe route toward a RAM-owned CP/M console. The 52K
-`B400h/BC00h/CA00h` RomBios build remains the baseline; the separate 51K
-experiment shifts CCP/BDOS/BIOS to `B000h/B800h/C600h`, retaining the same
-exclusive `CE00h` upper boundary while gaining 1 KiB for a renderer and font.
-The unmodified ROM now boots that layout through the host-supplied `JUKU51`
-staging copier.
-
-The historical renderer-only Stage 1 is simulator-proven. CP/M output is rendered from RAM through temporary
-all-RAM mode 3, while RomBios still owns input and IR5. The retained firmware
-frame service first had to be told `ESC 4`: otherwise it painted a solid cursor
-at its stale coordinates over the independent RAM screen. The focused test
-boots through stock Janet, executes matrix-typed `DIR`, completes 35 disk
-reads, preserves `D79Fh`, and compares all 9,600 framebuffer bytes with a
-reference rendering of the captured BIOS transcript. It caught and rejected
-both a broken clear loop and the stale cursor. This renderer-only result does not establish physical qualification of that
-image. Later independent RAM-BIOS/NetDisk-v3 qualification is summarized in
-[the serial investigation](juku-serial-19200-investigation.md). A system retaining
-RomBios must preserve its interrupt contract; D79F is not a standalone keyboard
-hook.
+Systems retaining RomBios input or frame services must preserve that interrupt
+contract. A separate RAM renderer must also disable the firmware cursor with
+`ESC 4` to prevent the frame service from painting at stale coordinates.
+Historical renderer-only simulator results do not qualify a physical RAM BIOS.
+For later independent RAM-BIOS/NetDisk-v3 qualification, see the
+[serial investigation](juku-serial-19200-investigation.md).
 
 The resident record format already carries a drive byte. CP/Mish `NETROM2`
 uses drive 0 for its writable 386 KiB A: volume and drive 1 for a read-only
