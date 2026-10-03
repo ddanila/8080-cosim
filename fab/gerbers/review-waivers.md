@@ -5,30 +5,34 @@ Status: **NOT ACCEPTED**
 
 This report is intentionally exact-count based. If the board changes and
 any remaining DRC count changes, the waiver must be reviewed again rather
-than silently carrying an old disposition forward.
+than silently carrying an old disposition forward. The generator reads
+saved DRC JSON; it does not rerun DRC, verify the current PCB identity,
+or compare individual finding geometry. A matching count preserves the
+recorded rationale; it is not a new visual assembly review.
 
-## Waived DRC Classes
+Regenerate with `python3 kicad/report_review_waivers.py`.
 
-| Type | Count | Rationale |
-| --- | ---: | --- |
-| courtyards_overlap | 108 | Dense authentic placement; assembly-fit review item, not a copper/routing fault. |
-| pth_inside_courtyard | 68 | Dense authentic placement; through-hole/socket fit review item, not an electrical fault. |
-| silk_over_copper | 199 | Silkscreen clipped by mask/copper; cosmetic unless assembly-critical marks become unreadable. |
-| silk_overlap | 199 | Silkscreen-to-silkscreen overlap in dense labels/outlines; cosmetic assembly-readability item. |
-| text_thickness | 199 | GOST/TrueType stroke warning; manufacturing-readability item, not fabrication geometry. |
+## Waiver baselines
+
+| Type | Count | Accepted count | Count check | Recorded rationale |
+| --- | ---: | ---: | --- | --- |
+| courtyards_overlap | 108 | 107 | HOLD | Dense authentic placement; assembly-fit review item, not a copper/routing fault. |
+| pth_inside_courtyard | 68 | 0 | HOLD | Dense authentic placement; through-hole/socket fit review item, not an electrical fault. |
+| silk_over_copper | 199 | 199 | MATCH | Silkscreen clipped by mask/copper; cosmetic unless assembly-critical marks become unreadable. |
+| silk_overlap | 199 | 199 | MATCH | Silkscreen-to-silkscreen overlap in dense labels/outlines; cosmetic assembly-readability item. |
+| text_thickness | 199 | 199 | MATCH | GOST/TrueType stroke warning; manufacturing-readability item, not fabrication geometry. |
 
 ## Independent Gerber Render
 
-Independent render smoke command used for this package:
+Render verification is a separate command:
 
 ```sh
-npx --yes @tracespace/cli --quiet --out=/tmp/juku-tracespace fab/gerbers/juku_routed-F_Cu.gtl fab/gerbers/juku_routed-B_Cu.gbl fab/gerbers/juku_routed-F_Mask.gts fab/gerbers/juku_routed-B_Mask.gbs fab/gerbers/juku_routed-F_Silkscreen.gto fab/gerbers/juku_routed-B_Silkscreen.gbo fab/gerbers/juku_routed-Edge_Cuts.gm1 fab/gerbers/juku_routed.drl
+python3 kicad/report_external_gerber_review.py
 ```
 
-The automated order-readiness gate now runs
-`kicad/report_external_gerber_review.py`, which renders the same package
-through Tracespace and writes `fab/gerbers/external-gerber-review.md` plus
-top/bottom review screenshots.
+It renders the fabrication inputs through Tracespace and writes
+`fab/gerbers/external-gerber-review.md` plus top/bottom review images.
+The waiver generator does not run that command or establish render freshness.
 
 ## Failures
 
