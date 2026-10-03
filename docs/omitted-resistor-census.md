@@ -48,8 +48,10 @@ The corrected D9 source placement projects the leading C88 holes near `(119.21,1
 | C93 | Assembly `PXL_20260711_114615300.jpg` explicitly draws a small horizontal C93 between larger C32 and C33 above X8; exact sheet-1 X8 detail explicitly draws C93 between ground and +12 V despite the nearby collective C82–C93 label. Owner component `PXL_20260710_200450127.jpg` has a small green horizontal axial body between the 22 µF metal can and the lower large can, around `(1145,2220)` original pixels, with leads on distinct narrow front-copper strips. The owner upper 47 µF/63 V and middle 22 µF/16 V cans are both positive on the right, while the lower can has a left-hand board `+`; this follows the assembly C31/C32 right-positive and C33 left-positive order. May close-up `PXL_20260519_202054713.jpg` reads 47 µF, 35 V on the lower can, the installed value at the C33 assembly position, with rail continuity pending. The overlapping `200439607.jpg` repeats the corner arrangement; the green leads' front strips disappear beneath the lower can, and the X8 solder tile does not yet supply a unique same-hole match (`ref/photos/juku-pcb-2/c93-power-corner-candidate-review.json`). | Now source-modeled in JSON on the exact X8 supply rails; PCB placement pending. The fitted green body is photo-registered at the unique C93 assembly position; its marking and both rail joins remain open. The three fitted cans are photo-registered to C31/C32/C33 by unique order and matching polarity marks; their actual rail continuity remains unmeasured. Meter both green leads to known +12 V and ground before assigning its value or footprint. |
 | C98 | Exact `.009` sheet-1 supply detail `PXL_20260718_101827714.jpg` explicitly includes C98 in the `C94...C98` +5 V-to-ground bypass group. Three overlapping assembly views (`114607591`, `114611058`, `114617677`) show a **diagonal C98 rectangle crossing the right end of D58’s package outline**, with two diagonal lead strokes; the separate `.009` mounting detail `PXL_20260711_114703874.jpg` labels C98/C100 and shows the intended over-package mounting with 25* mm between board landings. The former description of a separate site immediately right of D58 was wrong. Owner component views `PXL_20260710_200452717.MP.jpg` and `200455512.jpg` both expose that D58 package top without a C98 body. Both views show a small filled feature above D58’s left-end contact and a protruding joint below its right end; their diagonal span is consistent with the factory 25* mm mounting note, making them the leading C98 landing-pair candidates without proving hole identity or rails. See `ref/photos/juku-pcb-2/c98-d58-overlap-review.json`. | Source-modeled in JSON; PCB placement pending. The drawn body position is visibly unpopulated on this owner board, while factory source still calls for a C98 bypass. The two-photo candidate pair still needs same-hole registration and +5 V/GND continuity; value, factory DNP instruction, and any hidden under-package part remain unestablished. Do not choose a footprint or target population from the search geometry alone. |
 
-## Recently modeled source components
+## Modeled R9/R10 pull-ups
 
+| Ref | Source and owner evidence | Disposition |
+| --- | --- | --- |
 | R9, R10 | Assembly `PXL_20260711_114600417.jpg` labels the two vertical positions immediately left of D3 and below R18: **R10 on the left, R9 on the right**, beside D11. Owner component photos `PXL_20260710_200358952.jpg` and `PXL_20260710_200418174.jpg` show both positions populated by pale axial resistors whose bands appear red–black–red–gold. Exact `.009` electrical sheet 1 overview `PXL_20260718_101754468.jpg` prints **2к** beside each: R9 pulls the `-INT7` / D3.13 input to rail `A`; R10 pulls the `-INT6` / D3.1 input to `A`. | Added to JSON and source PCB as 2 kΩ pull-ups, using the D3-local four-anchor photo fit for the lead centers. Confirm R10 lower lead→D3.1 and R9 lower lead→D3.13, and both upper leads→+5 V; the photo position does not establish their copper nets. |
 
 ## Corrected modeled refdes
@@ -68,9 +70,11 @@ The current JSON has 97 numeric R refs. Within R1–R110 the absent refs are:
 R68–R77 are documented `.006` RF-only parts absent from the `.009` target in
 `docs/video-analog-boundary.md`; their omission is intentional. R21–R28
 are source-modeled with individual D8 output joins unresolved; R2/R7,
-R15/R16, R21–R28, R35–R37, R104, and R106
+R15/R16, R21–R28, R35–R37, and R106
 are schematic-only with PCB placement pending; the
-photo-registered R9/R10 pair is listed separately as modeled. R109/R110
+photo-registered R9/R10 pair is listed separately as modeled. R104 has a
+footprint in the source, routed, and routed-candidate PCBs; its installed
+value and remote continuity remain open. R109/R110
 appear only as lower right-edge D56 positions on the `.009` assembly view
 `PXL_20260711_114611058.jpg`. The exact electrical D56 detail
 `PXL_20260718_101927794.jpg` instead names only R47=20 kΩ and R59=33 kΩ
