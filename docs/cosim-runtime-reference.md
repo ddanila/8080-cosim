@@ -70,8 +70,9 @@ The fixed instrumentation addresses are `C027h`/`C02Ah` with state at
 sync/cosim_check.sh
 ```
 
-Runtime is dominated by driving `juku_top` to ~20 ms of simulated boot (a few minutes), not by a
-multi-hour full-banner run. `WINDOW` (ns) and `TRACE_LIMIT` (events) bound it. The default boot
+`WINDOW` (ns) and `TRACE_LIMIT` (events) bound the run. Their defaults are
+30,000,000 ns and 130,000 events; the event verdict may stop the simulation
+earlier. Wall runtime depends on the simulator and host, not a full-banner run. The default boot
 necessarily covers `MR`, `MW`, `IR`, and `IW`; separate interrupt guards exercise the interrupt
 path. `sync/inta_bus_check.sh` runs a focused synthetic PIC/EI loop through both
 CPUs and requires the typed `IA` sequence `CD D4 FE` end-to-end.
@@ -92,11 +93,15 @@ opcode and initial flag combinations, not over the full 8080 state space.
 
 The boot ROM stores at `0x000A` the eight-bit additive sum of bytes
 `0x000B..0x07FF`. This is the convention exercised by the checksum routine at
-`0x03E0`; `cosim/trace.c` logs its computed/stored comparison. All five
-official repository images satisfy it: EktaSoft 2.4/3.1/3.2/3.5/3.7 store
-`7B`/`D3`/`8F`/`EE`/`1A`, respectively. The homebrew 4.3 image is the known
-counterexample: it stores stale `F2` while its covered bytes compute to `57`,
-so the boot harness applies its explicitly logged compatibility patch.
+`0x03E0`; `cosim/trace.c` logs its computed/stored comparison. The archived
+`ekta24/31/32/35/37.bin` images satisfy it, storing
+`7B`/`D3`/`8F`/`EE`/`1A`, respectively. These filename numbers are serials,
+not RomBios versions; see [the lineage notes](ektasoft-rombios-lineage.md).
+`ekta43.bin` (serial #0043, RomBios 2.43m) is the counterexample: it stores
+`F2` while its covered bytes sum to `57`. The boot harness patches its in-memory
+checksum byte and logs the change; the source file remains unchanged. The
+patch condition tests the stored byte and computed sum, not the filename or
+whole-image hash.
 
 Jukuravi rung 5a deliberately uses these exact offsets rather than inventing a
 second short-ROM convention. Its D15-only diagnostic reserves `0x000A`, starts
