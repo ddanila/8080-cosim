@@ -5,7 +5,7 @@
   "location": "home lab",
   "deployment_role": "diagnostic candidate; not a reference machine",
   "fitted_firmware": {
-    "identity": "JukuNet C12 / ROM ABI 1.4 D15/D16; corrected CP437 D16",
+    "identity": "JukuNet C12 / ROM ABI 1.5 D15/D16; corrected CP437 D16",
     "sha256": "b1a8152c0b4684d9d5608bd8bb60a06a21393c3bd7e7894cd8b7b61c494350d6",
     "confidence": "physical-record"
   },
