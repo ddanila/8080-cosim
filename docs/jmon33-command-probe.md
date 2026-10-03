@@ -11,10 +11,13 @@ The no-input baseline is the [idle cursor oracle](jmon33-ready-probe.md).
 ## Command
 
 ```sh
-sync/jmon33_command_probe.py
+JMON33_COMMAND_ORACLE=early JMON33_COMMAND_START_VRAM=0 \
+  JMON33_COMMAND_MAX_CYCLES=60000000 JMON33_COMMAND_FRAME_CYCLES=200000 \
+  JMON33_COMMAND_HOLD_FRAMES=20 JMON33_COMMAND_GAP_FRAMES=6 \
+  JMON33_COMMAND_REPORT=docs/jmon33-command-probe.md sync/jmon33_command_probe.py
 ```
 
-Environment overrides:
+Environment overrides (defaults for the direct command above):
 
 - `JMON33_COMMAND_MAX_CYCLES` default `60000000`
 - `JMON33_COMMAND_FRAME_CYCLES` default `200000`

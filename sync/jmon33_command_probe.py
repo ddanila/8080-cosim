@@ -6,6 +6,7 @@ import hashlib
 import os
 import re
 import shutil
+import shlex
 import subprocess
 import tempfile
 from dataclasses import dataclass
@@ -233,10 +234,16 @@ def main() -> int:
         "## Command",
         "",
         "```sh",
-        "sync/jmon33_command_probe.py",
+        f"JMON33_COMMAND_ORACLE={shlex.quote(oracle)} "
+        f"JMON33_COMMAND_START_VRAM={shlex.quote(os.environ.get('JMON33_COMMAND_START_VRAM', '0'))} \\",
+        f"  JMON33_COMMAND_MAX_CYCLES={shlex.quote(os.environ.get('JMON33_COMMAND_MAX_CYCLES', '60000000'))} "
+        f"JMON33_COMMAND_FRAME_CYCLES={shlex.quote(os.environ.get('JMON33_COMMAND_FRAME_CYCLES', '200000'))} \\",
+        f"  JMON33_COMMAND_HOLD_FRAMES={shlex.quote(os.environ.get('JMON33_COMMAND_HOLD_FRAMES', '20'))} "
+        f"JMON33_COMMAND_GAP_FRAMES={shlex.quote(os.environ.get('JMON33_COMMAND_GAP_FRAMES', '6'))} \\",
+        f"  JMON33_COMMAND_REPORT={shlex.quote(os.path.relpath(REPORT, ROOT))} sync/jmon33_command_probe.py",
         "```",
         "",
-        "Environment overrides:",
+        "Environment overrides (defaults for the direct command above):",
         "",
         "- `JMON33_COMMAND_MAX_CYCLES` default `60000000`",
         "- `JMON33_COMMAND_FRAME_CYCLES` default `200000`",
