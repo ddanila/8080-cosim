@@ -2,22 +2,33 @@
 
 Status: **OFFICIAL .009 IC CENSUS GUARDED**
 
-This report transcribes both pages of `ДГШ5.109.009 ПЭЗ` and compares
-the factory IC population against the authoritative board model. Factory
-markings remain visible even where the photographed owner board proves a
-later or alternate compatible population. D60-D83 are the only modeled
+This report compares a retained transcription of both pages of
+`ДГШ5.109.009 ПЭЗ` with the board model. Factory markings and registered
+owner overrides are displayed separately. D60-D83 are the only modeled
 numeric IC positions absent from the ПЭЗ; they are retained as explicit
 empty DRAM expansion sockets, not claimed as factory-populated parts.
+
+## Command
+
+```sh
+python3 scripts/report_official_009_ic_census.py
+```
+
+The guard verifies the source PDF hash, reference coverage, effective
+logic-family mappings, selected exact markings, and programming labels.
+It does not reread PDF or photo text, inspect installed socket population,
+verify firmware bytes, or establish pinout and electrical compatibility
+between substitutions. Those require their owning evidence and guards.
 
 ## Guard checks
 
 | Check | Result |
 | --- | --- |
-| Factory PDF checksum matches the transcription | PASS |
+| Factory PDF checksum matches the registered source hash | PASS |
 | Every factory-listed IC refdes exists in the board model | PASS |
 | The transcription has no duplicate refdes | PASS |
-| Every factory/owner marking maps to the modeled logic family | PASS |
-| Every known marking correction is explicit in board JSON | PASS |
+| Every effective census marking maps to the modeled logic family | PASS |
+| Selected exact markings match board JSON | PASS |
 | Board-only numeric IC refs are only D60-D83 expansion sockets | PASS |
 | Factory programming identities match .037/.038/.039/.041-.043/.087-.092 | PASS |
 
