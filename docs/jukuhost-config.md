@@ -16,11 +16,12 @@ A: snapshot, read-only native B:, and DOS-safe log/capture names.
 
 Relative artifact, disk, log and capture file names are resolved beside the
 configuration file. `port` and `console` are passed unchanged to the platform
-backend; relative device paths are not rebased to the INI directory. The format is
-ASCII, line-oriented, and deliberately strict: section and key names are
+backend; relative device paths are not rebased to the INI directory. The format
+uses line-oriented ASCII syntax: section and key names are
 case-insensitive, but duplicate keys, unknown sections or keys, malformed
 numbers and hashes, incomplete artifact identities, and lines of 512 bytes or
-more are rejected. Blank lines and whole-line `#` or `;` comments are
+more are rejected. Embedded NUL bytes are rejected; path values are copied as
+bytes without character-set conversion or an ASCII-only validation. Blank lines and whole-line `#` or `;` comments are
 accepted; inline comments are not stripped from values.
 
 The example below describes a direct JF16 deployment. Its artifact names,
