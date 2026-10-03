@@ -33,6 +33,7 @@ are in [windows-jukuhost-client.md](windows-jukuhost-client.md).
 | Environment | Evidence | Limit |
 | --- | --- | --- |
 | Native build/API shims | Payload, configuration, device selection, partial I/O, cancellation, timer, file replacement and PE/package checks | Does not execute native Windows drivers |
+| Windows Server 2022 CI | Actual PE self-test, repeated GUI Listen, Stop during reconnect, early failure and session logs | Uses failure fixtures and an unavailable COM port; no serial-to-board session |
 | Wine | Executable self-test and stock/C11/C12 simulator boot, A:/B:, captures and clean stop | Wine's explicit parity-readback exception is byte emulation, not physical UART qualification |
 | Original Windows 95 guest | Executable self-test, GUI, C12 boot, DIR and target-reset recovery | COM1 connects to the simulator; no physical adapter or board was used |
 
@@ -55,4 +56,6 @@ sync/jukuhost_win32_wine_e2e.sh
 
 The first command is the desk/reproducibility gate. The second executes the
 actual PE against the stock, C11 and C12 simulators with the documented Wine
-prerequisites. The Windows Actions workflow publishes the checked build.
+prerequisites. The [Windows Actions workflow](../.github/workflows/windows-host.yml) also
+runs [the native runtime guard](../tools/check-jukuwin-runtime.ps1) before
+publishing the checked build.

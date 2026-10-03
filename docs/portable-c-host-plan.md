@@ -32,7 +32,7 @@ The Windows product is the GUI described in
 | Linux | Native protocol, fault, media and PTY checks; physical CS00015 qualification | Requalify when a platform or protocol change affects the accepted workload |
 | macOS | Native arm64 C8 cold boot and focused CS00015 workload | Full reconnect, reset, media and endurance matrix |
 | DOS / Pocket8086 | Reproducible 16-bit executable; DOSBox-X serial-to-simulator checks | Physical Pocket8086-to-CS00015 UART, latency, memory and endurance matrix |
-| Windows | Reproducible PE, native API shims, Wine stock/C11/C12 matrix; Windows 95 guest C12 boot and reset recovery | Current Windows and physical Windows 95 serial hardware, GUI and endurance qualification |
+| Windows | Reproducible PE, native API shims, Windows Server 2022 executable/GUI failure-path checks, Wine stock/C11/C12 matrix; Windows 95 guest C12 boot and reset recovery | Current Windows and physical Windows 95 serial hardware, GUI and endurance qualification |
 
 A simulator, Wine, or VM result does not establish physical adapter behavior.
 The DOS physical gate remains open independently of Windows implementation.
