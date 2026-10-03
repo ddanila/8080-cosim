@@ -85,7 +85,7 @@ sync/juku_top_periph_bus_check.sh
 | Vendored \`JUKU1.CPM\` loaded by top-level FDC | $(if [ -n "$disk_line" ]; then echo PASS; else echo FAIL; fi) |
 | PIC register write/read through decoded ports \`0x00/0x01\` | $status |
 | Frame tick raises \`INTR\` and INTA returns \`CD D4 FE\` for vector \`0xFED4\` | $status |
-| PPI0 no-key scan reads \`0xCF\` like the first ROMBIOS keyboard poll | $status |
+| PPI0 no-key scan reads \`0xCF\` for the ordinary idle keyboard profile | $status |
 | PPI0 keyboard scan reads shifted \`T\` as \`0x88\` through decoded ports \`0x04/0x05\` | $status |
 | PPI0 Port C motor-on latch through decoded port \`0x06\` | $status |
 | Physical D94 table produces mutually exclusive FDC \`/RE\` and \`/WE\` strobes | $status |
@@ -123,9 +123,10 @@ sync/juku_top_periph_bus_check.sh
 - This is a direct-bus harness, not the full ROMBIOS \`TDD\` CPU path.
 - The behavioral FDC consumes D94's physical-table strobes. A3 is physically
   closed to D105.3 qualified peripheral \`/WR\`; FDC write cycles drive raw
-  \`/IOWR\` plus CPU \`/WR\` and check D105 derives that rail. D94 enable's
-  upstream source and runnable A4 behavior remain
-  explicit simulation fits around the measured D94.15/D93.3 and D94.14/D101.7 nets.
+  \`/IOWR\` plus CPU \`/WR\` and check D105 derives that rail. D94 enable is source-closed
+  to D9.7/CS7 at D94.15/D93.3. Runnable A4 is held high instead of
+  implementing the D101 precompensation chain; D94.14/D101.7 is the measured
+  boundary. See [D94 constraints](d94-reconstruction-constraints.md).
 - A separate forced-low A4 check exercises the alternate register-3 D0 branch;
   D0 has only the measured R8 2 kΩ pull-up in the observed hardware scope.
 - Two opt-in builds route the behavioral controller through an unmapped profile adjunct.

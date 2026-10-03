@@ -255,7 +255,7 @@ module juku_top_periph_bus_tb();
     kbd_pressed = 1'b0;
     io_write(8'h04, 8'h04);     // PPI0 Port A: scan column 4
     io_read(8'h05, rd);
-    if (rd !== 8'hCF) fail("PPI0 no-key keyboard read did not match ROMBIOS first read");
+    if (rd !== 8'hCF) fail("PPI0 idle keyboard read did not match the no-key profile");
 
     kbd_pressed = 1'b1;
     kbd_shift = 1'b1;
