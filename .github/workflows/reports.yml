@@ -98,8 +98,7 @@ jobs:
               hashFiles(
                 'ref/photos/juku-pcb-2/*.jpg',
                 'ref/photos/dgsh5-109-009-sb/*.jpg',
-                'ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg',
-                'ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg'
+                'ref/photos/dgsh5-109-009-e3/*.jpg'
               )
             }}
           restore-keys: |
@@ -108,7 +107,7 @@ jobs:
       - name: Materialize photos required by reports
         timeout-minutes: 5
         run: |
-          git lfs pull --include="ref/photos/juku-pcb-2/*.jpg,ref/photos/dgsh5-109-009-sb/*.jpg,ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg,ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg" --exclude=""
+          git lfs pull --include="ref/photos/juku-pcb-2/*.jpg,ref/photos/dgsh5-109-009-sb/*.jpg,ref/photos/dgsh5-109-009-e3/*.jpg" --exclude=""
 
       - name: Validate photos and vendored reference artifacts
         timeout-minutes: 5
