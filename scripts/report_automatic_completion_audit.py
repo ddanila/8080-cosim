@@ -112,7 +112,7 @@ CLASSIFICATIONS = {
     ("PLAN.md", "Replica completes Tier 2."): "bringup",
     ("PLAN.md", "Replica completes Tier 3."): "bringup",
     ("docs/crt-cvbs-simulation-plan.md", "Replace the simulation-only framebuffer read port only after the"): "framebuffer",
-    ("docs/factory-drawing-exploitation-plan.md", "After Stage 1.2, decide what to share on juku3000 #25 (the MAME"): "community",
+    ("docs/factory-drawing-exploitation-plan.md", "Decide what to share on juku3000 #25."): "community",
 }
 
 

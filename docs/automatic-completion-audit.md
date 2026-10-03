@@ -46,7 +46,7 @@ or owner authorization.
 | `PLAN.md` | Replica completes Tier 2. | `bringup` | `docs/replica-manufacturing-readiness.md` (no released fabrication package) |
 | `PLAN.md` | Replica completes Tier 3. | `bringup` | `docs/replica-manufacturing-readiness.md` (no released fabrication package) |
 | `docs/crt-cvbs-simulation-plan.md` | Replace the simulation-only framebuffer read port only after the | `framebuffer` | `docs/video-slot-timing-audit.md` (physical video-slot schedule pending); `docs/crt-cvbs-simulation-plan.md` (implementation explicitly evidence-gated) |
-| `docs/factory-drawing-exploitation-plan.md` | After Stage 1.2, decide what to share on juku3000 #25 (the MAME | `community` | `docs/factory-drawing-exploitation-plan.md` (external publication is owner-gated) |
+| `docs/factory-drawing-exploitation-plan.md` | Decide what to share on juku3000 #25. | `community` | `docs/factory-drawing-exploitation-plan.md` (external publication is owner-gated) |
 
 The 42 unchecked boxes in the order, order-evidence, parts-inventory,
 and first-article documents are operator templates. They deliberately remain
