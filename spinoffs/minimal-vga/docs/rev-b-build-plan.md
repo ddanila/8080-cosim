@@ -62,7 +62,7 @@ Existing identifiers remain for references in source and qualification reports.
 | ID | Current decision |
 | --- | --- |
 | D1.1 | UART data/control at `0x08`/`0x09`, decoded window `0x08–0x0B`. |
-| D1.2 | Bring-up byte-stream comparison uses cosim's OUT trace and the twin's real UART TX. Output-latch status coincidence in cosim is not a UART timing oracle. |
+| D1.2 | Bring-up byte-stream comparison uses cosim's modeled 8251 and the twin's UART data-port writes. It checks startup byte agreement, not exact wire timing or interactive monitor commands. |
 | D1.3 | Minimal bring-up RAM test covers `0x4000–0xD6FF`; reserve `0xD700–0xD7FF` for stack/variables and exclude Video-owned space. |
 | D1.4 | Separate base and offset extension rows; exact geometry is in `mating.json`. Orientation safety follows D1.32b. |
 | D1.5 | Each card flows from board spec through generation, checks, routing and export. |
