@@ -11,7 +11,8 @@ complement: low-nibble complement for RT4 and full-byte complement for RE3.
 
 ## Physical sources
 
-The filenames deliberately retain the board identity:
+The filenames retain recorded board labels. Their read-event identity comes
+from the validated manifest, including its alias notes:
 
 - `sukharev_reference` names reads from Danila Sukharev's reference board.
   Its PROMs are intact. The board has had
@@ -24,7 +25,8 @@ Identical transcript bytes can represent either matching independent reads
 or retained filename aliases. The validated manifests distinguish parsed
 `capture_count` from `independent_capture_count` and record alias notes;
 counting files or distinct hashes does not establish independent acquisition.
-In particular, the D2 manifest identifies the July-13 unqualified and
+D8/D94 retain both board-name sets as aliases of three supplied events per
+PROM. The D2 manifest identifies the July-13 unqualified and
 Arvutimuuseum capture1/capture2 names as aliases. Keep their recorded names
 and use the manifest’s read-event count rather than counting each alias again.
 Repeated reads establish stability; separately documented board/socket reads

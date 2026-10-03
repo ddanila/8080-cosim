@@ -20,7 +20,9 @@ board-variant detection, not because the adopted PROM/EPROM set is incomplete:
   boots `media/disks/JUKU1.CPM` to the EKDOS `A>` prompt, but physical-media
   provenance is still useful.
 - D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` now have validated repeated
-  physical tables from two `.009` boards. Independent reads or original
+  physical tables. D8/D94 have three independent read events each, retained
+  under two board-name aliases; those aliases do not prove cross-board reads.
+  Independent acquisitions or original
   programming-disk files would provide optional further provenance. D94's
   D0 hidden load remains incomplete; exact `.009` sheets close its `CS7` enable source.
 - The third-source archival `JUKUROM0/1` pair is adopted as the D15/D16 archive-37

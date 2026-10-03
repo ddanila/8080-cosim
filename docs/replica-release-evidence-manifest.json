@@ -108,7 +108,7 @@
     },
     "Firmware lineage": {
       "path": "docs/firmware-gap-ledger.md",
-      "sha256": "d1b671053107bab657a41e2b7a398ea32849fefb9511ac07fb8bcf061b8acfd9",
+      "sha256": "af613932026f8f13e039bb8818ca31740410e35467db09b8ffd5c8d85b27d6e2",
       "status": "ADOPTED FIRMWARE SET VERIFIED"
     },
     "EPROM programming": {
