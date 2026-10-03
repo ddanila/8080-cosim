@@ -56,7 +56,7 @@ sheet's +5 V rail. Contacts absent from sheet 3 are not assigned from analogy.
 | 23 | `RD.DATA` | D98 input channel A0 |
 
 The D98 output side is also explicit: its B1/B2/B3 channels reach D93
-TR00/INDEX/WPRT pins 34/35/36. The READY channel passes through the newly used
+TR00/INDEX/WPRT pins 34/35/36. The READY channel passes through
 D28 pins 5/6 before D93.32. `RD.DATA` enters the read-separator path rather
 than D93 RAW READ directly.
 
@@ -66,13 +66,12 @@ and `R83` on -READY. The `.009 СБ` assembly drawing independently places the
 five bodies as the left-to-right `R83..R79` bank above D98. Three further
 open-collector pull-ups are explicit: `R84=470` on D28.6/D93 READY,
 `R85=470` on D28.8/D96.3 separator clock, and `R98=4.7k` on the cascaded
-D28.2/D28.3/X4.21 -D.SEL1 node. Their assembly-drawing locations are now
-registered and guarded in `docs/fdc-lower-assembly-placement.md`.
+D28.2/D28.3/X4.21 -D.SEL1 node. Their assembly-drawing locations are
+registered and guarded in [the placement review](../../docs/fdc-lower-assembly-placement.md).
 
 ## Processor-side source map
 
-The same drawing closes the host bus that the earlier photo reconstruction
-had assigned to D100. Sheet 3 labels the eight conductors entering D93
+Sheet 3 labels the eight conductors entering D93
 DAL0-DAL7/pins 7-14 as the sheet-1 `D0`-`D7` bundle. They are direct system
 data-bus connections; no transceiver lies between D0-D7 and D93.
 
@@ -97,7 +96,7 @@ respectively; input pin 6 receives the write-data/precompensation path. D100
 quoted sheet-1 continuation and crosses the OE_N path without a junction dot.
 The nearby `1` denotes the destination sheet, not a logic level or an
 electrical join. Its remote source remains unresolved
-(`docs/d100-control-source-review.md`).
+(see [the D100 control review](../../docs/d100-control-source-review.md)).
 
 ## НГМД external XS5
 
@@ -159,27 +158,23 @@ grouped returns; the active signals use the standard even contacts:
 Drive power is separate: each assembly's `X1` carries +12 V, GND, and +5 V.
 It does not come from processor X4.12/.13.
 
-## Source-model divergences
+## Model disposition and remaining boundaries
 
-The recovered primary drawing invalidated four inference-era assignments in
-the earlier source model:
+D100 is not the CPU-data-to-D93-DAL transceiver. It is the drive-output
+КР580ВА87, with its B-side endpoints listed above. D93 DAL0-DAL7 connect
+directly to the system data bus. D28.9 belongs to the read-separator inverter,
+separate from D26 PC4/DDEN.
 
-1. D100 is not the CPU-data-to-D93-DAL transceiver. It is the drive-output
-   КР580ВА87 whose B-side pins 16,19,18,14,15,17,13,12 feed X4.10,.16,.9,
-   .11,.18,.17,.19,.20 respectively. The existing `FDC_DAL0..7` attachment
-   and D100 `/OE`/`T` bus-control narrative were removed or reassigned.
-2. D28 pins 2 and 4 feed X4.21 `-D.SEL1` and X4.22 `-D.SEL0`, not the stale
-   `.006` X4.5/X4.4 tape labels. D28 pins 5/6 are used in the READY receive
-   path, so they are not NC on the `.009` board.
-3. X4.6-.23 are no longer anonymous landing boundaries. Sheet 3 supplies the
-   circuit names and local endpoints above. X4.2-.5 remain a cross-revision
-   disposition item because sheet 3 omits them while the НГМД XS5 side groups
-   contacts 1-6 as returns.
-4. D93 DAL0-DAL7 are the direct sheet-1 D0-D7 bundle. D26 PC2/PC4/PC5/PC6
-   feed MOTOR EN, FM/MFM, D_SEL, and S.SEL respectively. In particular,
-   D28.9 is part of the read-separator inverter on sheet 3, not a branch of
-   the D26-PC4/DDEN conductor.
+The source model represents these connections. X4.2–.5 remain a revision
+boundary: processor sheet 3 omits them, while the НГМД side groups XS5.1–.6
+as returns. The drawing does not establish external cable conductors for
+X4.1–.5 or D100.11's sheet-1 source. Current routing holds are recorded in
+[factory-wire fidelity](../../docs/factory-wire-route-fidelity.md).
 
-The source model has incorporated these corrections. The routed replica still
-has source-correction opens and remains held. The drawing does not establish
-external cable conductors for X4.1-.5 or D100.11's sheet-1 source.
+The source-frame hashes and selected model endpoints are guarded by:
+
+```sh
+python3 scripts/report_dgsh5_109_009_e3_audit.py
+```
+
+That audit does not establish cable continuity or inspect all connector pins.
