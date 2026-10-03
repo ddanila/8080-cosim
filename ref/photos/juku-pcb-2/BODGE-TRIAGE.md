@@ -173,9 +173,10 @@ drives tied D12.1/.2 before D12.3 produces OC SOUT. That physical inverter
 stage is now modeled instead of the former direct SER_TXD-to-D12 shortcut.
 
 Sheet 1 also explicitly ties D10 PIC SP/EN pin 16 to the `A` (+5 V) rail,
-selecting standalone master mode. This is now modeled. Its older RxRDY/TxRDY
-IR0/IR1 labels conflict with the FDC-era target assignment and are retained as
-a revision boundary rather than overwriting the current D93 interrupt nets.
+selecting standalone master mode. Exact `.009` source evidence assigns IR0 to
+X2.214 and IR1 to X2.218/D27 PB7, separately from the FDC conditioner. D11
+RxRDY/TxRDY directly drive IR2/IR3; the off-sheet IR0/IR1 labels do not justify
+a direct D93 INTRQ/DRQ assignment. See [the serial handoff](../../../docs/serial-handoff.md).
 
 ## Factory solder-side cuts and patches
 
