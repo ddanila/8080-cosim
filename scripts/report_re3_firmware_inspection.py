@@ -98,11 +98,6 @@ def main() -> int:
 
     write_sha_file()
 
-    rows = []
-    for name in ARTIFACTS:
-        path = REF / name
-        rows.append((name, path.stat().st_size, sha256(path)))
-
     lines = [
         "# К155РЕ3 firmware inspection",
         "",
@@ -116,9 +111,15 @@ def main() -> int:
         "## Command",
         "",
         "```sh",
-        "scripts/report_re3_firmware_inspection.py",
+        "python3 scripts/report_re3_firmware_inspection.py",
         "sync/reference_artifact_check.sh",
         "```",
+        "",
+        "The writer compares retained HEX bytes with hard-coded transcriptions and",
+        "the retained physical D8/D94 tables. It does not reread the scan or verify",
+        "drawing-to-socket identity. It rewrites `ref/firmware/SHA256SUMS` from the",
+        "current artifacts rather than checking them against fixed historical hashes.",
+        "The separate reference-artifact guard checks the registered source identities.",
         "",
         "## Shape Checks",
         "",
@@ -138,14 +139,10 @@ def main() -> int:
             f"| `ДГШ5.106.113` | `ДГШ5.106.103` family | `{row_ranges(table_113)}` | `{sha256(REF / 're3_dgsh5.106.113.hex')}` |",
             f"| `ДГШ5.106.117` | `ДГШ5.106.103` family | `{row_ranges(table_117)}` | `{sha256(REF / 're3_dgsh5.106.117.hex')}` |",
             "",
-            "## Artifact Hashes",
+            "Artifact checksums are in [the firmware manifest](../ref/firmware/SHA256SUMS).",
             "",
-            "| File | Size | SHA256 |",
-            "| --- | ---: | --- |",
         ]
     )
-    for name, size, digest in rows:
-        lines.append(f"| `{name}` | {size} | `{digest}` |")
 
     lines.extend(
         [
