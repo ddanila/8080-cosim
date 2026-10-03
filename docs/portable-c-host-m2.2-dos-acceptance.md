@@ -90,10 +90,15 @@ After building, run:
 tools/package-jukuhost-dos.py
 ```
 
-The packager verifies every selected input against the adjacent
-`cpm-plus-juku` C8 manifest before producing `build/dos-package/`. It contains
-only 8.3-safe names: `JUKUHOST.EXE`, `JUKUHOST.INI`, `JUKU.BAT`, `SYSTEM.BIN`,
+The packager verifies the selected system, Fastboot and disk payloads against
+the adjacent `cpm-plus-juku` C8 manifest. It copies the locally built EXE;
+executable reproducibility is checked by the separate DOS gate. A clean output
+directory contains the generated 8.3-safe names: `JUKUHOST.EXE`, `JUKUHOST.INI`, `JUKU.BAT`, `SYSTEM.BIN`,
 `FAST16.BIN`, `BASE.IMG`, `APPS.JUK`, `README.TXT`, and `MANIFEST.SHA`.
+
+The packager does not clear an existing output directory. Use a fresh
+`--output` directory for a new transfer package; its `MANIFEST.SHA` lists
+all top-level files present, including retained files from earlier sessions.
 
 Copy that directory to the Pocket8086 and run either command with no options:
 
