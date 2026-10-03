@@ -149,8 +149,9 @@ EktaSoft's single block-1 sum: eight stored bytes at `0003h..000Ah`, block
 0 covering `0004h..07FFh` and blocks 1-7 covering their full 2 KiB. This
 is the convention that diagnoses jmon22's corrupt blocks
 ([`jmon22-reconstruction.md`](jmon22-reconstruction.md)); jmon33 passes
-all eight (byte-verified), independently validating it against a healthy
-image. Monitor boot is a short in-place sequence (checksum verification,
+all eight (byte-verified). This makes it a checksum-consistent comparison
+image, not an independent proof of every byte's correctness. Monitor boot is
+a short in-place sequence (checksum verification,
 PIT and PPI init) followed by copying ROM `3F40h..3FFFh` to
 `FF40h..FFFFh` and dispatching through that vector region. Maintained
 annotated disassemblies of both Monitor images live in
