@@ -2,11 +2,13 @@
 
 Status: **PASS**
 
-This is the full cosim I/O-sequence reference for the vendored
-`media/disks/JUKU1.CPM` factory `TDD` path, captured with
-`JUKU_TRACE_IO=1`. It pins the exact ROMBIOS keyboard/PIC/PPI/FDC
-events that the `juku_top` direct-bus harness mirrors at the current
-post-banner boundary.
+This guard captures a bounded cosim I/O trace for the vendored
+`media/disks/JUKU1.CPM` factory `TDD` path with `JUKU_TRACE_IO=1`.
+It checks seven selected events by PC, framebuffer-write count, and value,
+requires at least 100 events and one FDC access, and checks modeled
+1 MHz clock selection at every captured D93 register access.
+It does not assert full-sequence equality, exact event counts, cycle
+timestamps, or physical clock timing. Counts and cycles below are observed.
 
 ## Command
 
@@ -48,7 +50,7 @@ access instead of inferring it from the final latch value.
 ## Boundary
 
 - This is a cosim reference, not an HDL prompt proof.
-- `docs/juku-top-periph-bus-check.md` proves the corresponding top-level
-  keyboard/PIC/PPI/FDC hardware path works when driven directly.
-- Uninterrupted HDL CPU execution now reaches decoded FDC I/O and the EKDOS
-  prompt; this reference remains the fast event-sequence oracle for regressions.
+- [Direct-bus HDL checks](juku-top-periph-bus-check.md) separately test
+  the modeled keyboard/PIC/PPI/FDC path.
+- [Uninterrupted HDL evidence](juku-top-fdc-verilator-probe.md) records
+  the reset-to-prompt path and its toolchain requirements.
