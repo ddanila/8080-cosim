@@ -23,7 +23,7 @@ fi
 cat > "$REPORT" <<EOF
 # К555ИЕ7 / 74LS193 counter readiness
 
-Status: **FULL DIGITAL DEVICE CONTRACT GUARDED**
+Status: **DEVICE DIGITAL BEHAVIOR TESTED**
 
 The shared \`ie7_ctr\` primitive models the standard К555ИЕ7 / SN74LS193
 package used at video-address counters D44-D47 and identified at FDC data-
@@ -61,13 +61,21 @@ $pass_line
 
 ## Evidence boundary
 
-This closes the standard package's digital behavior. Recovered \`.009\` Э3
+The Icarus test exercises the primitive and a two-counter cascade. It does
+not instantiate the complete board, check JSON/PCB connections, verify the
+PDF hash, or measure separator lock.
+
+Recovered \`.009\` Э3
 sheet 3 independently closes the board wiring around D106: D95.9 clocks DOWN,
 R78 pulls UP and all four preset inputs high, D97.4/D93.27 RAW READ drives
 /LOAD, CLR is grounded, Q3 drives D28.9, and Q0-Q2 plus /CO and /BO are explicit
 no-connects. The downstream D28/R85/D96 waveform quality and separator lock
 margin remain board bring-up measurements even though D96 connectivity is now
-source-closed.
+source-closed. The separate source-map guard is:
+
+\`\`\`sh
+python3 kicad/check_fdc_recovery_counter.py
+\`\`\`
 EOF
 
 echo "$pass_line"
