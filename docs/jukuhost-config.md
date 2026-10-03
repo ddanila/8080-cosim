@@ -1,7 +1,7 @@
 # Juku host configuration
 
-The production C host accepts either an explicit `JUKUHOST.INI` path or the
-long Linux command line retained for development tests:
+The production C host accepts an explicit configuration path. The Linux
+command-line options are also available for direct invocation:
 
 ```sh
 build/jukuhost JUKUHOST.INI
@@ -18,7 +18,12 @@ Relative file names are resolved beside the configuration file. The format is
 ASCII, line-oriented, and deliberately strict: section and key names are
 case-insensitive, but duplicate keys, unknown sections or keys, malformed
 numbers and hashes, incomplete artifact identities, and lines of 512 bytes or
-more are rejected.
+more are rejected. Blank lines and whole-line `#` or `;` comments are
+accepted; inline comments are not stripped from values.
+
+The example below describes a direct JF16 deployment. Its artifact names,
+sizes and hashes are illustrative; use a generated deployment INI or replace
+every identity from the matching build manifest before running it.
 
 ```ini
 [host]
@@ -75,8 +80,28 @@ geometry=juku-native
 mode=read-only
 ```
 
-The hashes above are placeholders; a generated deployment file must contain
-the hashes from its canonical build manifest.
+Required sections are `[host]` with `port`, `[system]` with `file`, `size`
+and `sha256`, and `[disk_a]` with `file`, `size`, `sha256`, `geometry` and
+`mode`. Snapshot A: also requires `base`. Optional artifact sections must
+contain all three identity fields; a fallback requires both fallback sections.
+Drive B is optional and requires its complete file identity, geometry and mode.
+
+Defaults and units for the timing and transfer settings are:
+
+| Setting | Default | Accepted range |
+| --- | ---: | --- |
+| `host.timeout` | 120 s | 1–86400 s |
+| `host.disk_timeout` | 0 | 0–86400 s; zero permits an indefinite session |
+| `host.boot_restarts` | 3 | 0–100 |
+| `host.reconnect_timeout` | 30 s | 0–86400 s; zero disables reopen |
+| `network.protocol` | 3 | 1–3; a console requires 3 |
+| `network.baud` | 19200 | Parser range 300–115200; the serial backend must support the selected rate |
+| `network.read_ahead` | 3 records | 1–8 records |
+| `network.reply_guard_ms` | 2 ms | 0–1000 ms |
+
+`network_rom` and `recover_session` default to `no`. Omitting the network
+section does not automatically choose the resident baud to match a stock
+bootstrap; set `baud=9600` explicitly for JF17.
 
 Boot selection is explicit:
 
@@ -116,14 +141,10 @@ because its final acknowledgement was lost. The host retries only after the
 reset ROM emits a fresh checked `JR16` readiness frame, so it cannot overwrite
 a possibly running CP/M system.
 
-Stock Janet begins with no added line-turn delay. If a particular client
-resumes polling or rejects a just-sent frame, the host resends that exact
-checked frame and raises only the current session's destination-zero guard
-through 2, 5, and at most 10 ms. Fast clients therefore retain the zero-guard
-path. After a JF15 core is executed, its overlap-safe `A5 3A` probe continues
-until the configured `timeout`; a fixed short probe count is deliberately not
-used because physical boards can take several seconds to complete the stock
-execute handoff.
+Stock Janet adapts its line-turn guard when a client rejects or resumes
+polling, without changing the configured baud. JF15 probing continues until
+`timeout` to allow a slow stock execute handoff. The protocol details and
+current boot recipes are in [the bootstrap guide](janet-fastboot.md).
 
 `reconnect_timeout` bounds named serial-device reopen attempts in seconds;
 zero disables reopen. After a disk-session link loss, the host closes the stale
