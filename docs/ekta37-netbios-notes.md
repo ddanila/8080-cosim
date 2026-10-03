@@ -280,8 +280,9 @@ Systems retaining RomBios input or frame services must preserve that interrupt
 contract. A separate RAM renderer must also disable the firmware cursor with
 `ESC 4` to prevent the frame service from painting at stale coordinates.
 Historical renderer-only simulator results do not qualify a physical RAM BIOS.
-For later independent RAM-BIOS/NetDisk-v3 qualification, see the
-[serial investigation](juku-serial-19200-investigation.md).
+For later NetDisk-v3 qualification on CS00015, see the
+[M2.1 physical acceptance record](portable-c-host-m2.1-physical-acceptance.md),
+which binds the C8/V16 system and host identities to the tested serial profile.
 
 The resident record format already carries a drive byte. CP/Mish `NETROM2`
 uses drive 0 for its writable 386 KiB A: volume and drive 1 for a read-only
