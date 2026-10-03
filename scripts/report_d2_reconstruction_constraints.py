@@ -217,6 +217,9 @@ def main() -> int:
     fallback_boundary = marker(
         "docs/reconstructed-prom-fallbacks.md",
         "PHYSICAL PROM TABLES ADOPTED",
+        "../ref/physical-proms/README.md",
+    ) and marker(
+        "ref/physical-proms/README.md",
         "953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b",
     )
     owner_evidence = marker(
@@ -422,7 +425,7 @@ def main() -> int:
             table_row([
                 "D2 physical-table provenance is preserved",
                 "PASS" if fallback_boundary else "FAIL",
-                "`docs/reconstructed-prom-fallbacks.md`",
+                "`ref/physical-proms/README.md`",
             ]),
             table_row([
                 "D2 raw electrical polarity executes through D30 READY",

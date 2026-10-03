@@ -147,6 +147,9 @@ def main() -> int:
     fallback_report_ok = marker(
         "docs/reconstructed-prom-fallbacks.md",
         "HISTORICAL D8 FALLBACK RETAINED / PHYSICAL PROM TABLES ADOPTED",
+        "../ref/physical-proms/README.md",
+    ) and marker(
+        "ref/physical-proms/README.md",
         "c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489",
         "bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0",
     )

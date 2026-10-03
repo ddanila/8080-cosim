@@ -118,7 +118,7 @@ review against the corrected package fit.
 | 256-row symbolic address table is non-burnable | PASS | all D0 values are `?` |
 | Validated physical `.037` raw programming image exists | PASS | `ref/physical-proms/validated/d2_037.raw.bin` |
 | Old D2-as-I/O-decode path is superseded | PASS | `kicad/juku.board.json` D9 identity and provenance |
-| D2 physical-table provenance is preserved | PASS | `docs/reconstructed-prom-fallbacks.md` |
+| D2 physical-table provenance is preserved | PASS | `ref/physical-proms/README.md` |
 | D2 raw electrical polarity executes through D30 READY | PASS | `sync/d2_ready_path_check.sh`; D0 reader channel Nano D10 |
 | Owner dump and corrected continuity are recorded | PASS | `docs/d2-physical-dump-and-continuity.md` |
 | Official BOM/photo trail identifies `.037/.038` pair | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
