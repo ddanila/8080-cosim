@@ -65,12 +65,12 @@ cat > "$REPORT" <<EOF
 
 Status: **$status**
 
-This fast harness drives the LVS-checked \`juku_top\` buffered CPU bus directly
+This fast harness drives the \`juku_top\` buffered CPU bus directly
 through \`BA\`, \`DB\`, \`iord_n\`, \`iowr_n\`, and \`inta_n\`; FDC writes
 additionally exercise raw \`iowr_raw_n\` plus CPU \`wr_n\`, while leaving the
-real top-level chip-select decode and peripheral instances in place. It proves
-the post-banner keyboard/PIC/PPI/FDC path without waiting for ROMBIOS to redraw
-the screen.
+top-level chip-select decode and peripheral instances in place. It checks
+keyboard/PIC/PPI/FDC bus transactions without running ROMBIOS to its banner
+or command prompt. LVS is a separate guard; this script does not run it.
 
 ## Command
 
