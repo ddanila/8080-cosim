@@ -41,10 +41,7 @@ continuity measurements, validate drilled auxiliary holes, or run PCB DRC.
 
 Three overlapping component photographs identify the same notch-down
 `К155АГ3 8901` package beside the right board edge. Held-out-validated
-component and reflected local-package fits replace the displaced global
-endpoint seeds.
-The corrected component fit sits on the marked AG3 at x3215..3415;
-the former x2865..3050 component anchors were on neighboring D103.
+component and reflected local-package fits register the marked AG3.
 All four outer AG3 contacts align with the independent solder columns
 x807/990 and rows y89/536; see `d56-fit-correction.json`.
 The drawing's three leaders register as the separate left annulus,
@@ -136,9 +133,8 @@ annulus is a source-ground candidate; owner rail continuity is unmeasured.
 A D11-local cross-face fit puts all eight D14 contacts on the visible
 2×4 solder field in `200506061`: D14.2 near `(2426,1376)` and D14.7
 near `(2288,1376)`. It also maps the fifth component hole to the
-distinct solder drill near `(2424,1513)`. The older broad projection
-near `(2050,1565)` and geometry-only pin seeds near `(2279,1708)`/
-`(2141,1711)` are retired. See `d14-cross-face-contact-fit.json`.
+distinct solder drill near `(2424,1513)`; see
+`d14-cross-face-contact-fit.json` for the accepted registration.
 On that solder face, a bare-board gap separates the long tinned strip
 holding the fifth drill from D14.4's solder cap. Their observed local
 join is the component-face stem. The strip runs west to an exposed
@@ -183,13 +179,12 @@ remote or fitted connection still require direct verification.
 
 These board centres use the panorama's coarse component-grid fit and are
 topology locators, not pin- or fabrication-grade coordinates. In
-particular, D27 and D11 two-face landmarks expose a four-joint error in
-the old D11 solder registration. The corrected 14-row D11 field starts
-near y=1610 rather than y=1425 in owner tile 200506061. The conspicuous
+particular, D27 and D11 two-face landmarks place the 14-row D11 field
+near y=1610 in owner tile 200506061. The conspicuous
 scar is beside its upper rows and is not the factory position-159 bridge.
 The undimensioned `.009` detail draws lower_exit as an annulus on a
 separate downward trace below the position-159 junction, matching the
-corrected front-side topology rather than the retired bare-board point.
+registered front-side topology.
 The lower_exit front coordinate was corrected to its drilled annulus
 in both views, shifting its D11-local solder projection to about
 `(2771,2078)` in `200506061`. An open hole near `(2776,2094)` maps
@@ -202,8 +197,8 @@ projection sits beside an isolated open via, and bridge/junction lie
 among several vias without a unique four-hole pattern. Two more partial
 views place the upper projection near their
 top boundaries and show no unique lower four-hole match. All four listed
-views have now been checked against shifted projections. The old upper-rail
-claim is retracted. D11 pin/net and both remote endpoints remain on
+views have been checked against the registered projections. No upper-rail
+closure is proved. D11 pin/net and both remote endpoints remain on
 hold for direct continuity; no source net or auxiliary drill is changed.
 
 ## Guarded evidence
