@@ -77,8 +77,10 @@ checks. Recorded full-prompt evidence has a separate
 Neither result releases the PCB for fabrication.
 
 Physical D2 contents and the measured D2/D30/D105/D13 WAIT/READY handoff are
-adopted in the source model and HDL; the exact `H` pull-up/contact remains a
-boundary. Local route/package checks cover that cluster, not the entire board.
+adopted in the source model and HDL. The source-closed `H` contact is
+X1.107B (`-BLOCK`), pulled up by R1 2 kΩ; see the
+[D105 handoff](d105-h-boundary.md) for its selected routed-pad checks.
+Local route/package checks cover that cluster, not the entire board.
 See [manufacturing readiness](replica-manufacturing-readiness.md), the
 [gap ledger](board-fidelity-gap-ledger.md), and [project plan](../PLAN.md) for
 current routing, functional-pin, sourcing and construction holds.

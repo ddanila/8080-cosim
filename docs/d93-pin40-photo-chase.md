@@ -6,6 +6,17 @@ The physical D93 is the populated КР1818ВГ93. The maintenance close-up
 temporarily removes it from its socket and provides the clearest pin-40
 registration; this is not evidence that the design omits the controller.
 
+## Reproduction
+
+```sh
+python3 kicad/report_d93_pin40_photo_chase.py
+```
+
+The guard checks D93 identity/pin role, JSON/source-PCB net assignment,
+the two observation IDs, and geometric distances to P12V pads. It does
+not check photo hashes, inspect copper continuity, or repeat the owner
+measurement. The ranked anchors are independent corroboration targets.
+
 ## Registered evidence
 
 - Component observation: `ref/photos/juku-pcb-2/PXL_20260710_202708344.jpg` at `(2206.000, 2201.000)` px.
