@@ -169,8 +169,8 @@ def build_report(fab_dir):
         detail = evidence_result.stderr.strip() or evidence_result.stdout.strip()
         failures.append("order-evidence-template regeneration failed" + (f": {detail}" if detail else ""))
     # Order readiness generates the upload runbook before the evidence template.
-    # Refresh the runbook once after the template so its retained-evidence byte
-    # counts describe the final files from this invocation, not the prior run.
+    # Refresh the runbook after the template so evidence markers describe
+    # the final files from this invocation.
     runbook_result = refresh_upload_runbook(fab_dir)
     if runbook_result.returncode not in (0, 3):
         detail = runbook_result.stderr.strip() or runbook_result.stdout.strip()
@@ -200,7 +200,6 @@ def build_report(fab_dir):
         report_rows.append([
             label,
             f"`{rel}`",
-            path.stat().st_size if exists else 0,
             gate_status,
         ])
 
@@ -295,8 +294,8 @@ def build_report(fab_dir):
         "Rows check report presence and configured markers; PASS does not mean",
         "this generator reran every underlying design check.",
         "",
-        "| Gate | Evidence | Bytes | Status |",
-        "| --- | --- | ---: | --- |",
+        "| Gate | Evidence | Status |",
+        "| --- | --- | --- |",
     ]
     lines.extend(table_row(row) for row in report_rows)
 

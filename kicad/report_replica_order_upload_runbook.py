@@ -155,7 +155,7 @@ def build_report(fab_dir, report_path):
         path = ROOT / name if "/" in name else fab_dir / name
         if not path.exists() or path.stat().st_size == 0:
             failures.append(f"missing or empty evidence file: {name}")
-            evidence_rows.append([label, f"`{repo_relative(path)}`", 0, "FAIL"])
+            evidence_rows.append([label, f"`{repo_relative(path)}`", "FAIL"])
             continue
         text = path.read_text(errors="replace")
         if marker and marker not in text:
@@ -163,7 +163,6 @@ def build_report(fab_dir, report_path):
         evidence_rows.append([
             label,
             f"`{repo_relative(path)}`",
-            path.stat().st_size,
             "PASS" if not marker or marker in text else "FAIL",
         ])
 
@@ -292,8 +291,8 @@ def build_report(fab_dir, report_path):
         "this table does not establish that every report is ready or its contents",
         "were freshly verified. Run the manufacturing gate for release checks.",
         "",
-        "| Purpose | File | Bytes | Status |",
-        "| --- | --- | ---: | --- |",
+        "| Purpose | File | Status |",
+        "| --- | --- | --- |",
     ])
     lines.extend(table_row(row) for row in evidence_rows)
 

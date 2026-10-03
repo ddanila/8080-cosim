@@ -133,7 +133,6 @@ def evidence_rows():
         rows.append([
             label,
             f"`{rel}`",
-            path.stat().st_size if exists else 0,
             "PASS" if exists and marker_ok else "FAIL",
         ])
     return rows, failures
@@ -209,8 +208,8 @@ def build_report(fab_dir):
         "PASS means a nonempty report contains an accepted status marker; it does",
         "not mean this generator reran its checks or closed its design risks.",
         "",
-        "| Purpose | File | Bytes | Status |",
-        "| --- | --- | ---: | --- |",
+        "| Purpose | File | Status |",
+        "| --- | --- | --- |",
     ]
     lines.extend(table_row(row) for row in rows)
 

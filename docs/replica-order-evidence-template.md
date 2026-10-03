@@ -32,12 +32,12 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 PASS means a nonempty report contains an accepted status marker; it does
 not mean this generator reran its checks or closed its design risks.
 
-| Purpose | File | Bytes | Status |
-| --- | --- | ---: | --- |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5828 | FAIL |
-| Package geometry | `docs/replica-package-geometry-readiness.md` | 583 | FAIL |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3564 | FAIL |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20922 | FAIL |
+| Purpose | File | Status |
+| --- | --- | --- |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | FAIL |
+| Package geometry | `docs/replica-package-geometry-readiness.md` | FAIL |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | FAIL |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | FAIL |
 
 ## Vendor Options To Record
 

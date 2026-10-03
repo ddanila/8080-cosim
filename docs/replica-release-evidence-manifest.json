@@ -183,17 +183,17 @@
     },
     "Manufacturing": {
       "path": "docs/replica-manufacturing-readiness.md",
-      "sha256": "f1c6873009a64a31c5665be13a139e45e58a9c88b57c215852afeebf32e1935e",
+      "sha256": "d14cc6f0bf7a58f2f5d6a79d64d6077bb599aa062b3bf15f091007903a1331b1",
       "status": "DESIGN HOLD / PACKAGE REGENERATION REQUIRED"
     },
     "Upload procedure": {
       "path": "docs/replica-order-upload-runbook.md",
-      "sha256": "d98792ee4059d2fd91cadc0e2a31d847dc1b401fa2b5b106741da2ee79c034be",
+      "sha256": "b3c5a5f5c6303facd0a44a565d2e4b6838749f66a9933bf5e7d84755f7646114",
       "status": "PACKAGE INVALID"
     },
     "Order evidence": {
       "path": "docs/replica-order-evidence-template.md",
-      "sha256": "a5ca03674acfea6b109e2b515a591e11c71c5b89e61ed40724e62e4fa7190b6f",
+      "sha256": "5fbf7f35540928967e225bea17ee200b6d361e357596608fce3acdaff0b974f3",
       "status": "TEMPLATE INVALID"
     },
     "First article": {

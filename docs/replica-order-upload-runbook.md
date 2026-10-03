@@ -59,20 +59,20 @@ Here `PASS` means a nonempty file contains its configured text marker
 this table does not establish that every report is ready or its contents
 were freshly verified. Run the manufacturing gate for release checks.
 
-| Purpose | File | Bytes | Status |
-| --- | --- | ---: | --- |
-| Order readiness | `fab/gerbers/order-readiness.md` | 3406 | PASS |
-| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 2255 | FAIL |
-| Review waiver | `fab/gerbers/review-waivers.md` | 1967 | FAIL |
-| External Gerber review | `fab/gerbers/external-gerber-review.md` | 3259 | FAIL |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3564 | FAIL |
-| Package geometry | `docs/replica-package-geometry-readiness.md` | 583 | FAIL |
-| Power trace readiness | `docs/replica-power-trace-readiness.md` | 1396 | FAIL |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20922 | PASS |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 13738 | PASS |
-| Factory wire construction | `docs/factory-wire-route-fidelity.md` | 7488 | PASS |
-| Checksum file | `fab/gerbers/SHA256SUMS` | 0 | FAIL |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 4549 | PASS |
+| Purpose | File | Status |
+| --- | --- | --- |
+| Order readiness | `fab/gerbers/order-readiness.md` | PASS |
+| Fabrication readiness | `fab/gerbers/fab-readiness.md` | FAIL |
+| Review waiver | `fab/gerbers/review-waivers.md` | FAIL |
+| External Gerber review | `fab/gerbers/external-gerber-review.md` | FAIL |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | FAIL |
+| Package geometry | `docs/replica-package-geometry-readiness.md` | FAIL |
+| Power trace readiness | `docs/replica-power-trace-readiness.md` | FAIL |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | PASS |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | PASS |
+| Factory wire construction | `docs/factory-wire-route-fidelity.md` | PASS |
+| Checksum file | `fab/gerbers/SHA256SUMS` | FAIL |
+| Order evidence template | `docs/replica-order-evidence-template.md` | PASS |
 
 ## Order-Time Checks
 

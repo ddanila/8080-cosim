@@ -40,23 +40,23 @@ Those results do not authorize the current board or package.
 Rows check report presence and configured markers; PASS does not mean
 this generator reran every underlying design check.
 
-| Gate | Evidence | Bytes | Status |
-| --- | --- | ---: | --- |
-| Main-board ERC/parity | `docs/main-board-erc-parity.md` | 3658 | HOLD |
-| PPI orientation | `docs/ppi-orientation-audit.md` | 3863 | HOLD |
-| X8 electrolytic footprints | `docs/x8-electrolytic-footprint-audit.md` | 2709 | HOLD |
-| Order readiness | `fab/gerbers/order-readiness.md` | 3406 | HOLD |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5828 | FAIL |
-| Package geometry | `docs/replica-package-geometry-readiness.md` | 583 | FAIL |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3564 | FAIL |
-| Power trace readiness | `docs/replica-power-trace-readiness.md` | 1396 | FAIL |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20922 | HOLD |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 13738 | HOLD |
-| Factory wire construction | `docs/factory-wire-route-fidelity.md` | 7488 | HOLD |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 4549 | PASS |
-| External Gerber review | `fab/gerbers/external-gerber-review.md` | 3259 | FAIL |
-| Review waiver | `fab/gerbers/review-waivers.md` | 1967 | FAIL |
-| Fabrication readiness | `fab/gerbers/fab-readiness.md` | 2255 | FAIL |
+| Gate | Evidence | Status |
+| --- | --- | --- |
+| Main-board ERC/parity | `docs/main-board-erc-parity.md` | HOLD |
+| PPI orientation | `docs/ppi-orientation-audit.md` | HOLD |
+| X8 electrolytic footprints | `docs/x8-electrolytic-footprint-audit.md` | HOLD |
+| Order readiness | `fab/gerbers/order-readiness.md` | HOLD |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | FAIL |
+| Package geometry | `docs/replica-package-geometry-readiness.md` | FAIL |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | FAIL |
+| Power trace readiness | `docs/replica-power-trace-readiness.md` | FAIL |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | HOLD |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | HOLD |
+| Factory wire construction | `docs/factory-wire-route-fidelity.md` | HOLD |
+| Order evidence template | `docs/replica-order-evidence-template.md` | PASS |
+| External Gerber review | `fab/gerbers/external-gerber-review.md` | FAIL |
+| Review waiver | `fab/gerbers/review-waivers.md` | FAIL |
+| Fabrication readiness | `fab/gerbers/fab-readiness.md` | FAIL |
 
 ## Toolchain Provenance
 
