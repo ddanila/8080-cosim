@@ -83,7 +83,7 @@
     "path": "roms/ekta37.bin",
     "sha256": "fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27"
   },
-  "bom_csv_sha256": "9cf0a370c1915231aadf7bcbd4ae2d6ad751f181c6e3f0dbedebcd2c9dad67e7",
+  "bom_csv_sha256": "9ea0ef482148cd03658275ff9499b284553d488f6429fbb93e1c2ef9012c18d8",
   "unresolved_singleton_endpoints": 32,
   "reports": {
     "Fidelity": {
@@ -98,12 +98,12 @@
     },
     "BOM": {
       "path": "docs/replica-dual-config-bom.md",
-      "sha256": "c029169a177660dd7acb16cc8dcb60c587069071fa1a17828f8520d81963b0d4",
+      "sha256": "50b8c6919e2e7d2cfab37d27ed8fd67e358b510d7050b08a2c501d8bdd687552",
       "status": "NO STATUS FIELD"
     },
     "Sourcing": {
       "path": "docs/replica-sourcing-readiness.md",
-      "sha256": "d2c07432311c9961ca6aa674de767cb359db920741707c4abfd10ea03c75ae6b",
+      "sha256": "2ba1f8189b50c24bd704dd208517beb52d77f1b3cf59979b057b7d18f8614f19",
       "status": "PARTIAL / PROGRAMMING AND REVIEW BLOCKED"
     },
     "Firmware lineage": {

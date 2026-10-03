@@ -159,7 +159,7 @@ FUNCTIONAL_SUBSTITUTE = {
 
 TYPE_NOTES = {
     "DEC_PROM": "Contents remain a PROM-truth item: prefer Baltijets disk files or hardware dump before programming.",
-    "WAIT_PROM": "D2 uses the preservation-grade physical `.037` table from three matching reads, including a power-cycled capture.",
+    "WAIT_PROM": "D2 uses the preservation-grade physical `.037` table from six independent accepted acquisitions, including a power-cycled capture.",
     "RE3_PROM": "D8 `.039` content comes from the validated repeated physical table; the former reconstruction is superseded.",
     "RE3_PROM_092": "D94 `.092` content comes from the validated repeated physical table; complete strobe gating remains continuity-gated.",
     "EPROM8K": "Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets.",
