@@ -30,15 +30,12 @@ history.
   included improvement ledger, and remaining CP/M/physical gates.
 - `portable-c-host-plan.md` — subordinate implementation and qualification plan
   for a Linux-first portable C Janet/Fastboot/NetDisk/N4 host, an Open Watcom
-  Windows 95 build, headless Wine-to-simulator automation, and eventual
-  physical-COM validation.
+  Windows 95 build, headless Wine-to-simulator automation, and remaining physical-COM validation.
 - `portable-c-host-m0-contract.md` — frozen Python-era production modules,
   artifacts, wire vectors, and required C-host parity.
-- `portable-c-host-implementation.md` — milestone-by-milestone admitted C-host
-  code and verification.
+- `portable-c-host-implementation.md` — current C-host architecture, behavior and verification entry points.
 - `portable-c-host-m2-acceptance.md` — retained Linux parity comparison,
-  caller-retirement audit, CI identities, and the baseline for the M2.1-M2.3
-  CS00015/Pocket8086 gates before M3.
+  caller-retirement audit, CI identities, and the Linux behavioral baseline.
 - `portable-c-host-m2.1-physical-acceptance.md` — exact native-host identities,
   CS00015 cold/reconnect/reset matrix, raw captures, replay result, and the
   accepted physical baseline for the Pocket8086 comparison.

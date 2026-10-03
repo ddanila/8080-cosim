@@ -121,8 +121,7 @@ host is closed. Send this file when reporting a startup or Listen failure.
 If neither location can be written, the application displays an error.
 
 Listen failures include the Windows error number, description and C runtime
-error number. The Windows 95/98 worker now supplies the required thread-ID
-output and initializes the multithreaded C runtime.
+error number.
 
 Each run creates a distinct timestamped folder beneath the configured
 `logs` directory containing `JUKUHOST.LOG` and, by default, `JUKUHOST.CAP`.

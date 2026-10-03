@@ -68,9 +68,10 @@ Asserted contents:
 ```
 
 D94 differs from D8 at 25 of 32 addresses, confirming that the two locations
-carry distinct programs. The dump closes D94 content truth only: the board
-source of pin 15 and the far destinations or branches of outputs D3..D7 remain
-continuity boundaries.
+carry distinct programs. The dump establishes content identity. Exact `.009` drawings close CS7
+to D94.15/D93.3; owner continuity closes D3 to D93.2 and the other adopted
+control paths. D4–D7 are no-connects. D0’s hidden branch remains open; see
+[d94-reconstruction-constraints.md](d94-reconstruction-constraints.md).
 
 The retained serial transcripts, canonical binaries, hexadecimal views,
 validation manifests, and checksums are under `ref/physical-proms/`.

@@ -268,7 +268,7 @@ and `3a60561d0e5f8a8d8e9a1f1c355e503db5daeadec174b45380de732690c9bdf1`.
 Both AT28C64 writes passed their single built-in 8,192-byte verify with zero
 retries or late completions. The complete monitorless physical matrix and its
 remaining display boundary are recorded in
-[`../cpm-plus-juku/docs/cs00015-c6-blind-qualification-20260818.md`](../cpm-plus-juku/docs/cs00015-c6-blind-qualification-20260818.md).
+[`../cpm-plus-juku/docs/cs00015-c6-blind-qualification-20260818.md`](https://github.com/ddanila/cpm-plus-juku/blob/master/docs/cs00015-c6-blind-qualification-20260818.md).
 
 Later source review found a bounded limitation in the immutable fitted C6
 `JCGKEYRAW` implementation: the global active-low SHIFT/CTRL returns can make

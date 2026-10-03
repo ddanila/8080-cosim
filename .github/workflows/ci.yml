@@ -306,6 +306,12 @@ jobs:
         timeout-minutes: 5
         run: python3 tests/replica_order_readiness_test.py
 
+      - name: Check Markdown links
+        timeout-minutes: 5
+        run: |
+          python3 tests/markdown_check_test.py
+          python3 scripts/check_markdown.py
+
       - name: Check documentation consistency
         timeout-minutes: 5
         run: python3 scripts/check_documentation_consistency.py

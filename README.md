@@ -1,201 +1,37 @@
 # 8080-cosim
 
-Reconstruction of the Soviet/Estonian Juku E5104 processor board as both a
-physical PCB and a runnable, headless digital model. The project’s distinctive
-piece is an LVS-style check that compares the structural Verilog connectivity
-with the machine-readable board model.
+Reconstruction of the Soviet/Estonian Juku E5104 processor board as a physical
+PCB and a runnable digital model. Structural Verilog connectivity is checked
+against the machine-readable board model with LVS.
 
-## Current result
+## Current state
 
-- The C emulator and the structural `juku_top` model boot the real Juku ROM,
-  render the same framebuffer, accept keyboard input, boot EKDOS from the
-  vendored disk images, and reach disk BASIC `READY`. The deep value-level
-  guard `sync/cosim_check.sh` compares `juku_top`'s typed CPU-bus events against
-  the C emulator (`cosim`). The default trace covers memory and I/O reads and
-  writes; a focused interrupt-acknowledge differential separately verifies the
-  decoded `CD D4 FE` sequence. Instruction-level CPU and generated C/HDL FDC
-  differentials cover their declared input spaces. The deep run reaches
-  `BTRACE-END` without a type, address, or data divergence.
-- The C emulator also has an opt-in D11/8251 PTY transport for diagnostic-ROM
-  development. Its data/status mirrors, ready transitions, TX, and RX/echo are
-  guarded by `tests/cosim_usart_pty_test.py` via `sync/juk_disk_check.sh`.
-  The same transport now boots all five vendored CP/M/EKDOS system images,
-  plus an optional external image such as the CP/Mish Juku build,
-  through the stock interrupt-driven NetBios/Janet protocol. The parallel
-  `sync/janet_netboot_check.sh` guard reaches each byte-exact `CA00h` handoff.
-  The native `build/jukuhost` can then keep a diskless CP/Mish Juku attached to
-  a host-backed A: volume and optionally expose an unchanged native 800 KiB
-  Juku image as read-only B:. The archival stock bootstrap remains at nominal
-  9,600 baud. BAUDTEST2 found that the original 19,200 mode-3 clock shape fails
-  in the receive direction, then proved D57 mode 2/count 4 at 19,200/8O1;
-  sustained network-disk traffic subsequently passed on physical CS00014 and
-  CS00015. The Fastboot experiments let an unmodified stock ROM load one
-  compact record at 9,600 before that proven setting sends a fixed
-  CRC-protected ZX0 stream at 19,200. V1-V14 remain historical regression
-  fixtures; the portable C host now admits the final V15 format as one narrowly
-  bounded stock-ROM compatibility path. Repeated CS00015 work measured three
-  clean v12 boots at
-  5.739-5.740 seconds to the first disk request. V13 made both `A5 3A` and `JZ`
-  handoffs overlap-safe and explicitly acknowledged; five of five physical
-  boots succeeded, but four first streams still needed a CRC retry. The current
-  v14 desk candidate removes that last timing dependency: it receives and
-  authenticates the entire 4826-byte stream before ZX0 decode. Its clean,
-  corruption/loss, partial-header, 3.4 MHz, prompt, and network `DIR` cosim
-  matrix passes. A one-shot RxRDY IRQ delay reproduces a V13 retry but leaves
-  V14 retry-free. Three physical CS00015 runs then completed at 6.069-6.115 s
-  with zero retries, including two runs that needed a second extension-header
-  probe. V14 is now the frozen production fastboot baseline; marginal timing
-  gains alone do not justify another variant. The experimental V15 reuses that
-  deterministic transport for CP/Mish's 51K all-RAM BIOS: the host validates a
-  self-describing `JUKURM1` container, the simulator boots its 8,320-byte
-  resident image at `B000h`, types `DIR` through the RAM matrix scanner, and
-  verifies framebuffer output, 35 NetDisk-v2 reads, mode 3, and a fully masked
-  PIC. The separately named RAM-BIOS/NetDisk-v3 payload adds CRC-protected
-  three-record read-ahead with bounded raw/fill/deleted/prefix encodings. Its
-  full stock-Janet-to-`DIR` path takes 12 disk exchanges instead of 35; cosim
-  also proves one corrupted-response retry, negotiated v2/v1 fallback, and a
-  complete host-loss recovery: three missing replies produce a bounded CP/M
-  disk error, after which restored replies serve a fresh `TYPE README.TXT`
-  without a target restart. Explicit N4 negotiation also provides a dual
-  local/remote console:
-  simulator runs type `VER` remotely and `DIR` locally with byte-identical
-  transcripts, including automatic disable/backoff/reconnect after a lost
-  console reply. N3 remains disk-only by default.
-  The separately versioned EktaSoft `ekta4402` ROM adds `N fastboot`: its
-  pinned 128-byte V15 core begins directly at 19,200/8N1, skipping Janet
-  discovery and the complete 9,600-baud stock stage. A ROM-level simulator
-  guard proves the checked extension handoff and execution; CP/Mish then
-  reaches `A>` and completes NetDisk-v3 `DIR` with zero stock frames.
-  The same direct V15 transport boots the separately maintained
-  [`cpm-plus-juku`](https://github.com/ddanila/cpm-plus-juku) non-banked
-  CP/M Plus 3.1 baseline at `7000h`: its standard SCB-linked RAM BIOS reaches
-  `A>`, performs NetDisk-v3 `DIR`, and loads the shared `DIAG CPU` transient.
-  CP/M Plus owns that system's sources, images, and regression; this repo owns
-  the machine model, ROM, and host transport. A first CS00015 bench run exposed
-  target-turnaround, queued-host-guard, and stale-PIC failures. Physical-time
-  cosim now reproduces each through the real legacy code path; corrected direct
-  and stock boots pass `A>`, `DIR`, and `DIAG CPU` with zero retries and zero
-  modeled overruns. On physical CS00015, manually retaining the corrected
-  19,200-baud disk server recovered the already-started system to `A>`, then
-  passed `DIR` and the full `DIAG`; this qualifies the resident disk fix. The
-  retired Python stock-`TN` wrapper could miss the delayed V15 core and fall
-  back to 9,600. A CS00000 run proved the already-loaded core was alive by
-  attaching directly at 19,200 without RESET. The C host now fixes that
-  host-side defect: it validates only exact JF15 artifacts, learns any valid
-  Janet identity, adapts its stock line-turn guard only when the client resumes
-  polling, and probes the delayed core until the configured boot deadline.
-  Ekta4402 was then fitted in
-  CS00015: direct `N` boot reached CP/M Plus, NetDisk-v3 and N4; three
-  automatic C4 boots reach disk service in 6.068--6.070 seconds, and live host
-  replacement recovers `DIR` without RESET. A traced false failure proved that
-  eager PTY input had been flushed by host raw-mode setup while Juku continued
-  valid polls; readiness synchronization now prevents it. The inherited `J`
-  API-v2 service passes PROBE, refresh query and READ with zero transport
-  mismatch. On 2026-08-18 the exact ABI 1.2 C6 pair replaced Ekta4402 in
-  CS00015 and passed repeated automatic 19,200-baud V16 boot, A:/B:, full
-  diagnostics, local keyboard, ROM sound, writes, warm boot, soak, delayed-host
-  recovery, and two live host replacements. The later ABI 1.3 C8 pair is now
-  fitted and passed the same blind qualification plus native macOS service.
-  The separately named ABI 1.4 C9 candidate adds bounded resident-host
-  transactions and failure/negotiation telemetry, reserves S21 bit 0 for
-  unconditional network boot, and passes the C-model, structural HDL, CP/M,
-  native-host replacement, and `vc8080` N4 gates. Its CS00000 evaluation
-  proved a PC7/POF blank-video defect. The separately named C10 candidate
-  applies the stock-compatible POF release, adds full Port-C/visible-frame
-  regressions and direct diagnostics, and has passed all desk, HDL, CP/M,
-  native-host, and reproducible-package gates. Its D15/D16 pair is ready to
-  program; local-video and full physical acceptance remain pending, with the
-  known-good EKTA3.7 pair retained as rollback.
-  A two-machine display control then isolated CS00015's remaining blank screen
-  after CPU-visible framebuffer storage; the same corrected raw pattern is
-  visible on CS00014. C6 remains immutable. Ekta4401, Ekta4402,
-  and V14 remain frozen historical baselines. The original stock Janet path is
-  unchanged as fallback.
-- The sole production network host is portable C. Its native-Linux M2 build is
-  physically qualified on CS00015, and the M2.2 desk port now builds the same
-  core as a reproducible 16-bit Open Watcom DOS executable for Pocket8086.
-  The actual EXE passes headless DOSBox-X at stock Janet 9,600 baud and C8
-  Fastboot/NetDisk/N4 at 19,200 baud through emulated COM1. Images remain
-  file-backed and the Pocket package runs with no options. Physical
-  Pocket8086/CS00015 qualification is the remaining M2.3 gate before Win32.
-  The newer stock recovery profile keeps its accelerated JF17 bootstrap and
-  NetDisk at 9,600/8O1, allowing the same listening host to distinguish Janet
-  from checked NetDisk traffic and reboot CP/M automatically after a stock-ROM
-  reset. C11/C12 remain at 19,200.
-- `sync/check.sh` reports no KiCad/HDL connectivity mismatch within its declared
-  scope.
-- The promoted routed main-board artifact exactly matches the live source.
-  Stable KiCad reports no opens, electrical blockers, or dangling tracks or
-  vias. The accepted D57.18 `VERT_RTR` correction is now routed in both PCBs;
-  full board-model endpoint coverage and source/routed pad parity pass. The
-  tracked Gerber/drill report verifies the older board hash, and the ignored
-  `fab/gerbers` tree and upload ZIP are absent in this checkout. The corrected
-  PCB needs a fresh package and independent review before release. The current
-  route correction is recorded in `ref/routing/d57-clock-correction.json`;
-  earlier topology and package snapshots remain in
-  `ref/routing/zero-open-promoted-topology.json` and
-  `ref/routing/zero-open-fabrication-package.json`. Fabrication/release
-  gates are summarized in `docs/replica-manufacturing-readiness.md`.
-  The separately preserved candidate is audit history, not the promoted board.
-- The main board is **not released for fabrication**. Validated physical D2
-  `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are preserved from
-  repeated reads across two `.009` boards; the measured D2/D30/D105 and
-  D6/D13 continuity is adopted in the source model, HDL, and promoted route.
-  D94 content truth and all five A0-A4 sources are owner-closed. D1-D3 reach
-  D99/D93 with their measured pull-ups, while D4-D7 are owner/drawing-closed
-  no-connects. The remaining D94 boundaries are the upstream source beyond the
-  local pin15/D93.3 enable conductor and whether D0/pin1 has a hidden load
-  beyond R8; the former BA11-BA15 input assignment was an unproved scaffold
-  analogy and is retired. There are 4 official FDC-support ICs whose
-  functional pin closure is still incomplete.
-  Recovered sheet 3 closes D106 completely: its R78 preset pull-up, RAW READ
-  load, D95 recovery clock, grounded clear, Q3 output, and five no-connects are
-  now source-modeled and LVS-visible; R78 value/placement stays unresolved.
-  Sheet 3 also closes D96's section-1 divide-by-two read-clock wiring. Primary
-  device truth shows that WREQ asserts `/CLR1` and `/PRE1` together, producing
-  Q1=/Q1=high and leaving restart phase undefined; `/Q` feedback still divides
-  after release. A full-resolution reread restores D96 section 2 plus D28
-  sections 5/6 and R93/R95 as the local DRQ/INTRQ path. A closer sheet-3
-  re-read joins D96.13 `/CLR2` to D99.10 `B2` and a sheet-1 continuation;
-  overlapping sheet-3 details also join D99.11 `/CLR2` to `MOTOR EN`.
-  D99.5 Q2 drives D100.7 A7 and its `-MOTOR ON` X4 output, while D99.12
-  Q2_N separately controls D100.9 OE_N; the former direct D26-to-D100.7
-  path was removed from the replica model.
-  the separately proved pin-8 test landing is retained. Primary SN74LS74A
-  truth makes the shared `/PRE2`/D2 wiring set-only while `/CLR2` is inactive.
-  D96.9-to-D101 A0–A3 continuity, D96.11-to-D94.2 continuity, and the shared D96.13/D99.10 remote source remain verification gates.
-  The source-closed D97/D102 delay cascade and D101 write-precompensation mux
-  are also now structural and LVS-visible. Their recovered digital conductors
-  are proved without assigning analog timing to the still-incomplete C16/C19
-  markings or hiding D101.1/.3/.5/.6 behind simulation defaults.
-  Source-closed D28 and D98 are likewise structural and LVS-visible, including
-  all six D28 open-collector inverters, the five used D98 buffers, and the
-  exact-revision omission of D98 buffer pair 4.
-  The exact-revision sheet makes D97.13, D98.9/.10, and D102.4 intentional
-  no-connects, leaving D96, D99, D100, and D101 with open support-device functional pins.
-  The measured D105 DBIN/H and MEMW paths are modeled in the source PCB and HDL;
-  D6's validated physical table drives runnable memory selection directly and
-  its chip-removed separate ROM/RAM outputs stay LVS-visible; the old functional
-  decoder remains only as a non-LVS diagnostic comparison.
-  A focused diagnostic now proves all eight physical modes leave D6.9 high at
-  the `B37A` RAM-output failure, excluding mode selection and V1/V2 as causes
-  across every raw A7..A5 row. Chip-removed continuity proves D6.12->D8.15
-  and isolates D6.11 from D6.12, invalidating the earlier installed-PROM join.
-  The report
-  records the retired reader-order fault and the measurements that closed it;
-  the promoted route carries the corrected topology with exact source parity.
-  D30 READY sections A/B are modeled; owner continuity closes pin 8 to D29.7
-  and pin 11 to the D105.2/D13.4/D11.20 clock conductor. Native sheet 1 plus
-  the `.009` drawing and owner photo now close `H` as X1.107B/-BLOCK with its
-  R1 2 kΩ pull-up. D7's physical SYNC/feedback strobe is
-  preserved structurally while simulation uses a zero-delay-safe I/O activity oracle.
-  In total, 55 modeled nets retain source-risk annotations requiring
-  evidence or explicit redesign.
-  See [PLAN.md](PLAN.md).
+The C emulator and structural `juku_top` boot the real ROM, produce matching
+framebuffers, accept keyboard input, boot the vendored EKDOS images and reach
+disk BASIC `READY`. CPU, FDC, serial and subsystem guards cover their declared
+inputs; the deep cosim guard compares typed CPU-bus events against the C oracle.
 
-That last distinction matters: a clean DRC and a green LVS prove only the
-connectivity represented in those checks. They do not prove omitted pins,
-unmodeled footprints, reconstructed PROM contents, or analog/timing assumptions.
+The production network host is portable C. Linux/macOS, DOS and the Windows
+GUI share its core; Janet, Fastboot, NetDisk, N4, snapshots, journals and reset
+recovery are implemented. See the [host contract](docs/portable-c-host-plan.md)
+and [Windows guide](docs/windows-jukuhost-client.md) for platform qualification
+and the latest build.
+
+The physical board is on **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**.
+Hidden or conflicting source paths, physical placement, routed copper and
+parts decisions remain. The evidence archive is a review package, and the
+current Gerber/drill upload ZIP is absent. The
+[manufacturing report](docs/replica-manufacturing-readiness.md) owns release
+status; [PLAN.md](PLAN.md) lists the remaining work.
+
+The physical shared-DRAM/video slot schedule is not complete. The runnable
+framebuffer readout is an abstract oracle, not a proved VIDEO_OUT voltage
+waveform. Green behavioral CI and LVS do not establish physical authenticity.
+
+The independent spin-offs are [Jukuravi](spinoffs/jukuravi/README.md),
+[VJUGA](spinoffs/minimal-vga/README.md) and
+[JukuPoly](spinoffs/jukupoly/README.md). Their physical results and release
+criteria are separate from the replica main board.
 
 ## Network boot demonstrations
 

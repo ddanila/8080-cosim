@@ -19,17 +19,17 @@ represented as explicit assembly wires between split copper islands.
 - Paired A-point landing terminals modeled: `14/20`
 - Photo-confirmed modeled landing relocations still required: `W7.1, W14.1`
 - Promoted/source pad identities equal: `FAIL`
-- Promoted/source pad-net mismatches: `0`
+- Promoted/source pad-net mismatches: `3`
 - Promoted/source moved pads (>50 nm): `210`
 - Explicit assembly-wire island splits: `7/10`
 - Same-net copper substitutions still held: `3/10`
-- Promoted DRC unconnected items: `56`
+- Promoted DRC unconnected items: `59`
 - Historical pre-promotion candidate audit:
   - Candidate/source pad identities equal: `FAIL`
-  - Candidate/source pad-net mismatches: `0`
+  - Candidate/source pad-net mismatches: `3`
   - Candidate/source moved pads (>50 nm): `210`
   - Link nets carrying historical candidate copper: `9/10`
-  - Historical candidate DRC unconnected items: `56`
+  - Historical candidate DRC unconnected items: `59`
 - Required release state: twenty registered and modeled landing terminals,
   ten split island pairs, ten explicit assembly-wire closures, exact source
   parity, and zero electrical/unconnected DRC findings.

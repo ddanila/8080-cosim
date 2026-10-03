@@ -106,7 +106,6 @@ GROUPS = {
 # continuation text remains evidence/context, not task identity.
 CLASSIFICATIONS = {
     ("PLAN.md", "P0 physical connectivity is complete and rerouted."): "connectivity",
-    ("PLAN.md", "Independent reads from two `.009` boards corroborate the four adopted"): "firmware",
     ("PLAN.md", "Main-board design release passes; board is ordered."): "release",
     ("PLAN.md", "Functional parts kit is received and tested."): "parts",
     ("PLAN.md", "Replica completes Tier 1 bring-up."): "bringup",
@@ -123,7 +122,7 @@ def rel(path: Path) -> str:
 
 def markdown_files() -> list[Path]:
     tracked = subprocess.run(
-        ["git", "ls-files", "--", "*.md"],
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", "--", "*.md"],
         cwd=ROOT,
         text=True,
         stdout=subprocess.PIPE,
@@ -133,8 +132,10 @@ def markdown_files() -> list[Path]:
     for relative in tracked:
         if relative.startswith((".git/", "external/")) or relative in TEMPLATES:
             continue
-        files.append(ROOT / relative)
-    return sorted(files)
+        path = ROOT / relative
+        if path.is_file():
+            files.append(path)
+    return sorted(set(files))
 
 
 def task_states() -> dict[tuple[str, str], str]:

@@ -15,8 +15,7 @@ manual `full` HDL runs mean **all bounded CI lanes**, not every local test.
 
 - Network ROM: CI retains the complete fast cosim ABI/fault matrix, elaborates
   both structural ROM testbenches, and executes the focused video POF guard.
-  The complete firmware/ABI/NetDisk structural matrix took 25m48s in run
-  `33953312773`; run it locally with
+  Run the complete firmware/ABI/NetDisk structural matrix locally with
   `bash sync/network_first_rom_hdl_check.sh` (without `--ci`).
 - Rev B TTL boot: CI retains the default 400-write framebuffer comparison
   against cosim. It took roughly seven minutes, so it has the sole eight-minute
@@ -37,7 +36,3 @@ When a bounded check outgrows its budget, inspect step timings first. Split
 independent checks or add a meaningful, explicitly labelled smoke profile;
 keep the full local command and assertions intact. Do not raise the deadline
 or accept a timed-out simulation as successful.
-
-The September 2026 failures also exposed a missing JukuPoly PCM manifest entry
-and a missing `cpmtools` installation. Both are covered by the corrected
-workflow; manifest validation now runs in generic CI even when HDL is skipped.

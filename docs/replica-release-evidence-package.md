@@ -44,7 +44,7 @@ tracked DRC disposition count.
 | [ERC and parity](main-board-erc-parity.md) | DESIGN HOLD | `ab316a921c35c8300c56de9b7e76344c7f47d6d43d40a8640788669e8b7f09da` |
 | [PPI orientation](ppi-orientation-audit.md) | HOLD | `e3e22d3e94cbbf2bf4c75f610338b5631312d8634abd5d00512db0528bd28816` |
 | [X8 electrolytic geometry](x8-electrolytic-footprint-audit.md) | HOLD | `afbb3c4431913177cb430fb68711001604b7fc8179793b5a8c8d93ac4fa8ba9a` |
-| [Factory wire construction](factory-wire-route-fidelity.md) | FACTORY WIRE LANDING EVIDENCE HOLD | `e91d8438bb044daf10cb01517be646b96ac6d039f4e9d4e43ced9a9f9ffc2514` |
+| [Factory wire construction](factory-wire-route-fidelity.md) | FACTORY WIRE LANDING EVIDENCE HOLD | `b5693bb43ff986af53de62347a9914909370809917c4ac765b20784eec778d0a` |
 | [DRC disposition](replica-fab-drc-disposition.md) | REVIEW REQUIRED | `bfe1e8724791b195ddcefe577ebcc65163b5aea8d9ba5ad84f79236094be86b3` |
 | [Power trace](replica-power-trace-readiness.md) | NOT READY | `69d0d9265a712e2cc0280ef337b9a67043d5b8bfb067289e75923c0c059cc2c1` |
 | [Package geometry](replica-package-geometry-readiness.md) | READY | `5dc3277b3ea24511eabebc5a676bc235bf4d01198fc12e24b07d8d7503449aba` |

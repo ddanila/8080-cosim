@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Guard public status in both a working tree and a clean Git checkout.
 
-The fabrication tree is intentionally ignored.  Tracked status/checksum records
-must therefore be internally consistent without it; byte-level main-board package
-and order-report checks are added when the local ``fab/gerbers`` tree is available.
-Other projects may keep independent artifacts elsewhere under ``fab``.
+Public summaries link to canonical reports instead of duplicating their counts,
+checksums and experiment timelines. Source records, report identity and release
+holds remain guarded here. Review artifacts under fab/gerbers are tracked; a
+complete fabrication upload package is verified separately when present.
 """
 
 from __future__ import annotations
@@ -40,6 +40,17 @@ def sha256(path: Path) -> str:
 
 def main() -> int:
     failures: list[str] = []
+    # Keep concise public documents connected to the reports that own the facts.
+    public_references = {
+        "README.md": ("docs/replica-manufacturing-readiness.md", "docs/portable-c-host-plan.md", "PLAN.md"),
+        "PLAN.md": ("docs/owner-measurement-shortlist.md", "docs/board-fidelity-gap-ledger.md",
+                    "docs/replica-manufacturing-readiness.md", "docs/routed-refresh-audit.md"),
+        "docs/routed-refresh-audit.md": ("factory-wire-route-fidelity.md", "kicad/check_replica_manufacturing_ready.sh"),
+    }
+    for path, references in public_references.items():
+        for reference in references:
+            if reference not in read(path):
+                failures.append(f"{path} omits canonical reference {reference}")
     core = {
         "README.md": read("README.md"),
         "PLAN.md": read("PLAN.md"),
@@ -125,15 +136,6 @@ def main() -> int:
         for expected in expected_photo_markers:
             if expected not in photo_doc:
                 failures.append(f"photo-registration summary is stale; missing {expected!r}")
-        plan = core["PLAN.md"]
-        for expected in (
-            f"{len(photo_rows)} observations have dispositions",
-            f"{state_counts['accepted']} rows are accepted evidence",
-            f"other {state_counts['measurement']} remain",
-        ):
-            if expected not in plan:
-                failures.append(f"PLAN photo-evidence totals are stale; missing {expected!r}")
-
     # Byte-level truth for all four board PROMs is now physical evidence, not a
     # reconstruction TODO. Guard both the artifacts and the legacy provenance
     # notes that previously called those dumps absent/open. Circuit adoption is
@@ -194,8 +196,6 @@ def main() -> int:
                 failures.append(f"{path} retains stale D6 runnable-path claim: {phrase!r}")
 
     plan_text = read("PLAN.md")
-    if "- [x] Runnable boot executes from all four physical PROM tables" not in plan_text:
-        failures.append("PLAN does not record the completed all-physical-PROM runnable milestone")
     if "The runnable boot does not yet execute from all four physical tables" in plan_text:
         failures.append("PLAN retains the stale all-physical-PROM adoption hold")
     firmware_ledger = read("docs/firmware-gap-ledger.md")
@@ -461,7 +461,7 @@ def main() -> int:
         if package_evidence.get("board_sha256") != sha256(ROOT / "kicad/juku_routed.kicad_pcb"):
             failures.append("local fabrication ZIP belongs to a historical routed board")
         digest = sha256(upload_zip)
-        for path in ("README.md", "PLAN.md", "docs/replica-manufacturing-readiness.md"):
+        for path in ("docs/replica-manufacturing-readiness.md",):
             if digest not in read(path):
                 failures.append(f"{path} does not contain current upload ZIP SHA256 {digest}")
         package_upload = package_evidence.get("upload_zip", {})
@@ -574,24 +574,7 @@ def main() -> int:
     cosim_runtime = read("docs/cosim-runtime-reference.md")
     fdc_readiness = read("docs/fdc-readiness.md")
     hdl_readme = read("hdl/README.md")
-    plan_status_match = re.search(
-        r"^Status date: \*\*(\d{4}-\d{2}-\d{2})\*\*\.$",
-        plan,
-        re.MULTILINE,
-    )
-    if not plan_status_match:
-        failures.append("PLAN status date is missing or malformed")
-    elif plan_status_match.group(1) < "2026-08-09":
-        failures.append("PLAN status date is older than the D55 diagnostic audit")
-    if not re.search(
-        r"(?:old\s+D55\s+predicate\s+invalidated|invalidated\s+(?:the\s+)?old\s+D55\s+predicate)",
-        plan,
-        re.IGNORECASE,
-    ):
-        failures.append("PLAN Jukuravi dashboard omits the invalidated old D55 predicate")
-
     august_markers = (
-        (plan, "Until new `MAIN-P0` measurements are accepted", "PLAN lost the physical-fidelity edit hold"),
         (jukuravi_readme, "completed serial-only T33 investigation", "Jukuravi README still presents T33 as future work"),
         (t33_plan, "Status: **COMPLETED 2026-08-05; no re-burn was required**", "T33 completion marker is missing"),
         (t33_plan, "Hardware repair confirmation — completed 2026-08-06", "T33 still presents the completed D1 repair as future work"),
@@ -646,13 +629,6 @@ def main() -> int:
     ):
         if stale in plan:
             failures.append(f"PLAN retains stale D6 topology/mode claim: {stale!r}")
-    for required in (
-        "revision-3 captures and the direct full-boot comparison",
-        "boot firmware observes A6/A5 suffixes `11` and `10`",
-    ):
-        if required not in plan:
-            failures.append(f"PLAN omits current guarded D6 evidence: {required!r}")
-
     d26 = next((chip for chip in board_model.get("chips", []) if chip.get("ref") == "D26"), {})
     d26_provenance = d26.get("prov", {}).get("pins", "")
     if not all(
@@ -707,16 +683,6 @@ def main() -> int:
     unmodeled_count = None
     if unmodeled_count_match:
         unmodeled_count = int(unmodeled_count_match.group(1))
-        if unmodeled_count and not re.search(
-            rf"{unmodeled_count}\s+official\s+FDC-support\s+ICs",
-            core["README.md"],
-        ):
-            failures.append("README does not expose the current untraced FDC-device count")
-        if unmodeled_count and not re.search(
-            rf"{unmodeled_count}\s+official\s+FDC-support\s+devices",
-            hdl_readme,
-        ):
-            failures.append("HDL README does not expose the current untraced FDC-device count")
     if unmodeled_count == len(expected_unmodeled):
         for ref in expected_unmodeled:
             if f"| `{ref}` |" not in unmodeled:
@@ -730,11 +696,6 @@ def main() -> int:
         evidence["source-risk nets"],
     ):
         failures.append("bring-up checklist exposes a stale untraced FDC-device count")
-    if unmodeled_count and not re.search(
-        rf"`unmodeled-footprint-inventory\.md` \({unmodeled_count} FDC devices\)",
-        read("PLAN.md"),
-    ):
-        failures.append("PLAN active-report index exposes a stale untraced FDC-device count")
     if unmodeled_count:
         for path in (
             "docs/community-prom-media-request.md",
@@ -815,12 +776,7 @@ def main() -> int:
         for name, net in closed_overrides:
             if not str(net.get("risk_disposition", "")).strip():
                 failures.append(f"{name} has source_risk=false without a disposition")
-        if risk_count and not re.search(
-            rf"{risk_count}\s+modeled\s+nets retain source-risk annotations",
-            core["README.md"],
-        ):
-            failures.append("README does not expose the current residual source-risk net count")
-        for path in ("PLAN.md", "hdl/README.md"):
+        for path in ("hdl/README.md",):
             if not re.search(rf"\b{risk_count}\b[^\n]*source-risk", read(path)):
                 failures.append(f"{path} does not expose the current residual source-risk net count")
 
@@ -830,30 +786,16 @@ def main() -> int:
     )
     if not endpoint_match:
         failures.append("bring-up checklist is missing the source-PCB endpoint count")
-    else:
-        endpoint_count = int(endpoint_match.group(1))
-        if not re.search(
-            rf"all {endpoint_count}/{endpoint_count}\s+PCB-scoped board-JSON endpoints",
-            core["PLAN.md"],
-        ):
-            failures.append("PLAN exposes a stale source-PCB endpoint count")
     excluded_match = re.search(
         r"Intentional non-PCB or placement-pending endpoints excluded: `(\d+)`",
         evidence["source-risk nets"],
     )
     if not excluded_match:
         failures.append("bring-up checklist is missing the excluded endpoint count")
-    else:
-        excluded_count = int(excluded_match.group(1))
-        if not re.search(
-            rf"with {excluded_count} non-PCB or placement-held\s+endpoints intentionally excluded",
-            core["PLAN.md"],
-        ):
-            failures.append("PLAN exposes a stale excluded endpoint count")
 
     # The preserved zero-open routing candidate intentionally drifts from the
     # current source. Its generated factory-wire report owns those counts; keep
-    # the public summaries and routed-refresh narrative synchronized with it.
+    # the canonical drift fields present without duplicating them in plans.
     candidate_net_match = re.search(
         r"Candidate/source pad-net mismatches: `(\d+)`",
         evidence["factory wire routing"],
@@ -864,18 +806,6 @@ def main() -> int:
     )
     if not candidate_net_match or not candidate_moved_match:
         failures.append("factory-wire report omits candidate/source drift counts")
-    else:
-        candidate_net_count = int(candidate_net_match.group(1))
-        candidate_moved_count = int(candidate_moved_match.group(1))
-        routed_refresh = read("docs/routed-refresh-audit.md")
-        if not re.search(
-            rf"finds {candidate_net_count} changed pad-net assignments? and "
-            rf"{candidate_moved_count} pads",
-            routed_refresh,
-        ):
-            failures.append(
-                "routed-refresh post-checkpoint drift counts disagree with factory-wire report"
-            )
 
     routing_exhaustion_path = ROOT / "ref/routing/current23-grid01125-exhaustion.json"
     if not routing_exhaustion_path.exists():
@@ -901,9 +831,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"routing-exhaustion tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current23-grid01125-exhaustion.json" not in read(path):
-                failures.append(f"{path} omits the current routing-exhaustion evidence")
 
     edge_phase_path = ROOT / "ref/routing/current23-grid-edge-phase-exhaustion.json"
     if not edge_phase_path.exists():
@@ -930,9 +857,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"edge-phase routing tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current23-grid-edge-phase-exhaustion.json" not in read(path):
-                failures.append(f"{path} omits the edge-phase routing evidence")
 
     csd57_path = ROOT / "ref/routing/current23-cs-d57-transaction.json"
     if not csd57_path.exists():
@@ -961,9 +885,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"CS_D57 transaction tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current23-cs-d57-transaction.json" not in read(path):
-                failures.append(f"{path} omits the CS_D57 transaction evidence")
 
     live_salvage_path = ROOT / "ref/routing/current-source-salvage-baseline.json"
     if not live_salvage_path.exists():
@@ -996,9 +917,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"current-source salvage tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current-source-salvage-baseline.json" not in read(path):
-                failures.append(f"{path} omits the current-source salvage baseline")
 
     live_prune_path = ROOT / "ref/routing/current-source-uncapped-prune.json"
     if not live_prune_path.exists():
@@ -1049,9 +967,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"current-source uncapped-prune tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current-source-uncapped-prune.json" not in read(path):
-                failures.append(f"{path} omits the current-source uncapped-prune evidence")
 
     residual_path = ROOT / "ref/routing/current9-residual-topology.json"
     if not residual_path.exists():
@@ -1076,9 +991,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"nine-open residual tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current9-residual-topology.json" not in read(path):
-                failures.append(f"{path} omits the nine-open residual evidence")
 
     current7_path = ROOT / "ref/routing/current7-residual-topology.json"
     if not current7_path.exists():
@@ -1109,9 +1021,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"seven-open residual tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current7-residual-topology.json" not in read(path):
-                failures.append(f"{path} omits the seven-open residual evidence")
 
     current6_path = ROOT / "ref/routing/current6-residual-topology.json"
     if not current6_path.exists():
@@ -1140,9 +1049,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"six-open residual tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current6-residual-topology.json" not in read(path):
-                failures.append(f"{path} omits the six-open residual evidence")
 
     current5_path = ROOT / "ref/routing/current5-residual-topology.json"
     if not current5_path.exists():
@@ -1171,9 +1077,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"five-open residual tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current5-residual-topology.json" not in read(path):
-                failures.append(f"{path} omits the five-open residual evidence")
 
     current4_path = ROOT / "ref/routing/current4-residual-topology.json"
     if not current4_path.exists():
@@ -1202,9 +1105,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"four-open residual tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current4-residual-topology.json" not in read(path):
-                failures.append(f"{path} omits the four-open residual evidence")
 
     current3_path = ROOT / "ref/routing/current3-residual-topology.json"
     if not current3_path.exists():
@@ -1233,9 +1133,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"three-open residual tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current3-residual-topology.json" not in read(path):
-                failures.append(f"{path} omits the three-open residual evidence")
 
     current2_path = ROOT / "ref/routing/current2-residual-topology.json"
     if not current2_path.exists():
@@ -1264,9 +1161,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"two-open residual tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current2-residual-topology.json" not in read(path):
-                failures.append(f"{path} omits the two-open residual evidence")
 
     current1_path = ROOT / "ref/routing/current1-residual-topology.json"
     if not current1_path.exists():
@@ -1293,9 +1187,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"one-open residual tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current1-residual-topology.json" not in read(path):
-                failures.append(f"{path} omits the one-open residual evidence")
 
     rom_recovery_path = ROOT / "ref/routing/rom-closed-recovery-checkpoint.json"
     if not rom_recovery_path.exists():
@@ -1316,9 +1207,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"ROM recovery tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "rom-closed-recovery-checkpoint.json" not in read(path):
-                failures.append(f"{path} omits the ROM-closed recovery checkpoint")
 
     rom_two_path = ROOT / "ref/routing/rom-closed-two-residual-checkpoint.json"
     if not rom_two_path.exists():
@@ -1340,9 +1228,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"ROM two-residual tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "rom-closed-two-residual-checkpoint.json" not in read(path):
-                failures.append(f"{path} omits the ROM-closed two-residual checkpoint")
 
     rom_one_path = ROOT / "ref/routing/rom-closed-one-residual-checkpoint.json"
     if not rom_one_path.exists():
@@ -1364,9 +1249,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"ROM one-residual tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "rom-closed-one-residual-checkpoint.json" not in read(path):
-                failures.append(f"{path} omits the ROM-closed one-residual checkpoint")
 
     zero_path = ROOT / "ref/routing/zero-open-promoted-topology.json"
     if not zero_path.exists():
@@ -1391,9 +1273,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"zero-open promotion tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "zero-open-promoted-topology.json" not in read(path):
-                failures.append(f"{path} omits the zero-open promotion evidence")
 
     d57_path = ROOT / "ref/routing/d57-clock-correction.json"
     if not d57_path.exists():
@@ -1434,7 +1313,7 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"D57 clock correction tool hash changed: {relative}")
-        for path in ("README.md", "PLAN.md", "docs/cs00024-t36-diagnosis.md"):
+        for path in ("docs/cs00024-t36-diagnosis.md",):
             if "d57-clock-correction.json" not in read(path):
                 failures.append(f"{path} omits the D57 clock correction evidence")
 
@@ -1464,9 +1343,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"dangling-prune tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-dangling-prune.json" not in read(path):
-                failures.append(f"{path} omits the dangling-prune evidence")
 
     deep_prune_path = ROOT / "ref/routing/current21-deep-dangling-prune.json"
     if not deep_prune_path.exists():
@@ -1502,9 +1378,6 @@ def main() -> int:
             tool_path = ROOT / relative
             if not tool_path.is_file() or sha256(tool_path) != expected:
                 failures.append(f"deep-prune sweep tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-deep-dangling-prune.json" not in read(path):
-                failures.append(f"{path} omits the deep dangling-prune evidence")
 
     fine_prune_path = ROOT / "ref/routing/current21-fine-dangling-prune.json"
     if not fine_prune_path.exists():
@@ -1537,9 +1410,6 @@ def main() -> int:
                 tool_path = ROOT / relative
                 if not tool_path.is_file() or sha256(tool_path) != expected:
                     failures.append(f"fine-prune tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-fine-dangling-prune.json" not in read(path):
-                failures.append(f"{path} omits the fine dangling-prune evidence")
 
     twoitem_path = ROOT / "ref/routing/current21-twoitem-dangling-prune.json"
     if not twoitem_path.exists():
@@ -1572,9 +1442,6 @@ def main() -> int:
                 tool_path = ROOT / relative
                 if not tool_path.is_file() or sha256(tool_path) != expected:
                     failures.append(f"two-item-prune tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-twoitem-dangling-prune.json" not in read(path):
-                failures.append(f"{path} omits the two-item dangling-prune evidence")
 
     eleven_path = ROOT / "ref/routing/current21-eleven-tail-prune.json"
     if not eleven_path.exists():
@@ -1607,9 +1474,6 @@ def main() -> int:
                 tool_path = ROOT / relative
                 if not tool_path.is_file() or sha256(tool_path) != expected:
                     failures.append(f"eleven-tail-prune tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-eleven-tail-prune.json" not in read(path):
-                failures.append(f"{path} omits the eleven-tail dangling-prune evidence")
 
     ten_path = ROOT / "ref/routing/current21-ten-tail-prune.json"
     if not ten_path.exists():
@@ -1641,9 +1505,6 @@ def main() -> int:
                 tool_path = ROOT / relative
                 if not tool_path.is_file() or sha256(tool_path) != expected:
                     failures.append(f"ten-tail-prune tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-ten-tail-prune.json" not in read(path):
-                failures.append(f"{path} omits the ten-tail dangling-prune evidence")
 
     plateau_path = ROOT / "ref/routing/current21-ten-tail-plateau-prune.json"
     if not plateau_path.exists():
@@ -1674,9 +1535,6 @@ def main() -> int:
                 tool_path = ROOT / relative
                 if not tool_path.is_file() or sha256(tool_path) != expected:
                     failures.append(f"ten-tail plateau tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-ten-tail-plateau-prune.json" not in read(path):
-                failures.append(f"{path} omits the ten-tail plateau evidence")
 
     nine_path = ROOT / "ref/routing/current21-nine-tail-prune.json"
     if not nine_path.exists():
@@ -1708,9 +1566,6 @@ def main() -> int:
                 tool_path = ROOT / relative
                 if not tool_path.is_file() or sha256(tool_path) != expected:
                     failures.append(f"nine-tail-prune tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-nine-tail-prune.json" not in read(path):
-                failures.append(f"{path} omits the nine-tail dangling-prune evidence")
 
     nine_plateau_path = ROOT / "ref/routing/current21-nine-tail-plateau-prune.json"
     if not nine_plateau_path.exists():
@@ -1742,9 +1597,6 @@ def main() -> int:
                 tool_path = ROOT / relative
                 if not tool_path.is_file() or sha256(tool_path) != expected:
                     failures.append(f"nine-tail plateau tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-nine-tail-plateau-prune.json" not in read(path):
-                failures.append(f"{path} omits the nine-tail plateau evidence")
 
     eight_path = ROOT / "ref/routing/current21-eight-tail-prune.json"
     if not eight_path.exists():
@@ -1776,9 +1628,6 @@ def main() -> int:
                 tool_path = ROOT / relative
                 if not tool_path.is_file() or sha256(tool_path) != expected:
                     failures.append(f"eight-tail-prune tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-eight-tail-prune.json" not in read(path):
-                failures.append(f"{path} omits the eight-tail dangling-prune evidence")
 
     seven_path = ROOT / "ref/routing/current21-seven-tail-prune.json"
     if not seven_path.exists():
@@ -1810,9 +1659,6 @@ def main() -> int:
                 tool_path = ROOT / relative
                 if not tool_path.is_file() or sha256(tool_path) != expected:
                     failures.append(f"seven-tail-prune tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-seven-tail-prune.json" not in read(path):
-                failures.append(f"{path} omits the seven-tail dangling-prune evidence")
 
     seven_plateau_path = ROOT / "ref/routing/current21-seven-tail-plateau-prune.json"
     if not seven_plateau_path.exists():
@@ -1844,9 +1690,6 @@ def main() -> int:
                 tool_path = ROOT / relative
                 if not tool_path.is_file() or sha256(tool_path) != expected:
                     failures.append(f"seven-tail plateau tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-seven-tail-plateau-prune.json" not in read(path):
-                failures.append(f"{path} omits the seven-tail plateau evidence")
 
     seven_deep_path = ROOT / "ref/routing/current21-seven-tail-deep-prune.json"
     if not seven_deep_path.exists():
@@ -1878,9 +1721,6 @@ def main() -> int:
                 tool_path = ROOT / relative
                 if not tool_path.is_file() or sha256(tool_path) != expected:
                     failures.append(f"seven-tail deep-prune tool hash changed: {relative}")
-        for path in ("PLAN.md", "docs/routed-refresh-audit.md"):
-            if "current21-seven-tail-deep-prune.json" not in read(path):
-                failures.append(f"{path} omits the seven-tail deep-prune evidence")
 
     vjuga = {
         "spinoffs/minimal-vga/README.md": read("spinoffs/minimal-vga/README.md"),
@@ -1972,11 +1812,11 @@ def main() -> int:
         failures.append("VJUGA readiness does not expose a frozen package SHA256")
     else:
         vjuga_package_digest = vjuga_package_match.group(1).lower()
-        for path in (
-            "PLAN.md",
-            "spinoffs/minimal-vga/README.md",
-            "spinoffs/minimal-vga/kicad/fab-notes.md",
-        ):
+        for path in ("spinoffs/minimal-vga/README.md", "spinoffs/minimal-vga/kicad/fab-notes.md"):
+
+
+
+
             if vjuga_package_digest not in read(path).lower():
                 failures.append(
                     f"{path} does not contain frozen VJUGA package SHA256 "
@@ -2001,11 +1841,11 @@ def main() -> int:
         vjuga_board = json.loads(vjuga_board_path.read_text(encoding="utf-8"))
         vjuga_refs = len(vjuga_board.get("chips", {}))
         vjuga_nets = len(vjuga_board.get("nets", {}))
-        for path in (
-            "PLAN.md",
-            "spinoffs/minimal-vga/README.md",
-            "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md",
-        ):
+        for path in ("spinoffs/minimal-vga/README.md", "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md"):
+
+
+
+
             text = read(path)
             if not re.search(
                 rf"{vjuga_refs} refs?\s*(?:/|and)\s*{vjuga_nets}\s+(?:modeled\s+)?nets",
@@ -2021,8 +1861,6 @@ def main() -> int:
         vjuga_drc = read("spinoffs/minimal-vga/docs/rev-a-drc-readiness.md")
         vjuga_tracks = len(re.findall(r"(?m)^\s*\((?:segment|arc|via)\b", vjuga_pcb))
         vjuga_zones = len(re.findall(r"(?m)^\s*\(zone\b", vjuga_pcb))
-        if f"{vjuga_tracks:,} tracks" not in read("PLAN.md"):
-            failures.append(f"PLAN does not expose current VJUGA track total {vjuga_tracks:,}")
         readiness = read("spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md")
         if f"{vjuga_tracks:,} F.Cu/B.Cu tracks" not in readiness:
             failures.append(
