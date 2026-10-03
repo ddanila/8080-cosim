@@ -1,4 +1,4 @@
-# C12 runtime console and improvement ledger
+# C12 runtime console contract and physical qualification
 
 Status: **CORRECTED CP437, WARM/DEFAULT, RESET AND POWER-CYCLE CHECKS
 PASSED ON CS00000; BROADER RELEASE QUALIFICATION SEPARATE**
@@ -63,11 +63,9 @@ override lines independently. Byte-exact original CS00000 transcripts are
 retained under `tests/fixtures/c12-CS00000-20260905/` for offline replay and
 negative tests. Cold-state and hardware-error checks remain strict.
 
-C12 is an additive successor to the immutable C11 ROM. It implements the one
-fully specified, hardware-compatible improvement left in the retained design
-record: switching video geometry and character bank at runtime without using
-S21 or resetting the machine. It also gives the inherited passive boot beacon
-a C12 identity so a host can report which ROM is waiting.
+C12 is an additive successor to the immutable C11 ROM. It switches video
+geometry and character bank at runtime without changing S21 or resetting the
+machine. Its passive boot beacon identifies C12 to the host.
 
 ## ABI 1.5 contract
 
@@ -147,81 +145,42 @@ The owner authorized and installed the corrected pair on 2026-09-05. Focused
 physical results and their exact scope are recorded above; broader release
 promotion must distinguish the original and corrected images.
 
-## Improvement disposition
+## Companion implementation and remaining qualification
 
-Included in C12 because the contract and evidence are complete:
+The sibling CP/M project implements `CONSOLE` query/set/default, active-state
+STATUS/DIAG reporting, and C12-specific `VIDTEST`. Its named system, Fastboot,
+release image and manifest-bound physical workloads remain separate from older
+release artifacts. The Windows host embeds matching stock/C11/C12 payloads;
+actual-PE Wine sessions cover boot, NetDisk, snapshot media, B:, captures and
+evidence decoding. See [Windows qualification](windows-jukuhost-client-implementation.md)
+for the platform boundary.
 
-- atomic runtime video geometry and character-bank switching;
-- separately observable S21 default, active pair, and override flags;
-- warm-boot preservation and explicit default restoration;
-- runtime-switch preservation of the existing persistent key-remap table;
-- distinct `JB/12` discovery identity with C11-compatible host recovery;
-- deterministic artifacts and exhaustive simulator regression.
+The focused CS00000 results above do not complete broader release-profile
+qualification on the corrected pair. Real Windows serial hardware also needs
+its own lifecycle and endurance qualification; Wine is not evidence for that
+boundary.
 
-Completed above the ROM core:
+The older production-Linux-host stress extension is not a passing C12 gate:
+it accumulated seven modeled USART overruns and missed the final warm-boot
+prompt. Dedicated C12 CP/M and bounded Wine gates have different timing scopes;
+their passes do not establish that stress workload or physical endurance.
 
-- CP/M `CONSOLE` query/set/default control plus STATUS/DIAG active-state and
-  independent-override reporting;
-- distinct C12 system, Fastboot, and 400 KiB release-image artifacts;
-- C12-specific `VIDTEST` reads the active ABI 1.5 tuple, with exact switched
-  framebuffer proof while all older release binaries remain unchanged;
-- manifest-bound cold/runtime/full physical profiles and an exact CS00000
-  worksheet covering every geometry and character bank;
-- Windows-host C12 selection with six embedded stock/C11/C12 payloads;
-- actual-PE Wine boot, NetDisk, snapshot, B:, capture, and evidence decoding
-  for stock, C11, and C12.
+Write-back caching, cryptographic boot authentication, higher serial rates,
+RAM banking and S21-bit-0 reuse remain outside C12's implemented contract.
+They need separate cost, hardware and failure-semantics evidence.
 
-Still required before calling C12 physically complete:
+## Verification commands
 
-- any broader release-profile rerun on the corrected pair beyond the focused
-  CS00000 glyph and lifecycle checks recorded above;
-- physical Windows-to-CS00000 qualification remains a separate host-product
-  gate and is not inferred from Wine.
+From this repository, rebuild and compare all named ROM artifacts and run the
+C-model and focused structural gates:
 
-A supplemental attempt to add C12 to the older, long production-Linux-host
-stress workload reached ABI/default-state reporting, diagnostics, disk reads,
-and journaled writes, but the simulator accumulated seven USART overruns and
-missed the final warm-boot prompt. The dedicated C12 CP/M gate passes the same
-warm-boot behavior, while the bounded actual-PE Wine C12 run has zero retries
-and UART errors. The stress extension is therefore recorded as a timing-fixture
-follow-up, not committed as a flaky release gate and not treated as physical
-evidence.
+```sh
+python3 spinoffs/jukuravi/network-rom/build_network_rom.py --check
+sync/network_first_rom_abi_check.sh
+sync/network_first_rom_hdl_check.sh
+```
 
-Not folded in without new evidence or a separate design decision:
-
-- write-back disk caching, because power-loss semantics are unsafe;
-- cryptographic boot authentication, because its 8080/EPROM/wire cost is not
-  yet measured;
-- higher serial rates, whose physical margin is unproved;
-- RAM banking, which requires hardware support;
-- XMODEM or host-side filesystem shortcuts that duplicate the authenticated
-  bootstrap/NetDisk path;
-- repurposing S21 bit 0 without a concrete distinct behavior.
-
-## Completion audit
-
-This table is the finite acceptance boundary for “C12 implemented with all
-currently justified improvements folded in.” A pass requires direct evidence;
-an unmeasured idea is dispositioned above rather than silently becoming a
-release requirement.
-
-| Requirement | Authoritative evidence | State |
-| --- | --- | --- |
-| Deterministic D15/D16 pair | generator check, split/concatenation test, additive checksums, exact hashes above | pass |
-| ABI 1.5 layout and compatibility | exact 224-byte gate, `1000h` feature, `FF5Fh` vector, immutable C4--C11 regressions | pass |
-| Complete runtime selection | independent framebuffer/font oracle for all 16 mode/bank pairs | pass |
-| Atomic failure and transition policy | invalid selector/value fixtures, full-raster-tail checks, cursor/timing reset, published state checks | pass |
-| Keyboard transition safety | pending/debounce state discarded and installed four-pair remap retained across set/default | pass |
-| Warm/default lifecycle | local and N4 CP/M switch, `WBOOT`, STATUS/DIAG, and `CONSOLE DEFAULT` checks | pass |
-| Active visual utility | C12-only strict-8080 VIDTEST build plus exact switched 40x24/Russian hidden/visible frames; legacy hash retained | pass |
-| Structural hardware model | VM80A/Juku ABI self-test with POF release, runtime transition, remap, keyboard, and serial completion | pass |
-| Host delivery | reproducible PE, six pinned payloads, actual-PE stock/C11/C12 Wine sessions | pass |
-| ROM capacity fail-closed | assembly envelope assertions and generated padding measurements; ABI call gate exactly full | pass |
-| Reproducible physical procedure | manifest-bound workloads, captured original failures, corrected fixtures and audited focused rechecks above | executed in the recorded focused scope |
-| Installed-hardware behavior | three original-pair visual modes; corrected-pair CP437, warm/default, reset and power-cycle evidence above | focused checks pass; broader release qualification separate |
-| Real-Windows serial product | current Windows, real PL2303 and CS00000 lifecycle/endurance evidence | separate host-product gate |
-
-The first ten rows close every C12 implementation and desk-verification item.
-The ROM cannot be called physically complete until the installed-hardware row
-passes. The last row does not change C12 ROM readiness: it qualifies the
-Windows distribution and driver boundary separately.
+From the sibling `cpm-plus-juku`, `make c12-check` verifies matching CP/M
+integration and `make c12-simulator-candidate` produces the reproducible
+non-physical package. None of these commands proves broader physical
+qualification or authorizes new programming.

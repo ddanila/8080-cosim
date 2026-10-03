@@ -75,15 +75,11 @@ for backward compatibility and adds:
 The forced NetDisk-reset run completed with one target reset, one bootstrap
 restart, zero service retries, and clean writable-journal behavior.
 
-## C11 candidate supersession
+## Exact C11 artifact boundary
 
-This recovery work was explicitly folded into C11 before its physical ROM pair
-was programmed. The earlier desk-only C11 candidate is retained in Git history
-but is superseded and must not be burned:
-
-- old combined: `49af4137be8cab2a487ccec0ac264e964b75f6699ebea8baf0f1a29d1ce292dc`;
-- old D15: `4040833d71fe9029d9cf5bc261b76b57edb87528d1d624e6b003fb2208bf2187`;
-- old D16: `ac80ca047adeff842a911266ff1c054e30ac4628e925ea9fbb1be54e872b9581`.
+The earlier desk-only C11 build is superseded and must not be programmed.
+The current per-release manifest identifies the recovery loader and ROM pair;
+older candidate hashes remain in Git history.
 
 The recovery C11 pair is:
 
