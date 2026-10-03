@@ -81,7 +81,10 @@ alternative causes.
 ### 4. Require repeatable post-substitution evidence
 
 - Perform **five cold-power T34 runs**. All five must report D55 clear while
-  retaining clean D54 and D57 results.
+  retaining clean D54 results. Record D57 separately: T34 does not wait for
+  the D57 channel-2 frame clock, so bit `10` alone does not reject a D55-path
+  pass. Use the corrected `D57S` v2 probe for that path, as described in
+  [the timing audit](../../docs/jukuravi-d55-diagnostic-audit.md#corrected-t34-predicate).
 - Run the standard RomBios 3.43m or JMON 3.3 configuration and verify its normal
   video/frame behavior. This is a functional regression, not the package
   discriminator by itself.

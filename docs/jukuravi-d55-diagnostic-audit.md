@@ -1,7 +1,6 @@
 # Jukuravi D55 diagnostic audit
 
-Status date: 2026-08-09
-Verdict: **T15/T16/T31 D55 results are not valid evidence that either D55
+Verdict: **T15/T16/T31/T32 D55 results are not valid evidence that either D55
 package is bad. T34 corrects the clocking error and reports a D55 functional
 path, not a package identity.**
 
@@ -122,7 +121,7 @@ written count is still waiting for a D55 clock.
 | T34, D56 Q2_N held low | `08` | 6 | 6 | 4 | detects channel-1/2 clock-path fault |
 | T34, D9/CS_D55 disabled | `08` | 6 | 6 | 0 | detects select-path fault |
 
-The clean and all five adversarial cases passed on 2026-08-09. The matrix
+The clean and all five adversarial cases passed. The matrix
 proves the corrected predicate is sensitive to the intended functional path
 and no longer creates a clean-board D55 failure solely from missing setup
 clocks. It also proves why the result must not be labeled “D55 package bad.”
@@ -177,7 +176,8 @@ failed, but the remaining candidates include:
 - D54 OUT0 and D54 OUT2 output paths; and
 - D56 and the D56 Q2_N route to D55.15/D55.18.
 
-Package confirmation still requires controlled substitution with the same T34
-image before and after, or direct signal measurements that separately prove
-select, strobes, data and all three clocks. Software alone cannot make that
-package-level claim 100% unique.
+Controlled substitution with the same T34 image before and after can support
+localization, but also reseats socket contacts. Confirming a package fault needs
+independent package testing or measurements that distinguish package behavior
+from socket, supply, select, strobe, data and clock faults. Software alone does
+not uniquely identify the package.
