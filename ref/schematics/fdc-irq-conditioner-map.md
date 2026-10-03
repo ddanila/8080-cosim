@@ -24,8 +24,9 @@ and routed PCB now carry the corrected 10k R94 pull-up plus a
 separate `RUNK1` 220-ohm physical placeholder with two measurement boundaries.
 
 The earlier direct D93.38/.39-to-D10.19/.18 assignment came from MAME and is
-now retired. D10 IR0/IR1 remain explicit boundaries until owner continuity
-identifies their actual joins. Registered component and solder views fix the
+now retired. Exact `.009` sheet 1 source-closes IR0 to X2.214/R105 and
+IR1 to X2.218/D27 PB7/R107, separately from this conditioner. These source
+assignments do not establish owner-board continuity. Registered component and solder views fix the
 D96.9/.11 pad locations and show that
 D96.9 has no exposed local B.Cu departure. A later D96.11 solder review
 finds a conditional route toward D28.11/DRQ, conflicting with the separate
