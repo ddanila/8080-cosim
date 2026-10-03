@@ -18,13 +18,23 @@ Homebrew, macOS `java_home`, Gradle-managed and Linux JDK locations; use
 `FREEROUTING_JDK=/path/to/jdk` explicitly when needed. The script builds the
 checked-out submodule and records its commit and JAR SHA-256 in
 `.tools/freerouting/PROVENANCE.txt`. Verify the submodule matches the root pin
-before building; the build script does not reset an existing checkout.
+before building; the build script does not reset an existing checkout. Also
+check `git -C external/freerouting status --short`: the build includes local
+source edits, while provenance records only `HEAD` and the resulting JAR hash,
+not a dirty-tree diff. A commit label alone therefore does not identify those
+inputs.
 
 `run-freerouting.sh` checks for the custom `PolylineTrace.combine` marker and
 rebuilds when the JAR is absent or lacks it. That marker distinguishes this
 fork's build lineage; it does not prove that an already-installed JAR matches
 the current submodule commit. Rebuild explicitly after a pin change and retain
 its provenance with route evidence.
+
+The build invokes `./gradlew executableJar -x test`, then checks the custom
+marker and installs the JAR. It does not run the router’s test suite or prove
+reproducible JAR bytes. `FREEROUTING_JDK` selects an executable Java location;
+the helper does not validate its version, so check `bin/java -version` when
+supplying it explicitly.
 
 ## Run and review
 
