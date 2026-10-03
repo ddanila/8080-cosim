@@ -28,7 +28,7 @@ source-to-routed differences. R9/R10 are the two missing references;
 D11, D12, D26, D27, D42, D43, D58, D59, D6, and D9 also differ in position or rotation.
 The local D12/R9/R10 repair is therefore only part of the routed refresh.
 
-A read-only DRC of the source PCB with R9/R10 present found no R9/R10 electrical shorts or copper/hole clearances. It did report one D3/R9 courtyard overlap; that mechanical outline still needs review. The source PCB has many unrelated DRC holds, so this does not release the layout.
+A recorded read-only DRC of the source PCB with R9/R10 present found no R9/R10 electrical shorts or copper/hole clearance violations and one D3/R9 courtyard overlap. This is a prior local observation, not a fresh check of the current source PCB. Review that mechanical outline and rerun DRC after any layout change; the observation does not release the layout.
 
 Native owner crop `(1000,650)-(1600,1350)` of
 `ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg` shows the fitted inner
@@ -37,8 +37,8 @@ also clear the D3 package in this view. That observation rules out an obvious
 body collision on the photographed board, but does not validate the generic
 replica footprint's courtyard or a substitute resistor's diameter. Review
 the fitted body envelope and lead bends before reducing or waiving the
-source-board D3/R9 courtyard finding. The routed-board shorts above remain
-actual copper collisions and are not explained away by this mechanical view.
+source-board D3/R9 courtyard finding. The insertion-trial shorts above
+are copper conflicts; this mechanical view does not resolve them.
 
 The source KiCad geometry makes the warning precise. D3's F.Fab body starts
 at x `217.204` mm and R9's F.Fab body ends at x `215.619` mm, leaving
