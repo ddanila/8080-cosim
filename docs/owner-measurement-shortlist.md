@@ -1,6 +1,6 @@
 # Owner measurement shortlist
 
-Status: **READY**
+Status: **EVIDENCE HOLD**
 
 This report assigns current source gaps to physical measurement tasks.
 `READY` means required inputs and selected report markers are present
@@ -37,7 +37,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | Bring-up verification points generated | PASS |
 | Source inventory PASS marker present | PASS |
 | Cartridge BASIC boundary documented | PASS |
-| .009 assembly drawing extraction guarded | PASS |
+| .009 assembly drawing extraction guarded | MISSING |
 | Factory Вид В modifications guarded | PASS |
 | Source-PCB placement collision gate passes | PASS |
 

@@ -210,7 +210,7 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
     lines = [
         "# Automatic completion audit",
         "",
-        ("Status: **DESK REVIEW REOPENED / D56 REGISTRATION HOLD**" if desk_review_open else
+        ("Status: **DESK REVIEW REOPENED / SHORTLIST EVIDENCE HOLD**" if desk_review_open else
          "Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**"),
         "",
         "This report inventories recognized Markdown checkboxes and verifies their",
@@ -229,7 +229,7 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         "",
         f"There are {len(tasks)} unchecked items across {len(task_counts)} project-plan",
         "documents. The manifest assigns these items to the boundaries below.",
-        "The shortlist also reports a D56 registration hold." if desk_review_open else
+        "The shortlist reports an evidence hold; inspect its failed checks before handoff." if desk_review_open else
         "The exhaustion status applies to this classified checkbox list only.",
         "",
         "| Plan | Unchecked tasks |",

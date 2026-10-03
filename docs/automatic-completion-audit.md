@@ -1,6 +1,6 @@
 # Automatic completion audit
 
-Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**
+Status: **DESK REVIEW REOPENED / SHORTLIST EVIDENCE HOLD**
 
 This report inventories recognized Markdown checkboxes and verifies their
 manifest classifications and cited text markers. It scans tracked and
@@ -18,7 +18,7 @@ python3 scripts/report_automatic_completion_audit.py
 
 There are 8 unchecked items across 3 project-plan
 documents. The manifest assigns these items to the boundaries below.
-The exhaustion status applies to this classified checkbox list only.
+The shortlist reports an evidence hold; inspect its failed checks before handoff.
 
 | Plan | Unchecked tasks |
 | --- | ---: |

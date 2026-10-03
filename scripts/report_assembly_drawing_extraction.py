@@ -11,7 +11,6 @@ ROOT = Path(__file__).resolve().parents[1]
 PHOTO_DIR = ROOT / "ref/photos/dgsh5-109-009-sb"
 PHOTO_README = PHOTO_DIR / "README.md"
 BODGE = ROOT / "ref/photos/juku-pcb-2/BODGE-TRIAGE.md"
-PLAN = ROOT / "PLAN.md"
 WIRE_TABLE_PDF = ROOT / "ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf"
 WIRE_TABLE_MD = ROOT / "ref/schematics/dgsh5-109-009-sb-wire-table.md"
 PCB_GENERATOR = ROOT / "kicad/gen_kicad_pcb.py"
@@ -36,7 +35,6 @@ def main() -> int:
     photos = sorted(PHOTO_DIR.glob("PXL_20260711_*.jpg"))
     photo_text = read(PHOTO_README)
     bodge_text = read(BODGE)
-    plan_text = read(PLAN)
     kicad_python = subprocess.run(
         [str(ROOT / "scripts/find-kicad-python.sh")],
         cwd=ROOT, text=True, capture_output=True,
@@ -118,7 +116,7 @@ def main() -> int:
         (
             "D94/D100/D98 retain the corrected horizontal assembly posture",
             placement.returncode == 0,
-            "final `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py`",
+            "source `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py`",
         ),
         (
             "D106/D28/D96 row follows registered owner-photo spacing",
@@ -126,9 +124,10 @@ def main() -> int:
             "two-sided D106/D28 fits; D96 component fit; `kicad/check_d28_d106_photo_placement.py`",
         ),
         (
-            "D101 follows its registered package-centre offset from D95",
+            "D95/D99/D101/D97/D102 follow registered package offsets and orientations",
             mux_placement.returncode == 0,
-            "shared component photo; D95/D101 fits; `kicad/check_d95_d101_photo_placement.py`",
+            "shared component photo; `kicad/check_d95_d101_photo_placement.py`"
+            + ("; " + mux_placement.stdout.strip().replace("\n", "; ") if mux_placement.returncode else ""),
         ),
         (
             "Lower FDC passive identities follow the registered factory drawing",
@@ -180,9 +179,8 @@ def main() -> int:
         (
             "Bracket-mounted S1 is excluded from generated PCB footprints",
             marker(read(PCB_GENERATOR), "OFF_BOARD = {", "'S1'", "must never become a PCB header footprint")
-            and '(property "Reference" "S1"' not in read(SOURCE_PCB)
-            and marker(plan_text, "Bracket-mounted S1/X3/X4/X6/X8/X9", "A-point cable landings"),
-            "`kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction",
+            and '(property "Reference" "S1"' not in read(SOURCE_PCB),
+            "`kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`",
         ),
         (
             "Dedicated А:17 landing is present on RES_RC in the board spec and source PCB",
@@ -258,8 +256,7 @@ def main() -> int:
         (
             "Connection-table sheets 2-6 are adopted and transcribed",
             WIRE_TABLE_PDF.exists() and WIRE_TABLE_MD.exists()
-            and marker(read(WIRE_TABLE_MD), "ДУБЛИКАТ", "S1:1", "S1:2", "X9:14")
-            and marker(plan_text, "sheets 2-6", "таблица соединений"),
+            and marker(read(WIRE_TABLE_MD), "ДУБЛИКАТ", "S1:1", "S1:2", "X9:14", "таблица соединений"),
             "`ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`; `ref/schematics/dgsh5-109-009-sb-wire-table.md`",
         ),
     ]
@@ -269,8 +266,6 @@ def main() -> int:
     lines = [
         "# ДГШ5.109.009 СБ extraction audit",
         "",
-        "Status date: **2026-07-11**.",
-        "",
         f"Status: **{status}**",
         "",
         "This generated audit turns the photographed factory assembly drawing into",
@@ -278,6 +273,10 @@ def main() -> int:
         "details, and local solder/copper operations; sheets 2-6 (ДУБЛИКАТ scan)",
         "document the wire/cable connection table and change registration. Neither",
         "is promoted as a copper netlist.",
+        "",
+        "Regenerate with `python3 scripts/report_assembly_drawing_extraction.py`.",
+        "The checks below cover the source PCB and retained assembly evidence;",
+        "they do not qualify the routed PCB or close manufacturing holds.",
         "",
         "## Extraction checks",
         "",
@@ -316,6 +315,9 @@ def main() -> int:
         "- Keep D13/D105 right-facing and preserve R1 as the component-side 2 kΩ X1.107B/H pull-up.",
         "- Conductor 11 is promoted as A17.1/А:17 to S1:1; conductor 12 is promoted as D98.7/А:18 to S1:2.",
         "- S1 remains an off-board bracket component and is excluded from generated PCB footprints.",
+        "- The wire table lists only S1:1 and S1:2. Available owner views do not",
+        "  expose its terminal side, so S1.3 remains unassigned; see",
+        "  `ref/photos/juku-pcb-2/s1-third-contact-photo-review.json`.",
         "- Preserve А:7-А:14 and А:19-А:20 as insulated assembly links; their guarded electrical mapping must not be mistaken for replacement PCB etch.",
         "",
     ]

@@ -545,7 +545,7 @@ def main() -> int:
     completion_audit = read("docs/automatic-completion-audit.md")
     desk_review_open = "Status: **EVIDENCE HOLD**" in read("docs/owner-measurement-shortlist.md")
     for marker in (
-        ("Status: **DESK REVIEW REOPENED / D56 REGISTRATION HOLD**" if desk_review_open else
+        ("Status: **DESK REVIEW REOPENED / SHORTLIST EVIDENCE HOLD**" if desk_review_open else
          "Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**"),
         "This report inventories recognized Markdown checkboxes",
         "Any new unchecked task outside the four operator templates",

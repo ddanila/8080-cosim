@@ -1,8 +1,6 @@
 # ДГШ5.109.009 СБ extraction audit
 
-Status date: **2026-07-11**.
-
-Status: **SHEETS 1-6 AND WIRE-TABLE PIN MAPPING ADOPTED**
+Status: **ASSEMBLY DRAWING EXTRACTION FAILED**
 
 This generated audit turns the photographed factory assembly drawing into
 guarded project evidence. Sheet 1 proves component posture, mounting/cable
@@ -10,15 +8,19 @@ details, and local solder/copper operations; sheets 2-6 (ДУБЛИКАТ scan)
 document the wire/cable connection table and change registration. Neither
 is promoted as a copper netlist.
 
+Regenerate with `python3 scripts/report_assembly_drawing_extraction.py`.
+The checks below cover the source PCB and retained assembly evidence;
+they do not qualify the routed PCB or close manufacturing holds.
+
 ## Extraction checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
 | All 26 photographed sheet-1 views are local, real JPEGs, and indexed | PASS | `ref/photos/dgsh5-109-009-sb/` |
 | Factory local solder/copper details are guarded without treating position 150 as a cut | PASS | `BODGE-TRIAGE.md`; Вид В photos 114626340/114633498/114638730 |
-| D94/D100/D98 retain the corrected horizontal assembly posture | PASS | final `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
+| D94/D100/D98 retain the corrected horizontal assembly posture | PASS | source `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
 | D106/D28/D96 row follows registered owner-photo spacing | PASS | two-sided D106/D28 fits; D96 component fit; `kicad/check_d28_d106_photo_placement.py` |
-| D101 follows its registered package-centre offset from D95 | PASS | shared component photo; D95/D101 fits; `kicad/check_d95_d101_photo_placement.py` |
+| D95/D99/D101/D97/D102 follow registered package offsets and orientations | FAIL | shared component photo; `kicad/check_d95_d101_photo_placement.py`;  |
 | Lower FDC passive identities follow the registered factory drawing | PASS | five photo-fitted IC anchors; `kicad/report_fdc_lower_assembly_placement.py` |
 | Upper-row C12/C9 placements follow adjacent fitted IC centres | PASS | D94/D100/D98 drawing interpolation; `kicad/report_fdc_upper_assembly_placement.py` |
 | D94 pull-up identities, values, and endpoints are source-modeled | PASS | factory R87/R88/R89 labels/BOM plus registered component/solder/value photos; `kicad/check_d94_pullups.py` |
@@ -27,7 +29,7 @@ is promoted as a copper netlist.
 | Board points А:17 and А:18 carry documented S1 far ends without conflation | PASS | sheets 2-5 wire table rows 11/12 plus accepted two-sided/photo-package evidence |
 | All ten on-board insulated links map conductor positions and А:N points to guarded endpoints | PASS | sheets 2-5 table; owner continuity; `kicad/check_factory_wire_links.py` |
 | Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18 | PASS | sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12 |
-| Bracket-mounted S1 is excluded from generated PCB footprints | PASS | `kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb`; PLAN source-PCB correction |
+| Bracket-mounted S1 is excluded from generated PCB footprints | PASS | `kicad/gen_kicad_pcb.py`; generated `kicad/juku.kicad_pcb` |
 | Dedicated А:17 landing is present on RES_RC in the board spec and source PCB | PASS | two-sided owner photos; `kicad/juku.board.json`; `kicad/check_factory_switch_landings.py` |
 | R94 is the owner-confirmed 10k FDC DRQ pull-up; the separate 220-ohm body remains explicit and unidentified | PASS | `.009` assembly drawing; owner continuity; retained four-view `r94-photo-exhaustion.json`; `kicad/check_r94_landing.py` |
 | X9 is schematic-only and its reversed ribbon nets use provisional PCB landings A45-A58 | PASS | sheets 4-5 X9 wire table; `kicad/check_x9_offboard_landings.py` checks nets, while `ref/photos/juku-pcb-2/x9-solder-row-registration.json` holds physical placement open |
@@ -85,7 +87,7 @@ Transcription: `ref/schematics/dgsh5-109-009-sb-wire-table.md`.
 - Keep D13/D105 right-facing and preserve R1 as the component-side 2 kΩ X1.107B/H pull-up.
 - Conductor 11 is promoted as A17.1/А:17 to S1:1; conductor 12 is promoted as D98.7/А:18 to S1:2.
 - S1 remains an off-board bracket component and is excluded from generated PCB footprints.
-- The wire table lists only S1:1 and S1:2. The available owner front and back
-  views show S1 edge-on and do not expose its terminal side, so S1.3 remains
-  unassigned; see `ref/photos/juku-pcb-2/s1-third-contact-photo-review.json`.
+- The wire table lists only S1:1 and S1:2. Available owner views do not
+  expose its terminal side, so S1.3 remains unassigned; see
+  `ref/photos/juku-pcb-2/s1-third-contact-photo-review.json`.
 - Preserve А:7-А:14 and А:19-А:20 as insulated assembly links; their guarded electrical mapping must not be mistaken for replacement PCB etch.

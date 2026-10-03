@@ -38,7 +38,7 @@ tracked DRC disposition count.
 | Evidence | Status in report |
 | --- | --- |
 | [Fidelity](board-fidelity-gap-ledger.md) | BOARD FIDELITY GAPS CATALOGED |
-| [Owner checks](owner-measurement-shortlist.md) | READY |
+| [Owner checks](owner-measurement-shortlist.md) | EVIDENCE HOLD |
 | [BOM](replica-dual-config-bom.md) | NO STATUS FIELD |
 | [Sourcing](replica-sourcing-readiness.md) | PARTIAL / PROGRAMMING AND REVIEW BLOCKED |
 | [Firmware lineage](firmware-gap-ledger.md) | ADOPTED FIRMWARE SET VERIFIED |

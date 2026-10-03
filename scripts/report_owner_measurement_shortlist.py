@@ -260,7 +260,7 @@ def main() -> int:
         ("FDC firmware profiles proved; Ekta 3.7 direct-bus profile adopted", has_phrase("docs/fdc-bus-polarity.md", "Status: **FIRMWARE PROFILES PROVED / EKTA 3.7 DIRECT-BUS PROFILE ADOPTED**")),
         ("Beeper standalone toggle and JSON handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **STANDALONE SOUND TOGGLE AND JSON HANDOFF GUARDED**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING**")),
-        ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DRAM OPTIONAL FOOTPRINT ARTWORK REOPENED / VALUES AND NON-FIELD PLACEMENTS PENDING**")),
+        ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DRAM OPTIONAL PAD IDENTITIES / VALUES AND NON-FIELD PLACEMENTS PENDING**")),
         ("D41 timing connectivity source-closed", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**")),
         ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS SOURCE BOUNDARY PENDING**")),
         ("I/O decode boundary guarded", has_phrase("docs/io-decode-boundary.md", "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**")),

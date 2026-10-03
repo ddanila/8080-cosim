@@ -1,13 +1,13 @@
 # Decoupling capacitor value fidelity
 
-Status: **DRAM OPTIONAL FOOTPRINT ARTWORK REOPENED / VALUES AND NON-FIELD PLACEMENTS PENDING**
+Status: **DRAM OPTIONAL PAD IDENTITIES / VALUES AND NON-FIELD PLACEMENTS PENDING**
 
 This generated report isolates the C35-C72 decoupling-capacitor
 authenticity issue. The board model and routed PCB preserve the two
 array-power bypass rail groups as schematic intent. The `.009` factory
 drawing identifies C38/C42/C46/C50 for factory population and omits
-the other 28 older grid refdes. The former claim that all 32 independent
-capacitor pad pairs remain fabricated is reopened: a proposed C35 pair
+the other 28 older grid refdes. Independent capacitor pad pairs remain
+unproved: a proposed C35 pair
 coincides with adjacent D67.16/D66.1 package contacts. The older C63
 grid slot is distinct from the absent
 `.009` C83 callout between D41/D40. Six non-field placement/population

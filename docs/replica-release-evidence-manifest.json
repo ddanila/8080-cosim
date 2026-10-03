@@ -93,8 +93,8 @@
     },
     "Owner checks": {
       "path": "docs/owner-measurement-shortlist.md",
-      "sha256": "2b5f6ff427b2eb1c395f8edc6db0539e4c060027c0e2e3923a5b2756492c0858",
-      "status": "READY"
+      "sha256": "fb30585f46874a33ce51b4a918e4930b926b5c43dc2b0ae411e8587f49bf388f",
+      "status": "EVIDENCE HOLD"
     },
     "BOM": {
       "path": "docs/replica-dual-config-bom.md",
