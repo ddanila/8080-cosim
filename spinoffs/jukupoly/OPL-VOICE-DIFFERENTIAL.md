@@ -49,34 +49,18 @@ the remaining voices.
 
 ## First case: The Imp's Song intro
 
-The hash-pinned Doom source reconstructs the opening low F-sharp as logical
-note 0, MIDI pitch 41.974, from four OPL channels keyed continuously from
-0.000 to 14.120 seconds. It has three distinct target phase steps. OPL
-channels 0 and 2 quantize to the same step but have complementary loudness
-lobes; channels 0/1 dominate alternating lobes while channel 2 fills their
-gaps. The old policy retained only the highest-total-energy member for each
-step, so it discarded channel 2 and created long silent gaps.
+The opening low F-sharp is logical note 0 in the pinned Doom source. Its
+four keyed OPL members produce three distinct target phase steps. Channels 0
+and 2 quantize to the same step but have complementary loudness contours;
+selecting only one member would discard audible content. The converter fits
+those equal-step members as a composite and uses the other two target voices
+for the distinct steps.
 
-The generic equal-step grouping fixes that policy error. The target now uses:
-
-- step 845 for the composite of source channels 0 and 2;
-- step 839 for source channel 1; and
-- step 848 for source channel 3.
-
-The isolated score first measures its exact C-cosim execution rate and then
-regenerates phase steps on the host; it converges from the full-song 7,170 Hz
-seed to 7,188 Hz in two passes. The worst measured pitch error is 0.969 cents.
-Relative to the previous static-member selection, rendered-contour median
-absolute error fell from 2.99 to 0.97 dB, 90th-percentile error fell from
-54.22 to 6.17 dB, and correlation rose from 0.557 to 0.832. The large silent
-gaps disappeared. The current composite
-member fit has 0.365 levels sample-weighted mean error; its brief maximum error
-is three of fifteen levels.
-
-The source uses AM on a directly audible path and no directly audible vibrato
-for this note. In the detuned-member reduction its post-AM 50 Hz contour is
-folded into host-generated envelopes and bounded re-articulations. No OPL LFO
-is emulated by the 8080 for this case.
+The isolated score measures its C-cosim execution rate and regenerates phase
+steps on the host. Use the generated `comparison.json` and contour CSV to
+inspect pitch error, envelope fit and rendered loudness for the exact inputs.
+For this note, directly audible source AM is folded into host-generated
+envelopes and bounded re-articulations; the 8080 does not emulate an OPL LFO.
 
 ## Reproduction
 
