@@ -71,18 +71,10 @@ net. All 81 nonblank candidate labels now resolve to their stated pad in
 RC net names while their remote owner-board paths remain unproved.
 
 Confidence metadata consists of 429 `local-package-fit`, 155
-`registration-only`, and 14 `registration+unique-hole-snap` rows. Eight use
-`registration+package-row-snap` after correcting the D29 lower-row probes. Two use
-`local-package-pin-count` after correcting the D39 component probes. Two use
-`local-package-fit+continuous-copper`, two use `local-package-fit+visible-gap`, four use
-`registration+visible-common-landing`, one uses
-`registration+separate-cable-joint`, four use
-`registration+unique-joint`, three use `registration+three-lead-identity`, four use
-`local-cross-face-fit`, seven use `cross-side-registration`, one uses
-`cross-side-registration+visible-joint`, and one uses `overlap-trace-topology`.
-Four `panorama-projected-region`
-observations record photo-exhausted regions without pretending that a
-projection is pad identity.
+`registration-only`, and 14 `registration+unique-hole-snap` rows. The remaining
+confidence categories and individual fit methods are recorded in
+`ref/photos/juku-pcb-2/endpoints.csv`. Projected regions and hole snaps retain
+their evidence limits even when the coordinates match the model.
 A hole snap or accurate pad projection is not electrical evidence by itself.
 
 ## Reproduce the registration aids
@@ -141,7 +133,7 @@ chronological narrative here. Important cross-checks include:
 | D11 placement across views | [Cross-view audit](../ref/photos/juku-pcb-2/d11-placement-crossview-audit.json) |
 | C84 candidate pairs and rejected timer-pin routes | [Region review](../ref/photos/juku-pcb-2/c84-region-review.json) |
 | FDC remote continuations and conflicting layer observations | [Hardware handoff](fdc-hardware-handoff.md) |
-| D94 adopted connections and unresolved chip-select/hidden branch | [Reconstruction constraints](d94-reconstruction-constraints.md) |
+| D94 adopted connections, source-closed chip select, and unresolved hidden branch | [Reconstruction constraints](d94-reconstruction-constraints.md) |
 | Physical versus source/routed placement | [Placement residuals](photo-placement-residuals.md) |
 
 A good local fit does not establish absolute board registration across regions.
