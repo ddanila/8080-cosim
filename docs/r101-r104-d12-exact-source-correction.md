@@ -36,19 +36,16 @@ The D3 local photo fit projects this resistor's two joints near
 are placement targets from hand-read pixels; confirm the hole centers and
 installed value before fabrication.
 
-The same fit exposed a former PCB placement error: the old **R18** pad 1 was
-at `(214.493,59.559)` mm, almost on the R104 upper site, while the
-assembly and owner photo place the distinct R18 body lower beside D3.
-Its actual candidate pad centers are `(211.299,70.945)` and
-`(211.635,81.049)` mm. R18 was moved and R104 added on all three PCBs.
+R18 is the distinct lower body beside D3, with candidate pad centers
+`(211.299,70.945)` and `(211.635,81.049)` mm. Its placement is separate
+from R104; the corrected model and PCBs retain both parts.
 Two native owner crops, `200358952` and `200418174`, show **33К** on the
 lower R18 body, agreeing with exact sheet-1 R18=33 kΩ. The upper R104
 body's print is partly hidden by glare and cable, so its installed 470 Ω
 value still needs an isolated measurement. The independent `200402344`
 overlap repeats the dark R104 print beneath a specular stripe; its last
 digit remains unreadable in all three archived component views.
-Twenty obsolete trace segments were removed from each routed variant;
-the displaced nets still require routing. See
+The displaced nets still require routing. Placement evidence is in
 `ref/photos/juku-pcb-2/r18-r104-footprint-collision-review.json`.
 The owner solder tile `PXL_20260710_200522685.jpg` additionally shows
 an uninterrupted short bar from R18's lower joint to registered D3.11,
