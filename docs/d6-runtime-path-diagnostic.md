@@ -2,8 +2,8 @@
 
 Status: **CORRECTED TABLE MATCHES MEASURED MODE PATH**
 
-This generated diagnostic guards the corrected 2026-07-19 D6 channel order
-through the exact D6/D8 and D13/D37/D58 combinational paths. It retains the
+This generated diagnostic exercises D6/D8 and the D13/D37 decode path
+to the D58 enable signal in a standalone combinational fixture. It retains the
 former functional decoder only as a comparison at the RAM target.
 
 ## Reproduction
@@ -18,6 +18,13 @@ It also samples `decode_prom_functional` only at `B37A`. The measured
 A6/A5=`/PC1,/PC0` mapping makes Port C `80` supply suffix `11`. Owner
 continuity closes A7 as D7.8 `IO_CYCLE_H`; it is low during these memory
 cycles, so the runnable row is `011`.
+
+The fixture holds D37's other input high, uses modeled pull-ups, and
+observes the D58 enable signal without instantiating D58 or the CPU.
+It sweeps eight modes at `B37A`, checks `0484` in mode `011`, and
+checks disabled release at `B37A`. It does not sweep every address,
+run firmware, or measure the MEMR path or physical timing. The generator
+also checks recorded checkpoint fields and exact D8 socket fanout in JSON.
 
 ## Result
 
@@ -47,15 +54,10 @@ at `0484` and `FF` at `B37A`.
 
 - Reader-3 socket continuity fixes D0..D3 as pins 12,11,10,9; three
   identical D6 captures include a separate power cycle.
-- Chip-removed `.009` continuity proves the `.006` sheet's separate D6
-  ROM/RAM outputs are real: D6.12 reaches D8.15; D6.11 does not, and the
-  two socket pads are isolated. D6.11 instead reaches D2.15/-WREQ. The
-  earlier installed-PROM D6.11/D6.12 joined reading is invalidated. Follow-up
-  continuity proves D6.11 also reaches D92.5/R12.2 on the same -WREQ net.
-- The former all-mode failure was an artifact of the old reversed channel
-  packing. The corrected mode-011 row closes the observed runnable path.
+- Chip-removed owner continuity keeps ROM/RAM outputs separate:
+  D6.12 reaches D8.15; D6.11 reaches D2.15/-WREQ and D92.5/R12.2.
 - Powered-off owner continuity now confirms the entire endpoint chain:
   D6.9-D13.1, D13.2-D37.4, and D37.6-D58.9.
   The second D37 NAND input is independently source-closed by the native
   sheet-2 MEMR-D33.3/D33.4-D37.5 route; it is not a remaining probe ask.
-  Live probes remain useful corroboration but no longer gate D6 adoption.
+  These source/continuity facts do not qualify powered edge behavior.

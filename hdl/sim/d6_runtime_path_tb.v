@@ -1,11 +1,9 @@
 `timescale 1ns/1ps
 
-// Focused diagnostic for the still-open physical-D6 runnable adoption path.
-// It exercises the exact combinational chain which blocked checkpoint-resumed
-// execution when the CPU called RAM at B37A. `pc` below is now only a raw
-// A7..A5 table coordinate; measured board inputs are A6=/PC1, A5=/PC0, while
-// owner continuity closes A7 as D7.8 IO_CYCLE_H. The runnable memory checks use
-// A7=0 because neither raw /IORD nor /IOWR is asserted during memory cycles.
+// Standalone combinational diagnostic of D6/D8 and D13/D37 decode to D58 OE.
+// `pc` is the raw A7..A5 table coordinate; measured inputs are A6=/PC1,
+// A5=/PC0, and A7=D7.8 IO_CYCLE_H. Memory checks use A7=0.
+// D37's other input is held high; this fixture does not model its MEMR source.
 module d6_runtime_path_tb;
   reg [15:0] ba = 16'h0000;
   reg [2:0] pc = 3'b000; // raw {D6 A7,A6,A5}
