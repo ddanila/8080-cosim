@@ -1,6 +1,7 @@
 # Vendored third-party cores
 
-## vm80a — die-accurate i8080 / КР580ВМ80А replica (Verilog)
+## vm80a — die-derived i8080 / КР580ВМ80А core (Verilog)
+
 - Source: https://github.com/1801BM1/vm80a (1801BM1@gmail.com)
 - License: **CC-BY 3.0** (https://creativecommons.org/licenses/by/3.0/) — see `license.md`.
 - Files: `vm80a.v` (the core, pin-compatible 8080 wrapper + die logic),

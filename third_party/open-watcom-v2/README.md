@@ -2,7 +2,7 @@
 
 This directory vendors the official Open Watcom V2 `Current-build` C/C++
 distribution published on 2026-08-20. It is the single compiler lineage for
-the 16-bit DOS/Pocket8086 host and the later 32-bit Win32/Windows 95 host.
+the 16-bit DOS/Pocket8086 and 32-bit Win32/Windows 95 hosts.
 
 | field | pinned value |
 | --- | --- |
