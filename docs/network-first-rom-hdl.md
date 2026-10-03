@@ -1,38 +1,47 @@
-# Network-first ROM structural HDL qualification
+# Network-first ROM structural HDL checks
 
-Status: **PASS for reset/POST, the resident ABI, and one NetDisk-v3 read**.
-
-Run the complete focused gate with:
+The focused gate checks firmware through structural `juku_top` and its
+`vm80a` CPU. Run the full local profile from the repository root:
 
 ```sh
 sync/network_first_rom_hdl_check.sh
 ```
 
-The first fixture boots the exact `network-first-abi1-cs00015-c2` production
-image in `juku_top` with the structural `vm80a` CPU. Its combined SHA-256 is
-`928bdbbd8845f6d3b3f73ead8070a3a55a55bc4b284a8a4da8a0eed9e1c6671a`.
-It proves reset, bounded POST, mode-1 selection, masked interrupts, the
-D57 mode-2/count-4 clock, D11 `4Eh`/`35h` setup, and the first `C4h`
-target-ready byte. A passing run ends with output equivalent to:
+## Full-profile coverage
 
-```text
-NETWORK-FIRST-ROM-HDL: PASS post=00 ready=C4 mode=1 pit=mode2/count4 usart=4E/35 io=45 memw=1406 pc=0184
+| Fixture | Boundary |
+| --- | --- |
+| Committed C4 / ABI 1.0 ROM | Reset, bounded POST, memory mode 1, masked interrupts, D57 mode-2/count-4 clock, D11 `4Eh`/`35h`, and first `C4h` target-ready byte |
+| Test-only C4 ABI dispatch | Copied mode-3 video helper, matrix-key input, public vectors and serial exchange through the modeled D57/D11/D104 path |
+| Test-only C9/C10/C11/C12 ABI dispatch | Each release's resident ABI behavior, with the POF release option for C10 and successors |
+| Video POF fixture | The C9 blank versus C10 visible boundary |
+| Test-only C4 NetDisk caller | Exact v3 request, CRC-checked reply and all 128 returned `5Ah` bytes copied to DMA memory |
+
+The committed C4 artifact is
+`spinoffs/jukuravi/network-rom/juku-network-rom-abi1.bin`, SHA-256
+`931218a654412e2f9b0776a81bd5369f0c22c1da45cada220a2b96bbe70854c0`.
+The gate first checks artifact freshness, then builds temporary self-test
+variants. Those variants use test dispatch to exercise resident code; they
+are not complete production reset-to-CP/M runs for every release.
+
+## Bounded CI profile
+
+```sh
+sync/network_first_rom_hdl_check.sh --ci
 ```
 
-The second fixture uses test-only reset dispatch around the same resident
-bytes and public vectors. It proves the copied mode-3 helper, 9,619 video-RAM
-writes, shifted matrix-key input, ABI version 1, and the resident serial path
-through the structural D57, D11, and D104 models. It transmits `ABI1`, consumes
-the test receive byte, and emits host marker `C3h`.
+This profile builds the fixtures, elaborates both structural ROM benches and
+executes the video POF guard. It skips the firmware simulations listed above.
+Its PASS therefore does not establish the full local profile's runtime result.
 
-The third run enables a test-only NetDisk caller. The unchanged resident C2
-transaction code emits the exact v3 request, validates a CRC-protected reply,
-and copies all 128 returned `5Ah` bytes to DMA memory. Its success line includes
-`netdisk_dma=128`.
+## Limits and related evidence
 
-These fixtures deliberately stop at a small structural boundary. The C model
-remains the practical full-system oracle for the V15 receive/decompression
-stream, the actual CP/M Plus image and command transcript, exact cursor pixels,
-fault recovery, server replacement, and long NetDisk soak. Physical CS00015
-qualification remains mandatory: HDL agreement cannot validate analogue
-levels, fitted silicon, board loading, or the actual serial cable.
+The C model remains the practical full-system oracle for bootstrap reception,
+decompression, CP/M commands, cursor pixels, recovery, host replacement and
+longer NetDisk workloads. Use [the network-ROM guide](../spinoffs/jukuravi/network-rom/README.md)
+for the corresponding gates and artifact identities.
+
+Structural HDL agreement does not qualify analog levels, fitted silicon,
+loading or the physical cable. Physical results remain board- and
+artifact-specific; [C12 qualification](c12-runtime-console.md) records the
+focused corrected-pair CS00000 results and remaining limits.
