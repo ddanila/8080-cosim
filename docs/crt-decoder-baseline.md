@@ -1,13 +1,13 @@
 # CRT decoder fork baseline
 
-Status date: **2026-07-22**.
+Baseline recorded: **2026-07-22**.
 
 Status: **WP0-WP2 + EVIDENCE-LINKED SYNTHETIC JUKU WP3 GUARDED**.
 
 This generated report records the CVBS-plan WP0 clean-checkout baseline and
 the later fork-owned WP1/WP2 receiver follow-ups and the bounded WP3
-synthetic Juku-timing fixture. The recorded unmodified fork point builds
-and passes its upstream synthetic NTSC
+synthetic Juku-timing fixture. The recorded unmodified fork point built
+and passed its upstream synthetic NTSC
 regression, then pins the float32/headless and explicit-profile E2E paths.
 The WP3 fixture consumes exact Juku raster evidence, but it makes no
 physical-VIDEO_OUT, framebuffer-agreement, or hardware claim.
@@ -18,7 +18,14 @@ physical-VIDEO_OUT, framebuffer-agreement, or hardware claim.
 python3 scripts/report_crt_decoder_baseline.py
 ```
 
-## Provenance checks
+This command validates fields in the retained
+[baseline record](../ref/video/decoder-fork-baseline.json) and their agreement
+with the CVBS plan. Artifact digests are checked for syntax, not recomputed
+from a decoder checkout. Recorded build/test and CI outcomes are not rerun
+or fetched here. The context commit is checked for ancestry only when it
+exists in local Git history; a shallow checkout may skip that check.
+
+## Recorded evidence checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
@@ -99,7 +106,7 @@ baseline.
 
 WP0-WP2 are complete at their generic boundaries: the fork owns provenance,
 strict raw-float input, explicit timing profiles, measured lock telemetry,
-positive/negative generated fixtures, and green full-build/test CI. The
+positive/negative generated fixtures, and successful recorded build/test CI. The
 bounded WP3 fixture additionally proves receiver lock at the exact guarded
 Juku raster timing without promoting it to a built-in preset. Physical pixel
 slots, D34_SIG/VIDEO_OUT integration, and framebuffer validation remain open.
