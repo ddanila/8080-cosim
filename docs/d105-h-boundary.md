@@ -13,10 +13,11 @@ drives D5.4 as `DBIN AND H`. Tied D105.12/.13 receive `MEMW`, while
 D105.11 drives D30.13.
 
 The authoritative board JSON, source PCB, HDL, and promoted routed PCB now
-preserve that measured topology. The routed board has exact source-pad identity
-and the stable-KiCad route/package gates report zero opens and zero electrical
-blockers. Historical DSN/SES and rejected local repair trials remain audit
-artifacts only.
+preserve the checked D105 path. This guard checks the six routed pad nets
+listed below; it does not run whole-board DRC or verify all source pads.
+Current routing and fabrication remain held; see
+[the routed audit](routed-refresh-audit.md) and
+[manufacturing readiness](replica-manufacturing-readiness.md).
 
 | Check | Result | Evidence |
 | --- | --- | --- |
@@ -45,13 +46,14 @@ artifacts only.
 | D13/D105 preserve their photographed right-facing notches | PASS | `D13=270.0; D105=270.0` |
 | D105 preserves its factory centre with owner-photo orientation | PASS | `(31.9, 215.505)` |
 | HDL models pulled-up H and gated DBIN | PASS | `hdl/juku_top.v` |
-| Promoted routed PCB preserves the measured D105 nets | PASS | `exact source parity` |
+| Promoted routed PCB preserves the measured D105 nets | PASS | `six checked D105 path pad nets` |
 
-## Rejected routed-snapshot repairs
+## Reproduction
 
-Earlier local copper trials attempted to preserve the obsolete routed netlist.
-They produced shorts or clearance failures around PHI2TTL, PHI2, RESIN, GND,
-RAM_OUT_EN, and the E3 control routing. Those trials remain rejected. The
-Promoted exact-source routing supersedes those trials and passes DRC without
-restoring the old D2.12-to-D105.9 assumption or adding a hidden jumper. Any
-future source-net change must regenerate and re-verify the complete package.
+```sh
+python3 kicad/report_d105_h_boundary.py
+```
+
+Any source-net change requires renewed routing and package verification.
+Rejected local copper trials are retained in Git history; they are not
+evidence of current whole-board routing readiness.
