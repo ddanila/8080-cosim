@@ -213,10 +213,11 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         ("Status: **DESK REVIEW REOPENED / D56 REGISTRATION HOLD**" if desk_review_open else
          "Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**"),
         "",
-        "This generated audit answers a narrow question: whether any tracked project",
-        "Markdown outside vendored `external/` material and operator templates contains",
-        "an unchecked implementation task that can be completed from repository evidence",
-        "and tools. It does not declare the replica complete or release the PCB.",
+        "This report inventories recognized Markdown checkboxes and verifies their",
+        "manifest classifications and cited text markers. It scans tracked and",
+        "untracked non-ignored `.md` files, excluding `external/` and the four",
+        "operator templates. It does not inspect prose tasks, validate completed",
+        "checkboxes, rerun the cited guards, or establish that all desk work is done.",
         "",
         "## Command",
         "",
@@ -226,11 +227,10 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         "",
         "## Active unchecked work",
         "",
-        f"There are {len(tasks)} unchecked items across {len(task_counts)} tracked project-plan",
-        ("documents. The corrected D56 fit reopens a photo-registration task;" if desk_review_open else
-         "documents. Every one now requires evidence, hardware, purchasing, fabrication,"),
-        "Other items still require evidence, hardware, purchasing, fabrication," if desk_review_open else "",
-        "or owner authorization." if desk_review_open else "or owner authorization.",
+        f"There are {len(tasks)} unchecked items across {len(task_counts)} project-plan",
+        "documents. The manifest assigns these items to the boundaries below.",
+        "The shortlist also reports a D56 registration hold." if desk_review_open else
+        "The exhaustion status applies to this classified checkbox list only.",
         "",
         "| Plan | Unchecked tasks |",
         "| --- | ---: |",
@@ -238,7 +238,7 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
     lines += [f"| `{path}` | {count} |" for path, count in sorted(task_counts.items())]
     lines += [
         "",
-        "| Plan item | Tasks | Why automation must stop | Required next input |",
+        "| Plan item | Tasks | Remaining dependency | Required next input |",
         "| --- | ---: | --- | --- |",
     ]
     for group_name in GROUPS:
@@ -253,7 +253,7 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         "",
         "## Machine-checked classification",
         "",
-        "| Plan | Unchecked task | Class | External-boundary evidence |",
+        "| Plan | Unchecked task | Class | Cited report markers |",
         "| --- | --- | --- | --- |",
     ]
     for path, task in tasks:
@@ -268,29 +268,18 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         "blank until an authorized physical order/assembly record exists; they are not",
         "repository implementation backlog.",
         "",
-        "## Automatically closed scope",
-        "",
-        "- Source/routed PCB identity, historical zero-open package integrity,",
-        "  adopted PROM/EPROM content, and runnable HDL/cosim behavior have dedicated",
-        "  generated reports and CI guards. The current routed board still has opens.",
-        "- Cross-machine reads close the four small PROM tables, and the independent",
-        "  archival D15/D16 pair is adopted as exact EktaSoft 3.7 content. Missing",
-        "  programming-drawing filename linkage remains optional provenance nuance.",
-        "- Physical shared-DRAM video timing and analog-output fidelity remain explicitly",
-        "  evidence-gated rather than replaced with a simulation convenience path.",
-        "",
         "## Guard",
         "",
-        f"This writer found active unchecked tasks in {len(task_counts)} tracked Markdown file(s).",
+        f"This writer found active unchecked tasks in {len(task_counts)} Markdown file(s).",
         "Any new unchecked task outside the four operator templates must have an exact",
-        "classification and all cited evidence markers must exist, otherwise generation",
+        "classification. Classified milestones must remain present as checkboxes, and",
+        "all cited evidence markers must exist, otherwise generation",
         "fails closed. `scripts/check_documentation_consistency.py` runs this writer in",
         "`--check` mode, and `scripts/regen_all.sh` regenerates the committed report.",
         "",
-        ("The practical next action is to register the marked D56 solder pads from" if desk_review_open else
-         "The practical next action is therefore the owner/bench shortlist—not another"),
-        ("the archived owner views, then use the owner/bench shortlist for remaining continuity." if desk_review_open else
-         "inference pass over the same files."),
+        "Use the [owner/bench shortlist](owner-measurement-shortlist.md) for the",
+        "listed physical evidence tasks. This inventory does not rule out further",
+        "repository review, documentation corrections, or implementation repairs.",
         "",
     ]
     return "\n".join(lines)

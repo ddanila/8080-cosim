@@ -2,10 +2,11 @@
 
 Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**
 
-This generated audit answers a narrow question: whether any tracked project
-Markdown outside vendored `external/` material and operator templates contains
-an unchecked implementation task that can be completed from repository evidence
-and tools. It does not declare the replica complete or release the PCB.
+This report inventories recognized Markdown checkboxes and verifies their
+manifest classifications and cited text markers. It scans tracked and
+untracked non-ignored `.md` files, excluding `external/` and the four
+operator templates. It does not inspect prose tasks, validate completed
+checkboxes, rerun the cited guards, or establish that all desk work is done.
 
 ## Command
 
@@ -15,10 +16,9 @@ python3 scripts/report_automatic_completion_audit.py
 
 ## Active unchecked work
 
-There are 8 unchecked items across 3 tracked project-plan
-documents. Every one now requires evidence, hardware, purchasing, fabrication,
-
-or owner authorization.
+There are 8 unchecked items across 3 project-plan
+documents. The manifest assigns these items to the boundaries below.
+The exhaustion status applies to this classified checkbox list only.
 
 | Plan | Unchecked tasks |
 | --- | ---: |
@@ -26,7 +26,7 @@ or owner authorization.
 | `docs/crt-cvbs-simulation-plan.md` | 1 |
 | `docs/factory-drawing-exploitation-plan.md` | 1 |
 
-| Plan item | Tasks | Why automation must stop | Required next input |
+| Plan item | Tasks | Remaining dependency | Required next input |
 | --- | ---: | --- | --- |
 | P0 physical connectivity and reroute | 1 | Remaining endpoints are hidden, contradictory under powered behavior, or continuity-only | owner continuity and powered captures from `docs/owner-measurement-shortlist.md` |
 | Main-board release and order | 1 | The current routed board has open connections and needs copper repair plus a regenerated package; physical-connectivity and sourcing gates remain held | closed P0 evidence, regenerated and reviewed package, explicit release, vendor upload, and payment |
@@ -37,7 +37,7 @@ or owner authorization.
 
 ## Machine-checked classification
 
-| Plan | Unchecked task | Class | External-boundary evidence |
+| Plan | Unchecked task | Class | Cited report markers |
 | --- | --- | --- | --- |
 | `PLAN.md` | P0 physical connectivity is complete and rerouted. | `connectivity` | `docs/owner-measurement-shortlist.md` (owner/bench packet ready); `docs/replica-bringup-verification-points.md` (source-risk net index unresolved); `docs/main-board-erc-parity.md` (release parity gate held) |
 | `PLAN.md` | Main-board design release passes; board is ordered. | `release` | `docs/replica-manufacturing-readiness.md` (current package regeneration held) |
@@ -53,24 +53,15 @@ and first-article documents are operator templates. They deliberately remain
 blank until an authorized physical order/assembly record exists; they are not
 repository implementation backlog.
 
-## Automatically closed scope
-
-- Source/routed PCB identity, historical zero-open package integrity,
-  adopted PROM/EPROM content, and runnable HDL/cosim behavior have dedicated
-  generated reports and CI guards. The current routed board still has opens.
-- Cross-machine reads close the four small PROM tables, and the independent
-  archival D15/D16 pair is adopted as exact EktaSoft 3.7 content. Missing
-  programming-drawing filename linkage remains optional provenance nuance.
-- Physical shared-DRAM video timing and analog-output fidelity remain explicitly
-  evidence-gated rather than replaced with a simulation convenience path.
-
 ## Guard
 
-This writer found active unchecked tasks in 3 tracked Markdown file(s).
+This writer found active unchecked tasks in 3 Markdown file(s).
 Any new unchecked task outside the four operator templates must have an exact
-classification and all cited evidence markers must exist, otherwise generation
+classification. Classified milestones must remain present as checkboxes, and
+all cited evidence markers must exist, otherwise generation
 fails closed. `scripts/check_documentation_consistency.py` runs this writer in
 `--check` mode, and `scripts/regen_all.sh` regenerates the committed report.
 
-The practical next action is therefore the owner/bench shortlist—not another
-inference pass over the same files.
+Use the [owner/bench shortlist](owner-measurement-shortlist.md) for the
+listed physical evidence tasks. This inventory does not rule out further
+repository review, documentation corrections, or implementation repairs.

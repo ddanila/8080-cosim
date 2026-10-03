@@ -547,10 +547,9 @@ def main() -> int:
     for marker in (
         ("Status: **DESK REVIEW REOPENED / D56 REGISTRATION HOLD**" if desk_review_open else
          "Status: **AUTOMATIC CHECKLIST EXHAUSTED / EXTERNAL ACTION REQUIRED**"),
-        "This generated audit answers a narrow question",
+        "This report inventories recognized Markdown checkboxes",
         "Any new unchecked task outside the four operator templates",
-        ("The practical next action is to register the marked D56 solder pads" if desk_review_open else
-         "The practical next action is therefore the owner/bench shortlist"),
+        "This inventory does not rule out further",
     ):
         if marker not in completion_audit:
             failures.append(f"automatic-completion audit is stale; missing {marker!r}")
