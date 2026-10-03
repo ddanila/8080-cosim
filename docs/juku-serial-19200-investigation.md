@@ -87,9 +87,11 @@ The decisive clue is now the controlled mode comparison. At the same nominal
 19,200 rate, framing, serial data waveform, CPU loop, and D11 setup, mode 3
 usually stops after a correct prefix while mode 2 passes both 133-byte probes
 and sustained filesystem traffic. Only the D57 output duty/edge waveform was
-intentionally changed. This rejects serial-line bandwidth, D104 data-path
-bandwidth, host pacing, parity, and CPU service latency as explanations for
-the mode-3 failure.
+intentionally changed. This makes receive-clock sensitivity the leading
+explanation and lowers suspicion on serial-line bandwidth, D104 data-path
+bandwidth, host pacing, parity, and CPU service latency. The software comparison
+does not exclude interactions between data timing and the receive-clock waveform;
+measure both at D11 before assigning a component fault.
 
 The ranked boundaries are:
 
@@ -112,8 +114,9 @@ external signal amplitude at X3.4 under the actual Juku load.
 
 ## Next bench session
 
-The first experiment should be one repeatable BAUDTEST run at 9600 followed by
-19,200, observed at the actual receiver. No new ROM is needed.
+Compare the passing 9600 mode-3/count-8 control, failing 19,200
+mode-3/count-4 case, and passing 19,200 mode-2/count-4 case at the actual
+receiver. Use the existing BAUDTEST2 matrix; no new ROM is needed.
 
 1. Use a two-channel oscilloscope. Reference both probes to confirmed signal
    ground X3.7. Use a 10x probe on the bipolar X3.4 RS-232-level signal; never
@@ -122,7 +125,7 @@ The first experiment should be one repeatable BAUDTEST run at 9600 followed by
    the first host start edge and capture a complete 133-byte case. At both
    rates record X3.4 positive/negative levels, D104.13 logic levels and edge
    times, and whether the output stops toggling when BAUDTEST stops counting.
-3. In a second capture observe D57.10 and D11.25 during count 8 and count 4.
+3. In a second capture observe D57.10 and D11.25 for all three clock settings.
    Confirm the frequencies and periods above, TTL amplitude, duty cycle,
    ringing, and continuity of the waveform at the USART pin.
 4. With power on but serial traffic idle, measure D104 pin 15 (+5 V), pin 16
