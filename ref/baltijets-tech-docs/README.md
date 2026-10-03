@@ -4,8 +4,7 @@ Source:
 `https://elektroonikamuuseum.ee/failid/juku/tech_docs_from_baltijets/`
 
 Fetched: 2026-07-06.
-Remote directory rechecked: 2026-07-11; it still listed files `000` through
-`015`, matching the 16 mirrored PDFs.
+The retained mirror contains files `000` through `015`.
 
 The directory contains 16 PDFs found in the former Baltijets factory building in
 Narva and scanned in November 2024. `000 Info.pdf` is text-searchable; the other
@@ -14,10 +13,10 @@ contain no useful body OCR for the scan-only PDFs beyond sparse metadata.
 
 `SHA256SUMS` records the fetched PDF hashes.
 
-## Doc 007 ROM/programming triage
+## Doc 007 ROM/programming references
 
-`007 ROM and ROM programming.pdf` does not close the small PROM byte-content
-blocker. It confirms the existence/type/provenance of several programmed parts,
+`007 ROM and ROM programming.pdf` does not print the four processor small-PROM
+byte tables. Their contents are adopted from physical captures. The packet confirms the existence/type/provenance of several programmed parts,
 but the relevant small-PROM tables are referenced as disk-held programming
 tables rather than printed in the PDF:
 
@@ -26,7 +25,7 @@ tables rather than printed in the PDF:
 | 16 | `ДГШ5.106.038` | `КР556РТ4` | programming table `ДГШ5.106.038 Д1`; note says `на диске` |
 | 17 | `ДГШ5.106.040` | `К573РФ5` | EPROM, table `ДГШ5.106.040 Д1`; `на диске` |
 | 18 | `ДГШ5.106.092` | printed `КР556РТ5` crossed out; handwritten amendment `К155РЕ3` | programming table `ДГШ5.106.092 Д1`; `на диске` |
-| 19-22 | `ДГШ5.106.106` | `К573РФ2` | printed hex listing `ДГШ5.106.106 Д1`; already low priority because РФ2 ROMs are available elsewhere |
+| 19-22 | `ДГШ5.106.106` | `К573РФ2` | printed 2 KiB BASIC listing `ДГШ5.106.106 Д1`; [reconstructed and matched to the cartridge image](../../docs/dgsh5-106-106-rom-table.md) |
 | 23 | `ДГШ5.106.107` | `К573РФ2` | EPROM sheet, no printed byte table on the shown page |
 
 Implication for the replica plan:
@@ -40,14 +39,14 @@ Implication for the replica plan:
   abstract/removed placeholder; its programmed bits are physically captured,
   while incomplete copper destinations remain unresolved.
 
-## Doc 002 schematics/components first pass
+## Doc 002 schematics/components
 
 `002 Schematics and components.pdf` is a mixed packet: assembly/mechanical
 drawings, component lists, applicability tables, and a few connection schematics.
 It does not contain a replacement full processor-module schematic in this scan,
 so it does not close the remaining CPU-board net unknowns by itself.
 
-Useful pages identified in the first pass:
+Relevant pages:
 
 | Page | Finding |
 |---|---|
@@ -62,15 +61,14 @@ Implication:
   applicability tables.
 - The table confirms the small PROM drawing numbers already seen in doc 007,
   but still gives no byte contents.
-- The P0 connectivity blockers in `PLAN.md` still need either the original
-  processor schematic pages, the referenced programming disk, or hardware
-  continuity/dump sessions.
+- The owner-supplied `.009` electrical schematic is retained in
+  [the photo catalog](../photos/dgsh5-109-009-e3/README.md). Remaining
+  connectivity and timing gaps are listed in [the active plan](../../PLAN.md);
+  the programming disk is optional content corroboration.
 
-## Doc 010 parts-list first pass
+## Doc 010 parts list
 
-`010 Parts list.pdf` is a parts-list/kit packet rather than the adjustment
-instructions anticipated in PLAN's `010-class` placeholder. It is still useful
-for sourcing:
+`010 Parts list.pdf` is a parts-list/kit packet used for sourcing:
 
 | Page | Finding |
 |---|---|
@@ -154,13 +152,12 @@ interface.
 
 Implication:
 
-- The `.042` hardware is consistent with a 23-contact inter-unit cable, but the
-  scan does not prove that its contacts are straight-through or that either end
-  is processor connector X4. It therefore cannot yet promote X4.6-X4.23 from
-  explicit harness boundaries to named FDD signals.
-- A cable continuity measurement, an explicit `.042` connection schematic, or
-  another factory interconnection table is still required before applying the
-  FDD-unit page-5 names to processor X4.
+- The `.042` hardware is consistent with a 23-contact inter-unit cable,
+  but this scan does not prove straight-through wiring or identify processor X4.
+- The separately recovered processor `.009` and НГМД schematics now establish
+  the [X4/XS5 signal map](../schematics/fdc-x4-ngmd-wire-map.md) by exact
+  contact-number agreement. That drawing-level map does not prove physical
+  cable continuity; preserve the cable as a separate measurement boundary.
 
 ## Doc 014 removable-memory-expander pass
 
@@ -187,5 +184,6 @@ and suffix `-02` to `JUKU-3`.
 Implication:
 
 - Doc 003's EKDOS boot disk `JUKU-1 ДГШ5.106.105` is a factory-named disk label
-  family, not a dumped image by itself. The actual disk image still needs to come
-  from MAME/juku3000 media or a physical disk dump.
+  family, not a dumped image by itself. The vendored
+  [media images](../../media/disks/README.md) have separate public-archive
+  provenance; matching a label does not prove factory-written disk contents.
