@@ -1,15 +1,13 @@
-# JukuNet C10 ROM plan
+# JukuNet C10 video-release contract
 
 Status: **IMPLEMENTED AND DESK-QUALIFIED; D15/D16 PAIR READY TO PROGRAM;
 PHYSICAL ACCEPTANCE PENDING**.
 
-Decision date: **2026-08-27**
-
 C9 / ABI 1.4 is immutable. Its physical evaluation on CS00000 proved the
 network boot, CP/M, NetDisk, resident N4 console, diagnostics, writes, warm
 boot, and host-replacement paths, but also found one release-blocking local
-video initialization defect. C10 is the separately named successor that must
-correct that defect and close the verification gap that admitted it.
+video initialization defect. C10 is the separately named successor that corrects
+that defect and adds a guard for the full Port C state.
 
 ## Implemented candidate and desk qualification
 
@@ -36,7 +34,7 @@ Programming and physical promotion are distinct: the pair is ready for the
 writer, while CS00000 cold-video, attended `VIDTEST`, and full workload
 acceptance remain required after installation.
 
-## Required C10 correction: release PC7/POF after POST
+## PC7/POF release after POST
 
 ### Physical proof
 
@@ -84,15 +82,15 @@ S21-mode, CP/M renderer, MODX, programmer, or host-console defect.
   under a separately named C10 combined image and D15/D16 pair.
 
 This electrical correction does not by itself require a new ABI vector. C10
-may retain ABI 1.4 unless another accepted C10 feature changes the public
-contract.
+retains ABI 1.4. Runtime console switching belongs to the separate C12 release.
 
-## Required verification corrections
+## Verification contract
 
 The original gates checked the exact stock PIT sequence and the final memory
 mode, but not the complete PPI0 Port C state. The abstract framebuffer could
 therefore contain correct pixels while the physical mixer suppressed them.
-C10 must add all of the following:
+The C10 automated gates cover the following; attended physical observation
+remains a separate acceptance requirement:
 
 - a reset-sequence guard proving ordered PPI0 writes `82h`, `0Fh`, then `0Eh`;
 - successful boot/self-test checkpoints requiring complete Port C `01h`, not
@@ -159,37 +157,35 @@ the operating system.
 latched S21 raw `01h`, video mode 0 (40x24). This is expected command policy,
 not a C9 defect.
 
-## Candidate companion feature: runtime console switching
+## Remaining physical acceptance
 
-The separately recorded `cpm-plus-juku/docs/runtime-console-switching.md`
-proposal names C10 or later as its possible ABI owner. The POF defect now
-provides an independent reason for a C10 build, but runtime switching still
-multiplies the physical geometry/locale/transition matrix and is not required
-to fix C9.
+The completed implementation and desk gates do not establish physical
+promotion of the named C10 pair. The sibling
+`cpm-plus-juku/docs/c10-physical-acceptance-worksheet.md` owns its programming
+and acceptance procedure. A bench run must bind the exact combined/D15/D16
+hashes above and record built-in programmer verification.
 
-Default decision: keep runtime mode/charset switching deferred unless it is
-explicitly admitted before C10 implementation begins. If admitted, it must be
-atomic, publish boot-default versus active state, preserve overrides across
-warm boot, and return to S21 defaults on reset. It must not delay the POF fix
-or weaken its focused qualification.
+On CS00000, require cold local video before network load, visible CP/M/MODX
+output, attended `VIDTEST`, exact Port C `01h`, and the retained C9 workloads
+with zero clean-path target retries/UART errors. The five-byte discriminator
+cannot substitute for a correct C10 boot. The known-working EKTA 3.7/C8 pairs
+remain rollback paths.
 
-## Implementation and acceptance order
+Later C11/C12 features and their physical scope are described in the
+[network-ROM overview](../spinoffs/jukuravi/network-rom/README.md).
+[Runtime console switching](c12-runtime-console.md) is implemented in C12;
+it is outside the immutable C10 contract.
 
-1. Add the failing full-Port-C and POF-visibility fixtures against immutable
-   C9; prove they fail for the demonstrated reason.
-2. Add the stock `0Eh` release in a separately named C10 build and update its
-   truthful hardware-initialization metadata.
-3. Add the narrow `STATUS`/`DIAG VIDEO` observability without claiming analog
-   self-test coverage.
-4. Rebuild C4--C9 byte-identically and run the complete C9 simulator, HDL,
-   native-host, replacement, fault, CP/M, and package gates for C10.
-5. Produce deterministic C10 combined/D15/D16 hashes and a private physical
-   worksheet. Do not reuse C9 filenames or rewrite its artifacts.
-6. Program and built-in-verify one named C10 pair only after explicit approval.
-7. On CS00000, require cold local video before network load, visible CP/M/MODX
-   output, attended `VIDTEST`, exact Port C `01h`, and the complete retained C9
-   unattended workload with zero clean-path retries/UART errors.
+## Reproduction
 
-Steps 1--5 are complete. Steps 6--7 are the remaining physical work. C9
-remains immutable physical evidence rather than a promoted ROM, and the
-known-working EKTA 3.7/C8 pairs remain rollback paths.
+From this repository:
+
+```sh
+python3 spinoffs/jukuravi/network-rom/build_network_rom.py --check
+sync/jukuhost_c10_cosim_check.sh
+```
+
+From the sibling `cpm-plus-juku` checkout, `make c10-check` checks the matching
+system and `make c10-release-candidate` builds its reproducible package and
+physical worksheet. Package production does not authorize programming or
+establish physical acceptance.
