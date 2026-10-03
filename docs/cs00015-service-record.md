@@ -162,30 +162,17 @@ volume, selected B:, completed `DIR` on the native 160-track
 read-only. CS00014 had already passed the same setup, so the native game-drive
 path is now physically validated on both available reference boards.
 
-## Historical fast-bootstrap measurements
+## Fast-bootstrap evidence
 
-The August 14 comparison used the same CS00015, system, volume, cable and host.
-The measured interval runs from the first valid bootstrap request to the first
-valid A: request; it is not a power-on-to-prompt measurement.
+Historical CS00015 loader comparisons and per-run captures are retained in
+[the comparison record](evidence/juku-serial/cs00015-fastboot-20260814.json)
+and its linked evidence. Their timing boundary is the first valid bootstrap
+request to the first valid A: request, not power-on to prompt. These results
+qualify the recorded variants, not later releases.
 
-| Path | Interval | Stock frames | Recovery | Display |
-| --- | ---: | ---: | --- | --- |
-| Original stock 9600, 6784-byte/53-record wrapper | 73.873 s | 330 | baseline | CP/M prompt |
-| Fast stage v1, 558-byte stage | 17.508 s | 42 | one recovered block-0 timeout | CP/M prompt |
-| Fast stage v2 | 12.999 s | 42 | zero retries | CP/M prompt |
-
-The [retained comparison record](evidence/juku-serial/cs00015-fastboot-20260814.json)
-binds the artifacts and measurements. Later v9–v13 trials exposed acknowledged
-handoff and interrupt-fed stream races. V14 received and CRC-checked the whole
-compressed stream before expansion. Three physical v14 runs reached their
-first disk request at 6.115, 6.100 and 6.069 seconds with zero extension or
-stream retries. Two needed a second extension-header probe, which recovered
-without body contamination. Per-run records remain in
-[`evidence/juku-serial/`](evidence/juku-serial/).
-
-These are historical loader qualification results. The supported stock
-recovery path is now JF17; see [the current fastboot guide](janet-fastboot.md)
-for artifacts, commands and reset boundaries.
+The supported stock recovery path is JF17; use
+[the current fastboot guide](janet-fastboot.md) for artifacts, commands and
+reset boundaries.
 
 ## Current deployment
 
