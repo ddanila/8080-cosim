@@ -11,7 +11,9 @@ tracked in
 
 - A Windows 95-compatible ANSI Win32 GUI uses the shared C protocol/media
   core and runner. Linux, macOS and DOS remain frontends of that same core.
-- Default C12, selectable C11 and stock modes use the checked embedded catalog.
+- C12, C11 and stock modes use the checked embedded catalog. Configuration
+  defaults and the source INI select C12; the floppy package writes a Stock ROM
+  INI for its bundled development disk.
 - Listen/Stop, adapter selection, A:/B: image selection, N4 console and visible
   diagnostics are available without a command shell.
 - Serial/device ambiguity is reported; the host does not guess among identical
