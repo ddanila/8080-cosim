@@ -9,9 +9,9 @@ history.
 - `../README.md` — project overview and honest current status.
 - `../PLAN.md` — sole project-wide plan, priorities, milestones, and
   fabrication-release criteria.
-- `automatic-completion-audit.md` — generated, fail-closed classification of
-  every active unchecked item as evidence-, hardware-, procurement-, or
-  authorization-gated.
+- `automatic-completion-audit.md` — generated classification of recognized
+  Markdown checkboxes and their cited evidence markers; it does not inventory
+  prose tasks or establish that all desk work is complete.
 - `crt-cvbs-simulation-plan.md` — subordinate execution plan for generating a
   loaded VIDEO_OUT voltage waveform, adapting the forked sample-domain receiver, and
   validating monitor lock before optional CRT presentation.
@@ -63,8 +63,9 @@ history.
   and re-shoot disposition for the 2026-07-18 recovered drawing batch.
 - `../ref/schematics/dgsh5-109-009-e3-notes.md` — reviewed, generated
   three-sheet `.009` electrical transcription and `.006` divergence audit.
-- `d30-section-b-scan-chase.md` — exhausted sheet-1 trace audit for the two
-  remaining D30 section-B conductors and the exact continuity closure required.
+- `d30-section-b-scan-chase.md` — owner continuity closure of D30.11 to
+  D105.2/D13.4/D11.20 and D30.8 to D29.7, with the older scan ambiguity retained
+  as provenance.
 - `8286-pinout-audit.md` — physical D4/D107/D23-D25/D29/D100 channel pinouts
   and source/LVS-map high-address/command permutation guard.
 - `phi2ttl-d29-clock-route.md` — exact `.009` and owner-verified correction of
@@ -182,8 +183,9 @@ findings. Every status applies only to the boundary named by the report.
   `video-physical-probes.md` (executable controlled-stimulus probes for the
   source-proved D42/D43/D37 and D56/D34_SYNC contributors, with the shared-DRAM
   slot schedule and D34 signal input explicitly open),
-  `video-pit-timing.md` (exact-ROM autonomous 15.625 kHz/313-line D54/D55/D56
-  raster timing, independently matched to the 320x241 reference geometry),
+  `video-pit-timing.md` (replay of selected ROM PIT writes into D54/D55/D56,
+  producing 15.625 kHz/313-line raster timing matched to the 320x241 reference
+  geometry; this does not execute the ROM or validate physical slot timing),
   `d99-reconstruction-constraints.md` (grounded-clear constant section 1,
   D94-D1 access trigger, fitted RC timing, and five remote-pin boundaries),
   `video-readout-readiness.md`, `x7-output-stage-model.md` (guarded static

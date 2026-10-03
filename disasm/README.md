@@ -122,7 +122,7 @@ the mapping boundary closes.
 ## Workflow
 
 ```sh
-# Install once (any machine; also done automatically by the check script):
+# Install the expected version:
 python3 -m venv ~/.venvs/skoolkit && ~/.venvs/skoolkit/bin/pip install skoolkit==10.0
 
 # After editing the ctl, regenerate the vendored skool:
@@ -136,6 +136,14 @@ sync/disasm_check.sh
 For each of the nine images, the guard checks the pinned ROM SHA256,
 byte-identical regeneration of its vendored skool from the ctl, and exact
 ROM-byte reassembly with `skool2bin.py`.
+
+The guard installs SkoolKit 10.0 in a temporary environment only when
+`sna2skool.py` is absent from `PATH`. Otherwise it uses the installed commands
+without checking their version. To use the environment above, run:
+
+```sh
+PATH="$HOME/.venvs/skoolkit/bin:$PATH" bash sync/disasm_check.sh
+```
 
 ## Caveats
 
