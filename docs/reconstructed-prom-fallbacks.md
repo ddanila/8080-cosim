@@ -9,7 +9,7 @@ comparison only. Validated physical D2, D6, D8, and D94 tables under
 ## Command
 
 ```sh
-scripts/export_reconstructed_proms.py
+python3 scripts/export_reconstructed_proms.py
 sync/prom_fallback_check.sh
 ```
 
@@ -47,10 +47,13 @@ sync/prom_fallback_check.sh
 ## HDL Consistency Guard
 
 `sync/prom_fallback_check.sh` compiles `hdl/sim/prom_fallback_tb.v` against the
-current `hdl/devices.v` modules and compares every validated physical row with
-physical-table-backed D2/D6/D8/D94 logic. A passing guard means the
-validated physical files still match HDL; it does not validate the retained
-historical D8 reconstruction.
+current `hdl/devices.v` modules. With modeled pull-ups and enables asserted,
+it compares all 256 D2/D6 rows and all 32 D8/D94 rows against the retained
+`.raw.hex` tables. Separate D6/D8 probes check disabled release and the
+row-0 sink pattern. It does not sweep every enable combination or measure
+physical voltage/timing. The model and test read the same retained tables;
+independent dump identity and BIN/HEX agreement require the physical-PROM
+guards. This test does not validate the historical D8 reconstruction.
 
 CI also reruns `scripts/export_reconstructed_proms.py` and fails if the
 generated files or this report are stale.
