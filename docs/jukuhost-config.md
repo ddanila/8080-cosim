@@ -14,7 +14,9 @@ The generated Pocket8086 folder therefore starts with either `JUKUHOST` or
 are COM1, 19,200-baud NetDisk v3, `CON` for the local N4 console, a writable
 A: snapshot, read-only native B:, and DOS-safe log/capture names.
 
-Relative file names are resolved beside the configuration file. The format is
+Relative artifact, disk, log and capture file names are resolved beside the
+configuration file. `port` and `console` are passed unchanged to the platform
+backend; relative device paths are not rebased to the INI directory. The format is
 ASCII, line-oriented, and deliberately strict: section and key names are
 case-insensitive, but duplicate keys, unknown sections or keys, malformed
 numbers and hashes, incomplete artifact identities, and lines of 512 bytes or
@@ -92,7 +94,7 @@ Defaults and units for the timing and transfer settings are:
 | --- | ---: | --- |
 | `host.timeout` | 120 s | 1–86400 s |
 | `host.disk_timeout` | 0 | 0–86400 s; zero permits an indefinite session |
-| `host.boot_restarts` | 3 | 0–100 |
+| `host.boot_restarts` | 3 | 0–100; applies when `recover_session=no` |
 | `host.reconnect_timeout` | 30 s | 0–86400 s; zero disables reopen |
 | `network.protocol` | 3 | 1–3; a console requires 3 |
 | `network.baud` | 19200 | Parser range 300–115200; the serial backend must support the selected rate |
@@ -135,8 +137,12 @@ next checked request. Named serial-device loss is retried in bounded
 PTY is likewise awaited before boot and reopened after a loss.
 See [`c11-session-recovery.md`](c11-session-recovery.md).
 
-`boot_restarts` bounds complete bootstrap retransmissions after an explicit
-target-reset indication; zero disables them. A V16 body is never resent merely
+With `recover_session=no`, `boot_restarts` bounds complete bootstrap
+retransmissions after an explicit target-reset indication; zero disables them.
+Passive recovery ignores this count limit and rediscoveries continue after
+failed bootstrap attempts or checked target resets. Each boot attempt still
+has its `timeout`; serial reopen attempts have their `reconnect_timeout`.
+A V16 body is never resent merely
 because its final acknowledgement was lost. The host retries only after the
 reset ROM emits a fresh checked `JR16` readiness frame, so it cannot overwrite
 a possibly running CP/M system.
