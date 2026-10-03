@@ -8,7 +8,15 @@ conservative catalog, not a full CP/M filesystem extractor.
 
 The current images expose their directory at byte offset `0x5000`.
 The scanner reads `128` directory entries of `32` bytes
-and strips CP/M attribute bits from filename bytes.
+and strips CP/M attribute bits from filename bytes. It selects local `.CPM`
+and `.JUK` files by suffix and uses this fixed layout; it does not detect
+disk format or validate directory allocation consistency.
+
+## Command
+
+```sh
+python3 scripts/report_vendored_disk_catalog.py
+```
 
 ## BASIC-relevant files
 
@@ -30,9 +38,9 @@ The exact search covers raw and asserted polarity, forward and reversed address
 order, compact/space/line-oriented ASCII hex, checksum-valid Intel HEX,
 and, where the table is nibble-wide, nibble ASCII plus both packed-nibble
 orders.
-No match under these common exact encodings rules out a plainly stored validated
-table; a proprietary, permuted, compressed, or otherwise transformed encoding
-still cannot be ruled out.
+A negative result excludes the enumerated contiguous encodings in the searched
+views. Fragmented storage not reconstructed by this layout, proprietary
+formats, other address permutations, and compression remain untested.
 
 | Disk | Active candidate names | Deleted names | Raw marker hits | Exact table hits |
 | --- | --- | --- | --- | --- |
@@ -45,6 +53,11 @@ still cannot be ruled out.
 Each encoding is searched once in the physical byte stream and once in every
 active file reconstructed in CP/M logical extent order. Offsets would be shown
 for every match; `none` means the full encoding was absent from both views.
+File reconstruction assumes 4 KiB blocks, four reserved logical tracks, and
+the retained 40-record sector translation. The BASIC raw-offset extraction
+has a separate unresolved allocation-map boundary; see
+[BASIC disk files](basic-disk-extraction.md). Reconstructed corpora here do not
+prove complete filesystem recovery.
 
 | Disk | Validated table | Corpora searched | Encoding forms tested | Matches |
 | --- | --- | ---: | ---: | --- |
