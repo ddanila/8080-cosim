@@ -13,8 +13,7 @@ verified simulation twin.
 
 ## 4.0 Implemented observability interfaces
 
-These are board-model (`rev-a-physical.board.json`) changes. Each is cheap in
-copper and impossible to retrofit cleanly after fab.
+These interfaces are present in the board model (`rev-a-physical.board.json`).
 
 | Item | What | Why |
 |---|---|---|
@@ -23,10 +22,8 @@ copper and impossible to retrofit cleanly after fab.
 | J98 control-bus header | 1×8: `MREQ_N`, `IORQ_N`, `RD_N`, `WR_N`, `M1_N`, `RFSH_N`, `WAIT_N`, `GND` | Provides the control bus for stepping and control-view captures. |
 | NOP-plug provision | none (documentation only) | Free-run test uses an empty U2 socket plus a resistor plug on J91 (8× ~1 kΩ, D0-D7→GND) so every fetch reads `0x00` = NOP. No board change needed — J91 already carries D0-D7 + GND. |
 
-**Done:** J96/J97/J98 are in `rev-a-physical.board.json`, the schematic is
-regenerated, and `check_rev_a_physical.py` now requires these refs and enforces
-an observability contract (A8-A15 + `MEM_WR_N` on J97, the control bus on J98,
-`OSC_OE_N`/GND on J96). The NOP plug is documentation-only (no copper).
+`check_rev_a_physical.py` requires J96/J97/J98 and checks their signal assignments.
+The NOP plug is an external fixture, with no added PCB copper.
 
 ## 4.1 Fixed analyzer channel maps (RP2350, 24 channels, 5 V-tolerant inputs)
 
@@ -64,10 +61,11 @@ guessing, no idle samples.
 The bench twin of `sim/vjuga_boot_check.sh`: capture every memory write during
 boot (Profile FB), filter to `0xD800-0xFFFF`, replay the stream into a
 9640-byte framebuffer image, and `cmp` against cosim's `vram.bin`.
-**Byte-identical banner = boot PASS**, with zero display electronics (VGA stays
-deferred).
+**Byte identity proves the captured workload at its chosen cutoff.** Rev A
+does not need VGA electronics for this comparison. A bounded capture does not
+prove completion of the boot banner or the full RAM test.
 
-Deliverables — **implemented and green** against the twin, before any hardware:
+Implemented replay path:
 
 1. `tools/vjuga_fb_readback/reassemble.py` — reads a capture stream (`ADDR DATA`
    hex per line), replays writes in order into a 64 KiB image, extracts
@@ -76,9 +74,12 @@ Deliverables — **implemented and green** against the twin, before any hardware
    every framebuffer write in that exact format.
 3. `sim/vjuga_readback_check.sh` — boots the twin with `+capture`, reassembles,
    and requires `reassemble(capture) == twin dump == cosim vram.bin`
-   (both PASS at 6000 writes). Wired into `sim/check.sh`. This validates the replay path for twin-generated captures. A physical
+   (default `WRITES=6000`). Wired into `sim/check.sh`. This validates the replay
+   path for twin-generated captures at that cutoff. A physical
    mismatch may also arise from sampling, wiring, omitted writes or initial
-   state; verify the capture chain before blaming a chip.
+   state; verify the capture chain before blaming a chip. Use the same write
+   cutoff and initial framebuffer state for capture and oracle; retain the ROM
+   identity and cutoff with each result.
 
 ## 4.3 Arduino UNO single-step rig — DONE (sketch + reference trace)
 
@@ -113,7 +114,7 @@ step runs. Western parts throughout until step (g).
 | b | Sockets + passives only; power via bench supply on J1 | PWR_OK LED on; rails 5 V ± 5 %; idle draw ≲ 50 mA; no warm parts |
 | c | Insert U50 + U51 only | CLK = 4 MHz square on J92.10 (scope); RESET_N clean single rising edge; D4/D5 LEDs behave |
 | d | Free-run NOP test: Z80 + GAL in, **U2 empty**, NOP plug on J91, J94 = Mode A | A0-A15 binary-count on the analyzer (Profile FB, clock on RD_N); M1 LED (D6) lit dim; RFSH LED (D7) active |
-| e | Mode A baseline boot: + ROM, 8255, 74xx, KM4164 bank | **Profile FB capture → `reassemble.py` → byte-identical to cosim `vram.bin`** = board baseline PASS |
+| e | Mode A baseline boot: + ROM, 8255, 74xx, KM4164 bank | Profile FB capture → `reassemble.py` → byte identity with the matching cosim workload; record cutoff and separately confirm the completed banner for baseline acceptance |
 | f | Single-step session: J96 shorted, UNO rig on | first ~200 M1 fetches `diff`-clean against the twin reference trace |
 | g | Chip tests — ONE scarce part at a time into the proven baseline, re-run the step (e) readback after each swap | matching capture for the tested boot workload; broader part qualification remains separate |
 | h | D6 polarity guard (see 4.6) | `DEC_ROM_N` low during reset fetch and agrees with the corrected twin |
