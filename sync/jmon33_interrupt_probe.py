@@ -64,8 +64,6 @@ def main() -> int:
     passed = all(checks.values()) and proc.returncode == 0
     status = "JMON33 INTERRUPT PATH READY" if passed else "JMON33 INTERRUPT PATH NOT READY"
 
-    irq_lines = [line for line in proc.stderr.splitlines() if line.startswith("[IRQ]")]
-    stopped = next((line for line in proc.stderr.splitlines() if line.startswith("stopped ")), "")
 
     REPORT.write_text("\n".join([
         "# jmon33 interrupt-path probe",
@@ -99,13 +97,6 @@ def main() -> int:
         f"| First frame IRQ logged; trace contains vector `FF54h` | {'PASS' if checks['frame_irq_taken'] else 'FAIL'} |",
         f"| Keyboard matrix ports read | {'PASS' if checks['keyboard_scan'] else 'FAIL'} |",
         f"| Positive write-density count on page `DB00h` or `DC00h` | {'PASS' if checks['vram_written'] else 'FAIL'} |",
-        "",
-        "## Trace Highlights",
-        "",
-        "```text",
-        *(irq_lines[:4] or ["<no IRQ lines observed>"]),
-        stopped or "<no stopped line observed>",
-        "```",
         "",
         "## Remaining Boundary",
         "",

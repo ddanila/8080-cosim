@@ -144,8 +144,6 @@ def main() -> int:
     passed = all(checks.values())
     status = "JMON33 MONITOR-IDLE ORACLE READY" if passed else "JMON33 MONITOR-IDLE ORACLE NOT READY"
 
-    irq_lines = [line for line in proc.stderr.splitlines() if line.startswith("[IRQ]")]
-    stopped = next((line for line in proc.stderr.splitlines() if line.startswith("stopped ")), "")
 
     def result(name: str) -> str:
         return "PASS" if checks[name] else "FAIL"
@@ -198,13 +196,6 @@ def main() -> int:
         f"- Mode switches: `{stop.get('switches', 0)}`" if stop else "- Mode switches: not parsed",
         f"- Actual VRAM SHA256: `{actual_sha256 or 'missing'}`",
         f"- Write pages: `{', '.join(f'0x{page:02X}00={count}' for page, count in sorted(pages.items()))}`",
-        "",
-        "Trace highlights:",
-        "",
-        "```text",
-        *(irq_lines[:3] or ["<no IRQ lines observed>"]),
-        stopped or "<no stopped line observed>",
-        "```",
         "",
         "## Remaining Boundary",
         "",
