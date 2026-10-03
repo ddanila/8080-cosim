@@ -2,7 +2,11 @@
 
 Status date: 2026-08-22
 
-CS00000 is a home-lab Juku received from Arvutimuuseum. Its fitted stock ROM
+This record covers the August 2026 service and stock-ROM tests. The later
+[deployment profile](machines/CS00000.json) records the corrected C12 pair
+installed in September.
+
+CS00000 is a home-lab Juku received from Arvutimuuseum. Its then-fitted stock ROM
 identifies itself on screen as ROM `#0031`, RomBios `3.43`, and Janet `1.2`.
 Those strings are owner-observed; the two ROM devices have not been dumped in
 this session, so no content hash is claimed.

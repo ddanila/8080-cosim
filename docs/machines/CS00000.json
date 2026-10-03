@@ -1,13 +1,13 @@
 {
   "schema": "juku-machine-profile-v1",
   "machine_id": "CS00000",
-  "updated": "2026-08-22",
+  "updated": "2026-09-05",
   "location": "home lab",
   "deployment_role": "diagnostic candidate; not a reference machine",
   "fitted_firmware": {
-    "identity": "EktaSoft 3.7; Serial #0037; owner-reported swap",
-    "sha256": null,
-    "confidence": "owner-report"
+    "identity": "JukuNet C12 / ROM ABI 1.4 D15/D16; corrected CP437 D16",
+    "sha256": "b1a8152c0b4684d9d5608bd8bb60a06a21393c3bd7e7894cd8b7b61c494350d6",
+    "confidence": "physical-record"
   },
   "qualified_paths": [
     "stock Janet boot with learned station identity 02 -> 01",
@@ -17,12 +17,15 @@
     "portable C host 0.3.1-m6 post-truncation-fix boot and physical ROM-independent DIAG 0.6 ALL pass with EK37",
     "restored CP2102 plus MAX3232 control boot after an unqualified Diymore FTDI adapter comparison",
     "CP/M Plus prompt and sustained 19,200-baud NetDisk v3",
-    "100 percent successful repeated cold starts with EktaSoft 3.7 #0037 after #0031 no-display starts"
+    "100 percent successful repeated cold starts with EktaSoft 3.7 #0037 after #0031 no-display starts",
+    "corrected C12 80x24 glyph recheck, warm-boot override preservation and default restoration",
+    "corrected C12 cold-state and DIAG ALL checks after owner RESET and power cycle; host started after checkerboard"
   ],
   "open_investigations": [
     "preserve and repeatedly dump removed stock #0031 D15/D16 pair",
     "inspect ROM socket contacts and compare #0031 with EK37 under controlled conditions",
-    "repair and verify original PSU"
+    "repair and verify original PSU",
+    "corrected C12 broader video-profile and endurance qualification; continuous-host physical reset recovery"
   ],
   "evidence": [
     "docs/machine-deployment-status.md",
@@ -31,6 +34,7 @@
     "docs/evidence/juku-serial/cs00000-ek37-c-host-v15-20260822T103131Z.boot.json",
     "docs/evidence/juku-serial/cs00000-ek37-diag06-20260822T162818Z.log",
     "docs/evidence/juku-serial/cs00000-ek37-diag06-fixed-20260822T183458Z.boot.json",
-    "docs/evidence/juku-serial/cs00000-ek37-cp2102-control-20260822T202538Z.boot.json"
+    "docs/evidence/juku-serial/cs00000-ek37-cp2102-control-20260822T202538Z.boot.json",
+    "docs/c12-runtime-console.md"
   ]
 }

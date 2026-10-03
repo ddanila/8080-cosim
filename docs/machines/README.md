@@ -1,8 +1,6 @@
 # Juku machine profiles
 
-Status date: 2026-08-18
-
-These machine-readable records separate inventory identity, deployed state,
+Each record has its own evidence update date. These machine-readable records separate inventory identity, deployed state,
 qualified behavior, and unresolved investigations. A finding is local to the
 named board unless an explicit cross-board experiment says otherwise. Unknown
 values are recorded as `null`; they must not be inferred from a board number.
