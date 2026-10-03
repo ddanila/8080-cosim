@@ -9,9 +9,10 @@ The identities below remain necessary for the frozen compatibility oracle.
 
 ## Baseline identity
 
-The baseline is the repository state containing this document. Its production
-modules and direct regression tests are pinned below so later changes cannot
-silently redefine parity:
+The baseline is commit
+[`81f64f76e56c3dd56cffbb4a6a89a4094dafbda6`](https://github.com/ddanila/8080-cosim/commit/81f64f76e56c3dd56cffbb4a6a89a4094dafbda6).
+The hashes below identify its production modules and direct regression tests;
+they are historical identities, not hashes of the current test files.
 
 | File | SHA-256 |
 | --- | --- |
@@ -103,7 +104,9 @@ python3 tests/jukuhost_contract_test.py
 sync/janet_netboot_check.sh
 ```
 
-The first command proves the immutable compact oracle. The second runs that
-oracle plus the existing Fastboot, disk-server, and five-system simulator
-regressions. These verify the frozen baseline, not the complete current
-platform or physical acceptance matrix.
+The first command compares selected wire and checksum vectors with the
+retained Python fixtures. It does not hash-check the historical files or
+prove complete behavioral parity. The second runs that comparison, the C
+core gate, and Fastboot, disk-server and archived-system simulator
+regressions. The complete current platform and physical acceptance matrix
+requires the separate guards in the production contract.
