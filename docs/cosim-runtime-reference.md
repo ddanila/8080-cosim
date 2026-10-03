@@ -1,13 +1,13 @@
 # Deep cosim CPU-bus guard — reference
 
-`sync/cosim_check.sh` is the deep VALUE-level guard. It runs `juku_top` (the LVS-checked
-structural model) and compares its ordered CPU-bus activity against the C emulator (`cosim`).
+`sync/cosim_check.sh` compares the runnable `juku_top` model
+with the C emulator (`cosim`) through ordered CPU-bus events.
 The shared event vocabulary is memory read/write (`MR`/`MW`), I/O read/write (`IR`/`IW`), and
 interrupt acknowledge (`IA`); address and data are checked for every event, with the acknowledge
-address treated as don't-care. `cosim` is the authoritative reference: a straightforward 8080 +
-flat-memory model, written independently and in a different language, whose framebuffer
-`boot_check` already validates. LVS checks connectivity and `boot_check` checks sampled memory;
-this checks the live transaction stream value-by-value.
+address treated as don't-care. The C oracle combines an independent 8080 core
+with Juku memory banking and peripheral models. This checks agreement between
+two implementations; it does not establish physical timing or complete board
+fidelity. LVS checks connectivity, while `boot_check` checks sampled memory.
 
 The C CPU also records the address and byte of the last instruction actually
 fetched, distinguishing an interrupt acknowledge from a memory opcode. This

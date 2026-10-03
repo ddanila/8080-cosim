@@ -1,23 +1,9 @@
 #!/usr/bin/env bash
-# Deep CPU-bus guard, referenced to the C emulator (cosim). juku_top (the LVS-checked structural
-# model) must perform the same memory reads/writes and I/O reads/writes in the same order and with
-# the same values. The shared format also supports interrupt acknowledges, whose path is exercised
-# by focused interrupt guards. cosim is the AUTHORITATIVE reference -- a
-# straightforward 8080 + flat-memory model in a different language -- so this compares juku_top
-# against ground truth rather than against a second Verilog model. Catches datapath/read value bugs
-# the other guards miss:
-#   - sync/check.sh (LVS)  checks CONNECTIVITY, not values.
-#   - sync/boot_check.sh   checks only sampled memory (0xD300 + the 0xD800+ framebuffer).
-#
-# History: this used to lockstep juku_top against a second Verilog model (juku_struct, the behavioral
-# oracle). Comparing two independently-timed Verilog models made the verdict depend on sub-cycle
-# event ordering, so it diverged differently across Icarus versions ("passed on Linux, failed on
-# Mac"). Referencing cosim removes the second model and pins each divergence to a real
-# juku_top-vs-reference difference. See docs/cosim-runtime-reference.md.
-#
-# Current state: juku_top matches cosim across the complete bounded trace. The РУ5 model follows
-# the 4164 early/delayed-write contract, while the functional D53 scaffold holds RAS from the row
-# phase through the CAS column pulse. Any address or data divergence is a hard failure.
+# Compare ordered runnable juku_top CPU-bus events with the C oracle.
+# cosim uses an independent 8080 core plus Juku memory/peripheral models.
+# This checks type, address, and data agreement, not physical-board timing.
+# Focused interrupt guards separately exercise interrupt acknowledgements.
+# See docs/cosim-runtime-reference.md for scope and model boundaries.
 #
 # Run:   sync/cosim_check.sh
 # Slower than boot_check (juku_top runs to ~20 ms sim); run in thorough/nightly CI.
