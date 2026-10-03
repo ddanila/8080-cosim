@@ -1,53 +1,55 @@
-# Shared commons — generic Juku ↔ spin-offs
+# Shared Juku facts and spin-off consumers
 
-Contract for what is shared between the main Juku reconstruction (root) and the
-spin-offs (`spinoffs/minimal-vga/` rev A, rev B boards, and anything later), so
-that knowledge and findings flow **automatically**, not by copy-paste.
+The root reconstruction owns the original-machine evidence. Spin-offs consume
+that evidence through references, derived artifacts and focused guards. A
+spin-off's new hardware design or qualification result remains specific to
+that design; it does not establish the same result on an original Juku.
 
-## Principle
-**Root is the single source of truth; spin-offs consume, never fork.** A finding
-made anywhere (bench, owner measurement, PROM dump, twin calibration) lands in
-the root artifact first; spin-offs pick it up through derivation or a guard —
-a spin-off must never carry a hand-maintained copy of a root fact.
+## Sources
 
-## The commons inventory (what is shared, where truth lives)
+| Shared material | Source | Consumer |
+| --- | --- | --- |
+| Behavioral reference | `cosim/` and its firmware/framebuffer checks | Rev A/B boot and framebuffer comparisons |
+| Firmware | `roms/` | Z80-patched images built by the minimal-VGA ROM tools |
+| Small PROM truth tables | `ref/physical-proms/` and `ref/reconstructed-proms/` | Decode models and their focused checks |
+| Memory, ports, PIC and model timing | [juku-machine-facts.json](../ref/juku-machine-facts.json) | [Rev B bus contract](../spinoffs/minimal-vga/docs/rev-b-bus-contract.md), board checks and selected HDL constants |
+| Owner measurements | [Measured facts](owner-measured-facts.md) and topic-specific evidence | Referenced source boundaries and qualification records |
+| Device behavior | Root `hdl/` models | Spin-off simulations using the corresponding devices |
+| Bring-up procedure | [Rev A workbench](../spinoffs/minimal-vga/docs/workbench-plan.md) and [Rev B build plan](../spinoffs/minimal-vga/docs/rev-b-build-plan.md) | Staged board validation |
 
-| Commons | Truth location | Spin-offs consume via |
-|---|---|---|
-| Behavioral oracle | `cosim/` (C emulator) + golden `vram*.bin` | boot/framebuffer comparison — already the rev A/B gate |
-| Firmware images | `roms/` (ekta37 etc.) | derived images only (e.g. `make_z80_rom.c` builds `ekta37_z80.bin`); derived files are build products, never edited |
-| PROM/silicon truth | `proms/` dumps, `ref/reconstructed-proms/`, D6/D8 tables | GAL equations and decode models are *derived from* these tables |
-| Machine facts (map, ports, timing) | **`ref/juku-machine-facts.json`** (to create — see below) | testbenches, docs, and card specs read the same file |
-| Owner/bench measurements | `docs/owner-measured-facts.md` and per-topic docs | referenced, never restated with different numbers |
-| Shared HDL device models | root `hdl/` (FDC, PIC/intr, devices) | spin-off twins instantiate root models where the device is the same silicon |
-| Bring-up method | rev A docs (NOP plug, J95 observability, FB-readback oracle) | rev B inherits by reference (`rev-b-build-plan.md` S9) |
+The facts JSON includes provenance for the shared model values. Its timing
+assumptions and framebuffer conventions require their recorded scope; they
+are not measurements of every firmware mode or physical board. Derived ROMs
+and decode outputs must be regenerated from their inputs rather than edited.
 
-## The new artifact: `ref/juku-machine-facts.json`
-One machine-readable file holding the facts every consumer currently repeats in
-prose: memory map (ROM/RAM/overlay modes, framebuffer `0xD800`+9640, 40×241
-geometry), I/O port map (PIC `0x00/0x01`, 8255 `0x04–0x07`, UART, FDC), PIC
-wiring (ir0..ir7 assignments), calibrated constants (frame-IRQ period 200,000
-cycles, FDC 2 MHz-equivalent timings), and clock assumptions. Populated **from
-cosim/twin sources**, with provenance notes per entry.
+## Guard coverage
 
-Consumers: rev B's B0 bus-contract doc (generated sections), HDL testbench
-parameters, cosim guards, future spin-offs.
+Run from the repository root:
 
-## The automatic part: a commons guard
-Extend the existing consistency-guard pattern
-(`scripts/check_documentation_consistency.py` precedent) with a **commons check**:
-it verifies that constants appearing in spin-off HDL/testbenches/docs match
-`juku-machine-facts.json`, and that derived artifacts (Z80 ROM image, GAL
-equations, reconstructed PROM exports) are up to date with their root sources.
-Run with the other guards; a root finding that changes a fact then *fails* every
-stale consumer instead of silently diverging.
+```sh
+python3 scripts/check_spinoff_commons.py
+```
 
-## Findings flow (the rule of motion)
-1. New finding → update the root truth artifact (dump, facts file, measured-facts doc).
-2. Re-run derivations (exports, ROM builds, GAL terms).
-3. Commons guard flags every consumer that must react — that list *is* the work item.
-4. Spin-off docs cite root docs; they don't restate numbers.
+The CI guard checks the facts file's required sections, provenance fields,
+framebuffer size arithmetic and base-address consistency. It checks that the
+Rev B bus-contract document contains the selected canonical values and that
+any `FB_BASE` definitions found in Rev B HDL match the canonical base.
 
-The inverse also holds: a spin-off bench discovery (e.g. rev A resolving the D6
-polarity, rev B backplane timing reality) is a **root finding made on spin-off
-hardware** — it lands in root first, then flows back out.
+Missing consumer files are reported as skipped. The document checks look for
+values in text; they do not parse every table field or detect every conflicting
+number. This guard does not regenerate ROMs, GAL equations or PROM exports,
+or establish complete timing/connectivity agreement across all spin-offs.
+Use the corresponding subsystem checks for those boundaries.
+
+## Updating shared facts
+
+1. Record new original-machine evidence in its root source artifact, retaining
+   board identity, provenance and uncertainty.
+2. Update affected model facts and consumers, then regenerate the relevant
+   derived artifacts.
+3. Run the commons guard and the affected subsystem checks. Commit the source
+   evidence and resulting consumer changes together.
+
+Record findings made on spin-off hardware as spin-off evidence. Promote a
+claim about the original machine only when the original-machine sources or a
+suitable repeated test support it.
