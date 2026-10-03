@@ -35,14 +35,15 @@ The 8253 slice implements binary/BCD count loading, LSB/MSB access formats,
 live or latched count reads, first-latch ownership, and the video-used modes;
 the Juku-specific HDL clocks remain authoritative for count progression.
 
-## Honest boundaries
+## Model boundaries
 
 - D2's physical inputs, validated `.037` table, and D0/WAIT handoff are modeled.
 - D6's validated `.038` table and chip-removed separate pins 11/12 remain the
   structural/LVS truth. Runnable simulation now selects from that physical table
-  through `U_DECODE`. The 2026-07-19 revision-3 reread corrected the original
-  reader's four-channel bit reversal, so all four outputs now connect directly
-  with no simulation-only polarity correction.
+  through `U_DECODE`. All four outputs connect directly
+  with no simulation-only polarity correction. Capture provenance and the
+  corrected channel order are in
+  [the physical PROM guide](../ref/physical-proms/README.md).
   `decode_prom_functional` is retained only by the B37A diagnostic comparison.
 - D94's validated physical `.092` table is modeled with open-collector outputs,
   and its first three outputs are wired to the accepted local FDC controls.
@@ -88,13 +89,13 @@ the Juku-specific HDL clocks remain authoritative for count progression.
   Physical D41/D42/D43 and mux/decode instances exist. Their ИР16 falling-edge
   LD/SH/OC behavior and D48-D52 inverting КП14/258 behavior are guarded, but
   faithful shared-DRAM slot timing still needs the remote control sources. The
-  formerly missed D59 5->6 inverter is now wired locally: D59.5 reaches the
-  E14/video /G link and D59.6 reaches the E13/CPU /G link. Owner continuity on
-  2026-07-22 proves D59.5 is driven by the D40.11 1 MHz slot rail, shared with
+  D59 5->6 inverter is wired locally: D59.5 reaches the
+  E14/video /G link and D59.6 reaches the E13/CPU /G link. Owner continuity
+  proves D59.5 is driven by the D40.11 1 MHz slot rail, shared with
   D92.2/.3 and D95.5/.6. The runnable HDL, JSON, schematic, and both routed
   PCB representations preserve that modeled single-driver net; this does not
   imply zero open connections across either board. See
-  `docs/d40-d59-d92-d95-1mhz-route.md`. Yosys/LVS applies its complementary
+  [the route review](../docs/d40-d59-d92-d95-1mhz-route.md). Yosys/LVS applies its complementary
   enables to D48-D51; runnable simulation keeps CPU MA selected while the
   SIM-ONLY video port remains in use, because the D41/D53 slot schedule is
   still an explicit timing boundary. D94's proved
@@ -103,8 +104,6 @@ the Juku-specific HDL clocks remain authoritative for count progression.
   and the РУ5 model implements early/delayed asynchronous writes without a
   synthetic sampling clock. Exact D36/R57 delays and DOUT turn-off remain
   physical evidence boundaries.
-- Several device models implement only the modes exercised by the guarded Juku
-  paths.
 - Simulation-only CPU sampling, keyboard stimulus, framebuffer access, and
   interrupt helpers are excluded from LVS by an explicit allowlist in
   `sync/lvs.py`.
@@ -119,6 +118,6 @@ sync/ie7_check.sh   # К555ИЕ7/74LS193 device behavior and cascade
 sync/ie10_check.sh  # К555ИЕ10/74LS161 behavior and traced D103 /13 loop
 ```
 
-See `../sync/README.md` for subsystem and deep checks. A green LVS result proves
+See [verification entry points](../sync/README.md) for subsystem and deep checks. A green LVS result proves
 only mapped connectivity; it does not cover omitted pins or validate device
 behavior.
