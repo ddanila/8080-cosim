@@ -15,19 +15,12 @@ source of T is still unread. Original-board D99.12↔D100.9 continuity and
 D100.11's remote source need direct measurement. The nearby D96.13/D99.10
 branch bears a similar quoted `1` arrow but has no local junction to T;
 check D99.10↔D100.11 on the target rather than equating the arrow labels.
-An original-pixel reread of `(700,2050)–(1450,2650)` shows the T arrow
-annotated with a large `1`, a small raised character resembling Cyrillic `п`,
-and two separate strokes to the lower left that can look like `11` or Roman
-`II`. These are continuation markings, not a junction to any of the three
-crossing vertical conductors. In particular, the two strokes are not a
-confirmed decimal `11` or an identified sheet-1 device pin; searching sheet
-1 for literal `11` alone cannot resolve this continuation.
-The D99.10/D96.13 downward arrow on the same original frame, near
-`(1400,1940)`, repeats the same two-stroke / large-`1` / raised-mark pattern.
-The matching annotation style does not join those two conductors: their
-separate arrowheads terminate different drawn lines, and no common local
-junction is drawn. It does rule out treating either two-stroke mark as a
-unique D100 pin-11 identifier.
+Native crop `(700,2050)–(1450,2650)` shows D100 T's continuation marked
+with a large `1`, a raised character resembling Cyrillic `п`, and two separate
+lower-left strokes. The D99.10/D96.13 arrow near `(1400,1940)` repeats this
+style. Neither mark identifies decimal pin `11`, and matching typography
+does not join the separately drawn conductors or identify their remote source.
+
 ## Physical probe locations
 
 In
