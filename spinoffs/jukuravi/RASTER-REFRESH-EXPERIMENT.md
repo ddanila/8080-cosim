@@ -23,7 +23,10 @@ refresh from natural retention differences. The controlled raster/no-raster
 comparison below tests whether arming the timing chain changes retention.
 
 This experiment arms the raster from the T36 loader and measures whether
-that alone preserves RAM through an unrefreshed hold. No ROM burn, no scope.
+that alone preserves RAM through an unrefreshed hold. Once the required
+service firmware is fitted, the experiment uploads snippets and requires no
+additional ROM programming. Initial retention measurements need no scope;
+fault localization may require waveform capture.
 
 ## Mechanism
 
