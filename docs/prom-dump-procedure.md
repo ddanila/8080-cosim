@@ -6,7 +6,7 @@ programming-disk files provide independent corroboration. Raw pin-level files
 are authoritative; active-low asserted complements remain separately named.
 The old D8 reconstruction is historical comparison evidence.
 
-D15/D16 use the adopted third-source EktaSoft 3.7 split, rather than direct
+D15/D16 use the adopted third-source archive-37 RomBios 3.43m split, rather than direct
 reads of the photographed EPROMs. See [programming images](eprom-programming-images.md).
 PROM capture consistency does not close circuit continuity or timing holds;
 see [D94 constraints](d94-reconstruction-constraints.md) for the FDC boundary.
@@ -104,10 +104,12 @@ close the `CS7` shared-enable source.
    four data bits; the corrected `.038` table is adopted directly. Compare an
    independent reader or programming-disk artifact only as optional provenance.
 3. **РТ4 D2 → bus/wait corroboration**: compare another physical `.037` read
-   with the three matching adopted captures. It does **not** replace the I/O
+   with the adopted capture set listed in `d2_037.dump.json`: eight named
+   inputs representing six independent captures. Alias inputs are not extra
+   independent reads. It does **not** replace the I/O
    decoder; board evidence puts the functional I/O chip-select decoder at D9
    К555ИД7.
-4. **M2764 ×2**: optionally corroborates (or forks) the adopted Ekta 3.7 pair
+4. **M2764 ×2**: optionally corroborates (or forks) the adopted archive-37 RomBios 3.43m pair
    against another physical board.
 
 If a future owner dump differs from `ref/physical-proms/validated/*.bin`, keep
