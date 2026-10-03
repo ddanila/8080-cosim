@@ -106,6 +106,12 @@ python3 scripts/photo_registration.py project --group solder_grid --x 506 --y 33
 Do not cite a panorama seam or rectified pixel as endpoint provenance; use the
 projected original-image coordinate.
 
+`validate` checks the declared image hashes and endpoint records. `solve`
+rewrites the transforms in `registration.json`; panorama generation also
+writes derived registration metadata. Review those changes before committing.
+These commands recompute registration aids, not the electrical observations
+recorded in the reviewed JSON files.
+
 ## Local package fitting
 
 When global board projection misses a physical pad row, add direct anchors to
@@ -116,9 +122,19 @@ When global board projection misses a physical pad row, add direct anchors to
 /usr/bin/python3 kicad/apply_local_package_registration.py REF
 ```
 
-Each fit needs at least two anchors plus an independent held-out check. Applying
-a fit updates coordinates and confidence only; it preserves `measurement`
-state until visible copper or continuity establishes a destination.
+Similarity fits need at least two anchors; affine fits need exactly three.
+Include an independent held-out check for either model. The script checks
+errors for declared check anchors but does not reject their absence.
+Regenerate the local fit report
+before applying it: the application script consumes that report without
+recomputing its fit or checking input freshness.
+
+Applying a fit rewrites matching seed observations in `endpoints.csv`, including
+coordinates, confidence, and selected review notes. It can also change the
+source image for eligible seeds; the default requires fits for both faces,
+with `--side component` or `--side solder` available for one face. Review state
+and candidate nets are preserved. A separate electrical review must establish
+a destination before promoting a `measurement` row.
 
 ## Electrical evidence and remaining work
 
