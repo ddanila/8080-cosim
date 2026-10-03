@@ -63,7 +63,7 @@ EXE, then:
 5. leave A: in **Snapshot** mode for normal writable use; and
 6. press **Listen**, then power or reset the Juku if necessary.
 
-**C12** is the default for the latest ROM and matching CP/M system. **C11**
+Select **C12** for a machine fitted with the C12 ROM and matching CP/M system. **C11**
 retains compatibility with the physically accepted C11 ROM. Both wait without
 transmitting until they see their checked ROM beacon or a complete NetDisk
 request. This means either can safely attach while CP/M is already running or
@@ -73,7 +73,10 @@ ROM; the embedded system and Fastboot pair changes with it.
 **Stock ROM** stays at 9,600/8O1 for Janet, the compressed JF17 transfer, and
 NetDisk. Like C11/C12, it first listens without transmitting, attaches to a
 checked live NetDisk session, and recognizes a new checked Janet request as a
-target reset. It then reloads CP/M automatically without a baud-rate guess.
+target reset. After a stock-ROM cold start or hardware reset, select **T → N**
+on the Juku to enter Janet network boot. The host reloads CP/M when that
+checked request arrives; it does not send the monitor keys. See
+[the stock boot guide](janet-fastboot.md) for station-prompt settings.
 
 Press **Stop** before changing the mode, adapter, or disk images. Closing the
 window while active requests the same clean stop and waits for the current
