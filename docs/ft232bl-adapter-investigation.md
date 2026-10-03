@@ -168,7 +168,7 @@ plain-MAX232 mismatch, but its independent effect is not isolated because the
 selector orientation was corrected in the same revisit. The historical
 failure was therefore hardware configuration, not a host-parser defect.
 
-### Juku comparison
+### Earlier Juku comparison (August 22–23)
 
 Two fixed-host `0.3.1-m6` attempts were retained:
 
@@ -270,62 +270,25 @@ K170AP2 waveform. If a scope later shows that it does not, the result diagnoses
 this board, this socketed component, its selector/contact path, or its ground;
 it does not establish a generic MAX232-versus-Juku incompatibility.
 
-## Ranked diagnosis
+## Current conclusion
 
-CS00000, its D11 path, the Juku cable, local CTS loop, host, and images are
-qualified by the immediate CP2102 control. The Diymore adapter is **not
-qualified for Juku**. The new evidence rules out several broad explanations but
-still does not identify one failed component.
+The August 28 retest qualifies the corrected selector configuration and
+onboard MAX232/DB9 path for the recorded C9/V16 boot and NetDisk session.
+The earlier zero-receive diagnosis is superseded: the selector shunts were
+installed 90 degrees from the photographed orientation. Charge-pump
+capacitors were also replaced during the successful revisit, so their
+independent effect was not isolated.
 
-1. **DB9 signal-ground bond or external reference path.** This is now the
-   strongest single untested explanation. Neither the local nor the complete
-   far-end data loop requires DB9.5 to connect two device grounds. A missing or
-   high-resistance DB9.5-to-board-ground bond explains the two loopback passes,
-   zero external reception, the failed adapter-to-adapter join, and the working
-   TTL-header path, whose header GND was explicitly connected. The owner's
-   cable continuity check qualifies the harness; the module's internal DB9.5
-   bond to MAX232 pin 15/TTL GND remains unrecorded.
-2. **Board-local MAX232 receive path under an independently referenced load.**
-   A damaged or counterfeit receiver, socket contact, selector contact, or
-   waveform collapse visible only when the Juku driver and module receiver are
-   joined remains possible. The far loop proves the same receiver works with
-   its own transmitter, so this must be observed at MAX232 RIN and ROUT rather
-   than inferred from another loop.
-3. **Unverified selector topology.** MAX485 removal makes direct contention
-   from that socketed chip unlikely, and restored photographed positions pass
-   DB9 loopback. Hidden routing remains possible but ranks below ground and a
-   board-local analog/contact fault.
-4. **Data crossover.** Both end-to-end mappings were exercised twice. A final
-   post-swap voltage/continuity map would improve the record, but repeated zero
-   receive in both mappings makes crossover a low-ranked explanation.
+The earlier local and far-end loopbacks alone did not prove compatibility
+with an external driver. The successful Juku traffic supplies that evidence;
+it does not establish endurance or compatibility with every machine.
 
-Software framing, baud rate, host parsing, FTDI latency, RTS/CTS, FT232R-style
-EEPROM inversion, MAX485 presence, and a generic MAX232/MAX3232 polarity or
-threshold difference are rejected by direct evidence or the datasheets.
+## If the symptom returns
 
-## Next discriminating test
-
-If this module is revisited, do not repeat blind crossover or Janet tests. Use
-this order:
-
-1. With everything unpowered, measure resistance from module DB9.5 to the TTL
-   header GND, RS485 terminal GND, MAX232 pin 15, and USB logic ground. Expect a
-   near-short, not merely a DMM voltage reference. Reconfirm cable DB9.5 to
-   X3.7 separately.
-2. If the module bond is open or high, temporarily join TTL-header GND to Juku
-   X3.7 with power off, then retry the documented data pair. Do not substitute
-   either connector shell for signal ground.
-3. If ground is sound, map DB9.2/3 to MAX232 RIN/TOUT and the jumper centres by
-   powered-off continuity. This replaces the remaining selector inference with
-   facts.
-4. Use a common-ground breakout and send repeating `55` from Juku or the known
-   adapter. Scope the selected MAX232 RIN and matching ROUT simultaneously.
-   Record positive and negative peaks under load. A bipolar-rated 10x probe is
-   required at RIN; use a logic probe only at ROUT/FT232 RXD.
-5. Only after those checks, swap the socketed part as a component diagnostic.
-   A genuine `MAX232ACPE+` or ST232C matches the fitted 0.1 µF capacitors. Such
-   a swap tests this IC and corrects transmitter-margin noncompliance; it must
-   not be presented in advance as the proven receive fix.
-
-No EEPROM write, driver replacement, further host change, or Juku hardware
-change is justified by the current evidence.
+Preserve the successful selector orientation and replacement capacitor
+configuration. Compare a new capture with the August 28 result before
+changing host software or Juku components. If reception again becomes silent,
+verify the cable and module signal-ground bonds, map the selector/DB9 paths
+by powered-off continuity, and observe MAX232 RIN and ROUT under an
+independently referenced driver. The former ground, receiver and selector
+hypotheses are fallback diagnostic checks, not current unresolved faults.

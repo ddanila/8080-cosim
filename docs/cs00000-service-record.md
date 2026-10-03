@@ -174,49 +174,25 @@ errors. Its retained evidence begins at
 
 ### USB/RS-232 adapter comparison
 
-A Diymore multifunction FT232BL module (`0403:6001`, Linux `ftdi_sio`, DB9
-male, socketed MAX232CPE) was evaluated as an alternative to the known
-CP2102/MAX3232 chain. Its local
-DB9 pin-2/pin-3 loopback returned exact bytes at 9,600/8O1, 19,200/8N1, and
-19,200/8O1. With the DB9 open, pin 3 measured approximately -9 V relative to
-pin 5 while pin 2 measured 0 V. These observations prove a working local USB
-UART/DB9 loop but do not by themselves prove interoperability with a separate
-RS-232 driver.
+The August 22 Diymore FT232BL module trials left EK37 in `Wait` with
+zero host receive bytes. Local DB9 and full-harness far-end loops passed,
+but those loops did not establish interoperability with an independently
+referenced RS-232 driver. The module's onboard DB9 route remained unqualified;
+these results did not establish a Juku USART fault or a defective adapter.
 
-Repeated Juku trials used the documented X3 wiring and the existing local
-X3.10/RTS-to-X3.5/CTS loop. Both complete data mappings were tried twice and
-left EK37 in `Wait`; native host `0.3.1-m6` received zero bytes before its
-bounded timeout. Its zero transmit count is expected because the stock host
-does not answer before receiving a valid Janet request. A separate
-`INPCK|PARMRK` 9,600/8O1 capture received neither data nor parity, framing, or
-break markers. A direct FTDI-to-CP2102/MAX cross-test also
-received zero bytes in both directions under both attempted data orders. Since
-that temporary join was not electrically instrumented, this does not prove
-which multifunction-module path or join was at fault. The Diymore module is
-therefore **not qualified for Juku**, but is not declared defective.
-
-A later full far-end loop ran through the selected onboard MAX232, both DB9
-joins, the entire Juku harness, and a motherboard-end X3.4-to-X3.9 short. It
-passed exact payloads at 9,600/8O1, 19,200/8N1, and 19,200/8O1. This closes both
-data conductors but still does not exercise an external signal-ground
-reference. The strongest remaining common explanation is therefore the
-unmeasured module-internal DB9.5 bond to MAX232/TTL ground, followed by a
-board-local receiver/socket/selector fault visible only with an independently
-referenced driver. The fitted plain MAX232CPE with four 0.1 µF `C104`
-charge-pump capacitors is a genuine BOM/application-circuit mismatch, but it
-affects transmitter margin and does not explain the isolated receive silence.
-
-The original CP2102 + MAX3232 chain was then restored without changing
-CS00000, EK37, the Juku-side cable, or host artifacts. It immediately learned
-Janet `02 -> 01`, completed stock/JF15 boot with zero rejects or retries,
+Restoring the CP2102 + MAX3232 chain without changing CS00000, EK37, the
+Juku-side cable, or host artifacts immediately completed Janet/JF15 boot,
 reached `A>`, served 30 reads / 90 records, and stopped with exit 0 and zero
-UART errors. This control keeps CS00000, its X3 wiring, local CTS loop, and the
-production host qualified; only the alternative adapter path remains open.
-Evidence begins at
+UART errors. The control evidence begins at
 [`cs00000-ek37-cp2102-control-20260822T202538Z.boot.json`](evidence/juku-serial/cs00000-ek37-cp2102-control-20260822T202538Z.boot.json).
-The exact module identity, selector interpretation, corrected live assumptions,
-and next discriminating bench test are recorded in
-[`ft232bl-adapter-investigation.md`](ft232bl-adapter-investigation.md).
+
+The later [adapter investigation](ft232bl-adapter-investigation.md) retains
+the device identity, wiring and measurements. On August 28, corrected selector
+orientation and replacement charge-pump capacitors enabled C9/V16 boot and
+22 NetDisk reads / 66 records with zero retries or UART errors through the
+onboard MAX232/DB9 route. The independent effect of the capacitor replacement
+was not isolated. The final host exit 4 followed USB-device disappearance
+during shutdown; it does not invalidate the completed traffic.
 
 ## Remaining work
 
