@@ -13,11 +13,6 @@ and not physical Windows serial qualification.
   6.22-compatible floppy. Setup source was copied to `C:\WIN95` from the ISO.
   `FILES=60`, `BUFFERS=30`, no HIMEM, and the CD-documented `SETUP /IS` were
   used. See that repository's `tests/WINDOWS95-SETUP.md` for DOS fixes.
-  Follow-up on 2026-09-06 resolved the HIMEM observations: DOS fork commit
-  `a438fb9` fixes XMS free-memory status and moves crossing 64 KiB boundaries,
-  with standalone regressions. Normal Windows 95 Setup with `DOS=HIGH` then
-  completed through desktop and clean shutdown. This does not change the
-  original host-test configuration recorded here.
 - COM1 is QEMU's local PTY, attached directly to the C12 co-simulator; no
   physical serial adapter or CS00000 was used. Simulator pacing is 1.7 MHz,
   using the same UART settings as the Wine end-to-end harness.
@@ -28,20 +23,20 @@ and not physical Windows serial qualification.
   documented no-external-payload-source build path was used. No catalog
   identities were silently updated.
 
-## Bugs exposed by the real guest
+## Required Windows 95 compatibility
 
 1. `InterlockedExchangeAdd` is absent from the original kernel, preventing
-   process startup. Read the aligned volatile stop-only flags directly on
-   Win32/x86; retain `InterlockedExchange` for writes. Remove the unavailable
-   import from the allowlist and shim; the import regression guards this.
+   process startup. The accepted build reads aligned volatile stop-only flags directly on
+   Win32/x86 and uses `InterlockedExchange` for writes. The import regression
+   excludes the unavailable API.
 2. `MoveFileExA` exists as a stub returning `ERROR_CALL_NOT_IMPLEMENTED`.
-   Configuration replacement must take the existing backup/rename fallback
-   for this result, not only for an absent export. Tests also ensure a real
+   Configuration replacement uses the backup/rename fallback for this
+   result as well as an absent export. Tests also ensure a real
    access-denied error does not trigger fallback.
 3. With the configured 4096-byte serial TX queue, native probe writes of
    1, 128, 512, and 4096 bytes succeeded. Writes of 8192 and 16384 returned
-   FALSE, a count of 4096, and last-error zero. Cap each synchronous write at
-   4096 bytes, preserving the existing partial-write loop. A 9000-byte shim
+   FALSE, a count of 4096, and last-error zero. The accepted serial implementation caps each synchronous write at
+   4096 bytes and preserves the partial-write loop. A 9000-byte shim
    regression requires three bounded writes with exact byte preservation.
 
 ## Results and scope
