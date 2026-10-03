@@ -76,7 +76,7 @@ counter 0 before entering the loader. Service mode is one-way until RESET —
 the same contract NetBios has.
 
 Total Phase 2 footprint: 1,732 B in the reclaimed floppy region and 532 B
-in the `F900h` gap. Together with Phase 1 and `V`, the image still has 395 B
+in the `F900h` gap. Together with Phase 1 and `V`, the image still has 394 B
 free there.
 
 ## Phase 1 content

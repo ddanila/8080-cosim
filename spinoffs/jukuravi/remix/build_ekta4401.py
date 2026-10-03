@@ -49,7 +49,7 @@ TABLE_OFFSET = 0x1977            # stock dispatch table (runtime D977h)
 TABLE_POINTER_OFFSET = 0x1924    # operand of the single LXI H,D977h at 1923h
 NEW_TABLE_OFFSET = 0x3900        # free gap; runtime F900h via mode-1 mapping
 NEW_TABLE_RUNTIME = 0xF900
-FREE_GAP_END = 0x3EBA            # first non-FF byte after the gap
+FREE_GAP_END = 0x3EB9            # first non-FF byte after the gap
 PRINT_STRING = 0xDA6B            # ROM print routine: BC -> NUL/'$'-terminated
 
 HELP_TEXT = (
