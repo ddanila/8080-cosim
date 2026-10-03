@@ -3,7 +3,8 @@
 From the repository root, `spinoffs/minimal-vga/sim/check.sh` runs the broad
 aggregate: shared replica boot, T80 smoke and real-ROM boot, tv80 boot in both
 decode modes, the Rev B tier suite, framebuffer-readback validation, U24 DRAM
-timing, logical LVS, nine Rev A physical LVS slices and Rev A PCB/package checks.
+timing, logical LVS, nine Rev A physical-design JSON/HDL LVS slices, and
+Rev A PCB/package checks.
 
 ## Rev B entry points
 
@@ -34,4 +35,6 @@ U24's timing reference is guarded against the vendored MK4564-12 limits at
 4 MHz. Device-specific GAL programming and physical chip qualification belong
 to [the Rev A fixture guide](../docs/workbench-plan.md) and its linked bench
 procedure. Passing simulation, LVS or package checks does not prove a physical
-board works.
+board works. The Rev A LVS slices compare mapped endpoints in
+`rev-a-physical.board.json` with structural HDL; routed copper is checked
+separately by the PCB gates.
