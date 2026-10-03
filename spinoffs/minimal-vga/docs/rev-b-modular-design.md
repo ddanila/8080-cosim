@@ -1,80 +1,60 @@
-# VJUGA rev B — modular card + backplane design
+# VJUGA rev B modular design
 
-New parallel approach (rev A, the 200×200 4-layer board, is **not** scrapped). Goal:
-several **≤100×100 mm** cards on a **passive 100×100 mm backplane**, so every PCB stays
-in the cheap 2-layer tier and you re-spin one small card instead of a big 4-layer board.
-The five-slot backplane fits the complete CPU/Memory/I/O/Video/FDC system at the proven
-16 mm pitch; the former sixth spare slot was traded for a mechanically clear power tail
-and the lower fabrication price (D1.37).
+Rev B is a modular Z80/SRAM/VGA machine using the accepted Juku firmware
+interfaces. It is independent of the monolithic Rev A and the faithful original
+PCB reconstruction. The [five-board plan](rev-b-five-board-order-plan.md) controls
+the first article; [status](rev-b-status.md) records its qualification boundary.
 
-## Bus: RC2014
-0.1" pin header/socket, Z80-native (A0–15, D0–7, real Z80 control, clock, power).
-Chosen over ISA 8-bit (8088/XT baggage) and card-edge fingers (gold + bevel upcharge).
-Reusing the RC2014 bus means the **bus contract is mostly pre-defined**. The RC2014
-*interface* is freely implementable; only the specific board Gerbers are restricted
-(mainline = commercial license; the salfter respin = no license = all rights reserved).
-So we **reuse ideas, draw our own boards** — see below.
+## Cards and backplane
 
-### The ≤100 mm problem and the fix (idea from salfter/rc2014-compat)
-Mainline RC2014's 40-pin 0.1" bus spans ~102 mm → just over the 100×100 cheap-tier
-cliff, and the standard bus lacks /WAIT. salfter's respin solves both with a scheme we
-adopt (concept only, not his files):
-- **39-pin base connector** (~96.5 mm) → fits under 100 mm → the $2 JLCPCB tier.
-- **Separate 10-pin extension** carrying `/WAIT`, `/NMI`, `/BUSRQ`, `/BUSAK`, `/RFSH`,
-  `/HALT`, `IRQ_A`, `IRQ_B`, +5 V and GND. This gives us WAIT (needed for video contention) *without*
-  going to the wide 80-pin enhanced backplane. **Supersedes the earlier "use an 80-pin
-  enhanced backplane" note.**
-- A future second-backplane/daisy-chain path remains possible but is **not fitted on B1**.
-- **Backplane carries housekeeping**: protected barrel power in, reset circuit,
-  passive data-only TTL-serial header/jumper, power LED —
-  so those aren't per-card.
-- Extension must be **bussed across all slots** (not per-card) or /WAIT is useless.
-- Not pin-compatible with vanilla 40-pin RC2014 — this is our own variant of the idea.
+| Design | Role | First-article PCB |
+| --- | --- | --- |
+| CPU | Z80, socketed 2.000 MHz clock, diagnostic header; unbuffered bus interface | 100×70 mm, two layers |
+| Memory | 27C256 ROM, SRAM and ATF22V10 overlay decode | 100×60 mm, two layers |
+| I/O | Sole 8251 UART, 8255 keyboard/mode control, PIC, D57-compatible PIT and independent POST display | 100×100 mm, two layers |
+| Video | Local framebuffer SRAM, autonomous VGA timing, pixel shift, RGB drivers and CPU-access arbitration | 100×100 mm, four layers |
+| Backplane | Five bus slots, protected 5 V input, reset authority and data-only TTL console boundary | 100×100 mm, two layers |
 
-## Cards — how many?
-Three tiers:
+A future FDC card is outside this order. Minimal CPU/Memory/I/O population is a
+staged diagnostic configuration; the complete first article includes Video.
+The five-slot backplane has no spare slot once a future FDC is fitted. Current
+mechanical qualification places Video in slot 5 with slot 4 empty.
 
-| Tier | Cards | What you get |
-|---|---|---|
-| **Minimum (boot + interact)** | 3 + backplane | CPU, Memory, Serial I/O → boots to monitor over a serial console |
-| **Standalone** | 4 + backplane | + Video (TTL VGA) card, keyboard on the I/O card → own display + keyboard |
-| **Full Juku-like** | 5 + backplane | + FDC card → EKDOS / disk BASIC |
+## Bus and ownership
 
-### Card contents
-- **CPU** — Z80 + socketed clock oscillator + diagnostic header. B1 is deliberately
-  unbuffered (D1.21); reset authority lives on the backplane.
-- **Memory** — SRAM (main RAM) + ROM (EPROM/flash) + address decode. No DRAM → no refresh.
-- **Video (TTL VGA)** — **on-card framebuffer** at `0xD800`+9640, local 25.175 MHz dot
-  clock, sync + pixel-shift, resistor-ladder RGB, VGA connector. CPU writes over the bus;
-  scanout never touches the bus. Owns `0xD800`+ in the memory map.
-- **I/O** — 8251 UART (TTL serial console) plus the fully wired, initially-DNP 8255/PIC
-  and Juku matrix-keyboard header.
-- **FDC** (optional) — WD1793/ВГ93 floppy controller.
-- **Backplane** — passive: connectors + power + bus traces. Five slots at 16 mm pitch on
-  a 100×100 mm board; exactly enough for the Full Juku-like tier, with no spare slot.
+[The bus contract](rev-b-bus-contract.md) owns the exact pin tables, memory/I/O
+maps, defaults and interrupt connections. The RC2014-compatible base uses 39
+pins plus a separate ten-pin extension carrying `/WAIT`, `/NMI`, `/BUSRQ`,
+`/BUSAK`, `/RFSH`, `/HALT`, two peripheral IRQ lines, power and ground.
+All slots share the extension. This is not the vanilla 40-pin connector layout.
 
-## System rules (the bus contract must nail these)
-- **One driver per signal/cycle:** CPU owns address/control and write data; exactly one
-  selected memory/I/O card may drive read data. Shared `/INT`, `/NMI`, `/WAIT`, `/BUSRQ`
-  lines are open-drain with backplane pull-ups.
-- **Decode ownership:** each card decodes its own range; no overlaps. Video owns `0xD800`+,
-  so the Memory card must **not** respond there.
-- **Single +5V rail** — Z80, SRAM, TTL, resistor-DAC VGA all 5V. Simple supply.
-- **Video contention:** the B2 twin uses bounded cycle stealing—`WAIT` only when a CPU
-  framebuffer access collides with an active scanout fetch; its phase sweep proves no
-  lost/corrupted accesses.
-- **Reset + INT/NMI** distributed on the bus; define who drives INT (keyboard? serial?).
-- Per-card decoupling; slow Z80 clock forgives most backplane signal-integrity sins.
+- CPU owns address/control and write data. Only the selected card drives read
+  data; bus-conflict assertions check decode overlap and refresh behavior.
+- Video owns the framebuffer at `0xD800`, 9640 bytes in 40×241 geometry. Memory
+  must not answer in the Video window. Scanout stays on the Video card's SRAM.
+- Video asserts open-drain `/WAIT` for CPU accesses that collide with scanout
+  fetches. Phase sweeps and integrated CPU checks verify access completion.
+- Video supplies `FRAME_TICK`; I/O supplies overlay MODE0/1. Backplane defaults
+  the mode lines for boot when I/O is absent and owns shared-line pull-ups.
+- Reset comes from the backplane. Peripheral interrupt requests terminate at
+  the I/O PIC; serial-ready lines remain on-card.
+- Protected barrel power is the sole input. USB-TTL supplies data, not board
+  power. Parts, rail-drop and decoupling contracts are checked per card/system.
 
-## Simulation
-- Each card = an HDL module with the bus as its interface; backplane = top-level wiring.
-- Add a **bus-functional model** so each card can be unit-simulated in isolation.
-- Existing **framebuffer-readback oracle** still validates the assembled machine.
-- Caveat: the digital twin does **not** catch backplane SI/timing — budget it (few-MHz clock
-  = low risk) or bench-validate the physical backplane.
+## Verification and physical boundary
 
-## Open questions
-All resolved in `rev-b-build-plan.md` (separate CPU/Memory cards; GAL22V10 decode;
-five slots @ 16 mm on the 100×100 backplane; tiered interrupts—polling in B1,
-8259-class PIC populated at B3 with FRAME_TICK on USER1). The remaining choices are
-the owner’s B1 order decision and post-B1-bench release of B2 physical layout work.
+Each card has an HDL interface and bus-functional checks; the assembled twin
+uses firmware byte-stream/framebuffer oracles. Independent pin/LVS checks,
+programmable-logic rebuilds, DRC, exact-part guards, mechanics and package review
+cover the implementation beyond the behavioral model. Use the
+[execution guide](rev-b-execution-guide.md) for commands.
+
+Digital simulation does not prove physical bus timing, signal integrity or
+assembled operation. Those require the staged first-article bench procedure.
+The desk-qualified five-board candidate remains **ORDER HOLD** until explicit
+owner upload authorization; ordering and payment have separate gates.
+
+The [build contract](rev-b-build-plan.md) records durable decisions, and the
+[Video adoption note](rev-b-video-adoption.md) records external timing concepts,
+source identity and attribution. Generator-owned boards and qualification
+contracts define the actual implementation.
