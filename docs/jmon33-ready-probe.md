@@ -55,6 +55,6 @@ stopped pc=0xFF54 cyc=20000009 halted=0 iff=0 mode=1 switches=43
 
 - This is the reproducible cosim monitor-idle oracle. The typed jmon33
   command surface is guarded separately by `sync/jmon33_command_probe.py`.
-- `docs/jmon33-hdl-cursor-probe.md` records that `juku_top` reaches this
-  same cursor/framebuffer hash. Cartridge BASIC remains a separate
-  artifact/procedure boundary summarized in `docs/cartridge-basic-boundary.md`.
+- [HDL cursor probe](jmon33-hdl-cursor-probe.md) records the structural
+  comparison status. Cartridge BASIC has a separate
+  [artifact/procedure boundary](cartridge-basic-boundary.md).

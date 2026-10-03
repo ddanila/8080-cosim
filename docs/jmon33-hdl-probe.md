@@ -42,5 +42,5 @@ That stronger boundary is intentionally not the default for this fast guard.
 - The cosim-side interrupt path is documented in
   `docs/jmon33-interrupt-probe.md`.
 - `docs/jmon33-ready-probe.md` defines the cosim monitor-idle framebuffer
-  oracle, and `docs/jmon33-hdl-cursor-probe.md` records that `juku_top`
-  reaches the matching cursor/hash boundary.
+  oracle. [HDL cursor probe](jmon33-hdl-cursor-probe.md) records the
+  structural comparison status.

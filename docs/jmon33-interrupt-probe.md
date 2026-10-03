@@ -66,6 +66,6 @@ First I/O activity:
 
 - This fast probe proves that the interrupt-driven monitor path is alive in
   cosim; it is not the user-visible completion oracle by itself.
-- `docs/jmon33-ready-probe.md` records the stronger cosim monitor-idle
-  framebuffer oracle, and `docs/jmon33-hdl-cursor-probe.md` records the
-  matching structural-HDL cursor result.
+- [Ready probe](jmon33-ready-probe.md) records the cosim monitor-idle
+  framebuffer oracle. The [HDL cursor probe](jmon33-hdl-cursor-probe.md)
+  records the structural comparison status.

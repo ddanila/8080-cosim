@@ -112,6 +112,23 @@ def main() -> int:
     simulator = os.environ.get("JMON33_HDL_CURSOR_SIM", "icarus")
     stop_hook = int(os.environ.get("JMON33_HDL_CURSOR_STOPHOOK", "1"))
     old_vram = VRAM_TOP.read_bytes() if VRAM_TOP.exists() else None
+    configuration = [
+        "## Reproduce this run",
+        "",
+        "Run from the repository root with the recorded settings:",
+        "",
+        "```sh",
+        f"JMON33_HDL_CURSOR_MAXVRAM={max_vram} " + "\\",
+        f"JMON33_HDL_CURSOR_SIM={simulator} " + "\\",
+        f"JMON33_HDL_CURSOR_STOPHOOK={stop_hook} " + "\\",
+        f"JMON33_HDL_CURSOR_FRAMEIRQ={frame_irq} " + "\\",
+        f"JMON33_HDL_CURSOR_TIMECAP={timecap} " + "\\",
+        f"JMON33_HDL_CURSOR_TRACEPROGRESS={trace_progress} " + "\\",
+        f"JMON33_HDL_CURSOR_TIMEOUT={timeout_s} " + "\\",
+        "  sync/jmon33_hdl_cursor_probe.py",
+        "```",
+        "",
+    ]
 
     try:
         with tempfile.TemporaryDirectory(prefix="jmon33-hdl-cursor.") as tmp:
@@ -163,6 +180,31 @@ def main() -> int:
             if build.returncode != 0:
                 sys.stderr.write(build.stdout)
                 sys.stderr.write(build.stderr)
+                errors = [line for line in build.stderr.splitlines() if line.startswith("%Error")]
+                if not errors:
+                    errors = [line for line in build.stderr.splitlines() if line.strip()][:5]
+                REPORT.write_text("\n".join([
+                    "# jmon33 HDL cursor-boundary probe",
+                    "",
+                    "Status: **JMON33 HDL CURSOR BUILD BLOCKED**",
+                    "",
+                    f"The `{simulator}` build exited with code `{build.returncode}`.",
+                    "No simulation ran; this report does not establish the cursor boundary.",
+                    "",
+                    *configuration,
+                    "## Build errors",
+                    "",
+                    "```text",
+                    *errors,
+                    "```",
+                    "",
+                    "## Boundary",
+                    "",
+                    f"The expected cosim framebuffer SHA256 is `{EXPECTED_CURSOR_SHA256}`.",
+                    "Resolve the simulator build failure and rerun before treating the HDL",
+                    "cursor oracle as verified for the current source.",
+                    "",
+                ]))
                 return build.returncode
             try:
                 sim_cmd = [
@@ -222,22 +264,7 @@ def main() -> int:
         "records whether the structural HDL reaches the same monitor-idle cursor",
         "oracle that cosim records in `docs/jmon33-ready-probe.md`.",
         "",
-        "## Command",
-        "",
-        "```sh",
-        "sync/jmon33_hdl_cursor_probe.py",
-        "```",
-        "",
-        "Environment overrides:",
-        "",
-        f"- `JMON33_HDL_CURSOR_MAXVRAM` default `{max_vram}`",
-        f"- `JMON33_HDL_CURSOR_SIM` default `{simulator}`; optional `verilator`",
-        f"- `JMON33_HDL_CURSOR_STOPHOOK` default `{stop_hook}`",
-        f"- `JMON33_HDL_CURSOR_FRAMEIRQ` default `{frame_irq}`",
-        f"- `JMON33_HDL_CURSOR_TIMECAP` default `{timecap}`",
-        f"- `JMON33_HDL_CURSOR_TRACEPROGRESS` default `{trace_progress}`",
-        f"- `JMON33_HDL_CURSOR_TIMEOUT` default `{timeout_s}` seconds",
-        "",
+        *configuration,
         "## Evidence",
         "",
         "| Check | Result |",
@@ -265,7 +292,14 @@ def main() -> int:
         f"- Last progress machine cycle: `{parsed.get('last_progress_mcyc', 'unknown')}`",
         f"- First-write machine cycle: `{parsed.get('first_mcyc', 'unknown')}`",
         "",
-        "## Disposition",
+        "## Scope",
+        "",
+        "- The cursor status requires the stop-hook marker, the full expected",
+        "  framebuffer hash, and all ten solid cursor rows. The row-byte check",
+        "  alone does not compare the rest of the framebuffer.",
+        "- A zero runner exit code requires a zero simulator exit, the first",
+        "  write at `0xFF40`, and a framebuffer dump. It does not require the",
+        "  cursor oracle; inspect the status and hash for that stronger result.",
         "",
     ]
     if cursor_reached:
@@ -273,19 +307,16 @@ def main() -> int:
     elif solid_rows:
         lines.extend(
             [
-                f"- `juku_top` reached a stable partial cursor boundary ({solid_rows}/10 rows)",
-                "  in an uninterrupted run from reset.",
-                "- The full cosim monitor-idle framebuffer hash remains open; the next",
-                "  diagnostic target is the final two cursor rows / full VRAM hash.",
+                f"- The captured framebuffer contains {solid_rows}/10 solid cursor rows",
+                "  in this bounded run from reset.",
+                "- This run did not reach the full cosim monitor-idle framebuffer oracle.",
             ]
         )
     else:
         lines.extend(
             [
-                "- The fast HDL jmon33 first-write guard remains the automated passing gate.",
-                "- This bounded run documents that the stronger cursor boundary is still open",
-                "  for `juku_top`; the next step is reducing the long interrupt/high-memory",
-                "  path enough to complete this comparison reproducibly.",
+                "- This run did not reach the cursor oracle. The separate",
+                "  [first-write guard](jmon33-hdl-probe.md) checks the earlier boundary.",
             ]
         )
     lines.append("")

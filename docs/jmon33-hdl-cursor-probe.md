@@ -1,55 +1,35 @@
 # jmon33 HDL cursor-boundary probe
 
-Status: **JMON33 HDL CURSOR ORACLE REACHED**
+Status: **JMON33 HDL CURSOR BUILD BLOCKED**
 
-This bounded diagnostic runs Monitor 3.3 on `juku_top` with frame
-interrupts enabled and an optional `+cursorstop=1` testbench hook. It
-records whether the structural HDL reaches the same monitor-idle cursor
-oracle that cosim records in `docs/jmon33-ready-probe.md`.
+The `verilator` build exited with code `1`.
+No simulation ran; this report does not establish the cursor boundary.
 
-## Command
+## Reproduce this run
+
+Run from the repository root with the recorded settings:
 
 ```sh
-sync/jmon33_hdl_cursor_probe.py
+JMON33_HDL_CURSOR_MAXVRAM=1200 \
+JMON33_HDL_CURSOR_SIM=verilator \
+JMON33_HDL_CURSOR_STOPHOOK=1 \
+JMON33_HDL_CURSOR_FRAMEIRQ=200000 \
+JMON33_HDL_CURSOR_TIMECAP=30000000000 \
+JMON33_HDL_CURSOR_TRACEPROGRESS=100 \
+JMON33_HDL_CURSOR_TIMEOUT=900 \
+  sync/jmon33_hdl_cursor_probe.py
 ```
 
-Environment overrides:
+## Build errors
 
-- `JMON33_HDL_CURSOR_MAXVRAM` default `1200`
-- `JMON33_HDL_CURSOR_SIM` default `verilator`; optional `verilator`
-- `JMON33_HDL_CURSOR_STOPHOOK` default `1`
-- `JMON33_HDL_CURSOR_FRAMEIRQ` default `200000`
-- `JMON33_HDL_CURSOR_TIMECAP` default `30000000000`
-- `JMON33_HDL_CURSOR_TRACEPROGRESS` default `100`
-- `JMON33_HDL_CURSOR_TIMEOUT` default `900` seconds
+```text
+%Error-UNSUPPORTED: hdl/devices.v:570:17: disable isn't underneath a begin with name: 'wait_for_expiry1'
+%Error-UNSUPPORTED: hdl/devices.v:587:17: disable isn't underneath a begin with name: 'wait_for_expiry2'
+%Error: Exiting due to 2 error(s)
+```
 
-## Evidence
+## Boundary
 
-| Check | Result |
-| --- | --- |
-| simulator | `verilator` |
-| simulator exit code | `0` |
-| subprocess timeout | NO |
-| first jmon33 video write is `0xFF40` | PASS |
-| cursor hook reached | PASS |
-| framebuffer dump observed | PASS |
-| framebuffer cursor bytes match cosim | PASS |
-| solid cursor rows at `x=8`, `y=20..29` | `10/10` |
-| cursor row bytes | `[255, 255, 255, 255, 255, 255, 255, 255, 255, 255]` |
-| visible framebuffer pixels | `80` |
-| nonzero framebuffer bytes | `10` |
-| framebuffer SHA256 | `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397` |
-| cosim cursor SHA256 | `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397` |
-
-## Stop State
-
-- Stop reason: `cursor`
-- Stop writes: `402`
-- Stop machine cycle: `710291`
-- Last progress writes: `400`
-- Last progress machine cycle: `710271`
-- First-write machine cycle: `12151`
-
-## Disposition
-
-- `juku_top` reached the cosim monitor-idle cursor boundary in this bounded run.
+The expected cosim framebuffer SHA256 is `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`.
+Resolve the simulator build failure and rerun before treating the HDL
+cursor oracle as verified for the current source.
