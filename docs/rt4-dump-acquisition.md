@@ -74,11 +74,10 @@ avrdude -c usbasp -p m328p \
   -U flash:w:tools/re3_board_rt4_dumper/build/re3_board_rt4_dumper.ino.hex:i
 ```
 
-The Snap-packaged Arduino CLI uploader segfaulted with this USBasp on the
-2026-07-19 workstation; system `avrdude` 7.1 identified signature `0x1e950f`,
-wrote all 3,900 firmware bytes, and verified them successfully. This USBasp's
-old firmware also reports that it cannot set the SCK period; the warning is
-non-fatal when device identification, writing, and verification continue.
+Use the verified system `avrdude` flashing path above. On the recorded
+workstation the Snap Arduino uploader failed with USBasp. The adapter's
+old-firmware SCK warning was non-fatal when device identification, writing,
+and verification succeeded; require those checks on each upload.
 
 ISP programming may erase the Nano serial bootloader; that does not affect the
 reader firmware, but later serial-port uploads require reburning the bootloader.
@@ -122,8 +121,9 @@ SHA256, and classification alongside the capture hashes.
 4. Record the socket/refdes, programmed drawing (`.037` or `.038`), reader
    wiring, pull-up values, supply voltage, board/part photographs, date, and
    operator alongside the raw logs.
-5. For revision-2 captures, preserve the `reader_revision`, `data_map`, and
-   `disabled_raw` lines. Reject a stream without a stable disabled value of `F`.
+5. Preserve `reader_revision`, `data_map`, and `disabled_raw` metadata for
+   revision-2/3 captures. Revision 3 also requires both separate enable-release
+   checks. Reject any required check without stable raw `F`.
 
 Run:
 
