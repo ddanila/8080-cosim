@@ -18,10 +18,11 @@
     "native arm64 macOS cold STATUS, DIAG ALL, N4BULK, and SOAK with S21 07h"
   ],
   "open_investigations": [
-    "observe exact C8 display geometry, glyphs, pseudographics, and blinking underline cursor with a working monitor",
+    "diagnose board-local video-data fault after CPU-visible framebuffer storage; stable sync but no pixels in 40x24, 53x24, or 80x24, with visible-pattern control on CS00014",
     "safely exercise and observe the C8 C1-C5 POST failure tones"
   ],
   "evidence": [
+    "docs/machine-deployment-status.md",
     "docs/cs00015-service-record.md",
     "spinoffs/jukuravi/T32-PHYSICAL.md",
     "spinoffs/jukuravi/network-rom/juku-network-rom-abi1.1-c5.json",

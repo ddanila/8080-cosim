@@ -1,6 +1,7 @@
 # Arvutimuuseum CS00015 service record
 
-Status date: 2026-08-14
+Evidence period: August 2026. Current fitted state is summarized below and in
+[the machine profile](machines/CS00015.json).
 
 This record identifies the physical Juku that underwent the diagnostic work as
 the Arvutimuuseum machine `CS00015`. The identifier is the same physical-source
@@ -45,7 +46,9 @@ latching them. T16's NOP spacing delayed bus accesses but did not start those
 clock sources. The codes above remain faithful observations, but they no
 longer support “bad or marginal D55” or channel-2 package localization.
 
-CS00015 is now **D55 functional path unverified**. Run T34 first. A T34 `08`
+The corrected raster/D57 channel-2 test described below validates the
+D55.13 output clock path. The broader **D55 counter predicates remain
+unverified**; run T34 before considering package substitution. A T34 `08`
 would still cover D55, its socket/power, D9 select, local strobes/data, D54
 output paths and D56 clocks; controlled substitution is a later package
 discriminator, not the next assumed action. Full reasoning and structural
@@ -159,73 +162,30 @@ volume, selected B:, completed `DIR` on the native 160-track
 read-only. CS00014 had already passed the same setup, so the native game-drive
 path is now physically validated on both available reference boards.
 
-## Fast-bootstrap physical baseline
+## Historical fast-bootstrap measurements
 
-On 2026-08-14 CS00015 physically validated the stock-ROM-compatible fast
-bootstrap. Its fitted service ROM retained the ordinary Janet entry: stock
-Janet loaded the 558-byte stage at 9600/8O1, the stage selected D57 channel 0
-mode 2/count 4 and D11 19200/8O1, thirteen CRC16-protected 512-byte blocks
-installed B400h-CDFFh, and the machine reached the visible CP/M prompt.
+The August 14 comparison used the same CS00015, system, volume, cable and host.
+The measured interval runs from the first valid bootstrap request to the first
+valid A: request; it is not a power-on-to-prompt measurement.
 
-Freeze this same-machine comparison before further optimization:
+| Path | Interval | Stock frames | Recovery | Display |
+| --- | ---: | ---: | --- | --- |
+| Original stock 9600, 6784-byte/53-record wrapper | 73.873 s | 330 | baseline | CP/M prompt |
+| Fast stage v1, 558-byte stage | 17.508 s | 42 | one recovered block-0 timeout | CP/M prompt |
+| Fast stage v2 | 12.999 s | 42 | zero retries | CP/M prompt |
 
-- **Fast stage v2:** 12.999 s from first valid bootstrap request to first valid
-  A: request; 42 stock frames; stage 8.00 s; bulk 4.39 s; zero retries; visible
-  prompt reached.
-- **Fast stage v1:** 17.508 s from first valid bootstrap request to first valid
-  A: request; 42 stock frames; stage 7.99 s; bulk 8.90 s; one automatically
-  recovered block-0 timeout; visible prompt reached.
-- **Original stock 9600:** 73.873 s over the original 6784-byte/53-record
-  wrapper; 330 stock frames; visible prompt reached.
+The [retained comparison record](evidence/juku-serial/cs00015-fastboot-20260814.json)
+binds the artifacts and measurements. Later v9–v13 trials exposed acknowledged
+handoff and interrupt-fed stream races. V14 received and CRC-checked the whole
+compressed stream before expansion. Three physical v14 runs reached their
+first disk request at 6.115, 6.100 and 6.069 seconds with zero extension or
+stream retries. Two needed a second extension-header probe, which recovered
+without body contamination. Per-run records remain in
+[`evidence/juku-serial/`](evidence/juku-serial/).
 
-Fast stage v2 is 1.35x faster than v1, saving 4.509 s (25.8%), and 5.68x faster
-than Original stock 9600, saving 60.874 s (82.4%). The v1 result remains frozen
-at 4.22x/56.365 s/76.3%. All three runs used the same system, volume, cable,
-host, and CS00015. See `janet-fastboot.md` and
-`evidence/juku-serial/cs00015-fastboot-20260814.json`.
-
-On 2026-08-15 CS00015 also passed the exact 5518-byte fast stage v9 artifact
-(`7dd745e67ac400c22a229a796e77dd51239df793ec5375bf9ebc6bd8069de924`)
-with compact stock execute and the conservative host guards. It reached the
-visible CP/M prompt and completed network `DIR`. This run qualified the current
-fastest code path functionally but did not retain an exact boot timestamp; the
-separate low-latency host-guard policy still needs a physical run.
-
-Later repeated runs replaced that pending timing claim with a sharper result.
-Guard tuning alone was intermittent: v9 and bounded-decoder v10 each produced
-both clean roughly 5.6-5.7-second boots and multi-second extension/stream
-retries. V11 added an extension-header ACK, but two of four runs missed the
-first ACK and the host contaminated the exchange by sending the body anyway.
-V12 made the header parser overlap-safe and withheld the body until ACK. All
-four physical runs then had zero extension retries; the fourth required two
-header probes and recovered as designed. Its first three disk requests arrived
-at 5.739, 5.740, and 5.739 seconds. The fourth exposed the separate `JZ` stream
-handoff race, retried that stream once, and arrived at 8.307 seconds.
-
-Fast stage v13 then applied the same explicit readiness protocol to `JZ`. All
-five CS00015 runs booted, and the extension needed no retry, but four first
-streams failed CRC and succeeded on the complete retransmission. In every such
-run the extension header had also required its second probe; the sole one-probe
-run was stream-clean. Thus v13 proved recovery, but not a deterministic first
-pass.
-
-Fast stage v14 is the simulator-qualified conservative successor. It keeps
-v13's two overlap-safe acknowledged handoffs but removes interrupt-fed overlap:
-all 4826 compressed bytes are first received into 4000h and CRC-checked, then
-ZX0 expands them to B400h. Clean, partial-header, injected corruption/loss,
-3.4 MHz, byte-exact, prompt, and network `DIR` simulations pass. A one-shot
-RxRDY interrupt delay of more than two character times makes v13 overrun and
-retry once in cosim, while v14 stays retry-free under the same disturbance.
-Its 5229-byte artifact is only 11 bytes larger than proven v7 and should cost
-roughly 0.3 s against a clean v13 while avoiding the observed 2.6 s retry.
-Three immediate physical CS00015 runs then reached their first disk request at
-6.115, 6.100, and 6.069 seconds. All had zero extension and stream retries;
-the first two needed two extension-header probes and recovered without body
-contamination. The 46 ms total spread and clean first-pass streams physically
-qualify v14 as the repeatable production baseline. Speed optimization is frozen
-at this version; later variants require a functional, observability, or
-reproduced reliability reason. Exact per-run evidence and rationale are in
-`janet-fastboot.md` and `evidence/juku-serial/`.
+These are historical loader qualification results. The supported stock
+recovery path is now JF17; see [the current fastboot guide](janet-fastboot.md)
+for artifacts, commands and reset boundaries.
 
 ## Current deployment
 
