@@ -24,6 +24,9 @@ images, or rerun boot/cosim tests.
 
 ## Exact archival identity
 
+The status shorthand “Ekta 3.7” refers to serial #0037, whose embedded
+banner is `RomBios 3.43m`; it is not a BIOS version number.
+
 `ref/firmware/JUKUROM0.HEX` and `JUKUROM1.HEX` are raw binary despite
 their suffixes. They are exactly 8,192 bytes each and concatenate
 byte-for-byte to `roms/ekta37.bin` (SHA256
@@ -46,7 +49,7 @@ address permutation is involved.
 | Layer | D15 | D16 | What it proves |
 | --- | --- | --- | --- |
 | Factory `.009` parts list | `К573РФ5`, `ДГШ5.106.087` | `К573РФ5`, `ДГШ5.106.041` | Intended fitted device and programmed-drawing designations for this assembly revision |
-| Preservation archive | `JUKUROM0.HEX`, 8 KiB | `JUKUROM1.HEX`, 8 KiB | An exact preserved EktaSoft 3.7 low/high pair; filenames contain no refdes or factory drawing number |
+| Preservation archive | `JUKUROM0.HEX`, 8 KiB | `JUKUROM1.HEX`, 8 KiB | An exact preserved `ekta37.bin` low/high pair; filenames contain no refdes or factory drawing number |
 | Replica functional images | `d15_ekta37_low.bin` | `d16_ekta37_high.bin` | Deterministic burnable images already guarded by boot/cosim checks |
 | Owner overview photo | ST `M2764AF1`, windowed and socketed | ST `M2764AF1`, windowed and socketed | Physical package class and population only; neither window has a content-identifying sticker |
 
@@ -59,15 +62,15 @@ but cannot identify bytes, version, or factory program number.
 
 ## Bounded conclusion
 
-- `JUKUROM0/1` match only EktaSoft 3.7 among the eight guarded candidates.
+- `JUKUROM0/1` match only `ekta37.bin` among the eight guarded candidates.
 - The independent archival pair is adopted as the D15/D16 content source
-  for the replica; it exactly supplies the guarded EktaSoft 3.7 image.
+  for the replica; it exactly supplies the guarded `ekta37.bin` image.
 - No surviving paper cross-reference binds factory drawing numbers
   `ДГШ5.106.087/.041` to the archival filenames. Under the project's
   adopted-dump rule this remains provenance nuance, not a content gate.
 - The photographed D15/D16 package markings establish compatible fitted
   hardware but do not independently identify the bytes.
-- EktaSoft 3.7 belongs to the direct-bus/NOP family proved in
+- `ekta37.bin` belongs to the direct-bus/NOP family proved in
   `docs/fdc-bus-polarity.md`. That makes it electrically consistent with
   the recovered `.009` D93 bus, but does not explain the historical CMA
   family; explaining those non-adopted variants is optional historical work.

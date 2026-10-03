@@ -11,15 +11,18 @@ match the current pinned driver (`ref/mame_juku.cpp`). `jmon22.bin` is an
 additional public museum image. Hash agreement establishes artifact identity,
 not historical completeness or redistribution rights.
 
+The `ektaNN` filenames derive from the embedded serial numbers, not BIOS
+versions. The table uses the ROMs’ embedded `RomBios` banners.
+
 | file | size | SHA-1 | role |
 |---|---|---|---|
 | `jmon33.bin`  | 16K | `76407d99bf83035ef526d980c9468cb04972608c` | **Juku Monitor v3.3** — default BIOS (MAME `ROM_BIOS(0)`), interrupt-driven |
-| `ekta24.bin`  | 16K | `a7185d747c94cd519868692ed3d10fade90dd6d5` | EktaSoft BIOS '88 |
-| `ekta31.bin`  | 16K | `73d62c032be1de06c0dd5618f4abccd4d0f3a329` | EktaSoft BIOS |
-| `ekta32.bin`  | 16K | `57311d53f6fe1e87e0755990f400253caccd4795` | EktaSoft BIOS |
-| `ekta35.bin`  | 16K | `7aa03497d88cfab9315aa3987765bc06ecb70013` | EktaSoft BIOS |
-| `ekta37.bin`  | 16K | `29366d74c0e27129f2484a973f7a6de659b90cf4` | EktaSoft BIOS '88; stock ROMBIOS/Janet boot reference |
-| `ekta43.bin`  | 16K | `a7419bfd8249871cc7dbf5c6ea85022d6963fc9a` | EktaSoft 2.43m #0043, tape/disk variant modified for an AT keyboard |
+| `ekta24.bin`  | 16K | `a7185d747c94cd519868692ed3d10fade90dd6d5` | EktaSoft '88, Serial #0024, RomBios 3.42 |
+| `ekta31.bin`  | 16K | `73d62c032be1de06c0dd5618f4abccd4d0f3a329` | EktaSoft '88, Serial #0031, RomBios 3.43 |
+| `ekta32.bin`  | 16K | `57311d53f6fe1e87e0755990f400253caccd4795` | EktaSoft '88, Serial #0032, RomBios 2.43 |
+| `ekta35.bin`  | 16K | `7aa03497d88cfab9315aa3987765bc06ecb70013` | EktaSoft '88, Serial #0035, RomBios 3.43 |
+| `ekta37.bin`  | 16K | `29366d74c0e27129f2484a973f7a6de659b90cf4` | EktaSoft '88, Serial #0037, RomBios 3.43m; stock ROMBIOS/Janet boot reference |
+| `ekta43.bin`  | 16K | `a7419bfd8249871cc7dbf5c6ea85022d6963fc9a` | EktaSoft '90, Serial #0043, RomBios 2.43m; tape/disk variant modified for an AT keyboard |
 | `jmon22.bin`  | 16K | `dee46441f6beeece3e2dfe897c8b1547939c7b1f` | Juku Monitor v2.2 from the public museum ROM bundle; blocks 3, 6, and 7 fail internal checksums |
 | `jbasic11.bin`| 8K  | `27e40395e8b49e2f9febf2b23773fbfe251befcf` | Juku BASIC 1.1 |
 
@@ -28,7 +31,7 @@ block 3 from two matching firmware artifacts plus the stored checksum. Blocks
 6 and 7 remain unresolved, so the original image is retained unchanged and no
 partially repaired binary is distributed.
 
-EktaSoft 3.7 uses frame interrupts and PIC-driven USART service in its Janet
+`ekta37.bin` uses frame interrupts and PIC-driven USART service in its Janet
 path; it is not a wholly polled firmware. See [the boot-path analysis](../docs/ekta37-netbios-notes.md)
 for its banked runtime addresses and serial contract.
 

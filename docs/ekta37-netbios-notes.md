@@ -122,14 +122,14 @@ setting. Ordinary keyboard-idle reads remain the drawing-derived `CFh`; merging
 those two contexts had previously made all configuration switches look closed
 and selected the absent `F0h..F3h` expansion interface.
 
-This PB5 behavior is specific to the archived EktaSoft 3.7 ROM. At offsets
+This PB5 behavior is specific to the archived `ekta37.bin` ROM. At offsets
 `1211h..1216h` in `roms/ekta37.bin`, the bytes `DB 05 2F FB E6 20` read PPI
 port B, complement it, and mask bit 5. The exact `.009 Э3` sheet-1 detail
 instead connects D26 PB4/pin22 to E8.3, PB5/pin23 to E8.2, and `CONTRDAT`
 to E8.4. The `.009 СБ` assembly drawing and owner board photo both show E8
 bridged 3–4. Thus the ROM's PB5 S21 read and the surviving `.009` board's
 PB4 selector are revision-incompatible as drawn. The simulator retains the
-PB5 behavior for its EktaSoft 3.7 reference runs; the original board's
+PB5 behavior for its `ekta37.bin` reference runs; the original board's
 firmware/configuration behavior needs a matching ROM readback or a powered
 PB4/PB5 observation before claiming the S21 path works on this revision.
 The four other archived #0024/#0031/#0032/#0035 images use the same PB5
