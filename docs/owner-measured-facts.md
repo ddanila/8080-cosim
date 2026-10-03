@@ -2,10 +2,11 @@
 
 Purpose: one place that lists what the owner has already physically measured, so
 nobody re-asks for a measurement that exists. This is an **index into the
-authoritative docs** (each row cites its source); it does not restate results in
-a way that could drift. Provenance tags: `probe` = multimeter/continuity,
-`photo` = read from board photos (treat as ~90% until probed), `owner-continuity`
-= chip-removed / powered-off continuity session.
+authoritative docs** (each row cites its source); the cited records own the full
+measurement details. Provenance tags: `probe` = multimeter/continuity,
+`photo` = visible photo evidence, `owner-continuity` = a recorded continuity
+session (chip removal and power state must be checked in the cited record).
+Photo evidence does not establish hidden connectivity or rail polarity.
 
 **Convention:** before adding an "owner-measurement" ask anywhere (PLAN.md,
 shortlists, agent prompts), grep this file and the cited docs first. When a new

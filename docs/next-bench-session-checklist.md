@@ -3,28 +3,16 @@
 Status: **OWNER ACTION LIST** (hand-maintained; the auto-generated superset is
 `docs/owner-measurement-shortlist.md`). Ordered by unlock value. **Before adding
 or re-asking any measurement here, check `docs/owner-measured-facts.md` — it
-indexes what has already been probed, so nothing gets re-requested.** Produced-board
-photos are the ultimate truth; manual probes are truth at ~95%; the schematic
-PDF is the prototype and may differ.
+indexes what has already been probed, so nothing gets re-requested.**
 
-## Closed in the 2026-07-19 bench session
+Use the exact `.009` drawings for source intent and owner photos for visible
+construction. Continuity establishes electrical connections; photographs alone
+cannot prove hidden joints, rail polarity, or absence of a connection. Resolve
+conflicts explicitly before changing the model.
 
-The revision-3 reader passed an empty-socket release test and known-D2 control
-reads, then produced three identical D6 reads including a power cycle.
-Continuity confirmed `pins 9,10,11,12 -> Nano A1,D2,D3,D4`. The former D6
-artifact was an exact four-bit reversal; the corrected table now executes
-directly. See `docs/rt4-dump-acquisition.md`.
-
-D94 continuity then corrected the former pin/photo interpretation. R87/R88/R89
-pull up D94.4/.3/.2; R8 2 kΩ pulls up D94.1; D94.2 reaches D99.9, D94.5 is NC,
-D93.1 alone owns the open stub, and D94.13 is D105.3 qualified peripheral `/WR`.
-Raw D5.27 reaches D7.10; D7.8 closes to D105.1/D6.15, and D13.4 closes to
-D105.2. D104.7 remains separate (~84 kΩ from D94.13).
-
-On 2026-07-22, direct continuity plus the exact `.009` sheet closed the last
-D30 control singleton: `D30.1/.4/.10/.12` and `R5.2` are one conductor driven
-by D38.8; `R5.1` goes to +5 V. A powered capture of D30.2/.3/.5 may still be
-useful validation, but no further D30 continuity measurement is requested.
+Closed D6 reader, D94 local-control, and D30 continuity results are indexed in
+[owner-measured facts](owner-measured-facts.md). Do not request them again as
+missing evidence.
 
 ## Remaining P0 connectivity (batch in the same session)
 
@@ -43,7 +31,7 @@ useful validation, but no further D30 continuity measurement is requested.
    physical table but does not replace the D0 continuity check
    (`docs/d94-reconstruction-constraints.md`).
 2. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
-   first isolate the tentative D96.6 observation from the newly closed 1 MHz
+   first isolate the tentative D96.6 observation from the source-closed 1 MHz
    slot route. Measure resistance from D96.6 to D40.11 in both probe
    polarities, preferably with D96 removed; sheet 3 requires D96.6 to remain
    local to D96.2 and not join the D40.11/D59.5/D92.2/.3/D95.5/.6 net.
@@ -101,9 +89,7 @@ after the P0 set if the board remains available; record unresolved results
 instead of treating a silent meter or an unread photo as proof of no-connect.
 Its P1 analog capture now names D34.8/R62.1, D34.11/R63.1, and the common
 R62.2/R63.2/R64.1/VT2.3 node on the original .009 board, with X6 A:3 (after continuity to VT2.1/R65.1 is confirmed) as the
-output comparison. The former P1 X2 PA1/PA5 contact-digit check is retired:
-native `.009` sheet-1 detail `PXL_20260718_101824181.MP.jpg` clearly shows
-D27.3→X2.206 and D27.39→X2.203, matching the board netlist.
+output comparison.
 
 ### D59 timing and oscillator probes (P1)
 
@@ -144,7 +130,7 @@ readback. See `ref/photos/juku-pcb-2/e8-bridge-photo-review.json` and
 
 ## Programmable-parts corroboration (optional, Tier-3)
 
-5. Independent re-reads of the D2/D6/D8/D94 PROMs, and dumps of the D15/D16
+- Independent re-reads of the D2/D6/D8/D94 PROMs, and dumps of the D15/D16
    EPROMs, only as corroboration of the validated captures
    (`docs/community-prom-media-request.md`).
 
