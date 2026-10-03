@@ -2,10 +2,10 @@
 
 Status: **FROZEN PYTHON-ERA BASELINE**
 
-This document closes M0 of the
-[portable C host plan](portable-c-host-plan.md). It identifies the last Python
-production-host baseline and the behavior that the C host must reproduce before
-the Python server is removed.
+This record pins the Python-era baseline used to verify the C replacement.
+The Python production commands have been removed; current behavior and platform
+qualification live in the [portable C host contract](portable-c-host-plan.md).
+The identities below remain necessary for the frozen compatibility oracle.
 
 ## Baseline identity
 
@@ -39,9 +39,8 @@ the original `tools/janet_*.py` production commands no longer exist.
 
 `tests/fixtures/jukuhost/python-era-v1.txt` is the compact, standalone wire
 oracle. `tests/jukuhost_contract_test.py` proves that it still agrees with the
-pinned Python implementation while that implementation exists. The C tests
-will consume the same fixture directly. After retirement, the fixture—not a
-runnable Python server—is authoritative.
+non-runnable archived Python implementation. C tests consume the same fixture
+directly; it remains the wire baseline after Python host retirement.
 
 ## Required production parity
 
@@ -69,11 +68,11 @@ The C host must reproduce all behavior used by the accepted operational path:
 
 Fastboot V1 through V14 were valuable hardware experiments and remain valid
 historical builders and regression inputs. They are not separate admitted
-production protocols for the new runtime. JF15 is the sole legacy-format
-exception because it provides the current stock-ROM-assisted CP/M Plus path;
-JF16 remains the direct network-ROM path. Both parsers require their exact
-magic, layout, length, metadata, and CRCs and fail clearly on every other
-legacy bundle.
+production protocols for the C runtime. JF15 is the admitted legacy
+compatibility exception. Current stock reset recovery uses the separately
+identified JF17 profile at 9,600/8O1; JF16 serves direct network-ROM boot.
+Artifact validation requires exact magic, layout, length, metadata and CRCs.
+See the [stock recovery guide](janet-fastboot.md) for current operation.
 
 ## Observable result contract
 
@@ -95,7 +94,7 @@ layout, JSON as a runtime dependency, or arbitrary experimental command-line
 flags. The accepted wire bytes, state transitions, recovery outcomes, media
 mutations, and useful evidence are the compatibility contract.
 
-## M0 exit evidence
+## Baseline verification
 
 Run:
 
@@ -106,4 +105,5 @@ sync/janet_netboot_check.sh
 
 The first command proves the immutable compact oracle. The second runs that
 oracle plus the existing Fastboot, disk-server, and five-system simulator
-regressions. M1 may begin only with both green.
+regressions. These verify the frozen baseline, not the complete current
+platform or physical acceptance matrix.

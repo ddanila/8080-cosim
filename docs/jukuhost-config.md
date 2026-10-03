@@ -127,8 +127,9 @@ execute handoff.
 
 `reconnect_timeout` bounds named serial-device reopen attempts in seconds;
 zero disables reopen. After a disk-session link loss, the host closes the stale
-handle, retries the same configured path every 250 ms, restores 19,200 8O1,
-discards any partial request, and advertises the normal NetDisk ready marker.
+handle, retries the same configured path every 250 ms, and restores the selected
+disk baud at 8O1. It discards partial requests; recovery mode returns to passive
+discovery, while an ordinary disk session resumes its checked ready handshake.
 The service and its duplicate-reply cache remain live, so a retried write is
 not applied twice. The integration-only inherited-descriptor mode cannot
 reopen a descriptor and therefore fails cleanly instead.
@@ -146,7 +147,8 @@ served file in the other modes. Drive B is always `mode=read-only` with
 `geometry=juku-native`.
 
 `build/jukuhost --selftest` checks the portable checksum primitives without a
-serial device. It is also the future headless Win32/Wine startup check.
+serial device. The Windows executable provides the corresponding `--selftest`
+entry point used by the Win32/Wine checks.
 
 When configured, the text log and binary capture are required evidence rather
 than best-effort decoration. Failure to open, write, or flush either stream
