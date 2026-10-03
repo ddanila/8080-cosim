@@ -2,10 +2,9 @@
 
 Status date: 2026-08-28
 
-This note records the desk review and bench evidence for the Diymore
-USB/RS-232/TTL/RS-485 module tried with Juku CS00000. It deliberately separates
-what the measurements prove from hypotheses that still need an electrically
-observed two-endpoint test.
+The corrected selector orientation and replacement charge-pump capacitors
+enabled the recorded CS00000 C9/V16 boot and NetDisk session. This note
+retains the device configuration, measurements and limits of that result.
 
 ## Device identity and selector topology
 
@@ -17,8 +16,7 @@ Linux enumerated it as `0403:6001`, bound it to `ftdi_sio`, and created
 bus-powered 90 mA configuration. The USB ID alone does not identify the FTDI
 generation, but the product photograph and the owner's board both show an
 `FT232BL` package. The socketed line-interface parts are a `MAX232CPE` and a
-MAX485-family transceiver; the former must no longer be described as a
-MAX3232-family device.
+MAX485-family transceiver.
 
 FTDI describes the BL as the lead-free FT232BM, its second-generation USB UART,
 not as an FT232R. The [FT232BL/BQ datasheet](https://ftdichip.com/wp-content/uploads/2020/08/DS_FT232BL_BQ.pdf)
@@ -30,18 +28,24 @@ limit can turn a repeated 90-second Janet request into zero received bytes.
 The two shunts occupy the `TXD` and `RXD` rows of a three-column header whose
 silkscreen reads `RS232-RS485`. The photograph therefore supports a
 per-direction RS-232/RS-485 selection interpretation, but the vendor publishes
-neither a schematic, connector pinout, nor jumper instructions. The earlier
-claim that these select TTL versus a combined RS-232/RS-485 group was too
-strong and is withdrawn. The empirical contracts are narrower and sufficient:
+neither a schematic, connector pinout, nor jumper instructions. The internal schematic remains unverified. The observed behavior is:
 
-- with the shunts in the photographed positions, the DB9 loop works;
-- removing the MAX485 does not change that DB9 loop or cure the Juku failure;
+- with the shunts correctly oriented as photographed, the DB9 loop and
+  August 28 Juku boot work;
+- removing the MAX485 did not change the earlier DB9 loop or cure the
+  failed Juku setup;
 - with both shunts open, the TTL header plus the known external level converter
   boots Juku successfully;
-- using the TTL header while the shunts were installed produced an exact echo
+- using the TTL header in the earlier installed-shunt setup produced an exact echo
   of every host byte; the mechanism was not instrumented, so it is recorded as
   simultaneous-path contention/routing evidence rather than assigned to one
   chip.
+
+FT232R EEPROM inversion fields do not apply to this FT232B generation.
+The [D2XX Programmer's Guide](https://ftdichip.com/wp-content/uploads/2023/09/D2XX_Programmers_Guide.pdf)
+gives FT232B only the common EEPROM header; the FT232R structure separately
+contains `InvertTXD`, `InvertRXD`, and related fields. EEPROM inversion is
+therefore not a supported remedy for this module.
 
 ## Correct Juku cable contract
 
@@ -110,13 +114,12 @@ MAX232 receiver, selected FTDI receive path, and UART framing as one closed
 loop. It still does **not** qualify data-direction assignment or the external
 signal-ground path. Joining the two data conductors makes their order
 symmetrical, and a return into the same transceiver does not need cable pin 5
-to be bonded to a second device's ground. That limitation becomes central to
-the diagnosis below.
+to be bonded to a second device's ground. The later successful Juku test supplies the missing external-driver evidence.
 
 ### MAX232 capacitor audit
 
-The installed part is a plain `MAX232CPE`, while the product photograph shows
-four charge-pump capacitors marked `C104` (0.1 µF). This is a real design/BOM
+Before the August 28 replacement, the plain `MAX232CPE` was paired with
+four charge-pump capacitors marked `C104` (0.1 µF), as in the product photograph. This was a design/BOM
 mismatch. Analog Devices specifies 1 µF for plain MAX232 and 0.1 µF for the
 improved MAX232A; its
 [MAX232 capacitor FAQ](https://ez.analog.com/jp/other-products/w/faqs/32681/max232)
@@ -129,9 +132,8 @@ silence. The charge pump supplies this adapter's RS-232 transmitters. Its
 receiver input is specified from the 5 V logic supply and presents the same
 3-7 kΩ load as MAX3232. The measured -9 V idle and both exact loopbacks also
 show that this instance can generate and receive its own levels. The mismatch
-can reduce transmitter margin under an external load and should be corrected
-before qualifying the module, but replacing the chip solely to fix Juku-to-host
-reception would be an unsupported diagnosis.
+can reduce transmitter margin under an external load. The August 28
+replacement corrected it, but its effect on reception was not isolated.
 
 ### 2026-08-28 capacitor-replacement retest
 
@@ -221,37 +223,6 @@ Juku, ROM, Juku-side cable, or host artifacts. It immediately completed the
 stock/JF15 path, reached `A>`, and served 30 disk reads / 90 records with zero
 retries or UART errors. Evidence begins at
 [`cs00000-ek37-cp2102-control-20260822T202538Z.boot.json`](evidence/juku-serial/cs00000-ek37-cp2102-control-20260822T202538Z.boot.json).
-
-## Corrections to the live diagnosis
-
-The desk review corrects or narrows several live suggestions:
-
-1. `0403:6001` did not establish an FT232R. The photographed part is FT232BL,
-   and FTDI documents it as the lead-free FT232BM generation.
-2. FT232R EEPROM signal-inversion settings must not be projected onto FT232B.
-   FTDI's [D2XX Programmer's Guide](https://ftdichip.com/wp-content/uploads/2023/09/D2XX_Programmers_Guide.pdf)
-   gives the FT232B EEPROM structure only the common header, whereas the FT232R
-   structure separately contains `InvertTXD`, `InvertRXD`, and related fields.
-   Reading the external EEPROM may still identify descriptors and power options,
-   but it is not a supported TX/RX inversion fix for this generation.
-3. The yellow shunts route RXD and TXD between interface groups; they are not a
-   software-controlled crossover. Their exact schematic must not be inferred
-   beyond the photographed silkscreen and empirical open/installed behavior.
-4. Juku CTS was already handled correctly by the local X3.10-to-X3.5 loop. Host
-   RTS was not missing from the known cable.
-5. A two-pin local loopback proves an end-to-end loop through some local transmit
-   and receive path, but not independent transmit and receive interoperability.
-6. The BREAK/DMM and open-receiver observations are not reliable polarity or
-   health tests and must not be promoted into a fault diagnosis.
-7. `tx=0` in a stock-bootstrap timeout is a consequence of `rx=0`, not an
-   independent transmit-path result.
-8. Plain MAX232 with 0.1 µF charge-pump capacitors is outside the documented
-   application circuit, but that concerns the adapter's transmitter margin and
-   does not explain a receiver-only zero-byte result.
-9. MAX232 and MAX3232 are not opposite-polarity alternatives. Both perform the
-   same RS-232 inversion, present 3-7 kΩ receiver inputs, and have nearly the
-   same receiver thresholds at 5 V. The known MAX3232 chain's success does not
-   imply a protocol or polarity difference.
 
 ## Datasheet compatibility check
 
