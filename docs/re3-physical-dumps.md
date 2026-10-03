@@ -1,10 +1,8 @@
 # D8/D94 physical RE3 dumps
 
-Status date: 2026-07-13
-
 Status: **CROSS-MACHINE PHYSICAL CONTENT VALIDATED**
 
-The D8 `.039` and D94 `.092` КР556РЕ3 PROMs were read independently from
+The D8 `.039` and D94 `.092` К155РЕ3 PROMs were read independently from
 two physical Juku processor boards:
 
 - Danila Sukharev's reference board; and
