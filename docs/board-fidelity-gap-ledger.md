@@ -2,16 +2,18 @@
 
 Status: **BOARD FIDELITY GAPS CATALOGED**
 
-This generated ledger records the remaining board-fidelity surfaces
-from `kicad/juku.board.json` and the exact-source passive omission census:
-chip-level provenance that is
-still assumed, boundary-only, deferred, untraced, or dump-dependent, and
-net-level source risks already carried into the bring-up checklist, and
-drawing-proved passive refs absent from the model. It
-is not a release decision by itself; its P0 rows feed `PLAN.md` and
-prevent current gaps from hiding behind a green endpoint-coverage gate.
-Validated physical PROM dumps are established evidence, not gap markers;
-their unresolved board wiring remains listed under net-level risks.
+This generated ledger screens `kicad/juku.board.json` provenance and the
+[passive omission census](omitted-resistor-census.md) for remaining fidelity work.
+It feeds `PLAN.md`; it does not release the board.
+
+Chip rows are selected by missing provenance or uncertainty keywords.
+Net rows use those keywords unless an explicit `source_risk` disposition
+overrides them. These counts are a prose-based screen, not independently
+verified counts of physical defects or proof that every unlisted part is closed.
+Notes are abbreviated; consult the component's `prov` or net's `src`/`note`
+fields in board JSON for complete evidence and remaining boundaries.
+The generator does not inspect photographs, run HDL, or check routed copper.
+Validated PROM contents and unresolved PROM wiring are separate evidence.
 
 ## Command
 
@@ -30,57 +32,6 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 - Explicitly dispositioned closed net risks: `14`
 - Documented intentional no-connect pins: `63`
 
-## Chip Provenance Types
-
-| Provenance type | Chips |
-| --- | ---: |
-| .009 assembly drawing + registered component/solder/value photos + factory BOM | 3 |
-| datasheet | 1 |
-| exact .009 E3 sheet 1 + assembly + registered two-face owner photos | 1 |
-| exact .009 E3 sheet 1 + assembly/owner photo | 3 |
-| exact .009 E3 sheet 1 + assembly/photo | 3 |
-| exact .009 E3 sheet 1 + factory assembly + owner photos | 8 |
-| exact .009 E3 sheet 1 supply collective | 20 |
-| exact .009 E3 sheet 2 | 3 |
-| exact .009 E3 sheet 2 + assembly/owner photo | 2 |
-| exact .009 E3 sheet 2 + assembly/photo | 6 |
-| exact .009 E3 sheet 2 + owner photo | 2 |
-| exact .009 factory assembly + registered owner photos | 1 |
-| exact .009 sheet + factory assembly + owner photo | 2 |
-| exact .009 sheet + owner continuity | 1 |
-| exact .009 sheet 1 + factory assembly + owner photos | 1 |
-| exact .009 source + owner photo | 2 |
-| exact .009 source + registered owner photos | 2 |
-| factory .009 assembly wire table + system cable map + registered owner photos | 1 |
-| factory X3 cable table + registered owner photos | 12 |
-| factory X4 cable table + legacy circuit | 1 |
-| factory X4 cable table + owner photo | 23 |
-| factory assembly + owner photo + continuity | 1 |
-| factory assembly drawing + owner photo | 1 |
-| factory power-cable table | 4 |
-| factory shielded-cable table + registered owner photos | 2 |
-| factory wire table | 14 |
-| factory wire table + owner photos | 1 |
-| factory wire table + registered owner backside photo | 1 |
-| factory wire table + registered owner backside photos | 1 |
-| factory wire table + registered owner photos | 3 |
-| factory wire table + registered two-sided owner photos | 1 |
-| factory wire table + two-sided owner photos | 1 |
-| mame+datasheet | 1 |
-| native schematic + factory assembly drawing + owner photo | 3 |
-| photo | 1 |
-| prom | 1 |
-| registered owner photo | 1 |
-| scan | 221 |
-| scan + assembly drawing + registered owner photo | 2 |
-| scan + factory assembly drawing | 4 |
-| scan + factory assembly drawing + registered owner photo | 4 |
-| scan + factory assembly wire table | 3 |
-| scan + owner continuity | 1 |
-| scan + registered owner photos | 3 |
-| scan + target-photo override | 2 |
-| scan+datasheet | 1 |
-| wire | 1 |
 
 ## Gap Categories
 
@@ -323,7 +274,7 @@ the active release-risk count.
 | `VERT_RTR` | closed on exact-revision .009 E3 sheet 2 by the matching VER RTR/tag2 conductor joining D55.13, D35.9, and D57.18 |
 | `W_RAIL16` | the native sheet closes both D36 write-NAND inputs and its complete output fanout: MEMW->D36.9, D36.3->D33.11/.10->D36.10, and D36.8->all DRAM W pins; only the simulation timing abstraction remains |
 
-## Automatic Closure Rule
+## Updating the ledger
 
 - If a gap can be closed from existing scans/docs/code, update
   `kicad/juku.board.json` first, then regenerate this report and the
@@ -331,6 +282,6 @@ the active release-risk count.
 - If a gap depends on PROM contents, hidden routing, owner continuity,
   analog measurement, or vendor/order evidence, keep it listed here
   until that stronger evidence exists.
-- Endpoint coverage remains necessary but not sufficient: it proves the
-  PCB preserves modeled connectivity, while this ledger records where
-  the model is still not fully historical-source-proven.
+- A PCB endpoint/net-assignment check does not establish copper continuity
+  or historical fidelity. Use the route/DRC checks for copper and the owning
+  source records for fidelity; this ledger screens recorded uncertainties.

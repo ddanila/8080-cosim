@@ -219,7 +219,6 @@ def main() -> int:
     omission_rows = source_proved_omissions(board)
     netted = netted_pins_by_ref(board)
     no_connects = no_connect_pins_by_ref(board)
-    chip_prov_counts = Counter(str(chip.get("prov", {}).get("type", "missing")) for chip in board["chips"])
     chip_gap_rows: list[dict[str, object]] = []
     for chip in board["chips"]:
         text = chip_prov_text(chip)
@@ -295,16 +294,18 @@ def main() -> int:
         "",
         f"Status: **{status}**",
         "",
-        "This generated ledger records the remaining board-fidelity surfaces",
-        "from `kicad/juku.board.json` and the exact-source passive omission census:",
-        "chip-level provenance that is",
-        "still assumed, boundary-only, deferred, untraced, or dump-dependent, and",
-        "net-level source risks already carried into the bring-up checklist, and",
-        "drawing-proved passive refs absent from the model. It",
-        "is not a release decision by itself; its P0 rows feed `PLAN.md` and",
-        "prevent current gaps from hiding behind a green endpoint-coverage gate.",
-        "Validated physical PROM dumps are established evidence, not gap markers;",
-        "their unresolved board wiring remains listed under net-level risks.",
+        "This generated ledger screens `kicad/juku.board.json` provenance and the",
+        "[passive omission census](omitted-resistor-census.md) for remaining fidelity work.",
+        "It feeds `PLAN.md`; it does not release the board.",
+        "",
+        "Chip rows are selected by missing provenance or uncertainty keywords.",
+        "Net rows use those keywords unless an explicit `source_risk` disposition",
+        "overrides them. These counts are a prose-based screen, not independently",
+        "verified counts of physical defects or proof that every unlisted part is closed.",
+        "Notes are abbreviated; consult the component's `prov` or net's `src`/`note`",
+        "fields in board JSON for complete evidence and remaining boundaries.",
+        "The generator does not inspect photographs, run HDL, or check routed copper.",
+        "Validated PROM contents and unresolved PROM wiring are separate evidence.",
         "",
         "## Command",
         "",
@@ -323,13 +324,7 @@ def main() -> int:
         f"- Explicitly dispositioned closed net risks: `{len(closed_risk_overrides)}`",
         f"- Documented intentional no-connect pins: `{sum(map(len, no_connects.values()))}`",
         "",
-        "## Chip Provenance Types",
-        "",
-        "| Provenance type | Chips |",
-        "| --- | ---: |",
     ]
-    for key, count in sorted(chip_prov_counts.items()):
-        lines.append(table_row([key, count]))
 
     lines.extend(["", "## Gap Categories", "", "| Category | Chip gaps | Net gaps |", "| --- | ---: | ---: |"])
     for category in sorted(set(chip_categories) | set(net_categories)):
@@ -468,7 +463,7 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "## Automatic Closure Rule",
+            "## Updating the ledger",
             "",
             "- If a gap can be closed from existing scans/docs/code, update",
             "  `kicad/juku.board.json` first, then regenerate this report and the",
@@ -476,9 +471,9 @@ def main() -> int:
             "- If a gap depends on PROM contents, hidden routing, owner continuity,",
             "  analog measurement, or vendor/order evidence, keep it listed here",
             "  until that stronger evidence exists.",
-            "- Endpoint coverage remains necessary but not sufficient: it proves the",
-            "  PCB preserves modeled connectivity, while this ledger records where",
-            "  the model is still not fully historical-source-proven.",
+            "- A PCB endpoint/net-assignment check does not establish copper continuity",
+            "  or historical fidelity. Use the route/DRC checks for copper and the owning",
+            "  source records for fidelity; this ledger screens recorded uncertainties.",
             "",
         ]
     )
