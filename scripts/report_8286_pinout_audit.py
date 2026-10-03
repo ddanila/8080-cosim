@@ -104,7 +104,7 @@ def main() -> None:
     expected_d4_map.update({
         pin: f"AOUT{i}" for i, pin in enumerate(("12", "13", "19", "18", "15", "16", "17", "14"))
     })
-    checks.append(("D4 LVS override preserves its routed high-address permutation", d4_map == expected_d4_map))
+    checks.append(("D4 LVS override preserves its source high-address permutation", d4_map == expected_d4_map))
     d29_map = mapping["pinmaps"]["kicad_instance"]["D29"]
     expected_d29_map = {
         pin: f"AIN{i}" for i, pin in enumerate(("3", "1", "2", "7", "6", "8", "4", "5"))
@@ -112,7 +112,7 @@ def main() -> None:
     expected_d29_map.update({
         pin: f"AOUT{i}" for i, pin in enumerate(("17", "19", "18", "13", "14", "12", "16", "15"))
     })
-    checks.append(("D29 LVS override preserves its routed command permutation", d29_map == expected_d29_map))
+    checks.append(("D29 LVS override preserves its source command permutation", d29_map == expected_d29_map))
     checks.append((
         "D7 pin 5 and D29 physical A2 pin 3 share the traced -INHIB source boundary",
         {
@@ -147,16 +147,26 @@ def main() -> None:
         "Sheet 1 routes D107 and D23-D25 straight, permutes D4's high-address",
         "channels, and permutes D29's eight command channels. The exact .009",
         "D29 row transcription is in `ref/schematics/d29-exact-009-pinmap-review.json`;",
-        "the command rows now match the exact .009 source map. Other checked",
+        "the command rows match the exact .009 source map. Other checked",
         "pad endpoints and per-instance LVS maps use ordered logical buses.",
         "Factory sheets 1 and 3 prove that D100 instead buffers eight",
         "floppy-drive outputs; its paired pads and shared pins 9/11 control",
         "continuation are guarded here independently of the data-bus devices.", "",
         "Primary pinout source:",
         "`https://www.silicon-ark.co.uk/datasheets/m8286-m8287-datasheet-intel.pdf`", "",
+        "## Command", "", "```sh",
+        "python3 scripts/report_8286_pinout_audit.py", "```", "",
         "## Checks", "", "| Check | Result |", "| --- | --- |",
     ]
     lines.extend(f"| {name} | {'PASS' if ok else 'FAIL'} |" for name, ok in checks)
+    lines.extend([
+        "", "## Scope", "",
+        "This guard compares the listed main-board source contracts, net endpoints",
+        "and LVS mapping data with fixed pinout/channel expectations. It does not",
+        "run LVS, inspect routed copper, simulate turnaround timing or measure",
+        "physical continuity. D100 control and remote-source boundaries remain",
+        "subject to the [FDC handoff](fdc-hardware-handoff.md).",
+    ])
     OUT.write_text("\n".join(lines) + "\n")
     print(f"Wrote {OUT.relative_to(ROOT)}")
     if failed:
