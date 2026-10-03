@@ -247,9 +247,13 @@ def main() -> int:
     )
     ready_polarity_guard = marker(
         "docs/d2-ready-path-check.md",
-        "Status: **PHYSICAL D2 RAW POLARITY EXECUTES THROUGH D30**",
-        "Nano D10",
-        "D2.12 on D30.2 and the R6 pull-up",
+        "Status: **CAPTURED D2 RAW POLARITY GUARDED IN HDL**",
+        "D30 section A samples the low and released levels on `PHI2TTL`",
+        "asynchronous",
+    ) and marker(
+        "docs/d2-physical-truth.md",
+        "sampled on Nano D10",
+        "board pull-up R6 and D30.2",
     ) and marker(
         "hdl/devices.v",
         "К556РТ4 outputs are open collector",
