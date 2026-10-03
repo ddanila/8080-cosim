@@ -79,7 +79,7 @@ Exact report digests are recorded in the machine-readable manifest linked below.
 The four small-PROM raw tables and asserted interpretations are separately
 preserved. The programming procedure determines which bit polarity to write
 for the selected device and programmer. D15/D16 are the adopted functional
-EktaSoft 3.7 split; their concatenation matches
+archive-37 RomBios 3.43m split; their concatenation matches
 `roms/ekta37.bin` (`fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`). Record
 the exact installed images in each first-article record.
 

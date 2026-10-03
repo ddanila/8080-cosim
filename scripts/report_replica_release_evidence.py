@@ -148,13 +148,13 @@ def programming_evidence() -> dict[str, dict]:
         digest = sha(ROOT / path)
         if digest != expected.get(filename) or (ROOT / path).stat().st_size != 8192:
             raise SystemExit(f"EPROM image does not match checked 8 KiB split: {ref}")
-        items[ref] = {"kind": "adopted EktaSoft 3.7 EPROM split",
+        items[ref] = {"kind": "adopted archive-37 RomBios 3.43m EPROM split",
                       "path": path.as_posix(), "sha256": digest, "bytes": 8192}
     source_rom = ROOT / "roms/ekta37.bin"
     joined = b"".join((ROOT / items[ref]["path"]).read_bytes()
                       for ref in ("D15", "D16"))
     if joined != source_rom.read_bytes() or sha(source_rom) != expected.get("../../roms/ekta37.bin"):
-        raise SystemExit("D15/D16 split does not reproduce the adopted EktaSoft 3.7 ROM")
+        raise SystemExit("D15/D16 split does not reproduce the adopted archive-37 RomBios 3.43m ROM")
     return items
 
 
@@ -283,7 +283,7 @@ def build() -> tuple[str, str]:
               "The four small-PROM raw tables and asserted interpretations are separately",
               "preserved. The programming procedure determines which bit polarity to write",
               "for the selected device and programmer. D15/D16 are the adopted functional",
-              "EktaSoft 3.7 split; their concatenation matches",
+              "archive-37 RomBios 3.43m split; their concatenation matches",
               f"`roms/ekta37.bin` (`{manifest['eprom_source_rom']['sha256']}`). Record",
               "the exact installed images in each first-article record.", "",
               "| Ref | Evidence | SHA256 | Provenance |", "| --- | --- | --- | --- |"]
