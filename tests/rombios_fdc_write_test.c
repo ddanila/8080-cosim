@@ -1037,15 +1037,15 @@ int main(int argc, char** argv) {
     fail = 1;
   }
 
-  uint8_t saved_usart_data = f.out[0x0C];
-  uint8_t saved_usart_status = f.out[0x0E];
+  uint8_t saved_printer_data = f.out[0x0C];
+  uint8_t saved_printer_status = f.out[0x0E];
   f.out[0x0C] = 0;
-  f.out[0x0E] = 0x08;                 // USART transmitter ready
+  f.out[0x0E] = 0x08;                 // PPI1 Port-C bit 3: fixture printer-ready input
   fail |= run_bios_entry(&f, BIOS_LIST, 0, 'L', 0, NULL, NULL,
                          &list_output_cycles, "LIST");
   uint8_t listed_character = f.out[0x0C];
-  f.out[0x0C] = saved_usart_data;
-  f.out[0x0E] = saved_usart_status;
+  f.out[0x0C] = saved_printer_data;
+  f.out[0x0E] = saved_printer_status;
   if (listed_character != 'L') {
     fprintf(stderr, "EKDOS LIST: output=%02X expected=%02X\n",
             listed_character, 'L');
@@ -1201,7 +1201,7 @@ int main(int argc, char** argv) {
          "unallocated=4 no-preread=1 "
          "ramdisk-select=absent/format/reopen ramdisk-banks=6 "
          "boot=ccp wboot=resident+reload-ccp "
-         "const=no-key conin=shift-T conout=glyph-C list=usart-L "
+         "const=no-key conin=shift-T conout=glyph-C list=printer-L "
          "aux=punch+reader-unimplemented "
          "home=clean+dirty "
          "listst=not-ready "

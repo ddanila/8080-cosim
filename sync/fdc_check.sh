@@ -297,7 +297,7 @@ physical D93/D94 wiring.
   both WBOOT branches, HOME, and the console, printer, auxiliary, and drive
   selection vectors through exact ROM/installed monitor services. Guards
   check the CCP handoff and vectors, cache preservation, system-sector reload,
-  interrupt-fed keyboard input, framebuffer character rendering, USART output,
+  interrupt-fed keyboard input, framebuffer character rendering, printer-port output,
   and unavailable-device returns. The default WBOOT retry reloads sectors
   `3,2,4,6,5` and checks the final bytes after the `CCPExit` patch.
   These are behavioral fixtures in
