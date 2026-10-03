@@ -555,7 +555,8 @@ oracle, cycle renderer, reducers and report writers. Generated qualification
 reports retain exact inputs, measurements and hashes. External copyrighted
 source packs are required for rebuilding their reductions and are not committed.
 
-Build or verify everything with:
+Build the default player and run the music, library, baseline and envelope
+gates with:
 
 ```sh
 python3 spinoffs/jukupoly/firmware/build_jukupoly.py
@@ -563,6 +564,12 @@ bash sync/jukupoly_check.sh
 bash sync/jukupoly_library_check.sh
 bash sync/jukupoly_baseline_check.sh
 bash sync/jukupoly_envelope_check.sh
+```
+
+Standalone PCM has a separate synthetic playback regression:
+
+```sh
+python3 tests/jukupoly_pcm_test.py
 ```
 
 Build the complete DOOM library (requires `cpmtools`) with:
