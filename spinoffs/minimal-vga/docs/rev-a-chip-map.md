@@ -9,7 +9,7 @@ it is not a released manufacturing BOM.
 | Ref | Function | Candidate part | Package | Notes |
 |---|---|---|---|---|
 | U1 | CPU | Z0840004PSC | DIP-40 | Owner-ordered 4 MHz Z80; factory mounts socket only. |
-| U2 | ROM | 27C256-class EPROM, 28C256-compatible where possible | DIP-28 | 32 KiB ROM target for recovered firmware. |
+| U2 | ROM | 28C256 pin contract; alternate ROM requires explicit compatibility review | DIP-28 | 32 KiB socket; verify write-enable/programming pin roles before substituting an EPROM. |
 | U5 | Decode glue | GAL22V10-class programmable logic | DIP-24 | Dual-mode decode; see the Decode PROMs section and `rev-a-gal-equations.md`. |
 
 ## Decode PROMs (Phase 3 — the workbench purpose)
@@ -19,7 +19,7 @@ real functional roles; booting the firmware is the self-test.
 
 | Ref | Juku role | Part | Package | Notes |
 |---|---|---|---|---|
-| U3 | D6 memory-map decode (`.038`) | К556РТ4 / 82S126-class 256×4 OC PROM | DIP-16 | Address `{A7=0,/PC1,/PC0,A11..A15}`; outputs O1..O4 = rom_n/ram_n/rev/roe_n. |
+| U3 | D6 memory-map decode (`.038`) | К556РТ4 / 82S126-class 256×4 OC PROM | DIP-16 | Address `{A7=0,/PC1,/PC0,A11..A15}`; output roles follow the corrected physical table and decode equations. |
 | U4 | D8 ROM-select pager (`.039`) | К155РЕ3 / SN74188-class 32×8 OC PROM | DIP-16 | Address `A[15:11]`; `/CE`=ROM_CE_N; outputs to J95 readback. |
 | U6 | Port C mode-bit inverter | 74HC04 hex inverter | DIP-14 | 8255 PC0/PC1 → `/PC0,/PC1` for the РТ4 (two gates; rest tied off). |
 | J94 | Decode-mode jumper | 1×3 header + shunt | TH | Mode A (GAL-internal decode, PROM sockets empty) vs Mode B (real РТ4 drives decode). |
@@ -78,64 +78,43 @@ refresh-row count while grounding both reset inputs permits counting.
 | Ref | Function | Candidate part | Package | Notes |
 |---|---|---|---|---|
 | U40 | VGA timing block | TTL640x480 bring-up timing header | 2x6 2.54 mm header | Rev A proves CPU/DRAM/refresh/video handoff first; exports PIXCLK, sync, blanking, video request/ack, and pixel-load timing. Full onboard TTL VGA expansion is deferred. |
-| U41 | Pixel latch/serializer | 74HCT165/166/595-class | DIP | Byte-to-pixel path driven by U40 timing signals for Rev A bring-up. |
+| U41 | Pixel latch/serializer | 74HCT166 | DIP-16 | Byte-to-pixel path driven by U40 timing signals for Rev A bring-up. |
 | J40 | VGA output/debug | 1x7 2.54 mm header | TH | RGB after series resistors plus HSYNC/VSYNC/GND and BLANK_N; HD-15 adapter is external for Rev A. |
 
 ## Power, Clock, Reset, Debug
 
 | Ref | Function | Candidate part | Package | Notes |
 |---|---|---|---|---|
-| J1 | +5V input | 2-pin 5.00 mm terminal/header | TH | Feeds VCC_RAW before F1; alternate input to USB-C. |
+| J1 | +5V input | Phoenix MKDS-1,5-2-5.08 terminal | TH | Feeds VCC_RAW before F1; alternate input to USB-C. |
 | J3 | USB-C +5V input | HRO TYPE-C-31-M-17-compatible receptacle | SMD/THT shell | Power-only USB-C input in parallel with J1 before F1. |
 | R30-R31 | USB-C CC pulldowns | 5.1k | TH | Rd pulldowns from CC1/CC2 to GND for 5V sink behavior. |
-| F1 | +5V input fuse | resettable PTC fuse | TH | VCC_RAW from J1/J3 feeds fused VCC through F1. |
-| D1 | +5V clamp | TVS diode | TH | Fused VCC clamp near power entry. |
+| F1 | +5V input fuse | Bourns MF-RG300-0-14 | TH | VCC_RAW from J1/J3 feeds fused VCC through F1. |
+| D1 | +5V clamp | Littelfuse P4KE6.8A-B | TH | Fused VCC clamp near power entry. |
 | U50 | Clock oscillator | canned oscillator | DIP-14/half-can | CPU clock and/or divided timing source. |
-| U51 | Reset supervisor | MCP130-class or RC+Schmitt | TO-92/SOT/DIP | Prefer deterministic reset. |
+| U51 | Reset supervisor | Reset supervisor matching the assigned pin contract | TO-92 | Source pads: 1=GND, 2=RESET_N, 3=VCC; confirm exact part before insertion. |
 | J90-J93 | Logic analyzer/debug headers | 2.54 mm headers | TH | Address/data/RAS/CAS/WE/sync/power debug; J93 exposes VCC/GND/PWR_OK/VCC_RAW. |
 | D2-D7 | Diagnostic LEDs | 3 mm LEDs | TH | +5V, PWR_OK, CLK, RESET_N, M1_N, and RFSH_N bring-up indicators. |
 | R24-R29 | Diagnostic LED resistors | 2.2k | TH | Conservative current limit to reduce logic loading. |
 | C* | Decoupling | 100 nF ceramic | TH/SMD | One per IC, close to socket power pins. |
 
-## Current Modeling Status
+## Verification and remaining scope
 
-- `minimal_vga_lvs.v` still uses logical blocks for adapter, DRAM bank,
-  refresh, keyboard, VGA timing, and video fetch.
-- Staged physical LVS now independently closes the POWER/CLOCK_RESET group,
-  complete decode socket/glue group, and complete U1 Z80/U2 ROM core. The core
-  slice covers every U1/U2/C1/C2 pad and every endpoint on all 36 non-power
-  address/data/control nets. Stage 4 additionally closes every U10-U17/C6-C13
-  pad and all 19 non-power DRAM-bank nets. Stage 5 closes every U20/U21/C14/C15
-  pad, both grounded active-low enables, and all 25 non-power address-mux nets;
-  its U22 boundary also includes the corrected pin-6-to-pin-13 cascade endpoint.
-  Stage 6 closes every U22/C16 pin and all endpoints on CLK plus the eight
-  refresh-row nets. Stage 7 closes every pin and NC declaration on the
-  explicitly empty U23/C17 DNP spare socket plus every CLK endpoint. The
-  complete U24/C18 Stage 8 closes all 19 refresh-arbitration/DRAM-timing nets,
-  including the corrected pin-13 input and three state-feedback NC pads. The
-  complete U30/C19 Stage 9 closes all 28 PPI nets through the U31 and R16-R23
-  keyboard boundaries, including PC0/PC1 and all ten NC pads. The remaining
-  devices are still staged.
-- `../kicad/rev-a-physical.board.json` is the first generated physical
-  schematic target using this decomposition.
-- `../kicad/rev-a-physical.kicad_sch` is generated from that target.
-- The Rev A physical spec now uses real DIP pin numbers for Z80, 28C256, 4164,
-  8255, and the selected 74xx support sockets. GAL and header pins are still
-  design-assigned until equations and connector pinouts are frozen.
-- The optional CPU bus buffer, address latch/buffer, and extra DRAM control
-  gates are not populated in the Rev A baseline. The current board routes the
-  direct Z80 data bus and GAL-based decode/timing contract; add those sockets
-  back only if simulator or hardware bring-up proves they are needed.
-- Rev A uses western parts for the baseline (Mode A), and adds DIP sockets for
-  the scarce original Juku bipolar PROMs (U3 РТ4, U4 РЕ3) that Mode B exercises;
-  the DRAM sockets (U10-U17) take either KM4164B or К565РУ5. Soviet-part
-  footprints are otherwise not preserved as a constraint for this spin-off.
-- **The routed PCB (`rev-a-physical.kicad_pcb`) now matches the Phase 3 source.**
-  It places/routes U3/U4/U6/J94-J98 and their passives and passes zero-violation,
-  zero-unconnected KiCad DRC. The generated fab package still must be refreshed
-  and independently reviewed before any order.
-- A future assembly path may mount sockets/passives at the factory and insert
-  vintage or programmed ICs later, but that path is blocked on functional
-  proof and design review.
-- The physical schematic should replace logical blocks one group at a time while
-  keeping LVS green at each step.
+The [physical board JSON](../kicad/rev-a-physical.board.json) owns pad numbers
+and connections; the schematic and PCB are generated from that decomposition.
+`minimal_vga_lvs.v` retains the older logical-block comparison.
+
+Nine physical LVS slices cover power/clock/reset, decode, CPU/ROM, DRAM bank,
+address muxes, refresh counter, spare socket, DRAM sequencer and PPI. Each has
+its own completeness and boundary projection; passing them does not establish
+whole-board LVS. See [the coverage guide](rev-a-lvs-coverage.md) for exact
+endpoints and negative controls.
+
+The direct Z80 bus and GAL decode/timing are the baseline. Optional bus buffers
+and extra control gates require a demonstrated need. Mode A uses the western
+baseline decode; Mode B exercises the original PROM sockets. U4's byte is
+observed rather than used to gate the single ROM's data bus.
+
+For current routing and fabrication holds, use [DRC readiness](rev-a-drc-readiness.md)
+and [manufacturing readiness](rev-a-manufacturing-readiness.md). An old zero-open
+route or generated package does not authorize an order. Exact-part acceptance
+and first-article electrical qualification remain separate from the chip map.
