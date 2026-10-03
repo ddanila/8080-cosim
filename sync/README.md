@@ -201,8 +201,13 @@ reset-to-prompt reports are the stronger evidence where both exist.
 
 ## Reference and generated-evidence checks
 
-- `reference_artifact_check.sh` verifies checksums for vendored factory,
-  firmware, media, and WD1772/VG93 references.
+- `reference_artifact_check.sh` verifies the checksum manifests in
+  `ref/baltijets-tech-docs`, `ref/ekdos-source`, `ref/extracted-software`,
+  `ref/firmware`, `ref/reconstructed-proms`, `ref/reconstructed-firmware`,
+  `ref/wd1772-vg93`, and `ref/datasheets`. It also requires 52 owner-board and
+  26 factory-assembly photos to be materialized JPEGs. It does not inspect
+  photo content or verify photographed continuity. Physical PROM captures have
+  their own manifest: `(cd ref/physical-proms && sha256sum -c SHA256SUMS)`.
 - Scripts under `scripts/report_*.py` regenerate constraint and boundary
   reports used by CI.
 - `system_bus_connector_check.sh` checksum-guards the recovered `.106.103`
