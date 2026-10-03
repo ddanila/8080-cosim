@@ -31,12 +31,11 @@ Both capacitor symbols carry polarity marks. The target component view directly
 shows axial electrolytics and reads C18 as `47 мкФ / 6.3 V`; the sheet value
 closes C17 as `120 мкФ`. Their factory body centres are corrected locally
 against D98/D99 and the owner-board view because the folded sheet's global
-lower-FDC affine drifts at the right edge. D99 pin 4 remains a physical
-continuity boundary; pin 12 is source-joined to D100.9 OE_N. Q2/pin5 drives D100.7
-A7, separate from the D26.16 MOTOR EN line feeding D99.11 CLR2_N. The E12 local selector and post-3 HLD destination are
-source-readable, but its physical posts, population, and continuity need
-confirmation
-(`docs/d99-e12-selector-source-review.md`).
+lower-FDC affine drifts at the right edge. E12's physical posts, population,
+and continuity remain unconfirmed; see
+[the selector review](../../docs/d99-e12-selector-source-review.md).
+
+## Source evidence
 
 The two native sheet-3 frames `PXL_20260718_101637906.jpg` and
 `PXL_20260718_101641055.jpg` overlap at D93 and its input rails. Following
@@ -45,14 +44,11 @@ and D99 pin 11 `/CLR2` in the latter frame. The first frame's SHA256 is
 `ba6f618ea610f05617cde668660a767c103116bcd55f46862a36cbe385ee26e4`;
 the second frame's SHA256 is
 `86740a80fb494cdb08f4de3a120cab83e4f6638cf5885d4c83418a4a94c881a7`.
-The board model now places D99.11 on `FDC_MOTOR_EN` with D26.16.
-The original board's D99.11-to-D26.16 continuity remains unmeasured.
 
 The full sheet-3 overview `PXL_20260718_101633062.jpg`, native crop
-`(1850,520)-(3072,1650)`, corrects the cross-frame rail match: D99.4
+`(1850,520)-(3072,1650)`, shows D99.4
 turns west at approximately `(2564,689)` on the rail **above** the
-D94.14/D101.7 rail near `y≈725`. The earlier claim that D99.4 runs down to
-D94.14 is retracted. The same overview draws D101.7/Q0 onto the D94.14
+D94.14/D101.7 rail near `y≈725`. The same overview draws D101.7/Q0 onto the D94.14
 rail, independently agreeing with owner continuity. Following the D99.4
 rail west in overview crop `(1230,590)-(1640,1350)` reaches D93 HLT/pin23;
 its descent crosses the E11 post-1 vertical without a dot. Keep the
@@ -67,16 +63,7 @@ crossing. This excludes those nearby control rails as alternate readings of
 the D94.14 continuation. The separate overview establishes its D101.7
 destination without promoting the adjacent D99.4 rail.
 
-The old, incorrect D99.4-to-D94.14 interpretation would have changed
-decoded FDC behavior. In the validated physical
-D94 `.092` raw PROM image (`ref/physical-proms/validated/d94_092.raw.bin`),
-A4-low/high address pairs 03/19, 07/23, 11/27, and 15/31 read `FE/FF`,
-`FC/F5`, `FC/F9`, and `FE/FF`, respectively. The other twelve pairs match.
-With D99 CLR1/pin3 grounded, the one-shot contract predicts Q1_N/pin4
-high; if that pin drove A4, the A4-low register-3 rows and their D0
-assertion would be unreachable. The corrected exact drawing and
-owner-measured D101.7 connection instead leave those rows potentially
-reachable.
+## Physical route limits
 
 The registered board-photo points put D99.4 at solder-image
 `PXL_20260710_200522685.jpg` `(1124.714,901.429)`, D101.7 in that
@@ -96,17 +83,18 @@ a separate upward copper trace; that neighboring trace must not be assigned
 to D99.4. A front-face route beneath the installed D99 package remains
 possible, so this narrows the probe site but does not settle D99.4's route.
 
-The parenthesized/quoted `1` beside this conductor denotes the destination
+## Unresolved sheet-1 continuations
+
+The parenthesized/quoted `1` beside the D99.10 conductor denotes the destination
 sheet, not a logic level. Full-resolution `PXL_20260718_101641055.jpg` shows
-D96.13 running directly to the marked junction on D99.10's line; the former
-D96.13 no-connect transcription was wrong. Their shared remote source remains
+D96.13 running directly to the marked junction on D99.10's line. Their shared remote source remains
 unread on sheet 1. Native crop `(0,1100)-(1800,2200)` also separates this
 pin-10/pin-13 branch from the crossing D96.9 output line: the branch has its
 own junction just below D99 and a quoted `1` continuation arrow, while the
 output line crosses it without a junction. The arrow gives no unique source
 pin, so the two lines must not be merged from their crossing. D100.9 is
 connected to D99.12; D100.11 has a separate
-sheet-1 boundary (`docs/d100-control-source-review.md`). Structural HDL
+sheet-1 boundary; see [the D100 control review](../../docs/d100-control-source-review.md). Structural HDL
 keeps the two conductors distinct.
 
 Guard:
