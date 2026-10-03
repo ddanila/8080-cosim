@@ -1,8 +1,8 @@
 # Juku system binaries
 
 Vendored public CP/M and EKDOS system binaries from the Juku software archive.
-These are preservation/reference artifacts for disk and system-software work;
-they are not the missing РЕ3/РТ4 PROM programming payloads.
+These preservation artifacts supply the stock Janet bootstrap regression and
+reference system-software work. Their runnable layout is described below.
 
 Source archive:
 
@@ -52,9 +52,5 @@ The proven stock setting is nominal 9600 baud, 8O1. The regression exercises
 the real PTY serial/PIC/NetBios path and requires a byte-exact `B400h` image plus
 the `CA00h` handoff; it does not inject RAM.
 
-## PROM search result
-
-The archive containing these system binaries has no obvious programming files
-for PROMs `.037`, `.038`, `.039`, or `.092`. Validated physical dumps for all
-four PROMs are now stored under `ref/physical-proms/`; the programming-disk
-search remains useful only for provenance.
+Validated physical dumps for all four small PROMs are maintained separately
+in [the physical PROM reference](../../ref/physical-proms/README.md).
