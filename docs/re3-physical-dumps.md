@@ -1,19 +1,16 @@
 # D8/D94 physical RE3 dumps
 
-Status: **CROSS-MACHINE PHYSICAL CONTENT VALIDATED**
+Status: **REPEATED PHYSICAL CONTENT VALIDATED**
 
-The D8 `.039` and D94 `.092` К155РЕ3 PROMs were read independently from
-two physical Juku processor boards:
+The D8 `.039` and D94 `.092` К155РЕ3 tables are preserved with
+`sukharev_reference` and `arvutimuuseum_CS00015` capture names. For each PROM,
+the validated manifest records six named inputs but only three independent
+read events: the two board-name sets are byte-for-byte aliases of those events.
+The third event is labelled power-cycled. All retained inputs agree.
 
-- Danila Sukharev's reference board; and
-- Arvutimuuseum machine `CS00015`.
-
-Three captures were retained for every PROM on every board. The third capture
-followed a power cycle. All six captures of each location are byte-identical.
-They are independent physical reads, not duplicate aliases.
-
-The Sukharev board has missing capacitors and an unrelated decapped logic IC,
-probably an ЛЕ4. Its D8 and D94 PROM packages are intact.
+These aliases do not establish six independent reads or cross-board
+corroboration. Preserve the recorded names and manifest alias notes; a new
+board/socket-qualified acquisition would add independent provenance.
 
 ## Reader and representation
 

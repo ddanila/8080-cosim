@@ -61,8 +61,9 @@ SHA256 c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489
 
 ## D8 — ДГШ5.106.039, К155РЕ3
 
-Three reads from each of the two physical boards include a power-cycled capture.
-All six agree byte-for-byte. The physical table differs from the old
+Six named inputs represent three independent read events, including a
+power-cycled capture. The two board-name sets are aliases, as recorded in
+`validated/d8_039.dump.json`; all retained inputs agree byte-for-byte. The physical table differs from the old
 reconstructed fallback at 19 of 32 addresses and therefore supersedes it.
 
 ```text
@@ -79,8 +80,9 @@ Active-low asserted table:
 
 ## D94 — ДГШ5.106.092, К155РЕ3
 
-Three reads from each of the two physical boards include a power-cycled capture.
-All six agree byte-for-byte, and the resulting table differs from D8 at 25 of
+Six named inputs represent three independent read events, including a
+power-cycled capture. The two board-name sets are aliases, as recorded in
+`validated/d94_092.dump.json`; all retained inputs agree byte-for-byte, and the resulting table differs from D8 at 25 of
 32 addresses.
 
 ```text
