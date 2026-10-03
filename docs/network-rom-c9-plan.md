@@ -72,7 +72,7 @@ Deterministic candidate identities are:
 
 The per-release [ROM manifest](../spinoffs/jukuravi/network-rom/juku-network-rom-abi1.4-c9.json)
 is the reproducible ROM/ABI authority. The sibling
-[c9 physical worksheet](../../cpm-plus-juku/docs/c9-physical-acceptance-worksheet.md)
+[c9 physical worksheet](https://github.com/ddanila/cpm-plus-juku/blob/61b2d5397589e794c0381aa836b7a0da2217e6c8/docs/c9-physical-acceptance-worksheet.md)
 records the named bench boundary. These identities and C9's physical defect
 must remain distinct from subsequent programming candidates; no new EPROM
 programming is requested by this document.

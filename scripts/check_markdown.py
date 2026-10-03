@@ -52,7 +52,7 @@ def files(root: Path) -> list[Path]:
     return sorted({root / name for name in names if (root / name).is_file()})
 
 
-def check(path: Path) -> list[str]:
+def check(path: Path, root: Path | None = None) -> list[str]:
     errors = []
     for _, destination in LINK.findall(prose(path.read_text(encoding="utf-8"))):
         if destination.startswith("<"):
@@ -63,7 +63,9 @@ def check(path: Path) -> list[str]:
             continue
         relative, _, anchor = destination.partition("#")
         target = path.parent / unquote(relative) if relative else path
-        if not target.exists():
+        if root is not None and not target.resolve().is_relative_to(root.resolve()):
+            errors.append(f"path outside repository; use a source URL: {destination}")
+        elif not target.exists():
             errors.append(f"missing path: {destination}")
         elif anchor and target.suffix.lower() == ".md":
             if unquote(anchor) not in anchors(target.read_text(encoding="utf-8")):
@@ -73,7 +75,7 @@ def check(path: Path) -> list[str]:
 
 def main() -> int:
     documents = files(ROOT)
-    errors = [f"{path.relative_to(ROOT)}: {error}" for path in documents for error in check(path)]
+    errors = [f"{path.relative_to(ROOT)}: {error}" for path in documents for error in check(path, ROOT)]
     if errors:
         print("Markdown links failed:\n" + "\n".join(errors))
         return 1

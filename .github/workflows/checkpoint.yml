@@ -1,0 +1,52 @@
+name: CI (cosim checkpoint — Linux + macOS)
+
+# The test supplies its own ROM and reads only the compiled cosim sources.
+# Keep both platforms on input changes and a weekly runner/toolchain sentinel.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 4 * * 1'
+  push:
+    paths:
+      - 'cosim/**'
+      - 'tests/cosim_watch_checkpoint_test.py'
+      - 'ci/**'
+      - '.github/**'
+  pull_request:
+    paths:
+      - 'cosim/**'
+      - 'tests/cosim_watch_checkpoint_test.py'
+      - 'ci/**'
+      - '.github/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checkpoint-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  watch-checkpoint:
+    name: Watch checkpoint (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: |
+            cosim
+            tests/cosim_watch_checkpoint_test.py
+          sparse-checkout-cone-mode: false
+      - name: Build cosim trace
+        timeout-minutes: 5
+        run: >-
+          cc -O2 -Wall -Wextra -I cosim -o /tmp/cosim-watch-trace
+          cosim/trace.c cosim/i8080.c cosim/juk_disk.c cosim/juku_fdc.c
+      - name: Check atomic watched-write checkpoint state
+        timeout-minutes: 5
+        run: python3 tests/cosim_watch_checkpoint_test.py /tmp/cosim-watch-trace

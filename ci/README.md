@@ -11,6 +11,18 @@ may use up to ten minutes including checkout and tool installation. Path-based
 selection and cancellation of superseded runs still apply. Scheduled and
 manual `full` HDL runs mean **all bounded CI lanes**, not every local test.
 
+The watched-write checkpoint test has its own workflow. Changes to `cosim/`,
+its test, CI helpers, or workflow configuration run the same Linux/macOS
+matrix; a weekly schedule and manual dispatch also exercise runner updates.
+It supplies its own ROM, so documentation and reference-image changes do not
+need those two jobs. Its checkout includes only the cosim sources and test.
+
+Generic CI retains Markdown links and release-status consistency on every
+push. The consistency check also runs the automatic-completion freshness
+audit, so a second invocation is unnecessary. Local links must stay within
+the repository: references to sibling projects use source URLs so a developer's
+extra checkouts cannot conceal failures on hosted runners.
+
 ## Coverage kept local
 
 - Network ROM: CI retains the complete fast cosim ABI/fault matrix, elaborates

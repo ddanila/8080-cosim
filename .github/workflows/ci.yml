@@ -320,10 +320,6 @@ jobs:
         timeout-minutes: 5
         run: sync/jukuhost_linux_check.sh
 
-      - name: Check automatic completion audit freshness
-        timeout-minutes: 5
-        run: python3 scripts/report_automatic_completion_audit.py --check
-
       - name: Check spin-off shared commons
         timeout-minutes: 5
         run: python3 scripts/check_spinoff_commons.py
@@ -335,22 +331,3 @@ jobs:
       - name: Check rev B board connectivity + netlist completeness
         timeout-minutes: 5
         run: python3 scripts/check_revb_boards.py --completeness
-
-  watch-checkpoint:
-    name: Watch checkpoint (${{ matrix.os }})
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v7
-      - name: Build cosim trace
-        timeout-minutes: 5
-        run: >-
-          cc -O2 -Wall -Wextra -I cosim -o /tmp/cosim-watch-trace
-          cosim/trace.c cosim/i8080.c cosim/juk_disk.c cosim/juku_fdc.c
-      - name: Check atomic watched-write checkpoint state
-        timeout-minutes: 5
-        run: python3 tests/cosim_watch_checkpoint_test.py /tmp/cosim-watch-trace

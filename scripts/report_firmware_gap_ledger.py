@@ -158,8 +158,7 @@ def main() -> int:
         "READER-3 CONTROL VALIDATED / D6 CHANNEL ORDER CORRECTED",
         "revision-3 reread",
         "*.raw.bin",
-        "D94 `.092` requires a",
-        "separate К155РЕ3 reader",
+        "re3-physical-dumps.md",
     ) and exists("scripts/validate_rt4_dump.py")
     re3_validator_ok = marker(
         "docs/prom-dump-procedure.md",

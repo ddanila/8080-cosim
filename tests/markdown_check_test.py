@@ -48,6 +48,18 @@ class MarkdownTest(unittest.TestCase):
             new.write_text("# New doc\n")
             self.assertEqual(CHECK.files(root), [new])
 
+    def test_sibling_checkout_does_not_hide_nonportable_link(self):
+        with tempfile.TemporaryDirectory() as directory:
+            parent = Path(directory)
+            root = parent / "repo"
+            root.mkdir()
+            (parent / "sibling.md").write_text("# Exists locally\n")
+            doc = root / "source.md"
+            doc.write_text("[sibling](../sibling.md)\n")
+            self.assertEqual(CHECK.check(doc, root), [
+                "path outside repository; use a source URL: ../sibling.md",
+            ])
+
 
 if __name__ == "__main__":
     unittest.main()
