@@ -146,9 +146,15 @@ selectors, bounded profiles, and checks that require a local run.
 
 After changing `kicad/juku.board.json` or report inputs, run
 `scripts/regen_all.sh` for its selected fast report set. Add `--deep` for the
-listed HDL/cosim report writers. Also run a changed report's own command when
-it is outside those lists: neither mode refreshes every generated report or
-executes the uninterrupted Verilator prompt runs.
+listed HDL/cosim report writers. Add `--placement` to run the FDC upper/lower
+assembly placement writers; this requires `pcbnew`, Pillow, and their materialized
+photo inputs. It refreshes their Markdown, JSON, and overlay images. For example,
+`scripts/regen_all.sh --placement --check` checks their freshness along with the
+fast report set.
+
+Also run a changed report's own command when it is outside these lists. These
+options do not refresh every generated report or execute the uninterrupted
+Verilator prompt runs.
 
 `--check` uses `git diff` against the index for tracked files under `docs/`,
 `ref/`, and three named Rev A candidate reports. It includes pre-existing

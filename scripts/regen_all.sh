@@ -7,18 +7,20 @@ ROOT=$(cd "$(dirname "$0")/.." && pwd)
 cd "$ROOT"
 
 deep=0
+placement=0
 check=0
 for arg in "$@"; do
   case "$arg" in
     --deep) deep=1 ;;
+    --placement) placement=1 ;;
     --check) check=1 ;;
     -h|--help)
-      echo "Usage: scripts/regen_all.sh [--deep] [--check]"
+      echo "Usage: scripts/regen_all.sh [--deep] [--placement] [--check]"
       exit 0
       ;;
     *)
       echo "regen_all.sh: unknown argument: $arg" >&2
-      echo "Usage: scripts/regen_all.sh [--deep] [--check]" >&2
+      echo "Usage: scripts/regen_all.sh [--deep] [--placement] [--check]" >&2
       exit 2
       ;;
   esac
@@ -94,6 +96,13 @@ run python3 spinoffs/minimal-vga/kicad/report_rev_a_usb_c_candidate.py
 run python3 spinoffs/minimal-vga/kicad/report_rev_a_ptc_candidate.py
 run python3 spinoffs/minimal-vga/kicad/report_rev_a_tvs_candidate.py
 run python3 scripts/report_automatic_completion_audit.py
+
+# Photo/PCB placement writers require KiCad's Python API and Pillow.
+if ((placement)); then
+  python3 -c 'import pcbnew; import PIL' || { echo "regen_all.sh --placement: pcbnew and Pillow required" >&2; exit 2; }
+  run python3 kicad/report_fdc_upper_assembly_placement.py
+  run python3 kicad/report_fdc_lower_assembly_placement.py
+fi
 
 if ((deep)); then
   command -v gcc >/dev/null || { echo "regen_all.sh --deep: gcc not found" >&2; exit 2; }
