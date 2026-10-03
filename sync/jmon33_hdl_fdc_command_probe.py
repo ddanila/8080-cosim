@@ -48,12 +48,13 @@ def main() -> int:
     lower_text = text.lower()
     saw_write_track = "out port=0x1c reg=0 data=0xfd" in lower_text
     saw_write_protect = "in  port=0x1c reg=0 data=0x40" in lower_text
-    if not (saw_write_track or saw_write_protect):
+    accepted = saw_write_track or saw_write_protect
+    if not accepted:
         print("jmon33_hdl_fdc_command_probe: expected write-track or write-protect FDC trace not found", file=sys.stderr)
-        return 1
     text = text.replace(
         "Status: **JMON33 HDL COMMAND BOUNDED DIAGNOSTIC**",
-        "Status: **JMON33 HDL FDC T-COMMAND ORACLE PINNED**",
+        "Status: **JMON33 HDL FDC T-COMMAND ORACLE PINNED**" if accepted
+        else "Status: **JMON33 HDL FDC TRACE REQUIREMENT FAILED**",
         1,
     )
     text = text.replace(
@@ -61,6 +62,15 @@ def main() -> int:
         "sync/jmon33_hdl_fdc_command_probe.py",
         1,
     )
+    intro_start = text.index("This guard starts from")
+    intro_end = text.index("## Command", intro_start)
+    text = text[:intro_start] + (
+        "This wrapper generates a disk-backed cosim checkpoint with the T command\n"
+        "scheduled, then resumes its RAM and visible state in `juku_top`. The default\n"
+        "checkpoint is already inside the FDC polling loop. The HDL run stops after\n"
+        "eight FDC events and checks for a write-track or write-protect trace marker;\n"
+        "it does not require a completed command or matching command framebuffer.\n\n"
+    ) + text[intro_end:]
     text += (
         "\n"
         "## FDC-Specific Disposition\n"
@@ -75,7 +85,7 @@ def main() -> int:
         '  or complete the generic command framebuffer oracle.\n'
     )
     REPORT.write_text(text)
-    return 0
+    return 0 if accepted else 1
 
 
 if __name__ == "__main__":

@@ -410,6 +410,12 @@ def run_case(
 
 
 def main() -> int:
+    recorded_disk = os.environ.get("JMON33_HDL_COMMAND_DISK", "none")
+    if recorded_disk != "none":
+        try:
+            recorded_disk = str(Path(recorded_disk).resolve().relative_to(ROOT))
+        except ValueError:
+            pass
     phase_checkpoint = os.environ.get("JMON33_HDL_COMMAND_PHASE_CHECKPOINT", "0") not in ("", "0")
     expected_checkpoint_sha = os.environ.get(
         "JMON33_HDL_COMMAND_CHECKPOINT_SHA256",
@@ -507,7 +513,7 @@ def main() -> int:
         f"- `JMON33_HDL_COMMAND_KEY_MCYC` = `{os.environ.get('JMON33_HDL_COMMAND_KEY_MCYC', '50000')}`",
         f"- `JMON33_HDL_COMMAND_DEFER_IFF` = `{os.environ.get('JMON33_HDL_COMMAND_DEFER_IFF', '1')}`",
         f"- `JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS` = `{os.environ.get('JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS', '1')}`",
-        f"- `JMON33_HDL_COMMAND_DISK` = `{os.environ.get('JMON33_HDL_COMMAND_DISK', 'none')}`",
+        f"- `JMON33_HDL_COMMAND_DISK` = `{recorded_disk}`",
         f"- `JMON33_HDL_COMMAND_TRACEFDC` = `{os.environ.get('JMON33_HDL_COMMAND_TRACEFDC', '0')}`",
         f"- `JMON33_HDL_COMMAND_STOPFDC` = `{os.environ.get('JMON33_HDL_COMMAND_STOPFDC', '0')}`",
         f"- `JMON33_HDL_COMMAND_CASES` selected `{','.join(case.name for case in cases)}`",

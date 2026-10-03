@@ -1,12 +1,12 @@
 # jmon33 HDL command-surface probe
 
-Status: **JMON33 HDL FDC T-COMMAND ORACLE PINNED**
+Status: **JMON33 HDL FDC TRACE REQUIREMENT FAILED**
 
-This guard starts from a generated Monitor 3.3 cosim checkpoint,
-loads that RAM and visible state into `juku_top`, injects a single
-command plus Enter through the `juku_top` keyboard pins, and checks the
-visible command-state oracles pinned by `docs/jmon33-command-probe.md`
-or `docs/jmon33-idle-command-probe.md`, depending on the checkpoint.
+This wrapper generates a disk-backed cosim checkpoint with the T command
+scheduled, then resumes its RAM and visible state in `juku_top`. The default
+checkpoint is already inside the FDC polling loop. The HDL run stops after
+eight FDC events and checks for a write-track or write-protect trace marker;
+it does not require a completed command or matching command framebuffer.
 
 ## Command
 
@@ -31,7 +31,7 @@ Recorded environment settings:
 - `JMON33_HDL_COMMAND_KEY_MCYC` = `50000`
 - `JMON33_HDL_COMMAND_DEFER_IFF` = `1`
 - `JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS` = `1`
-- `JMON33_HDL_COMMAND_DISK` = `/home/ddanila/fun/8080-cosim/media/disks/JUKU1.CPM`
+- `JMON33_HDL_COMMAND_DISK` = `media/disks/JUKU1.CPM`
 - `JMON33_HDL_COMMAND_TRACEFDC` = `1`
 - `JMON33_HDL_COMMAND_STOPFDC` = `8`
 - `JMON33_HDL_COMMAND_CASES` selected `T-enter`
@@ -48,7 +48,7 @@ Recorded environment settings:
 
 | Case | Key | Checkpoint | Exit | Timed out | Keyboard samples | Active key values | Stimulus | FDC trace | Idle cursor | Command oracle | Resume line | Visible blocks | Pixels | VRAM SHA256 | Result |
 | --- | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- |
-| T-enter | `T\n` | `cyc=26050000 pc=0xE43C iff=1 kbd=2/0` | `0` | `False` | `0` | - | - | `[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=422 vram=290 ios=1`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=430 vram=290 ios=2`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=438 vram=290 ios=3`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=446 vram=290 ios=4`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=454 vram=290 ios=5`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=462 vram=290 ios=6`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=470 vram=290 ios=7`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x40 mcyc=478 vram=290 ios=8` | `yes` | `none` | `none` | `x=8,y=20` | `80` | `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397` | FAIL |
+| T-enter | `T\n` | `cyc=26050000 pc=0xE43C iff=1 kbd=2/0` | `0` | `False` | `0` | - | - | `[RESUME-FDC] IN  port=0x1c reg=0 data=0x44 mcyc=422 vram=290 ios=1`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x44 mcyc=430 vram=290 ios=2`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x44 mcyc=438 vram=290 ios=3`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x44 mcyc=446 vram=290 ios=4`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x44 mcyc=454 vram=290 ios=5`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x44 mcyc=462 vram=290 ios=6`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x44 mcyc=470 vram=290 ios=7`<br>`[RESUME-FDC] IN  port=0x1c reg=0 data=0x44 mcyc=478 vram=290 ios=8` | `yes` | `none` | `none` | `x=8,y=20` | `80` | `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397` | FAIL |
 
 ## Disposition
 
