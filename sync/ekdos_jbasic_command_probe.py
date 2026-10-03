@@ -482,12 +482,14 @@ def build_report(
         "## Command",
         "",
         "```sh",
-        (
-            f"JUKU_DISK={rel(disk)} JUKU_KEYS=$'{command_display}' "
-            f"JUKU_KEY_HOLD_FRAMES=6 JUKU_KEY_GAP_FRAMES=8 "
-            f"cosim/trace roms/ekta37.bin {max_cycles} 0 {frame_cycles}"
-        ),
+        f"JBASIC_COMMAND_MAX_CYCLES={max_cycles} JBASIC_COMMAND_FRAME_CYCLES={frame_cycles} \\",
+        "  sync/ekdos_jbasic_command_probe.py",
         "```",
+        "",
+        "The wrapper compiles its own trace and sets the keyboard/checkpoint inputs.",
+        "Its default disk is `media/disks/JUKPROG2.CPM`; to select another image,",
+        "set `JBASIC_COMMAND_DISK` to its absolute path. Keyboard timing overrides",
+        "are `JBASIC_KEY_HOLD_FRAMES` (default 6) and `JBASIC_KEY_GAP_FRAMES` (default 8).",
         "",
         "## Summary",
         "",
