@@ -6,7 +6,7 @@ Status: **COMPLETE 32 KIB RAM PROOF UNDER T36 REFRESH; LEGACY D57 CHANNEL-2
 CAPTURE NEEDS THE CORRECTED `/VER RTR` RERUN; 12 MS LINK MARGIN IS SEPARATE**.
 
 This note consolidates the completed T36 physical capture, the Juku drawings,
-the exact EktaSoft 3.7 ROM, deterministic simulation, and contemporary
+the exact RomBios 3.43m (archive #0037) ROM, deterministic simulation, and contemporary
 manufacturer documentation. It intentionally separates three effects that
 looked related during live work but are not supported as one fault.
 
@@ -171,7 +171,8 @@ Exploratory routing trials remain in Git history rather than the bench diagnosis
 The exact `ekta37.bin` also uses this channel. At ROM offsets `01FCh..020Dh`
 it writes D57 control `B0h`, then sends `FFh,FFh` to port `1Ah`. An executed
 cosim trace observes those writes at PCs `0200h`, `020Ch`, and `020Eh`.
-Therefore the fault is relevant to the stock initialization even though
+This establishes channel-2 programming in the stock initialization, not a
+channel-2 fault;
 `SYNC_B`'s final consumer is still an explicit drawing boundary.
 
 ## Ranked diagnosis and next physical checks
@@ -199,15 +200,16 @@ were the same clock: they are `/VER RTR` and 1.23 MHz respectively. The next
 bench action is the corrected D57 software rerun; pin-level work follows only
 if that valid discriminator fails.
 
-A prepared, not yet executed host-driven experiment can additionally decide
-whether the board's normal video-slot refresh works at all: it replays the
+A prepared, not yet executed host-driven experiment can test whether arming
+the raster improves retention relative to the unarmed control: it replays the
 exact EktaSoft D54/D55 raster programming from the T36 loader and holds RAM
 unrefreshed past the proven decay boundary. Its protocol, mechanism, and
 pre-registered interpretation are in
 [`../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md`](../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md).
-Because it needs no scope and no ROM burn, it is a sensible companion to the
-D57 pin checks on the same bench visit; its `raster-syncb` stage also
-physically probes whether `SYNC_B` participates in refresh gating.
+Once the required T36 or service-loader firmware is fitted, initial retention
+measurements need no additional ROM burn or scope. Compare its staged controls
+before attributing an improvement to raster or channel-2 programming; the
+experiment does not directly measure the physical refresh waveform.
 
 ## Reproduction
 

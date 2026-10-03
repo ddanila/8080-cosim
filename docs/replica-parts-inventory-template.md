@@ -40,7 +40,7 @@ Source gates:
 | Connectors/switches | exact mechanical fit reviewed for X1/X2/X3/X6/X8/X9/S1/S3/S4 |  |
 | Sockets | DIP socket quantities and widths checked against footprints before IC seating |  |
 | PROM/EPROM blanks | received D2/D6 RT4-class, D8/D94 RE3-class, and D15/D16 EPROM blanks |  |
-| Programmed firmware | D2/D6/D8/D94 verified against validated physical tables and D15/D16 against the adopted EktaSoft 3.7 split; installed-device readbacks and provenance recorded |  |
+| Programmed firmware | D2/D6/D8/D94 verified against validated physical tables and D15/D16 against the adopted RomBios 3.43m (archive #0037) split; installed-device readbacks and provenance recorded |  |
 
 ## Received Parts Ledger
 

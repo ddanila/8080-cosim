@@ -525,7 +525,7 @@ passed all eight repetitions with `FD/3D FC/3C FE/3E`, validating both D57
 channel 2 and the D55.13 → D57.18 `/VER RTR` path there. CS00024 must run this
 corrected probe before any socket, board-path, or package localization.
 
-The exact EktaSoft 3.7 ROM does use the channel: offsets `01FCh..020Dh` write
+The exact RomBios 3.43m (archive #0037) ROM does use the channel: offsets `01FCh..020Dh` write
 control `B0h`, followed by `FFh,FFh` to port `1Ah`. The immediate bench action
 is `batch.py --only-d57` with the corrected source. Only a corrected failure
 justifies tracing D55.13 to D57.18, verifying pin 16 high, observing pin 17
