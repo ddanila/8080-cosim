@@ -17,8 +17,9 @@ In the component-side close-up
 `ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg`, the horizontal row is
 `РТ4`, `РЕ3`, `ИД7`, `ЛА3`. D2 is the socketed РТ4 mounted perpendicular
 immediately below that row, not either of the two horizontal socketed PROMs.
-The existing component-side D2 package registration therefore requires
-correction before more photo-derived endpoints are accepted from it.
+The adopted [local package registration](../ref/photos/juku-pcb-2/local-package-registration.json)
+now identifies that vertical DIP-16 on the component face and in two solder
+views. Its check anchors establish pad identity, not electrical continuity.
 
 ## Reader and capture
 
