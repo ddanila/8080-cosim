@@ -10,6 +10,10 @@ The target is under five minutes per check. A lane containing several checks
 may use up to ten minutes including checkout and tool installation. Path-based
 selection and cancellation of superseded runs still apply. Scheduled and
 manual `full` HDL runs mean **all bounded CI lanes**, not every local test.
+The HDL schedule is daily at 03:23 UTC. It skips the lanes when the latest
+successful scheduled run already checked the exact current commit; manual
+`full` dispatch still selects all lanes. Manual `changed` compares `HEAD^`
+with `HEAD`, and an unavailable change set selects all lanes.
 
 The watched-write checkpoint test has its own workflow. Changes to `cosim/`,
 its test, CI helpers, or workflow configuration run the same Linux/macOS
@@ -22,6 +26,22 @@ push. The consistency check also runs the automatic-completion freshness
 audit, so a second invocation is unnecessary. Local links must stay within
 the repository: references to sibling projects use source URLs so a developer's
 extra checkouts cannot conceal failures on hosted runners.
+
+## Workflow scope
+
+| Workflow | Trigger and coverage |
+| --- | --- |
+| Generic | Every push and pull request; syntax, Markdown, evidence consistency, native Linux host, disassembly and board guards |
+| HDL | Relevant source/input changes, daily schedule and manual dispatch; lanes selected by `hdl-ci.json`, with unknown paths selecting all lanes |
+| Checkpoint | Relevant inputs, weekly Monday 04:43 UTC schedule and manual dispatch; watched-write checkpoint test on Linux and macOS |
+| Reports | Listed generator/input changes and manual dispatch; generated-report freshness, PROM captures and photo evidence |
+| Windows host | Listed host, packaging and guide changes, or manual dispatch; reproducible PE/package checks and Windows Server 2022 runtime checks; public release publication on `master` |
+| Smoke kit | Listed simulator/host/container inputs on `master`, or manual dispatch; publishes the downstream simulator container |
+
+Exact path filters and assertions are in [the workflows](../.github/workflows).
+The Windows runtime checks do not establish physical serial or Windows 95
+qualification. Report checks verify their listed artifacts; they do not amount
+to a semantic review of every document.
 
 ## Coverage kept local
 
@@ -40,9 +60,18 @@ extra checkouts cannot conceal failures on hosted runners.
   jobs; a local `--ci` invocation defaults to both. The default
   `bash spinoffs/minimal-vga/sim/revb_tier_suite.sh` retains full GAL synthesis,
   physical PCB, DRC and manufacturing-release checks with Galette/KiCad.
+  Some local physical gates explicitly skip when KiCad/`pcbnew` is unavailable;
+  inspect those outcomes before treating a local run as release evidence.
   A green hosted run does not qualify manufacturing release.
 - The existing deep cosim/full-banner and hardware/endurance checks remain
   outside hosted CI.
+
+The tracked [pre-push hook](../.githooks/pre-push) runs the deep cosim guard
+for pushes touching `hdl/`, `cosim/`, or `roms/` when `cc` and Icarus Verilog
+are available. Git must be configured to use that hook (for example,
+`git config core.hooksPath .githooks`); committing the file does not enable it.
+Missing tools skip the deep guard with a warning. Run
+`sync/cosim_check.sh` manually when the hook did not run it.
 
 When a bounded check outgrows its budget, inspect step timings first. Split
 independent checks or add a meaningful, explicitly labelled smoke profile;
