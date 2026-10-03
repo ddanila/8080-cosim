@@ -1,6 +1,6 @@
 # VJUGA rev B — five-GAL release contract
 
-Status: **R5.P1 + R5.V3 + R5.I4 implemented and reproducibly compiled 2026-08-29**.
+Status: **R5.P1 + R5.V3 + R5.I4 implemented and reproducibly compiled**.
 
 The authoritative sources and generated programming artifacts are in
 `pld/revb/`. The selected first-article identity is Microchip
@@ -13,16 +13,15 @@ compiled by pinned Galette 0.3.0 revision
 
 | Pin | Signal | Dir | Pin | Signal | Dir |
 |---:|---|---|---:|---|---|
-| 1 | `MREQ_N` | in | 13 | NC | in |
+| 1 | `MREQ_N` | in | 13 | GND (unused input) | defined |
 | 2 | `RD_N` | in | 14 | `ROM_CE_N` | out |
 | 3 | `WR_N` | in | 15 | `RAM_CE_N` | out |
 | 4–6 | A13–A15 | in | 16 | `MEM_RD_N` | out |
 | 7–8 | MODE0–MODE1 | in | 17 | `MEM_WR_N` | out |
 | 9–10 | A11–A12 | in | 18–23 | NC | out |
-| 11 | NC | in | 24/12 | VCC/GND | power |
+| 11 | GND (unused input) | defined | 24/12 | VCC/GND | power |
 
-`memory-u3.pld` implements the complete machine map, not the former mode-0-only
-bring-up shortcut:
+`memory-u3.pld` implements the complete four-mode machine map:
 
 | Mode | ROM | Memory-card SRAM | Other owner |
 |---:|---|---|---|
@@ -34,7 +33,7 @@ bring-up shortcut:
 The eight SRAM product terms fit pin 15's ten-term macrocell. The exhaustive
 checker evaluates every address in all four modes, proves ROM/SRAM exclusion,
 and confirms the D800 ownership boundary. `revb_mem_card.v` uses the same full
-map; its old mode-0-only internal decode is retired.
+map.
 
 The physical 27C256 receives CPU A0–A14 directly. Therefore the 16 KiB source
 image is duplicated into both halves of `ekta37_z80-27c256.bin`: mode-0 reads
@@ -57,8 +56,8 @@ source 1800–3FFF bytes from the upper copy.
 |  |  |  | 22–23 | NC | spare output |
 |  |  |  | 24 | VCC | power |
 
-R5.I4 replaces the earlier ATF16V8 implementation so PIT select and an
-independent positive-edge POST write clock fit without external decode glue.
+The I/O GAL provides PIT select and an independent positive-edge POST write
+clock without external decode glue.
 All selects require `M1_N=1`; `POST_CLK` is low only during an ordinary write to
 20h–23h and latches on write completion. `INT_N` drives zero only while
 `PIC_INT` is asserted and is otherwise high impedance. The select windows are

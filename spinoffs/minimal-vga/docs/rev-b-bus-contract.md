@@ -98,7 +98,7 @@ and rejects writes.
 |---|---|---|
 | 0 | 0x0000–0x3FFF | boot/default overlay |
 | 1 | 0xD800–0xFFFF | |
-| 2 | 0x4000–0xBFFF, 0xD800–0xFFFF | 0x4000–0xBFFF = cartridge (0xFF empty) |
+| 2 | 0xD800–0xFFFF | 0x4000–0xBFFF = empty cartridge window (0xFF), not populated ROM |
 | 3 | (none) | all RAM |
 
 Framebuffer window: base **0xD800**, **9640** bytes, geometry **40×241**.

@@ -15,7 +15,8 @@ oracles; it does not establish physical equivalence to the original Juku PCB.
 - Five independent PCB designs: CPU, Memory, expanded I/O, Backplane and Video.
   The complete five-board candidate is reviewed and released together.
 - The first-article CPU uses a socketed 2.000 MHz oscillator. Memory is ROM/SRAM;
-  Video owns the framebuffer at `0xD800`, with 9640 bytes in 40×241 geometry.
+  Video owns upper-window RAM accesses in modes 0/3, with a 9640-byte, 40×241
+  framebuffer at `0xD800`. Memory serves the upper ROM overlay in modes 1/2.
 - The I/O card contains the sole 8251, 8255, PIC, D57-compatible PIT and POST
   latch. Minimal bench population is a bring-up stage, not a different order.
 - Video uses local SRAM and a 25.175 MHz clock on a four-layer board. It supplies
