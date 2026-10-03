@@ -1,9 +1,7 @@
 # Processor-board physical evidence summary
 
-This legacy filename is retained because generated reports refer to it. The
-content is a settled evidence summary, not an experiment diary. Historical
-guesses that were contradicted by the official `.009` parts list, schematics,
-assembly drawing, or owner continuity measurements have been removed.
+This summary records the target board’s identity, source-supported topology,
+and remaining physical boundaries.
 
 ## Target and evidence order
 
@@ -24,7 +22,7 @@ two assemblies must not be mixed.
 
 | Ref | `.009` identity | Current conclusion |
 | --- | --- | --- |
-| D2 | КР556РТ4, program `.037` | validated physical table adopted from four independent accepted reads; the measured D30/D105/H handoff is in the model, while other source-risk nets remain open |
+| D2 | КР556РТ4, program `.037` | validated physical table adopted from six independent accepted reads; the measured D30/D105/H handoff is in the model, while other source-risk nets remain open |
 | D6 | КР556РТ4, program `.038` | validated physical table adopted from three independent matching reads; runnable joined-conductor timing remains bounded |
 | D8 | К155РЕ3, program `.039` | validated physical table adopted from three independent matching reads; its contents select the ROM sockets in boot while D6 still supplies the functional enable |
 | D9 | К555ИД7 | I/O chip-select decoder; physical D2 is not this decoder |
@@ -71,8 +69,6 @@ A3/pin 4, `-XACK` to A5/pin 2, and `-WREQ` to A7/pin 15. It shows D105's other
 two sections as `(1,2)->3` (D13.4 and MWR inputs) and `(12,13)->11` (tied-input
 MEMW inverter). The paired board photographs register A0/A1/A2/A4/A6 pad
 locations but do not close their remote nets.
-Only D0 is drawn on the factory symbol; D1-D3/pins 11/10/9 are explicit
-no-connects.
 
 The three photographed К155АГ3 positions require 16-pin DIP footprints. This is consistent
 with the traced D56 АГ3 pinout on sheet 2, whose RC terminals explicitly use
@@ -160,9 +156,10 @@ solder views show its twelve cable wires terminating in one PCB row labeled
 A21..A32, while factory sheets 4-5 map those points to X3.1..X3.12. Sheet 1
 also corrects two former reads: DTP is A31 (not 51), and SIN is A24 (not 33).
 It proves all three D104 К170УП2 receivers: SIN 4->13, CTS 5->12, and DSR
-6->11, closing D11 RxD/CTS/DSR. The same sheet and photo identify R104 as the
-120-ohm pull-up from A21/X3.1 to +5 V; its fitted 12.7 mm-pitch footprint now
-replaces that boundary. Source junction dots tie A22/X3.2 to the same OC SOUT
+6->11, closing D11 RxD/CTS/DSR. Exact `.009` sheet 1 and the assembly identify **R101** as the
+120-ohm pull-up from A21/X3.1 to +5 V. **R104** is the separate 470-ohm
+pull-up at D12.5/`X2_IRQ0`; installed resistance and remote continuity remain
+open. See [the source correction](../../../docs/r101-r104-d12-exact-source-correction.md). Source junction dots tie A22/X3.2 to the same OC SOUT
 node as A32/X3.12 and D12.3. A27/A28 show no solder-side copper departure and
 are absent from the older circuit sheet, so their installed X3.7/.8 wires are
 intentional cable-only reserved contacts rather than missing PCB traces.
@@ -267,8 +264,8 @@ bridge, and remote endpoints remain held.
 This evidence closes several old identity disputes, but it does not release the
 PCB for fabrication. All four small-PROM contents are now preserved physical
 truth; the measured D2/D30/D105 handoff is adopted, while D94/FDC
-connectivity remains incomplete, and two
-official IC footprints (D99 and D101) still lack complete
-pin-level functional nets. D105 wait/MRD logic is modeled and routed; the FDC
+connectivity remains incomplete. The
+[current inventory](../../../docs/unmodeled-footprint-inventory.md) identifies
+four modeled FDC devices with untraced or continuity-boundary functional pins. D105 wait/MRD logic is modeled and routed; the FDC
 cluster and other source-risk boundaries are not complete. See
 `PLAN.md` and the generated reconstruction/unmodeled-footprint reports.
