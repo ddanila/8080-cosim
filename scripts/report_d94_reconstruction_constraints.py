@@ -533,7 +533,7 @@ def main() -> int:
             f"| D94 address input sources are traced | {'PASS' if address_traced else 'FAIL'} | direct owner continuity/source nets for pins 10-14 |",
             f"| Retired D94 BA11..BA15 mapping is absent from the source model | {'PASS' if retired_ba_mapping_absent else 'FAIL'} | board JSON BA nets |",
             f"| Held freerouting DSN matches the current D94 mapping | {'PASS' if dsn_matches_source_model else 'HELD'} | `kicad/juku.dsn` is a routed engineering snapshot; authoritative connectivity is board JSON/schematic |",
-            f"| Source PCB agrees with current board-model D94 output nets | {'PASS' if pcb_ok and pcb_outputs_match else 'FAIL'} | `kicad/juku.kicad_pcb`; promoted route has exact source-pad identity |",
+            f"| Source PCB agrees with current board-model D94 output nets | {'PASS' if pcb_ok and pcb_outputs_match else 'FAIL'} | `kicad/juku.kicad_pcb`; source pad-net comparison only |",
             f"| `V3_RC` is present but not D94 enable/output evidence | {'PASS' if v3_rc_not_d94_evidence else 'FAIL'} | board nodes {format_nodes(v3_rc_nodes)}; DSN/PCB D94 signal pins are not on `V3_RC` |",
             f"| Enable pin D94.15 is traced | {'PASS' if enable_ok else 'FAIL'} | board JSON nets |",
             f"| Enable pin15 is isolated from output pin2 | {'PASS' if enable_output_isolated else 'FAIL'} | direct owner continuity; distinct board nets |",

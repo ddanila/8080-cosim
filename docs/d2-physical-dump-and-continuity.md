@@ -1,6 +1,6 @@
 # D2 physical dump and local continuity
 
-Status date: **2026-07-13**.
+Acquisition and initial continuity measurements: **2026-07-13**.
 
 Status: **D2 PHYSICAL TABLE VALIDATED / CONNECTIVITY ADOPTED**
 
@@ -102,8 +102,9 @@ D105.12 <-> D105.13 <-> D5.26 MEMW_N
 ```
 
 D105 is the ЛА3 below D30 with D13 physically between them. The exact edge
-connector contact and pull-up reference/value on `H` were difficult to access
-and remain unresolved.
+connector contact and pull-up were inaccessible during this session. Subsequent
+source and photo evidence identifies `X1.107B/-BLOCK` and `R1 2 kΩ` to +5 V;
+see [the current D105 boundary](d105-h-boundary.md).
 
 The earlier installed-PROM report `D13.12 <-> D6.11 <-> D6.12` and
 `D6.11 <-> D6.12 = 0 ohm` is invalidated by the owner. With D6 removed,
@@ -141,5 +142,7 @@ D5.26 is `MEMW_N`; D105.12/.13 invert it onto D30.13.
 Board JSON, structural HDL, generated KiCad artifacts, and D2/D30/D105 reports
 now adopt these measurements. The old `D2.12 -> D105.9`, direct CPU-to-D5
 DBIN, and installed-PROM D6.11/D6.12 join are retired. The promoted routed PCB
-has exact source-pad identity and carries the corrected topology; remaining
-WAIT/READY timing evidence is a functional release hold, not a stale-route gap.
+preserves the six D105 path pad nets checked by the linked boundary report.
+Whole-board source/routed drift remains a separate hold in
+[the routed audit](routed-refresh-audit.md). Complete WAIT/READY timing also
+remains unqualified; these continuity measurements do not establish it.

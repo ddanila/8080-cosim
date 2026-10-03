@@ -104,7 +104,7 @@ candidate identity gate separately proves the promoted board has the same pads.
 | D94 address input sources are traced | PASS | direct owner continuity/source nets for pins 10-14 |
 | Retired D94 BA11..BA15 mapping is absent from the source model | PASS | board JSON BA nets |
 | Held freerouting DSN matches the current D94 mapping | PASS | `kicad/juku.dsn` is a routed engineering snapshot; authoritative connectivity is board JSON/schematic |
-| Source PCB agrees with current board-model D94 output nets | PASS | `kicad/juku.kicad_pcb`; promoted route has exact source-pad identity |
+| Source PCB agrees with current board-model D94 output nets | PASS | `kicad/juku.kicad_pcb`; source pad-net comparison only |
 | `V3_RC` is present but not D94 enable/output evidence | PASS | board nodes `R17.1`, `C99.1`, `D9.6`; DSN/PCB D94 signal pins are not on `V3_RC` |
 | Enable pin D94.15 is traced | PASS | board JSON nets |
 | Enable pin15 is isolated from output pin2 | PASS | direct owner continuity; distinct board nets |
