@@ -120,9 +120,10 @@ The cartridge's physical runtime mapping is an explicitly open boundary
 ([the cartridge boundary](../docs/cartridge-basic-boundary.md)): under an org-0 reading its apparent
 entry jump targets data (ASCII), so **this seed asserts no code at all** —
 addresses are file offsets, everything is data blocks with titled
-landmarks. The BASIC body at offset `0100h` is byte-identical to the
-Monitor images at `+2C8h` (mapping-independent, content-level fact) and
-served as a donor in the jmon22 block-3 proof. Code discovery starts when
+landmarks. The 7,224-byte BASIC body at offset `0100h` is byte-identical to Monitor 3.3
+at file offset `03C8h`; Monitor 2.2 differs at its proven repair byte
+`1EFCh`. This mapping-independent comparison supplied the donor byte for
+the jmon22 block-3 proof. Code discovery starts when
 the mapping boundary closes.
 
 ## Workflow

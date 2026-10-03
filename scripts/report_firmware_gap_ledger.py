@@ -88,7 +88,7 @@ def main() -> int:
     )
     eprom_report_ok = marker(
         "docs/eprom-programming-images.md",
-        "ADOPTED THIRD-SOURCE EKTA 3.7 IMAGES READY",
+        "ADOPTED ARCHIVE-0037 ROMBIOS 3.43m IMAGES READY",
         "`U_D15`, `HALF=0`",
         "`U_D16`, `HALF=1`",
         "adopted third-source archival pair",
