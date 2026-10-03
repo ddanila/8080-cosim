@@ -95,8 +95,14 @@ adapter.
 
 A: accepts a logical 409,600-byte image. Snapshot mode authenticates and keeps
 the selected image immutable, creating or resuming a sibling `-WORK` image.
-Every write uses the existing CRC-protected `.jhj` transaction journal. An
-interrupted transaction is recovered at the next start.
+A resumed working copy must have the correct size; its modified contents are
+not required to match the base hash.
+
+Every write uses the CRC-protected `.jhj` transaction journal. At the next
+writable session, an incomplete transaction restores its saved previous
+record; a completed transaction restores its saved new record. Invalid or
+unreadable journals stop the session. This recovers the recorded transaction,
+not arbitrary filesystem damage or external edits to the image.
 
 Read-only mode serves A: without writes. B: accepts only an 819,200-byte native
 cylinder/head image and is always read-only.

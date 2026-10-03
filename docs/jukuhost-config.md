@@ -170,7 +170,11 @@ Drive A supports three explicit policies:
 
 Snapshot mode is the normal writable deployment policy because the admitted
 base is never modified. `sha256` identifies the base in snapshot mode and the
-served file in the other modes. Drive B is always `mode=read-only` with
+served file in the other modes. A resumed snapshot is checked for size,
+not equality with the base hash. Its `.jhj` journal restores the previous
+record for an incomplete transaction or the new record for a completed one;
+an invalid or unreadable journal stops the writable session. Drive B is
+always `mode=read-only` with
 `geometry=juku-native`.
 
 `build/jukuhost --selftest` checks the portable checksum primitives without a
