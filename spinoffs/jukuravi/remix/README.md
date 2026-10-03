@@ -1,7 +1,7 @@
 # ekta4401/ekta4402 — EktaSoft #0037 remix ROMs
 
-Phases 1 + 2 and the visual easter egg are complete, 2026-08-12. A derived 16 KiB image built deterministically
-from the pinned `roms/ekta37.bin`. Plan and phase results:
+These implemented 16 KiB images are built deterministically from the pinned
+`roms/ekta37.bin`. The design and remaining physical boundary are in:
 [`../EKTA37-REMIX-PLAN.md`](../EKTA37-REMIX-PLAN.md).
 
 - Image: [`ekta4401.bin`](ekta4401.bin), SHA256
