@@ -359,6 +359,11 @@ diagnosis, and scope-first next-session decision tree are in
 
 ## Physical host use
 
+For current recoverable CP/M Plus sessions, use the
+[JF17 bootstrap guide](janet-fastboot.md). The command below serves an archived
+stock system; the subsequent CP/Mish results describe the named historical
+images, not the current CP/M Plus implementation.
+
 Connect the Juku serial interface through the appropriate electrical-level
 adapter, start the server, then type `TN` at a configured physical Juku ROM
 prompt (no Enter). Use `TN0201` only if the ROM asks for `N=` and `S=`:
@@ -409,16 +414,18 @@ exclusive `CE00h` upper boundary while gaining 1 KiB for a renderer and font.
 The unmodified ROM now boots that layout through the host-supplied `JUKU51`
 staging copier.
 
-Stage 1 is simulator-proven. CP/M output is rendered from RAM through temporary
+The historical renderer-only Stage 1 is simulator-proven. CP/M output is rendered from RAM through temporary
 all-RAM mode 3, while RomBios still owns input and IR5. The retained firmware
 frame service first had to be told `ESC 4`: otherwise it painted a solid cursor
 at its stale coordinates over the independent RAM screen. The focused test
 boots through stock Janet, executes matrix-typed `DIR`, completes 35 disk
 reads, preserves `D79Fh`, and compares all 9,600 framebuffer bytes with a
 reference rendering of the captured BIOS transcript. It caught and rejected
-both a broken clear loop and the stale cursor. Physical validation remains
-pending. Replace input second; own the whole interrupt contract only after both
-stages match the baseline. At no stage is D79F a standalone keyboard hook.
+both a broken clear loop and the stale cursor. This renderer-only result does not establish physical qualification of that
+image. Later independent RAM-BIOS/NetDisk-v3 qualification is summarized in
+[the serial investigation](juku-serial-19200-investigation.md). A system retaining
+RomBios must preserve its interrupt contract; D79F is not a standalone keyboard
+hook.
 
 The resident record format already carries a drive byte. CP/Mish `NETROM2`
 uses drive 0 for its writable 386 KiB A: volume and drive 1 for a read-only

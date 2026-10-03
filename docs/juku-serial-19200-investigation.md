@@ -3,8 +3,8 @@
 Status: **9600 PROVEN / CS00014 19,200 MODE-2 DISK PROVEN / SCOPE CAPTURE NEXT**
 
 This is the decision record and next-bench plan for the direction-specific
-19,200-bit/s failure reproduced on CS00015 and CS00014. The complete run log
-and capture filenames remain in `ekta37-netbios-notes.md`; this document keeps
+19,200-bit/s failure reproduced on CS00015 and CS00014. The retained captures are indexed below and in
+[the Janet analysis](ekta37-netbios-notes.md); this document keeps
 the conclusions, electrical boundaries, and experiments that can still change
 the diagnosis.
 
@@ -170,9 +170,9 @@ or a signal stuck at idle.
   value. There is no valid periodic count-one mode-2/3 route to x64/19,200
   from the existing D57 clock.
 - A 19,200 mode-2/count-4 clock changes duty cycle without changing the
-  nominal rate. This discriminator has now passed on CS00014; the sustained
-  disk-soak experiment below is the next software test, while direct clock
-  capture remains the decisive electrical follow-up.
+  nominal rate. Both this discriminator and the sustained
+  disk soak below have passed on CS00014. Repetition on CS00015 and direct
+  clock capture remain open.
 
 Do not spend another bench session on parity, host byte pacing, per-byte ER,
 cable replacement, x1 mode, or the invalid count-one x64 image: today’s
@@ -245,8 +245,7 @@ the already-running network disk.
 
 ### NetDisk v2 compact records
 
-With fastboot v14 frozen, network-disk latency became the next controlled
-software boundary. The first cache design was rejected during implementation:
+For the historical V14/RomBios layout, compact records avoid a cache:
 the fixed B400h-CDFFh resident layout leaves only CF00h-CFFFh as an audited
 spare page before firmware-owned memory at D000h. A four-record/512-byte cache
 would therefore depend on undocumented monitor RAM or reduce the TPA. Neither
@@ -287,8 +286,7 @@ The separately named 5273-byte V14/NetDisk-v2 bundle has SHA-256
 `23fe0e156541717885d9fa76e9bd288724bdb633dfbcd8cf597e634d30a070a6`;
 the frozen V14 baseline retains its original SHA-256.
 
-That future work is now implemented for the separately named independent 51K
-RAM BIOS as NetDisk v3. It does not alter the frozen V14/RomBios baseline.
+The separately named independent 51K RAM BIOS implements NetDisk v3. It does not alter the frozen V14/RomBios baseline.
 Permanent all-RAM mode and a fully masked PIC make `D080h..D3FFh` an explicit
 RAM-BIOS-owned region; it holds a three-record cache and client. Opcode 14h
 returns up to three translated records with bounded raw, fill,
@@ -317,8 +315,8 @@ and stock `TN` through `A>`, `DIR`, and `DIAG CPU` with zero disk retries and
 zero 8251 overruns. The target drain is now a bounded two-character delay, the
 host accounts for queued 8O1 wire time, the fill loop keeps its counter in a
 register, and CP/M masks every PIC input. The later manual-server recovery on
-CS00015 qualified this corrected resident path; only the earlier stock-`TN`
-completion handoff remains open, as recorded below.
+CS00015 qualified this corrected resident path; the earlier stock-`TN`
+completion failure belongs to that historical wrapper, as distinguished below.
 
 Physical CS00015 then qualified NetDisk v2 on 2026-08-15. Three boots reached
 the first opcode-13h request at 6.116354, 6.116790, and 6.115778 seconds, a
@@ -357,102 +355,27 @@ controls, uses public ASCII glyphs, and maps bytes above 7Dh to `?`. A
 selectable presentation is now a user-interface/physical-console preference,
 not an unimplemented correctness test.
 
-## Future network-boot work
+## Current bootstrap boundary
 
-Keep two distinct and permanently testable boot paths.
+The experiments above qualify specific historical images and serial profiles.
+They do not define the current production host defaults. Use
+[the stock bootstrap and recovery guide](janet-fastboot.md) for current
+commands: recoverable stock-ROM sessions use **JF17 at 9600/8O1 throughout**.
+The C host also retains exact JF15 compatibility and a separate network-ROM
+JF16 workflow; their artifact and serial profiles must match the target.
 
-### 1. Fastest possible server for the stock ROM protocol
+The former CP/M Plus stock-`TN` final-ACK failure was an observed historical
+wrapper failure, not an unresolved limitation of the current JF17 path.
+[The CS00014 JF17 record](evidence/juku-serial/cs00014-stock-jf17-20260905/README.md)
+qualifies boot, operator-selected reset recovery and live host replacement.
+It does not qualify 19,200 mode-3 reception or reset during disk writes.
 
-Stock EktaSoft NetBios compatibility is a preservation requirement, not a
-temporary stepping stone. `build/jukuhost` must remain able to boot all five
-archived system images through an unmodified ROM. Optimize only the host
-implementation and timing that the existing client permits: profile every
-poll/frame/ACK turn, remove avoidable host-side waits, batch writes where the
-ROM accepts them, and tune retry/poll scheduling from captures rather than
-changing protocol semantics.
+For implementation and regression commands, see the
+[portable C host contract](portable-c-host-plan.md). Older fast-stage timings,
+optimization sequences and proposed boot designs remain in Git history; the
+physical baud evidence below remains relevant to the electrical diagnosis.
 
-The acceptance gates are:
-
-- all five archived images still reach `CA00h` byte-exactly in
-  `sync/janet_netboot_check.sh`;
-- physical stock-ROM boot remains reliable on CS00014 and CS00015;
-- no increase in rejects, retries, or sensitivity to USB-UART scheduling;
-- report request-to-entry time, loaded-image B/s, frame/ACK/reject counts, and
-  the exact server settings for every benchmark.
-
-The physical CS00014 baseline is 6,784 bytes in approximately 81 seconds after
-request acceptance, 334 transmitted frames, 161 positive acknowledgements,
-and zero rejects. This track may improve that substantially, but remains bound
-by the ROM's many acknowledged turns.
-
-### 2. New bulk netboot protocol where both ends are controlled
-
-The preferred first design is now implemented in cosim and does **not** require
-replacing the stock ROM. Stock Janet loads the 558-byte
-`juku-fastboot-stage1.bin` executable at 9600; stage 1 changes D57 channel 0 to
-mode 2/count 4, reinitializes D11 for 19,200/8O1, and receives the fixed CP/Mish
-resident system as thirteen 512-byte blocks. See `janet-fastboot.md` for the
-wire contract, command, regression evidence, and physical benchmark plan. The
-separately versioned `ekta4402` custom ROM now enters the V15 core directly
-with monitor command `N`, while the stock-ROM route and the original all-stock
-server remain available alongside it. That direct path is simulator-qualified
-through the CP/Mish prompt and NetDisk-v3 `DIR`, but not yet physically tested.
-
-The separate CP/M Plus V15 consumer is also simulator-qualified. A CS00015
-stock-`TN` run physically started CP/M Plus, and manual retention of its
-corrected 19,200-baud NetDisk-v3 server reached `A>`, passed `DIR`, and passed
-the full `DIAG`. The remaining CP/M Plus fault is the preceding wrapper
-handoff: the host misses final `JA` and returns to 9,600 although the payload
-has started. This does not reopen the proven 19,200 mode-2/count-4 link.
-
-The implemented single-client baseline fixes the only supported layout at
-B400h-CDFFh with entry CA00h, avoiding general address/length fields in the
-stock-loaded stage. Each block carries its sequence and CRC16-CCITT; bounded
-timeouts, retry, stream resynchronization, duplicate ACK, and a final
-whole-image CRC are implemented. Stop-and-wait is the baseline. Benchmark a
-small window only if it produces a material physical gain without weakening
-recovery. Compression remains optional only if a small 8080 decoder
-demonstrably reduces total boot time.
-
-Physical CS00015 passed the complete path on 2026-08-14. Preserve the
-same-machine results as **Fast stage v2** (12.999 s, 42 stock frames, zero
-retries), **Fast stage v1** (17.508 s, 42 stock frames), and **Original stock
-9600** (73.873 s, 330 stock frames), measured from the first valid Janet request
-to the first valid A: request. All reached the visible CP/M prompt. V2 is 1.35x
-faster than v1 and 5.68x faster than stock. Later optimization results must be
-added as separate variants; see `janet-fastboot.md` for the frozen table and
-evidence JSON.
-
-The separate **Fast stage v2** retains the 512-byte stop-and-wait
-shape but makes each block CRC the cumulative image CRC checkpoint. This
-preserves block retry, duplicate handling, and final whole-image verification
-while removing v1's 4,297,085-cycle final RAM scan (about 2.53 s on CS00015).
-The host also waits for all repeated header ACKs to release the half-duplex
-line, addressing v1's observed block-0 timeout. Both v1 and v2 pass the clean
-and injected-fault cosim matrix. Its projected CS00015 request-to-first-disk
-time was about 12.8 s; the physical run measured 12.999 s, with an 8.00 s stock
-stage, 4.39 s bulk phase, zero retries, and a visible CP/M prompt.
-
-Start at the already proven **19,200/8O1, x16, PIT mode 2/count 4**. At that
-wire rate the raw 6,784-byte lower bound is about 3.9 seconds, so a practical
-4–6 second bulk load is a reasonable initial goal. Later test mode 2/count 2
-for nominal 38,400 only as a separately recoverable bench experiment; do not
-make it a default until the D11/D57 limits and more than one physical board are
-proven. Every high-speed failure must fall back cleanly to the stock 9600 path.
-
-Keep protocol/version negotiation explicit so the same host can serve:
-
-1. original stock Janet at 9600;
-2. stock Janet loading the high-speed stage 1;
-3. the implemented, simulator-qualified ekta4402 `N` direct V15 bootstrap.
-
-Cosim now injects complete-block loss, payload corruption, duplication, and a
-lost target ACK against the assembled 8080 stage, and verifies the exact RAM
-image before CA00h. Delayed-Rx recovery and a mid-stream power reset followed
-by complete stock-request rediscovery are automated as well. Physical
-benchmarks should include
-CS00014 and CS00015, cold and warm runs, at least ten consecutive boots, exact
-RAM comparison before entry, and recorded UART/kernel error counters.
+## Retained baud evidence
 
 Machine-readable evidence is
 [`cs00014-mode2-soak-20260813.json`](evidence/juku-serial/cs00014-mode2-soak-20260813.json).
