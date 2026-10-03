@@ -2,8 +2,9 @@
 
 Status: **EKDOS A> PROMPT REACHED**
 
-This probe exercises the factory boot sequence mined from Baltijets doc 003:
-`ROMBIOS 3.43` -> `*` -> `<T>, <D>, <D>` from `JUKU-1` toward the
+This probe exercises the factory boot sequence documented in Baltijets doc 003.
+It uses archive-37 `ekta37.bin` (RomBios 3.43m) to exercise
+`*` -> `<T>, <D>, <D>` from `JUKU-1` toward the
 `A>` EKDOS prompt. By default it uses the vendored `media/disks/JUKU1.CPM`
 image, so this guard stays reproducible without network access. Set
 `EKDOS_PROBE_DISK=/path/to/image` to run the same path through another
@@ -13,7 +14,8 @@ no-image boundary.
 ## Command
 
 ```sh
-EKDOS_PROBE_DISK=media/disks/JUKU1.CPM JUKU_KEYS=TDD cosim/trace roms/ekta37.bin 250000000 0 200000
+EKDOS_PROBE_MAX_CYCLES=250000000 EKDOS_PROBE_FRAME_CYCLES=200000 \
+  EKDOS_PROBE_DISK=media/disks/JUKU1.CPM sync/ekdos_fdc_probe.py
 ```
 
 ## Summary
@@ -46,6 +48,6 @@ EKDOS_PROBE_DISK=media/disks/JUKU1.CPM JUKU_KEYS=TDD cosim/trace roms/ekta37.bin
 ## Disposition
 
 - The keyboard/frame-interrupt path is sufficient to drive ROMBIOS into the documented disk boot path.
-- The no-image run proves the BIOS/FDC boundary without depending on disk contents.
+- The no-image run checks a command write, at least 1000 status reads, and exactly 512 data reads; it does not check the prompt.
 - A disk-backed run is selected with `EKDOS_PROBE_DISK=/path/to/image`; invalid paths or unsupported raw image sizes fail this report explicitly.
-- The exact target remains the factory acceptance result `A>` after `<T>, <D>, <D>`.
+- The disk-backed oracle is the `A>` bitmap near the left edge after the cycle budget; it does not exercise subsequent EKDOS commands or physical hardware.

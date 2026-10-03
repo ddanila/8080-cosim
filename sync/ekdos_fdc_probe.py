@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import re
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -196,8 +197,9 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
         "",
         f"Status: **{status}**",
         "",
-        "This probe exercises the factory boot sequence mined from Baltijets doc 003:",
-        "`ROMBIOS 3.43` -> `*` -> `<T>, <D>, <D>` from `JUKU-1` toward the",
+        "This probe exercises the factory boot sequence documented in Baltijets doc 003.",
+        "It uses archive-37 `ekta37.bin` (RomBios 3.43m) to exercise",
+        "`*` -> `<T>, <D>, <D>` from `JUKU-1` toward the",
         "`A>` EKDOS prompt. By default it uses the vendored `media/disks/JUKU1.CPM`",
         "image, so this guard stays reproducible without network access. Set",
         "`EKDOS_PROBE_DISK=/path/to/image` to run the same path through another",
@@ -207,12 +209,8 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
         "## Command",
         "",
         "```sh",
-        (
-            f"EKDOS_PROBE_DISK={disk_label} JUKU_KEYS=TDD cosim/trace "
-            f"roms/ekta37.bin {max_cycles} 0 {frame_cycles}"
-            if disk_selected
-            else f"JUKU_KEYS=TDD cosim/trace roms/ekta37.bin {max_cycles} 0 {frame_cycles}"
-        ),
+        f"EKDOS_PROBE_MAX_CYCLES={max_cycles} EKDOS_PROBE_FRAME_CYCLES={frame_cycles} \\",
+        f"  EKDOS_PROBE_DISK={shlex.quote(disk_label) if disk_selected else 'none'} sync/ekdos_fdc_probe.py",
         "```",
         "",
         "## Summary",
@@ -250,9 +248,9 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
             "## Disposition",
             "",
             "- The keyboard/frame-interrupt path is sufficient to drive ROMBIOS into the documented disk boot path.",
-            "- The no-image run proves the BIOS/FDC boundary without depending on disk contents.",
+            "- The no-image run checks a command write, at least 1000 status reads, and exactly 512 data reads; it does not check the prompt.",
             "- A disk-backed run is selected with `EKDOS_PROBE_DISK=/path/to/image`; invalid paths or unsupported raw image sizes fail this report explicitly.",
-            "- The exact target remains the factory acceptance result `A>` after `<T>, <D>, <D>`.",
+            "- The disk-backed oracle is the `A>` bitmap near the left edge after the cycle budget; it does not exercise subsequent EKDOS commands or physical hardware.",
         ]
     )
     if failures:
