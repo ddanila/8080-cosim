@@ -6,7 +6,7 @@ This is the controlled before/substitute/after procedure if the corrected T34
 functional-path test first reproduces a CS00015 D55-path failure. D55 is the
 middle КР580ВИ53/8253 and supplies vertical video and frame timing.
 
-The 2026-08-09 desk audit invalidated T15/T16/T31/T32 as D55 evidence. They
+T15/T16/T31/T32 are not valid D55-path evidence. They
 latched newly written Mode-0 counts without establishing the D54/D56 clocks
 required by a real 8253. Do not remove or substitute D55 on the strength of
 those historical codes. See
@@ -21,7 +21,7 @@ main-board P0 continuity changes. Change one variable: D55.
 | --- | --- | ---: | ---: | --- |
 | T34 | `firmware/diag-d0-clocked-pit.bin` | 8,192 bytes | `1C` / CRC `A637` | `63f69281e632324083bd5e7040d19a7939936b98a4d5cb245e008ea491d45cb5` |
 
-Before programming or fitting either image:
+Before programming or fitting the image:
 
 ```sh
 sha256sum spinoffs/jukuravi/firmware/diag-d0-clocked-pit.bin
@@ -90,11 +90,13 @@ alternative causes.
 
 ## Decision and rollback criteria
 
-Classify the result only after the complete repetition matrix:
+Classify the result only after the complete repetition matrix. A passing
+substitute does not distinguish a defective original package from contact
+improvement caused by extraction and reinsertion:
 
 | Outcome | Disposition |
 | --- | --- |
-| Original repeats T34 `08`; substitute clears D55 in 5×T34 and standard video/frame behavior is normal | D55 package fault confirmed for the tested path; retain original bagged/labeled and leave the proven substitute fitted |
+| Original repeats T34 `08`; substitute clears D55 in 5×T34 and standard video/frame behavior is normal | Substitution restored the tested path; package failure remains a hypothesis because socket contacts were also reseated. Retain the original bagged/labeled and leave the tested substitute fitted |
 | Substitute produces any T34 D55-path failure | D55 package alone is not confirmed; power off, preserve both parts/configurations, inspect select/socket/supply/bus/D54/D56 evidence, and do not rework another circuit |
 | Missing alive tone, new earlier code, excess current, or abnormal heating | Immediate rollback: power off, verify orientation/media/configuration, photograph state, and return to the last electrically safe configuration |
 | Original cannot be retested or substitute provenance is weak | Record the limitation; classify as improved/unchanged behavior, not a confirmed package diagnosis |
@@ -159,7 +161,7 @@ Retain the JSON/raw capture for every row.
 | Field | Recorded value |
 | --- | --- |
 | Outcome classification | |
-| D55 package fault confirmed? | YES / NO / INCONCLUSIVE |
+| D55 package diagnosis | Suspected / not supported / inconclusive; record any independent package test |
 | Package left fitted | |
 | Original storage label/location | |
 | Rollback performed and why | |
