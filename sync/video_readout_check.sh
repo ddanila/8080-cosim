@@ -49,7 +49,11 @@ cat > "$REPORT" <<EOF
 
 Status: **RUNNABLE ABSTRACT VIDEO READOUT GUARDED**
 
-This guard proves the current runnable video-readout path:
+This guard checks byte preservation in the runnable abstract video path.
+It boots ekta37 with a default stop target of $WRITES framebuffer writes
+(override with VIDEO_WRITES), then serializes the captured framebuffer.
+It does not require a full boot prompt or compare that screen to cosim:
+
 
 - hdl/sim/video_readout_tb.v serializes a booted framebuffer through the
   abstracted ir16_sr pixel serializer and reconstructs the bytes.
@@ -84,8 +88,10 @@ sync/video_readout_check.sh
 
 ## Remaining Boundary
 
-- Dump or otherwise prove the РЕ3/АГ3 timing that arbitrates CPU/video DRAM
-  slots.
+- Establish the CPU/video shared-DRAM slot schedule with source closure and
+  measured timing. The validated D8/D94 РЕ3 contents are already available;
+  they do not establish this arbitration schedule. See
+  [the slot timing audit](video-slot-timing-audit.md).
 - Replace the sim-only second framebuffer read port with the real shared-memory
   video read slot when the timing source is available.
 EOF
