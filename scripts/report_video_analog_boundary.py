@@ -144,7 +144,7 @@ def main() -> int:
             "A:3/X6.1 electrical net open / A:4/X6.2 GND; no PCB X6 body",
         ),
         (
-            "VT2/C94 owner-photo misidentification remains corrected",
+            "VT2 photo registration and unresolved C94 model remain distinct",
             chips.get("C94", {}).get("type") == "C_KM"
             and not chips.get("C94", {}).get("value")
             and correction.get("vt2_component_registration", {}).get("visible_marking") == "Б / 8901"
@@ -190,15 +190,8 @@ def main() -> int:
 
     lines += [
         "",
-        "## Retained target nets and boundaries",
-        "",
         "Per-net provenance is retained in [the board model](../kicad/juku.board.json).",
-        "",
-        "| Net | Endpoints |",
-        "| --- | --- |",
     ]
-    for name in guarded:
-        lines.append(table_row([f"`{name}`", f"`{endpoint_text(board, name)}`"]))
 
     lines += [
         "",

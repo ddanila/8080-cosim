@@ -51,34 +51,9 @@ python3 scripts/report_video_analog_boundary.py
 | R66 clamp input remains on the source-proved +12 V rail | PASS | sheet-2 B arrow is +12 V |
 | Unsupported physical X7 is absent; VT2/R65 video node is retained | PASS | VIDEO_OUT is VT2.1/R65.1; X6 A:3 remains a target-board continuity boundary |
 | Bracket X6 A:3 signal is isolated pending continuity; A:4 is ground | PASS | A:3/X6.1 electrical net open / A:4/X6.2 GND; no PCB X6 body |
-| VT2/C94 owner-photo misidentification remains corrected | PASS | yellow three-lead body is VT2; separately drawn C94 retains two measurement boundaries |
-
-## Retained target nets and boundaries
+| VT2 photo registration and unresolved C94 model remain distinct | PASS | yellow three-lead body is VT2; separately drawn C94 retains two measurement boundaries |
 
 Per-net provenance is retained in [the board model](../kicad/juku.board.json).
-
-| Net | Endpoints |
-| --- | --- |
-| `VID_MIX1` | `D34.12, D37.11` |
-| `D34_SYNC` | `D34.8, R62.1` |
-| `D34_SIG` | `D34.11, R63.1` |
-| `VT2_BASE` | `R62.2, R63.2, R64.1, VT2.3` |
-| `VIDEO_OUT` | `R65.1, VT2.1` |
-| `SOUND_CLAMP` | `R66.2, R67.1, VD3.2` |
-| `X6_A3_BOUNDARY` | `AX603.1, X6.1` |
-| `R67_2_BOUNDARY` | `R67.2` |
-| `C94_1_BOUNDARY` | `C94.1` |
-| `C94_2_BOUNDARY` | `C94.2` |
-| `C9_1_BOUNDARY` | `C9.1` |
-| `C9_2_BOUNDARY` | `C9.2` |
-| `C10_1_BOUNDARY` | `C10.1` |
-| `C10_2_BOUNDARY` | `C10.2` |
-| `C11_1_BOUNDARY` | `C11.1` |
-| `C11_2_BOUNDARY` | `C11.2` |
-| `C12_1_BOUNDARY` | `C12.1` |
-| `C12_2_BOUNDARY` | `C12.2` |
-| `C15_1_BOUNDARY` | `C15.1` |
-| `C15_2_BOUNDARY` | `C15.2` |
 
 ## Interpretation
 
