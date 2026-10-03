@@ -408,9 +408,8 @@ def main() -> int:
         "This diagnostic starts from a generated cosim EKDOS `A>` prompt",
         "checkpoint on `media/disks/JUKPROG2.CPM`, loads that RAM/state into",
         "`juku_top`, and injects the fixed `JBASIC` + Enter command through the",
-        "checkpoint-resume keyboard path. It is the first HDL-side bridge from",
-        "the now-pinned cosim `JBASIC` READY oracle toward a full HDL BASIC",
-        "prompt proof.",
+        "checkpoint-resume keyboard path. It checks a bounded command-to-prompt",
+        "path from that checkpoint; it does not execute the reset-to-EKDOS path.",
         "",
         "## Command",
         "",
@@ -459,11 +458,11 @@ def main() -> int:
         "",
         "## Boundary",
         "",
-        "- The testbench now has opt-in `+jbasickeys=1` support for the exact",
+        "- The testbench has opt-in `+jbasickeys=1` support for the exact",
         "  `JBASIC` + Enter sequence (`J`, `B`, `A`, `S`, `I`, `C`, Return).",
         "- The same bench also has `+stopjbasicready=1`, which checks the final",
         "  `READY` prompt with exact fixed-`0xD800` glyph bytes.",
-        "- The default run now uses frame-scale key holds/gaps, `+stopfdc=0`,",
+        "- The default run uses frame-scale key holds/gaps, `+stopfdc=0`,",
         "  `+stopfdc_data_reads=0`, quiet keyboard/FDC tracing, and",
         "  `+stopjbasicready=1` so the normal proof stops on the exact HDL",
         "  `READY` glyph oracle.",
@@ -474,7 +473,7 @@ def main() -> int:
         "- The report also preserves the HDL framebuffer dump before restoring",
         "  the worktree copy and checks for the exact cosim-pinned `A>JBASIC`",
         "  command glyphs at scanline 71.",
-        "- The bench now counts PPI0 traffic plus `[RESUME-KBD-HIT]` active-key",
+        "- The bench counts PPI0 traffic plus `[RESUME-KBD-HIT]` active-key",
         "  and non-`0xCF` reads; set `JUKU_TOP_CHECKPOINT_JBASIC_STOP_KBD_HIT=1`",
         "  to stop at the first sampled keyboard hit during retiming experiments.",
         "- Set `JUKU_TOP_CHECKPOINT_JBASIC_TRACE_RESUME=N` to include the first",
@@ -487,13 +486,13 @@ def main() -> int:
     ]
     if reached_ready:
         lines.append("- This run did reach the HDL `READY` oracle; `sync/ekdos_jbasic_checkpoint_check.sh` is the named local/deep guard for this boundary.")
-    if reached_fdc:
+    if reached_fdc and not reached_ready:
         if reached_fdc_data_read:
-            lines.append("- This run reached HDL FDC data-register reads; next work is to continue through the disk transfer and the `READY` oracle.")
+            lines.append("- This run reached HDL FDC data-register reads but did not reach the `READY` oracle.")
         else:
-            lines.append("- This run reached post-command HDL FDC I/O; next work is to continue through FDC data reads and the `READY` oracle.")
+            lines.append("- This run reached post-command HDL FDC I/O but did not reach the `READY` oracle.")
     if command_reached and not reached_fdc:
-        lines.append("- This run did echo the full HDL `A>JBASIC` command line; the next boundary is Return execution and FDC traffic.")
+        lines.append("- This run echoed the full HDL `A>JBASIC` command line without reaching post-command FDC traffic.")
     if failures:
         lines.extend(["", "## Failures", ""])
         lines.extend(f"- {failure}" for failure in failures)

@@ -501,34 +501,19 @@ def main() -> int:
         "",
         "## Boundary",
         "",
-        "- This is a checkpoint-resumed proof, not a replacement for the",
-        "  prompt-checkpoint command-stimulus report.",
-        "- The prompt-checkpoint report still owns the early HDL path: `JBASIC`",
-        "  key sampling, command echo, and the first 4,096 post-command FDC data",
-        "  reads.",
+        "- This run starts at a cosim transfer checkpoint. It does not exercise",
+        "  command entry or the earlier disk transfer in HDL.",
+        "- The prompt-checkpoint runner separately targets command entry, FDC",
+        "  traffic and `READY`; the reset-driven runner covers an earlier start.",
         ]
     )
     if stop_read_target:
-        lines.extend(
-            [
-                "- This mid-transfer run proves that a later `JBASIC` checkpoint can",
-                f"  drain `{stop_read_target}` additional decoded FDC data-register reads",
-                "  under checkpoint-resumed `juku_top` execution.",
-                "- The open gap remains the uninterrupted HDL bridge from the prompt",
-                "  checkpoint through the later transfer checkpoints and then into",
-                "  the final `READY` renderer.",
-            ]
-        )
+        lines.extend([
+            f"- The selected stop targets `{stop_read_target}` additional FDC data reads.",
+            "  Inspect the status and observed read count for the achieved boundary.",
+        ])
     else:
-        lines.extend(
-            [
-                "- This late-state run proves that checkpoint-resumed `juku_top` can",
-                "  continue from the post-transfer JBASIC state to the user-visible",
-                "  BASIC `READY` prompt.",
-                "- The open gap is now the uninterrupted HDL bridge between those two",
-                "  checkpoint windows, not the final BASIC prompt renderer itself.",
-            ]
-        )
+        lines.append("- The selected stop targets the `READY` glyph oracle; inspect the status for the result.")
     if failures:
         lines.extend(["", "## Failures", ""])
         lines.extend(f"- {failure}" for failure in failures)

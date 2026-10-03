@@ -146,20 +146,12 @@ Current values: `SIM=verilator KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=0 F
 
 ```
 
-## Disposition
+## Scope
 
-- The top-level bench now has opt-in `+ekdoskeys=1`, `+traceio=1`,
-  `+stopio=N`, `+tracepic=1`, `+stoppic=N`, `+tracefdc=1`, and
-  `+stopfdc=N`, plus `+stopprompt=1` for the EKDOS `A>` bitmap,
-  `+jbasickeys=1` with `+stopjbasiccmd=1` / `+stopjbasicready=1` for
-  the EKDOS `JBASIC` path, and `+stoppc=HEX` / `+stoppc_skip=N` for
-  CPU address stops.
-- Existing boot guards keep those hooks disabled, preserving the byte-identical
-  ekta37 boot comparison.
-- `docs/ekdos-timing-reference.md` shows the fast cosim target for this same
-  vendored `TDD` path: first PIC/PPI setup around 30,520 VRAM writes, first
-  frame IRQ at 33,812 VRAM writes, and first FDC command at 63,085 VRAM writes.
-- With `STOPPROMPT=1`, this same harness can prove the full `juku_top`
-  ROMBIOS `TDD` path to an EKDOS `A>` prompt.
-- With `JBASICKEYS=1` and `STOPJBASICREADY=1`, the same reset-driven path
-  continues through `JUKPROG2.CPM` to the visible BASIC `READY` prompt.
+- `STOPPROMPT=1` stops on the EKDOS `A>` bitmap. `JBASICKEYS=1` with
+  `STOPJBASICREADY=1` targets disk BASIC `READY`; use `JUKPROG2.CPM` for
+  the preserved live-load BASIC candidate.
+- The status and markers describe the recorded stop. A zero runner exit
+  also permits a timeout (`124`); it does not by itself prove either prompt.
+- [Timing reference](ekdos-timing-reference.md) pins the C-model anchors.
+  This diagnostic does not establish physical FDC behavior.
