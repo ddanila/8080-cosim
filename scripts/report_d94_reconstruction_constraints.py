@@ -419,7 +419,7 @@ def main() -> int:
         "media/disks/JUKPROG1.CPM | D94 .092 | 79 | 76 | none",
         "media/disks/JUKPROG2.CPM | D94 .092 | 49 | 76 | none",
         "media/disks/JUKPROGX.CPM | D94 .092 | 25 | 76 | none",
-        "a proprietary, permuted, compressed, or otherwise transformed encoding",
+        "Fragmented storage not reconstructed by this layout, proprietary",
     )
     video_audit_independent = marker(
         "docs/video-slot-timing-audit.md",

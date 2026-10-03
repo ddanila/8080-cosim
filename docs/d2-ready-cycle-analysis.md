@@ -3,16 +3,10 @@
 Status: **DESK ANALYSIS / FETCH-SELECTIVE PREMISE NOT SUPPORTED /
 CAS-GATED CONFINEMENT REFUTED BY T32**
 
-Supersession note. The T32 bench session
-([`../spinoffs/jukuravi/T32-PHYSICAL.md`](../spinoffs/jukuravi/T32-PHYSICAL.md))
-ran the wait-class execution matrix this report proposed: entries at
-`1100h` (CAS-gated), `1200h` (no wait) and `1400h` (always wait) all
-failed, so the failure is **not** confined to the CAS-gated class and this
-report's surviving-hypothesis section is refuted where it says otherwise.
-The wait-class derivation, the fetch/read argument, and the refutations of
-the slow-EPROM and code-placement hypotheses stand. The measured fault was
-a consecutive-read A12-low alias; the completed follow-up record is
-[`../spinoffs/jukuravi/T33-PLAN.md`](../spinoffs/jukuravi/T33-PLAN.md).
+The completed [T32](../spinoffs/jukuravi/T32-PHYSICAL.md) and
+[T33](../spinoffs/jukuravi/T33-PLAN.md) evidence shows failure across all
+three wait classes and identifies the fitted D1 increment-path fault.
+The derivation below remains a model analysis, not a new measurement.
 
 This generated report re-derives, from the validated D2 `.037` READY PROM,
 what wait treatment each page of the D15 window receives, and then asks
@@ -160,9 +154,9 @@ exact clock: at 2.5 MHz the budget is still ~800 ns. These are datasheet-
 class figures and a first-order budget, not measurements.
 
 Decisively, the CAS-gated class can only **lengthen** a cycle relative to
-the no-wait class. Since the no-wait pages execute correctly on CS00015, a
-uniform access-time shortfall cannot explain a failure confined to pages
-that receive at least as much time.
+the no-wait class. The measured failure across all three classes does not
+support the earlier premise of confinement to CAS-gated pages. The fitted
+D1 increment-path diagnosis rests on the T32/T33 measurements.
 
 ## Does the factory firmware execute in the CAS-gated pages?
 
