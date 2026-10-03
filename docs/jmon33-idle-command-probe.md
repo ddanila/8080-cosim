@@ -3,10 +3,10 @@
 Status: **JMON33 IDLE COMMAND SURFACE READY**
 
 This cosim guard exercises Monitor 3.3 with frame interrupts and keyboard
-stimulus long enough for the jmon33 scan loop. It proves typed
-command/return paths produce deterministic visible screen states, which
-is a stronger user-visible command-surface boundary than the plain idle
-cursor oracle in `docs/jmon33-ready-probe.md`.
+stimulus for A, T, and B followed by Enter. After a fixed cycle budget it
+checks successful trace exit, full VRAM hashes, and expected solid blocks.
+It does not assert command semantics or detect when a command returns.
+The no-input baseline is the [idle cursor oracle](jmon33-ready-probe.md).
 
 ## Command
 
@@ -20,8 +20,13 @@ Environment overrides:
 - `JMON33_COMMAND_FRAME_CYCLES` default `200000`
 - `JMON33_COMMAND_HOLD_FRAMES` default `20`
 - `JMON33_COMMAND_GAP_FRAMES` default `6`
-- `JMON33_COMMAND_START_VRAM` default `210`
-- `JMON33_COMMAND_ORACLE` default `idle`
+- `JMON33_COMMAND_START_VRAM` default `0`
+- `JMON33_COMMAND_ORACLE` default `early`; `idle` selects the alternate hashes.
+- `JMON33_COMMAND_TRACE_IO` default `1`; `0` suppresses detailed I/O samples.
+- `JMON33_COMMAND_REPORT` overrides the report output path.
+
+Selected oracle: `idle`. Timing overrides can change the final framebuffer
+and fail the fixed hashes. I/O sample counts are diagnostic, not pass criteria.
 
 ## Evidence
 
@@ -38,4 +43,4 @@ Environment overrides:
   both ekta37's long banner path and jmon33's short cursor path.
 - This proves jmon33 is accepting keyboard input and moving its visible
   command cursor deterministically. It does not prove cartridge BASIC;
-  that pairing remains tracked by `docs/cartridge-basic-boundary.md`.
+  see the [cartridge boundary](cartridge-basic-boundary.md).
