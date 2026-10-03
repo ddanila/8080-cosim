@@ -237,8 +237,9 @@ def main() -> int:
                 "1 / 401", "D28.8", "2 / 402", "D28.10", "3 / 403", "D28.12",
                 "4 / 404", "D28.4", "5 / 405", "D28.2",
                 "promotes all 23 board-edge landings", "X4.6-X4.23", "explicit boundaries",
+                "historical", "not the current FDC connector assignments", "X4.1",
             ),
-            "`.006` sheet-1 exit codes 401-405; `.009` target continuity still required",
+            "`.006` tape exits are historical; exact `.009` FDC assignments are separate and physical continuity remains open",
         ),
         (
             "X4 bracket harness has all 23 physical board landings",

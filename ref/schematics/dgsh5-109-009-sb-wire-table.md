@@ -217,16 +217,16 @@ for five X4 contacts through its explicit exit codes. The open-collector
 | 5 / 405 | `-STOP` | D28.2 |
 
 The `.009` cable table promotes all 23 board-edge landings and their direct
-wires to the bracket connector. The first five circuit-side paths are retained
-as cross-revision, owner-verify nets because D28 is present in the FDC-era
-population and MAME independently assigns the same Port-C functions; actual
-`.009` D28-to-landing copper must still confirm they were not reassigned.
-X4.6-X4.23 are promoted only as landing-to-connector harness nets: their
-on-board circuit destinations remain explicit boundaries.
+wires to the bracket connector. The `.006` tape exits above are historical
+revision evidence, not the current FDC connector assignments. Exact `.009`
+sheet 3 assigns X4.6-X4.23 to returns, supplies and FDC drive signals as recorded
+in [the FDC wire map](fdc-x4-ngmd-wire-map.md). X4.1 is retained as an NC harness
+contact; X4.2–.5 remain explicit boundaries. Source assignments do not prove
+installed cable or target-board copper continuity.
 
 The X9 row is now promoted without changing its already traced keyboard nets:
 the source PCB contains fourteen one-pad `A45` through `A58` placeholders,
-and the off-board X9 connector remains schematic-only. Each net contains its
+and the off-board X9 connector remains schematic-only. The signal nets contain their
 D26 endpoint, numbered A:N landing, and reversed X9 pin; A53/A54 carry the
 two +5 V conductors. The placeholder pad coordinates are not photo-registered:
 owner solder photos locate a candidate fourteen-site cable row beneath D26,
@@ -286,7 +286,7 @@ single on-board S1 footprint: first model the physically separate `А:17` and
 `А:18` wire landings and their proved local copper. For wire 18, the proved
 landing is D98.7 itself; for wire 17, it is the dedicated `A17` pad.
 The X3, X4, X8, and X9 cables are promoted as physical numbered landings plus
-schematic-only bracket connectors. X4 contacts 1-5 carry the guarded `.006`
-D28.8/.10/.12/.4/.2 cross-revision reconstruction; contacts 6-23 stop at
-explicit board-side boundaries until their circuit destinations are traced.
-These are not claims of target-board copper proof.
+schematic-only bracket connectors. The older tape assignments at X4 contacts 1–5 are not adopted for the FDC
+revision. Exact `.009` sheet 3 supplies the current 6–23 assignments; 2–5
+remain explicit boundaries and 1 remains an NC harness contact. These are
+source-model assignments, not claims of target-board copper proof.
