@@ -70,7 +70,10 @@ backends accept an explicit companion file: set `JUKU_DISK_DELETED_MARKS` for
 `cosim/trace`, or pass `+disk_deleted_marks=<path>` to the HDL model. The file
 is exactly 1,600 bytes, one binary `0` or `1` for every fixed
 `((track * 2 + side) * 10 + sector - 1)` slot. A writable mount creates and
-updates it; a read-only mount can consume an existing file. This sidecar is a
+updates it; a read-only mount can consume an existing file. Values are binary
+bytes `00h`/`01h`, not ASCII digits. The loader checks size and values but
+does not bind the sidecar to an image hash; keep each sidecar with its matching
+raw image. This sidecar is a
 simulation representation and is never embedded in or inferred from a raw
 `.juk`/`.CPM` payload. Other unrepresentable complete revolutions set
 behavioral WRITE FAULT instead of being falsely serialized as an unchanged
