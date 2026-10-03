@@ -35,6 +35,15 @@ request back byte-for-byte before starting the ordinary service. Random `J` or
 `JB/11` frame is an explicit target-reset indication and returns the host to
 V16.
 
+### Waiting and retry limits
+
+Passive discovery and waiting for a configured console endpoint continue until
+the host is stopped; `timeout` does not bound those waits. It bounds each
+bootstrap attempt. Failed attempts return to discovery without applying the
+ordinary `boot_restarts` count limit. Named serial-device reopen attempts are
+bounded by `reconnect_timeout`; recovery requires the path to return within
+that window. See [the configuration guide](jukuhost-config.md) for defaults.
+
 ## Recovery matrix
 
 | Starting/failure state | ROM behavior | Host behavior | Result |
@@ -90,3 +99,8 @@ The recovery C11 pair is:
 D16 is unchanged because the discovery loader lives in the lower D15 half.
 Physical programming and the raster/listening acceptance remain separate
 operator gates.
+
+C12 retains this passive recovery design with its own checked beacon identity.
+Its [physical recheck](c12-runtime-console.md#corrected-d16-physical-recheck)
+used a host started after the target's checkerboard appeared. Those passes do
+not establish recovery from a physical reset while the host remains running.
