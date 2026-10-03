@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# The report writers mirror .github/workflows/reports.yml and hdl.yml; the
-# final automatic-completion audit is additionally checked by generic CI.
+# Selected report writers follow reports.yml and hdl.yml dependency groups.
+# This is not an exhaustive report or runtime verification suite.
 set -euo pipefail
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
@@ -140,7 +140,7 @@ if ((check)); then
     spinoffs/minimal-vga/docs/rev-a-usb-c-candidate.md \
     spinoffs/minimal-vga/docs/rev-a-ptc-candidate.md \
     spinoffs/minimal-vga/docs/rev-a-tvs-candidate.md
-  echo "regen_all.sh: generated artifacts are current"
+  echo "regen_all.sh: selected tracked output paths match the index"
 else
   drift=$(git status --short -- \
     docs/ \

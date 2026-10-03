@@ -197,9 +197,12 @@ findings. Every status applies only to the boundary named by the report.
   `cartridge-basic-firmware-lineage.md` and `jmon22-reconstruction.md`, plus
   the current disk-BASIC/Monitor guards.
 
-The producing scripts live under `scripts/`, `kicad/`, or `sync/`. CI reruns
-the reports that guard active boundaries and fails if their committed output
-changes.
+The producing scripts live under `scripts/`, `kicad/`, or `sync/`. Run the
+command named by a report to refresh its evidence. See
+[regeneration scope](../sync/README.md#fast-behavioral-checks) for the selected
+`scripts/regen_all.sh` sets and its index-relative `--check` behavior.
+Path-selected CI jobs regenerate their configured reports; a green job does
+not establish freshness or runtime coverage for every report in this directory.
 
 Human-written summaries should describe outcomes and point to the command or
 owning symbol. Keep generated totals, hashes, and source locations in their
@@ -222,7 +225,8 @@ Provenance for vendored inputs belongs beside the inputs:
 
 ## Status vocabulary
 
-- **PASS/READY** means the specifically named check passes.
+- **PASS/READY** means the specifically named check passed for its recorded
+  inputs and scope. Recheck changed inputs before treating that result as current.
 - **PACKAGE VERIFIED** means files, geometry, and checksums are coherent.
 - **DESIGN HOLD** means fabrication is not authorized even if the package is
   coherent.

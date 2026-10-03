@@ -144,10 +144,17 @@ hook and should be reserved for a deliberate, documented exception.
 See [CI budgets and local-only coverage](../ci/README.md) for workflow
 selectors, bounded profiles, and checks that require a local run.
 
-After changing `kicad/juku.board.json`, timing-relevant HDL, or any
-`report_*.py`, run `scripts/regen_all.sh`; add `--deep` when HDL/cosim behavior
-changed. Commit every resulting artifact, and use `--check` for a CI-style
-nonzero exit when generated `docs/` or `ref/` output drifts.
+After changing `kicad/juku.board.json` or report inputs, run
+`scripts/regen_all.sh` for its selected fast report set. Add `--deep` for the
+listed HDL/cosim report writers. Also run a changed report's own command when
+it is outside those lists: neither mode refreshes every generated report or
+executes the uninterrupted Verilator prompt runs.
+
+`--check` uses `git diff` against the index for tracked files under `docs/`,
+`ref/`, and three named Rev A candidate reports. It includes pre-existing
+unstaged edits in those paths and excludes staged changes and untracked files.
+Review `git status --short` and both unstaged and staged diffs before committing
+and pushing regenerated artifacts.
 
 ## Simulator compatibility
 
