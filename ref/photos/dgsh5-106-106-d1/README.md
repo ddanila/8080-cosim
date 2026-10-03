@@ -6,12 +6,14 @@ Owner photographs (2026-07-18) of **ДГШ5.106.106 Д1 «Таблица про�
 
 ## Why this matters
 
-This is **authoritative factory ground-truth for a Juku ROM image** — printed
-byte values, not a re-read of an aged part. Cross-check it against the
-reconstructed / physically-read images under `ref/reconstructed-proms/`,
-`ref/physical-proms/`, and `ref/eprom-images/`.
+The printed bytes identify a 2 KiB BASIC cartridge page. The reconstructed
+image is `ref/reconstructed-firmware/dgsh5-106-106-d1.bin`, not a mainboard
+PROM table or D15/D16 BIOS half. See the
+[reconstruction report](../../../docs/dgsh5-106-106-rom-table.md) for hashes
+and the archive/photo adjudication.
 
 Observations from the listing:
+
 - Reset vector at 0000: `C3 07 01` = `JMP 0107h` (8080/Z80).
 - Later region contains ASCII BASIC interpreter strings — e.g. `?REDO FROM
   START`, `OUT OF DATA`, `OVERFLOW`, `DIVISION BY ZERO`, `SYNTAX ERROR`,
@@ -28,5 +30,5 @@ Observations from the listing:
 `scripts/reconstruct_dgsh5_106_106.py` reconstructs the complete page from
 the archived `BAS0.HEX` transcription and an independent `jbasic11.bin` diff.
 They disagree only at `021A`; the photographed row visibly reads `21`, not
-the archive's `A1`. The resulting image exactly equals cartridge bytes
-`0000-07FF`. See `docs/dgsh5-106-106-rom-table.md`.
+the archive's `A1`. The resulting image exactly equals `roms/jbasic11.bin` file offsets
+`0000-07FF`; these are file positions, not mapped cartridge addresses.
