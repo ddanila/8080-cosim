@@ -1,6 +1,6 @@
 # D99 trigger and timing reconstruction constraints
 
-Status: **D99 TRIGGER/TIMING LOGIC CONSTRAINED / FIVE PINS MEASUREMENT-GATED**
+Status: **D99 TRIGGER/TIMING LOGIC CONSTRAINED / SIX SIGNAL PINS MEASUREMENT-GATED**
 
 D99 is the target-board К155АГ3 / SN74123-compatible dual retriggerable
 monostable. Exact-revision sheet evidence closes both RC networks and the
@@ -15,6 +15,11 @@ python3 kicad/check_d99_source_paths.py
 sync/ag3_check.sh
 ```
 
+The generator checks artifact hashes, JSON pin/net/value invariants, selected
+pinout and HDL/test text markers, all 32 D94 image rows, and nominal RC
+arithmetic. It does not execute the HDL test or measure installed timing.
+Run `sync/ag3_check.sh` separately for the device simulation.
+
 ## Evidence checks
 
 | Check | Result |
@@ -23,11 +28,11 @@ sync/ag3_check.sh
 | D99 all-pin board mapping matches the measured/source model | PASS |
 | D99 B2 joins D96 clear; Q1_N joins D93 HLT separately from READY | PASS |
 | D94 D1, both RC networks, and section-1 Q NC preserve exact endpoints | PASS |
-| C17/C18/R97/R103 fitted values remain source-closed | PASS |
+| C17/C18/R97/R103 modeled values match source nominals | PASS |
 | Local D99 pinout records the exact clear/trigger contract | PASS |
-| AG3 HDL/test preserves triggers, overriding clear, and complements | PASS |
+| AG3 HDL/test contains selected trigger, clear, and complement markers | PASS |
 | Physical D94 D1 is asserted exactly when A3 xor A2 | PASS |
-| RC pulse and retrigger-inhibit predictions are exact | PASS |
+| Nominal RC formula arithmetic matches expected results | PASS |
 
 ## Exact pin disposition
 
@@ -43,7 +48,7 @@ sync/ag3_check.sh
 | 8 | GND | `GND` | CLOSED |
 | 9 | 2A_N / D94 D1 | `D94_D1_D99_A2N` | CLOSED |
 | 10 | 2B / sheet-1 boundary | `D99_B2_SHEET1_BOUNDARY` | MEASURE |
-| 11 | 2CLR_N / MOTOR EN | `FDC_MOTOR_EN` | CLOSED |
+| 11 | 2CLR_N / MOTOR EN | `FDC_MOTOR_EN` | MEASURE |
 | 12 | 2Q_N boundary | `D99_Q2N_BOUNDARY` | MEASURE |
 | 13 | 1Q / constant-low NC | `D99_Q1_NC` | CLOSED |
 | 14 | 1Cext / C18− | `D99_C1_TIMING` | CLOSED |
@@ -54,8 +59,8 @@ sync/ag3_check.sh
 
 D99.3 `/CLR1` is physically grounded. The TI overriding-clear row
 therefore fixes Q1/pin13 low and `/Q1`/pin4 high regardless of A1, B1,
-or the fitted R103/C18 network. Pin13 is owner/drawing-closed NC; pin4
-still leaves toward an unknown destination, but it is a constant-high
+or the fitted R103/C18 network. Pin13 is drawing-closed NC; pin4
+is source-joined to D93.23/HLT and is a constant-high
 driver rather than a pulse source.
 
 | /CLR1 | A1_N | B1 | Q1 pin13 | /Q1 pin4 |
@@ -63,8 +68,8 @@ driver rather than a pulse source.
 | 0 | don't care | don't care | 0 | 1 |
 
 This rules out D99 section 1 as the active raw-read conditioner and
-gives a direct powered-probe expectation for pin4. It does not identify
-pin4's remote conductor.
+gives a direct powered-probe expectation for pin4. Original-board
+D99.4-to-D93.23 continuity remains unmeasured.
 
 ## Section 2 access trigger
 
@@ -130,9 +135,9 @@ powered measurement before hardware release.
 
 ## Reconstruction boundary
 
-Closed automatically: package truth table, section-1 constant outputs,
-D94-D1 access equation, both fitted RC networks, nominal timing, and exact
-probe conditions. Still physical: pin4 destination, B2/pin10 source,
+Derived constraints: section-1 constant outputs, the D94-D1 access equation,
+source-nominal RC timing, and conditional trigger behavior.
+Still physical: D99.4-to-D93.23 continuity, B2/pin10 source,
 original-board MOTOR EN continuity to `/CLR2`/pin11, Q2/pin5 to
 D100.7, Q2_N/pin12 to D100.9, and
 the installed analog timing waveform.

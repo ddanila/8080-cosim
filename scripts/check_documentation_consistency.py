@@ -260,7 +260,7 @@ def main() -> int:
             if phrase in text:
                 failures.append(f"{path} retains stale D96 section-2 claim: {phrase!r}")
     d99_report = read("docs/d99-reconstruction-constraints.md")
-    if "Status: **D99 TRIGGER/TIMING LOGIC CONSTRAINED / FIVE PINS MEASUREMENT-GATED**" not in d99_report:
+    if "Status: **D99 TRIGGER/TIMING LOGIC CONSTRAINED / SIX SIGNAL PINS MEASUREMENT-GATED**" not in d99_report:
         failures.append("D99 trigger/timing reconstruction constraints are missing or failed")
     for marker in ("constant-high", "`D1_active = A3 xor A2`", "2.538 s", "26.4 ms"):
         if marker not in d99_report:
