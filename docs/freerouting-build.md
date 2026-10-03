@@ -1,95 +1,72 @@
-# freerouting: use our custom submodule build (not stock)
+# Custom freerouting build
 
-**Routing in this repo must use the custom freerouting built from the
-`external/freerouting` submodule (branch `custom`). Never drop a stock
-freerouting release into `.tools/freerouting/`.** The stock jar looks
-interchangeable but is missing fixes we depend on and will fail or misbehave on
-this board.
+Routing uses the user's custom fork pinned by the `external/freerouting`
+submodule. Build its executable JAR for `.tools/freerouting/`; a stock release
+does not carry the same compatibility fixes.
 
-## Why
+## Build and provenance
 
-The `custom` branch (submodule `external/freerouting`) carries:
-
-- **Bounded `PolylineTrace.combine()`** — upstream now uses an iterative loop,
-  but it still has no progress bound on degenerate/overlapping trace geometry
-  (for example hand-placed locked wires imported from a DSN). The custom build
-  caps successful combine iterations so a malformed case cannot run forever.
-- KiCad-compatible Specctra SES output: original `::N` package identifiers and
-  standard `host_cad` / `host_version` grammar tokens are preserved.
-
-## Use it
-
-```sh
-# builds from the submodule if needed, then routes HEADLESS (no GUI).
-# Reproducible by default (single-threaded -> stable board_sha256):
-scripts/run-freerouting.sh -de kicad/juku.dsn -do kicad/juku.ses -mp 100
-
-# ...opt into parallel speed for throwaway/exploratory routing (not reproducible):
-scripts/run-freerouting.sh -de kicad/juku.dsn -do out.ses -mp 10 -mt 10
-```
-
-`run-freerouting.sh` **defaults to `-mt 1`** so the promoted route's `.ses` is
-byte-reproducible; the `.ses` then goes through `kicad/finalize_route.py`
-(imports it into the board) and the promotion/salvage/prune steps. Pass `-mt N`
-only for routing you will throw away.
-
-### Regenerating `kicad/juku.dsn`
-
-`kicad/juku.dsn` is a committed, SHA-pinned input; you only regenerate it when
-the source board (`kicad/juku.kicad_pcb`) placement or nets change. There is no
-`kicad-cli` Specctra export (dropped in KiCad 10), so export via `pcbnew`:
-
-```sh
-"$(scripts/find-kicad-python.sh)" -c \
-  "import pcbnew; b=pcbnew.LoadBoard('kicad/juku.kicad_pcb'); pcbnew.ExportSpecctraDSN(b,'kicad/juku.dsn')"
-```
-
-This changes `juku.dsn`'s SHA-256, which is pinned in the fabrication evidence
-(`docs/unmodeled-footprint-inventory.md`, checked by
-`scripts/check_documentation_consistency.py`), so regenerate that evidence
-afterward on the canonical (Linux) toolchain. It is not a routine step.
-
-`run-freerouting.sh` refuses to run a stock jar: it checks the installed
-`.tools/freerouting/freerouting.jar` for a custom-only marker string and rebuilds
-from the submodule if it is missing or stock. Build explicitly with:
-
-```sh
-scripts/build-freerouting.sh   # -> .tools/freerouting/freerouting.jar (+ PROVENANCE.txt)
-```
-
-## Fresh checkout
-
-The jar (~59 MB) is gitignored; the **submodule commit is the source of truth**:
+Run from the repository root:
 
 ```sh
 git submodule update --init external/freerouting
 scripts/build-freerouting.sh
 ```
 
-Needs a JDK 25+ (the jar targets class-file 69.0). The scripts find Homebrew
-`openjdk@25`/`@26` or `java_home`; override with `FREEROUTING_JDK=/path/to/jdk`.
-`.tools/freerouting/PROVENANCE.txt` records the submodule commit the installed
-jar was built from and its sha256.
+The build requires a JDK 25+ for class-file version 69. It searches the recorded
+Homebrew, macOS `java_home`, Gradle-managed and Linux JDK locations; use
+`FREEROUTING_JDK=/path/to/jdk` explicitly when needed. The script builds the
+checked-out submodule and records its commit and JAR SHA-256 in
+`.tools/freerouting/PROVENANCE.txt`. Verify the submodule matches the root pin
+before building; the build script does not reset an existing checkout.
 
-## Custom-build behavior (branch `custom`)
+`run-freerouting.sh` checks for the custom `PolylineTrace.combine` marker and
+rebuilds when the JAR is absent or lacks it. That marker distinguishes this
+fork's build lineage; it does not prove that an already-installed JAR matches
+the current submodule commit. Rebuild explicitly after a pin change and retain
+its provenance with route evidence.
 
-- **Telemetry hardwired off** — no analytics or update-check network calls
-  regardless of config, and no 1 s analytics startup sleep. Offline by default.
-- **GUI forced off when headless** — `gui.enabled` is set false under
-  `GraphicsEnvironment.isHeadless()`, so the "Couldn't get screen resolution"
-  warning no longer prints on every headless/CI run.
-- **KiCad-compatible SES** — explicit front/back package IDs such as `::1` and
-  `::2` remain distinct, and Specctra metadata uses the standard `host_cad` and
-  `host_version` tokens accepted by KiCad.
-- **Deterministic routing** — the RNG is already seeded (`new Random(0)` /
-  `setSeed(ripup_costs)`). Verified: two `-mt 1` runs of the same DSN produce a
-  **byte-identical `.ses`**, so single-threaded routing is reproducible
-  (→ stable `board_sha256` for the pinned fabrication evidence). Multi-threaded
-  runs (`-mt >1`) trade that reproducibility for speed.
+## Run and review
 
-## Speed
+```sh
+scripts/run-freerouting.sh -de kicad/juku.dsn \
+  -do /tmp/juku-router-review.ses -mp 100
+```
 
-The core autoroute pass is effectively single-threaded (`-mt` mainly helps
-fanout/optimize), so it is single-core bound: ~2 min/pass on an M4 Pro for the
-full source board, converging over several passes with the last few nets
-hand-finished.
+The wrapper forces headless Java and defaults to `-mt 1` unless a thread count
+is supplied. Its runtime lookup is narrower than the build-script lookup:
+use `FREEROUTING_JDK` or a compatible `java` on PATH on Linux.
+
+Single-threaded execution and seeded random choices reduce variation. The
+historical same-input runs produced identical SES files; this is not a guarantee
+of identical routes or PCB hashes across source, algorithm, configuration or
+toolchain changes. Record exact inputs and outputs and run DRC/connectivity
+checks before promoting a route. Explicit `-mt N` selects a different execution
+profile and needs its own evidence.
+
+The main Juku route remains under [the routing hold](routed-refresh-audit.md).
+An SES result alone does not close source-risk nets or authorize fabrication.
+
+## Regenerate a DSN
+
+The committed `kicad/juku.dsn` is a routed engineering snapshot. It must be
+reviewed against current source connectivity before use. Export through the
+matching KiCad Python API when the source board changes:
+
+```sh
+"$(scripts/find-kicad-python.sh)" -c \
+  "import pcbnew; b=pcbnew.LoadBoard('kicad/juku.kicad_pcb'); assert pcbnew.ExportSpecctraDSN(b,'kicad/juku.dsn')"
+```
+
+Regenerate current evidence for changed inputs. Keep historical hash-bound
+reports tied to their recorded artifacts; do not rewrite their identities to
+match a later DSN. KiCad version, placement, zones and net definitions all form
+part of the export context.
+
+## Fork capabilities
+
+The pinned fork carries bounded trace combining, headless/offline behavior and
+KiCad-compatible SES identifiers and grammar. These capabilities permit the
+repository workflow; they do not validate a particular routed board. Rev A/B
+routing scripts also choose their own algorithm, seed and optimizer settings,
+so use the board-specific workflow when regenerating those designs.
