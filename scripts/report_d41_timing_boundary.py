@@ -120,7 +120,9 @@ def main() -> int:
         ),
         (
             "D41 proved straps, outputs, and timing boundaries are netted",
-            netted == {"1", "2", "3", "4", "5", "6", "8", "9", "12", "13"},
+            netted == {"1", "2", "3", "4", "5", "6", "7", "8", "9", "12", "13", "14"}
+            and node_in(board, "GND", "D41", "7")
+            and node_in(board, "P5V", "D41", "14"),
             ", ".join(f"D41.{pin}" for pin in sorted(netted)),
         ),
         (

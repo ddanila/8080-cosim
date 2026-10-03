@@ -2,6 +2,9 @@
 
 Status: **TEMPLATE INVALID**
 
+Historical superseded fabrication ZIP SHA256: `90308b962433648cf52d0de44046367380e79f3e653151da75fc08bd9d949a46`.
+This is provenance for the older package; current release requires fresh package verification.
+
 This is a future private order-record template. Do not upload the current
 package or start an order while the design-release report says DESIGN HOLD.
 Live DFM, price, and order-number evidence only exists after a released
@@ -27,10 +30,10 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5247 | FAIL |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5197 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3375 | FAIL |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 17334 | FAIL |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20412 | FAIL |
 
 ## Vendor Options To Record
 

@@ -86,7 +86,7 @@ for pin, expected in pcb_expected.items():
     )
     if not match:
         raise SystemExit(f"FDC RECOVERY: source PCB missing D106 pad {pin}")
-    net_match = re.search(r'\n\t\t\t\(net \d+ "([^"]+)"\)', match.group())
+    net_match = re.search(r'\n\t\t\t\(net (?:\d+ )?"([^"]+)"\)', match.group())
     actual = net_match.group(1) if net_match else None
     if actual != expected:
         raise SystemExit(f"FDC RECOVERY: source PCB D106.{pin} net {actual!r} != {expected!r}")

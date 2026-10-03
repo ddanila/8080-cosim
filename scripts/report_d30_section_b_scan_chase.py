@@ -82,6 +82,20 @@ def main() -> int:
         "", "## Model guards", "", "| Check | Result |", "| --- | --- |",
     ]
     lines.extend(f"| {name} | PASS |" for name, _ in checks)
+    lines.extend("""
+## Additional source observations
+
+The owner component photo seeds have been corrected to the marked right-notched
+D30 2×7 package. In `200439607`, D30.8/.11 are lower-row contacts near
+`(875,1230)/(1040,1230)`; the former component seeds were above the chip
+under a cable. The former solder seeds in `200537608` are on an unrelated
+broad rail. Rechecking the native image exposed a D13 registration that
+crossed into D105's package. With that corrected, D30 occupies the distinct
+2×7 solder field at y≈540/730; D30.8/.11 are the lower-row joints near
+`(3040,730)/(2860,730)`. These are visual probe pads; the chip-removed
+owner measurement remains the net evidence. See
+`ref/photos/juku-pcb-2/d30-pin8-pin11-photo-registration.json`.
+""".splitlines())
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("D30 SECTION-B SCAN CHASE: PASS; ambiguous routes rejected")
     return 0

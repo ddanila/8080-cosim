@@ -10,7 +10,7 @@ Status: **NOT READY**
 - Electrical/routing gate: **FAIL**
 - Fabrication-file inventory gate: **FAIL**
 - Total DRC findings: 798
-- Unconnected items: 56
+- Unconnected items: 59
 
 ## Electrical Blockers
 
@@ -19,7 +19,7 @@ Status: **NOT READY**
 | clearance | 0 |
 | shorting_items | 0 |
 | tracks_crossing | 0 |
-| unconnected_items | 56 |
+| unconnected_items | 59 |
 
 ## DRC Finding Types
 

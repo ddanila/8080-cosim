@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import hashlib
+import json
 import sys
 import zipfile
 from pathlib import Path
@@ -224,12 +225,18 @@ def build_report(fab_dir, report_path):
         failures.append("unexpected upload SHA256SUMS entries: " + ", ".join(extra_upload_hashes))
 
     status = "PACKAGE VERIFIED / DESIGN RELEASE SEPARATE" if not failures else "PACKAGE INVALID"
+    historical_path = ROOT / "ref/routing/zero-open-fabrication-package.json"
+    historical = json.loads(historical_path.read_text()) if historical_path.exists() else {}
+    historical_sha = historical.get("upload_zip", {}).get("sha256", "-")
     lines = [
         "# Replica order-upload runbook",
         "",
         f"Fabrication package: `{repo_relative(fab_dir)}`",
         f"Upload archive: `{repo_relative(zip_path)}`",
         f"Status: **{status}**",
+        "",
+        f"Historical superseded fabrication ZIP SHA256: `{historical_sha}`.",
+        "This is provenance for the older package; current release requires fresh package verification.",
         "",
         "This report verifies the mechanics of the saved upload package. It is not",
         "an order authorization. The current design-release state is owned by",

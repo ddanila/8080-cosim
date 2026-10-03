@@ -46,9 +46,9 @@ def main() -> None:
     evidence = json.loads(EVIDENCE.read_text(encoding="utf-8"))
     if (evidence.get("schema_version") != 1 or evidence.get("refdes") != "D96" or
             evidence.get("endpoints") != ["9", "11"] or
-            evidence.get("status") != "photo-exhausted / continuity required" or
+            evidence.get("status") != "D96.11 local B.Cu-to-D28.11 candidate found; source conflict and D96.9 continuation require continuity" or
             evidence.get("unresolved") != [
-                "D96.9 Q2-to-D101 A0-A3 physical continuity", "D96.11 CLK2-to-D94.2/D99.9 physical continuity"]):
+                "D96.9 Q2-to-D101 A0-A3 physical continuity", "D96.11 CLK2-to-D94.2/D99.9 physical continuity and its apparent D28.11/DRQ copper join"]):
         raise SystemExit("D96.9/.11 photo-exhaustion evidence header mismatch")
     for key in ("drawing_observation", "overview_observation", "component_observation", "solder_observation"):
         observation = evidence.get(key, {})

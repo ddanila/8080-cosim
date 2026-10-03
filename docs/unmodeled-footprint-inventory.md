@@ -15,9 +15,9 @@ python3 scripts/report_unmodeled_footprint_inventory.py
 
 ## Summary
 
-- Board JSON SHA-256: `f963887161e0e622c7b65dd65e8537e45e1538bfd9269a4bf3f6878c71539408`
-- Source PCB SHA-256: `50df831a9b6b4565315409c6dd0319751b31fd41ce13c77197dc856bf1184fe0`
-- Routed PCB SHA-256: `9f6fff3fea7eaffa706e7479bc149983a1551b787542241ed8795fb869175158`
+- Board JSON SHA-256: `98864ba47523a05d05afea6a7ed11591e68a2c3de7a46e39cf00e60b880fb13c`
+- Source PCB SHA-256: `c1fbfcdeae9a859f76d9c46f79c570f83e7d1a98a5a136ef60e818d801482b97`
+- Routed PCB SHA-256: `f22f7ba849a6088d7b41e8f2ada8153cda9226c8848bec00128044177643e26a`
 - DSN SHA-256: `28dc905fb0afdacaa39314f7a2c9dd1292da47a9ea3e7ea735d96fcedbd0fc25`
 - Modeled board-JSON `D*` ICs: `106`
 - Source PCB IC footprints: `106`
@@ -111,7 +111,7 @@ documented intentional no-connects are excluded.
 | --- | --- |
 | `D96` | 9:Q2, 13:CLR2_N |
 | `D99` | 2:B, 4:Q_N, 5:Q2, 10:B2, 11:CLR2_N, 12:Q2_N |
-| `D100` | 3:A2, 7:A6, 9:OE_N, 11:T |
+| `D100` | 3:A2, 7:A6, 9:OE_N, 11:T, 20:VCC_5V |
 | `D101` | 1:OE0_N, 3:D03, 4:D02, 5:D01, 6:D00 |
 
 ## Closure Rule

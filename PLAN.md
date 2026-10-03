@@ -1308,7 +1308,7 @@ Every ask below is queued with exact deliverables in
    pin/net, and remote endpoints; this remains the P0 hold
    (`docs/factory-modification-disposition.md`).
 5. **Disposition all remaining source-risk nets and omitted endpoints.**
-   46 source-risk nets and 62 chip-level fidelity gaps remain, including 4
+   55 source-risk nets and 71 chip-level fidelity gaps remain, including 4
    official FDC devices with untraced functional pins. X2's PA1/PA5
    contact digits are closed from native `.009` sheet 1 (`docs/replica-bringup-verification-points.md`,
    `docs/board-fidelity-gap-ledger.md`). Anything affecting boot, memory, bus
@@ -1390,7 +1390,7 @@ Every ask below is queued with exact deliverables in
    evidence rather than a Tier-1/2 boot blocker.
 
 Source-model state feeding this work: the authoritative board JSON defines all 2320/2320
-PCB-scoped board-JSON endpoints, with 137 non-PCB or placement-held
+PCB-scoped board-JSON endpoints, with 155 non-PCB or placement-held
 endpoints intentionally excluded. The controlled D54/D55/D56 owner-timing
 refresh is now applied to both source and promoted routed PCBs; the generated
 coverage report checks 2320 source endpoints. D2.8/GND, D2.16/+5 V,
@@ -1547,8 +1547,8 @@ likewise outside PCB-pad scope while its three switch contacts remain modeled
 nets (`docs/s4-interrupt-boundary.md`).
 Neither source nor routed PCB has an endpoint-coverage failure. The July photo workflow is
 complete as a registration/review scaffold: all
-641 observations have dispositions, 37 rows are accepted evidence, six rows
-are rejected (including the former R94 assignment and two D94.5-D93.1 claims), and the other 598 remain
+641 observations have dispositions, 39 rows are accepted evidence, six rows
+are rejected (including the former R94 assignment and two D94.5-D93.1 claims), and the other 596 remain
 measurement requests
 (`docs/photo-registration.md`).
 

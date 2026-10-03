@@ -13,7 +13,7 @@ D53-to-RAS ladder.
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| All registered sources match SHA256 | PASS | 5 drawing/photo artifacts |
+| All registered sources match SHA256 | PASS | 6 drawing/photo artifacts |
 | Drawing refdes order matches the target photo column | PASS | R56/R52, R55/R51, R54/R50, R53/R49 |
 | Registered geometry is the vertical 10.16 mm bank | PASS | x=221.0 mm; eight independently recorded centres |
 | Target case markings are encoded as values | PASS | R49-R52=75 Ω; R53-R56=5.1 kΩ |

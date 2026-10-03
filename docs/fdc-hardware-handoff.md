@@ -99,7 +99,8 @@ Figure 11 contains no mux and only one half of a single 74123. The owner
 photos identify the packages but the recovered Juku sheet, not the generic
 reference circuit, closes D95 and D106 completely plus D96's exact wiring.
 D96 section-1 restart phase remains undefined; D96.9-to-D101 continuity is physically pending,
-D96.11-to-D94.2 continuity remains unmeasured. A native owner solder crop now shows a candidate D96.11-to-D28.11/DRQ B.Cu line that conflicts with those separate exact-source nets; check that apparent join directly. The D99.10-joined pin13 sheet-1 source remains a verification gate.
+D96.11-to-D94.2 continuity remains unmeasured,
+and the D99.10-joined pin13 sheet-1 source remains a verification gate.
 
 ## Soviet VG93 Circuit Cross-Check
 
@@ -243,7 +244,7 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
 | `FDC_DDEN` | recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM; sheet 3 joins it to D93 DDEN/pin37 and D95 select A0/pin14. Registered target copper additionally closes R92.2 on the same pin14 node; D28.9 belongs to the separator and is not a DDEN branch | `D26.13, D93.37, D95.14, R92.2` |
 | `FDC_DIR_TO_D100` | recovered .009 Э3 sheet 3: D93 DIR/pin16 directly drives D100 A2/pin1 | `D93.16, D100.1` |
 | `FDC_DRIVE_SIZE_5_8` | recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; sheet 3 directly joins it to D95 clock-mux select A1/pin2 | `D26.17, D95.2` |
-| `FDC_DRQ` | recovered .009 Э3 sheet 3 and owner continuity 2026-07-20 directly join D93 DRQ/pin38, D28 open-collector inverter input pin11, and R94.1; physical R94 is the 10-kohm pull-up immediately above D28 and its other terminal joins +5 V | `D93.38, D28.11, R94.1` |
+| `FDC_DRQ` | recovered .009 Э3 sheet 3 and owner continuity 2026-07-20 directly join D93 DRQ/pin38, D28 open-collector inverter input pin11, and R94.1; physical R94 is the 10-kohm pull-up immediately above D28 and its other terminal joins +5 V. Owner solder photo 200506061 has a candidate D28.11-to-D96.11 B.Cu line conflicting with the exact-source separate DRQ and CLK2 nets; check the two pins directly before a model merge | `D93.38, D28.11, R94.1` |
 | `FDC_DSEL_IN` | recovered .009 Э3 sheet 1 continuation 4 and sheet 3 directly join D26 PC5/pin12 D_SEL to D28 input pin1 | `D26.12, D28.1` |
 | `FDC_EARLY_SEL` | recovered .009 Э3 sheet 3 directly joins D93 EARLY/pin17 to the common D101 select input A1/pin2 | `D93.17, D101.2` |
 | `FDC_HLD_TO_D100` | recovered .009 Э3 sheet 3 photo PXL_20260718_101641055.jpg: D93 HLD/pin28 drives D100 A6/pin3 and E12 post 3; drawn E12 2-3 bridge connects D99 B1/pin2. Original-board E12 population and continuity are pending direct measurement. | `D93.28, D100.3, D99.2` |
@@ -284,11 +285,9 @@ contacts at the other end of the modeled DRQ/INTRQ nets.
   continuity, D96.11 CLK2-to-D94.2/D99.9 continuity, and whether sheet-3
   D96.13 /CLR2 joins D99.10 B2; identify the shared clear/B2 source separately. Capture WREQ_N at pins1/4 with Q1/pin5
   and /Q1/pin6 because simultaneous async release leaves restart phase
-  undefined. The solder view leaves D96.9 without a clear B.Cu departure,
-  but D96.11 has a visible route to a joint near D28.11. Meter D96.11↔D28.11
-  separately from D94.2/D99.9; the conditional owner copper conflicts with
-  the source DRQ/CLK2 separation. Obscured F.Cu paths and non-unique
-  drawing marks do not prove other PIC joins. Direct D93.39/38-to-D10.18/19
+  undefined. The registered solder
+  view excludes B.Cu departures at both pads, and the obscured F.Cu
+  paths plus non-unique drawing marks do not prove PIC joins. Direct D93.39/38-to-D10.18/19
   was a retired MAME-era assumption: sheet 3 instead proves the local
   D28/R93/R95/D96 path. Primary device truth makes the shared
   /PRE2/D2 wiring set-only while /CLR2 is inactive; capture

@@ -244,7 +244,7 @@ module juku_top #(
     wire timing_tag2;
     net_boundary U_D38I4LNK (.a(1'b1), .b(timing_tag2));
     la1_gate  U_D38 (.i0(clkg_d33), .i1(sync), .i2(d39_y), .i3(d39_y), .y(stb_d38),   // pin12(I1) <- SYNC [WIRE 9]; pins 13+10 tied <- D39.11 (bite-3, ex-assumed D39Y)
-                     .i4(d39_memcyc), .i5(timing_tag2), .i6(1'b0), .i7(cas_n), .y2(load_pre));  // sect2 LOAD: pins5/4/2/1 <- rails4/2/1/15; only rail2 origin remains pending
+                     .i4(latch_sig), .i5(timing_tag2), .i6(1'b0), .i7(cas_n), .y2(load_pre));  // sect2 LOAD: pin5 <- LATCH_SIG; pin4 shares TIMING_TAG2 with D34.4; pin2 <- GND; pin1 <- CAS
     // D38.8 is the physical 8238 status-strobe source: ~sync -> ststb_n -> D5 STB(pin1).
     // D13 remains the separate Schmitt inverter package for RAMOUTEN, system-clock handoff,
     // reset, the now owner-closed D13.9->.8 FDC reset inversion, and the
@@ -444,9 +444,8 @@ module juku_top #(
 `else
     tri0 d34_b2;                       // RC node (C5) boundary: idle low -> ctr_ld_n = 1 (counting)
 `endif
-    wire d56_qn, d56_q2, d56_q2_n, d34_sync_phys, d34_rc_drive, d34_a1_tag2, d37_out;
-    net_boundary U_D34A1LNK (.a(1'b0), .b(d34_a1_tag2));
-    lp5_xor U_D34 (.a1(d34_a1_tag2), .b1(1'b0), .y1(d34_rc_drive), .a2(1'b1), .b2(d34_b2), .y2(ctr_ld_n),
+    wire d56_qn, d56_q2, d56_q2_n, d34_sync_phys, d34_rc_drive, d37_out;
+    lp5_xor U_D34 (.a1(timing_tag2), .b1(1'b0), .y1(d34_rc_drive), .a2(1'b1), .b2(d34_b2), .y2(ctr_ld_n),
                    .a3(d56_q2), .b3(d56_qn), .y3(d34_sync_phys), .a4(d37_out), .b4(1'b1), .y4());
     ie7_ctr  U_D44 (.up(pst_clk), .down(1'b1), .load_n(ctr_ld_n), .clr(1'b0), .d(4'b0), .q(VA[3:0]),   .co(co0), .bo());   // UP <- PST CLK [D59.4, sheet-2]
     ie7_ctr  U_D45 (.up(co0),     .down(1'b1), .load_n(ctr_ld_n), .clr(1'b0), .d(4'b0), .q(VA[7:4]),   .co(co1), .bo());

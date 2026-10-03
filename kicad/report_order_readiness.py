@@ -192,11 +192,13 @@ def run_package_geometry(out_dir):
 
 
 def run_external_gerber_review(out_dir):
-    subprocess.run([sys.executable, str(EXTERNAL_GERBER_REPORT), str(out_dir)], check=True)
+    result = subprocess.run([sys.executable, str(EXTERNAL_GERBER_REPORT), str(out_dir)], check=False)
+    if result.returncode not in (0, 3):
+        result.check_returncode()
     report_path = out_dir / "external-gerber-review.md"
     text = report_path.read_text(errors="replace")
     return {
-        "ready": "Status: **READY**" in text and "## Failures" not in text,
+        "ready": result.returncode == 0 and "Status: **READY**" in text and "## Failures" not in text,
         "report": report_path,
     }
 

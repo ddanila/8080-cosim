@@ -37,17 +37,6 @@ Direct owner continuity on the physical `.009` board now closes both routes:
 D30.11 reaches D105.2 on the D13.4/D11.20 clock conductor, and D30.8
 reaches D29.7. The latter supersedes the prior raw-IOWR assignment at D29.7.
 
-The owner component photo seeds have been corrected to the marked right-notched
-D30 2×7 package. In `200439607`, D30.8/.11 are lower-row contacts near
-`(875,1230)/(1040,1230)`; the former component seeds were above the chip
-under a cable. The former solder seeds in `200537608` are on an unrelated
-broad rail. Rechecking the native image exposed a D13 registration that
-crossed into D105's package. With that corrected, D30 occupies the distinct
-2×7 solder field at y≈540/730; D30.8/.11 are the lower-row joints near
-`(3040,730)/(2860,730)`. These are visual probe pads; the chip-removed
-owner measurement remains the net evidence. See
-`ref/photos/juku-pcb-2/d30-pin8-pin11-photo-registration.json`.
-
 ## Model guards
 
 | Check | Result |
@@ -58,3 +47,16 @@ owner measurement remains the net evidence. See
 | Measured common D30 asynchronous-control and section-B D conductor is adopted | PASS |
 | R5 provenance records agreement between the exact sheet and target board | PASS |
 | Measured /CLR path from D105.11 is kept separate | PASS |
+
+## Additional source observations
+
+The owner component photo seeds have been corrected to the marked right-notched
+D30 2×7 package. In `200439607`, D30.8/.11 are lower-row contacts near
+`(875,1230)/(1040,1230)`; the former component seeds were above the chip
+under a cable. The former solder seeds in `200537608` are on an unrelated
+broad rail. Rechecking the native image exposed a D13 registration that
+crossed into D105's package. With that corrected, D30 occupies the distinct
+2×7 solder field at y≈540/730; D30.8/.11 are the lower-row joints near
+`(3040,730)/(2860,730)`. These are visual probe pads; the chip-removed
+owner measurement remains the net evidence. See
+`ref/photos/juku-pcb-2/d30-pin8-pin11-photo-registration.json`.

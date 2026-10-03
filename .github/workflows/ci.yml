@@ -302,6 +302,10 @@ jobs:
         timeout-minutes: 5
         run: python3 kicad/check_board_population.py
 
+      - name: Test incomplete-package reporting
+        timeout-minutes: 5
+        run: python3 tests/replica_order_readiness_test.py
+
       - name: Check documentation consistency
         timeout-minutes: 5
         run: python3 scripts/check_documentation_consistency.py

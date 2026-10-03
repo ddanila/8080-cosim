@@ -58,3 +58,19 @@ The previous Git-directory write restriction and GitHub DNS failure were
 resolved in this session. Publication uses a normal fast-forward push to
 `origin/master` in the user's fork, followed by remote commit verification.
 No feature branch or pull request is part of this handoff.
+
+## CI repair after publication
+
+The published snapshot exposed outdated guard and report assumptions. The
+repair accepts KiCad's numbered and name-only pad-net formats, brings HDL
+D38.5 and D34.4 onto the source-proved LATCH_SIG and TIMING_TAG2 conductors,
+and checks D41 package supplies explicitly. Photo guards retain the unmetered
+D96.11/D28.11 candidate as a source conflict requiring continuity. Report
+writers now preserve the additional D30, D36, D59 and IE10 photo observations.
+
+LVS, all boot regression levels including self clocking, video readout, report
+and PROM validation steps, and documentation consistency passed locally.
+Package reporting now writes an incomplete-package hold for absent Gerbers
+instead of crashing; tests also require unexpected tool errors to propagate.
+The evidence packet and portable archive were regenerated for this repair.
+Remote CI must be verified on the publication commit before CI is declared green.

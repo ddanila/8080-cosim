@@ -59,7 +59,7 @@ This guard proves the current runnable video-readout path:
   juku_top framebuffer.
 
 The sim-only vid_out port is not composite voltage and is not a simulated D34
-or X7 node. It contains no sync summing, VT2 output stage, termination, or edge
+or VIDEO_OUT node. It contains no sync summing, VT2 output stage, termination, or edge
 model. Its name is retained only for HDL interface compatibility.
 
 The remaining physical boundary is the shared-DRAM slot timing: arbitration

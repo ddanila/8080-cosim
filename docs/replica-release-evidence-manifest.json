@@ -11,7 +11,7 @@
   "supporting_files_sha256": {
     "docs/main-board-unresolved-endpoints.csv": "8048d1afc5e01e862a46f435110b6f1330318ada8ffa20ce22c06e2d4cff8f56",
     "docs/ppi-physical-pin-mapping.json": "68e4f7b0c27553a0575ce62aab2470aef26618ff797dc69c0f6d74e8e765c08f",
-    "fab/gerbers/juku_routed-drc.json": "e481218638993cc4271ed6f62bbecdceceaa513bb245971845c239cc056190ba",
+    "fab/gerbers/juku_routed-drc.json": "dc80c5c433bb9c69c4aac97f1955ab3df30055aeab922f690f2b00564658093b",
     "fab/audit/main-board-erc.json": "8dc45308c5a0d1bbffa0afe564add62a29878af0992873933846a30bedca8525",
     "fab/audit/main-board-parity-drc.json": "1629f10fb0768282ed95e783cb9e4fbf379965cce456c80aea82dee18405ecc6"
   },
@@ -93,7 +93,7 @@
     },
     "Owner checks": {
       "path": "docs/owner-measurement-shortlist.md",
-      "sha256": "52a53f7d682ca573679a7fd9a7da222f709810f7088a9bd923b1ca9ecf14493d",
+      "sha256": "014d578971a97b8fa00cba8ec3e2944390814b923388141ad7a724e216ad6d94",
       "status": "READY"
     },
     "BOM": {
@@ -143,7 +143,7 @@
     },
     "DRC disposition": {
       "path": "docs/replica-fab-drc-disposition.md",
-      "sha256": "a91fef3ec0535b69eca21afd233158347ec60fab5c1ea1f419afe65555a5a296",
+      "sha256": "bfe1e8724791b195ddcefe577ebcc65163b5aea8d9ba5ad84f79236094be86b3",
       "status": "REVIEW REQUIRED"
     },
     "Power trace": {
@@ -163,8 +163,8 @@
     },
     "Order readiness": {
       "path": "fab/gerbers/order-readiness.md",
-      "sha256": null,
-      "status": "MISSING"
+      "sha256": "b740f38bf443446afd1ac475c6af6080e7b2cb62bea43dc17ef25ab676305c9c",
+      "status": "NOT READY"
     },
     "External Gerber review": {
       "path": "fab/gerbers/external-gerber-review.md",
@@ -173,27 +173,27 @@
     },
     "Review waivers": {
       "path": "fab/gerbers/review-waivers.md",
-      "sha256": "0e570fe2d26d579c57bcaf16812500084196831df61c5b6275644d27d702c1da",
+      "sha256": "23743626a541d649f167af88f74c364cb1f06e4a14a8929e9daf6178bce9e985",
       "status": "NOT ACCEPTED"
     },
     "Fabrication inventory": {
       "path": "fab/gerbers/fab-readiness.md",
-      "sha256": "d3f4a8d848dce234f9bfcbe1b08d3c37ded3dcb42e08e7cdb372917f29ad571a",
+      "sha256": "718740c7755a84c742e53bce8b9576ae1245583cb4c2d4d6772698c853f0e07e",
       "status": "NOT READY"
     },
     "Manufacturing": {
       "path": "docs/replica-manufacturing-readiness.md",
-      "sha256": "f384cf55f43f55a1547a7e372d210e15476c99c50bc1d14d71115272fd1d6033",
+      "sha256": "88dc1672446fa3b5b63ee1a41ac92d3d0a612091a8483d0add2bc648800dfe04",
       "status": "DESIGN HOLD / PACKAGE REGENERATION REQUIRED"
     },
     "Upload procedure": {
       "path": "docs/replica-order-upload-runbook.md",
-      "sha256": "33e84af7c9ada80c31f240c26789947222d4fba946e186d0e7b12a479cb44400",
+      "sha256": "8b9bbc8f80732449d496b897c1a29116621d2d384deaea0c7c6866e8c066d92b",
       "status": "PACKAGE INVALID"
     },
     "Order evidence": {
       "path": "docs/replica-order-evidence-template.md",
-      "sha256": "5c937f9f975ebc765f11773304a41c679d96232f1599cc33fc33b624e4e5e130",
+      "sha256": "3a602301ecc31307af6876e66d62ddab5bfb532d6e260873e81e3052a0774d54",
       "status": "TEMPLATE INVALID"
     },
     "First article": {
@@ -203,7 +203,7 @@
     }
   },
   "bringup_board_json_hash_matches": true,
-  "manufacturing_routed_pcb_hash_matches": false,
+  "manufacturing_routed_pcb_hash_matches": true,
   "upload_zip": {
     "path": "fab/gerbers/upload/juku-replica-gerbers-drill.zip",
     "present": false,
@@ -225,14 +225,13 @@
     "DRC disposition: REVIEW REQUIRED (requires READY)",
     "Power trace: NOT READY (requires READY)",
     "Bring-up coverage: ENDPOINT COVERAGE FAILED / RISKS UNRESOLVED (requires DESIGN RELEASE RISKS CLOSED)",
-    "Order readiness: MISSING (requires RELEASED FOR ORDER)",
+    "Order readiness: NOT READY (requires RELEASED FOR ORDER)",
     "External Gerber review: NOT READY (requires READY)",
     "Review waivers: NOT ACCEPTED (requires ACCEPTED)",
     "Manufacturing: DESIGN HOLD / PACKAGE REGENERATION REQUIRED (requires RELEASED FOR UPLOAD)",
     "Upload procedure: PACKAGE INVALID (requires PACKAGE VERIFIED / DESIGN RELEASE SEPARATE)",
     "Order evidence: TEMPLATE INVALID (requires READY FOR RELEASED ORDER RECORD)",
     "fabrication-file inventory gate has not passed",
-    "tracked manufacturing report does not identify the current routed PCB SHA256",
     "current Gerber/drill upload ZIP is absent",
     "fabrication source-board stamp does not match the routed PCB",
     "upload checksum file does not match the exact ZIP"

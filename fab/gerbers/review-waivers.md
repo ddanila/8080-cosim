@@ -32,7 +32,7 @@ top/bottom review screenshots.
 
 ## Failures
 
-- Unconnected items are not waivable here: 56
+- Unconnected items are not waivable here: 59
 - `courtyards_overlap` count changed: expected 107, got 108
 - `pth_inside_courtyard` count changed: expected 0, got 68
 - Unexpected non-waived DRC type(s): `track_dangling`=24, `via_dangling`=1

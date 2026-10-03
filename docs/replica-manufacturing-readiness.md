@@ -8,7 +8,7 @@ Historical upload ZIP SHA256: `90308b962433648cf52d0de44046367380e79f3e653151da7
 The tables below record a verified package for routed-board SHA256
 `3a1f83c8277624f2c04633761de5703550420443839fb3d5e49eea2c8a99e266`.
 The current routed board is
-`40ecf0550c44bb205ebb8cfb547d34613b698dc6ba14323a5560348ccfc42c3c`
+`f22f7ba849a6088d7b41e8f2ada8153cda9226c8848bec00128044177643e26a`
 after the unsupported physical X7 footprint and route removal, the accepted D57.18 correction, the D104.7/R30 source-ground assignment, and the subsequent exact-sheet C99.2
 ground-net, CS7/D9.7, D96.13/D99.10, D99.11/MOTOR EN, and selected
 E12/D99.2 HLD, D100.9/D99.12 OE_N, D99 Q2 motor-pulse, D26.38/D101.1 IMDRG, D101 section-A input-junction, D96.9-to-D101 input, and D96.11-to-D94.2 clock corrections, followed by the photographed D34.4/D38.4 timing-tag-2 net merge.

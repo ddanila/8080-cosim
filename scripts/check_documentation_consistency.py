@@ -452,7 +452,11 @@ def main() -> int:
     main_fab_root = fab_root / "gerbers"
     upload_zip = main_fab_root / "upload/juku-replica-gerbers-drill.zip"
     if main_fab_root.exists() and not upload_zip.exists():
-        failures.append("local fabrication tree exists but main-board upload ZIP is missing")
+        # Review-only audit exports are tracked even while the upload package is
+        # absent. That is coherent only when the release gate reports a hold
+        # and the manufacturing report explicitly records the missing ZIP.
+        if not design_held or "upload ZIP is absent" not in manufacturing:
+            failures.append("missing main-board upload ZIP is not explicitly held")
     elif upload_zip.exists():
         if package_evidence.get("board_sha256") != sha256(ROOT / "kicad/juku_routed.kicad_pcb"):
             failures.append("local fabrication ZIP belongs to a historical routed board")

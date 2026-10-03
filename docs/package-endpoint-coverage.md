@@ -11,14 +11,14 @@ must still be declared in its chip contract; the report fails otherwise.
 
 - Undeclared non-power endpoints: `0`
 - Undeclared explicit no-connect pins: `0`
-- HDL-excluded physical power endpoints: `111` across `54` refs
+- HDL-excluded physical power endpoints: `119` across `58` refs
 
 | Tagged power net | Endpoints intentionally outside HDL pinmaps |
 | --- | ---: |
-| `GND` | 55 |
+| `GND` | 59 |
 | `M12V` | 2 |
 | `P12V` | 2 |
-| `P5V` | 52 |
+| `P5V` | 56 |
 
 ## Checks
 

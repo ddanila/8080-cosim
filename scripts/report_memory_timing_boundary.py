@@ -526,6 +526,39 @@ def main() -> int:
             "",
         ]
     )
+    lines.extend("""
+## Additional source observations
+
+For D36, two native owner component views (`PXL_20260710_200445914.jpg`
+and `PXL_20260519_201927098.jpg`) show a short front-copper neck between
+the physically counted D36.12 and D36.13 pads. This corroborates their
+source-drawn local tie. The seven-contact solder field remains unassigned,
+and the common input's upstream driver is still unknown; see
+`ref/photos/juku-pcb-2/cas-timing-row-registration.json`.
+
+The `.009` assembly wire table also assigns board point **А:10** to the
+insulated conductor D41.13–D50.1 (`W10_QA_SEL`). The sheet-2 detail
+`PXL_20260718_101908284.jpg` draws the numeral 10 at D41.13's
+open-circle departure. That drawing mark agrees with the assembly-wire
+identity; it is not evidence that D59.10 joins D41.13. D41.13 is a shift
+register output already traced to D50.1/D51.1, while D59.10 is a separate
+inverter output. Keep the D59 remote endpoint open until its conductor is
+traced continuously or measured on the target board.
+
+The original-pixel sheet-2 crop of `PXL_20260718_101911242.jpg` at
+`(0,1350)–(1000,2700)` also resolves the crossing at approximately
+`(610,1870)`: D38.8 `STB` crosses the vertical `B` supply conductor feeding
+R37/R36 without a junction dot. The +12 V phase pull-up rail must therefore
+stay separate from `STB`; the same crop shows R37 and R36 ending on the
+distinct Ф1 and Ф2 outputs.
+
+In the registered D59 solder field of `PXL_20260710_200534267.jpg`, the
+D59.3 side of that local join runs through a separate joint outside the DIP14
+row near `(2975,2260)` and ends at an open annulus near `(3160,2200)`. The
+front-side projection falls in the crystal-can area, but no same-hole Z1
+contact is identified there. This annulus is the next physical OSC probe;
+see `ref/photos/juku-pcb-2/d59-orientation-audit.json`.
+""".splitlines())
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
     print(f"Status: {status}")

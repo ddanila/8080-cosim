@@ -24,7 +24,7 @@ python3 scripts/report_d41_timing_boundary.py
 | D41 LD is source-traced onto timing-bundle rail 17 | PASS | `TIMING_TAG17`: D41.6 + D36.2 |
 | D41 CK is source-traced onto timing-bundle rail 8 | PASS | `SHIFT_G` / numbered rail 8: D41.9 + D42.8 + D43.8 |
 | Factory tag 7 and owner continuity close the complete 1 MHz clock net | PASS | sheets 2/3 and owner continuity join D40.11/D37.2/D54.9/.15/.18/D59.5/D92.2/.3/D95.5/.6; adjacent `LATCH_PRE`/`LATCH_SIG` retained |
-| D41 proved straps, outputs, and timing boundaries are netted | PASS | D41.1, D41.12, D41.13, D41.2, D41.3, D41.4, D41.5, D41.6, D41.8, D41.9 |
+| D41 proved straps, outputs, and timing boundaries are netted | PASS | D41.1, D41.12, D41.13, D41.14, D41.2, D41.3, D41.4, D41.5, D41.6, D41.7, D41.8, D41.9 |
 | D41 unused QC/QD outputs remain intentional no-connects | PASS | 10:QD, 11:QC |
 | D41 package landing is locally registered on both sides | PASS | validated notch-right component fit plus reflected solder fit in `docs/photo-registration/local-packages/report.json` |
 

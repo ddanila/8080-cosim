@@ -66,6 +66,13 @@ This closes D103's standard digital behavior and the already traced local /13
 feedback topology. The native sheet still does not visibly close the upstream
 OSC-to-XTAL16M bundle, so \`XTAL16M\` remains a physical continuity boundary; the
 runnable raster continues to use its explicit simulation dot-clock input.
+
+The marked К555ИЕ10 in owner tile \`PXL_20260710_200445914.jpg\` now has a
+separate two-sided local fit; its reflected solder rows are visible in
+\`PXL_20260710_200530933.MP.jpg\`. Pins 12–14 have distinct joints without
+visible copper departure on either face. The nearby horizontal traces run
+between the joints. This supports the exact-sheet NC treatment of Q2/Q1/Q0;
+it does not close D103.2's upstream XTAL16M source.
 EOF
 
 echo "$pass_line"

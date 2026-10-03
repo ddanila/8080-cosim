@@ -23,11 +23,11 @@ after any source or report change; use `--check` to detect a stale tracked packe
 | --- | --- |
 | `docs/main-board-unresolved-endpoints.csv` | `8048d1afc5e01e862a46f435110b6f1330318ada8ffa20ce22c06e2d4cff8f56` |
 | `docs/ppi-physical-pin-mapping.json` | `68e4f7b0c27553a0575ce62aab2470aef26618ff797dc69c0f6d74e8e765c08f` |
-| `fab/gerbers/juku_routed-drc.json` | `e481218638993cc4271ed6f62bbecdceceaa513bb245971845c239cc056190ba` |
+| `fab/gerbers/juku_routed-drc.json` | `dc80c5c433bb9c69c4aac97f1955ab3df30055aeab922f690f2b00564658093b` |
 | `fab/audit/main-board-erc.json` | `8dc45308c5a0d1bbffa0afe564add62a29878af0992873933846a30bedca8525` |
 | `fab/audit/main-board-parity-drc.json` | `1629f10fb0768282ed95e783cb9e4fbf379965cce456c80aea82dee18405ecc6` |
 
-The raw routed DRC lists 56 unconnected items, matching the
+The raw routed DRC lists 59 unconnected items, matching the
 tracked DRC disposition count.
 
 ## Evidence index
@@ -35,7 +35,7 @@ tracked DRC disposition count.
 | Evidence | Status in report | SHA256 |
 | --- | --- | --- |
 | [Fidelity](board-fidelity-gap-ledger.md) | BOARD FIDELITY GAPS CATALOGED | `6efedfe48ffe352c5aabb62dd3c5809cbfa2ef269fb873428366485d8c96ab4f` |
-| [Owner checks](owner-measurement-shortlist.md) | READY | `52a53f7d682ca573679a7fd9a7da222f709810f7088a9bd923b1ca9ecf14493d` |
+| [Owner checks](owner-measurement-shortlist.md) | READY | `014d578971a97b8fa00cba8ec3e2944390814b923388141ad7a724e216ad6d94` |
 | [BOM](replica-dual-config-bom.md) | NO STATUS FIELD | `4db20c6612df2f40f9601f94fe03297535be9493f44626a773633443f60d050f` |
 | [Sourcing](replica-sourcing-readiness.md) | PARTIAL / PROGRAMMING AND REVIEW BLOCKED | `d96ee48504e6ff2b2160bc72ad325afd62337bd0c39ee2943600b1b6c032fe4b` |
 | [Firmware lineage](firmware-gap-ledger.md) | ADOPTED FIRMWARE SET VERIFIED | `5908ea5a0d09f42f96600e2d51def00d6450ad9344494cfbd8bef2c040c678a1` |
@@ -45,17 +45,17 @@ tracked DRC disposition count.
 | [PPI orientation](ppi-orientation-audit.md) | HOLD | `e3e22d3e94cbbf2bf4c75f610338b5631312d8634abd5d00512db0528bd28816` |
 | [X8 electrolytic geometry](x8-electrolytic-footprint-audit.md) | HOLD | `afbb3c4431913177cb430fb68711001604b7fc8179793b5a8c8d93ac4fa8ba9a` |
 | [Factory wire construction](factory-wire-route-fidelity.md) | FACTORY WIRE LANDING EVIDENCE HOLD | `e91d8438bb044daf10cb01517be646b96ac6d039f4e9d4e43ced9a9f9ffc2514` |
-| [DRC disposition](replica-fab-drc-disposition.md) | REVIEW REQUIRED | `a91fef3ec0535b69eca21afd233158347ec60fab5c1ea1f419afe65555a5a296` |
+| [DRC disposition](replica-fab-drc-disposition.md) | REVIEW REQUIRED | `bfe1e8724791b195ddcefe577ebcc65163b5aea8d9ba5ad84f79236094be86b3` |
 | [Power trace](replica-power-trace-readiness.md) | NOT READY | `69d0d9265a712e2cc0280ef337b9a67043d5b8bfb067289e75923c0c059cc2c1` |
 | [Package geometry](replica-package-geometry-readiness.md) | READY | `5dc3277b3ea24511eabebc5a676bc235bf4d01198fc12e24b07d8d7503449aba` |
 | [Bring-up coverage](replica-bringup-verification-points.md) | ENDPOINT COVERAGE FAILED / RISKS UNRESOLVED | `13c0a06a002981f838314fd3d1f8a2789079671e51d6c6f9620b188d3447bb4f` |
-| Order readiness | MISSING | - |
+| [Order readiness](../fab/gerbers/order-readiness.md) | NOT READY | `b740f38bf443446afd1ac475c6af6080e7b2cb62bea43dc17ef25ab676305c9c` |
 | [External Gerber review](../fab/gerbers/external-gerber-review.md) | NOT READY | `2d8795e43d05532f38807e8fa8a8fe244f1d903480fdfac2ee3fe36c73aeb735` |
-| [Review waivers](../fab/gerbers/review-waivers.md) | NOT ACCEPTED | `0e570fe2d26d579c57bcaf16812500084196831df61c5b6275644d27d702c1da` |
-| [Fabrication inventory](../fab/gerbers/fab-readiness.md) | NOT READY | `d3f4a8d848dce234f9bfcbe1b08d3c37ded3dcb42e08e7cdb372917f29ad571a` |
-| [Manufacturing](replica-manufacturing-readiness.md) | DESIGN HOLD / PACKAGE REGENERATION REQUIRED | `f384cf55f43f55a1547a7e372d210e15476c99c50bc1d14d71115272fd1d6033` |
-| [Upload procedure](replica-order-upload-runbook.md) | PACKAGE INVALID | `33e84af7c9ada80c31f240c26789947222d4fba946e186d0e7b12a479cb44400` |
-| [Order evidence](replica-order-evidence-template.md) | TEMPLATE INVALID | `5c937f9f975ebc765f11773304a41c679d96232f1599cc33fc33b624e4e5e130` |
+| [Review waivers](../fab/gerbers/review-waivers.md) | NOT ACCEPTED | `23743626a541d649f167af88f74c364cb1f06e4a14a8929e9daf6178bce9e985` |
+| [Fabrication inventory](../fab/gerbers/fab-readiness.md) | NOT READY | `718740c7755a84c742e53bce8b9576ae1245583cb4c2d4d6772698c853f0e07e` |
+| [Manufacturing](replica-manufacturing-readiness.md) | DESIGN HOLD / PACKAGE REGENERATION REQUIRED | `88dc1672446fa3b5b63ee1a41ac92d3d0a612091a8483d0add2bc648800dfe04` |
+| [Upload procedure](replica-order-upload-runbook.md) | PACKAGE INVALID | `8b9bbc8f80732449d496b897c1a29116621d2d384deaea0c7c6866e8c066d92b` |
+| [Order evidence](replica-order-evidence-template.md) | TEMPLATE INVALID | `3a602301ecc31307af6876e66d62ddab5bfb532d6e260873e81e3052a0774d54` |
 | [First article](replica-first-article-record.md) | TEMPLATE / NO PHYSICAL UNIT AUTHORIZED | `fa41b7bee490ebbf3f785bfa4ba3d65714298a89888c471b660bee7c74686b75` |
 
 ## BOM snapshot
@@ -63,7 +63,7 @@ tracked DRC disposition count.
 - CSV: [replica-dual-config-bom.csv](replica-dual-config-bom.csv) (`9cf0a370c1915231aadf7bcbd4ae2d6ad751f181c6e3f0dbedebcd2c9dad67e7`)
 - 121 lines; 377 positions; 273 planned populated; 104 empty or pending.
 - Bring-up report board-JSON hash matches current source: **yes**.
-- Manufacturing report routed-PCB hash matches current source: **no**.
+- Manufacturing report routed-PCB hash matches current source: **yes**.
 - Current upload ZIP present: **no**.
 
 - Fabrication source stamp matches routed PCB: **no**.
@@ -112,14 +112,13 @@ It is a review snapshot and is never the fabrication upload ZIP.
 - DRC disposition: REVIEW REQUIRED (requires READY).
 - Power trace: NOT READY (requires READY).
 - Bring-up coverage: ENDPOINT COVERAGE FAILED / RISKS UNRESOLVED (requires DESIGN RELEASE RISKS CLOSED).
-- Order readiness: MISSING (requires RELEASED FOR ORDER).
+- Order readiness: NOT READY (requires RELEASED FOR ORDER).
 - External Gerber review: NOT READY (requires READY).
 - Review waivers: NOT ACCEPTED (requires ACCEPTED).
 - Manufacturing: DESIGN HOLD / PACKAGE REGENERATION REQUIRED (requires RELEASED FOR UPLOAD).
 - Upload procedure: PACKAGE INVALID (requires PACKAGE VERIFIED / DESIGN RELEASE SEPARATE).
 - Order evidence: TEMPLATE INVALID (requires READY FOR RELEASED ORDER RECORD).
 - fabrication-file inventory gate has not passed.
-- tracked manufacturing report does not identify the current routed PCB SHA256.
 - current Gerber/drill upload ZIP is absent.
 - fabrication source-board stamp does not match the routed PCB.
 - upload checksum file does not match the exact ZIP.
