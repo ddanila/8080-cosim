@@ -6,7 +6,7 @@ The listed firmware contains two VG93 I/O byte-pattern profiles: CMA beside
 each recognized register-transfer pattern, or NOP at those same boundaries.
 Factory sheet 1 now proves D93 DAL0..DAL7 connect directly to system
 DB0..DB7 and D100 instead buffers eight floppy-drive outputs. The adopted
-third-source EktaSoft 3.7 ROM pair selects the direct-bus/NOP profile; only
+third-source `ekta37.bin` ROM pair selects the direct-bus/NOP profile; only
 the historical reason for the non-adopted CMA profile remains open.
 
 ## Command
@@ -38,30 +38,34 @@ restores logical `0x44`.
 
 ## Preserved firmware profiles
 
-| Firmware | Opcode at every VG93 write/read boundary | Writes | Reads | Required data path |
+The Ekta filenames identify serial numbers, not BIOS versions; versions below
+are the embedded `RomBios` banners. The status label “Ekta 3.7” is the repository
+shorthand for `ekta37.bin`, whose banner is `RomBios 3.43m`.
+
+| Firmware | Opcode beside every recognized VG93 transfer pattern | Write patterns | Read patterns | Required data path |
 | --- | --- | ---: | ---: | --- |
-| EktaSoft 2.4 | `CMA` (`0x2F`) | `12` | `6` | one diagnostic inversion |
-| EktaSoft 3.1 | `NOP` (`0x00`) | `12` | `6` | direct bus |
-| EktaSoft 3.5 | `NOP` (`0x00`) | `12` | `6` | direct bus |
-| EktaSoft 3.7 | `NOP` (`0x00`) | `12` | `6` | direct bus |
+| ekta24.bin (RomBios 3.42) | `CMA` (`0x2F`) | `12` | `6` | one diagnostic inversion |
+| ekta31.bin (RomBios 3.43) | `NOP` (`0x00`) | `12` | `6` | direct bus |
+| ekta35.bin (RomBios 3.43) | `NOP` (`0x00`) | `12` | `6` | direct bus |
+| ekta37.bin (RomBios 3.43m) | `NOP` (`0x00`) | `12` | `6` | direct bus |
 | Monitor 3.3 | `CMA` (`0x2F`) | `12` | `6` | one diagnostic inversion |
 
 This is a whole-interface convention, not a patched command constant.
-Each listed ROM has exactly 12 writes to ports `0x1C..0x1F` and six
-reads. In the ВА87 profiles every OUT is immediately preceded by `CMA`
-and every IN immediately followed by `CMA`; in the non-inverting profiles
-all 18 positions are deliberately occupied by one-byte `NOP`s. EktaSoft
-3.2/4.3 and Monitor 2.2 use a different port-1C/1D bit-stream routine and
+Each listed ROM has exactly 12 OUT byte patterns for ports `0x1C..0x1F` and six
+IN patterns. In the CMA profiles every matched OUT is preceded by `CMA`
+and every matched IN followed by `CMA`; in the non-inverting profiles
+all 18 positions contain one-byte `NOP`s. The `ekta32.bin`,
+`ekta43.bin`, and Monitor 2.2 images use a different port-1C/1D bit-stream routine and
 are not falsely classified as this register-mapped VG93 template.
 
 Configuration consequence:
 
 - Factory sheet 1 requires a direct physical D93 data bus; D100 cannot
   explain or select either firmware profile.
-- EktaSoft 3.1, 3.5, and 3.7 match the recovered direct bus. EktaSoft 2.4
+- `ekta31.bin`, `ekta35.bin`, and `ekta37.bin` match the direct bus. `ekta24.bin`
   and Monitor 3.3 retain systematic CMA sites whose hardware context is
   not yet identified.
-- The third-source archival D15/D16 pair is adopted as EktaSoft 3.7,
+- The third-source archival D15/D16 pair is adopted as `ekta37.bin`,
   selecting the direct-bus/NOP profile for the replica. A future physical
   read that differs is preserved as another board variant, not used to
   reopen the adopted content set.
