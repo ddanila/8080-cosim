@@ -1,4 +1,4 @@
-# Experimental peak normalization A/B — 2026-09-05
+# Experimental peak normalization A/B
 
 The baseline 44-track library does not normalize each song to its own peak.
 Its converter maps OPL total-level attenuation (0.75 dB steps) to a linear
@@ -46,16 +46,19 @@ Use physical Escape to stop, then select the paired track. Keep the hardware
 volume unchanged during comparison. Listen for loudness, preserved melody/drum
 balance, lost quieter details and roughness. Q returns to CP/M.
 
-Build from a previously generated baseline library:
+Build the baseline library using the [DOOM library instructions](README.md),
+then run from the repository root:
 
 ```sh
 python3 spinoffs/jukupoly/tools/build_normalization_ab.py \
-  --library build/jukupoly-doom-library \
-  --output build/jukupoly-normalization-ab
+  --library out/jukupoly-doom-library \
+  --output out/jukupoly-normalization-ab
 ```
 
-Use Python 3.10+ for the preceding full DOOM library builder. Provide `mkfs.cpm`, `cpmcp` and `cpmls` on PATH; use the project disk definitions
-for native media generation.
+Use Python 3.10+ and cpmtools (`mkfs.cpm`, `cpmcp`, and `cpmls` on PATH).
+The builder uses the project disk definitions automatically. It builds the
+pinned zmac submodule with `make` when its executable is absent; initialize
+submodules first, or set `ZMAC` to an existing compatible executable.
 The resulting `normalization-ab.cpm` is a read-only native B: disk. The exact
 [prepared disk](sessions/cs00014-normalization-ab/normalization-ab.cpm) is also
 retained for use without rebuilding. Warm-boot
@@ -75,11 +78,9 @@ timing, PIT-write counts and Escape-poll counts. Simulated durations are
 payload identities and the disk hash are in
 [NORMALIZATION-AB.json](NORMALIZATION-AB.json).
 
-The disk was mounted on CS00014 with stock JF17 / 9600 recovery hosting.
-A CP/M warm boot refreshed the changed B: media, and `B:JUKEBOX` reached
-the six-entry selection prompt over N4. The machine was left waiting there;
+On CS00014, stock JF17 / 9600 recovery hosting and a CP/M warm boot
+reached the six-entry `B:JUKEBOX` prompt over N4;
 [menu-console.bin](sessions/cs00014-normalization-ab/menu-console.bin) records
-the warm boot, launch and menu. No trial song was started automatically.
-The physical monitor was off during preparation; subjective listening and
-normalization acceptance remain pending. The original 44-track disk remains
+that launch. This verifies menu entry only: no trial song was played, and
+subjective listening and normalization acceptance remain pending. The original 44-track disk remains
 available separately and normalization is not enabled in the production build.
