@@ -3,10 +3,11 @@
 Status: **RUNNABLE ABSTRACT VIDEO READOUT GUARDED**
 
 This guard checks byte preservation in the runnable abstract video path.
-It boots ekta37 with a default stop target of 6000 framebuffer writes
-(override with VIDEO_WRITES), then serializes the captured framebuffer.
+It runs archive-37 RomBios 3.43m with a requested stop target of 6000
+framebuffer writes (VIDEO_WRITES defaults to 6000), then serializes the capture.
+The testbench also has a 400 ms simulated time cap. This script suppresses
+the boot log and does not assert that the write target was reached.
 It does not require a full boot prompt or compare that screen to cosim:
-
 
 - hdl/sim/video_readout_tb.v serializes a booted framebuffer through the
   abstracted ir16_sr pixel serializer and reconstructs the bytes.
@@ -28,7 +29,7 @@ juku_top abstract oracle. The companion raster-geometry guard is
 ## Command
 
 ```sh
-sync/video_readout_check.sh
+VIDEO_WRITES=6000 sync/video_readout_check.sh
 ```
 
 ## Evidence
