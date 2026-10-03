@@ -76,18 +76,13 @@ replacement. Operator power latency and the physical UART's absent final
 completion byte remain correctly classified as physical observations rather
 than simulator facts.
 
-One pre-run harness failure is retained separately. Linux returns `EIO` from a
-PTY master before any slave is open; the runner had closed its own slave while
-the C host intentionally waits until NetDisk before opening N4. The runner now
-treats that transient state as “not connected yet”, and a delayed-slave
-regression prevents recurrence. The offline resume auditor was also aligned
-with the native host's `phase=netdisk` evidence instead of a retired Python-host
-message. Neither correction changes target or wire behavior.
-
 ## Decision
 
 M2.1 passes. The C host accepted at M2 is the physically qualified Linux
 baseline for CS00015. The subsequent M2.2 desk port now provides a
-reproducible 16-bit Open Watcom DOS executable for Pocket8086. M3 remains
-blocked until its M2.3 physical comparison against this baseline passes; see
-[portable-c-host-m2.2-dos-acceptance.md](portable-c-host-m2.2-dos-acceptance.md).
+reproducible 16-bit Open Watcom DOS executable for Pocket8086; its physical
+comparison against this baseline remains required. Windows development and
+Wine/guest qualification have proceeded independently. See
+[the DOS desk record](portable-c-host-m2.2-dos-acceptance.md) and
+[the current platform contract](portable-c-host-plan.md). This record qualifies
+the exact Linux executable and C8 artifacts above, not every later build.
