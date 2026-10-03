@@ -18,6 +18,10 @@ for provenance, hashes and the program/readback procedure:
 | NETC10/VJUGA | `netc10_vjuga-27c256.bin` | `6e84664b4513c1c3f8f2f717bbee5ed15495225636f1b2f2fe8de8924a889f3f` |
 | DIAG/VJUGA | `diag_vjuga-27c256.bin` | `c220bf654711d8dda13e1e980763c11e00821b38bbdd55bd65c85a2b27f138a7` |
 
+`EKTA3.7/VJUGA` is the retained programming/manifest label for the Z80-adapted
+archive-0037 image, whose source banner is `RomBios 3.43m`. The label does not
+identify a BIOS version 3.7. Its source is `roms/ekta37.bin`.
+
 NETC10 is byte-identical to the reproducibly assembled C10 16 KiB source: its
 canonical `zmac -8` instruction set needs no opcode substitutions, and its real
 D57 mode-2/count-four sequence is retained. DIAG's builder and instruction map

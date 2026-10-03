@@ -124,12 +124,13 @@ not: it moves into hardware in this revision.
 
 Maintain three independently named, reproducible 27C256 programming artifacts:
 
-1. **EKTA3.7/VJUGA** -- the existing Ekta 3.7 image with only the demonstrated
-   Z80 opcode/checksum adaptation.
+1. **EKTA3.7/VJUGA** -- the retained label for archive-0037 RomBios 3.43m,
+   with only the demonstrated four-byte Z80 opcode/checksum adaptation.
 2. **NETC10/VJUGA** -- C10 rather than immutable C9 as the source baseline, thus
    preserving the physically proved C9 ABI/network/CP/M behavior and the C10
-   PC7/POF release fix. Apply the demonstrated Z80 adaptation and 27C256 image
-   layout, but no PIT bypass or fixed-clock patch.
+   PC7/POF release fix. The canonical 8080 source requires no Z80 opcode
+   substitutions; duplicate its 16 KiB image into the 27C256 halves without
+   a PIT bypass or fixed-clock patch.
 3. **DIAG/VJUGA** -- the bring-up ROM extended for the POST latch, no-stack early
    RAM tests, D57 channel/count checks, 8251 TX/RX, PPI/PIC checks, VGA/frame
    activity and final TTL detail. The existing textual output remains a late
