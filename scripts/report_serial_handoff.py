@@ -86,7 +86,7 @@ def check_rows(board: dict) -> list[list[object]]:
     )
     checks.append(
         (
-            "D11 power-pin contract is routed",
+            "D11 power-pin endpoints are modeled",
             chip(board, "D11").get("pins", {}).get("4") == "VSS_GND"
             and chip(board, "D11").get("pins", {}).get("26") == "VCC_5V"
             and has_node(board, "GND", "D11", "4")
@@ -286,7 +286,7 @@ def check_rows(board: dict) -> list[list[object]]:
     )
     checks.append(
         (
-            "HDL USART model separates TxRDY/TxEMPTY and guards Tx/Rx loopback",
+            "USART model and loopback test contain required code markers",
             marker(
                 "hdl/devices.v",
                 "module usart_8251",
@@ -336,7 +336,7 @@ def main() -> int:
         "This generated report separates the serial-port facts already guarded by",
         "the board JSON and HDL from the remaining functional serial boundary.",
         "It covers the D11 8251 host bus path, the D57 baud-clock handoff, and",
-        "the X3 line-driver/receiver wiring. It now also guards a minimal",
+        "the X3 line-driver/receiver wiring. It checks code markers for a minimal",
         "bus-visible 8251-style async Tx/Rx slice with separate transmit holding",
         "and shift stages; it does not claim",
         "external X3 loopback or full protocol-mode coverage.",
@@ -347,6 +347,10 @@ def main() -> int:
         "python3 scripts/report_serial_handoff.py",
         "```",
         "",
+        "The generator checks JSON endpoint and provenance invariants, selected HDL",
+        "and test-source markers, and recorded diagnostic evidence. It does not",
+        "run the USART simulation, perform LVS, inspect PCB copper, or measure",
+        "line levels. Run `sync/serial_check.sh` separately for device behavior.", "",
         "## Checks",
         "",
         table_row(["Check", "Result", "Evidence"]),
@@ -404,7 +408,7 @@ def main() -> int:
             "  signal ground.  This closes the ground contact for the current diagnostic",
             "  cable; it does not silently rewrite the still-separate generic A27 harness",
             "  boundary in the reconstructed PCB without a corresponding board-side chase.",
-            "- `sync/serial_check.sh` now proves a scoped USART behavior slice:",
+            "- `sync/serial_check.sh` tests a scoped USART behavior slice:",
             "  mode/command writes, the `TxRDY=0,TxEMPTY=0` holding-full state,",
             "  the `TxRDY=1,TxEMPTY=0` holding-to-shift transition, final",
             "  `TxEMPTY=1`, RxRDY, command-driven RTS/DTR, and one 8N1 byte",
@@ -421,8 +425,7 @@ def main() -> int:
             "  pad to ground; owner-board rail polarity still needs a meter check.",
             "  Exact `.009` sheet 1 draws only",
             "  sections 4→13, 5→12, and 6→11, omitting the fourth 7→10 section; direct",
-            "  owner continuity on 2026-07-21 closes output pin 10 as NC. The former",
-            "  solder-side D104 pad fit remains rejected; a D11-local replacement fit",
+            "  owner continuity on 2026-07-21 closes output pin 10 as NC. A D11-local fit",
             "  photo-registers its package but does not prove pin 7's rail. The ground",
             "  assignment uses component copper and R30's source endpoint.",
             "- D11 auxiliary pins without a net or explicit NC:",
@@ -445,8 +448,7 @@ def main() -> int:
             "  its remote endpoint or prove NC; use D10.22 as the powered-off probe point.",
             "  In solder tile `PXL_20260710_200522685.jpg`, the coherent reflected",
             "  fourteen-joint row puts pin 15 near `(3048,1028)`, pin 28 near",
-            "  `(3775,1028)`, and pin 22 near `(3438,1028)`. The retired global",
-            "  projection `(3264,905)` lies between rails and is excluded. Pin 22",
+            "  `(3775,1028)`, and pin 22 near `(3438,1028)`. Pin 22",
             "  has no exposed B.Cu departure; its front copper remains obscured.",
             "  The board model therefore preserves only D10.22 as an unmatched",
             "  continuation boundary. A retained label from the earlier tape revision is",
@@ -456,8 +458,7 @@ def main() -> int:
             "  outside the current critical path, but physical continuity remains",
             "  Tier-3 historical evidence.",
             "- Full-resolution sheet 1 proves D11.16 `SYNDET` on the lower S4 throw.",
-            "  D11.18 `TXEMPTY` is absent from the drawn USART symbol and is now an",
-            "  explicit NC rather than an unresolved functional endpoint.",
+            "  D11.18 `TXEMPTY` is absent from the drawn USART symbol and modeled NC.",
             "- External X3 loopback, electrical levels, and full 8251 sync/parity",
             "  modes remain Tier-2 bench/software work after that PCB-truth boundary.",
             "",
