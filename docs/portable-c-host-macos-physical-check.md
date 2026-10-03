@@ -11,12 +11,9 @@ system `ec9b7fd00db2d8e70258aae74500fa261f987b6b04bddfdb5ab44e56ca2ba3f1`,
 and Fastboot V16 stage
 `44735bf468a2014bbcf327d5d0770d9fcf21a3c33704499282180ad6c95898ea`.
 
-The first physical attempt exposed a Darwin USB-serial queue difference.
-macOS accepted the complete Fastboot stream before it had left the adapter;
-the host could therefore change from 8N1 to 8O1 while bytes were still queued.
-The portable host now drains the serial transmitter before awaiting the final
-Fastboot reply or changing framing. The focused C8 simulator check passed
-before the corrected physical run.
+The accepted host drains the serial transmitter before awaiting the final
+Fastboot reply or changing from 8N1 to 8O1. On Darwin, accepting a write does
+not mean that the complete stream has left the USB-serial adapter.
 
 The final cold run latched S21 `07h` (English, 80x24, automatic network boot),
 completed all 7,670 compressed Fastboot bytes, and ran `STATUS`, `DIAG ALL`,
@@ -25,11 +22,10 @@ requests, 33 disk reads carrying 264 records, four writes to a private A:
 snapshot, zero target resets, zero reconnects, and zero UART errors. Every
 target diagnostic passed and the host stopped cleanly.
 
-Darwin and Python expose monotonic clocks with different epochs on this
-machine. The adjacent `cpm-plus-juku` runner now aligns capture records to its
-recorded host-start boundary before attributing request metrics. Its synthetic
-cross-epoch regression, complete physical-acceptance test, retained cold-run
-audit, and the physical four-command run all pass.
+The recorded request metrics use the adjacent `cpm-plus-juku` runner's
+host-start boundary to align capture timestamps: Darwin and Python monotonic
+clock epochs differ on this machine. Preserve that alignment when reanalyzing
+the capture.
 
 This check qualifies the focused physical C8 cold path on Apple Silicon. It
 does not replace the broader M5 simulator/platform matrix, visually qualify
