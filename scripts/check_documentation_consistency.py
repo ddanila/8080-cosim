@@ -199,7 +199,7 @@ def main() -> int:
     if "The runnable boot does not yet execute from all four physical tables" in plan_text:
         failures.append("PLAN retains the stale all-physical-PROM adoption hold")
     firmware_ledger = read("docs/firmware-gap-ledger.md")
-    if "Runnable top executes all four physical small-PROM tables without a functional PROM stand-in | PASS" not in firmware_ledger:
+    if "Runnable source instantiates all four physical small-PROM tables without a functional PROM stand-in | PASS" not in firmware_ledger:
         failures.append("firmware ledger does not guard the all-physical-PROM runnable milestone")
 
     d94_boundary_claims = {

@@ -5,7 +5,7 @@ Status: **ADOPTED FIRMWARE SET VERIFIED**
 This generated ledger is the single-page burnability view for the
 small PROMs that still matter to replica and Tier-3 preservation work.
 It records the adopted small-PROM tables read from two physical boards and
-the independent archival D15/D16 pair. Every populated device has an
+the independent archival D15/D16 pair. Each of these six devices has an
 exact-hash-guarded burnable repository image accepted as content truth.
 Later programming files or socket reads are preservation evidence and must
 be retained as variants if they differ; they do not keep this set open.
@@ -16,9 +16,15 @@ be retained as variants if they differ; they do not keep this set open.
 python3 scripts/report_firmware_gap_ledger.py
 ```
 
+The generator verifies image sizes/hashes, BIOS split concatenation, and
+the reconstructed BASIC page bytes. Behavior, provenance, and acquisition
+rows check source/report text markers and tool presence; they do not run
+simulations, repeat physical reads, or verify a programmed chip. Use the
+owning reports and commands for those checks.
+
 ## PROM Matrix
 
-| Ref | Part | Programmed drawing | Role | Burnable repository image | Guard | Next truth source |
+| Ref | Part | Programmed drawing | Role | Burnable repository image | Guard | Disposition |
 | --- | --- | --- | --- | --- | --- | --- |
 | D2 | К556РТ4 | `ДГШ5.106.037` | READY/bus-control PROM | `ref/physical-proms/validated/d2_037.raw.bin` (256 bytes, SHA256 `953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b`) | `docs/d2-reconstruction-constraints.md`; `docs/d2-physical-dump-and-continuity.md` | adopted from two boards; future programming-disk comparison is optional provenance |
 | D6 | К556РТ4 | `ДГШ5.106.038` | memory decode PROM | `ref/physical-proms/validated/d6_038.raw.bin` (256 bytes, SHA256 `c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489`) | `ref/physical-proms/README.md` | adopted cross-machine table; future programming-disk comparison is optional provenance |
@@ -34,22 +40,22 @@ python3 scripts/report_firmware_gap_ledger.py
 | D2 validated physical raw image has exact size and SHA256 | PASS |
 | D6 validated physical raw image has exact size and SHA256 | PASS |
 | D8 validated physical raw image has exact size and SHA256 | PASS |
-| D8 physical table executes as open-collector socket selects | PASS |
-| D8 physical table has exhaustive minimized socket-select equations | PASS |
+| D8 source/test markers cover open-collector socket selects | PASS |
+| D8 report records exhaustive minimized socket-select equations | PASS |
 | D94 validated physical raw image has exact size and SHA256 | PASS |
 | D15 functional image has exact size and SHA256 | PASS |
 | D16 functional image has exact size and SHA256 | PASS |
 | D15+D16 round-trip exactly to roms/ekta37.bin | PASS |
 | D15/D16 split and adopted archival provenance are documented | PASS |
 | Third-source archival D15/D16 pair is adopted as content truth | PASS |
-| Factory .106.106 BASIC page is reconstructed and photo-adjudicated | PASS |
+| Factory .106.106 BASIC bytes match reconstruction; report records photo adjudication | PASS |
 | D2 physical table and continuity are guarded | PASS |
-| D2 open-collector raw polarity executes through the D30 READY latch | PASS |
-| D6 corrected physical table drives runnable selection directly | PASS |
-| D6 physical table preserves open-collector release | PASS |
+| D2 report records execution through the D30 READY latch | PASS |
+| D6 source markers connect the physical table to runnable selection | PASS |
+| D6 source/test markers cover open-collector release | PASS |
 | D94 physical table is adopted while continuity stays guarded | PASS |
-| D94 physical table drives runnable FDC read/write strobes under guarded upstream fits | PASS |
-| Runnable top executes all four physical small-PROM tables without a functional PROM stand-in | PASS |
+| D94 source markers connect physical-table FDC read/write strobes | PASS |
+| Runnable source instantiates all four physical small-PROM tables without a functional PROM stand-in | PASS |
 | .113/.117 RE3 scans are guarded as not D8/D94 | PASS |
 | Historical fallback report adopts all physical PROM tables | PASS |
 | Repeated RT4 dump validation procedure is available | PASS |
@@ -59,10 +65,6 @@ python3 scripts/report_firmware_gap_ledger.py
 
 - D2, D6, D8, and D94 have cross-machine validated physical raw tables;
   D15/D16 use the independently preserved archival `ekta37` pair.
-- Reader-3 reproduced D2 byte-for-byte across three captures including a
-  power cycle. Three equally stable D6 reads then proved the old artifact
-  had all four output channels reversed; socket continuity and the full
-  boot guard adopt the corrected direct table.
 - D15/D16 are the adopted third-source archival contents, not direct
   reads of the photographed sockets. Program them as low/high 8 KiB
   respectively and retain programmer verification records.
@@ -77,10 +79,10 @@ python3 scripts/report_firmware_gap_ledger.py
 - D94 content and all A0-A4 input destinations are owner-closed. Its
   physical table now drives the runnable FDC `/RE` and `/WE` inputs;
   A3 already consumes the owner-closed D105.3 qualified `/WR` conductor.
-  The decoded enable and pulled-high A4 runtime behavior remain explicit
-  simulation fits rather than claimed functional closure. Exact .009
-  CS7 closes the shared enable source; D0 hidden load remains unresolved
-  connectivity boundaries and still block an FDC hardware release.
+  CS7/D9.7 is the source-closed enable. Runnable A4 is held high;
+  the D101 precompensation chain is structural-only. D0's hidden load
+  remains unresolved. Firmware content alone does not release the FDC
+  hardware; see [D94 constraints](d94-reconstruction-constraints.md).
 
 ## Optional Preservation Follow-up
 
