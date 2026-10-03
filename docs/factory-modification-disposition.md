@@ -1,7 +1,5 @@
 # Factory modification disposition
 
-Status date: **2026-07-17**.
-
 Status: **FACTORY MODIFICATIONS GUARDED / PAD MAPPING REQUIRED**
 
 The `ДГШ5.109.009 СБ` Вид В detail marks local assembly work around
@@ -17,6 +15,20 @@ functional-net closures are separate from the still-held position-159 material
 and auxiliary-annulus disposition. Independent evidence also closes
 the D15 cut topology and local D14 ground link. D11 bridge endpoints and
 the remaining D14 auxiliary paths stay held.
+
+## Command and guard scope
+
+```sh
+python3 scripts/report_factory_modification_disposition.py
+```
+
+The generator checks selected board nodes, stored registration metadata,
+fit residuals, and cross-view projections. Photo checks use existence and
+file size, not image hashes. The reported copper and material observations
+come from retained reviews; generation does not reread pixels, repeat
+continuity measurements, validate drilled auxiliary holes, or run PCB DRC.
+
+## Disposition
 
 | Ref | Factory operation locality | Current disposition | Closure evidence |
 | --- | --- | --- | --- |
