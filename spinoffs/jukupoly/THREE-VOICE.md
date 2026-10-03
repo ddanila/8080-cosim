@@ -34,8 +34,9 @@ untouched.
 Three 16-bit phase accumulators implement A3, C-sharp4, and E4.  Their
 increments are held in `BC`, `DE`, and `SP`; the phases occupy the immediate
 operands of three self-modifying `LXI H` instructions.  Interrupts are disabled
-while `SP` is borrowed, then the original stack and interrupt state are
-restored before the CP/M `RET`.
+while `SP` is borrowed. Before the CP/M `RET`, the program restores the saved
+stack pointer and executes `EI`; it does not preserve a disabled interrupt
+state from entry.
 
 The timeline is deliberately simple:
 
@@ -45,9 +46,9 @@ The timeline is deliberately simple:
 | 2–4 s | A3 + C-sharp4, 277.18 Hz |
 | 4–9 s | A3 + C-sharp4 + E4, 329.63 Hz |
 
-Transitions are counted from A3 phase overflows rather than from every sample,
-so they remain near 2, 4, and 9 seconds when READY timing changes the loop
-rate.  Playback deliberately owns the CPU: console, keyboard, disk service,
+Transitions count 440, 440, and 1,100 A3 phase overflows. The approximately
+2, 4, and 9 second boundaries assume the calibrated effective execution rate;
+changes in READY timing also change pitch and elapsed playback time.  Playback deliberately owns the CPU: console, keyboard, disk service,
 and CP/M processing pause until the nine-second transient returns.
 
 ## Loudness
@@ -131,8 +132,9 @@ at 19200 baud, and CP/M Plus 3.1:
 
 The host intervals include CP/M directory lookup, COM loading, and CCP reload;
 they are not presented as audio-duration measurements.  In both cases the N4
-console shows `TRIVOICE` followed by a fresh `A>` prompt, proving that the
-transient restored the stack, silenced the PIT, and returned to CP/M.  The
+console shows `TRIVOICE` followed by a fresh `A>` prompt, confirming return
+to CP/M. The source and cycle regression check stack restoration and the final
+PIT silence writes; the console does not measure the speaker signal. The
 operator's listening result supplies the physical audio observation.
 
 Exact quiet/loud binaries, console transcripts, raw host captures, commands,
