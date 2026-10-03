@@ -246,96 +246,18 @@ turns. The resident disk protocol is roughly sixteen times faster in useful
 payload. Optimizing boot framing is a separate opportunity and does not limit
 the already-running network disk.
 
-### NetDisk v2 compact records
+### Other resident-protocol qualification
 
-For the historical V14/RomBios layout, compact records avoid a cache:
-the fixed B400h-CDFFh resident layout leaves only CF00h-CFFFh as an audited
-spare page before firmware-owned memory at D000h. A four-record/512-byte cache
-would therefore depend on undocumented monitor RAM or reduce the TPA. Neither
-is acceptable for the working baseline.
+CS00015 also exercised NetDisk v2 at 19,200 on 2026-08-15: three retry-free
+boots reached disk service, `DIR` passed, and `RDBENCH` completed 75 requests.
+That is evidence for the tested resident image and serial profile; it does not
+clear the mode-3 receive failure or establish current host defaults. The
+qualification records are retained in CP/Mish's `juku` branch.
 
-The implemented NetDisk v2 instead preserves CP/M's geometry, 128-byte BIOS
-API, 19,200/8O1 framing, request shape, synchronous writes, sequence/retry
-behavior, and XOR check. The host advertises support by appending `N2` to the
-existing `NR` handoff marker. A v2 BIOS uses read opcode 13h; without `N2` it
-automatically retains legacy opcode 11h. Old BIOS images ignore the extra
-marker bytes and continue to work with the new host.
-
-For opcode 13h, reply status zero carries the ordinary 128 raw bytes exactly as
-v1. Status two carries one byte which the BIOS expands to a uniform record.
-Status three carries no data and expands to an `E5` record. The host uses the
-latter only in the fixed track-2 directory region and only when all four CP/M
-entries are deleted; discarded bytes in deleted entries are therefore never
-interpreted as file metadata. Error status one remains unchanged. No cache,
-unbounded decoder, or undocumented RAM is involved.
-
-The repeatable cosim benchmark uses the same volume and V14 bootstrap for both
-variants. It runs `DIR`, full `TYPE README.TXT`, and `RDBENCH`, a 195-byte
-no-console program that opens and sequentially reads the same file. Modeled
-8O1 wire time includes the 2 ms half-duplex reply guard:
-
-| Operation | Legacy v1 | Compact v2 | Result |
-| --- | ---: | ---: | ---: |
-| initial 32-record directory scan | 2.667 s / 4544 B | 0.483 s / 731 B | 81.9% less wire time |
-| `DIR` | 0.250 s / 426 B | 0.177 s / 298 B | 29.3% less wire time |
-| `TYPE README.TXT` | 5.918 s / 10082 B | 5.918 s / 10082 B | unchanged; console dominates |
-| `RDBENCH` | 6.252 s / 10650 B | 6.179 s / 10523 B | 1.2% less wire time |
-
-The full `TYPE` transcript is byte-complete in both runs (9185 console bytes),
-which guards against prompt-like text inside the file ending a benchmark early.
-The v2 boot scan compacted 30 records and omitted 3813 wire bytes. Raw records
-have exactly v1's wire size, so incompressible sequential files do not regress.
-The separately named 5273-byte V14/NetDisk-v2 bundle has SHA-256
-`23fe0e156541717885d9fa76e9bd288724bdb633dfbcd8cf597e634d30a070a6`;
-the frozen V14 baseline retains its original SHA-256.
-
-The separately named independent 51K RAM BIOS implements NetDisk v3. It does not alter the frozen V14/RomBios baseline.
-Permanent all-RAM mode and a fully masked PIC make `D080h..D3FFh` an explicit
-RAM-BIOS-owned region; it holds a three-record cache and client. Opcode 14h
-returns up to three translated records with bounded raw, fill,
-deleted-directory, or prefix-plus-tail encoding, protected by CRC16/IBM over
-the complete response body. The target retries malformed or corrupt replies.
-
-Cycle-accurate integration found that descriptor streaming itself needs flow
-control: expanding a compressed fill record can take the 8080 longer than one
-19,200-baud character. A 4 ms host guard between descriptors prevents D11's
-single-byte receiver from overrunning, but only if it begins after queued UART
-bytes have actually consumed their wire time. Clean and corrupt-first-CRC runs
-both complete `DIR`; the latter makes exactly one retry. Read-ahead cuts the
-test's 35 record requests to 12. The same client negotiates `N2`/opcode 13h or
-legacy `NR`/opcode 11h and completes `DIR` in both fallback modes.
-
-The first CP/M Plus/NetDisk-v3 run on CS00015 reached the banner but repeated
-`CP/M Error On A: Disk I/O`. The host observed each opcode-14h request three
-times. A short status-error reply passed, while real multi-record replies did
-not. Re-running cosim at the measured 1.70 MHz target rate reproduced three
-real mechanisms rather than injecting a disk error: the old 400-iteration
-target drain kept command 35h active beyond the host's 2 ms reply guard; the
-server's 4 ms record guard expired while the preceding descriptor was still in
-the USB-UART queue; and stock `TN` left stale PIC sources unmasked. The fixed
-matrix assembles each old branch as a negative fixture, then proves direct `N`
-and stock `TN` through `A>`, `DIR`, and `DIAG CPU` with zero disk retries and
-zero 8251 overruns. The target drain is now a bounded two-character delay, the
-host accounts for queued 8O1 wire time, the fill loop keeps its counter in a
-register, and CP/M masks every PIC input. The later manual-server recovery on
-CS00015 qualified this corrected resident path; the earlier stock-`TN`
-completion failure belongs to that historical wrapper, as distinguished below.
-
-Physical CS00015 then qualified NetDisk v2 on 2026-08-15. Three boots reached
-the first opcode-13h request at 6.116354, 6.116790, and 6.115778 seconds, a
-1.0 ms spread; every extension and stream was retry-free. The 32-record startup
-directory scan used 30 compact replies and spanned 0.771-0.785 seconds between
-first and last request timestamps. Visible `DIR` passed. `RDBENCH` performed 75
-requests with no error; its complete span was 6.426 seconds and the 70-record
-`README.TXT` data phase spanned 6.13 seconds, about 1.4 KiB/s useful payload.
-
-B: was deliberately absent during this run. Selecting it returned status one,
-but the stock Digital Research `BDOS ERR ON B: SELECT` path ignored Ctrl-C and
-required RESET. CS00015's Space key also failed to register; `=` cannot replace
-the required intrinsic-command separator, so the physical whole-file proof
-used `RDBENCH` while cosim retained the byte-complete `TYPE README.TXT` proof.
-The three raw boot JSON files and a derived qualification JSON are committed in
-the CP/Mish `juku` branch.
+Compact-record benchmarks, read-ahead development, and earlier CP/M Plus
+bootstrap failures are separate from this electrical diagnosis. Use the
+[portable host contract](portable-c-host-plan.md) for the supported protocols
+and regression commands, and the recovery guide below for current boot behavior.
 
 ### Physical interactive CP/M baseline
 
