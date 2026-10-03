@@ -2,8 +2,8 @@
 
 The assembly drawing and the populated owner board jointly identify the
 passive groups below `D102`. This avoids assigning visually similar axial parts
-from colour or circuit expectations alone. `R65` can be placed independently;
-the RF group remains constrained but deferred while its tapped coil is traced.
+from colour or circuit expectations alone. The retained `.009` groups have
+photo-registered placements; the older `.006` RF group is excluded.
 
 ## Evidence and registration
 
@@ -20,9 +20,9 @@ the RF group remains constrained but deferred while its tapped coil is traced.
 
 The photo read is suitable for package placement but does not yet identify the
 lower obscured/passive positions. `R65`, the visibly marked red `4К7` R67, glass
-`VD3`, and rightmost `R66` are now placed at their observed centres. The
+`VD3`, and rightmost `R66` are placed at their observed centres. The
 factory drawing fixes the left-to-right identity of the right-hand group, so
-the photo centres no longer depend on colour or circuit-role inference.
+the photo centres do not depend on colour or circuit-role inference.
 Rotated native crops of the independent May 19 and July 10 owner views read
 `К43` on the fitted R65 body (0.43 kΩ, or 430 Ω) and `1K0` on R66. Both match
 the exact `.009` sheet-2 video detail in
@@ -31,8 +31,7 @@ prints R67 as 2 kΩ, while both owner views read `4К7` on the fitted R67;
 the source-versus-population difference remains recorded in
 `ref/schematics/native-resistor-value-registration.json`. These photo reads
 establish body markings, not isolated electrical measurements.
-The former C94 identification of the yellow body is retracted. Full-resolution
-review resolves three leads and the marking `Б / 8901`, the grade/date marking
+Full-resolution review resolves three leads and the marking `Б / 8901`, the grade/date marking
 of the factory-drawn КТ315 `VT2`. The raw July tile registers its E-C-B lap
 joints at board coordinates `(280.068,130.501)`, `(281.381,133.201)`, and
 `(279.700,135.892)` mm. Pin 1/emitter and R65.1 enter the directly visible common
@@ -48,9 +47,7 @@ fit, is `(289.870,130.321)` mm. Exact `.009` sheet-1 supply detail
 May and July owner views expose bare board at C94's locally projected centre
 between VT2 and the right-hand passive group. Its actual pad pair, population,
 value, and individual physical pin-to-rail assignments remain explicit
-boundaries; neither the former `680` value nor the former C94.2/VIDEO_OUT join is
-retained. The remaining parts stay unchanged until their bodies can be paired
-unambiguously.
+boundaries. C94 is modeled without an installed value or a VIDEO_OUT join.
 
 The routed replica's two C94 through-hole pad centres `(289.87,132.821)` and
 `(289.87,127.821)` mm project through the registered local affine to about
@@ -60,7 +57,7 @@ provisional placement, not a photo-registered copy of original drilling.
 
 The factory 12 cm cable table and two component-photo angles prove that X6 is bracket-mounted.
 An original-resolution reread places printed point A:3 beside VT2/R65, physically
-separate from VD3; its former `SOUND_CLAMP` promotion is retracted. A:3/X6.1 is
+separate from VD3. A:3/X6.1 is
 an electrical boundary, while the separately insulated A:4/X6.2 return reaches
 the wide ground strip. The generated PCB therefore carries
 surface lap-joint footprints `AX603`/`AX604`, not an invented X6 body. The
@@ -85,15 +82,13 @@ target-continuity boundaries. R67.2 and X6 A:3 remain such boundaries; the
 factory table still closes A:3/A:4 to X6 independently of the superseded RF nets. The
 yellow `Б / 8901` part is the retained VT2; C94 remains separately bounded.
 
-R67.2's July upper-lead coordinate is corrected from `(3321,1698)` to about
-`(3365,1730)` in `200418174`. Both July and May views read `4K7` on the
+R67.2's July upper-lead coordinate is about `(3365,1730)` in `200418174`. Both July and May views read `4K7` on the
 factory-identified body, superseding the printed 2 kΩ value. The D102-local
 cross-side fit now projects that lead near `(874,956)` in solder image
 `PXL_20260710_200522685.jpg`, about 5 px from an actual solder joint
 `(869,953)`. Native copper runs east without a break to open annulus
 `(1295,958)`; overlapping `200506061` repeats the joint-to-annulus pattern.
-The prior bare-copper/no-via claim used the wrong front point. The local route
-is photo-supported. Independent D102 and D97 inverse fits search for the far
+The local route is photo-supported. Independent D102 and D97 inverse fits search for the far
 annulus near front `(2937,1739)` and `(2905,1736)` respectively, but neither
 has a unique visible drill. Three adjacent July holes repeat in the May
 component view under a consistent (+26,-935) px local shift; both predicted
@@ -117,7 +112,7 @@ parts populated: a grey axial C16 and two red axial resistors. Their visible
 lead landings agree with the affine-projected factory centres and the solder
 image `PXL_20260710_200522685.jpg` corroborates the paired backside locations.
 
-C16 is therefore restored at `(267.094,101.055)` mm on a 12.50 mm horizontal
+C16 is placed at `(267.094,101.055)` mm on a 12.50 mm horizontal
 span, with pads at `(260.844,101.055)` and `(273.344,101.055)` mm. R92 is at
 `(253.869,101.194)` mm and R99 at `(241.207,103.467)` mm, each on a 10.16 mm
 horizontal span. An oblique May component view directly resolves bare `27` on
@@ -127,7 +122,7 @@ letter for a complete coded capacitance, and no such glyph is unambiguously
 readable; `27` is
 therefore registered literally without promoting a value. The broad nearby
 photo alone does not establish the remote destinations, but recovered `.009`
-Э3 sheet 3 now closes C16.1 to D97.15 and C16.2 to D97.14. The model keeps
+Э3 sheet 3 closes C16.1 to D97.15 and C16.2 to D97.14. The model keeps
 only C16's value/unit, tolerance, and voltage open. R92/R99 are separately
 photo-closed as 1.3 kΩ and 4.7 kΩ with all endpoints traced.
 
@@ -139,9 +134,8 @@ immediately right of D99 as C19 and projects its body centre to
 `PXL_20260710_200418174.jpg` independently shows the populated grey axial body,
 both bent leads, and two separate board landings at that site. The registered
 solder image `PXL_20260710_200522685.jpg` exposes the corresponding distinct
-joint pair. Cross-side review corrects their recorded order: upper component
-pad 1 is solder coordinate `(875,712)`, while lower pad 2 is `(823,893)`; the
-former record contained the same coordinates in reverse order. A vertical
+joint pair. Upper component pad 1 is solder coordinate `(875,712)`, while
+lower pad 2 is `(823,893)`. A vertical
 10.00 mm axial footprint therefore preserves the physical
 part at pads `(292.893,88.574)` and `(292.893,98.574)` mm.
 
@@ -163,7 +157,7 @@ and R86.2 are closed to `P5V` by the target common rail plus electrical sheet
 C20.2/D102.7. The solder-side D102.8 ground trace is not mistaken for this
 component-side +5 V rail.
 
-The July component view now also registers the four left joints at R100.1
+The July component view registers the four left joints at R100.1
 `(3294,1064)`, R102.1 `(3317,1142)`, R108.1 `(3325,1217)`, and R86.1
 `(3320,1276)` pixels. The independent May angle separates the same joints.
 Neither photo alone exposes a complete remote continuation for R102.1 or
@@ -185,8 +179,7 @@ registered solder view exposes both pairs of joints. Relative to D102's exact
 Both spans are 10.00 mm and the columns are 2.54 mm apart. This geometry lands
 on the visible component-side lead arcs and the corresponding four backside
 joints within the D102 registrations' roughly 0.1--0.5 mm photographic read
-uncertainty. Native July and May crops retract the earlier `1Н5` reading:
-C20's early July opposite face reads `±5`, while C22's May face carries
+uncertainty. C20's early July opposite face reads `±5`, while C22's May face carries
 the `М75` temperature-stability group marking
 ([standard cross-check](../ref/datasheets/gost-m75-capacitor-marking.md)),
 not a complete capacitance code. Two later July angles expose
@@ -197,9 +190,13 @@ unverified. The standard's code mapping is retained only as a generic reference
 in `ref/datasheets/gost-11076-69-capacitance-code.md`. Sheet 3 still closes
 C20 on D102.6/.7 with R108 and C22 on D102.14/.15 with R102.
 
-The R65/R67 increment removed their false D102-pad collisions. A later
-full-source DRC audit correctly exposed ten unique pairs caused by the remaining
-`.006` RF-option placeholders. The cross-revision population disposition above
-removes those contradicted footprints rather than moving any registered `.009`
-part. `docs/source-pcb-drc.md` now guards zero electrical pad/item collisions;
-LVS remains a separate connectivity check and does not validate placement.
+## Verification
+
+```sh
+python3 kicad/check_analog_photo_placement.py
+```
+
+The guard checks registered model placement and pad/net invariants. It does
+not establish physical continuity or validate all board copper. See
+[the source-PCB DRC audit](source-pcb-drc.md) for source pad/item collisions;
+LVS is a separate connectivity check and does not validate placement.
