@@ -113,7 +113,7 @@
     },
     "EPROM programming": {
       "path": "docs/eprom-programming-images.md",
-      "sha256": "11cd06583b808c97c7178d218d511de14cbff211765c9c8062c36f9940ebab9b",
+      "sha256": "8ca6e54fa5bb56bfdb8d0e18da25bffdae324b6f0637a79a811b438ac19bda3f",
       "status": "ADOPTED THIRD-SOURCE EKTA 3.7 IMAGES READY"
     },
     "PROM procedure": {

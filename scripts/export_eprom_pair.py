@@ -136,11 +136,13 @@ the board socket.
 
 - These files inherit the public preservation provenance and rights caveat in
   `roms/README.md`.
-- Keep physical board reads under the separately documented
-  `proms/m2764_d15.bin` and `proms/m2764_d16.bin` names, with board, socket,
-  date, programmer, and repeat-read provenance.
-- Compare future physical dumps with `ekta37.bin` and preserve a stable mismatch
-  as a possible BIOS variant. It does not invalidate the adopted archival pair.
+- Keep physical reads separate from these generated programming files. Use
+  board-specific names such as `proms/m2764_d15_<board>_read1.bin` and
+  `proms/m2764_d16_<board>_read1.bin`; retain each capture with its date,
+  socket, marking, programmer settings and repeat-read provenance.
+- Compare the D15-then-D16 concatenation with `ekta37.bin`. Preserve differing
+  captures while checking socket order and acquisition validity; stable reads
+  alone do not identify a BIOS variant or invalidate the adopted archival pair.
 """
     REPORT.write_text(report, encoding="utf-8")
     print(
