@@ -18,11 +18,10 @@ Sheet-3 detail tiles `_101644861` and `_101648508` print C16=`27` and
 C19/C20/C22=`22`, giving schematic nominals of 27 pF and 22 pF under the
 native bare-number convention. The target C16/C19 bodies show matching digits
 but incomplete unit codes, so their installed values remain unverified.
-The former C20/C22 `1Н5` reading is unsupported by native owner crops. Two
-later owner angles instead show bare `22` on both bodies, matching the drawing
+Two owner angles show bare `22` on C20/C22, matching the drawing
 numerals without independently proving the unit. Installed values remain held;
 22 pF is the drawing nominal. See
-`docs/native-capacitor-values.md`.
+[native capacitor values](../../docs/native-capacitor-values.md).
 
 ## Conflict resolution
 
@@ -30,9 +29,29 @@ Two overlapping exact .009 sheet-3 detail frames independently print `R99 4,7к`
 
 The sheet labels a separate `R86 470` WREQ reset pull-up. Target views unambiguously place physical R86=4.7k in the four-resistor timing column, with R86.1 on C19.2/D97.6 and R86.2 on the common +5 V rail. The target identity and connectivity override the sheet annotation.
 
-Native zoom of `PXL_20260718_101648508.jpg` corrects an earlier output-junction misread: D101 Q1/pin9 rises across the Q0/pin7 horizontal run near `(1550,620)` without a dot. The filled dot farther right near `(1598,620)` joins Q0 to a different vertical conductor and the source-drawn `R99 4.7k` branch. The outputs are separate in the exact drawing, agreeing with their distinct solder landings (`docs/d101-output-tie-photo-review.md`). The single-frame overview `PXL_20260718_101633062.jpg` independently traces D94.14 onto the long upper rail and back down to the D101.7/Q0 junction, matching owner continuity. Its native crop `(1850,520)-(3072,1650)` places D99.4 Q1_N on the **adjacent upper rail**, separate from the D94.14/D101.7 rail; the western overview crop `(1230,590)-(1640,1350)` follows that upper rail into D93.23 HLT. The earlier two-tile D99.4-to-D94.14 source claim is retracted (`docs/d99-q1n-a4-conflict-photo-review.md`). The D99.4 target solder landing has no visible local B.Cu departure and its F.Cu is obscured, so physical D99.4-D93.23 continuity remains unmeasured. Owner continuity also closes D101.4 to R92/R99. The model retains measured D101.7 → D94.14 and D101.4 → R92/R99, and the separately drawn D101.9 → D100.6 precomp path. R88 is separately owner-closed on D94.3/D93.4; it is not an A4/Q0 pull-up. D97.13 and D102.4 are omitted complementary outputs on otherwise complete, pin-numbered one-shot symbols and are intentional no-connects. D101.1 is source-closed to D26.38 `IMDRG`; D101.3/.5/.6 are source-joined to D101.4 and remain physical continuity checks.
+D101 Q1/pin9 crosses the Q0/pin7 conductor without a junction. The source
+and owner continuity independently close D101.7 to D94.14; D101.9 remains
+on the separate D100.6 precomp path. Crop coordinates and physical isolation
+limits are in [the D101 output review](../../docs/d101-output-tie-photo-review.md).
+D99.4 reaches D93.23/HLT on the neighboring upper rail; its original-board
+continuity remains unmeasured. See
+[the D99 route review](../../docs/d99-q1n-a4-conflict-photo-review.md).
+
+R88 is owner-closed on D94.3/D93.4. D97.13 and D102.4 are omitted
+complementary outputs on otherwise complete, pin-numbered one-shot symbols
+and are intentional no-connects. The section-A enable and common input
+conductor are source-closed as listed above; their physical continuity
+limits are recorded in
+[the section-A review](../../docs/d101-section-a-input-source-review.md).
 
 Primary image: `ref/photos/dgsh5-109-009-e3/PXL_20260718_101648508.jpg`. Target corroboration: `ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg` and `PXL_20260710_200522685.jpg`.
 
-The D101 section-A junction and its physical continuity limit are recorded
-separately in `docs/d101-section-a-input-source-review.md`.
+## Model guard
+
+```sh
+python3 kicad/check_fdc_precomp_network.py
+```
+
+The guard checks canonical JSON connections and resistor values, unresolved
+C20/C22 installed values, and structural HDL/LVS mappings. It does not
+validate installed analog timing, physical continuity, or routed copper.
