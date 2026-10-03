@@ -198,8 +198,8 @@ def main() -> int:
             "`sync/lvs.py` SIM_ONLY contract",
         ),
         (
-            "Owner photo survey confirms a socketed top-center РЕ3 is dumpable",
-            marker("ref/photos/juku-pcb-2/SURVEY.md", "К155РЕ3", "SOCKETED", "timing PROM", "dumpable"),
+            "Owner photo survey separates socketed РЕ3 from an assumed video role",
+            marker("ref/photos/juku-pcb-2/SURVEY.md", "К155РЕ3", "SOCKETED", "does not", "video-timing role", "dumpable"),
             "`ref/photos/juku-pcb-2/SURVEY.md`",
         ),
         (

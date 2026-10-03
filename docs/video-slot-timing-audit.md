@@ -33,7 +33,7 @@ python3 scripts/report_video_slot_timing_audit.py
 | Runnable video still uses the abstract raster/read port | PASS | `hdl/juku_top.v` runnable adjunct |
 | The DRAM model still exposes sim-only video read pins | PASS | `hdl/devices.v::dram_64kx1` |
 | LVS explicitly treats the sim-only video read pins as non-board pins | PASS | `sync/lvs.py` SIM_ONLY contract |
-| Owner photo survey confirms a socketed top-center РЕ3 is dumpable | PASS | `ref/photos/juku-pcb-2/SURVEY.md` |
+| Owner photo survey separates socketed РЕ3 from an assumed video role | PASS | `ref/photos/juku-pcb-2/SURVEY.md` |
 | Scanned `.113/.117` РЕ3 tables are guarded but not D94 `.092` | PASS | `docs/re3-firmware-inspection.md` |
 | Owner-scan firmware directory has no mislabeled D94 `.092` table | PASS | `ref/firmware/` has no `.092` artifact |
 | D94 FDC-control role is separated from video timing | PASS | `docs/d94-reconstruction-constraints.md`; only proved outputs terminate at D93 |

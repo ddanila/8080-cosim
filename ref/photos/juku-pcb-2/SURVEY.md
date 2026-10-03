@@ -4,9 +4,11 @@ Target: processor module `7.102.158`, 50 owner photographs taken in 2026.
 
 ## Confirmed observations
 
-- A top-center **К155РЕ3** timing PROM is **SOCKETED** and therefore
+- A top-center **К155РЕ3** is **SOCKETED** and therefore
   dumpable. The exact refdes/program identity must still be established before
-  treating a dump as D8 or D94 evidence.
+  treating a dump as D8 or D94 evidence. Socket position alone does not
+  establish a video-timing role; adopted D8/D94 tables and roles are recorded
+  in [the physical PROM archive](../../physical-proms/README.md).
 - `PXL_20260710_200402344.jpg` clearly shows a populated **КР1818ВГ93**.
   The processor visible elsewhere on the board is not evidence that the FDC is
   absent. The earlier non-FDC classification is withdrawn.

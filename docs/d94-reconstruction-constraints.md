@@ -127,7 +127,7 @@ candidate identity gate separately proves the promoted board has the same pads.
 - The official .009 BOM trail identifies the FDC-era D94 as the second
   К155РЕ3, programmed as `ДГШ5.106.092`.
 - Earlier D94 references in the sheet-3/tape-cluster survey are known
-  refdes reuse history, not evidence for the FDC-era timing PROM.
+  refdes reuse history, not evidence for the FDC-era control PROM.
 - The guarded firmware inspection establishes that `.113/.117` belong
   to the `.106.103`-family owner-scan evidence and are not a burnable
   D94 `.092` substitute. The repeated physical `.092` image is authoritative.
