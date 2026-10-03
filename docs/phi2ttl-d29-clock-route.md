@@ -29,7 +29,7 @@ not be collapsed onto the zero-ohm `PHI2TTL` copper net in the replica model.
 Factory assembly `PXL_20260711_114611058.jpg` identifies C29 as the left
 callout and R106 as the right callout of the close pair below R35, between
 D38 and D92. A wider comparison to owner component `PXL_20260710_200418174.jpg`
-corrects an earlier two-body misassignment: the upper body marked `330R` is
+shows the upper body marked `330R` as
 R35, matching the source 330 Ω value. The lower axial body is in the R106
 position. A crop of original owner pixels `(2270,2480)`–`(2390,2740)`,
 rotated upright, reads `510R`: the first glyph has the flat upper stroke
@@ -146,45 +146,19 @@ Expected powered-off checks are approximately 0 ohms from D29.1 to D30.3 and
 330 ohms from D29.1 to D35.13.  Record the measured resistance rather than
 relying only on a continuity beeper because some meters beep through 330 ohms.
 
-## Root cause of the reconstruction error
+## D29 continuation and pin numbering
 
-The four numbered cross-sheet continuations drawn immediately below D29 are:
-
-```text
-1  -MRD
-2  -MWR
-7  -IOWR
-8  -IORD
-```
-
-Those leading numbers are continuation identifiers, not D29 package-pin
-numbers.  Treating the `1` beside `-MWR` as physical D29.1 incorrectly placed
-D29.1 on `MEMW` and hid the clock route.
-
-The readable D29 channel order on the exact `.009` sheet is:
-
-The original-resolution row crop is recorded in
-`ref/schematics/d29-exact-009-pinmap-review.json`. The printed pairs match
-the 8286 physical channel map; the earlier table had shifted several output
-pin numbers and is superseded here.
-
-| Input pin | Output pin | Output label |
-| ---: | ---: | --- |
-| 3 | 17 | `-INHIB` |
-| 1 | 19 | `CCLCK` |
-| 2 | 18 | `-IOM` |
-| 7 | 13 | `-MWC` |
-| 6 | 14 | `-MRC` |
-| 8 | 12 | `-AMWC` |
-| 4 | 16 | `-IORC` |
-| 5 | 15 | `-IOWC` |
+The cross-sheet identifiers `1 -MRD`, `2 -MWR`, `7 -IOWR`, and `8 -IORD`
+are continuation numbers, not D29 package pins. Physical channel order is
+recorded in [the exact D29 pin map](d29-exact-command-map-hold.md) and
+`ref/schematics/d29-exact-009-pinmap-review.json`.
 
 ## Replica-model disposition
 
 The source model, generated schematic, three PCB pad maps, HDL, and pinout
 audit now assign D29.1 to PHI2TTL and D35.13 to the separate post-R35 node.
 R35, R106, and C29 are modeled as schematic-only parts pending owner pad
-registration, population/value checks, and footprint placement. The corrected
-D29 pads forced removal of 32 obsolete local copper items from each routed
-variant. Both variants have zero shorts, clearances, and crossings, with 35
-unconnected items. See `docs/d29-exact-command-map-hold.md`.
+registration, population/value checks, and footprint placement. Current routed copper and fabrication holds are recorded in
+[factory-wire fidelity](factory-wire-route-fidelity.md) and
+[the routed audit](routed-refresh-audit.md). Source-model alignment does not
+establish owner-board continuity or a completed RC footprint layout.

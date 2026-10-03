@@ -36,13 +36,14 @@ In component photo `200354648`, D29.2's lower lead has a front-copper
 segment toward the white cable; a collinear segment below the cable ends
 at an exposed annulus near `(2255,2352)`. The cable hides the intervening
 copper, so the annulus is a probe candidate rather than a closed join.
-The D29-corner cross-face projection of that annulus falls near
-`(2451,2393)` in solder view `200509593`, on bare board. A drilled hole
-near `(2450,2433)` is about 40 pixels south on a separate narrow trace;
-the extrapolation is too long to adopt it as the same hole.
-The local chase is recorded in
-`ref/photos/juku-pcb-2/d29-pin2-front-chase.json`; the opposite-face route
-and D7.3 remote join remain unproved.
+Independent tile matching places that waypoint at front `(2480,1015)` in
+`200411500`. D7/D9 local reflections register its opposite-face hole near
+`(3065,730)` in solder view `200525009`; the long D29-only extrapolation into
+`200509593` does not identify the same hole. The current evidence is in
+`ref/photos/juku-pcb-2/d29-pin2-front-chase.json` and summarized with the
+D7-side probe candidates in [the D7 review](d7-gates-source-review.md).
+Photo registration does not close the cable-hidden D29.2 segment or the
+D7.3 remote join; verify both by continuity.
 
 Exact sheet-1 detail `(1000,3040)–(1740,3540)` shows D7.3 directly feeding
 D29.2; the riser crosses D29.7 without a dot. The lower continuation puts
@@ -52,9 +53,13 @@ owner-board continuity before physical fidelity can be claimed. Native
 sheet-1 pixels show D7.11 and D105.3 on
 separate local strokes, correcting the earlier claimed output tie.
 
-The old routed copper touching the changed D29/D35 pads caused 30 shorts and
-three clearances. Removing 32 stale track/via items in each routed variant
-restored zero shorts, clearances, and crossings; the remaining 35 unrouted
-connections require a fresh routing pass. The deletion list is in
-`ref/routing/d29-command-copper-correction.json`. Fabrication remains held
-by those opens, passive placement, and physical continuity questions.
+## Verification and routing hold
+
+```sh
+python3 scripts/report_8286_pinout_audit.py
+```
+
+This verifies source-model endpoints and LVS mapping data. Current routing
+and DRC holds are recorded in [factory-wire fidelity](factory-wire-route-fidelity.md)
+and [the routed audit](routed-refresh-audit.md). Physical continuity and
+R35/R106/C29 placement/value questions remain open.
