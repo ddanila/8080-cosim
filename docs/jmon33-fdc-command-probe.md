@@ -2,11 +2,16 @@
 
 Status: **JMON33 FDC T-COMMAND ORACLE PINNED**
 
-This cosim diagnostic pins Monitor 3.3's `T` command behavior after the
+This cosim diagnostic records Monitor 3.3's `T` command behavior after the
 monitor-idle cursor, both with no disk-backed FDC and with the vendored
-`media/disks/JUKU1.CPM` image. It provides a command-level oracle for the
-current structural HDL FDC probe; keyboard sampling works, while the resumed
-`T` path enters heavy FDC I/O.
+`media/disks/JUKU1.CPM` image. It provides a command-level oracle for
+the checkpoint-resumed HDL FDC probe. This cosim run starts from reset
+and schedules keyboard input after the specified VRAM-write threshold.
+
+The report status and exit code require only a successful disk-backed
+trace exit. Framebuffer hashes, cursor blocks, and FDC event counts are
+recorded observations, not asserted acceptance criteria. The no-disk
+exit is reported separately and does not determine the overall status.
 
 ## Command
 
