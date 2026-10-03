@@ -45,9 +45,12 @@ def main() -> None:
         ("S1 off-board SPDT contact 3 is explicitly declared", chips["S1"]["pins"].get("3") == "P3"),
         ("Remaining undeclared endpoints belong only to tagged PCB power nets", all(board["nets"][net].get("power") for net in by_net)),
     ]
+    failed_checks = [name for name, ok in checks if not ok]
+    if failed_checks:
+        raise SystemExit("PACKAGE ENDPOINT COVERAGE: FAIL: " + "; ".join(failed_checks))
     lines = [
         "# Package endpoint coverage", "",
-        "Status: **NON-POWER PACKAGE CONTRACTS COMPLETE**", "",
+        "Status: **DECLARED NON-POWER ENDPOINTS VALIDATED**", "",
         "This guard reads `kicad/juku.board.json`. For net endpoints whose references",
         "exist in `chips`, it rejects undeclared pins unless the net is tagged `power`.",
         "It also rejects explicit no-connects absent from the chip pin contract.", "",

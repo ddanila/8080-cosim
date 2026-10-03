@@ -1,6 +1,6 @@
 # Package endpoint coverage
 
-Status: **NON-POWER PACKAGE CONTRACTS COMPLETE**
+Status: **DECLARED NON-POWER ENDPOINTS VALIDATED**
 
 This guard reads `kicad/juku.board.json`. For net endpoints whose references
 exist in `chips`, it rejects undeclared pins unless the net is tagged `power`.

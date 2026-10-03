@@ -194,9 +194,11 @@ def main() -> int:
             "- The same continuity pass proves MEMW on tied D105.12/.13 and",
             "  D105.11 -> D30.13. This supersedes both the false D2.12-to-D105.9",
             "  merge and the older `.006` D95 WAIT handoff.",
-            "- The promoted routed board has exact source-pad identity and carries",
-            "  these corrections with zero electrical blockers. Any future P0 source",
-            "  closure still requires complete route/package regeneration.",
+            "- Selected D105 routed-pad checks preserve these corrections; they do not",
+            "  establish whole-board source-pad parity or zero electrical blockers.",
+            "  See [ERC/parity](main-board-erc-parity.md) and the",
+            "  [routed audit](routed-refresh-audit.md) for current release holds.",
+            "  Future P0 source closure requires complete route/package regeneration.",
         ]
     else:
         d105_lines = [
