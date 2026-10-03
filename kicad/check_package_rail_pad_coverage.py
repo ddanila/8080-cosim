@@ -15,7 +15,7 @@ KNOWN_UNROUTED = {
     (ref, pin)
     for ref, pins in {
         "D52": ("8", "16"), "D2": ("8", "16"),
-        "D92": ("7",), "D8": ("16",),
+        "D8": ("16",),
     }.items()
     for pin in pins
 }
