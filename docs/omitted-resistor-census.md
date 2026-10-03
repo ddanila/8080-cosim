@@ -93,18 +93,10 @@ R109/R110 therefore remain assembly-only population candidates, not proved
 missing fitted parts or DNP positions; match intended landings before assigning
 any value or population state. The direct comparison is recorded in
 `ref/photos/juku-pcb-2/r109-r110-d56-review.json`.
-R96 has **no source-proved component** in the archived `.009` set. An
-original-resolution manual sweep of every electrical detail tile—sheet 1
-`101801729`–`101827714` (eight photos), sheet 2 `101908284`–`101932581`
-(eight), and sheet 3 `101637906`–`101648508` (four)—finds no readable R96
-callout. The sheet-3 FDC area clearly resolves R93–R95 and R97–R99, plus
-R100/R102/R108. A native-resolution sweep of all six broad assembly panels
-`PXL_20260711_114553710.jpg` through `_114611058.jpg` resolves those
-neighbors and R101/R109/R110, but identifies no R96 outline. Treat R96 as a **numbering
-gap in the visible `.009` sources**, with no justified value, footprint, or
-net; do not call it a DNP part, which would require an identified target site.
-An additional BOM, clearer drawing, or an independently registered owner
-pad pair would be needed to promote it.
+R96 has **no source-proved component** in the archived `.009` electrical or
+assembly frames. Keep it as a numbering gap, with no justified value, footprint
+or net. DNP status requires an identified target site. Promotion requires an
+original-resolution callout, additional BOM evidence or registered owner pads.
 
 The current JSON has 86 numeric C refs. Within C1–C100 the absent refs are:
 
@@ -121,26 +113,13 @@ but no refdes callout proves that identity. Keep C85 as a source-listed bypass
 with unknown individual rails, value, and population rather than assign the
 candidate owner holes or DNP status as fact
 (`ref/photos/juku-pcb-2/c85-source-placement-boundary.json`).
-The remaining C2/C3 and
-C23–C28/C30 numbers have not been promoted from numbering gaps. C79–C81
-are also absent from the adjacent exact sheet-1 ranges `C74...C78` and
-`C82...C93`; no individual callout was securely read in the broad assembly
-panel sweep. They remain numbering gaps, not identified DNP locations
-(`ref/schematics/x8-power-capacitor-rail-correction.json`). A visual
-contact-sheet sweep of all eight exact `.009` sheet-1 detail photos
-(`101801729`–`101827714`), all eight sheet-2 details
-(`101908284`–`101932581`), and all four sheet-3 details
-(`101637906`–`101648508`) identifies the C29/R35/R106 clock branch,
-the sheet-1 supply groups, and the C16–C22 FDC timing parts, but yields no
-independently readable C23–C28 or C30 callout. A second visual contact-sheet
-sweep of the six broad factory assembly panels (`PXL_20260711_114553710.jpg`
-through `_114611058.jpg`) likewise finds no securely readable callout in this
-number range. These lower-resolution sweeps are search boundaries, not proof
-of absence at original resolution; tiny refdes must be checked natively
-before disposition. Keep these as
-numbering gaps until an original-resolution callout or individual owner pad
-pair establishes a part. Do not assign a footprint, value, or DNP status by
-number alone.
+C2/C3, C23–C28/C30 and C79–C81 remain numbering gaps. C79–C81 are absent
+from the adjacent exact sheet-1 supply ranges; the electrical/assembly searches
+found no secure individual callouts for the other groups. These search limits
+are not proof of physical absence. Require an original-resolution callout or
+registered owner pad pair before assigning a footprint, value or DNP status.
+The supply-range evidence is retained in
+`ref/schematics/x8-power-capacitor-rail-correction.json`.
 
 ## Release consequence
 
