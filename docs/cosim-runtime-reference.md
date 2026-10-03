@@ -58,7 +58,8 @@ The fixed instrumentation addresses are `C027h`/`C02Ah` with state at
 
 ## How it works
 
-1. `cosim` boots the real `ekta37` BIOS and dumps `TYPE addr data` lines through
+1. `cosim` boots the adopted archive-0037 RomBios 3.43m image
+   (`roms/ekta37.bin`) and dumps `TYPE addr data` lines through
    `JUKU_BUS_TRACE`, bounded by `JUKU_BUS_TRACE_LIMIT`. Paired reads retain real 8080 low-byte-first
    order, while stack pushes retain the CPU's high-byte-first write order.
 2. `hdl/sim/cosim_ctrace_tb.v` runs `juku_top`, classifies DBIN and WR edges from the decoded bus

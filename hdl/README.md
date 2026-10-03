@@ -17,7 +17,8 @@ for simulation.
 
 ## What currently runs
 
-The structural top boots the real ekta37 ROM, matches the C oracle’s
+The structural top boots the adopted archive-0037 RomBios 3.43m image
+(`roms/ekta37.bin`), matches the C oracle’s
 framebuffer, handles keyboard and frame-interrupt paths, reads vendored Juku
 disk media through the bounded FDC model, reaches EKDOS `A>`, and reaches disk
 BASIC `READY`. The exact ROMBIOS `0xA0/0xA2` write-sector path can also stream
