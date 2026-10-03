@@ -58,9 +58,12 @@ C-model twin, and checks exact manifests, fixed vectors, stack guards,
 interrupt ownership, overlay protection, all S21 geometries, locale pixels,
 keyboard behavior, cursor phases, runtime mode/bank transitions, invalid-call
 atomicity, and resident serial activity.  The focused
-HDL gate retains the exact C4 reset/POST, call-gate, framebuffer, keyboard,
-serial, and one-record NetDisk boundary; full CP/M, recovery, and long-soak
-coverage remains in the faster C-model oracle.
+HDL gate runs C4 reset/POST and ABI fixtures, C9–C12 ABI fixtures, the
+video POF boundary, and a CRC-checked 128-byte NetDisk DMA record. The ABI
+fixtures cover call-gate, framebuffer, keyboard and serial behavior; they are
+not full CP/M boot runs. With `--ci`, the gate builds both ROM benches and
+executes only the focused video POF simulation. Full CP/M, recovery and
+long-soak coverage remains in the faster C-model oracle.
 
 The matching C8 rollback and C9/C10/C11/C12 system/TPA/local/N4 gates are run
 from `cpm-plus-juku`:
