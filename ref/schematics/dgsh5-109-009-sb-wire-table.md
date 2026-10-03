@@ -116,26 +116,17 @@ number in each cell, not the crossed revision history. In particular, A9
 ends at `12`, A10 at `13,5`, A11 at `11,5`, A12 at `20`, A13 at `15`,
 and A14 at `23` cm.
 
-The duplicate's conductor-6 length cell has an earlier value crossed out and
-`13,5` written as the final value. The two-sided photo fit independently gives
-a 131.355 mm straight A10 terminal chord, consistent with a 13.5 cm insulated
-lead and impossible for the former tentative `~11.5` transcription.
+The final ink readings are `13,5` cm for conductor 6/A10, `19` cm for
+conductor 4/A8 (over a crossed-out `20`), and `11,5` cm for conductor 7/A11.
+The earlier A10/A8 terminal fits are withdrawn; their former 131.355/195.9 mm
+chords do not qualify either installed lead or replacement cut length.
+A10B and A8B still require physical landing evidence. See the current
+[wire-fidelity dispositions](../../docs/factory-wire-route-fidelity.md).
 
-For conductor 4/A8, a 300 dpi re-read of PDF page 2 (printed sheet 3) confirms
-that the length cell has `20` crossed out and `19` written below it. Thus the
-revised table value really is 19 cm. The two locally fitted surface terminals
-have a 195.9 mm straight chord, already 5.9 mm longer than that value before
-allowing for routing or stripped ends. Each landing has direct copper to its
-owner-confirmed package pin, so the endpoint geometry is retained. The source
-value cannot be used as an assembly cut length; measure the installed lead or
-resolve the discrepancy against a physical original before fabrication.
-
-The same re-read confirms conductor 7/A11 has an earlier value crossed out
-with `11,5` written below. The crossed value is not reliably legible in this
-scan. Its final table value is therefore 11.5 cm, despite the
-119.177 mm fitted terminal chord. As with A8, this revised table value is
-shorter than the straight span and must not be used to cut the replacement
-wire until the installed lead or physical original has been checked.
+A11's accepted 119.177 mm terminal chord exceeds its revised 11.5 cm source
+reading. Measure the installed lead or resolve the discrepancy against a
+physical original before cutting a replacement. Keep source lengths separate
+from physically qualified cut lengths for every link.
 
 All ten on-board link rows are now mapped to electrical endpoints. The owner
 read for `А:20` was made through the installed X3 cable, so the table below
