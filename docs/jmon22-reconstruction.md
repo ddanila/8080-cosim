@@ -2,8 +2,8 @@
 
 Status: **ONE BYTE PROVEN / ROM BLOCKS 6-7 UNRESOLVED**
 
-This generated audit identifies the only Monitor 2.2 byte that current
-repository evidence can reconstruct without guesswork. It preserves
+This generated audit verifies one Monitor 2.2 correction supported by the
+guarded donor images and checksum constraints below. It preserves
 `roms/jmon22.bin` unchanged and exports only a machine-readable patch
 manifest; no partially repaired ROM binary is published.
 
@@ -12,6 +12,12 @@ manifest; no partially repaired ROM binary is published.
 ```sh
 python3 scripts/report_jmon22_reconstruction.py
 ```
+
+The writer pins the listed source hashes, compares BASIC bodies, computes
+block checksums, and searches the seven named related ROMs for contextual
+donors. It does not search every repository artifact, contact remote archives,
+reproduce physical reads, or execute a patched ROM. The catalog and upstream
+history observations below are retained provenance, not live checks.
 
 ## Source guard
 
@@ -74,7 +80,7 @@ independent dump, or another byte-identical firmware source is recovered.
 
 ## Related-ROM donor search
 
-The audit tests every one-byte checksum repair with three source bytes
+For the seven guarded related ROMs, the audit tests each one-byte checksum repair with three source bytes
 available on each side against all seven other tracked 16 KiB monitor/BIOS
 images. This covers all 2,048 block-6 positions and 2,045 block-7
 positions; only the ROM's final three bytes lack right-hand context. A donor
