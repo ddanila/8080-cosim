@@ -2,6 +2,11 @@
 
 Status: **FACTORY PLACEMENT EVIDENCE / PARTIAL ELECTRICAL MAPPING**
 
+Regenerate with `python3 kicad/report_fdc_lower_assembly_placement.py`.
+The guard checks registration records, selected photo hashes and coordinates,
+component values, and source-PCB placement/local joins. It does not establish
+unobserved copper continuity or measure installed capacitances.
+
 The upper FDC drawing places C12 between D94 and D100. May and early July
 owner photos show that gap bare, while later July photo `PXL_20260710_202708344.jpg`
 shows a fitted green bypass there with visible lap leads to D100.20/+5 V and
@@ -52,21 +57,15 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | C83 | 239.150, 140.065 | absent | - | factory label reads C83 in the D41/D40 gap; the owner component photo has no fitted body. D41 package calibration maps two candidate front sites to x=246.172 mm, centered between D41.1 x=242.62 mm and D40.8 x=249.67 mm. The folded-drawing projection x=239.15 mm lies inside D41's span and is not an owner-pad placement. The promoted D41 fit aligns the front sites with solder crowns; same-hole identity remains unproved |
 
 D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected
-factory-drawing positions. C20/C22 are also restored, but their table deltas are intentional: the drawing points identify the
+factory-drawing positions. C20/C22 have source-PCB footprints, but their table deltas are intentional: the drawing points identify the
 overlapping body labels, whereas registered owner component and solder photos prove the actual adjacent 2.54 mm drill columns
 at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. C83 is absent at its factory callout:
 the factory drawing shows its intended outline, while the owner photo shows no body in the D41/D40 gap. Two candidate front sites align with solder crowns under the promoted D41 fit, pending same-hole continuity. The separately photo-registered inherited DRAM-grid landing at `(176.1,145.6)` mm remains fabricated as bare common artwork.
-Owner component photo `PXL_20260710_200418174.jpg` independently shows C19's grey vertical axial body and the four stacked resistor bodies in the same top-to-bottom order;
-that corroborates population and orientation. Two independent component angles read R100/R102/R108=`12К` and R86=`4К7`. Recovered `.009` Э3 sheet 3 closes the common right-hand rail to +5 V, R102.1 to C22.2/D102.15, R108.1 to C20.2/D102.7, and the C19/R100 side to D97.7. Target copper closes C19.2/R86.1 to D97.6 and overrides the sheet's conflicting R86=470 reset annotation. The registered solder view
-`PXL_20260710_200522685.jpg` exposes C19's two distinct joints; cross-side review corrects their recorded order to upper pad1 `(875,712)` and lower pad2 `(823,893)`. The July view also registers all four resistor pin-1 joints. An oblique May view literally reads `22` on C19's exposed face; the opposite July angle repeats only `22`. Exact `.009` sheet 3 specifies C19=`22` (nominal 22 pF), but neither body view shows a complete unit code; the installed capacitance remains a boundary. The same owner views
-also show populated grey horizontal C16 between the IC rows and the red horizontal R92/R99 pair below D95. Their component-side landings and
-backside joints corroborate the factory identities and 12.5/10.16 mm spans. The alternate May angle directly reads R92=`1К3` and R99=`4К7`;
-the registered July view independently shows the same strings beneath stronger glare. Uninterrupted component copper closes R92.2-D95.14,
-R92.1-R99.2-D101.4, and R99.1-D101.8/GND. The May view literally reads bare `27` on C16 and the independent July angle repeats `27`, though D97 hides the lower body line. Exact sheet 3 specifies `27` (nominal 27 pF) and closes its endpoints to D97.15/.14. The incomplete GOST body code leaves its installed capacitance unproved.
-Those owner views additionally show the two grey C20/C22 axial bodies and all four solder joints independently of the factory identity drawing. Native May/early-July crops retract the former `1Н5` reading: the inner C20 body clearly reads `±5` on that face, while the May face of outer C22 reads `М75`, its ceramic temperature-stability group (nominal −75 ppm/°C). Two later July angles show literal `22` on both bodies, matching exact sheet 3's `22` (nominal 22 pF) for each; the closer angle also reads `±10` on outer C22. Thus C20/C22 tolerances are 5%/10%, respectively. No complete unit code or capacitance measurement verifies either installed value. Sheet 3 closes their D102 timing endpoints.
-The original-resolution lower drawing labels the vertical part between D41 and D40 as `C83`.
-The owner component view is bracketed by direct fits of both marked packages and contains no fitted C83 body. Two candidate front sites form a plausible span and align with solder crowns under the promoted D41 fit; physical identity still requires continuity.
-Whether the part was omitted at assembly or removed later is not recoverable from the image, but both histories yield the same exact target population: absent. C83 is present in the logical source model on +5 V/GND, but physical PCB placement and the owner-board pad pair remain unresolved. C63 remains a separate bare inherited DRAM-grid footprint. The unrelated `.006` RF-option C13 is also DNP on the `.009` target.
+The owner photos confirm C16/C19, C20/C22, R92/R99, and the R100/R102/R108/R86 row. Their drill registration, pad order, and visible joins are documented in [analog-cluster placement](analog-cluster-photo-placement.md).
+R92/R99 read 1.3 kΩ/4.7 kΩ; R100/R102/R108 read 12 kΩ and R86 reads 4.7 kΩ. C16 reads bare `27`; C19/C20/C22 read bare `22`. The schematic nominal values are 27/22 pF, but installed capacitances remain unverified. See [native capacitor values](native-capacitor-values.md) and the [FDC precomp map](../ref/schematics/fdc-write-precomp-map.md) for value boundaries and source connections.
+
+C83 is absent from the owner board's D41/D40 gap. The factory drawing labels the intended part `C83`; candidate front sites align with solder crowns, but their identity needs continuity. The logical model connects C83 to +5 V/GND; physical placement and the owner-board pad pair remain unresolved. The photos cannot distinguish omission at assembly from later removal. C63 is a separate bare inherited DRAM-grid footprint.
+
 The later July owner image `PXL_20260710_202708344.jpg` exposes green two-lead
 bodies at the factory C10 and C11 positions. Their values and lead rails remain
 unproved; the earlier C11 view only exposed landings. Two later views show
