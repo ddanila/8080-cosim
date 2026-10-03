@@ -80,16 +80,15 @@ falls through to the ROM's `N=` and `S=` keyboard prompts; cosim deliberately
 models that open-switch fallback and therefore injects `TN0201`. The same
 behavior on the `.009` PB4-strapped board remains unverified.
 
-For a later identity-free monitorless ROM, the accepted project plan may
-repurpose this same raw byte as shared ROM/OS machine configuration: logical
-bit 0 is ROM-only immediate-network-boot policy; bits 2:1 select four video
-modes used by both ROM and CP/M (`00` stock, `11` MODX 80x24, with the two
-historical intermediate timings still to be extracted); bits 7:3 remain
-reserved. This is not part of C2. Implementation must first verify active
-polarity and the S21.1..S21.8 order by drawing plus physical readback. ROM then
-latches the byte once, exposes it through the resident ABI, and CP/M consumes
-that same value instead of resampling the keyboard. Host and diagnostics report
-both raw and decoded settings.
+The implemented network-first ROM uses reset-latched S21 configuration shared
+with CP/M. Bits 2:1 select 40x24, 53x24, 64x20 or 80x24; bits 4:3 select
+English, Estonian, CP866 Russian or English/user-remap. C4--C8 use bit 0 for
+automatic boot versus local recovery wait; C9 and successors reserve it and
+always boot from the network. This software policy does not resolve the
+archived EktaSoft PB5 versus photographed PB4 selector boundary above.
+See [the network-ROM contract](../spinoffs/jukuravi/network-rom/README.md)
+and [C12 qualification](c12-runtime-console.md) for runtime overrides and
+physical acceptance scope.
 
 ## Model comparison
 
@@ -117,10 +116,6 @@ both raw and decoded settings.
   matrix model and requires the public raw-key vector to return column/PB
   pairs `0E/8E` and `0A/6A`. This is an executable regression for the exact
   modified contacts, not an inference from translated ASCII input.
-- The remaining function, navigation, locking, DEL, LAT/RUS, and national keys
-  are transcribed above but are not byte-addressable in `JUKU_KEYS`; extending
-  the stimulus syntax is a test-interface boundary, not missing hardware.
-
-The previous cosim table matched the drawing for every entry it contained, but
-omitted shifted punctuation, brackets/backslash, Tab, Escape, and Backspace.
-The guarded table now closes that software-stimulus completeness gap.
+- The matrix transcription includes contacts beyond the ASCII and synthetic
+  tuple sets listed above. Those stimulus checks do not establish complete
+  host-byte coverage of every locking, national or mode-switch contact.
