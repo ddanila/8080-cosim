@@ -133,11 +133,15 @@ The checks above cover these boundaries:
 | READY path | Physical D2 `.037` open-collector polarity through the D30 latch; this does not establish complete WAIT timing. |
 | Network ROM | Artifact freshness and ABI, locale, transport, telemetry, video and boot checks through C12. Structural HDL checks include C4 boot, C9–C12 ABI, the C9/C10 POF boundary and a CRC-checked NetDisk-v3 DMA record; bounded CI profiles run a subset. See [network ROM](../spinoffs/jukuravi/network-rom/README.md). |
 
-`sync/cosim_check.sh` is slower than the others (it drives `juku_top` to ~20 ms
-of simulated boot); see `docs/cosim-runtime-reference.md`. Activate the tracked
+`sync/cosim_check.sh` uses a default 30 ms simulated-time window and
+130,000-event limit; a successful event verdict can stop it earlier. See
+[the cosim reference](../docs/cosim-runtime-reference.md). Activate the tracked
 hooks once per checkout with `git config core.hooksPath .githooks`. Before a
-push, the hook blocks on the newest conclusive failed master workflow, then runs
-the deep cosim guard when `hdl/`, `cosim/`, or `roms/` changed. `CI_GATE=off`
+push, the hook checks the latest 15 `master` workflow runs and blocks on a
+workflow whose newest conclusive result in that sample is `failure`. Unavailable
+or unauthenticated `gh` skips that remote check with a warning. It then runs
+the deep cosim guard when `hdl/`, `cosim/`, or `roms/` changed and both `cc`
+and Icarus Verilog are available; missing tools produce a skip warning. `CI_GATE=off`
 overrides only the remote-CI check; `git push --no-verify` bypasses the complete
 hook and should be reserved for a deliberate, documented exception.
 
@@ -224,7 +228,8 @@ reset-to-prompt reports are the stronger evidence where both exist.
   complete sheet-3 circuit index against adopted board endpoints.
 - `d15_d16_firmware_lineage_check.sh` checksum-guards the factory census,
   archival EPROM halves, ROM candidates, and owner overview while proving the
-  unique EktaSoft 3.7 byte identity without claiming fitted-chip contents.
+  unique `ekta37.bin` (RomBios 3.43m, serial #0037) byte identity among its
+  eight candidates without claiming fitted-chip contents.
 - `scripts/check_documentation_consistency.py` ensures user-facing status and
   package hashes do not contradict the active design blockers.
 
@@ -232,10 +237,11 @@ reset-to-prompt reports are the stronger evidence where both exist.
 
 The FDC, USART, PIT/PPI/PIC, memory timing, and video helpers are scoped to
 guarded Juku behavior. They are not complete drop-in models of every original
-chip. Most importantly, behavioral success cannot supply the remaining D94
-wiring or the remaining connectivity of D96, D99, D100 and D101; those are
-fabrication-release blockers tracked in [the FDC handoff](../docs/fdc-hardware-handoff.md)
-and `PLAN.md`. D2 itself is no longer
-missing: its validated physical table and measured D0/READY path are adopted,
+chip. Behavioral success does not close physical release blockers: D94's
+hidden D0 load, the D96 continuity/clear boundaries, and remaining D99/D100
+sheet continuations still require evidence. D101's selected write-data path
+is source-closed; its physical continuity and waveform quality remain bring-up
+checks. Use [the FDC handoff](../docs/fdc-hardware-handoff.md) and
+[the active plan](../PLAN.md) for the exact current boundaries. D2’s validated physical table and measured D0/READY path are adopted,
 and the X1.107B/R1 `H` handoff belongs to D105/D13. D30 provides the
 common asynchronous `STB` path to D38, with R5.
