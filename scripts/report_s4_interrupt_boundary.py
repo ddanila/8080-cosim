@@ -119,8 +119,6 @@ def main() -> int:
     lines = [
         "# S4 interrupt boundary",
         "",
-        "Status date: 2026-07-10.",
-        "",
         f"Status: **{status}**",
         "",
         "This generated report isolates the external interrupt receive path",
@@ -143,7 +141,7 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "## Pending Boundary Checks",
+            "## Source Contract Checks",
             "",
             "| Boundary | Result | Current evidence |",
             "| --- | --- | --- |",
@@ -156,13 +154,14 @@ def main() -> int:
             "",
             "## Current Interrupt Nets",
             "",
-            "| Net | Endpoints | Source note |",
-            "| --- | --- | --- |",
+            "Per-net provenance is retained in [the board model](../kicad/juku.board.json).",
+            "",
+            "| Net | Endpoints |",
+            "| --- | --- |",
         ]
     )
     for name in ("INT7_RAW", "IR7", "INT6_RAW", "INT6_BUF", "SYNDET_S4", "IR6"):
-        net = board["nets"].get(name, {})
-        lines.append(row([f"`{name}`", f"`{endpoint_text(board, name)}`", net.get("src", "-")]))
+        lines.append(row([f"`{name}`", f"`{endpoint_text(board, name)}`"]))
 
     lines.extend(
         [
@@ -172,8 +171,12 @@ def main() -> int:
             "- Expansion `INT7` continues through D3 directly to PIC IR7.",
             "- Expansion `INT6` passes through D3 to one S4 throw; USART SYNDET feeds",
             "  the other throw, and the common drives PIC IR6.",
-            "- The exact fitted switch position affects behavior but no longer leaves",
-            "  any copper endpoint or switch terminal omitted from the source PCB.",
+            "- This generator checks source endpoints, package roles and provenance",
+            "  markers. It does not run LVS, inspect routed copper or verify a fitted",
+            "  switch position by measurement.",
+            "- S4 is an off-board mechanical assembly with three modeled terminals.",
+            "  The HDL `spdt_switch` fixes the common to the external INT6 throw;",
+            "  runtime throw selection and switching behavior are not modeled.",
             "",
         ]
     )

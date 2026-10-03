@@ -1,7 +1,5 @@
 # S4 interrupt boundary
 
-Status date: 2026-07-10.
-
 Status: **S4 INTERRUPT SELECTOR GUARDED**
 
 This generated report isolates the external interrupt receive path
@@ -27,7 +25,7 @@ python3 scripts/report_s4_interrupt_boundary.py
 | USART SYNDET reaches the lower S4 throw | PASS | `SYNDET_S4`: D11.16 -> S4.1 |
 | D3 and D10 package roles match the interrupt path | PASS | D3 complete hex-inverter contract; traced sections feed D10 PIC inputs |
 
-## Pending Boundary Checks
+## Source Contract Checks
 
 | Boundary | Result | Current evidence |
 | --- | --- | --- |
@@ -36,19 +34,25 @@ python3 scripts/report_s4_interrupt_boundary.py
 
 ## Current Interrupt Nets
 
-| Net | Endpoints | Source note |
-| --- | --- | --- |
-| `INT7_RAW` | `D3.13, R9.1, X1.113B` | scan; exact .009 E3 sheet-1 PXL_20260718_101754468.jpg adds R9 2k pull-up to rail A |
-| `IR7` | `D10.25, D3.12` | scan |
-| `INT6_RAW` | `D3.1, R10.1, X1.113C` | scan; exact .009 E3 sheet-1 PXL_20260718_101754468.jpg adds R10 2k pull-up to rail A |
-| `INT6_BUF` | `D3.2, S4.3` | scan sheet-1: D3.2 buffered -INT6 reaches the upper S4.2 throw |
-| `SYNDET_S4` | `D11.16, S4.1` | scan sheet-1: D11 SYNDET pin 16 reaches the lower S4.1 throw |
-| `IR6` | `D10.24, S4.2` | scan sheet-1: S4 changeover common drives D10 IR6 |
+Per-net provenance is retained in [the board model](../kicad/juku.board.json).
+
+| Net | Endpoints |
+| --- | --- |
+| `INT7_RAW` | `D3.13, R9.1, X1.113B` |
+| `IR7` | `D10.25, D3.12` |
+| `INT6_RAW` | `D3.1, R10.1, X1.113C` |
+| `INT6_BUF` | `D3.2, S4.3` |
+| `SYNDET_S4` | `D11.16, S4.1` |
+| `IR6` | `D10.24, S4.2` |
 
 ## Interpretation
 
 - Expansion `INT7` continues through D3 directly to PIC IR7.
 - Expansion `INT6` passes through D3 to one S4 throw; USART SYNDET feeds
   the other throw, and the common drives PIC IR6.
-- The exact fitted switch position affects behavior but no longer leaves
-  any copper endpoint or switch terminal omitted from the source PCB.
+- This generator checks source endpoints, package roles and provenance
+  markers. It does not run LVS, inspect routed copper or verify a fitted
+  switch position by measurement.
+- S4 is an off-board mechanical assembly with three modeled terminals.
+  The HDL `spdt_switch` fixes the common to the external INT6 throw;
+  runtime throw selection and switching behavior are not modeled.
