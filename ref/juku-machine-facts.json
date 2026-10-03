@@ -13,7 +13,7 @@
 
   "memory_overlay_modes": {
     "_desc": "ROM/RAM overlay is selected by 8255#0 Port C bits[1:0] (I/O port 0x06). '1' regions are served by the ROM overlay, everything else is RAM. Framebuffer at 0xD800 is RAM except where a mode overlays ROM there.",
-    "mode0": {"rom_regions": ["0x0000-0x3FFF"], "note": "boot/default mode; ekta37 stays in mode 0"},
+    "mode0": {"rom_regions": ["0x0000-0x3FFF"], "note": "boot/default overlay; firmware may select other modes"},
     "mode1": {"rom_regions": ["0xD800-0xFFFF"]},
     "mode2": {"rom_regions": ["0x4000-0xBFFF (cartridge, reads 0xFF when empty)", "0xD800-0xFFFF"]},
     "mode3": {"rom_regions": [], "note": "all RAM"},

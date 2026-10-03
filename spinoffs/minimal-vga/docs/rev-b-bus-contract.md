@@ -1,10 +1,11 @@
 # VJUGA rev B — bus contract
 
-The single authoritative interface every card and every HDL module is written
-against. Signal-level detail only; card internals live elsewhere. Map, port, and
-timing values are **derived from `ref/juku-machine-facts.json`** (root
-`docs/spinoff-commons.md`) and enforced by `scripts/check_spinoff_commons.py` —
-do not edit a value here without updating the facts file.
+This defines the interface between Rev B cards. Card internals and physical
+qualification live in their subsystem guides. Shared reference values come
+from [the machine facts](../../../ref/juku-machine-facts.json); update their
+source and provenance before changing them here. The commons guard checks
+selected values and `FB_BASE` definitions, as described in
+[its coverage guide](../../../docs/spinoff-commons.md).
 
 ## 39-pin base connector
 
@@ -93,7 +94,7 @@ respond in that window.
 
 | Mode (MODE1:MODE0) | ROM regions | Notes |
 |---|---|---|
-| 0 | 0x0000–0x3FFF | boot/default; ekta37 stays here |
+| 0 | 0x0000–0x3FFF | boot/default overlay |
 | 1 | 0xD800–0xFFFF | |
 | 2 | 0x4000–0xBFFF, 0xD800–0xFFFF | 0x4000–0xBFFF = cartridge (0xFF empty) |
 | 3 | (none) | all RAM |
@@ -134,10 +135,11 @@ Lower number = higher priority. Frame-service ROM vector 0xFED4.
 
 ## Timing anchors
 
-- Frame IRQ / keyboard-scan period: **200000** CPU cycles.
+- Reference-model frame IRQ / keyboard-scan period: **200000** CPU cycles.
 - FDC controller clock: 2 MHz nominal (FDC card carries its own crystal).
 
-(Both from the facts file; CPU operating frequency is a build-plan decision, S1.)
+(These are reference-model anchors from the facts file. Rev B CPU frequency
+and video interrupt cadence follow the implemented card contracts.)
 
 ## Mechanical mating contract (D1.31)
 
@@ -158,24 +160,17 @@ geometry from it. Distances in mm, footprint-centre.
 | `backplane_board_h` | 100.0 | backplane outline height (cheap-tier decision D1.37) |
 | `tail_strip_y0` | 82.0 | clear top-side service strip starts above the final ext row |
 
-The base offset is **4.0 mm** (not mem's historical 5.0): io — the densest, most
-routing-constrained card — routes reliably only at 4 mm, and it is the binding
-constraint, so the contract adopts its value and the roomier cards follow.
+The adopted base offset is **4.0 mm**, shared by all cards.
 
 **Connector gender / presentation (RC2014-compatible).** Cards carry **right-angle
 male** headers on the bottom edge; the backplane carries **female sockets**
 ([RC2014 module template](https://rc2014.co.uk/1377/module-template/),
 [RC2014 bus spec](https://smallcomputercentral.com/rc2014-bus/specification-rc2014-bus/)).
-Mainline RC2014 presents the enhanced bus as an *adjacent second row* of the main
-connector; **we instead use a separate 10-pin ext header**. This is a legitimate
-RC2014-compatible variant (the spec fixes the signal set, not the physical presentation)
-and it lets the base and ext bus **columns interleave** on the 2-layer backplane:
-`ext_row_x = 14.45` places the ext pin grid a **half pin-pitch (1.27 mm)** off the base
-grid, versus only 0.82 mm at the old 14.0 — the checker's `min_column_sep` gate enforces
-this. Five 16 mm-pitch slots occupy base-row Y=10…74 and ext-row Y=15…79; the service
-tail starts at Y=82 on the 100×100 board. D1.37 supersedes the earlier 100×120/six-slot
-variant: the complete planned five-card system still fits, while top-side power/reset/
-serial components stay outside the seated-card envelope.
+Rev B uses a separate 10-pin extension header. Its grid at
+`ext_row_x = 14.45` sits half a pin-pitch (1.27 mm) off the base grid; the
+checker's `min_column_sep` gate checks that separation. Five 16 mm-pitch slots
+occupy base-row Y=10…74 and extension-row Y=15…79. The service strip starts at
+Y=82 on the 100×100 backplane, outside the seated-card envelope.
 
 The right-angle mating posts point out through the bottom card edge. The 39-pin base
 header is front-side and the 10-pin extension header is back-side; this is required
@@ -186,8 +181,7 @@ both rows. `mating.json` freezes side and rotation as well as XY coordinates.
 
 ## Five-card first-article power budget
 
-R5.V2 replaces the old four-card/B1 estimate with a conservative actual-population
-budget. Details and machine-checked arithmetic are in `rev-b-five-card-power.md` and
+The conservative budget follows the actual five-card population. Details and machine-checked arithmetic are in `rev-b-five-card-power.md` and
 `video-power-audit.json`.
 
 | Card | Conservative +5 V budget |
@@ -201,9 +195,11 @@ budget. Details and machine-checked arithmetic are in `rev-b-five-card-power.md`
 
 The required supply is regulated 5 V rated at least 2 A: 345 mA/17.25% planning
 headroom remains at that design limit, while the selected 4 A adapter retains 2.345 A.
-Operation is frozen to the receipt-tested Mean Well GST25A05-P1J through the
+The specified supply is the Mean Well GST25A05-P1J, subject to the mandatory
+receipt test, through the
 MF-R300 fused/reverse-crowbar-protected barrel input. The routed R5.I7 model gives
 a 4.574 V minimum slot trough at 1.655 A. R5.J1 removed the optional USB4085 power
 path because its fixed PTH lands fall below JLCPCB's published 2-layer annular-ring
 minimum; the USB-TTL console is data-only. Exact protection and receipt-test limits are in
-`rev-b-five-card-power.md`; the old ~712 mA number is historical evidence only.
+`rev-b-five-card-power.md`. The slot trough is a model result; physical
+board acceptance remains pending.
