@@ -38,7 +38,9 @@ Its `#02` banner and new `N fastboot` command identify the change. `N` needs
 no Enter: it copies the pinned V15 core to `0100h`, selects D57 mode 2/count 4
 and D11 19200/8N1, then receives the normal checked V15 extension and ZX0
 stream directly. No stock Janet station request or 9600-baud stage occurs.
-Both named halves are fitted and qualified on CS00015. Direct `N` has booted
+Both named halves were fitted and qualified on CS00015. The machine now
+uses C8; see [its service record](../../../docs/cs00015-service-record.md).
+Direct `N` has booted
 CP/M Plus through NetDisk-v3 and N4, and the inherited `J` service has passed
 two physical API-v2 attaches with zero transport mismatch.
 
@@ -50,12 +52,14 @@ known factory serial) and build **01**; 44 is this project's convention, not
 a factory-assigned number. No byte of the archival #0037 pair is affected;
 that image remains the replica content truth.
 
-## Phase 2 content — the `J` service command
+## The `J` service command
 
 The floppy subsystem (`2325h-29FFh`) is removed; a Net-only machine. Its
 `FF50h+` vectors now point at a `NO DISK - NET ONLY` stub, so the EKDOS
 vector contract keeps its shape. The reclaimed space stores the **T36
 loader engine verbatim** — never relocated, never re-assembled:
+
+Source ranges below include the start and exclude the end.
 
 | Segment | T36 source | stored at | copied to | bytes |
 | --- | --- | --- | --- | ---: |
@@ -75,11 +79,11 @@ T36 restore routine at `0CE1h` to program the 8251 and its 2400-baud D57
 counter 0 before entering the loader. Service mode is one-way until RESET —
 the same contract NetBios has.
 
-Total Phase 2 footprint: 1,732 B in the reclaimed floppy region and 532 B
-in the `F900h` gap. Together with Phase 1 and `V`, the image still has 394 B
+Service footprint: 1,732 B in the reclaimed floppy region and 532 B
+in the `F900h` gap. Together with the monitor additions and `V`, the image still has 394 B
 free there.
 
-## Phase 1 content
+## Monitor additions
 
 | Change | ROM bytes |
 | --- | --- |
@@ -100,7 +104,7 @@ centered `JUKU 2026` mark legible. The demo then clears, restores mode 1,
 re-enables interrupts and returns to the monitor. This avoids the mode-1 ROM
 overlay, whose high-window writes do not reach the framebuffer.
 
-## Checksum convention (recovered here)
+## Checksum convention
 
 The boot verifier checks **eight 2 KiB chunks in two regions**, with stored
 bytes *descending* from a header byte — not the single block-1 sum of the
@@ -113,7 +117,7 @@ Jukuravi-era convention:
 
 All eight sums verify against stock ekta37, and the builder regenerates all
 eight. A patched image that updates only the block-1 byte fails the ROM's
-own verifier and never reaches the command prompt — observed during Phase 1.
+own verifier and never reaches the command prompt.
 
 ## Validation
 
@@ -127,11 +131,8 @@ Behavioral (cosim): four boots — a keyless control, `H`, `V`, and `J` — with
 every count taken as a **difference from the control**. This matters: the
 console renders through the same `D800h+` window the relocated code
 occupies, so absolute read counts there are dominated by framebuffer
-traffic and prove nothing on their own (an earlier version of this guard
-was green for exactly that wrong reason). Two further harness facts are
-load-bearing: the frame interrupt must be enabled (cosim `argv[4]`) or the
-keyboard is never scanned and no command dispatches at all, and typing only
-begins once the banner has been painted.
+traffic and do not prove command execution on their own. Enable the frame interrupt (cosim `argv[4]`) so the keyboard is scanned,
+and begin typing only after the banner has been painted.
 
 Current signals: `H` reads the help text region **+161 bytes** over control;
 `V` adds **3,213** mapped-ROM reads, **1,988,036** copied-body reads and
@@ -147,17 +148,16 @@ The visual guard captures the first completed frame directly from C-cosim
 bus writes after the demo selects mode 3. It compares every framebuffer byte
 with the coordinate-based tunnel oracle and independently requires bilateral
 symmetry, connected horizontal runs, balanced black/white coverage, the dark
-plaque and the exact logo. This was added after MAME and C-cosim both exposed
-the first address-hash implementation as a screen of repeated glyph-like
-tiles; byte diversity alone had incorrectly accepted that version.
+plaque and the exact logo. Byte diversity alone does not establish the
+intended image.
 
 ## Physical validation
 
 The frozen Ekta4401 pair and its immediately preceding service image were
 programmed and qualified on 2026-08-11; that chronology remains in the
-original session records. The current Ekta4402 pair was programmed on
+original session records. The Ekta4402 pair was programmed on
 2026-08-16 through the DOSRAVI/Willem controlled-write path, using only the
-programmer's built-in full read/verify. The fitted devices are labeled
+programmer's built-in full read/verify. The programmed devices were labeled
 `Ekta4402low` (D15) and `Ekta4402high` (D16). Their exact committed SHA-256
 values are `ee87c5b199b409c97909f0eb2b7cfd24cbee2537569bbcdec378631ec8fc85d5`
 and `e76587d94189ce8d1cf33ee95cb50f68f5d62280a9dd675ded006eb32232e6e7`;
@@ -188,7 +188,7 @@ fresh stateless host replacement without resetting the machine. Those system
 and timing records belong to `cpm-plus-juku`.
 
 The service design therefore has deterministic desk validation and direct
-physical validation of the currently fitted byte image. Burning always
+physical validation of the recorded byte images. Burning always
 touches both chips: D15 carries the
 banner and table pointer, while D16 carries the copied loader segments and the
 H/J/V code. Program the named D15/D16 files; never load the combined 16 KiB
