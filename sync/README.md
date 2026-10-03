@@ -130,7 +130,7 @@ The checks above cover these boundaries:
 | Video and device slices | Raster/readout, beeper, USART, IE7/IE10 counters, AG3 trigger/timing and BASIC cartridge behavior. |
 | Jukuravi | D0 fault/session checks, Nano transport/reset/liveness guards, optional AVR compile, and D2 upload/readback/run and heartbeat handling. See [Jukuravi](../spinoffs/jukuravi/README.md) for the hardware boundary. |
 | JukuPoly | Chord, compiled-pattern and library players; cycle/memory/file-size baselines and deterministic WAV checks. See [JukuPoly](../spinoffs/jukupoly/README.md). |
-| READY path | Physical D2 `.037` open-collector polarity through the D30 latch; this does not establish complete WAIT timing. |
+| READY path | Captured D2 `.037` raw-output polarity and D30 sampling in HDL, with asynchronous controls inactive; hardware timing and the complete WAIT path remain outside this bench. |
 | Network ROM | Artifact freshness and ABI, locale, transport, telemetry, video and boot checks through C12. Structural HDL checks include C4 boot, C9–C12 ABI, the C9/C10 POF boundary and a CRC-checked NetDisk-v3 DMA record; bounded CI profiles run a subset. See [network ROM](../spinoffs/jukuravi/network-rom/README.md). |
 
 `sync/cosim_check.sh` uses a default 30 ms simulated-time window and
