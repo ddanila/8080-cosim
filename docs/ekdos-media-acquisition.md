@@ -17,24 +17,27 @@ The factory target from Baltijets doc 003 is disk `JUKU-1`
 
 The raw image geometry is 80 tracks, 10 sectors per track, 512 bytes per sector,
 and one or two sides (409,600 or 819,200 bytes). The `.CPM` extension is an
-archive convention; the loader validates size and geometry.
+archive convention; the loader accepts the size and infers the side count.
+This does not verify filesystem contents or factory provenance.
 
 ## Proven boundary
 
 - `sync/ekdos_fdc_probe.py` boots the default `JUKU1.CPM` through the C oracle
   and reaches the visible `A>` prompt.
-- `docs/juku-top-fdc-verilator-probe.md` and
-  `sync/juku_top_fdc_prompt_check.sh` guard the uninterrupted structural-HDL
-  path to the same prompt.
-- `docs/juku-top-jbasic-verilator-probe.md` extends that path through disk
-  `JBASIC.COM` to visible `READY`.
+- [The FDC report](juku-top-fdc-verilator-probe.md) records the uninterrupted
+  structural-HDL path to the same prompt. Its prompt guard checks the saved
+  report by default; only `JUKU_TOP_FDC_PROMPT_DEEP=1` reruns the simulation.
+- [The BASIC report](juku-top-jbasic-verilator-probe.md) records a separate
+  `JUKPROG2.CPM` run through `JBASIC.COM` to visible `READY`. Its guard
+  reruns only with `JUKU_TOP_JBASIC_DEEP=1`.
 - `docs/vendored-disk-catalog.md` and `docs/basic-disk-extraction.md` own the
   current disk directory and BASIC extraction evidence.
 
 This closes functional public-media acquisition for Tier 2. It does not prove
 that `JUKU1.CPM` is byte-identical to a surviving factory
 `ДГШ5.106.105` disk, and none of these files supplies D8/D94 programming truth.
-Validated physical D2/D6 tables were acquired independently from the disk media.
+Validated physical D2/D6/D8/D94 tables were acquired independently from the
+disk media; see [the PROM reference](../ref/physical-proms/README.md).
 A fresh physical factory-disk dump remains useful preservation evidence but is
 not a fabrication blocker.
 
@@ -51,6 +54,10 @@ sync/juk_disk_check.sh
 sync/ekdos_fdc_probe.py
 sync/juku_top_fdc_prompt_check.sh
 ```
+
+The unqualified HDL command above verifies retained report evidence. A fresh
+HDL run requires the explicit deep flag and a compatible simulator; see
+[simulator compatibility](../sync/README.md#simulator-compatibility).
 
 For a new raw image, record source, filename, geometry, and SHA256 in
 `media/disks/README.md`, then run with
