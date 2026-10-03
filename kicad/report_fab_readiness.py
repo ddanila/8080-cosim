@@ -160,11 +160,18 @@ def build_report(board, out_dir, kicad_cli, kicad_version, drc):
         f"KiCad version: `{kicad_version}`",
         f"Status: **{overall}**",
         "",
+        "Regenerate with `python3 kicad/report_fab_readiness.py`.",
+        "The command reruns KiCad DRC on the named PCB, checks nine fabrication",
+        "files for nonempty content and expected format markers, and records their",
+        "current hashes. It does not export those files or prove they were generated",
+        "from this PCB. Gerber geometry, source-model parity, waiver acceptance,",
+        "and design release require the separate manufacturing gates.",
+        "",
         "## Gates",
         "",
         f"- Electrical/routing gate: **{electrical_gate}**",
         f"- Fabrication-file inventory gate: **{package_gate}**",
-        f"- Total DRC findings: {len(violations)}",
+        f"- DRC violation entries (excluding the separate unconnected list): {len(violations)}",
         f"- Unconnected items: {len(unconnected)}",
         "",
         "## Electrical Blockers",
@@ -203,8 +210,9 @@ def build_report(board, out_dir, kicad_cli, kicad_version, drc):
     elif overall == "REVIEW REQUIRED":
         lines.append(
             "Routing/electrical blockers are clear and the Gerber/drill inventory "
-            "is present. Remaining DRC findings are non-electrical fabrication "
-            "review items that need human disposition before ordering."
+            "is present. Remaining DRC classes are outside this gate's four blocker "
+            "categories; the separate disposition gate must classify and accept them "
+            "before ordering."
         )
     else:
         lines.append(

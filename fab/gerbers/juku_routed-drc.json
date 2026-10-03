@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/drc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-10-03T12:52:40",
+    "date": "2026-10-03T18:19:33",
     "ignored_checks": [
         {
             "description": "Footprint has no courtyard defined",
@@ -45,12 +45,12 @@
                     "uuid": "93d3c822-3a00-48e6-ad68-ae1ed14bcc2d"
                 },
                 {
-                    "description": "Track [GND] on F.Cu, length 8.9000 mm",
+                    "description": "Track [GND] on F.Cu, length 3.5026 mm",
                     "pos": {
-                        "x": 59.9,
+                        "x": 51.0,
                         "y": 206.365
                     },
-                    "uuid": "beed76b3-c463-42bf-82ad-aaa9e765ddd6"
+                    "uuid": "b0b7c7ce-0f3e-4193-b134-23284475cf31"
                 }
             ],
             "severity": "error",
@@ -114,12 +114,12 @@
                     "uuid": "a3602304-16f1-44b4-a233-acb6415da63d"
                 },
                 {
-                    "description": "Track [GND] on B.Cu, length 1.4142 mm",
+                    "description": "Track [GND] on B.Cu, length 7.5000 mm",
                     "pos": {
-                        "x": 200.0,
-                        "y": 31.0
+                        "x": 201.0,
+                        "y": 32.0
                     },
-                    "uuid": "0d3e334e-a809-4e89-8c43-19e7c1020f58"
+                    "uuid": "ed4716e4-ef63-49a7-add7-f613f2ce88df"
                 }
             ],
             "severity": "error",
@@ -244,12 +244,12 @@
             "description": "Missing connection between items",
             "items": [
                 {
-                    "description": "Track [P5V] on F.Cu, length 18.1550 mm",
+                    "description": "Track [P5V] on F.Cu, length 6.4385 mm",
                     "pos": {
-                        "x": 55.71,
-                        "y": 194.2
+                        "x": 51.1573,
+                        "y": 189.6473
                     },
-                    "uuid": "ff0774e3-8b99-4c89-87de-a0a1e46593a4"
+                    "uuid": "4056cb37-8a23-4501-8085-d9a4a9969f4c"
                 },
                 {
                     "description": "PTH pad 16 [P5V] of D52",
@@ -451,12 +451,12 @@
             "description": "Missing connection between items",
             "items": [
                 {
-                    "description": "Track [DB0] on B.Cu, length 2.8284 mm",
+                    "description": "Track [DB0] on B.Cu, length 0.5000 mm",
                     "pos": {
                         "x": 203.0,
-                        "y": 74.0
+                        "y": 73.5
                     },
-                    "uuid": "5530a417-2870-41c0-b6ea-4f878ce7a59e"
+                    "uuid": "e8380c70-c9b5-4e33-a5af-226d6468a148"
                 },
                 {
                     "description": "Track [DB0] on F.Cu, length 10.1250 mm",
@@ -758,12 +758,12 @@
                     "uuid": "78d95e9f-278b-4768-bbfe-d5ec06e429a4"
                 },
                 {
-                    "description": "Track [S_OC] on B.Cu, length 0.7071 mm",
+                    "description": "Track [S_OC] on B.Cu, length 1.5000 mm",
                     "pos": {
-                        "x": 209.0,
-                        "y": 71.5
+                        "x": 209.5,
+                        "y": 71.0
                     },
-                    "uuid": "33c02e0f-ec63-4d22-b2cb-3ffe6d0067a7"
+                    "uuid": "83ca1194-b0ab-4dda-9a4b-a4922f5c6e24"
                 }
             ],
             "severity": "error",

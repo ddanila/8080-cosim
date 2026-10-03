@@ -5,11 +5,18 @@ KiCad CLI: `/usr/bin/kicad-cli`
 KiCad version: `10.0.6`
 Status: **NOT READY**
 
+Regenerate with `python3 kicad/report_fab_readiness.py`.
+The command reruns KiCad DRC on the named PCB, checks nine fabrication
+files for nonempty content and expected format markers, and records their
+current hashes. It does not export those files or prove they were generated
+from this PCB. Gerber geometry, source-model parity, waiver acceptance,
+and design release require the separate manufacturing gates.
+
 ## Gates
 
 - Electrical/routing gate: **FAIL**
 - Fabrication-file inventory gate: **FAIL**
-- Total DRC findings: 798
+- DRC violation entries (excluding the separate unconnected list): 798
 - Unconnected items: 59
 
 ## Electrical Blockers
