@@ -11,6 +11,10 @@ modeled endpoint whose reference has a footprint on the source PCB or
 either routed variant. A separate check catches modeled source-PCB pads
 missing from a routed variant; off-board connectors are outside both checks.
 
+Regenerate with `/usr/bin/python3 kicad/report_main_board_erc_parity.py`
+using KiCad Python bindings. The command reruns ERC and source schematic
+parity; it does not repair copper or establish physical continuity.
+
 ## Summary
 
 | Check | Count | Result |
@@ -50,14 +54,6 @@ boundaries and `12` have closed or intentional dispositions.
 
 The complete machine-readable singleton-endpoint backlog is
 `docs/main-board-unresolved-endpoints.csv`.
-
-## ERC types
-
-- None.
-
-## Most affected references
-
-- None.
 
 ## Release interpretation
 

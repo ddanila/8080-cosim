@@ -27,8 +27,8 @@ after any source or report change; use `--check` to detect a stale tracked packe
 | `docs/main-board-unresolved-endpoints.csv` | `8048d1afc5e01e862a46f435110b6f1330318ada8ffa20ce22c06e2d4cff8f56` |
 | `docs/ppi-physical-pin-mapping.json` | `68e4f7b0c27553a0575ce62aab2470aef26618ff797dc69c0f6d74e8e765c08f` |
 | `fab/gerbers/juku_routed-drc.json` | `fb9f3eed1719f673a2af0c05d8dcf4d0e85ec4cd80534ce0ee1024bf701e13f6` |
-| `fab/audit/main-board-erc.json` | `8dc45308c5a0d1bbffa0afe564add62a29878af0992873933846a30bedca8525` |
-| `fab/audit/main-board-parity-drc.json` | `1629f10fb0768282ed95e783cb9e4fbf379965cce456c80aea82dee18405ecc6` |
+| `fab/audit/main-board-erc.json` | `3f4133d1dd927dba652ba0e48914724e3ca829f76fa81e6fb5d7830d7c2a4f03` |
+| `fab/audit/main-board-parity-drc.json` | `7d9a927f3a88dfd4c2c54d1fa115c8ccbbcc6895ca7b12a8ca5c16910d1424c7` |
 
 The raw routed DRC lists 59 unconnected items, matching the
 tracked DRC disposition count.

@@ -266,6 +266,9 @@ def main() -> int:
         "modeled endpoint whose reference has a footprint on the source PCB or",
         "either routed variant. A separate check catches modeled source-PCB pads",
         "missing from a routed variant; off-board connectors are outside both checks.", "",
+        "Regenerate with `/usr/bin/python3 kicad/report_main_board_erc_parity.py`",
+        "using KiCad Python bindings. The command reruns ERC and source schematic",
+        "parity; it does not repair copper or establish physical continuity.", "",
         "## Summary", "", "| Check | Count | Result |", "| --- | ---: | --- |",
         f"| Raw ERC error violations | {len(violations)} | {'GUARDED' if singleton_erc_ok else 'BLOCK'} |",
         f"| Unexpected ERC/mapping findings | {unexpected_erc_count} | {'PASS' if singleton_erc_ok else 'BLOCK'} |",
@@ -299,10 +302,13 @@ def main() -> int:
     ]
     lines += [f"| {priority} | {priority_counts.get(priority, 0)} |" for priority in ("P0", "P1", "P2")]
     lines += ["", "The complete machine-readable singleton-endpoint backlog is",
-              "`docs/main-board-unresolved-endpoints.csv`.", "", "## ERC types", ""]
-    lines += [f"- `{typ}`: {count}" for typ, count in sorted(by_type.items())] or ["- None."]
-    lines += ["", "## Most affected references", ""]
-    lines += [f"- `{ref}`: {count}" for ref, count in top_refs.most_common(20)] or ["- None."]
+              "`docs/main-board-unresolved-endpoints.csv`."]
+    if by_type:
+        lines += ["", "## ERC types", ""]
+        lines += [f"- `{typ}`: {count}" for typ, count in sorted(by_type.items())]
+    if top_refs:
+        lines += ["", "## Most affected references", ""]
+        lines += [f"- `{ref}`: {count}" for ref, count in top_refs.most_common(20)]
     lines += ["", "## Release interpretation", ""]
     if duplicate_owners:
         lines += ["Duplicate board-JSON endpoint memberships must be removed:", ""]
