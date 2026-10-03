@@ -1,9 +1,9 @@
-# JPS v2 tremolo vertical-slice contract
+# JPS v2 tremolo contract
 
-Status: guarded M4 target design, 2026-09-01.  The host/oracle evidence is
-implemented; the 8080 experiment described here is not yet an accepted player
-feature.  The accepted M3 envelope player and JPS v1 output remain the
-fallback.
+Status: implemented frame-boundary tremolo; three capability-03 tracks are
+included in the mixed library. Physical listening was acceptable but inconclusive
+for Dark Halls/Suspense. Qualification is scoped to the delivered payloads in
+[OPL-PLAN-STATUS.json](OPL-PLAN-STATUS.json), not arbitrary future conversions.
 
 ## Scope and evidence
 
@@ -17,15 +17,16 @@ survives independent 4-bit quantization in 69,978 of 405,454 direct-AM channel
 frames and never changes any of the 232,212 FM-modulator-only channel frames.
 [`OPL-TREMOLO-CANDIDATE-M4.json`](OPL-TREMOLO-CANDIDATE-M4.json) establishes
 one real joint envelope/tremolo fit worth carrying through a reversible target
-experiment.  These reports justify an experiment, not default enablement.
+experiment. Delivery additionally requires the target, full-track and listening
+evidence listed below.
 
 ## Compatibility boundary
 
-Target support is compiled only in a new `-P5=1` experimental build, together
+Target support is compiled with `-P5=1`, together
 with the existing `-P4=1` envelope support.  The frozen `-P2=1` G0 player and
 the `-P2=1 -P4=1` M3 envelope player remain separately reproducible.
 
-The experimental library player accepts:
+The tremolo-only extension build accepts:
 
 - `JPS\1`, capability `00h`: the original packet ABI;
 - `JPS\2`, capability `01h`: fitted envelopes only;
@@ -34,7 +35,7 @@ The experimental library player accepts:
 
 Capability bit 0 means fitted envelopes and bit 1 means tremolo.  Tremolo
 cannot appear without the envelope capability.  An envelope-only player must
-reject capability `03h`; an experimental player must reject tremolo packet
+reject capability `03h`; a tremolo-capable player must reject tremolo packet
 bits when the header advertises only capability `01h`.  The whole variable
 row stream is still preflighted before the PIT is touched.
 
@@ -84,8 +85,8 @@ the next sample batch, then joins normal preparation immediately before phase
 steps are loaded.  Thus modulation cannot feed back into attack, decay,
 sustain, or release state.
 
-The existing `ENV2_FLAGS` byte uses only its low nibble.  In the experimental
-build, packet depth bits 2–3 are shifted into internal flag bits 4–5, already
+Envelope flags occupy the low nibble of `ENV2_FLAGS`. In the tremolo build,
+packet depth bits 2–3 are shifted into internal flag bits 4–5, already
 in table-page-offset form (`00h`, `10h`, `20h`, or `30h`).  No new per-channel
 byte is required.  New persistent state is exactly the two-byte shared phase;
 scratch uses registers which normal preparation reloads before entering the
@@ -96,59 +97,20 @@ the same phase as `simulate_tremolo(..., start_frame=0)`.  The phase advances
 even when all three current depths are zero in a capability `03h` song, which
 keeps later notes aligned to absolute source time.
 
-## Static resource guard
+## Resource and cycle guards
 
-The M3 enhanced player is 4,537 bytes, ends at `12B9h`, has 49 declared state
-bytes, and leaves 1,351 bytes before the `1800h` song window.  This experiment
-may add:
+The tremolo layer adds exactly two persistent phase bytes, 64 fixed table bytes,
+no per-channel byte and no tone-packet growth. The tremolo-only player declares
+51 state bytes; exact map and cycle evidence is in
+[OPL-TREMOLO-TARGET-M4.json](OPL-TREMOLO-TARGET-M4.json).
+The combined tremolo/vibrato build is measured independently under the
+[pitch contract](JPS2-PITCH-DESIGN.md).
 
-- 64 bytes of fixed attenuation tables;
-- exactly two declared state bytes;
-- bounded parser, dispatch, and frame-boundary code, with no generated target
-  code and no dynamic allocation;
-- zero bytes per tone packet and therefore zero direct JPS growth.
-
-Before acceptance, the assembled map must still end below `1800h`, declared
-state must be exactly 51 bytes, and the existing stack/JPS size guards remain
-unchanged.  These are limits to measure, not permission to consume all 1,351
-available bytes.
-
-## Cycle guard
-
-The intended implementation does one phase lookup/update and at most three
-clamped table subtractions at the 50 Hz boundary.  A conservative instruction
-count is below 450 additional 8080 cycles on an enabled frame, roughly 1.3% of
-the nominal 34,000-cycle frame and well below the rough 3,800-cycle combined
-orientation budget.  This estimate is not an acceptance result.
-
-The C-cosim report must measure empty, all-zero-depth, one-depth, and
-three-depth frames.  Envelope, tremolo, Escape polling, percussion, and row
-parsing share the single G2 budget: effective sample rate must remain at least
-90% of the matching frozen baseline, full-song duration must remain within 1%
-of source timing, and the phase-step table must match the selected measured
-sample rate.  No reduction of pitch range, drum concurrency, Escape handling,
-or the sample hot loop is permitted.
-
-## Guarded implementation order
-
-1. Extend pure host encoding and malformed-packet tests.  Prove capability
-   `01h` bytes remain identical and `03h` is rejected by the old player.
-2. Add the separate `-P5=1` dispatch/parser state while keeping both disabled
-   compatibility profiles cycle-identical.
-3. Add the shared-phase preparation routine and a synthetic target fixture.
-   Compare every frame's three prepared mixer levels with the Python model.
-4. Generate a report containing binary/map growth, state, hot-loop hash,
-   exact enabled/disabled cycle distributions, effective rates, duration, and
-   JPS sizes.
-5. Render a bounded real representative excerpt with depth zero and the
-   selected depth for host/reference comparison.
-6. Perform CS00000 A/B listening before enabling tremolo in general library
-   conversion.
-
-Host policy remains disabled during steps 1–5.  A nonzero depth may eventually
-be emitted only for a direct AM path, a change which survives exact 4-bit
-quantization, and a joint envelope/tremolo fit which passes the recorded
-quality gates.  Song-specific overrides are forbidden.
+Frame-boundary effects, row parsing, percussion and Escape share one
+[rate/memory budget](OPL-REDUCTION-PLAN.md). Disabled paths retain their matched
+compatibility profiles, the sample loop is frozen, the player must end below
+`1800h`, and full-track measurements must determine calibration and delivery.
+No tone-range, drum or Escape omission may buy cycles.
 
 ## Failure and rollback rules
 
@@ -169,81 +131,20 @@ This slice has independent acceptable stopping points:
 The success condition is therefore the best measured subset the hardware can
 support—not completion of every OPL feature named in the wider plan.
 
-## Synthetic implementation checkpoint
+## Qualification evidence
 
-Steps 1–3 are implemented in the separate `-P5=1` build.  The strict host
-encoder retains byte-identical capability `01h` output for omitted or zero
-depth, emits capability `03h` without growing a tone packet, and rejects bad
-depth types/ranges and depth on a key-off.  Library preflight proves that the
-M3 player rejects capability `03h`, while the M4 player accepts it and still
-rejects depth bits under capability `01h` before any PIT write.
+- [Target report](OPL-TREMOLO-TARGET-M4.json): exact prepared amplitudes, phase,
+  state/map, enabled/disabled profiles and frozen sample loop.
+- [Bounded real report](OPL-TREMOLO-REAL-M4.json) and
+  [full-track report](OPL-TREMOLO-FULL-M4.json): generic joint fits, song sizes,
+  measured rates/duration and target/reference render hashes.
+- [M6 physical record](sessions/cs00000-jukupoly-m6-physical/README.md): exact
+  tested payloads and listening limits. A delivered capability does not imply
+  every source instrument benefits from tremolo.
 
-The 200-frame three-channel target fixture exercises depths one, two, and
-three concurrently.  C-cosim compares every prepared mixer immediate with the
-host table, verifies the final 16-bit phase exactly, and confirms that all
-unmodulated envelope bases remain at level 15.
-
-[`OPL-TREMOLO-TARGET-M4.json`](OPL-TREMOLO-TARGET-M4.json) completes the
-synthetic map and timing gates.  The experimental library player is 4,863
-bytes, grows 326 bytes over M3, ends at `13FFh`, and leaves 1,025 bytes before
-the song window.  Declared state is exactly 51 bytes and the frozen 64-byte
-sample-loop hash remains unchanged.  Both the v1 Doomgate execution profile
-and the capability-`01h` envelope profile are cycle-identical to their M3
-counterparts.
-
-Against the same three active constant-envelope voices, enabling capability
-`03h` costs 195 boundary cycles at depth zero, 258 with one modulated voice,
-and 374 with all three modulated.  The measured maximum is below the guarded
-450-cycle estimate.  The selected three-depth configuration uses 140 samples
-per frame and a measured 6,970 Hz phase table; C-cosim produces 6,962.7 Hz,
-49.734 music frames/s, 4.021 seconds for a 4.000-second score, and a 42,135
-cycle worst frame.  This exceeds the 6,401.1 Hz floor, stays inside the 1%
-duration guard, and is less severe than M3's 42,670-cycle synthetic worst
-frame.  Empty, zero-depth, and one-depth configurations also pass with their
-explicitly measured batches/rates.  Capability changes no packet or JPS size.
-
-Steps 1–4 therefore pass.
-
-The bounded real step also passes in
-[`OPL-TREMOLO-REAL-M4.json`](OPL-TREMOLO-REAL-M4.json).  The generic opt-in
-converter evaluates 61 selected notes in the first 66 seconds of “Opening to
-Hell”; ten have a direct AM path, a surviving 4-bit source change, and positive
-joint-fit improvement.  They include the independently selected logical note
-100.  No track name or instrument override participates in the policy.
-
-The controlled envelope-only and tremolo JPS files are both exactly 2,090
-bytes.  With the per-song measured choice of 143 samples/frame and a 7,100 Hz
-phase table, the tremolo result measures 7,100.2 Hz, 49.652 frames/s, and
-66.463 seconds for 66.000 seconds of source.  Its 40,943-cycle worst frame is
-below the M3 and M4 synthetic worst frames.  Cycle-rendered envelope-only and
-tremolo WAVs differ, and an exact 44.1 kHz Nuked reference hash is recorded.
-
-Step 5 is complete for this bounded representative excerpt.  Complete-track
-size/duration coverage and CS00000 A/B remain open; tremolo is available only
-through explicit `--enhanced-tremolo`, while normal conversion continues to
-default to depth zero.
-
-For complete-track tooling, `fit_envelope_variants` evaluates all tremolo
-depth transforms while generating each candidate envelope only once.  This is
-an exact host-side search optimization: a regression compares every returned
-fit with independent single-transform searches, and the committed real
-candidate report remains byte-identical.  It changes no packet, target code,
-or hardware budget.
-
-The complete-track gate now passes in
-[`OPL-TREMOLO-FULL-M4.json`](OPL-TREMOLO-FULL-M4.json).  Across 279.98 seconds
-of “Opening to Hell,” the generic policy selects 592 logical notes and emits
-38 direct, quantization-surviving, positive-benefit tremolo events.  The
-maximum emitted depth is two levels; 1,670 source frames change after 4-bit
-quantization and the joint fits improve squared error by 1,734.  The
-envelope-only and tremolo JPS files are both 10,504 bytes, so the capability
-adds no song bytes and remains well under G5's 30 KiB soft ceiling.
-
-The measured full-track choice is 142 samples/frame with a 7,100 Hz phase
-table.  C-cosim measures the tremolo player at 7,059.7 samples/s, 49.716 music
-frames/s, and 281.577 seconds versus 279.98 seconds of source (0.57% long).
-Its 43,141-cycle worst frame, unchanged sample-loop hash, `13FFh` player end,
-and identical JPS sizes pass the combined G1--G5 gates.  Full target and exact
-Nuked WAV hashes are committed in the report.  This completes the automated
-M4 gates; CS00000 A/B remains the only M4 acceptance gate, and tremolo remains
-opt-in until it passes.
+The generic converter enables this reduction through `--enhanced-tremolo`;
+only direct, quantization-surviving, beneficial fits receive depth. The mixed
+library selection and fallbacks are recorded in the generated plan-status report.
+Use `sync/jukupoly_check.sh` and `sync/jukupoly_library_check.sh` for host/target
+semantics and preflight, and the linked report writers for exact measurement
+freshness. Completed experiment chronology is in Git.
