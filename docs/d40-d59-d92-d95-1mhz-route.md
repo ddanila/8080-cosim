@@ -1,8 +1,8 @@
 # D40/D59/D92/D95 1 MHz route review
 
-Status date: 2026-07-23.
+Owner continuity: 2026-07-23.
 
-Status: **OWNER-CONTINUITY CLOSED / MODEL AND ZERO-OPEN ROUTE GUARDED**
+Status: **OWNER-CONTINUITY CLOSED / CURRENT ROUTING RELEASE HELD**
 
 This note records the long timing trace measured on the target `.009` board
 and reconciles it with both recovered electrical-schematic revisions. It
@@ -85,31 +85,20 @@ Runnable simulation retains a CPU-only MA-bus scaffold while video uses its
 SIM-ONLY second DRAM port; it does not apply an unproved D41/D53 slot schedule
 to the behavioral RAS/CAS model.
 
-The PCB migration removes the two obsolete PHI2TTL branches into D92, retains
-the explicit D92.2/.3 bottom-copper tie, and merges all former video-enable
-copper into `LATCH_B`. The initial correction exposed three real opens. The
-two short gaps were repaired directly; the long LATCH_B transaction displaced
-29 removable items across nine nets. Restoring the affected routes left one
-RAIL_H channel at D78/D79 with no conservative path across all tested 0.125 mm
-and 0.10 mm grid offsets. The equivalent source-proved RAIL_H component was
-closed instead from D76.1 to D84.1, and four electrically redundant abandoned
-stubs were removed under
-`ref/routing/d40-1mhz-dangling-prune.json`.
+The endpoint and direct-tie invariant is executable in
+`kicad/check_d40_1mhz_route.py`; the one-shot historical migration is retained
+as `kicad/apply_d40_1mhz_route.py`. The checker also guards the later `.009`
+R35 split: D29.1 and R35.1 belong to `PHI2TTL`, while D35.13 belongs to
+`PHI2_POST_R35`.
 
-The promoted and candidate boards are byte-identical at this checkpoint and
-pass the connectivity, electrical DRC, and dangling-item checks. The exact
-endpoint and direct-tie invariant is executable in
-`kicad/check_d40_1mhz_route.py`; the guarded one-shot migration is retained as
-`kicad/apply_d40_1mhz_route.py`.
-
-The current checker also guards the later `.009` R35 split: D29.1 and R35.1
-belong to `PHI2TTL`, while D35.13 belongs to `PHI2_POST_R35`. It passes on
-the present source PCB. The present routed PCB has 49 unconnected items after
-subsequent source corrections, so its full connectivity check remains held;
-the byte-identical and complete-route statement above describes this earlier
-1 MHz checkpoint only. Its exact checker version is preserved at
-`ref/routing/tool-snapshots/check_d40_1mhz_route_zero_open.py` under the
-historical SHA256 in `ref/routing/zero-open-promoted-topology.json`.
+The zero-open routing result belongs to the earlier snapshot identified in
+[the promoted-topology record](../ref/routing/zero-open-promoted-topology.json).
+Its exact checker is retained in
+`ref/routing/tool-snapshots/check_d40_1mhz_route_zero_open.py`.
+Subsequent source corrections leave current whole-board connectivity held;
+see [the routed audit](routed-refresh-audit.md) and
+[factory-wire fidelity](factory-wire-route-fidelity.md) for the current state.
+The original route-search and copper-repair sequence remains in Git history.
 
 ## D96 exclusion
 
