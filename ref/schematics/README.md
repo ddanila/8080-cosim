@@ -6,13 +6,13 @@ Two electrical-schematic revisions of the processor module exist; **keep both**:
   its sheet 3 is the tape/serial subsystem.
 - **`.009 Э3`** — the later FDC-era revision, photographed by the owner under
   `ref/photos/dgsh5-109-009-e3/` (2026-07-18). Its sheet 3 is the КР1818ВГ93
-  floppy controller. This closes the "Document gap" tracked in `PLAN.md`: the
-  `.009 Э3` was not public anywhere. Where the two diverge (sheet-3 FDC vs
-  tape, and post-`.006` change notes), the `.009` wins; elsewhere they agree
-  and the `.006` scan is the higher-resolution source. See that folder's
-`README.md` for the per-sheet photo catalog.
+  floppy controller. Use its exact-revision evidence for the `.009` target;
+  differences also occur outside sheet 3. The `.006` scan is useful for finer
+  detail where compatibility is verified, not a substitute for revision
+  reconciliation. See [the photo catalog](../photos/dgsh5-109-009-e3/README.md)
+  for the per-sheet inventory.
 The checksum-guarded reviewed transcription/divergence index is
-`dgsh5-109-009-e3-notes.md`.
+[the electrical audit](dgsh5-109-009-e3-notes.md).
 
 `juku_es101_processor_module.pdf` is the primary factory electrical schematic
 for the ДГШ5.109.006 processor module. It outranks emulator inference for the
@@ -33,7 +33,7 @@ sheets 2-6 of the `ДГШ5.109.009 СБ` assembly drawing: the таблица с
 (wire/cable connection table, sheets 2-5) and the change-registration sheet 6.
 Sheet 1 of the same document is photographed in
 `ref/photos/dgsh5-109-009-sb/`. The reviewed transcription is
-`dgsh5-109-009-sb-wire-table.md`.
+[the assembly wire table](dgsh5-109-009-sb-wire-table.md).
 
 ## PDF page mapping
 
