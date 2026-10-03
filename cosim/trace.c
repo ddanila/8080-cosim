@@ -1248,7 +1248,7 @@ static void wb(void* u, uint16_t a, uint8_t v) {
   trace_bus_event("MW", a, v);
   unsigned idx = 0;
   int ov = overlay(a, &idx);
-  // Monitor 3.7's low-ROM dispatcher writes its return frame behind page-zero
+  // EktaSoft 3.7's low-ROM dispatcher writes its return frame behind page-zero
   // ROM. High-ROM and cartridge windows remain read-only overlays; allowing
   // those writes corrupts the independently guarded Monitor 3.3 framebuffer.
   if (ov && !(mode == 0 && a <= 0x3FFF)) return;

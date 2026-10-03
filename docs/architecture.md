@@ -26,15 +26,17 @@ freely editable sources that synchronize bidirectionally.
 ## LVS
 
 `sync/check.sh` elaborates `hdl/juku_top.v` with Yosys and compares its mapped
-instance/pin net partitions with a KiCad netlist. When KiCad CLI is unavailable,
-the same checker reads `board.json` directly.
+instance/pin net partitions with a KiCad netlist. When a compatible KiCad CLI export is unavailable, the checker reads
+`board.json` directly. Yosys treats device internals as black boxes for this
+comparison; LVS checks their mapped connections, not chip behavior.
 
 The comparison uses connectivity rather than net names: mapped endpoints are
 equivalent when they are partitioned into the same nets. `sync/map.json`
 contains the refdes/instance and pin/port mappings.
 
 The current check is intentionally partial. Unmapped analog parts, placement-
-only footprints, and pins omitted from `board.json` are outside its proof. A
+only footprints, simulation-only ports, power-only ports, and omitted pins
+are outside its proof. A
 green result must never be interpreted as full-board electrical completeness.
 
 ## Runnable structural model
@@ -45,8 +47,8 @@ where the physical circuit is not yet known. `sync/lvs.py` explicitly excludes
 those non-board ports from connectivity comparison.
 
 The independent C implementation under `cosim/` is the fast behavioral oracle.
-Lockstep/framebuffer and subsystem tests compare it with HDL. The current MAME
-Juku driver is an additional reference for memory/I/O maps, media geometry, and
+Lockstep/framebuffer and subsystem tests compare it with HDL. The vendored MAME
+Juku driver in `ref/mame_juku.cpp` is an additional reference for memory/I/O maps, media geometry, and
 raster behavior, but schematic/measurement evidence wins when they disagree.
 
 ## Physical artifacts

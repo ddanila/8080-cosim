@@ -1,7 +1,5 @@
 # Juku E5104 behavioral hardware map
 
-Status date: 2026-07-17.
-
 This is the concise software-visible map used by the emulator and digital-twin
 tests. The pinned source is `ref/mame_juku.cpp`; the physical endpoint model is
 `kicad/juku.board.json`. MAME is a behavioral oracle, not proof of every PCB
@@ -22,10 +20,9 @@ connection.
 | 2 | cartridge at `4000-BFFF`, BIOS at `D800-FFFF` | other addresses are RAM |
 | 3 | none | all RAM |
 
-The low BIOS window has one guarded write-behind behavior: Monitor 3.7's
-low-stack dispatcher maps ROM for instruction reads while writing its return
-frame into underlying RAM at `0x00E4..0x00E5`, then restores the caller's
-mapping. The high BIOS and cartridge windows remain write-protected overlays;
+Mode 0 reads the low BIOS overlay while writes to `0x0000..0x3FFF` reach
+underlying RAM. EktaSoft 3.7's low-stack dispatcher uses this behavior for
+its return frame at `0x00E4..0x00E5`, then restores the caller's mapping. The high BIOS and cartridge windows remain write-protected overlays;
 allowing high-ROM writes corrupts the independently guarded Monitor 3.3 idle
 framebuffer. `hdl/sim/mem_decode_tb.v`, the Monitor 3.3 oracle, and the default
 EKDOS WBOOT reload guard preserve this asymmetric contract.
@@ -42,8 +39,9 @@ a power-cycled capture. The older behavioral reconstruction remains under
   significant bit first.
 - The current runnable HDL uses an abstract second DRAM read port. The physical
   D42/D43 serializers and part of the arbitration mesh are structural, but the
-  exact shared-memory slot timing remains blocked on D41 and adjacent
-  one-shot/mux/counter continuity. D94 `.092` is constrained as FDC control,
+  exact shared-memory slot schedule remains unresolved. D41 package
+  connectivity is source-closed; source closure does not establish its dynamic
+  arbitration schedule or every remote timing-bundle connection. D94 `.092` is constrained as FDC control,
   not video-slot timing. See `video-slot-timing-audit.md`.
 
 ## I/O map
@@ -73,14 +71,14 @@ bus/wait PROM and must not be described as the I/O decoder.
 
 ## Physical-design boundary
 
-The digital twin reaches Monitor and EKDOS prompts, and the modeled endpoints
-pass structural comparison. That does not release the current PCB for
-fabrication: routed-snapshot parity, D94's remaining input/enable/output
-boundary, and 3 official FDC-support devices with untraced functional pins
-remain open design items. Validated physical D2 contents and the measured
-D2/D30/D105/D13 WAIT/READY handoff are adopted in the source PCB and HDL;
-D30.8->D29.7 and D30.11->D105.2 are owner-confirmed; only the exact `H`
-pull-up/contact remains as the smaller explicit boundary in this cluster.
-The promoted route carries that corrected topology with exact source-pad
-identity and a verified local fabrication package. `PLAN.md` is the living
-functional/factory-construction release checklist.
+The Monitor first-write guard and mapped-endpoint LVS comparison are runnable
+checks. Recorded full-prompt evidence has a separate
+[Verilator compatibility limitation](../sync/README.md#simulator-compatibility).
+Neither result releases the PCB for fabrication.
+
+Physical D2 contents and the measured D2/D30/D105/D13 WAIT/READY handoff are
+adopted in the source model and HDL; the exact `H` pull-up/contact remains a
+boundary. Local route/package checks cover that cluster, not the entire board.
+See [manufacturing readiness](replica-manufacturing-readiness.md), the
+[gap ledger](board-fidelity-gap-ledger.md), and [project plan](../PLAN.md) for
+current routing, functional-pin, sourcing and construction holds.
