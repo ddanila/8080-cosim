@@ -7,8 +7,9 @@ and remaining physical boundaries.
 
 - Target: processor module `7.102.158`, documented by
   `ДГШ5.109.009 ПЭЗ` in `ref/Juku_official_chip_BOM.pdf`.
-- Primary electrical evidence: the three schematic sheets in
-  `ref/schematics/`, the official parts list, and owner continuity readings.
+- Primary electrical evidence: the exact `.009` schematic photographs,
+  official `.009` parts list, and owner continuity readings. The older `.006`
+  scan under `ref/schematics/` requires revision reconciliation.
 - Physical placement evidence: `es101_emaplaat.pdf`, the 50 owner board photos
   in this directory, and the 26 owner photographs of the authoritative
   `ДГШ5.109.009 СБ` assembly drawing under `ref/photos/dgsh5-109-009-sb/`.
@@ -228,22 +229,15 @@ right-row dogleg, and their remote endpoints remain held. Both reflected solder
 overlaps put D14 into the same scraped/reworked two-row field, while the package
 body hides the component-side dogleg, so D14.2/.7 now require direct continuity.
 
-For D11, two component views instead show that the drawing's long hole column
-and unique L trace form an auxiliary drilled/copper field beside the package,
-not a 14-pad package row. Four position-159 landmarks are registered. The
-previously cited solder scar was assigned to D11 pins 4-6 using a solder fit
-four joint rows too high. Cross-aligning the D11 and D27 two-face landmarks
-corrects D11's reflected field to `y=1610..2211` in
-`PXL_20260710_200506061.jpg`; the scar is near the corrected upper rows
-and cannot assign the position-159 bridge. The corrected package-local
-projection puts the upper auxiliary landing beside an isolated open via and
-the three lower landmarks among several vias and parallel traces without a
-unique four-hole match. Recheck the other solder overlaps with these shifted
-projections; the first two complete tiles repeat that ambiguity after a
-D11-corner match, while the other two partial views put the upper point
-at their top edges and show no unique lower four-hole match. All four
-listed views are now reviewed at corrected coordinates. D11 pin/net,
-bridge, and remote endpoints remain held.
+For D11, two component views register an auxiliary drilled/copper field
+beside the package, not a 14-pad package row. Owner crops show bare substrate
+across the local left-to-junction front gap; the projected solder-side annuli
+also have no visible local copper bridge. A remote or fitted conductor remains
+possible. The lower-exit solder hole is a candidate, not a proved cross-face
+match. All four solder overlaps have been reviewed without closing the full
+four-hole pattern. D11 pin/net, bridge, upper-rail and remote endpoints remain
+held for direct continuity. Registration details and navigation coordinates are
+in [the factory modification report](../../../docs/factory-modification-disposition.md#d11-position-159-field-registration).
 
 ## Placement conclusions retained
 
