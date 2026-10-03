@@ -2,7 +2,7 @@
 import math
 import re
 import sys
-from collections import Counter, defaultdict
+from collections import defaultdict
 from pathlib import Path
 
 
@@ -11,10 +11,8 @@ DEFAULT_BOARD = ROOT / "kicad" / "juku_routed.kicad_pcb"
 DEFAULT_REPORT = ROOT / "docs" / "replica-power-trace-readiness.md"
 
 POWER_NETS = ["GND", "P5V", "P12V", "M12V", "M5V_DERIVED"]
-# The zero-open rip-up/recovery route replaces portions of the former widened
-# topology with clearance-safe 0.20 mm paths and fine-via bridges.  Pin the
-# resulting power inventory so later routing changes cannot silently alter the
-# reviewed DFM envelope; KiCad DRC remains the clearance authority.
+# Accepted inventory baseline; deviations require review. Counts and widths
+# do not establish connectivity, clearance, or electrical capacity.
 EXPECTED_POWER_SEGMENTS = 2738
 EXPECTED_WIDENED_SEGMENTS = 284
 BASELINE_WIDTH_MM = 0.20
@@ -86,10 +84,6 @@ def fmt_mm(value):
     return f"{value:.3f}"
 
 
-def fmt_width(value):
-    return f"{value:.4f}".rstrip("0").rstrip(".")
-
-
 def build_report(board):
     rows = parse_segments(board)
     power_rows = [row for row in rows if row["net"] in POWER_NETS]
@@ -121,7 +115,6 @@ def build_report(board):
     status = "READY" if not failures else "NOT READY"
     total_len = sum(row["length"] for row in power_rows)
     widened_len = sum(row["length"] for row in power_rows if row["width"] > BASELINE_WIDTH_MM + 1e-9)
-    width_counts = Counter(round(row["width"], 4) for row in power_rows)
 
     lines = [
         "# Replica power-trace readiness",
@@ -129,11 +122,13 @@ def build_report(board):
         f"Board: `{repo_relative(board)}`",
         f"Status: **{status}**",
         "",
-        "This report records the routed main-board power traces after",
-        "`kicad/widen_power_v2.py`. It is a fabrication-readiness guard for the",
-        "authentic 2-layer board: the freerouted 0.20 mm baseline remains where",
-        "clearance constrained widening, while all geometry is still checked by",
-        "the KiCad DRC gate in `kicad/report_order_readiness.py`.",
+        "This report counts straight track segments on the five named power nets",
+        "and checks their widths against the configured inventory and width limits.",
+        "It excludes vias, arcs, pads, and zones; it does not check connectivity,",
+        "clearance, voltage drop, or current capacity. Run the separate",
+        "`kicad/report_order_readiness.py` gate for fabrication checks.",
+        "",
+        "Refresh with `python3 kicad/report_replica_power_trace_readiness.py`.",
         "",
         "## Summary",
         "",
@@ -141,7 +136,7 @@ def build_report(board):
         f"- Widened power segments (`>{BASELINE_WIDTH_MM:.2f} mm`): {widened}",
         f"- Total routed power length: {fmt_mm(total_len)} mm",
         f"- Widened routed power length: {fmt_mm(widened_len)} mm",
-        f"- Width clamp: {BASELINE_WIDTH_MM:.2f} mm to {MAX_WIDTH_MM:.2f} mm",
+        f"- Accepted width range: {BASELINE_WIDTH_MM:.2f} mm to {MAX_WIDTH_MM:.2f} mm",
         "",
         "## Nets",
         "",
@@ -164,16 +159,6 @@ def build_report(board):
             ", ".join(layers) if layers else "-",
         ]))
 
-    lines.extend([
-        "",
-        "## Width Histogram",
-        "",
-        "| Width mm | Segments |",
-        "| ---: | ---: |",
-    ])
-    for width, count in sorted(width_counts.items()):
-        lines.append(table_row([fmt_width(width), count]))
-
     lines.extend(["", "## Disposition", ""])
     if failures:
         lines.append("Do not use this routed package until the failures below are resolved.")
@@ -181,8 +166,8 @@ def build_report(board):
         lines.extend(f"- {failure}" for failure in failures)
     else:
         lines.append(
-            "The routed power nets match the reviewed current-route widening envelope: "
-            f"{EXPECTED_POWER_SEGMENTS} power segments present, {EXPECTED_WIDENED_SEGMENTS} widened where local clearance allowed, "
+            "The parsed power-track inventory matches the configured baseline: "
+            f"{EXPECTED_POWER_SEGMENTS} power segments present, {EXPECTED_WIDENED_SEGMENTS} wider than the baseline, "
             "no power segment below the routed baseline, and no widened segment above "
             "the 1.00 mm clamp. KiCad DRC remains the clearance authority."
         )
