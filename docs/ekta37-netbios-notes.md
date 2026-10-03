@@ -3,16 +3,17 @@
 Status: hand-written analysis of the pinned `roms/ekta37.bin` (EktaSoft '88
 Serial #0037, RomBios 3.43m, SHA256
 `fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`).
-Byte-level claims are verified against the image and
-reproducible with the commands at the end; interpretations are labeled.
+The commands at the end inspect selected banners and USART code and run
+the archived-system bootstrap regression. Physical and cross-project claims
+use the evidence cited in their sections; interpretations are labeled.
 Sibling identity/context is in
 [`ektasoft-rombios-lineage.md`](ektasoft-rombios-lineage.md).
 
 ## What NetBios is
 
 The 3.4x RomBios line's second BIOS is the school-network boot path. There
-is no dedicated network hardware: NetBios drives the machine's one 8251
-USART (D11, ports `08h/09h`), whose clock is D57 counter 0 and whose line
+is no additional network interface required for the tested onboard path:
+NetBios drives the machine's 8251 USART (D11, ports `08h/09h`), whose clock is D57 counter 0 and whose line
 is the X3 serial connector — the same path the Jukuravi diagnostic link
 uses (see [`serial-handoff.md`](serial-handoff.md) and
 [`cs00024-t36-diagnosis.md`](cs00024-t36-diagnosis.md)).
@@ -163,8 +164,10 @@ Keeping the proven 9600/8O1 rate avoids modifying the ROM protocol while the
 filesystem phase remains independently retried.
 
 The native C `jukuhost` retains compatibility with the historical NetDisk-v1
-handoff described here. In that configuration, after stock bootstrap it keeps
-the physical serial device at 9600 and repeatedly
+handoff described here when explicitly selected with `--disk-protocol 1` and
+`--disk-baud 9600`, plus a compatible system and volume. The CLI defaults
+are protocol 3 and 19200 baud. In the historical v1 configuration, after stock
+bootstrap it keeps the physical serial device at 9600 and repeatedly
 sends the `NR` synchronization marker until the resident BIOS sends a valid
 request. Requests contain `JD`, operation, sequence, drive, 16-bit track,
 logical sector, an optional 128-byte write payload, and XOR checksum. Replies
