@@ -10,6 +10,7 @@ The canonical development branch for this repository is `master`.
 - Run the checks appropriate to the touched area before each push. At minimum,
   use `git diff --check`; connectivity changes also require `sync/check.sh`, and
   documentation/report changes require
+  `python3 scripts/check_markdown.py` and
   `python3 scripts/check_documentation_consistency.py`.
 
 The repository may retain `main` only as historical remote state. New progress
@@ -19,7 +20,8 @@ belongs on `master`.
 
 The HDL Actions workflow uses `ci/hdl-ci.json` to map changed paths to the HDL/LVS lanes. The selector is deliberately fail-open: shared machine
 model paths, CI-control paths, an unknown path, or an unavailable diff run every
-lane. A change confined to a declared subsystem runs only its owning lanes.
+lane once the workflow is triggered. The workflow’s own path filters run first;
+a path outside those filters does not invoke the selector on a push. A change confined to a declared subsystem runs only its owning lanes.
 
 The selector schedules the bounded hosted lanes described in
 [CI budgets](../ci/README.md); a full hosted run does not execute every local
@@ -44,9 +46,10 @@ python3 -m unittest -v ci.test_select_hdl_jobs
 ```
 
 New HDL tests must be added to the owning job and its `entrypoints` list. New
-path families must receive an explicit dependency rule. Leaving a path
-unclassified is safe but intentionally expensive because it selects the full
-suite.
+path families must be included in the workflow trigger filters and receive an
+explicit dependency rule. Within an invoked workflow, leaving a path
+unclassified selects the full suite; it does not compensate for an omitted
+workflow trigger.
 
 ## Reports and evidence
 
@@ -60,7 +63,11 @@ Photo hashes must validate the materialized bytes or the authenticated LFS
 object identity, as required by the guard. Hosted photo inputs and cache scope
 are declared in `.github/workflows/reports.yml`.
 
-`scripts/ci_gate.sh` checks the latest conclusive CI results on `master`.
+`scripts/ci_gate.sh` samples the latest 15 `master` workflow runs and checks
+each workflow’s newest conclusive result within that sample. It blocks
+`failure`; missing or unauthenticated `gh` and query errors warn and skip.
+This does not prove that every workflow passed on the current commit. Inspect
+the triggered runs for the pushed SHA before claiming CI success.
 Preserve protocol, source and release assertions when repairing a failure.
 Timing expectations live in `sync/ekdos_timing_expected.json`; update them only
 for a justified implementation change and review the regenerated evidence.
