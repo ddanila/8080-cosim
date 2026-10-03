@@ -100,7 +100,8 @@ All six EktaSoft images boot with the **same decoded PIT write sequence**
 [`video-pit-timing.md`](video-pit-timing.md) proves drive the autonomous
 raster and that the CS00024 experiment replays
 ([`../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md`](../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md)),
-plus the 2400-baud D57 counter-0 divisor (`1Fh`, BCD 32) in every image.
+plus the D57 counter-0 control `1Fh` and count `32h` (BCD 32)
+for 2400 baud in every image.
 
 The Monitor family programs the same timing chain with equivalent values
 and different encodings (jmon22 offset `0051h` inline; jmon33 offsets
@@ -111,22 +112,30 @@ deferred to a later routine at `2E89h..2E98h`):
 - D55 vertical: control `35h` (BCD) count `0312` = **312 lines**, where
   EktaSoft uses control `34h` (binary) count `0139h` = **313** — a one-line
   frame-height/encoding difference between the families;
-- D57 counter 0: same `1Fh` + BCD 32 = 2400 baud in all eight images.
+- D57 counter 0: control `1Fh`, count `32h` (BCD 32), giving 2400 baud
+  in all eight images.
 
 The one qualitative split is D57 channel 2 (`SYNC_B`), and it tracks the
 **firmware generation across both families**, not the family:
 
 - **2.x generation** — Monitor 2.2 (jmon22), RomBios 2.43/2.43m
-  (#0032/#0043): control `9Fh`, count BCD 32 — **mode 3 square wave,
-  1.23 MHz / 32 = 38.4 kHz** on OUT2;
+  (#0032/#0043): control `9Fh`, count `32h` (BCD 32) — mode 3;
 - **3.x generation** — RomBios 3.42 (#0024), 3.43/3.43m
   (#0031/#0035/#0037), Monitor 3.3 (jmon33): control `B0h`, count `FFFFh`
-  — binary mode 0, a one-shot whose OUT2 rises after ~53 ms.
+  — binary mode 0.
 
-Every firmware generation is therefore a period-legitimate consumer of the
-exact channel that is faulty on CS00024 (see
-[`cs00024-t36-diagnosis.md`](cs00024-t36-diagnosis.md)). The remote
-consumer of `SYNC_B` remains an unresolved drawing boundary.
+These bytes show use of channel 2 across both generations. They do not
+establish a 38.4 kHz output or a 53 ms timeout: the exact `.009` topology
+clocks D57.18 from D55.13 `/VER RTR` at approximately 49.92 Hz, independently
+of the 1.23 MHz channel-0 clock. With that input, enabled counting and no
+reprogramming, count 32 gives a nominal mode-3 period of about 0.641 s;
+65535 clocks in mode 0 take about 21.9 minutes. Actual OUT2 behavior also
+depends on its gate and later firmware writes.
+
+The remote consumer of `SYNC_B` remains an unresolved drawing boundary.
+Legacy CS00024 channel-2 samples did not wait for the frame clock and do not
+prove a fault. The corrected probe passed on CS00015 and remains pending on
+CS00024; see [the timing correction](cs00024-t36-diagnosis.md#d57-channel-2-timing-correction).
 
 All six EktaSoft images also carry the same pair of later D54/D55
 parameter routines (near `0EFCh..0F39h`): one alternative set
