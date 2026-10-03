@@ -5,9 +5,14 @@ Status: **PLACEMENT / VALUES CLOSED**
 The `.006` assembly drawing fixes the bank/refdes order. Registered target-board
 component views show the same eight populated vertical bodies, while the reflected
 solder panorama corroborates the drilled column. The red bodies directly read `75Ω`
-and the tan bodies directly read `5K1`; this supersedes the earlier unvalued/100-ohm
-working note. Connectivity is unchanged and remains source-closed by the sheet-2
-D53-to-RAS ladder.
+and the tan bodies directly read `5K1`. The source model encodes R49-R52
+as 75 Ω and R53-R56 as 5.1 kΩ.
+
+## Command
+
+```sh
+python3 scripts/report_ras_resistor_bank.py
+```
 
 ## Checks
 
@@ -18,7 +23,7 @@ D53-to-RAS ladder.
 | Registered geometry is the vertical 10.16 mm bank | PASS | x=221.0 mm; eight independently recorded centres |
 | Target case markings are encoded as values | PASS | R49-R52=75 Ω; R53-R56=5.1 kΩ |
 | Board provenance cites the target-board registration | PASS | all eight board-JSON components |
-| PCB generator carries the fitted placements without annulus waivers | PASS | normal 1.6 mm pads; C69 workaround retired |
+| PCB generator text contains the registered placements and footprint | PASS | registered footprint name and coordinates; no C69/R52 special-case branches |
 
 ## Registered top-to-bottom order
 
@@ -33,12 +38,13 @@ D53-to-RAS ladder.
 | 7 | R53 | 221.0, 215.2 | 90° | 10.16 mm | 5K1 | 5,1к | RAS termination to GND |
 | 8 | R49 | 221.0, 229.7 | 90° | 10.16 mm | 75Ω | 75 | D53 series output |
 
-## Disposition
+## Scope
 
-- R49-R52 are 75 Ω series resistors, not the earlier 100 Ω working value.
-- R53-R56 are 5.1 kΩ RAS-to-ground terminations.
-- Moving the bank to its photo-fitted column removes the fictional C69/R52 close pass;
-  both footprints use their normal pad geometry and source-PCB electrical DRC remains clean.
-- The source model's electrical nets do not change in this placement/value closure.
+This guard validates the registered source hashes, recorded order/geometry,
+board values and provenance markers, and selected PCB-generator text.
+It does not rerun image registration, inspect PCB output, execute DRC or
+measure resistor values and loaded RAS timing. The table's circuit roles
+come from the sheet-2 ladder; connectivity is checked separately by
+the [memory timing report](memory-timing-boundary.md).
 
-Source record: `ref/photos/juku-pcb-2/ras-resistor-bank-registration.json`.
+Source record: [bank registration](../ref/photos/juku-pcb-2/ras-resistor-bank-registration.json).

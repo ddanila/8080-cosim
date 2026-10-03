@@ -78,8 +78,8 @@ def main() -> int:
                         f"{placements[ref]['centre_mm'][1]:.1f},90)" in generator
                         for ref in expected_order)
     generator_ok &= 'if ref == "C69"' not in generator and 'if ref == "R52"' not in generator
-    checks.append(("PCB generator carries the fitted placements without annulus waivers",
-                   generator_ok, "normal 1.6 mm pads; C69 workaround retired"))
+    checks.append(("PCB generator text contains the registered placements and footprint",
+                   generator_ok, "registered footprint name and coordinates; no C69/R52 special-case branches"))
 
     ok = all(check[1] for check in checks)
     lines = [
@@ -90,9 +90,14 @@ def main() -> int:
         "The `.006` assembly drawing fixes the bank/refdes order. Registered target-board",
         "component views show the same eight populated vertical bodies, while the reflected",
         "solder panorama corroborates the drilled column. The red bodies directly read `75Ω`",
-        "and the tan bodies directly read `5K1`; this supersedes the earlier unvalued/100-ohm",
-        "working note. Connectivity is unchanged and remains source-closed by the sheet-2",
-        "D53-to-RAS ladder.",
+        "and the tan bodies directly read `5K1`. The source model encodes R49-R52",
+        "as 75 Ω and R53-R56 as 5.1 kΩ.",
+        "",
+        "## Command",
+        "",
+        "```sh",
+        "python3 scripts/report_ras_resistor_bank.py",
+        "```",
         "",
         "## Checks",
         "",
@@ -119,15 +124,16 @@ def main() -> int:
         ]))
     lines.extend([
         "",
-        "## Disposition",
+        "## Scope",
         "",
-        "- R49-R52 are 75 Ω series resistors, not the earlier 100 Ω working value.",
-        "- R53-R56 are 5.1 kΩ RAS-to-ground terminations.",
-        "- Moving the bank to its photo-fitted column removes the fictional C69/R52 close pass;",
-        "  both footprints use their normal pad geometry and source-PCB electrical DRC remains clean.",
-        "- The source model's electrical nets do not change in this placement/value closure.",
+        "This guard validates the registered source hashes, recorded order/geometry,",
+        "board values and provenance markers, and selected PCB-generator text.",
+        "It does not rerun image registration, inspect PCB output, execute DRC or",
+        "measure resistor values and loaded RAS timing. The table's circuit roles",
+        "come from the sheet-2 ladder; connectivity is checked separately by",
+        "the [memory timing report](memory-timing-boundary.md).",
         "",
-        "Source record: `ref/photos/juku-pcb-2/ras-resistor-bank-registration.json`.",
+        "Source record: [bank registration](../ref/photos/juku-pcb-2/ras-resistor-bank-registration.json).",
     ])
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
