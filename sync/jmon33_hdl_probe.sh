@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Prove that jmon33 runs far enough on the LVS-checked juku_top model to write
+# Prove that jmon33 runs far enough on the juku_top model to write
 # video RAM with frame interrupts enabled.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -50,21 +50,24 @@ cat > docs/jmon33-hdl-probe.md <<EOF
 
 Status: **JMON33 FIRST-WRITE MATCHES COSIM AND JUKU_TOP**
 
-This probe runs the Monitor 3.3 ROM on the LVS-checked structural model
+This probe runs the Monitor 3.3 ROM on the structural model
 \`juku_top\` with frame interrupts enabled. It proves that the HDL twin reaches
-jmon33's first video-memory write and matches the cosim first-write boundary.
+jmon33's first video-memory write at FF40h and compares the captured VRAM
+bytes with cosim. The default capture stops after one write; overrides change
+the capture size. The reported cycle counts are diagnostic, not compared.
+This script does not run LVS or verify that a frame interrupt was serviced.
 
 ## Command
 
 \`\`\`sh
-sync/jmon33_hdl_probe.sh
+JMON33_HDL_MAXVRAM=$MAXVRAM JMON33_HDL_FRAMEIRQ=$FRAMEIRQ JMON33_HDL_TIMECAP=$TIMECAP sync/jmon33_hdl_probe.sh
 \`\`\`
 
 Environment overrides:
 
-- \`JMON33_HDL_MAXVRAM\` default \`$MAXVRAM\`
-- \`JMON33_HDL_FRAMEIRQ\` default \`$FRAMEIRQ\`
-- \`JMON33_HDL_TIMECAP\` default \`$TIMECAP\`
+- \`JMON33_HDL_MAXVRAM\` default \`1\`
+- \`JMON33_HDL_FRAMEIRQ\` default \`200000\`
+- \`JMON33_HDL_TIMECAP\` default \`120000000\`
 
 The underlying HDL testbench also accepts \`+cursorstop=1\`, which stops when
 the cosim jmon33 monitor-idle cursor bytes are present in \`juku_top\` VRAM.

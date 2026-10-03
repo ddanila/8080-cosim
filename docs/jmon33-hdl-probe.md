@@ -2,14 +2,17 @@
 
 Status: **JMON33 FIRST-WRITE MATCHES COSIM AND JUKU_TOP**
 
-This probe runs the Monitor 3.3 ROM on the LVS-checked structural model
+This probe runs the Monitor 3.3 ROM on the structural model
 `juku_top` with frame interrupts enabled. It proves that the HDL twin reaches
-jmon33's first video-memory write and matches the cosim first-write boundary.
+jmon33's first video-memory write at FF40h and compares the captured VRAM
+bytes with cosim. The default capture stops after one write; overrides change
+the capture size. The reported cycle counts are diagnostic, not compared.
+This script does not run LVS or verify that a frame interrupt was serviced.
 
 ## Command
 
 ```sh
-sync/jmon33_hdl_probe.sh
+JMON33_HDL_MAXVRAM=1 JMON33_HDL_FRAMEIRQ=200000 JMON33_HDL_TIMECAP=120000000 sync/jmon33_hdl_probe.sh
 ```
 
 Environment overrides:
