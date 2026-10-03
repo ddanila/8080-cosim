@@ -68,9 +68,9 @@ were freshly verified. Run the manufacturing gate for release checks.
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3564 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 583 | FAIL |
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 1396 | FAIL |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20762 | PASS |
-| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 13721 | PASS |
-| Factory wire construction | `docs/factory-wire-route-fidelity.md` | 16627 | PASS |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20922 | PASS |
+| Sourcing readiness | `docs/replica-sourcing-readiness.md` | 13738 | PASS |
+| Factory wire construction | `docs/factory-wire-route-fidelity.md` | 7488 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 0 | FAIL |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 4549 | PASS |
 

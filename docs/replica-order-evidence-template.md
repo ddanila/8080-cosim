@@ -34,10 +34,10 @@ not mean this generator reran its checks or closed its design risks.
 
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5829 | FAIL |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5828 | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | 583 | FAIL |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3564 | FAIL |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20762 | FAIL |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20922 | FAIL |
 
 ## Vendor Options To Record
 
