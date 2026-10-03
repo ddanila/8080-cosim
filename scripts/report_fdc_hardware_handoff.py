@@ -520,6 +520,11 @@ def main() -> int:
         "python3 scripts/report_fdc_hardware_handoff.py",
         "```",
         "",
+        "The generator checks board-JSON endpoint contracts, recorded photo fits,",
+        "and evidence-record fields. It does not reread every schematic wire,",
+        "measure continuity, or execute HDL. Structural and runnable HDL coverage",
+        "is described in [FDC readiness](fdc-readiness.md).",
+        "",
         "## Source",
         "",
         f"- Board JSON: `{BOARD_JSON.relative_to(ROOT)}`",
@@ -650,32 +655,11 @@ def main() -> int:
         "`ref/schematics/fdc-write-precomp-map.md` for the exact source hierarchy and",
         "`ref/schematics/fdc-unused-pin-dispositions.md` for the omitted outputs.",
         "",
-        "### Superseded separator raw-crop candidates",
-        "",
-        "All coordinates below are validated local-package fits in",
-        "`PXL_20260710_200506061.jpg`. The negative result prevents topology-only",
-        "promotion before the primary sheet was recovered. Sheet 3 now resolves",
-        "these candidates directly, so the rows are retained only as audit history.",
-        "",
-        "| Endpoint | Solder coordinate | Candidate peer | Disposition |",
-        "| --- | --- | --- | --- |",
-    ]
-    lines.extend(table_row(row) for row in separator_rows)
-    lines.extend([
-        "",
-        "### Superseded D106 static-strap raw-crop candidates",
-        "",
-        "The same calibrated tile was exhausted for the six remaining IE7 setup",
-        "checks. The photograph alone could not close them, but sheet 3 now proves",
-        "R78 pulls pins 15/1/10/9 and UP/pin5 high, D95.9 clocks DOWN/pin4,",
-        "RAW READ loads pin11, and CLR/pin14 is grounded. These rows are no longer",
-        "meter requests.",
-        "",
-        "| Endpoint | Reference expectation | Solder coordinate | Photograph result | Required proof |",
-        "| --- | --- | --- | --- | --- |",
-    ])
-    lines.extend(table_row(row) for row in static_probe_rows)
-    lines.extend([
+        "D106 setup is source-closed: R78 pulls pins 15/1/10/9 and UP/pin5 high;",
+        "D95.9 clocks DOWN/pin4, RAW READ loads pin11, and CLR/pin14 is grounded.",
+        "See [recovery counter map](../ref/schematics/fdc-recovery-counter-map.md).",
+        "The earlier photograph-only candidates remain in the source evidence records;",
+        "they are not continuity requests.",
         "",
         "### KP12 passive-network component-copper disposition",
         "",
@@ -687,7 +671,7 @@ def main() -> int:
         "",
         "| Endpoint | Component coordinate | Modeled net | Disposition |",
         "| --- | --- | --- | --- |",
-    ])
+    ]
     lines.extend(table_row(row) for row in kp12_rows)
     lines.extend([
         "",
@@ -703,14 +687,10 @@ def main() -> int:
             "## D93 Source-Risk Pad Review",
             "",
             "The two-sided package fits make the controller-end pad identity exact.",
-            "The exact sheet now supersedes the former direct-to-PIC interpretation",
-            "with local D28/D96 conditioning. These coordinates retain the rejected",
-            "MAME-era D10 candidate as audit history, not modeled connectivity.",
+            "DRQ/INTRQ feed the local D28/D96 conditioner, not D10 directly.",
             "",
-            "The D10 affine fit independently localizes the КР580ВН59 interrupt-input",
-            "contacts at the other end of the modeled DRQ/INTRQ nets.",
-            "",
-            "| Signal | D93 pin | D93 solder coordinate | Remote component coordinate | Photograph result |",
+
+            "| Signal | D93 pin | D93 solder coordinate | Source endpoint | Physical boundary |",
             "| --- | ---: | --- | --- | --- |",
         ]
     )
@@ -734,8 +714,9 @@ def main() -> int:
             signal,
             pin,
             coordinate,
-            remote_coordinate,
-            f"pad and local copper identified; no photographed unbroken path to {remote}",
+            {"37": "D26.13", "38": "D28.11/R94", "39": "D28.13/R93"}[pin],
+            "owner-closed DRQ to D28.11/R94" if pin == "38" else
+            "pad and local copper identified; source connection requires continuity",
         ]))
     lines.extend(
         [
@@ -773,8 +754,8 @@ def main() -> int:
             "- The direct system-data-bus to D93 DAL route, register select, and",
             "  private D94-to-D93 RE/CS/WE controls are present in board JSON and",
             "  guarded by this report. All D94 A0-A4 inputs and the private D93",
-            "  controls are owner-mapped; remaining decode boundaries are the upstream",
-            "  pin-15 enable source and D0 hidden load. R87/R88/R89 and D3-D7 are",
+            "  controls are owner-mapped. CS7 is source-closed from D9.7 to",
+            "  D94.15/D93.3; D0's hidden load remains unresolved. R87/R88/R89 and D3-D7 are",
             "  owner/drawing-closed; the recorded D29.4/IORD recheck is optional",
             "  corroboration. The `.092` table is physically captured.",
             "- Before real FDC bring-up, confirm physical D96.9 Q2-to-D101 A0-A3",
@@ -793,7 +774,7 @@ def main() -> int:
             "  source-closed through D95's selected 1/2 MHz clock section. The adopted",
             "  archival D15/D16 pair fixes the replica to the direct-bus/NOP profile;",
             "  physical D100 is not the profile selector. D99.10 and",
-            "  D100.11 is a separate unresolved sheet-1 continuation, while",
+            "  D100.11 have separate unresolved sheet-1 continuations, while",
             "  D100.9 OE_N is source-closed to D99.12 Q2_N; D100.6's selected write-data input",
             "  is source-closed through D101.9. See",
             "  `docs/fdc-bus-polarity.md`.",
