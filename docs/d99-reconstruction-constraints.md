@@ -59,7 +59,7 @@ Run `sync/ag3_check.sh` separately for the device simulation.
 
 D99.3 `/CLR1` is physically grounded. The TI overriding-clear row
 therefore fixes Q1/pin13 low and `/Q1`/pin4 high regardless of A1, B1,
-or the fitted R103/C18 network. Pin13 is drawing-closed NC; pin4
+or the R103/C18 network. Pin13 is drawing-closed NC; pin4
 is source-joined to D93.23/HLT and is a constant-high
 driver rather than a pulse source.
 
@@ -104,11 +104,12 @@ continuity and the actual motor timing remain unmeasured.
 Using the model/datasheet typical `tW ≈ 0.45RC` and the datasheet
 retrigger exclusion `0.22*Cext(pF) ns`:
 
-| Section | Fitted network | Nominal pulse | Early-retrigger inhibit | Functional state |
+| Section | Source-nominal network | Nominal pulse | Early-retrigger inhibit | Functional state |
 | --- | --- | ---: | ---: | --- |
 | 1 | R103 47 kΩ / C18 47 µF | 0.99405 s | 10.34 ms | held clear; pulse suppressed |
 | 2 | R97 47 kΩ / C17 120 µF | 2.538 s | 26.4 ms | conditional access pulse |
 
+The generator verifies model values, not installed resistance or capacitance.
 These are nominal behavioral predictions. Electrolytic tolerance, leakage,
 device threshold, temperature, and the actual B2/clear waveforms require
 powered measurement before hardware release.
