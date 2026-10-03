@@ -12,8 +12,13 @@ This generated report re-derives, from the validated D2 `.037` READY PROM,
 what wait treatment each page of the D15 window receives, and then asks
 whether the CS00015 "A12 problem" as framed in
 [`../spinoffs/jukuravi/T31-PHYSICAL.md`](../spinoffs/jukuravi/T31-PHYSICAL.md)
-is physically expressible. It adds no measurement; it only draws out what
+is represented by the modeled input classes. It only draws out what
 the already-preserved tables imply.
+
+Regenerate with `python3 scripts/report_d2_ready_cycle_analysis.py`.
+The generator verifies the D2 hash and derives page classes. Probe bytes
+are compared with the diagnostic image; factory transfers are byte-pattern
+matches. Board/HDL descriptions below are transcriptions, not fresh net checks.
 
 ## Provenance
 
@@ -117,18 +122,18 @@ was therefore the only upper-half class tested. T32 subsequently tested
 all three upper-half wait classes and found the same failure in each,
 refuting wait-class confinement as stated in the supersession note.
 
-## Why no board mechanism can be fetch-selective
+## Modeled fetch/read inputs
 
 The premise under test is "correct upper-D15 data reads but a failing
-upper-D15 instruction fetch". For that to be a board property, something
-must distinguish the two cycles. Nothing does:
+upper-D15 instruction fetch". The modeled decode paths have no explicit
+opcode-fetch qualifier:
 
 - In the 8080 status word, `MEMR` is asserted for both an M1 opcode fetch
   and a memory data read. `hdl/devices.v`'s 8238 decodes only `INP`, `OUT`
   and `INTA`, deriving `memr_n = ~(dbin & ~INP & ~INTA)` - identical for
   both cycle types.
-- No `M1`-derived net exists in `kicad/juku.board.json` or the HDL, so no
-  chip select, decode or wait input can see it.
+- The recorded board model supplies no `M1` qualifier to the ROM-select
+  or D2 wait inputs.
 - D2 itself takes no cycle-type input. For every `A10=0` address - which
   includes all six probes - `IORC_N` and `A14` are don't-cares, `WREQ_N` is
   a region select rather than a cycle qualifier, and the only remaining
@@ -137,26 +142,8 @@ must distinguish the two cycles. Nothing does:
 
 A `JMP 106Fh` fetches `C3` as an M1 cycle and `0C 0A` as ordinary read
 cycles, so only the first byte is even nominally a different cycle type -
-and that difference is invisible to this hardware.
-
-## Access-time budget
-
-`docs/hardware-map.md` gives a КР580ВМ80А CPU and `docs/fdc-readiness.md`
-derives its tick arithmetic at 2 MHz, so a T-state is ~500 ns. An unwaited
-8080 memory read is three T-states with data sampled in T3, leaving on the
-order of two T-states (~1000 ns) from address-valid to data-required, less
-address-buffer, D6/D8 select and data-buffer delays.
-
-D15 is a 2764/27C64-class device (`docs/eprom-programming-images.md`),
-whose common variants specify 250-450 ns access. Even the slowest fits the
-unwaited budget with margin, and the conclusion is not sensitive to the
-exact clock: at 2.5 MHz the budget is still ~800 ns. These are datasheet-
-class figures and a first-order budget, not measurements.
-
-Decisively, the CAS-gated class can only **lengthen** a cycle relative to
-the no-wait class. The measured failure across all three classes does not
-support the earlier premise of confinement to CAS-gated pages. The fitted
-D1 increment-path diagnosis rests on the T32/T33 measurements.
+The listed decode inputs do not select on that distinction. This does not
+rule out physical differences in edge timing, loading, or CPU behavior.
 
 ## Does the factory firmware execute in the CAS-gated pages?
 
@@ -175,39 +162,18 @@ for absolute transfer instructions whose target lands in a CAS-gated page:
 | `1110h` | CAS-gated | `1101`, `110B` |
 | `11E6h` | CAS-gated | `0308`, `0312` |
 
-This is a byte-pattern scan, not a disassembly, so isolated hits may be
-data. A target entered from several distinct sites is much harder to
-explain as coincidence, and such targets exist. The factory firmware
-appears to call into the CAS-gated pages, so executing code there is
-within the machine's intended envelope and the T31 trampoline placement is
-not by itself an invalid assumption.
+This byte-pattern scan is not a disassembly or execution trace. Repeated
+matches remain candidate transfers; data bytes can produce the same patterns.
+It does not prove that these sites execute or establish an EPROM timing margin.
 
-## What this refutes and what survives
+## Current disposition
 
-Refuted:
+T32/T33 measured the same A12-low second-byte failure across CAS-gated,
+no-wait, and always-wait classes. The fitted D1 increment-path diagnosis
+and replacement confirmation are owned by the linked physical records.
+This table analysis does not repeat those measurements or qualify hardware.
 
-- **A uniformly slow substitute EPROM.** The failing pages get at least as
-  much access time as the working ones.
-- **"Code must not live in those pages."** The factory firmware targets
-  them from multiple sites.
-- **A fetch-selective board fault.** No decode, select or wait input on
-  this machine can distinguish an M1 fetch from a memory read.
-
-T32 has now closed the component question that motivated this report. The
-failure is not confined to CAS-gated pages: execution fails in all three ROM
-classes, and correctly initialized all-RAM LHLD pairs alias in all four
-`{A10,A9}` classes. POP and SHLD writes do the same.
-
-More decisively, an `INX D` setup lost an already-high A12 in the retained DE
-register before a later STAX, despite intervening CALL/RET and unrelated bus
-cycles. Boundary probes show that carry into A12 still works. The fitted fault
-is therefore D1's 16-bit increment path, not D2's class selection.
-
-The exact ROM read-pair matrix is now complete. CAS-gated `1000/1100`, no-wait
-`1200`, and always-wait `1400` all returned the exact A12-low second byte in
-all sixteen samples. No D2 class masks the D1 error. Raw evidence and expected
-bytes are in `spinoffs/jukuravi/T33-PLAN.md`.
-
-The D2 input pin-order reconstruction and the unresolved D36 CAS source remain
-generic schematic-model boundaries. They are no longer blockers for the
-CS00015 A12 diagnosis.
+D2's input mapping is recorded in [D2 constraints](d2-reconstruction-constraints.md).
+The unresolved CAS source and physical WAIT duration remain generic timing
+boundaries in [memory timing](memory-timing-boundary.md); they do not keep
+the completed CS00015 diagnosis open.
