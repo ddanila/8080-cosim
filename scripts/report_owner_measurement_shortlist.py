@@ -258,7 +258,7 @@ def main() -> int:
         ("D94 constraint report generated", has_phrase("docs/d94-reconstruction-constraints.md", "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**")),
         ("FDC hardware handoff generated", has_phrase("docs/fdc-hardware-handoff.md", "Status: **BUS-SIDE GUARDED / OWNER CONTINUITY REQUIRED**")),
         ("FDC firmware profiles proved; Ekta 3.7 direct-bus profile adopted", has_phrase("docs/fdc-bus-polarity.md", "Status: **FIRMWARE PROFILES PROVED / EKTA 3.7 DIRECT-BUS PROFILE ADOPTED**")),
-        ("Beeper source/handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **DIGITAL BEEPER SOURCE + BOARD HANDOFF READY**")),
+        ("Beeper standalone toggle and JSON handoff guarded", has_phrase("docs/beeper-readiness.md", "Status: **STANDALONE SOUND TOGGLE AND JSON HANDOFF GUARDED**")),
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING**")),
         ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DRAM OPTIONAL FOOTPRINT ARTWORK REOPENED / VALUES AND NON-FIELD PLACEMENTS PENDING**")),
         ("D41 timing connectivity source-closed", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**")),

@@ -25,7 +25,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | D94 constraint report generated | PASS |
 | FDC hardware handoff generated | PASS |
 | FDC firmware profiles proved; Ekta 3.7 direct-bus profile adopted | PASS |
-| Beeper source/handoff guarded | PASS |
+| Beeper standalone toggle and JSON handoff guarded | PASS |
 | Serial USART behavior guarded | PASS |
 | Decap value boundary guarded | PASS |
 | D41 timing connectivity source-closed | PASS |
