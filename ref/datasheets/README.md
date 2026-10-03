@@ -15,46 +15,38 @@ Current artifacts:
 
 | Board chip | Device | PDF | Text interpretation |
 | --- | --- | --- | --- |
-| D104 | К170УП2 | `k170up2.pdf` | `k170up2-pinout.txt` |
-| D94 | К155РЕ3 / SN74188-compatible | `sn74188-ti.pdf` | `k155re3-pinout.txt` |
-| D93 | КР1818ВГ93 / FD179X family | `../wd1772-vg93/fd179x-01-datasheet.pdf` | `kr1818vg93-pinout.txt` |
-| D27 | КР580ВВ55 / Intel 8255A | `intel-p8255a.pdf` | `kr580vv55-pinout.txt` |
-| D29 | КР580ВА86 / Intel 8286 | `kr580va86.pdf` | `kr580va86-pinout.txt` |
-| D101 | К555КП12 / SN74LS253 | `sn74ls253-ti.pdf` | `k555kp12-pinout.txt` |
-| D99 | К155АГ3 / SN74123-compatible | `sn74ls123-ti.pdf` | `k155ag3-pinout.txt` |
-| D96 | КМ555ТМ2 / SN74LS74A-compatible | `sn74ls74a-ti.pdf` | `k555tm2-pinout.txt` |
-| D84-D91 | К565РУ5Г / 4164-class 64Kx1 DRAM | `mk4564-64kx1-dram.pdf` | `k565ru5-pinout.txt` |
-| D2, D6 | К556РТ4 / 82S126 256x4 OC PROM | `82s126-556rt4-256x4-oc-prom.pdf` | `k556rt4-pinout.txt` |
-| D34 | К555ЛП5, with SN74LS86A current-condition comparison | `k555lp5-eandc.pdf`, `sn74ls86a-ti.pdf` | `k555lp5-output-reference.txt` |
-| VT2 | КТ315Б, old KT-13 package | `kt315-family-promelec.pdf` | `kt315b-output-reference.txt` |
-| D53 | КР531ИД7, with SN54S138 primary compatible-device timing comparison | `sn54s138-ti.pdf` | `kr531id7-timing-reference.txt` |
-| VJUGA Rev-A J3 | HRO TYPE-C-31-M-17 USB-C receptacle | `hro-type-c-31-m-17.pdf` | `hro-type-c-31-m-17-footprint.txt` |
-| VJUGA Rev-A F1 | Bourns MF-RG300-0-14 resettable PTC | `bourns-mf-rg.pdf` | `bourns-mf-rg300-footprint.txt` |
-| VJUGA Rev-A D1 | Littelfuse P4KE6.8A-B unidirectional TVS | `littelfuse-p4ke.pdf` | `littelfuse-p4ke6v8a-footprint.txt` |
+| D104 | К170УП2 | [k170up2.pdf](k170up2.pdf) | [k170up2-pinout.txt](k170up2-pinout.txt) |
+| D94 | К155РЕ3 / SN74188-compatible | [sn74188-ti.pdf](sn74188-ti.pdf) | [k155re3-pinout.txt](k155re3-pinout.txt) |
+| D93 | КР1818ВГ93 / FD179X family | [fd179x-01-datasheet.pdf](../wd1772-vg93/fd179x-01-datasheet.pdf) | [kr1818vg93-pinout.txt](kr1818vg93-pinout.txt) |
+| D27 | КР580ВВ55 / Intel 8255A | [intel-p8255a.pdf](intel-p8255a.pdf) | [kr580vv55-pinout.txt](kr580vv55-pinout.txt) |
+| D29 | КР580ВА86 / Intel 8286 | [kr580va86.pdf](kr580va86.pdf) | [kr580va86-pinout.txt](kr580va86-pinout.txt) |
+| D101 | К555КП12 / SN74LS253 | [sn74ls253-ti.pdf](sn74ls253-ti.pdf) | [k555kp12-pinout.txt](k555kp12-pinout.txt) |
+| D99 | К155АГ3 / SN74123-compatible | [sn74ls123-ti.pdf](sn74ls123-ti.pdf) | [k155ag3-pinout.txt](k155ag3-pinout.txt) |
+| D96 | КМ555ТМ2 / SN74LS74A-compatible | [sn74ls74a-ti.pdf](sn74ls74a-ti.pdf) | [k555tm2-pinout.txt](k555tm2-pinout.txt) |
+| D84-D91 | К565РУ5Г / 4164-class 64Kx1 DRAM | [mk4564-64kx1-dram.pdf](mk4564-64kx1-dram.pdf) | [k565ru5-pinout.txt](k565ru5-pinout.txt) |
+| D2, D6 | К556РТ4 / 82S126 256x4 OC PROM | [82s126-556rt4-256x4-oc-prom.pdf](82s126-556rt4-256x4-oc-prom.pdf) | [k556rt4-pinout.txt](k556rt4-pinout.txt) |
+| D34 | К555ЛП5, with SN74LS86A current-condition comparison | [k555lp5-eandc.pdf](k555lp5-eandc.pdf), [sn74ls86a-ti.pdf](sn74ls86a-ti.pdf) | [k555lp5-output-reference.txt](k555lp5-output-reference.txt) |
+| VT2 | КТ315Б, old KT-13 package | [kt315-family-promelec.pdf](kt315-family-promelec.pdf) | [kt315b-output-reference.txt](kt315b-output-reference.txt) |
+| D53 | КР531ИД7, with SN54S138 primary compatible-device timing comparison | [sn54s138-ti.pdf](sn54s138-ti.pdf) | [kr531id7-timing-reference.txt](kr531id7-timing-reference.txt) |
+| VJUGA Rev-A J3 | HRO TYPE-C-31-M-17 USB-C receptacle | [hro-type-c-31-m-17.pdf](hro-type-c-31-m-17.pdf) | [hro-type-c-31-m-17-footprint.txt](hro-type-c-31-m-17-footprint.txt) |
+| VJUGA Rev-A F1 | Bourns MF-RG300-0-14 resettable PTC | [bourns-mf-rg.pdf](bourns-mf-rg.pdf) | [bourns-mf-rg300-footprint.txt](bourns-mf-rg300-footprint.txt) |
+| VJUGA Rev-A D1 | Littelfuse P4KE6.8A-B unidirectional TVS | [littelfuse-p4ke.pdf](littelfuse-p4ke.pdf) | [littelfuse-p4ke6v8a-footprint.txt](littelfuse-p4ke6v8a-footprint.txt) |
 
-Checksums:
+## Verify retained artifacts
 
-```text
-0094e9959ca825ea89c3b2a2e7b015a276be563e9f66ef1c2d9d3fe4b31635e6  k170up2.pdf
-7d677a198664fe580e11d53f69a436f3d4e1bdf7f9a6bfb7c7acea386658a0db  sn74188-ti.pdf
-e51aef0933d88e7705f6f774ffb3238e8e8096bd9b9d774a985d95ef5766e3ce  ../wd1772-vg93/fd179x-01-datasheet.pdf
-f4efbeaaed2e19158e67640683407ac0dfd557ff29ef20a702532fddab2ceeef  intel-p8255a.pdf
-44f3c77489e36b015038b8fdde724aa844e2252e554be8158531f6f1e01a614c  kr580va86.pdf
-6dac6d83b154c40e39bf772ae3b144c8d5d7a42f7b31ddc49942223d6df6c47a  sn74ls253-ti.pdf
-abe37431fa9098d0230544c83e4490cc3e788f6be92ef23e99124047f2b59707  sn74ls123-ti.pdf
-d162b65235d894394a5438eef01cc890b0a95b38d3cdd1931eb8c5ed532c697d  sn74ls74a-ti.pdf
-8a6169963c020c1ff8b3c413356ed8f354b9963b77dab8f9bd2af22560c44093  mk4564-64kx1-dram.pdf
-63938c06d5c4645aaa462bb8c87dd8555f324056a64fca3585f5f725320b5223  82s126-556rt4-256x4-oc-prom.pdf
-0552f028f377ad641659bd44d671e420db08839bd45adbcf8c04de7bf11795ad  sn74ls86a-ti.pdf
-03d48a8503d9693d23081b9a42c278abbbae94245cbb8e3d76ad584d950d89ca  k555lp5-eandc.pdf
-22c783f99350b178b11a3f33269d24bb9f36c5634215ed39040fef0736500e99  kt315-family-promelec.pdf
-9c33e08a3bfb7ab3b685848eee0d80457774918ce0bd3224e17cd0c1970a20a9  sn54s138-ti.pdf
-e38df7ca56f6fa10a78f0c84ee40d26c90af25a1c6c3a692508e46bee2ee11d1  hro-type-c-31-m-17.pdf
-7c6cc82e2566fe7ba904d3783122320fa87f043bf7a720467cdfb637c7e803ef  bourns-mf-rg.pdf
-cab61a39ecf2d397cba37e06ec78765050ddfae63687ae4cf4dc3f83c1b7a845  littelfuse-p4ke.pdf
+The [checksum manifest](SHA256SUMS) records the PDF identities. From the
+repository root, run:
+
+```sh
+(cd ref/datasheets && sha256sum -c SHA256SUMS)
 ```
 
-Sources:
+`sync/reference_artifact_check.sh` includes this manifest. Matching hashes
+establish retained-file identity; they do not prove fitted-chip equivalence,
+board continuity or timing. Compatible-device references remain comparisons
+unless the text interpretation identifies exact-device evidence.
+
+## Sources
 
 - К170УП2 PDF: `https://www.km-cs.com/datasheet/_Other/k170up2.pdf`
 - SN74188 Texas Instruments scan: `https://www.radioradar.net/en/files.html?fid=500816`
