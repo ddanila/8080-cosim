@@ -70,7 +70,7 @@ were freshly verified. Run the manufacturing gate for release checks.
 | Power trace readiness | `docs/replica-power-trace-readiness.md` | 1396 | FAIL |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20412 | PASS |
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 13721 | PASS |
-| Factory wire construction | `docs/factory-wire-route-fidelity.md` | 16311 | PASS |
+| Factory wire construction | `docs/factory-wire-route-fidelity.md` | 16194 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 0 | FAIL |
 | Order evidence template | `docs/replica-order-evidence-template.md` | 4549 | PASS |
 

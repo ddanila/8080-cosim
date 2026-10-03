@@ -5,7 +5,7 @@ Status: **FACTORY WIRE LANDING EVIDENCE HOLD**
 The `.009` assembly table proves ten on-board insulated links. Their
 logical endpoints are source-closed, but logical net equality is not
 permission to replace the original flying wire with PCB etch. This report
-separates those two claims. The promoted route is electrically verified,
+separates those two claims. Source/routed parity and electrical DRC are held,
 but factory-construction release remains held until all ten links are
 represented as explicit assembly wires between split copper islands.
 
@@ -34,14 +34,13 @@ represented as explicit assembly wires between split copper islands.
   ten split island pairs, ten explicit assembly-wire closures, exact source
   parity, and zero electrical/unconnected DRC findings.
 
-The promoted board now has exact source identity and zero KiCad opens. Seven
+The current parity and DRC results above remain release blockers. Seven
 links (A7/A8/A10/A11/A14/A19/A20) are explicit W-footprint assembly wires
 between separately named copper islands. A9/A12/A13 lack five evidence-gated
 landing coordinates, so their endpoints remain same-net copper routes. A7B
 and A14B are also masked candidates, and W7.1/W14.1 still need relocation. This
-is a historical-construction hold, not an electrical package failure.
-The historical candidate counts remain below only to preserve the migration
-audit that led to the promoted board.
+construction hold is additional to the electrical and placement holds.
+The candidate audit is a separate snapshot and does not authorize the promoted board.
 
 ## Link audit
 
@@ -69,8 +68,7 @@ The former A14B and A7B metric projections from D41 are withdrawn
 after the common lower-cluster solder correction. Their printed
 joints remain visible, but wire termination is hidden by mastic; W14's landing and cut length
 remain under measurement hold.
-The promoted routed board has exact source identity, zero shorts, and zero
-opens; its fabrication package is machine-verified. It remains under design
+The routed board and fabrication package remain under design
 hold because A8/A9/A10/A12/A13 physical landings or construction
 remain unproved, and because the broader functional P0 netlist is open.
 A:7, A:8, A:10, A:11, A:14, A:19, and A:20 are already split into modeled landing pairs and
