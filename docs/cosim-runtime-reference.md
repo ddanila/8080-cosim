@@ -149,7 +149,7 @@ comparing results.
 An interactive tool may instead need maximum CPU speed while retaining a
 native helper process on the emulated USART. Set `JUKU_USART_HOST_SYNC_MS` to
 the maximum wall-clock wait for the first reply byte after target
-transmission. This opt-in coordination prevents the unpaced guest from
+transmission (an integer from 1 to 60,000 ms). This opt-in coordination prevents the unpaced guest from
 consuming a firmware timeout before the helper is scheduled; it does not
 alter the 8251/PIT byte timing or pace CPU-only execution. Leave it unset for
 timing experiments and use `JUKU_REALTIME_HZ` whenever wall time itself is
@@ -253,7 +253,10 @@ tools/juku_run.py --disk ../cpmish/juku-net-mode2-system.bin \
 It also turns cosim's bank-switch logging off and deletes its run directory
 on exit. The Juku switches memory banks constantly -- hundreds of thousands
 of times a minute -- so long sessions can produce large stderr logs. `--keep-logs`
-retains both the logging and the directory when that detail is wanted.
+retains the directory and leaves the inherited `JUKU_TRACE_BANK` setting intact.
+If it is already `0`, bank logging stays disabled. Likewise, `--max-speed`
+skips the launcher’s pacing override but preserves an inherited
+`JUKU_REALTIME_HZ`; unset that variable for an unpaced run.
 
 Type boot keys **one at a time with a beat between them**: the emulated
 matrix consumes a keystroke every few frames, and anything typed before its
