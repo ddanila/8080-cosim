@@ -53,7 +53,7 @@ tracked DRC disposition count.
 | [External Gerber review](../fab/gerbers/external-gerber-review.md) | NOT READY | `2d8795e43d05532f38807e8fa8a8fe244f1d903480fdfac2ee3fe36c73aeb735` |
 | [Review waivers](../fab/gerbers/review-waivers.md) | NOT ACCEPTED | `23743626a541d649f167af88f74c364cb1f06e4a14a8929e9daf6178bce9e985` |
 | [Fabrication inventory](../fab/gerbers/fab-readiness.md) | NOT READY | `718740c7755a84c742e53bce8b9576ae1245583cb4c2d4d6772698c853f0e07e` |
-| [Manufacturing](replica-manufacturing-readiness.md) | DESIGN HOLD / PACKAGE REGENERATION REQUIRED | `88dc1672446fa3b5b63ee1a41ac92d3d0a612091a8483d0add2bc648800dfe04` |
+| [Manufacturing](replica-manufacturing-readiness.md) | DESIGN HOLD / PACKAGE REGENERATION REQUIRED | `35fca65bd21e409b487131ebe4f47636ff782469dfe681e7c123194282aed337` |
 | [Upload procedure](replica-order-upload-runbook.md) | PACKAGE INVALID | `8b9bbc8f80732449d496b897c1a29116621d2d384deaea0c7c6866e8c066d92b` |
 | [Order evidence](replica-order-evidence-template.md) | TEMPLATE INVALID | `3a602301ecc31307af6876e66d62ddab5bfb532d6e260873e81e3052a0774d54` |
 | [First article](replica-first-article-record.md) | TEMPLATE / NO PHYSICAL UNIT AUTHORIZED | `fa41b7bee490ebbf3f785bfa4ba3d65714298a89888c471b660bee7c74686b75` |
