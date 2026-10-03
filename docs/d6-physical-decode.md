@@ -6,6 +6,11 @@ This generated report translates the preserved КР556РТ4 D6 image into
 address ranges without assigning semantics that the `.009` continuity does
 not support. Run `python3 scripts/report_d6_physical_decode.py` to refresh it.
 
+The generator verifies the PROM and selected drawing hashes, board-JSON
+endpoint subsets, and source/report text markers. It derives all mode ranges
+but does not run HDL or measure physical timing. See the
+[runtime diagnostic](d6-runtime-path-diagnostic.md) for its simulation command.
+
 ## Guarded artifact
 
 - Raw image: `ref/physical-proms/validated/d6_038.raw.bin` (256 bytes)
@@ -15,10 +20,8 @@ not support. Run `python3 scripts/report_d6_physical_decode.py` to refresh it.
 
 The factory programming instruction in `ref/baltijets-tech-docs/007 ROM and ROM programming.pdf`
 page 16 identifies D6 `.038` as a КР556РТ4 and says its programming table
-was supplied on disk. The 2026-07-19 reader-3 control first reproduced D2
-byte-for-byte, then three D6 reads including a power cycle exposed the old
-capture as an exact nibble bit reversal. Direct continuity confirms reader-3
-D0/pin12 through D3/pin9 packing.
+was supplied on disk. Reader-3 captures and channel-order qualification are
+preserved in [RT4 acquisition](rt4-dump-acquisition.md).
 
 ## Output words
 
@@ -31,8 +34,7 @@ D0/pin12 through D3/pin9 packing.
 
 Chip-removed owner continuity proves D6 output pins 11 and 12 are
 separate. D6.12 reaches D8.15, while D6.11 reaches D2.15/-WREQ and
-does not reach D8.15; the earlier installed-PROM
-zero-ohm reading that joined D6.11/D6.12/D13.12 is explicitly invalidated.
+does not reach D8.15. D13.12 drives the separate enable conductor.
 
 ## Recovered `.009` sheet-1 polarity read
 
@@ -51,11 +53,8 @@ this path, and D13 pin 2 is the drawn `RAMOUTEN` output. No additional
 series inverter, off-sheet inversion, or alternate consumer is drawn on
 either D6 output path.
 
-This reviewed factory-drawing result agrees with the stronger chip-removed
-D6.12-to-D8.15 and D6.9-to-D13.1 continuity measurements and with the
-modeled D13 polarity. It therefore rules out an omitted *drawn* inverter
-as the cause of the former raw-table contradiction. The corrected reader
-instead proved that the original capture labels reversed all four channels.
+The drawing agrees with chip-removed D6.12-to-D8.15 and D6.9-to-D13.1
+continuity and the modeled D13 polarity.
 
 ## Mode maps
 
@@ -82,22 +81,17 @@ nibble per 2 KiB block from `0000` through `F800`.
   middle, and word `8` at `D800-FFFF`; mode `010` extends word `1` through `D7FF`.
   Direct continuity proves A6=`~PC1`, A5=`~PC0`, and A7 is the
   D7.8-to-D105.1 `IO_CYCLE_H` qualifier. The raw mode
-  numbers remain useful table coordinates, not a claim about A7 semantics.
+  numbers are table coordinates for these three measured inputs.
 - D3/pin9 is low only in word `1`; D2/pin10 is high in words `B/F`.
 - These are physical electrical facts, not yet a complete explanation of
   the downstream D8/D13/D92 memory timing. That behavior must be derived
   from the now-separate ROM/RAM conductors and their confirmed consumers.
-- Runnable simulation now executes its memory map from THIS physical table
-  (the `decode_prom` instance), not the former `decode_prom_functional`
-  oracle, which is retired from the boot path. All four physical outputs
-  now execute directly with no per-output transform and pass the 6,000-write
-  byte-identical boot guard.
-- `docs/d6-runtime-path-diagnostic.md` now exhausts every mode without a
-  full boot. The corrected table emits word `1` at both low-ROM `0484` and
-  RAM target `B37A` for raw row `000`, aligning the direct ROM and ROE paths
-  with the runnable behavior without inventing an inverter.
-- Raw row `000` emits word `1` at both PC `0484` and RAM target `B37A`,
-  but the firmware suffix `11` identifies a different checkpoint row.
+- Runnable HDL uses the physical table through `decode_prom`, with direct
+  output connections. The generator checks source markers for this wiring;
+  it does not execute the boot guard.
+- The [runtime diagnostic](d6-runtime-path-diagnostic.md) covers all eight
+  modes without a full boot. Raw mode `000` emits word `1` at both `0484`
+  and `B37A`; the firmware suffix `11` identifies a different checkpoint row.
 
 ## Model adoption guards
 
@@ -116,7 +110,7 @@ nibble per 2 KiB block from `0000` through `F800`.
 | RT4 reader revision 3 has continuity-confirmed channel order and verifies both enables | PASS |
 | RT4 host validation guards revision-3 metadata and the old bit reversal | PASS |
 | Device commentary preserves measured mode pins and separate output conductors | PASS |
-| Runnable twin executes corrected physical D6 outputs directly | PASS |
+| Runnable source connects corrected physical D6 outputs directly | PASS |
 | Structural consumers retain separate ROM/RAM conductors | PASS |
 | Corrected mode path has a reproducible diagnostic | PASS |
 | Raw-row regression and corrected checkpoint suffix are documented | PASS |
