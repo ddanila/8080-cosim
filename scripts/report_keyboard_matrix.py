@@ -167,10 +167,11 @@ E8.2; the `.009` assembly and owner photo show the 3–4 bridge fitted. The
 replica netlist now assigns this return to PB4; its routed copper remains open
 pending A50 hole identification and direct continuity.
 
-EktaSoft 3.7 decodes the S21 bits as follows, but its archived ROM bytes at
+Archive-37 `ekta37.bin` (RomBios 3.43m) decodes the S21 bits as follows,
+but its archived ROM bytes at
 `1211h..1216h` (`DB 05 2F FB E6 20`) mask **PB5**, not PB4. That ROM profile
 and the photographed `.009` 3–4 bridge therefore disagree on the selected
-input; see `docs/ekta37-netbios-notes.md`.
+input; see [the NetBios analysis](ekta37-netbios-notes.md).
 
 | switch | configuration bit | NetBios meaning |
 | ---: | ---: | --- |
@@ -178,7 +179,7 @@ input; see `docs/ekta37-netbios-notes.md`.
 | S21.2–S21.3 | 6–5 | maximum station number: 3, 7, 15, or 31 |
 | S21.4–S21.8 | 4–0 | this station's number |
 
-In the EktaSoft 3.7 PB5 simulation profile, a nonzero configuration accepts
+In the archive-37 PB5 simulation profile, a nonzero configuration accepts
 `TN` with no Enter and takes network identity from S21. A zero configuration
 falls through to the ROM's `N=` and `S=` keyboard prompts; cosim deliberately
 models that open-switch fallback and therefore injects `TN0201`. The same
