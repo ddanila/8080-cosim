@@ -12,8 +12,8 @@ JAR="$ROOT/.tools/freerouting/freerouting.jar"
 MARKER="PolylineTrace.combine: iteration limit reached"
 
 is_custom() {
-  [ -f "$JAR" ] && unzip -p "$JAR" 'app/freerouting/board/PolylineTrace.class' 2>/dev/null \
-    | grep -qa "$MARKER"
+  [ -f "$JAR" ] && unzip -p "$JAR" 'app/freerouting/board/trace/PolylineTrace.class' 2>/dev/null \
+    | grep -aF "$MARKER" >/dev/null
 }
 if ! is_custom; then
   echo "run-freerouting: installed jar is missing/stock -> building the custom router" >&2
