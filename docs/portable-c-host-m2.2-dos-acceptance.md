@@ -4,8 +4,8 @@ Status: **DESK COMPLETE — PHYSICAL M2.3 QUALIFICATION REQUIRED**
 
 This report freezes the automatable acceptance boundary for the 16-bit DOS
 build of the production C Juku host. It proves that the same admitted protocol
-core builds and runs as an 8086 DOS executable through both supported boot
-paths. It does not claim Pocket8086 performance or physical CS00015 behavior;
+core builds and runs as an 8086 DOS executable through the recorded stock
+Janet and C8 boot paths. It does not claim Pocket8086 performance or physical CS00015 behavior;
 those are the next M2.3 gate.
 
 ## Locally owned toolchain
@@ -25,10 +25,15 @@ LFS, verified before use, and expanded only into the ignored `.tools/` tree.
 
 `tools/bootstrap-open-watcom.sh` and `tools/open-watcom-env.sh` are implemented
 here. There is no Kolobok checkout, build step, downloaded helper, or runtime
-dependency. Both the DOS and future Win32 ports use this one pinned compiler
+dependency. The implemented DOS and Win32 builds use this pinned compiler
 lineage.
 
 ## Accepted executable
+
+The identity below belongs to the recorded M2.2 acceptance build. A current
+rebuild may differ as the shared host evolves; its package manifest identifies
+the actual executable and payloads. Earlier emulator results do not implicitly
+qualify changed binaries.
 
 The build command is:
 
@@ -154,4 +159,7 @@ checking:
 - boot time, disk latency, request/record counts, retries, UART errors, and
   available memory against the native-Linux M2.1 baseline.
 
-Only that evidence can close M2.3 and allow the Win32/Wine M3 work to begin.
+Physical Pocket8086 evidence is still required to close M2.3. It is independent
+of the already implemented Windows build, Wine checks and Windows 95 guest
+qualification. See [the current platform contract](portable-c-host-plan.md) for
+their separate physical acceptance boundaries.
