@@ -54,7 +54,8 @@ that window. See [the configuration guide](jukuhost-config.md) for defaults.
 | CP/M running silent music | emits no traffic | sends no discovery or ready bytes | program is left undisturbed until NetDisk resumes |
 | board reset during NetDisk | C11 POST then checked beacon | closes NetDisk service state and restarts V16 | complete automatic reboot |
 | reset during V16 | fresh C11 beacon/`JR16` | abandons partial stream and rediscovers | full authenticated retransmission |
-| corrupt/truncated V16 body | CRC failure returns loader to discovery loop | sees a later beacon and retries complete V16 | no partial image executed |
+| complete V16 body with bad CRC | CRC failure returns loader to discovery loop | sees a later beacon and retries complete V16 | no partial image executed |
+| incomplete length/body/CRC after accepted `JZ` | blocks waiting for the remaining bytes; scanner timeout is inactive | boot deadline returns host to passive discovery | no partial image executed; a checked reset/restart is needed if the sender cannot complete the transfer |
 | host process replaced | resident ROM times out and retries the request | replacement validates `JD` and serves it | no manual resume flag |
 | named serial device disappears | target continues bounded request retries or C11 discovery | host retries reopen in bounded configured windows, then rediscovers | recovers when the device path returns |
 | configured console PTY is absent or replaced | target continues bounded N4 retries | host waits for the endpoint before boot, or reopens it and rediscovers after loss | no successful boot is abandoned for a missing relay |

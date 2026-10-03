@@ -139,8 +139,11 @@ raster and refresh timing, serial and known video/sound state.  CPU, scratch
 RAM data/address, complete-ROM integrity, PIT progress, and USART progress are
 bounded and retain distinct status in low RAM.  On success the ROM installs
 the call gate at `D620h`, framebuffer helper at `D700h`, and resident mutable
-state at `D780h`; it then enters the versioned loader at 19,200/8N1. Corrupt or
-truncated transfers resynchronize and retry. C4/C5 use the compatibility V15
+state at `D780h`; it then enters the versioned loader at 19,200/8N1. Complete transfers with failed
+integrity checks return to the loader scan. An incomplete accepted V16 body
+waits for the remaining bytes; its receive path has no timeout, so host
+discovery alone cannot restart it. See [the recovery limits](../../../docs/c11-session-recovery.md).
+C4/C5 use the compatibility V15
 path and download a checked extension. C6 instead copies its complete 361-byte
 V16 receive/CRC/ZX0 engine from boot-only ROM offset `0600h` to `0300h`, then
 enters a 49-byte core padded to the fixed 128-byte descriptor at `0F00h`.
