@@ -3,7 +3,8 @@
 Status: **PASS**
 
 This is the fast cosim timing reference for the factory `TDD` path with
-vendored `media/disks/JUKU1.CPM`. It records where ROMBIOS first touches
+vendored `media/disks/JUKU1.CPM` and `roms/ekta37.bin` (RomBios 3.43m,
+archive #0037). It records where ROMBIOS first touches
 the PIC/PPI/FDC ports relative to CPU cycles and framebuffer writes, so
 `juku_top` diagnostics can target the corresponding execution windows.
 

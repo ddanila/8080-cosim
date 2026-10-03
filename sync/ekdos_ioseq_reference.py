@@ -162,11 +162,11 @@ def main() -> int:
         ("PIC unmask", pic_unmask, "02D6", 30524, 0xDF),
         # 1213h is inside the ROM's 1209h..123Bh hardware-configuration scan,
         # where cosim models the unstrapped/onboard-D11 setting by sampling
-        # PB5 high (0xCF | 0x20) for this EktaSoft 3.7 ROM profile. The
+        # PB5 high (0xCF | 0x20) for this RomBios 3.43m ROM profile. The
         # photographed .009 E8 3-4 bridge selects PB4; that board/ROM
         # revision conflict is a separate physical verification boundary.
         # Ordinary keyboard-idle reads stay 0xCF.
-        ("first keyboard read", first_kbd_read, "1213", 30520, 0xEF),
+        ("first Port B configuration read", first_kbd_read, "1213", 30520, 0xEF),
         ("shifted T keyboard read", first_t_read, "1463", 42543, 0x88),
         ("FDC motor on", first_motor_on, "D7EF", 63085, 0x04),
         ("first FDC command", first_fdc, "E5DE", 63085, 0x02),
@@ -189,6 +189,7 @@ def main() -> int:
         "",
         "This guard captures a bounded cosim I/O trace for the vendored",
         "`media/disks/JUKU1.CPM` factory `TDD` path with `JUKU_TRACE_IO=1`.",
+        "The ROM input is `roms/ekta37.bin`, RomBios 3.43m (archive #0037).",
         "It checks seven selected events by PC, framebuffer-write count, and value,",
         "requires at least 100 events and one FDC access, and checks modeled",
         "1 MHz clock selection at every captured D93 register access.",
@@ -214,7 +215,7 @@ def main() -> int:
         row("PIC ICW1", first_pic),
         row("PIC ICW2", pic_icw2),
         row("PIC unmask IR5", pic_unmask),
-        row("First keyboard read", first_kbd_read),
+        row("First Port B configuration read", first_kbd_read),
         row("Shifted T keyboard read", first_t_read),
         row("FDC motor on", first_motor_on),
         row("First FDC command", first_fdc),
