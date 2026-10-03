@@ -21,13 +21,15 @@ The HDL Actions workflow uses `ci/hdl-ci.json` to map changed paths to the HDL/L
 model paths, CI-control paths, an unknown path, or an unavailable diff run every
 lane. A change confined to a declared subsystem runs only its owning lanes.
 
-The optimization changes scheduling, not the full test inventory:
+The selector schedules the bounded hosted lanes described in
+[CI budgets](../ci/README.md); a full hosted run does not execute every local
+test:
 
 - `ci/check_hdl_ci.py` verifies that all workflow entrypoints remain in the
   manifest, exist in the checkout, and select their owning lane.
 - `ci/test_select_hdl_jobs.py` covers isolated, multi-area, unknown, control,
   documentation, and forced-full decisions.
-- scheduled and tag runs force the complete suite; an unchanged nightly SHA is
+- scheduled and tag runs force all hosted lanes; an unchanged nightly SHA is
   skipped only if a previous scheduled run for that exact SHA succeeded.
 - `workflow_dispatch` defaults to `full`; `changed` evaluates the latest commit
   (`HEAD^..HEAD`) and is available for selector diagnostics.
@@ -48,8 +50,11 @@ suite.
 
 ## Reports and evidence
 
-Use `scripts/regen_all.sh --check` for the fast generated reports and
-`--deep --check` when changing behavioral evidence. Report writers own their
+Use `scripts/regen_all.sh --check` for its selected fast generated reports and
+`--deep --check` for its additional behavioral checks. These sets do not cover
+every report; run the owning command for changed evidence. See
+[regeneration scope](../sync/README.md#fast-behavioral-checks) for optional sets
+and index-relative freshness checking. Report writers own their
 Markdown output; edit the writer and regenerate instead of appending a work log.
 Photo hashes must validate the materialized bytes or the authenticated LFS
 object identity, as required by the guard. Hosted photo inputs and cache scope

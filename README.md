@@ -131,7 +131,7 @@ points.
 | Path | Purpose |
 | --- | --- |
 | `ref/` | Factory drawings, photographs, firmware evidence, and external references |
-| `kicad/` | Board model, generated schematic, source/routed PCB, zero-open audit candidate, and fabrication tooling |
+| `kicad/` | Board model, generated schematic, source/routed PCBs with current routing holds, and fabrication tooling |
 | `hdl/` | Structural runnable model and device behavior |
 | `cosim/` | Independent software emulator/oracle |
 | `sync/` | LVS, behavioral comparisons, and subsystem guards |
