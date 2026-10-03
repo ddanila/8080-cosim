@@ -91,6 +91,16 @@ as `kicad/apply_d40_1mhz_route.py`. The checker also guards the later `.009`
 R35 split: D29.1 and R35.1 belong to `PHI2TTL`, while D35.13 belongs to
 `PHI2_POST_R35`.
 
+Check the source model and source PCB from the repository root:
+
+```sh
+python3 kicad/check_d40_1mhz_route.py kicad/juku.kicad_pcb
+```
+
+With no board argument, the checker also inspects the routed snapshots and
+requires zero open connections on any board containing tracks. That default
+currently fails on held routing; a source-only PASS does not clear that gate.
+
 The zero-open routing result belongs to the earlier snapshot identified in
 [the promoted-topology record](../ref/routing/zero-open-promoted-topology.json).
 Its exact checker is retained in
