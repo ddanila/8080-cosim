@@ -61,45 +61,47 @@ python3 scripts/report_memory_timing_boundary.py
 
 ## Current Timing Nets
 
-| Net | Endpoints | Source note |
-| --- | --- | --- |
-| `D53_Y0_R49` | `D53.15, R49.1` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
-| `D53_Y1_R50` | `D53.14, R50.1` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
-| `D53_Y2_R51` | `D53.13, R51.1` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
-| `D53_Y3_R52` | `D53.12, R52.1` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
-| `W_RAIL16` | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, D66.3, D67.3, D68.3, D69.3, ... (+23)` | fully traced native sheet-2 write-strobe chain: MEMW enters D36 NAND input pin9, the D36.3 -> D33.11/.10 inverter-delay leg reaches D36 input pin10, and D36.8 drives rail 16 to all 32 DRAM W pins. D36 pin 8 is omitted from the LVS pinmap because the sim cannot reproduce the physical gate-delay chain; we_n = MEMW through a net_boundary remains the boot-identical behavioral abstraction while copper follows this source-proved net |
-| `CAS_PRE` | `D36.11, R57.1` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
-| `CAS` | `D60.15, D61.15, D62.15, D63.15, D64.15, D65.15, D66.15, D67.15, D68.15, D69.15, ... (+27)` | traced sheet-2 (array read plus D38 load-gate bundle: per-bank R rails 11/12/13/14; C+W shared); rail15 = the ONE shared CAS: D36.11 (К531ЛА12/SN74S37 high-drive NAND) -> R57 -> all 32 C pins, R58 5.1k pulldown -> grounded rail E, D36.1 feedback, D38.1 load-gate input, and video-cycle branch (2,3). Retired nets CAS0/1/2 dissolved (no per-bank CAS exists) |
-| `D36_CAS_IN` | `D36.12, D36.13` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and output pin11 reaches R57; independent May/July owner component photos show the local pin12-to-pin13 F.Cu neck. The common west source enters a dense timing bundle without a unique rail number, label, or junction; automatic scan chase exhausted, so its remote driver remains a deliberate continuity boundary |
-| `TIMING_TAG2` | `D38.4, D34.4` | Exact .009 sheet-2 PXL_20260718_101911242.jpg draws D34.4 upward to top conductor 2; overlapping exact .009 PXL_20260718_101908284.jpg crop (950,3200)-(2350,4000) shows numbered left rail 2 entering D38.4. Registered July owner solder photo PXL_20260710_200522685.jpg crop (850,1980)-(2350,2270) directly shows uninterrupted B.Cu from D34.4 near (1055,2113) through the parallel-track corridor to D38.4 near (2245,2119); see d34-pin4-tag2-via-review.json. The older scan's separate-looking numeral-2 domains are superseded for this target-board local join. The upstream driver remains a continuity boundary. |
-| `D39_MEMCYC` | `D39.3, D39.4` | exact .009 sheet-2 PXL_20260718_101908284.jpg lower-left bundle: D39 output pin3 joins its input pin4 and numbered timing rail4; rail4 is distinct from D38 pin5 LATCH and pin4 rail2 |
-| `LATCH_SIG` | `D33.12, D39.9, D38.5` | exact .009 sheet-2 PXL_20260718_101908284.jpg: D33.12 labeled LATCH runs to D39.9 and through a filled junction and westward branch into D38.5 |
-| `MEMR` | `D5.24, D15.22, D16.22, D29.6, D17.22, D18.22, D19.22, D20.22, D21.22, D22.22, ... (+3)` | native .006 sheets 1-2 full-resolution continuous label chase 2026-07-13: sheet-1 D29 exports -MRD to sheet 2; both sheet-2 arrivals marked (1) -MRD land on D33.3 and D92.13, while factory wire 11 continues D92.13 to D7.1. This closes the former W11_D7_D92 split onto the global MEMR conductor |
-| `D33_O4` | `D33.4, D37.5` | fully traced native sheet-2 300dpi route (crops s2_d37_d58 + s2_d58_oe): global -MRD/MEMR enters D33 inverter pin3, D33.4 runs directly to D37 NAND input pin5; this is the second qualifier paired with D13.2/RAM_OUT_EN on D37.4 |
-| `RAM_OUT_EN` | `D13.2, D37.4` | direct owner continuity 2026-07-14 confirms D13.2 -> D37.4. This agrees with traced sheet-1: D13.2 = ТЛ2 inverter OUTPUT (= ~D6.9) driving RAMOUTEN, exported "(2)" code 12 -> sheet-2 D37.4; factory wire 12 corroborates; cross-sheet arrival "(1) RAM OUT EN. -> D37.4" traced (crop s2_d37_d58) |
-| `RAM_RD_OE` | `D37.6, D58.9` | direct owner continuity 2026-07-14 confirms D37.6 -> D58.OE pin9. This agrees with the fully traced sheet-2 300dpi route (crops s2_d37_d58 + s2_d58_oe): "(1) RAM OUT EN." -> D37.4; "-MRD" -> D33 sect 3->4 -> D37.5; D37.6 riser corners east into D58.9 |
-| `D92_RD_NOR` | `D92.12, D92.11` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
-| `D92_WR_NOR` | `D92.6, D92.10, D92.9` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
-| `D92_NOACC` | `D92.8, D39.5` | scan sheet-2 (bite-2: D92/D39/D52/D53 RAM-strobe cluster, crops b2_*) |
-| `PHI2TTL` | `D39.1, D53.4, D30.3, D29.1, R35.1` | exact .009 E3 sheets 1-2: D29.1 and D30.3 join the pre-R35 Ф2TTL trunk with D39.1/D53.4; R35 330 ohms leads separately to D35.13/C29/R106. Owner D29.1 clock-path continuity corroborates the branch; physical R35 pads remain unregistered |
-| `PHI2_POST_R35` | `D35.13, R35.2, R106.1, C29.1` | exact .009 E3 sheet 2: R35 330 ohms separates the PHI2TTL trunk from D35.13/C29/R106 RC node; C29 marked bare 56 and R106 printed 910 to ground. Owner photos show 330R R35, 510R-position R106, and no confirmed C29 body; target pad geometry and value variants remain physical checks |
-| `XTAL16M` | `D39.10, D103.2, D42.9, D43.9, D37.12` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin10. It is separate from D56.Q_N. A continuous source-side conductor to D59.2/D59.3 OSC is not drawn through the intervening bundle, so functional expectation alone cannot prove the PCB merge; automatic scan chase exhausted and each net remains a deliberate continuity boundary Exact .009 native tile 101917240 gives D37.12 the same numbered rail 3 as D42.9 CK; this is source code equivalence, not proof of the OSC physical merge. |
-| `D39_O8` | `D39.8, D59.11` | scan |
-| `D39Y` | `D39.11, D38.10, D38.13` | scan sheet-2 (bite-3 mesh crops b3_*): drawn D39.11 -> D38.10+13 (tied); formerly provisional, now traced |
-| `D59_O10_TAG10` | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10. The other modeled numeral-10 use is D57.13 SOUND in a distinct bundle domain; no continuous conductor joins them, and merging would short two active TTL outputs. Automatic tag-number chase exhausted, so D59.10 remains a deliberate continuity boundary |
-| `POF` | `D26.10, D35.3, D35.5, R39.1` | exact .009 sheet-2 native R38/D35 frame: POF branches to both D35.3 and D35.5 and the R39.1 pull-up |
-| `VERT_RTR` | `D55.13, D35.9, D57.18` | exact-revision .009 E3 sheet 2 draws D55 OUT1/pin13 as active-low VER RTR with boundary tag2; that conductor continues into D35 К155ЛН5 input pin9 before inversion to FRAME INT and separately clocks D57 channel 2 at pin18 |
-| `FRAME_INT` | `D35.8, D10.23, R60.1` | native sheet-2 draws D35 К155ЛН5 output pin8 as FRAME INT with R60 5.1k pull-up; native sheet-1 draws FRAME INT(2) directly into D10 IR5/pin23 |
-| `D56_CLR` | `R61.2, D56.3, D56.11` | Exact .009 sheet-2 PXL_20260718_101927794.jpg native crop (330,600)-(670,1210): R61 12k pullup (from +5V) joins D56 clear pins 3 and 11 through the vertical conductor with a dot at pin 3. D56 trigger pins 2 and 4 cross that conductor without junction dots and remain separate. |
-| `D56_RC1` | `D56.15, R59.1, C8.1` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 1: RC pin 15 = R59 33k + C8 15nF |
-| `D56_C1` | `D56.14, C8.2` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 1: C pin 14 = C8 far plate |
-| `D56_RC2` | `D56.7, R47.1, C7.1` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 2: RC pin 7 = R47 20k + C7 560pF |
-| `D56_C2` | `D56.6, C7.2` | traced sheet-2 (crop s2_d56): АГ3 one-shot RC network section 2: C pin 6 = C7 far plate |
-| `D56_QN_D34` | `D56.4, D34.10` | scan sheet-2 native 5140x3563 review: D56 first-section Q_N pin4 runs east, corners south on its own vertical, and enters D34 gate-3 input pin10; it crosses the horizontal 16 MHz rail without a junction |
-| `PIT_HSYNC_DSL` | `D54.17, D56.10` | exact-revision .009 E3 sheet 2 plus direct owner continuity 2026-07-21: D54.OUT2/pin17 H.SYNC DSL drives D56 B2/pin10; it does not join the D55 clock pair |
-| `VERT_SYNC` | `D55.17, D56.2` | exact-revision .009 E3 sheet 2 plus direct owner continuity 2026-07-21: D55.OUT2/pin17 VERT SYNC DSL drives D56 B/pin2 |
-| `D56_Q2N_TAG16` | `D56.12, D55.15, D55.18` | exact-revision .009 E3 sheet 2 plus direct owner continuity 2026-07-21: D56 second-section Q2_N/pin12 drives the tied D55 CLK1/pin15 and CLK2/pin18 conductor marked 16; this signal is distinct from D36.8/DRAM write rail 16 |
-| `SYNC_B` | `D57.17` | exact-revision .009 E3 sheet 2 and direct owner continuity 2026-07-21 disprove the older scan chase that joined D57.OUT2/pin17 to both D56 triggers; D57.OUT2 remains the separately labeled SYNC B boundary |
+Per-net provenance is retained in [the board model](../kicad/juku.board.json).
+
+| Net | Endpoints |
+| --- | --- |
+| `D53_Y0_R49` | `D53.15, R49.1` |
+| `D53_Y1_R50` | `D53.14, R50.1` |
+| `D53_Y2_R51` | `D53.13, R51.1` |
+| `D53_Y3_R52` | `D53.12, R52.1` |
+| `W_RAIL16` | `D60.3, D61.3, D62.3, D63.3, D64.3, D65.3, D66.3, D67.3, D68.3, D69.3, ... (+23)` |
+| `CAS_PRE` | `D36.11, R57.1` |
+| `CAS` | `D60.15, D61.15, D62.15, D63.15, D64.15, D65.15, D66.15, D67.15, D68.15, D69.15, ... (+27)` |
+| `D36_CAS_IN` | `D36.12, D36.13` |
+| `TIMING_TAG2` | `D38.4, D34.4` |
+| `D39_MEMCYC` | `D39.3, D39.4` |
+| `LATCH_SIG` | `D33.12, D39.9, D38.5` |
+| `MEMR` | `D5.24, D15.22, D16.22, D29.6, D17.22, D18.22, D19.22, D20.22, D21.22, D22.22, ... (+3)` |
+| `D33_O4` | `D33.4, D37.5` |
+| `RAM_OUT_EN` | `D13.2, D37.4` |
+| `RAM_RD_OE` | `D37.6, D58.9` |
+| `D92_RD_NOR` | `D92.12, D92.11` |
+| `D92_WR_NOR` | `D92.6, D92.10, D92.9` |
+| `D92_NOACC` | `D92.8, D39.5` |
+| `PHI2TTL` | `D39.1, D53.4, D30.3, D29.1, R35.1` |
+| `PHI2_POST_R35` | `D35.13, R35.2, R106.1, C29.1` |
+| `XTAL16M` | `D39.10, D103.2, D42.9, D43.9, D37.12` |
+| `D39_O8` | `D39.8, D59.11` |
+| `D39Y` | `D39.11, D38.10, D38.13` |
+| `D59_O10_TAG10` | `D59.10` |
+| `POF` | `D26.10, D35.3, D35.5, R39.1` |
+| `VERT_RTR` | `D55.13, D35.9, D57.18` |
+| `FRAME_INT` | `D35.8, D10.23, R60.1` |
+| `D56_CLR` | `R61.2, D56.3, D56.11` |
+| `D56_RC1` | `D56.15, R59.1, C8.1` |
+| `D56_C1` | `D56.14, C8.2` |
+| `D56_RC2` | `D56.7, R47.1, C7.1` |
+| `D56_C2` | `D56.6, C7.2` |
+| `D56_QN_D34` | `D56.4, D34.10` |
+| `PIT_HSYNC_DSL` | `D54.17, D56.10` |
+| `VERT_SYNC` | `D55.17, D56.2` |
+| `D56_Q2N_TAG16` | `D56.12, D55.15, D55.18` |
+| `SYNC_B` | `D57.17` |
 
 The exact `.009` sheet-2 detail places D58.11 on timing tag 5,
 separate from D38.5 and D39.12. In the same tile D33.12 `LATCH`
@@ -114,94 +116,38 @@ component-side trace and remote driver remain unresolved.
 
 ## Interpretation
 
-- RAS/CAS ladder endpoints, the DRAM write rail and PHI2TTL/D56
-  support nets are guarded. Fabrication remains on DESIGN HOLD;
-  these connectivity checks do not release the board.
-- Physical D53 is guarded as КР531ИД7 with its traced 16-pin decoder
-  contract. The preserved primary TI SN54S138 sheet supplies a 12 ns
-  compatible-device maximum only at 5 V, 25 C, RL=280 ohm, CL=15 pF.
-  It does not guarantee the Soviet process, loaded board, or slot timing,
-  so the structural HDL remains untimed and those boundaries stay open.
-- The runnable CPU-memory scaffold now models a complete row/column transaction:
-  RAS remains active from the row phase through the CAS column pulse, and the
-  РУ5 model strobes DIN on the latter falling edge of CAS or WE for early and
-  delayed writes. The 130,000-event C-reference guard reaches `BTRACE-END` and
-  the dedicated DRAM unit guard covers coincident control edges. This is a
-  functional timing closure; it does not infer the unresolved D36.12/.13
-  conductor or the physical CPU/video slot schedule.
-- D92 is no longer an unmodeled timing placeholder. Its native triple-NOR
-  read/write combiner is instantiated in the structural HDL and covered by
-  LVS: pins 1/2/13 qualify reads, 3/4/5 qualify writes, and 9/10/11
-  combine both results onto D92.8/D39.5. The repeated native-sheet -MRD
-  label reaches D92.13, while factory wire W11 closes its registered A11B
-  surface island to the separate D7.1/A11A island without etched copper.
-- D37's RAM-read gate is source-complete rather than a remaining probe ask:
-  global MEMR enters D33.3, the inverter output D33.4 reaches D37.5,
-  D13.2/RAM_OUT_EN reaches D37.4, and D37.6 reaches D58.OE pin 9.
-- D36's DRAM-write gate is likewise source-complete: MEMW enters pin 9,
-  the D36.3 -> D33.11/.10 delay leg reaches pin 10, and output pin 8
-  drives rail 16 to every DRAM W pin. The direct `we_n = MEMW` simulation
-  path remains an explicit timing abstraction, not a copper uncertainty.
-- The promoted route preserves W11 as an explicit assembly wire between
-  the separately routed `MEMR` and `MEMR_D7` copper islands; it does not
-  restore the former etched bridge. Whole-board parity and DRC remain
-  held; see [the routed audit](routed-refresh-audit.md) and
-  [factory-wire fidelity](factory-wire-route-fidelity.md) for current
-  mismatches, moved pads and unconnected items.
-- The exact CAS-driver input source (`D36_CAS_IN`) is still not
-  historical-source-complete. D36.12/.13 were
-  rechecked across the native 5140x3563 sheet on 2026-07-13; their common
-  west conductor enters an unlabeled dense timing bundle, so the automated
-  scan chase is exhausted.
-- Exact-revision `.009 E3` sheet 2 and owner continuity close D56.12's
-  conductor code 16 onto the tied D55 CLK1/CLK2 inputs at pins 15/18.
-  It remains distinct from the unrelated D36.8/DRAM write rail 16.
-- D59.10's local timing-bundle marker 10 is likewise not the D57.13 SOUND
-  bundle marker 10. Native full-sheet review shows no continuous conductor,
-  and merging them would short active TTL outputs; automatic tag-number
-  chasing is exhausted pending continuity or stronger imagery.
-- The tag-14 `XTAL16M` bundle is functionally expected to originate at the
-  D59 oscillator, but the native sheet does not draw a continuous source-side
-  path through the intervening bundle. `OSC` and `XTAL16M` therefore remain
-  separate until continuity or stronger artwork proves the PCB merge.
-- D38.4's left-side timing rail 2 and D34.4's top-edge tag 2 share one
-  uninterrupted owner-board solder trace, visible from registered pin to
-  registered pin in the July native crop (850,1980)-(2350,2270). The local
-  join is modeled; the remote timing driver still requires tracing.
-- Do not replace these boundaries with a behavioral timing guess from the
-  runnable twin. They need stronger sheet-2 imagery, macro photo,
-  continuity check, or scope trace before being removed from the
-  fidelity gap ledger.
+- This generator checks source-model endpoints and evidence metadata; it
+  does not execute simulations, inspect routed copper or measure timing.
+  Fabrication remains on DESIGN HOLD.
+- The TI SN54S138 comparison bounds a compatible decoder at the published
+  conditions in the table. It does not qualify the fitted КР531ИД7,
+  loaded-board timing or a physical DRAM slot schedule.
+- The runnable memory scaffold holds RAS through the column phase and samples
+  DIN on the latter falling edge of CAS or WE. The C/HDL bus-event and DRAM
+  unit guards check this behavior separately; it does not identify the
+  physical D36 CAS input or CPU/video arbitration schedule.
+- D36's source-traced write rail is distinct from the simulation's direct
+  `we_n = MEMW` abstraction. D56.12's conductor code 16 is also distinct
+  from D36.8's DRAM write rail 16.
+- `D36_CAS_IN` has a local D36.12/.13 tie but an untraced remote driver.
+  `OSC` and `XTAL16M` remain separate until their source-side merge is proved.
+  D38.4/D34.4 share timing rail 2; its remote driver remains open.
+- D59.10's tag 10 is not proof of a connection to D57 SOUND or assembly
+  wire W10 at D41.13. These independent outputs must remain separate.
+- W11 is an assembly closure between `MEMR` and `MEMR_D7` islands. See
+  [factory-wire fidelity](factory-wire-route-fidelity.md) and
+  [the routed audit](routed-refresh-audit.md) for layout qualification.
 
+## Source observations
 
-## Additional source observations
-
-For D36, two native owner component views (`PXL_20260710_200445914.jpg`
-and `PXL_20260519_201927098.jpg`) show a short front-copper neck between
-the physically counted D36.12 and D36.13 pads. This corroborates their
-source-drawn local tie. The seven-contact solder field remains unassigned,
-and the common input's upstream driver is still unknown; see
-`ref/photos/juku-pcb-2/cas-timing-row-registration.json`.
-
-The `.009` assembly wire table also assigns board point **А:10** to the
-insulated conductor D41.13–D50.1 (`W10_QA_SEL`). The sheet-2 detail
-`PXL_20260718_101908284.jpg` draws the numeral 10 at D41.13's
-open-circle departure. That drawing mark agrees with the assembly-wire
-identity; it is not evidence that D59.10 joins D41.13. D41.13 is a shift
-register output already traced to D50.1/D51.1, while D59.10 is a separate
-inverter output. Keep the D59 remote endpoint open until its conductor is
-traced continuously or measured on the target board.
-
-The original-pixel sheet-2 crop of `PXL_20260718_101911242.jpg` at
-`(0,1350)–(1000,2700)` also resolves the crossing at approximately
-`(610,1870)`: D38.8 `STB` crosses the vertical `B` supply conductor feeding
-R37/R36 without a junction dot. The +12 V phase pull-up rail must therefore
-stay separate from `STB`; the same crop shows R37 and R36 ending on the
-distinct Ф1 and Ф2 outputs.
-
-In the registered D59 solder field of `PXL_20260710_200534267.jpg`, the
-D59.3 side of that local join runs through a separate joint outside the DIP14
-row near `(2975,2260)` and ends at an open annulus near `(3160,2200)`. The
-front-side projection falls in the crystal-can area, but no same-hole Z1
-contact is identified there. This annulus is the next physical OSC probe;
-see `ref/photos/juku-pcb-2/d59-orientation-audit.json`.
+- [CAS row registration](../ref/photos/juku-pcb-2/cas-timing-row-registration.json)
+  records the component-side D36.12/.13 tie. Its upstream driver and the
+  adjacent seven-contact field remain unresolved.
+- The factory wire table assigns W10 to D41.13–D50.1. That numbered wire
+  is distinct from D59.10's timing-bundle marker.
+- The sheet-2 STB crossing has no junction with the +12 V phase pull-up
+  conductor. Keep STB and that supply separate; the board-model provenance
+  retains the original image and crop identity.
+- [D59 orientation audit](../ref/photos/juku-pcb-2/d59-orientation-audit.json)
+  records the open annulus reached from D59.3. Its same-hole relationship to
+  Z1 is unproved and remains a physical continuity target.
