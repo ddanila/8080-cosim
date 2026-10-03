@@ -18,23 +18,25 @@ bytes to physical refdes or to factory programs `ДГШ5.106.087/.041`, so this
 identity supports the functional replica image but is not represented as an
 owner-board dump or original factory-programming record.
 
-Content semantics: low nibble is ONE-COLD (0111/1011/1101/1110) — four active-low selects.
-.117 steps them with 4-address dwell across the 08-17h window; .113 fires each once at 14-17h.
-The earlier role-based assignment D8↔.117 / D94↔.113 is retired. The guarded
-inspection in `docs/re3-firmware-inspection.md` shows that no
-permutation/addressing/population reading lets .117 or .113 boot a
-2-chip BIOS machine from D8, and the factory paper trail assigns D8=.039 / D94=.092. The
-.113/.117 shape (FF idle + one-cold walk) reads as a timing/phase PROM pair — candidate home:
-the socketed timing РЕ3 (photo, 8904) and the .103 family.
+## Interpretation and checks
 
-**2026-07 tracing and dump update: NEITHER scanned table is our board's D8.**
-Sheet-1 tracing shows all eight ROM-socket CEs hang on D8
-(tags D4..D7→D15..D18, D0..D3→D19..D22, E̅←D6.ROM̅), and the board boots
-from a BIOS pair populated in D15/D16. Both scanned tables leave D4-D7
-unburned (К155РЕ3 unprogrammed = 0 = OC asserted), so they fit only a
-BIOS-less expansion-cart configuration. The earlier mode-map reconstruction
-was useful as a falsifiable fallback, but three independent matching physical
-`.039` reads now provide the authoritative D8 table and differ from that
-fallback at 19 of 32 addresses. D94 `.092` likewise has three independent
-matching physical reads. `ref/physical-proms/README.md` records their hashes,
-raw/asserted polarity, and alias accounting.
+The low-nibble patterns `07/0B/0D/0E` each contain one low bit. Their shape
+supports a timing/phase-select interpretation, but does not identify a fitted
+socket. The processor-module parts list assigns D8 `.039` and D94 `.092`;
+the validated physical tables differ from both scanned programs.
+
+Use [the generated inspection](../../docs/re3-firmware-inspection.md) for exact
+byte comparisons, source identities, and interpretation limits. Physical
+captures and raw/asserted polarity are documented in
+[the physical PROM reference](../physical-proms/README.md). The older D8
+reconstruction is retained as comparison evidence and differs from the
+validated table at 19 of 32 addresses.
+
+```sh
+(cd ref/firmware && sha256sum -c SHA256SUMS)
+python3 scripts/report_re3_firmware_inspection.py
+```
+
+The inspection regenerates the report and checksum manifest; review its
+changes before committing. It compares retained transcriptions and does not
+repeat physical acquisition or establish a programming format.
