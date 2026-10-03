@@ -31,6 +31,13 @@ def marker(text: str, *needles: str) -> bool:
     return all(needle in text for needle in needles)
 
 
+def failure_detail(result: subprocess.CompletedProcess[str]) -> str:
+    if not result.returncode:
+        return ""
+    lines = (result.stdout + "\n" + result.stderr).strip().splitlines()
+    return "; " + (lines[-1].strip() if lines else f"guard exited {result.returncode}")
+
+
 def main() -> int:
     photos = sorted(PHOTO_DIR.glob("PXL_20260711_*.jpg"))
     photo_text = read(PHOTO_README)
@@ -127,7 +134,7 @@ def main() -> int:
             "D95/D99/D101/D97/D102 follow registered package offsets and orientations",
             mux_placement.returncode == 0,
             "shared component photo; `kicad/check_d95_d101_photo_placement.py`"
-            + ("; " + mux_placement.stdout.strip().replace("\n", "; ") if mux_placement.returncode else ""),
+            + failure_detail(mux_placement),
         ),
         (
             "Lower FDC passive identities follow the registered factory drawing",

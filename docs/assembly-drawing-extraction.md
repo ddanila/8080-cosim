@@ -20,7 +20,7 @@ they do not qualify the routed PCB or close manufacturing holds.
 | Factory local solder/copper details are guarded without treating position 150 as a cut | PASS | `BODGE-TRIAGE.md`; Вид В photos 114626340/114633498/114638730 |
 | D94/D100/D98 retain the corrected horizontal assembly posture | PASS | source `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
 | D106/D28/D96 row follows registered owner-photo spacing | PASS | two-sided D106/D28 fits; D96 component fit; `kicad/check_d28_d106_photo_placement.py` |
-| D95/D99/D101/D97/D102 follow registered package offsets and orientations | FAIL | shared component photo; `kicad/check_d95_d101_photo_placement.py`;  |
+| D95/D99/D101/D97/D102 follow registered package offsets and orientations | FAIL | shared component photo; `kicad/check_d95_d101_photo_placement.py`; D95/D101 PHOTO PLACEMENT: FAIL D95->D99 expected (25.078373116043164, 0.4511977130830599), actual (23.894999999999982, 0.4510000000000076), error 1.183 mm |
 | Lower FDC passive identities follow the registered factory drawing | PASS | five photo-fitted IC anchors; `kicad/report_fdc_lower_assembly_placement.py` |
 | Upper-row C12/C9 placements follow adjacent fitted IC centres | PASS | D94/D100/D98 drawing interpolation; `kicad/report_fdc_upper_assembly_placement.py` |
 | D94 pull-up identities, values, and endpoints are source-modeled | PASS | factory R87/R88/R89 labels/BOM plus registered component/solder/value photos; `kicad/check_d94_pullups.py` |
