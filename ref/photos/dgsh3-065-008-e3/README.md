@@ -6,14 +6,12 @@ schematic.
 
 ## Why this matters
 
-This was the **highest-value document lead** tracked in `PLAN.md`: the FDC-era
-floppy interface was only partially known, and the МАМЕ Juku driver's own TODO
-still reads "work out how the floppy interface really works" (juku3000 #25).
-Together with the processor board's FDC sheet (`ref/photos/dgsh5-109-009-e3/`,
-sheet 3, КР1818ВГ93), this drawing gives the **drive side** of that interface —
-the mating pinout of the processor board's X4 drive connector — so the two can
-be reconciled end to end. This is the connector cross-check the import was
-requested for.
+Together with processor-module `.009` sheet 3, this drawing documents the
+drive side of the floppy interface. The reviewed
+[X4/НГМД map](../../schematics/fdc-x4-ngmd-wire-map.md) reconciles the
+processor connector with both drive tables and their shared external connector.
+Contact-number agreement establishes drawing intent; no separate cable
+assembly drawing or physical cable continuity is proved by these photos.
 
 Contents: two НГМД drive mechanisms (**ЕС5323.01 / ЕС5323.02**), their
 hierarchical **X1/X2** power/signal connectors, intermediate **XS3/XS4**, and
@@ -30,12 +28,8 @@ top-to-bottom):
 - `PXL_20260718_121821197.jpg` — overview
 - `PXL_20260718_121826539.jpg` … `PXL_20260718_121851825.jpg` — 8 detail tiles
 
-## TODO
+## Reviewed scope
 
-- [x] Extract the X1/X2/XS3/XS4/XS5 pinout and reconcile it against the
-      processor board's X4 (sheet 3, `dgsh5-109-009-e3/`) and the VG93 signal
-      contract (`ref/schematics/fdc-x4-ngmd-wire-map.md`).
-- [x] Complete the drawing-level transcription: both drive X1/X2 tables,
-      XS3/XS4 fanout, XS5, and the separate +5 V/+12 V power-block boundary
-      are covered by that map. The Э3 presents the PSU as a named block and
-      contains no component-level PSU circuit.
+The transcription covers both X1/X2 drive tables, XS3/XS4 fanout, XS5, and
+the separate +5 V/+12 V power-block boundary. The drawing presents the PSU
+as a named block and contains no component-level PSU circuit.

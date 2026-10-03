@@ -28,7 +28,7 @@ continuity results are recorded individually in `endpoints.csv`; use
 and the distinction between accepted evidence and measurement requests.
 
 The JPEGs are Git LFS objects. Materialize this directory with
-`git lfs pull --include="ref/photos/juku-pcb-2/*.jpg"`; pointer stubs
+`git lfs pull --include="ref/photos/juku-pcb-2/*.jpg" --exclude=""`; pointer stubs
 do not count as available visual evidence, and `sync/reference_artifact_check.sh`
 rejects them.
 

@@ -13,9 +13,10 @@ the system-bus core — address `-ADR0…-ADRF`, data `-D0…-D7`, and control
 
 The XP pinout here is the **system-bus (backplane) connector** as seen by a
 peripheral card — directly relevant to the bus-connector cross-check and to the
-rev-B RC2014-style backplane work (`spinoffs/minimal-vga`). Reconcile XP against
-the processor board's bus connector and the system schematic
-(`ref/photos/dgsh3-031-011-e6/`).
+rev-B backplane work (`spinoffs/minimal-vga`). The
+[connector cross-check](../../schematics/system-bus-connector-map.md) compares
+XP with the processor connector and terminal-level interconnect drawing; the
+rail conflict below prevents treating it as a compatible expansion card.
 
 ## Photos
 
