@@ -1,6 +1,6 @@
 # Juku processor-board owner photos
 
-This directory contains 50 owner-supplied photographs of processor module
+This directory contains 52 owner-supplied photographs of processor module
 `7.102.158`. They are retained as routing, placement, connector, socket, and
 package-identification evidence.
 
@@ -18,12 +18,17 @@ removed. `PXL_20260710_202708344.jpg` is the close footprint view; the other six
 retain wider placement context. “VG93 removed” describes the photographed
 maintenance state, not a non-FDC board population.
 
-The solder-side view reverses the component-side left/right coordinate. The
-registration manifest preserves that mirror relationship. Reviewed two-sided
-paths have promoted five D2 address inputs and three D94-to-D93 FDC controls;
-all other seeded observations remain measurement requests.
+Two supplemental photographs from 2026-07-22 show the X3 connector face
+and rear harness. Their identification evidence is recorded in `SURVEY.md`.
 
-The JPEGs are Git LFS objects. Run `git lfs pull` after cloning; pointer stubs
+The solder-side view reverses the component-side left/right coordinate. The
+registration manifest preserves that mirror relationship. Reviewed paths and
+continuity results are recorded individually in `endpoints.csv`; use
+[photo registration](../../../docs/photo-registration.md) for current dispositions
+and the distinction between accepted evidence and measurement requests.
+
+The JPEGs are Git LFS objects. Materialize this directory with
+`git lfs pull --include="ref/photos/juku-pcb-2/*.jpg"`; pointer stubs
 do not count as available visual evidence, and `sync/reference_artifact_check.sh`
 rejects them.
 

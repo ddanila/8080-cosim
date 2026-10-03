@@ -12,8 +12,11 @@ nightly is adopted: add a dated filename, update its provenance and bootstrap
 hash, migrate the build, then remove the old path in a normal forward commit.
 
 The repository intentionally does not materialize every LFS object in routine
-CI. GitHub charges each Actions download to the repository owner's LFS
-bandwidth, even when the object is unchanged or a later step fails. The reports
+CI. Each Actions download counts toward the repository owner's LFS bandwidth
+allowance, even when the object is unchanged or a later step fails. Charges
+depend on the included allowance and account budget; see
+[GitHub's LFS billing rules](https://docs.github.com/en/billing/concepts/product-billing/git-lfs).
+The reports
 workflow therefore:
 
 1. checks out LFS pointer files;
@@ -58,7 +61,7 @@ git lfs pull --include="ref/photos/juku-pcb-2/*.jpg"
 To obtain every original photograph later, run:
 
 ```sh
-git lfs pull
+git lfs pull --include="ref/photos/**/*.jpg" --exclude=""
 ```
 
 To materialize only the vendored compiler:
