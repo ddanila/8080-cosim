@@ -1,7 +1,8 @@
 # Juku E5104 behavioral hardware map
 
 This is the concise software-visible map used by the emulator and digital-twin
-tests. The pinned source is `ref/mame_juku.cpp`; the physical endpoint model is
+tests. The pinned MAME reference is `ref/mame_juku.cpp`; current runnable
+behavior is implemented in `cosim/trace.c` and `hdl/juku_top.v`. The endpoint model is
 `kicad/juku.board.json`. MAME is a behavioral oracle, not proof of every PCB
 connection.
 
@@ -21,7 +22,7 @@ connection.
 | 3 | none | all RAM |
 
 Mode 0 reads the low BIOS overlay while writes to `0x0000..0x3FFF` reach
-underlying RAM. EktaSoft 3.7's low-stack dispatcher uses this behavior for
+underlying RAM. The `ekta37.bin` (RomBios 3.43m) low-stack dispatcher uses this behavior for
 its return frame at `0x00E4..0x00E5`, then restores the caller's mapping. The high BIOS and cartridge windows remain write-protected overlays;
 allowing high-ROM writes corrupts the independently guarded Monitor 3.3 idle
 framebuffer. `hdl/sim/mem_decode_tb.v`, the Monitor 3.3 oracle, and the default
@@ -56,7 +57,15 @@ a power-cycled capture. The older behavioral reconstruction remains under
 | `14-17` | 8253 PIT #1 | vertical timing and frame interrupt |
 | `18-1B` | 8253 PIT #2 | baud/audio timing |
 | `1C-1F` | КР1818ВГ93 / WD1793 | floppy controller |
-| `80` | mouse interface | optional mouse input |
+| `80` | MAME mouse expansion | optional reference interface; no mouse emulation in cosim |
+
+The table describes address assignments, not complete device emulation. Cosim
+implements selected PPI/PIC register behavior and peripheral paths needed by
+its guards; otherwise it returns the port’s last output byte (initially zero),
+with `F0-F3` explicitly returning `FF` for absent expansion hardware. In
+particular, the `80` entry comes from MAME and has no cosim mouse handler.
+The HDL has structural PPI instances; its passing tests cover their exercised
+behavior rather than the complete peripheral contract.
 
 The physical I/O select device is D9 К555ИД7. D2 is a separate `.037`
 bus/wait PROM and must not be described as the I/O decoder.
