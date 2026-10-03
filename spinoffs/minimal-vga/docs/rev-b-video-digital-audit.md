@@ -1,33 +1,32 @@
 # VJUGA rev B Video digital audit — R5.V1
 
-Status: **PASS / ARCHITECTURE AND GAL LOGIC FROZEN** on 2026-08-28. This closes
-R5.V1 and R5.V3; exact purchasing/land-pattern work remains R5.V4.
+Status: **PASS / ARCHITECTURE AND GAL LOGIC FROZEN; PHYSICAL ACCEPTANCE PENDING.**
+Exact parts and land patterns are specified in the
+[Video parts contract](rev-b-video-parts.md); routed layout and assembly checks
+are described in the [Video PCB guide](rev-b-video-pcb.md).
 
-## Corrections made by the audit
+## Pin, level and timing constraints
 
-- Both AS6C1008 definitions had omitted physical pin 1 (NC), shifting nearly the
-  entire package. Memory U2 and Video U21 now use the Alliance PDIP-32 pinout:
-  CE1# pin 22, OE# pin 24, WE# pin 29, active-high CE2 pin 30, A15 pin 31.
-- Video U16 had used a non-existent CD74HC283 pin order. It now adds `0x1800`
-  using S0/A0/B0 on pins 4/5/6, S1/A1/B1 on 1/3/2 and S2/A2/B2 on 13/14/15.
-- Unused CMOS/PLD inputs are tied low. Unconnected outputs remain intentionally NC.
-- Generic HC parts were removed at TTL-level boundaries. ACT/HCT inputs accept the
-  guaranteed high levels of the Z80, GAL and ALS shifter.
-- Generic HC393 and HC166 timing was too marginal at 25.175 MHz. U2-U4 are the ST
-  M74HC393B1R (34 MHz minimum at 4.5 V over -40..85 C); U19 is SN74ALS166N
-  (45 MHz). The scan counters are CD74ACT161E (91 MHz minimum).
-- H-decode now receives `RESET_N`. Its `H_END` is forced active during reset; V-decode
-  propagates reset to `V_END`. Two spare HCT08 gates translate these TTL-level signals
+- Memory U2 and Video U21 use the Alliance AS6C1008 PDIP-32 pinout:
+  pin 1 NC, CE1# pin 22, OE# pin 24, WE# pin 29, CE2 pin 30 and A15 pin 31.
+- Video U16 adds `0x1800` using CD74HC283 S0/A0/B0 on pins 4/5/6,
+  S1/A1/B1 on 1/3/2 and S2/A2/B2 on 13/14/15.
+- Unused CMOS/PLD inputs are tied low; unused outputs remain intentionally NC.
+- ACT/HCT inputs accept TTL-level Z80, GAL and ALS outputs. HC parts are used
+  where their input-high requirements are met by the preceding drivers.
+- U2-U4 are ST M74HC393B1R counters (34 MHz minimum at 4.5 V over -40..85 C);
+  U19 is SN74ALS166N (45 MHz), and the scan counters are CD74ACT161E (91 MHz).
+- H-decode receives `RESET_N` and forces `H_END` active during reset; V-decode
+  propagates reset to `V_END`. Two HCT08 gates translate these TTL-level outputs
   to full-rail `H_CLR`/`V_CLR` for the HC393 asynchronous clears.
-- `FETCH` is separate from the one-clock `BYTE_TICK`: H-decode pin 21 supplies a
-  four-dot SRAM ownership window to control-GAL pin 1. This avoids incrementing the
-  scan counters four times while still giving the 55 ns SRAM a real access interval.
+- H-decode pin 21 supplies the four-dot `FETCH` window to control-GAL pin 1.
+  The separate one-dot `BYTE_TICK` increments the scan counters once per byte.
 
 ## Component closure
 
 | Refs | Frozen device/family | Pin, threshold, reset and ownership result |
 |---|---|---|
-| U1 | 25.175 MHz 5 V oscillator | Seven local clock inputs; exact MPN/OE meaning deferred to R5.V4. |
+| U1 | 25.175 MHz 5 V oscillator | ECS-100A-251.7; seven local clock inputs; pin 1 NC, 7 GND, 8 output, 14 +5 V. |
 | U2-U4 | ST M74HC393B1R | All 42 pins closed; guaranteed clock margin; H/V clear is full-rail through U22. |
 | U5 | ATF22V10 H-decode | Counter inputs, global reset, sync/blank, phase, shifter and fetch outputs closed. |
 | U6 | ATF22V10 V-decode | Vertical timing, active, row-base, frame-top and frame-tick roles closed. |
@@ -64,7 +63,8 @@ the CPU cannot touch FD. A simultaneous CPU framebuffer request enables U7's
 open-drain `WAIT_N` low driver; the backplane 4.7 kohm resistor supplies the high
 level. The maximum raw overlap is four dots (158.888 ns). At 2.000 MHz the Z80 may
 insert a full wait state, after which U7 selects CPU address/data direction and only
-then permits OE# or WE#. No write is dropped and no two outputs own FD or D together.
+then permits OE# or WE#. The HDL collision checks verify write completion and exclusive FD/D ownership.
+This does not establish physical Z80 wait sampling or analog bus timing.
 
 R5.V3 expresses this phase/ownership table in three tracked GAL sources. U6 uses a
 registered, illegal-state-recovering modulo-six divider clocked by the dot-640

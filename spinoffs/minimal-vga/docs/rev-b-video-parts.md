@@ -59,25 +59,25 @@ guard and requires rejection.
 
 ## Bus placement consequence
 
-The prior footprint maps used vertical male headers on the cards. That contradicted the
-mechanical contract, which always specified right-angle males. R5.V4 corrects every card
-to the Samtec right-angle footprint and every backplane slot to a vertical female socket.
-R5.V5 closes presentation: mating posts face out through the card edge, the base
+Every card uses Samtec right-angle male headers; backplane slots use vertical
+female sockets. Mating posts face out through the card edge, the base
 header is front-side, and the shorter extension header is back-side so their bodies do
 not occupy the same volume. Corresponding backplane rotations preserve pin numbering.
 The PCB generator anchors connector **pad-row centres** to `mating.json`; centring an
 asymmetric right-angle body would otherwise move the mating row several millimetres.
 
-## Power correction and machine gate
+## Power contract and machine gate
 
-`ECS-100A-251.7` may draw 70 mA in its 25.175 MHz band. The former 30 mA placeholder is
-therefore retired: Video remains 686 mA. R5.I7 subsequently raises the complete
-five-card ceiling to 1655 mA for the expanded I/O card, leaving 345 mA / 17.25%
-headroom against the 2 A design limit. USB remains unqualified for the full system.
+`ECS-100A-251.7` may draw 70 mA in its 25.175 MHz band. The Video budget is
+686 mA and the complete five-card budget is 1655 mA, leaving 345 mA / 17.25%
+headroom against the 2 A design limit. The barrel jack is the sole power input;
+USB-TTL is data-only. Supply receipt limits and routed voltage-drop evidence
+are in the [five-card power contract](rev-b-five-card-power.md).
 
 Run:
 
 ```sh
+. spinoffs/minimal-vga/kicad/revb/env.sh
 for card in mem io cpu backplane video; do
   python3 spinoffs/minimal-vga/kicad/revb/check_revb_footprints.py "$card"
 done
