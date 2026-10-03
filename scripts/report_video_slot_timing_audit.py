@@ -220,7 +220,7 @@ def main() -> int:
                 "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**",
                 "D94 is now classified as an FDC control/decode PROM",
             ),
-            "`docs/d94-reconstruction-constraints.md`; only proved outputs terminate at D93",
+            "`docs/d94-reconstruction-constraints.md`; outputs serve D93 and its FDC support logic",
         ),
     ]
 
@@ -250,7 +250,7 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "## Guarded Inputs",
+            "## Recorded inputs",
             "",
             f"- `ref/firmware/re3_dgsh5.106.113.hex`: `{sha256('ref/firmware/re3_dgsh5.106.113.hex')}`",
             f"- `ref/firmware/re3_dgsh5.106.117.hex`: `{sha256('ref/firmware/re3_dgsh5.106.117.hex')}`",
@@ -262,6 +262,8 @@ def main() -> int:
             "## Interpretation",
             "",
             "- This audit checks board endpoints, HDL text and recorded-report markers.",
+            "  The two firmware hashes above are computed for reporting, not compared",
+            "  against pinned identities by this generator.",
             "  It does not execute the raster, serializer or mux tests; use the commands",
             "  cited in the table to refresh their runtime evidence.",
             "- The runnable video adjunct reads 40 bytes per line for 241 lines from",

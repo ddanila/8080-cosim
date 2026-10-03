@@ -36,9 +36,9 @@ python3 scripts/report_video_slot_timing_audit.py
 | Owner photo survey separates socketed РЕ3 from an assumed video role | PASS | `ref/photos/juku-pcb-2/SURVEY.md` |
 | Scanned `.113/.117` РЕ3 tables are guarded but not D94 `.092` | PASS | `docs/re3-firmware-inspection.md` |
 | Owner-scan firmware directory has no mislabeled D94 `.092` table | PASS | `ref/firmware/` has no `.092` artifact |
-| D94 FDC-control role is separated from video timing | PASS | `docs/d94-reconstruction-constraints.md`; only proved outputs terminate at D93 |
+| D94 FDC-control role is separated from video timing | PASS | `docs/d94-reconstruction-constraints.md`; outputs serve D93 and its FDC support logic |
 
-## Guarded Inputs
+## Recorded inputs
 
 - `ref/firmware/re3_dgsh5.106.113.hex`: `05b582e19bed47c70374859de41c7fb4ce648a6f0b895059f9cf963c5496cb13`
 - `ref/firmware/re3_dgsh5.106.117.hex`: `3c431fdc0005a865aba209a026a3e75cbc1af9bdf1d5d8fc9953954238205f18`
@@ -50,6 +50,8 @@ python3 scripts/report_video_slot_timing_audit.py
 ## Interpretation
 
 - This audit checks board endpoints, HDL text and recorded-report markers.
+  The two firmware hashes above are computed for reporting, not compared
+  against pinned identities by this generator.
   It does not execute the raster, serializer or mux tests; use the commands
   cited in the table to refresh their runtime evidence.
 - The runnable video adjunct reads 40 bytes per line for 241 lines from
