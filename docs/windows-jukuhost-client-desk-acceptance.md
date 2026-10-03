@@ -11,10 +11,11 @@ artifact and local runtime result in
 [windows-jukuhost-client-wine-acceptance.md](windows-jukuhost-client-wine-acceptance.md)
 supersede its artifact size, payload count, and unavailable-Wine statements.
 
-This accepts the implementation and all verification possible in the
-available environment. It does not claim execution on Windows, physical COM
-timing, CS00000 interoperability from the Windows binary, or Windows 95
-support. Those remain plan gates W4 and W5.
+This revision-qualified record proves build/API/package behavior only. It
+contains no execution of the PE on Windows or Wine, no physical COM timing and
+no Windows-to-board interoperability result. Later Wine and Windows 95 guest
+evidence is linked from [the implementation guide](windows-jukuhost-client-implementation.md);
+physical serial qualification remains separate.
 
 ## Artifact
 
@@ -41,8 +42,7 @@ is loose in the package.
 
 ## Accepted checks
 
-The following commands passed without source or assertion changes between a
-failing and accepted run:
+The recorded gate commands were:
 
 ```text
 sync/jukuhost_core_check.sh
@@ -75,21 +75,18 @@ PE audit confirmed the icon and version resources, zeroed build/resource
 timestamps, GUI subsystem, and the exact import allowlist. Package membership
 and hashes then passed.
 
-## Explicitly unavailable
+## Qualification boundary
 
-The test host was Ubuntu 26.04 LTS with Linux 7.0.0, GCC 15.2.0, Clang 21.1.8,
-and GNU binutils. Neither Windows nor Wine was installed. Therefore:
+The recorded host lacked Windows and Wine. The accepted binary was compiled
+and audited, but its self-test and GUI were not executed as Windows processes.
+API shims do not establish driver/device-instance behavior or serial timing.
+No physical Windows-to-CS00000 boot, disk/write safety, N4, reconnect, shutdown
+or endurance run belongs to this record.
 
-- `JUKUWIN.EXE --selftest` was compiled but not executed as a Windows process;
-- the GUI was not rendered or driven in a Windows message loop;
-- Wine PTY-to-COM stock/C11 integration was not available;
-- no Windows driver/device-instance behavior was observed for the Prolific
-  `067B:2303` adapter;
-- no physical Windows-to-CS00000 boot, disk, N4, reconnect, shutdown, or
-  endurance run was performed;
-- no Windows 95 execution or physical serial qualification was performed.
-
-The accepted outcome is consequently: **implementation and non-Windows desk
-testing complete; ready for W4 physical current-Windows qualification**. A
-successful W4 result is required before calling the client ready for ordinary
-use on that Windows machine. Only W5 can establish Windows 95 support.
+Current runtime evidence belongs to
+[Wine acceptance](windows-jukuhost-client-wine-acceptance.md) and
+[Windows 95 guest acceptance](windows-jukuhost-client-win95-acceptance.md).
+Their named binaries and environments differ from this pre-C12 artifact;
+neither substitutes for physical serial qualification. Use
+[the operator guide](windows-jukuhost-client.md) for the current package and
+[the platform contract](portable-c-host-plan.md) for remaining gates.
