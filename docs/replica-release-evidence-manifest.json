@@ -158,7 +158,7 @@
     },
     "Bring-up coverage": {
       "path": "docs/replica-bringup-verification-points.md",
-      "sha256": "13c0a06a002981f838314fd3d1f8a2789079671e51d6c6f9620b188d3447bb4f",
+      "sha256": "7f17320c6c1991616acf15ddfef4d4e3e65c603f15eff9dd933be8064e09af1c",
       "status": "ENDPOINT COVERAGE FAILED / RISKS UNRESOLVED"
     },
     "Order readiness": {
@@ -188,12 +188,12 @@
     },
     "Upload procedure": {
       "path": "docs/replica-order-upload-runbook.md",
-      "sha256": "98c31e35ba5a4dc4bb6c74325ff82c3e286d87f3529cd92ad01b7b81ffcd3608",
+      "sha256": "cb8a78846789b49a4503ac7fa3ccba9c7115c8774cb066b097bf7aaf464539d2",
       "status": "PACKAGE INVALID"
     },
     "Order evidence": {
       "path": "docs/replica-order-evidence-template.md",
-      "sha256": "7bfe541b7bf08d2265efe653f9bf089f454d0e6bc597775efe110fca4232ea99",
+      "sha256": "e0c3146abb60319a6f14292a517eb33c31859f41804718816ec55b46a1a5c83c",
       "status": "TEMPLATE INVALID"
     },
     "First article": {

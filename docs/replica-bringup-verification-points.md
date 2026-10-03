@@ -7,6 +7,10 @@ remaining source-risk annotations into an explicit checklist for vendor
 preview, owner continuity sessions, and staged bring-up. It does not mark
 these points as independently verified; it makes the residual risks
 visible and actionable before manufacturing and first power-on.
+Risk rows come from explicit source-risk flags and keyword matching in
+source notes; this is not an exhaustive physical failure inventory.
+Refresh with `python3 kicad/report_replica_bringup_verification.py`.
+Successful generation does not require endpoint coverage or risk closure.
 
 ## Summary
 
@@ -36,8 +40,8 @@ visible and actionable before manufacturing and first power-on.
 ## KiCad PCB Endpoint Coverage
 
 Every source-risk endpoint listed below is checked against the final
-`kicad/juku.kicad_pcb` footprint pad net assignment. This proves the
-fabrication source preserves the same residual-risk connectivity as
+`kicad/juku.kicad_pcb` footprint pad net assignment. Matching rows show
+that the source PCB preserves the same modeled pad-net assignments as
 `kicad/juku.board.json`; it does not prove the historical assumption
 behind a risk note.
 
@@ -136,9 +140,10 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 
 ## Design-release disposition
 
-- Endpoint coverage proves that modeled nets survive into both PCB files;
-  it does not prove that the modeled net is historically correct or that
-  omitted functional pins are safe.
+- Endpoint coverage compares modeled pad-net assignments in each PCB;
+  missing or mismatched endpoints remain blockers. Matching assignments
+  do not establish routed connectivity, historical correctness, or safety
+  of omitted functional pins.
 - The 4 official FDC devices with remaining source-risk pins are tracked
   separately in `docs/unmodeled-footprint-inventory.md`; they are outside
   every endpoint count above and remain design-release blockers.
