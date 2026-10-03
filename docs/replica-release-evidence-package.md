@@ -42,7 +42,7 @@ tracked DRC disposition count.
 | [BOM](replica-dual-config-bom.md) | NO STATUS FIELD |
 | [Sourcing](replica-sourcing-readiness.md) | PARTIAL / PROGRAMMING AND REVIEW BLOCKED |
 | [Firmware lineage](firmware-gap-ledger.md) | ADOPTED FIRMWARE SET VERIFIED |
-| [EPROM programming](eprom-programming-images.md) | ADOPTED THIRD-SOURCE EKTA 3.7 IMAGES READY |
+| [EPROM programming](eprom-programming-images.md) | ADOPTED ARCHIVE-0037 ROMBIOS 3.43m IMAGES READY |
 | [PROM procedure](prom-dump-procedure.md) | NO STATUS FIELD |
 | [ERC and parity](main-board-erc-parity.md) | DESIGN HOLD |
 | [PPI orientation](ppi-orientation-audit.md) | HOLD |

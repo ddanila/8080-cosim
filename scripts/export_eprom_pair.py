@@ -73,7 +73,7 @@ def main() -> int:
 
     report = f"""# D15/D16 EPROM programming images
 
-Status: **ADOPTED THIRD-SOURCE EKTA 3.7 IMAGES READY**
+Status: **ADOPTED ARCHIVE-0037 ROMBIOS 3.43m IMAGES READY**
 
 These deterministic 2764 programming images are split from the repository's
 boot-validated 16 KiB `roms/ekta37.bin`. They are functional replica inputs,

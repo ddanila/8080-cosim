@@ -113,8 +113,8 @@
     },
     "EPROM programming": {
       "path": "docs/eprom-programming-images.md",
-      "sha256": "8ca6e54fa5bb56bfdb8d0e18da25bffdae324b6f0637a79a811b438ac19bda3f",
-      "status": "ADOPTED THIRD-SOURCE EKTA 3.7 IMAGES READY"
+      "sha256": "3ac191cdbd4fc9b9f57661e190d1be6f2ec8a4f56f13398415c6aa34fa0ef892",
+      "status": "ADOPTED ARCHIVE-0037 ROMBIOS 3.43m IMAGES READY"
     },
     "PROM procedure": {
       "path": "docs/prom-dump-procedure.md",
