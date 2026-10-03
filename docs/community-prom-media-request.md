@@ -8,9 +8,9 @@ Primary public target: `infoaed/juku3000`
 
 ## Why We Are Asking
 
-The replica boots in the digital twin and its zero-open PCB package is
-checksum-verified under design hold. Several connectivity items still need
-hardware evidence.
+The digital twin boots the preserved ROM set. Current PCB routing and package
+release remain on design hold; see
+[manufacturing readiness](replica-manufacturing-readiness.md).
 Additional media and silicon reads are requested for preservation and
 board-variant detection, not because the adopted PROM/EPROM set is incomplete:
 
@@ -37,15 +37,15 @@ board-variant detection, not because the adopted PROM/EPROM set is incomplete:
   concatenated image. The original per-read captures could resolve the two
   remaining bad ROM blocks without speculative byte repair.
 
-Relevant local docs:
+Supporting records:
 
-- `docs/prom-dump-procedure.md`
-- `docs/reconstructed-prom-fallbacks.md`
-- `docs/ekdos-media-acquisition.md`
-- `docs/cartridge-basic-boundary.md`
-- `docs/jmon22-reconstruction.md`
-- `ref/baltijets-tech-docs/README.md`
-- `docs/replica-dual-config-bom.md`
+- [PROM read procedure](prom-dump-procedure.md)
+- [Adopted PROM contents](reconstructed-prom-fallbacks.md)
+- [Disk acquisition](ekdos-media-acquisition.md)
+- [Cartridge BASIC boundary](cartridge-basic-boundary.md)
+- [Monitor 2.2 reconstruction](jmon22-reconstruction.md)
+- [Baltijets sources](../ref/baltijets-tech-docs/README.md)
+- [Replica BOM](replica-dual-config-bom.md)
 
 ## Exact Ask
 
@@ -74,19 +74,15 @@ Relevant local docs:
    settings, and any log or note identifying the 50 divergent chip-8 bytes.
    Upstream commit `31c74684` is the first detailed catalog record of those
    unstable reads.
-6. Can an owner provide continuity readings, or clear trace-side photographs
-   of an actual `.009` FDC-populated board, for the official footprints whose
-   device pinouts are modeled but whose Juku signal nets remain untraced:
-   D96, D99, D100, and D101? The exact requests are D96.9 Q2-to-D101 input continuity,
-   D96.11 CLK2-to-D94.2/D99.9 continuity, the shared sheet-1 source of D96.13 `/CLR2`
-   and D99.10 `B2`,
-   powered D96 async-control captures, and the listed D99/D101 boundary pins.
-   Exact-revision sheet 3 source-closes D28/D95/D97/D98/D102/D106 plus D96's
-   local wiring, but primary SN74LS74A truth leaves section-1 restart phase
-   undefined and makes section 2 set-only while `/CLR2` is inactive. D105 and the
-   measured `.009` WAIT/READY edge handoff are modeled and carried by the
-   promoted route. D30.1/.4/.10/.12 and R5 are now continuity-closed as one
-   D38-driven conductor, so there is no remaining D30 continuity ask.
+6. Can an owner supply powered-off continuity or registered trace-side photos
+   for the remaining boundaries in
+   [the FDC hardware handoff](fdc-hardware-handoff.md)? The 4 still-open
+   support-device boundaries are D96, D99, D100 and D101. Their pin roles and
+   much of their wiring are source-closed; target-board continuity and powered
+   behavior remain separate requirements. Priority comparisons include
+   D96.9-to-D101, D96.11-to-D94.2/D99.9, D96.13-to-D99.10, and the shared
+   clear/B2 source. D30 and D105's measured local handoffs need no repeated
+   generic continuity request.
 
 ## Minimal Useful Deliverables
 
@@ -128,78 +124,34 @@ Body:
 ```text
 Hello,
 
-I am working on a preservation-oriented Juku E5101/E5104 processor-board
-recreation and digital twin:
-
+I am recreating the Juku .009 processor board and its digital twin:
 https://github.com/ddanila/8080-cosim
 
-The current twin boots ROMBIOS 3.43 from the real ROM set. The PCB package is
-reproducible but the physical design remains on hold while D94 D0 closure, the
-Juku-specific nets of 4 still-open modeled FDC-support ICs, and remaining
-programmable-part corroboration are incomplete. D2/D6/D8/D94 now have validated
-physical contents, and D2's measured READY handoff is source-modeled. D105
-wait/MRD logic and most of D30 READY are also source-modeled and present in the
-promoted exact-source route. The verified package remains under functional
-design hold.
+The twin boots the preserved ROM set; physical PCB release is still held.
+D2/D6/D8/D94 already have validated physical contents. Additional reads are
+useful for provenance and board variants, rather than filling a missing set.
 
-Baltijets doc 007 confirms several programmed-part drawings, but the byte tables
-for the small PROMs are marked "на диске" rather than printed. I am looking for
-either those programming disk files or dumps from a physical .009 processor
-board:
+Do you have any of the following?
 
-Validated physical D2/D6/D8/D94 tables are now preserved. Factory
-programming-disk files and independent reads remain valuable corroboration.
+- Baltijets doc 007 programming-disk files for .037/.038/.039/.092 PROMs
+  or the .040-family EPROMs; independent physical reads are also useful.
+- An independently acquired JUKU-1 / ДГШ5.106.105 disk image, with provenance
+  and checksum, to compare with the preserved public JUKU1/JUKU2 images.
+- A different/larger BASIC cartridge image or a hardware-confirmed Monitor
+  3.3 launch procedure. Disk JBASIC reaches READY, but the public 8 KiB
+  cartridge's required runtime page remains unresolved.
+- Original Monitor 2.2 chip-7 reads and all seven chip-8 reads, before the
+  consensus image. The catalog records unstable reads; raw captures could
+  resolve the remaining bad blocks without speculative repair.
+- Continuity readings or original-resolution trace-side photos for the
+  remaining .009 FDC support boundaries listed in our hardware handoff.
 
-- КР556РТ4А D2 and D6, drawing family ДГШ5.106.037/.038
-- К155РЕ3 D8, drawing ДГШ5.106.039
-- the FDC-era D94 PROM ДГШ5.106.092 on the .009 board
-- the D15/D16 2764/M2764 ROM pair, if a physical board can be read
+For reads, please retain board/socket identity, chip markings and orientation,
+reader settings, raw files, hashes and whether repeated reads match.
 
-The `.009` board also has 4 still-open FDC-support devices whose packages and
-device-level pin roles are now represented, but whose Juku-specific functional nets remain
-untraced: D96, D99, D100, and D101. D96's section-1 read-clock toggle and local
-section-2 copper are source-closed, but section-1 restart phase is undefined,
-section 2 is set-only without a real CLR2 source, and Q2/pin9 plus CLK2/pin11
-retain unresolved sheet-1 continuations. D28/D95/D97/D98/D102/D106 are source-closed
-from the recovered `.009` electrical sheet, including its intentional unused-pin
-omissions. The current owner photographs do
-show the FDC-equipped population, but sockets, wires, crossings, and incomplete
-local registration hide most end-to-end paths. Continuity readings or clearer
-trace-side photographs of those three devices and the remaining source-risk
-nets would directly unblock the board. D30 section B and the measured `.009`
-WAIT/READY edge handoff are owner-closed; direct continuity and the exact sheet
-agree that D30.1/.4/.10/.12 share the R5 pull-up and D38 strobe conductor.
-
-The repo now vendors Arti's public JUKU1/JUKU2 raw disk images, and
-media/disks/JUKU1.CPM boots to the EKDOS A> prompt in cosim. I am still looking
-for an independently dumped JUKU-1 / ДГШ5.106.105 disk, or checksum/provenance
-that can verify this public image. The cosim check is:
-
-    sync/ekdos_fdc_probe.py
-
-The disk-side JBASIC.COM path is now proven to a visible READY prompt, but the
-public 8 KiB removable-memory BASIC cartridge is still unresolved with Monitor
-3.3. Current probes show Monitor 3.3 copies the cartridge body, then the runtime
-bootstrap needs a page beyond the public 8 KiB payload; simple fill, append,
-final-page mirror, relocation-count, and direct body-entry patch hypotheses do
-not reach BASIC. I am also looking for any larger/different BASIC cartridge
-image, programming artifact, or hardware-confirmed launch procedure that reaches
-the documented BASIC banner / READY prompt.
-
-The public Monitor 2.2 image also retains checksum failures in its last two
-2 KiB chips. The catalog says chip 7 had a couple of read errors and chip 8 had
-50 divergences across seven reads, but only the final concatenated image is
-public. If the original per-read files or reader logs survive, please preserve
-and share those raw captures before any majority vote or byte repair; they are
-the strongest route to a non-speculative reconstruction.
-
-The dump procedure and exact requested outputs are documented here:
-
-https://github.com/ddanila/8080-cosim/blob/main/docs/prom-dump-procedure.md
-https://github.com/ddanila/8080-cosim/blob/main/docs/community-prom-media-request.md
-
-Happy to contribute back the traced netlist, KiCad board recreation, cosim
-findings, and any corrections that are useful to juku3000/MAME.
+The precise requests and preservation procedure are here:
+https://github.com/ddanila/8080-cosim/blob/master/docs/community-prom-media-request.md
+https://github.com/ddanila/8080-cosim/blob/master/docs/prom-dump-procedure.md
 
 Thanks!
 ```
