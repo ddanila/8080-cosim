@@ -1,10 +1,15 @@
 # D8 `.039` physical ROM-pager decode
 
-Status: **PHYSICAL D8 TABLE MINIMIZED AND EXECUTED**
+Status: **PHYSICAL D8 TABLE AND BOARD-JSON MAPPING GUARDED**
 
 This generated report reduces the validated 32 x 8 К155РЕ3 image to
 exact active-low socket-select equations and guards them against every
 captured bit. `S(Dn)=1` means output Dn sinks its open-collector rail.
+
+Regenerate with `python3 scripts/report_d8_physical_decode.py`.
+The generator verifies the image hash, all table bits, board-JSON endpoint
+subsets, and HDL/test text markers. It does not inspect PCB copper or run HDL.
+Run `sync/prom_fallback_check.sh` for the open-collector simulation.
 
 ## Artifact and mapping
 
@@ -41,8 +46,8 @@ provides the mode/region qualifier around this address-only pager.
 | 7 | `D6` | `ROM_CS_EXP17` -> `D17` | never | PASS |
 | 9 | `D7` | `ROM_CS_EXP18` -> `D18` | never | PASS |
 
-The six invariant outputs remain physical fidelity obligations: their copper
-to D17-D22 is preserved even though this factory program never selects those
+The six invariant outputs remain physical fidelity obligations: their modeled nets
+to D17-D22 are preserved even though this factory program never selects those
 sockets. The `.009` populated build uses only D15 and D16.
 
 ## Evidence checks
@@ -54,11 +59,11 @@ sockets. The `.009` populated build uses only D15 and D16.
 | Enable maps to measured D6.12 ROM select | PASS |
 | All eight output-to-socket nets are present | PASS |
 | All 256 captured bits match the equations | PASS |
-| HDL executes open-collector table and release checks | PASS |
+| HDL/test markers cover open-collector table and release checks | PASS |
 
 ## Remaining boundary
 
-D8 content, address equations, output activity, and socket destinations are
-closed. Full physical adoption still follows D6: its `/E` source is measured
-to D6.12; the corrected reader-3 D6 table now drives this path directly, while
-operating-level probe. No replacement D8 firmware remains to reconstruct.
+D8 content and equations are verified; socket destinations are recorded in
+board JSON. Its `/E` connection to D6.12 is owner-measured, and the corrected
+D6 table drives the runnable path. This report does not establish operating
+voltage, edge quality, or routed continuity. No replacement D8 firmware remains to reconstruct.

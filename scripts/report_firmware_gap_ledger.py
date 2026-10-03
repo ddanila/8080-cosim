@@ -135,7 +135,7 @@ def main() -> int:
     )
     d8_decode_ok = marker(
         "docs/d8-physical-decode.md",
-        "Status: **PHYSICAL D8 TABLE MINIMIZED AND EXECUTED**",
+        "Status: **PHYSICAL D8 TABLE AND BOARD-JSON MAPPING GUARDED**",
         "All 256 captured bits match the equations | PASS",
         "No replacement D8 firmware remains to reconstruct",
     )
