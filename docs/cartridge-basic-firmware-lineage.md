@@ -69,10 +69,8 @@ source boundary and cannot supply the required `0x2100..0x21FF` page.
 | `0x1F00..0x1FFF` | `256` | `18` | `e625e901f06b6eca4a5c9b8dca79b889fd90cf2db1f7771f67e9284365a70a9b` | relocation bootstrap page |
 
 The required loop-survival sequence occurs at bootstrap offset
-`0x09`. The earlier final-page-mirror experiment therefore
-already tested the strongest source-adjacent reconstruction: a second copy
-of this bootstrap page after the known 8 KiB image. It completed the
-self-overwriting relocation but still did not render `READY`.
+`0x09`. Its presence identifies relocation code, not a
+validated donor for the absent source page.
 
 ## Monitor 2.2 integrity
 
@@ -97,12 +95,9 @@ block-3 failure is the sole BASIC-body mismatch: replacing `0x9A` at
 exactly closes the stored checksum. It leaves the original dump unchanged
 because blocks 6 and 7 remain unresolved.
 
-A bounded diagnostic with checksum bytes repaired in temporary memory
-passed the self-test, but then executed at `0xC482`, outside the validated
-E5104 upper-ROM window (`0xD800..0xFFFF`). Widening that temporary window
-advanced execution into further low-ROM dependencies without reaching a
-visible prompt. This is evidence for an earlier hardware/firmware mapping,
-not authority to alter the reproduced E5104 decode or publish a patched ROM.
+This generator compares bytes and checksum constraints; it does not execute
+a cartridge or patched monitor. The current acceptance and recovery inputs
+are summarized in [the cartridge boundary](cartridge-basic-boundary.md).
 
 ## Boundary
 
@@ -114,8 +109,8 @@ not authority to alter the reproduced E5104 decode or publish a patched ROM.
 - The bootstrap's literal `HL=0x0200`, `DE=0x0100`, `BC=0x2000`
   operands independently prove the source extends through `0x21FF`, one
   256-byte page past the public image's mapped end at `0x20FF`.
-- A mirrored bootstrap/survival page fixes relocation mechanics but does not
-  fix the later monitor ABI/configuration mismatch or reach `READY`.
+- A working loading/decode contract remains unverified; byte lineage and
+  relocation operands alone do not establish BASIC startup.
 - The remaining preservation input is therefore a complete removable-memory
   image or a documented early-board decode/loading procedure, not another
   copy of the BASIC body already recovered here.
