@@ -10,9 +10,10 @@ layout check.
 
 The drawings establish connector intent, not target-board copper continuity.
 Owner continuity still outranks them where it exists. No separate external
-cable assembly drawing is present in this batch, so `X4` to `XS5`
-straight-through mating is identified by the exact contact-number and signal
-agreement on every used signal, not by an unseen cable.
+cable assembly drawing is present in this batch. Matching contact numbers and
+names support a same-number connection for the shared `X4`/`XS5` signals;
+they do not establish a complete straight-through cable. Ground, power, and
+processor-only contacts retain the dispositions listed below.
 
 ## Guarded primary frames
 
@@ -38,7 +39,7 @@ sheet's +5 V rail. Contacts absent from sheet 3 are not assigned from analogy.
 | 2-5 | not shown on sheet 3 | older `.006` sheet-1 tape-control assignments are revision-stale and require separate disposition |
 | 6 | GND | ground symbol at the contact |
 | 7 | `-WR.PROTECT` | D98 input channel A3 |
-| 8 | `-READY` | D98 input channel A4, then the D28.1 inverter section toward D93 READY |
+| 8 | `-READY` | D98 input channel A4, then D28 pins 5/6 toward D93 READY |
 | 9 | `-STEP` | D100 B3/pin 18 |
 | 10 | `TG43` | D100 B1/pin 16 |
 | 11 | `-WR.DATA` | D100 B4/pin 14 |
