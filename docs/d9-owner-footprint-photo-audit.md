@@ -26,7 +26,9 @@ A routed repair requires full DRC and connectivity checks.
 
 ## C88 candidates
 
-Photo-matched GND/+5 V front holes `(3030,1365)`/`(2978,1530)` project
+The upper front hole `(3030,1365)` matches a solder strip photo-traced to
+D6.8/source GND; the lower hole `(2978,1530)` has a visible front stem from
+D9.16/source +5 V. These rail-consistent candidate holes project
 from D9 to approximately `(119.21,111.61)`/`(116.82,119.37)` mm.
 An independent D7-local x fit agrees within 0.07 mm. Their approximate
 8.12 mm spacing cannot be represented by C35's current 5 mm footprint.
