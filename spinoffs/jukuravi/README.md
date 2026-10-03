@@ -11,25 +11,23 @@ T31 transport run, historical D55 bitmap, transport benchmark, upper-D15
 diagnostic, and uploaded speaker demo are recorded in
 [`T31-PHYSICAL.md`](T31-PHYSICAL.md).
 The separate CS00024 T31 session and its corrected D55 interpretation are in
-[`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md). The completed T36 desk diagnosis
-and D57 channel-2 localization are in
+[`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md). The current T36 diagnosis
+and remaining D57 channel-2 discriminator are in
 [`../../docs/cs00024-t36-diagnosis.md`](../../docs/cs00024-t36-diagnosis.md).
 The prepared, not yet executed video-slot refresh experiment — arming the
 exact EktaSoft D54/D55 raster from the T36 loader and holding RAM
 unrefreshed — is specified in
 [`RASTER-REFRESH-EXPERIMENT.md`](RASTER-REFRESH-EXPERIMENT.md) with its
-runner [`raster_retention.py`](raster_retention.py). The planned
+runner [`raster_retention.py`](raster_retention.py). The implemented
 EktaSoft-based remix ROM that embeds the Jukuravi loader as a monitor
 command is specified in
 [`EKTA37-REMIX-PLAN.md`](EKTA37-REMIX-PLAN.md).
 
 The separately built, from-scratch network-only successor is in
-[`network-rom/`](network-rom/README.md). Its C6 / ABI 1.2 bounded POST,
-ROM-resident Fastboot V16, services, and real CP/M Plus handoff are
-simulator-qualified. On 2026-08-18 the exact C6 D15/D16 pair was programmed,
-verified, fitted in CS00015, and passed every monitor-independent physical
-item. Display/cursor observation remains pending; see the CP/M Plus
-[`C6 qualification record`](https://github.com/ddanila/cpm-plus-juku/blob/master/docs/cs00015-c6-blind-qualification-20260818.md).
+[`network-rom/`](network-rom/README.md). Its current C12 / ABI 1.5 implementation and release-specific physical scope
+are documented there. CS00015's fitted C6 pair remains a separate physical
+identity; see the CP/M Plus
+[C6 qualification record](https://github.com/ddanila/cpm-plus-juku/blob/master/docs/cs00015-c6-blind-qualification-20260818.md).
 
 The three-voice speaker proof was first delivered through this environment,
 but the experiment grew into an independent CP/M music engine.  JukuPoly's
@@ -135,9 +133,9 @@ before/after matrix, provenance/socket inspection, rollback criteria, and
 evidence record. Do not combine that discriminator with other rework or
 optional Nano wiring.
 
-On CS00015, the wait-class matrix is superseded by a D1 16-bit increment fault.
-After a clean T32 boot, read the affected register-pair results directly
-without another ROM burn:
+The historical CS00015 investigation isolated a D1 16-bit increment fault;
+D1 replacement subsequently produced clean results. To repeat that focused
+discriminator after a T32 boot, without another ROM burn:
 
 ```sh
 python3 spinoffs/jukuravi/probe_a12_increment.py --port /dev/ttyUSB0
@@ -273,82 +271,35 @@ rows. CS00024 passes when touched about every five seconds but loses mutable
 loader state after an untouched interval between roughly 5 and 17 seconds.
 See [`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md) for exact captures and limits.
 
-### T35 physical finding and T36 successor
+### T36 refresh and D57 qualification boundary
 
-T35 (`1D/45C4`) was programmed and produced valuable captures, but it is not
-an all-row refresh solution. The drawings establish CPU A0..A7 on the DRAM
-address mux during RAS; MK4564-class 128-cycle refresh consumes MA0..MA6 and
-ignores MA7. T35 increments H and therefore reads `4000h,4100h,...,BF00h`:
-the low seven address bits remain zero, so physical row `00` is refreshed 128
-times.
+T35 (`1D/45C4`) increments the high address byte and refreshes physical row
+zero repeatedly; it is retained as a negative control, not an all-row solution.
+T36 (`1E/C617`) reads `4000h..407Fh` through public `CALL 07A9h`, covering
+all 128 physical rows. The exact image identities and refresh ABI are in
+[the firmware guide](firmware/README.md) and
+[loader API v2](LOADER-API-V2.md).
 
-The six-second `4D00h` physical lane capture confirmed that interpretation.
-Offset zero survived while other low-address rows decayed in structured
-blocks, every D84..D91 bit lane participated, and the loader later stopped.
-The earlier long T35 reattach proves survival of frequently touched loader
-state, not all-row retention.
+The completed CS00024 local sweep passed all eight stage/pattern combinations
+over `4000h..BFFFh` with no mismatches. It proves the recorded refresh-on
+workload, not unrefreshed retention. The earlier interrupted wire sweep has a
+narrower captured scope; both records remain in
+[CS00024 physical evidence](CS00024-PHYSICAL.md).
 
-T36 is the programmed physical-test image:
-
-- artifact `firmware/diag-d0-row-refresh.bin` / `firmware/dos/T36HOST.BIN`;
-- ROM `1E`, CRC16 `C617`;
-- SHA256 `32264641836ce914a0fc706c916e2847d542d83b05d6737f1d6272b76d78dedb`;
-- public `CALL 07A9h`, now reading `4000h..407Fh` with `INR L`.
-
-T36 retains T34's clock-safe D55 test, T35's one-vote/fail-safe loader policy,
-and query/enable/disable/counter command. The approximately 1.7 MHz host result
-is effective RAM-loop throughput including READY waits, not a direct clock
-measurement. It gives a conservative 1.234 ms estimate per sweep against the
-2 ms datasheet interval.
-
-The completed post-burn run used the destructive local 32 KiB RAM sweep with
-zero, one, checkerboard, and address-XOR patterns. Two small relocated programs
-covered the complete range after a six-second refresh-on hold and returned
-compact D84..D91 failure attribution:
-
-```sh
-python3 spinoffs/jukuravi/batch.py --port /dev/ttyUSB0 --rom t36 \
-  --local-full-ram-sweep --local-full-ram-hold-ms 6000 \
-  --log-dir spinoffs/jukuravi/sessions/cs00024-t36-local-full-physical
-```
-
-Start the command first and press RESET once when requested. This overwrites
-all host-safe RAM at `4000h..BFFFh`; it does not alter EEPROM. Use
-`--only-ram-lanes` for the shorter 32-byte scratch discriminator. See
-[`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md) for the captures and
-[`LOADER-API-V2.md`](LOADER-API-V2.md) for the ABI.
-
-The first T36 physical session on 2026-08-10 passed the complete boot bitmap,
-verified upload/return, the 1.702797 MHz effective CPU measurement, and every
-A12/LHLD/READY/boundary/increment probe. Its intentionally interrupted
-wire-forensic zero pattern still proves a full 32,768-byte LOAD plus immediate
-readback with zero retries. After the six-second hold, the captured contiguous
-`4000h..46BFh` prefix contained 1,728 exact zeros and sampled all 128 physical
-rows 13--14 times. See the physical log for the exact limits; the remainder of
-that delayed read and the other three wire patterns were not completed.
-
-The later local session completed the missing proof in 45 minutes. All eight
-stage/pattern combinations over the union `4000h..BFFFh` passed with zero
-mismatching bytes, XOR `00`, and no candidate D84--D91 package. The same run
-also retained a legacy `D57R` capture: channel 2 read `99/99` in all eight
-repetitions while channels 0/1 worked. That raw result remains useful evidence,
-but its original fault interpretation is superseded. Exact E3 tracing shows
-D57 CLK2 is active-low `/VER RTR` from D55.13 at about 49.92 Hz, not D57
-CLK0's 1.23 MHz clock, and the legacy probe waited only microseconds without
-arming the raster. Its channel-2 reads therefore preceded a guaranteed CLK2
-edge. Use the corrected focused follow-up without rerunning RAM:
+The legacy `D57R` channel-2 result is inconclusive: D57 CLK2 is D55's roughly
+49.92 Hz `/VER RTR`, and that probe did not wait for a guaranteed clock edge.
+The corrected `D57S` probe arms the Ekta raster and waits 64 refresh sweeps
+per write. It passed on CS00015. CS00024 still needs this corrected rerun
+before diagnosing its channel-2 path, socket or package:
 
 ```sh
 python3 spinoffs/jukuravi/batch.py --port /dev/ttyUSB0 --rom t36 \
   --only-d57 --log-dir spinoffs/jukuravi/sessions/cs00024-t36-d57-followup
 ```
 
-The corrected `D57S` probe arms the exact Ekta raster and waits 64 refresh
-sweeps after each channel-2 write. CS00015 returned `FD/3D`, `FC/3C`, `FE/3E`
-in all eight repetitions, physically validating its D57 channel 2 and
-`/VER RTR` path. CS00024 still needs this corrected rerun before any D57
-path, socket, or package diagnosis. See the consolidated
-[`CS00024 T36 diagnosis`](../../docs/cs00024-t36-diagnosis.md).
+This focused follow-up does not require rerunning the RAM sweep. See
+[the consolidated diagnosis](../../docs/cs00024-t36-diagnosis.md) for its
+expected signatures and interpretation.
 
 ### Session logs
 
@@ -403,7 +354,7 @@ bash sync/jukuravi_t36_check.sh
 ```
 
 The T28 suite pins the reference implementation of loader API v2. The T31
-suite pins the currently burned image and executes the uploaded speaker demo
+suite pins the T31 service image and executes the uploaded speaker demo
 through the real host/cosim PTY path. The same host code is used for cosim and
 the physical serial port. The T32 suite additionally executes all eight
 upper-ROM entries, reattaches after each one, and verifies its unique RAM
@@ -412,8 +363,8 @@ The T36 suite derives CPU A0..A6 from the drawings/datasheet, proves a complete
 128-row sweep, performs a 1,025-byte verified upload and idle reattach,
 exercises every refresh operation and torn-disable fallback, and requires exact
 T35 to decay as the one-row negative control while preserving T34 and T35. It
-also pins both physical T36 sessions and reproduces the clean-boot/raw-fail
-D57 channel-2 signature in focused cosim.
+also pins both physical T36 sessions and reproduces the legacy raw D57 result
+in focused cosim; that reproduction does not establish a channel-2 fault.
 
 The diagnostic ladder, fault injection coverage, image hashes, and older ROM
 revisions are documented in [`firmware/README.md`](firmware/README.md). That
