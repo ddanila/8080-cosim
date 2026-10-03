@@ -9,6 +9,20 @@ The two drawings independently agree on every exposed data, address, and
 listed control contact. They do **not** agree on all power contacts, so the
 `.106.103` card must not be treated as a drop-in `.009` expansion card.
 
+Regenerate with:
+
+```sh
+python3 scripts/report_system_bus_connector_map.py
+```
+
+The generator verifies the six listed image hashes, compares the 28
+transcribed signal contacts with the canonical JSON X1 pin map, and
+checks the exact modeled X1 +5 V contact set. Table PASS rows describe
+that model comparison. Card rail sets and the cable table are reviewed
+transcriptions stored in the generator; they are not reread from images
+during regeneration. The check does not verify connector orientation,
+physical continuity, routed copper, or complete module compatibility.
+
 ## Guarded primary frames
 
 - `ref/photos/dgsh5-106-103-e3/PXL_20260718_122444769.MP.jpg` — SHA256 `4cc84a693fd8c19d720f8cae342fde43fce0a78ae3862092cb45f85409658785`
@@ -56,8 +70,8 @@ three-character form: card `C32` is processor `132C`, etc.
 | `102B` | `-AMWTC` | `AMWC_N` | PASS |
 | `106B` | `-INHIBIT` | `INHIB_N` | PASS |
 
-The recovered card exposes ADR0 through ADRF (16 address bits), not
-ADR0 through ADR17. Its four shown controls are `-IOM`, `-MRDC`,
+The recovered card exposes ADR0 through ADRF (16 address bits).
+Its four shown controls are `-IOM`, `-MRDC`,
 `-AMWTC`, and `-INHIBIT`; these match `IOM_N`, `MRC_N`, `AMWC_N`, and
 `INHIB_N` at the identical contacts in `kicad/juku.board.json`.
 
@@ -93,9 +107,8 @@ modules are installed simultaneously.
 ## Disposition
 
 - The main-board data/address/control model is independently corroborated.
-- The `.106.103` README's former ADR17 claim is corrected to ADRF.
-- The power conflict is a variant boundary and a bench safety warning,
-  not permission to merge either rail map.
+- The conflicting power assignments remain a variant boundary; retain the
+  exact `.009` rail map for the replica.
 - A future `.106.102` drawing or backplane wiring table is required before
   claiming the E6201 module shown in the system drawing is pin-compatible
   with either connector map.
