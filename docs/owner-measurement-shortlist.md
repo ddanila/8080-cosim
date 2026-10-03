@@ -6,6 +6,9 @@ This report assigns current source gaps to physical measurement tasks.
 `READY` means required inputs and selected report markers are present
 and the gap-to-task assignment checks pass. It does not rerun the cited
 guards, validate every narrative request, or record completed measurements.
+A recorded assembly placement failure remains `HOLD` and keeps this report
+at `EVIDENCE HOLD`; generation succeeds so freshness CI can check it.
+Missing markers and unexpected assembly failures still fail generation.
 
 ## Command
 
@@ -37,7 +40,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | Bring-up verification points generated | PASS |
 | Source inventory PASS marker present | PASS |
 | Cartridge BASIC boundary documented | PASS |
-| .009 assembly drawing extraction guarded | MISSING |
+| .009 assembly drawing extraction guarded | HOLD |
 | Factory Вид В modifications guarded | PASS |
 | Source-PCB placement collision gate passes | PASS |
 
