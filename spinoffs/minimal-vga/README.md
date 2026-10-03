@@ -86,8 +86,10 @@ are historical evidence and must not be uploaded.
 - **The framebuffer-readback boot oracle is built and validated.**
   `sim/vjuga_readback_check.sh` boots the twin with `+capture`, reassembles the
   write stream (`tools/vjuga_fb_readback/reassemble.py`), and confirms it equals
-  both the twin's own dump and cosim's `vram.bin` — so the banner is verifiable
-  on the bench from analyzer captures with zero display electronics. A twin
+  both the twin's own dump and cosim's `vram.bin` at the selected write cutoff
+  (default 6000). This validates bounded replay, not completion of the banner
+  or physical capture reliability. Bench comparisons require matching ROM,
+  cutoff and initial state; see [the procedure](docs/phase4-bench-bringup.md). A twin
   reference trace (`tools/vjuga_single_step/`) backs the UNO single-step rig.
 - The committed four-layer routed PCB includes the Phase 3 decode sockets and
   observability headers and passes the repository's KiCad DRC and
