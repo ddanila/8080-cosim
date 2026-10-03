@@ -11,7 +11,7 @@
   "supporting_files_sha256": {
     "docs/main-board-unresolved-endpoints.csv": "8048d1afc5e01e862a46f435110b6f1330318ada8ffa20ce22c06e2d4cff8f56",
     "docs/ppi-physical-pin-mapping.json": "68e4f7b0c27553a0575ce62aab2470aef26618ff797dc69c0f6d74e8e765c08f",
-    "fab/gerbers/juku_routed-drc.json": "dc80c5c433bb9c69c4aac97f1955ab3df30055aeab922f690f2b00564658093b",
+    "fab/gerbers/juku_routed-drc.json": "d12ec04518c52b23cfddfa52df8fb36762d07051a1a30ef2bf3e10ca64fd245b",
     "fab/audit/main-board-erc.json": "8dc45308c5a0d1bbffa0afe564add62a29878af0992873933846a30bedca8525",
     "fab/audit/main-board-parity-drc.json": "1629f10fb0768282ed95e783cb9e4fbf379965cce456c80aea82dee18405ecc6"
   },
@@ -88,12 +88,12 @@
   "reports": {
     "Fidelity": {
       "path": "docs/board-fidelity-gap-ledger.md",
-      "sha256": "6efedfe48ffe352c5aabb62dd3c5809cbfa2ef269fb873428366485d8c96ab4f",
+      "sha256": "bc01295775fdb48601b1ce9d1264c85ebe018e33b9b159caf591d01b51eb8be7",
       "status": "BOARD FIDELITY GAPS CATALOGED"
     },
     "Owner checks": {
       "path": "docs/owner-measurement-shortlist.md",
-      "sha256": "014d578971a97b8fa00cba8ec3e2944390814b923388141ad7a724e216ad6d94",
+      "sha256": "be2e5e8d7ccdeb4b38cae48e8861f181631fb3550ff8c401e52d408ecb7d5de7",
       "status": "READY"
     },
     "BOM": {
@@ -108,12 +108,12 @@
     },
     "Firmware lineage": {
       "path": "docs/firmware-gap-ledger.md",
-      "sha256": "5908ea5a0d09f42f96600e2d51def00d6450ad9344494cfbd8bef2c040c678a1",
+      "sha256": "d1b671053107bab657a41e2b7a398ea32849fefb9511ac07fb8bcf061b8acfd9",
       "status": "ADOPTED FIRMWARE SET VERIFIED"
     },
     "EPROM programming": {
       "path": "docs/eprom-programming-images.md",
-      "sha256": "6f1b03095dbef68e6b97750fb31673dc0cb9c59f68e53295eab12bcf8648b366",
+      "sha256": "11cd06583b808c97c7178d218d511de14cbff211765c9c8062c36f9940ebab9b",
       "status": "ADOPTED THIRD-SOURCE EKTA 3.7 IMAGES READY"
     },
     "PROM procedure": {
@@ -128,12 +128,12 @@
     },
     "PPI orientation": {
       "path": "docs/ppi-orientation-audit.md",
-      "sha256": "e3e22d3e94cbbf2bf4c75f610338b5631312d8634abd5d00512db0528bd28816",
+      "sha256": "474769ebd39d324aa4f2d02e0ab1ae1a519b9041005e7a512becf0dce1441050",
       "status": "HOLD"
     },
     "X8 electrolytic geometry": {
       "path": "docs/x8-electrolytic-footprint-audit.md",
-      "sha256": "afbb3c4431913177cb430fb68711001604b7fc8179793b5a8c8d93ac4fa8ba9a",
+      "sha256": "f2f4850152ac966bd6486635e03c00ab52d6a499779d95557a53338e45d990f6",
       "status": "HOLD"
     },
     "Factory wire construction": {
@@ -143,18 +143,18 @@
     },
     "DRC disposition": {
       "path": "docs/replica-fab-drc-disposition.md",
-      "sha256": "bfe1e8724791b195ddcefe577ebcc65163b5aea8d9ba5ad84f79236094be86b3",
+      "sha256": "0400890f98b8d8591becf23b52a0e5919d1b7322db7bb5df601b0ca802f7449b",
       "status": "REVIEW REQUIRED"
     },
     "Power trace": {
       "path": "docs/replica-power-trace-readiness.md",
-      "sha256": "69d0d9265a712e2cc0280ef337b9a67043d5b8bfb067289e75923c0c059cc2c1",
+      "sha256": "fed802ba40d226eeb6ab5efa0c2326d89216771242f4a4adf69e397b4cf7ffea",
       "status": "NOT READY"
     },
     "Package geometry": {
       "path": "docs/replica-package-geometry-readiness.md",
-      "sha256": "5dc3277b3ea24511eabebc5a676bc235bf4d01198fc12e24b07d8d7503449aba",
-      "status": "READY"
+      "sha256": "84efc771f7ccc62bbe2a3f5a9786f848a7f2c9f5919f994522240f2aa8bdedae",
+      "status": "NOT READY"
     },
     "Bring-up coverage": {
       "path": "docs/replica-bringup-verification-points.md",
@@ -163,22 +163,22 @@
     },
     "Order readiness": {
       "path": "fab/gerbers/order-readiness.md",
-      "sha256": "b740f38bf443446afd1ac475c6af6080e7b2cb62bea43dc17ef25ab676305c9c",
+      "sha256": "370866b0f96d270ecba4b119ee843566a3d80a881947a35b70b49c9184480b66",
       "status": "NOT READY"
     },
     "External Gerber review": {
       "path": "fab/gerbers/external-gerber-review.md",
-      "sha256": "2d8795e43d05532f38807e8fa8a8fe244f1d903480fdfac2ee3fe36c73aeb735",
+      "sha256": "4ea5716f39a21b810131e02c68921ba43c5801951733b1f8e273be2b284c17e9",
       "status": "NOT READY"
     },
     "Review waivers": {
       "path": "fab/gerbers/review-waivers.md",
-      "sha256": "23743626a541d649f167af88f74c364cb1f06e4a14a8929e9daf6178bce9e985",
+      "sha256": "4ae498de2e7ea31cc2625cbb84f670d8445ae59de2eef481a43810207f6098dc",
       "status": "NOT ACCEPTED"
     },
     "Fabrication inventory": {
       "path": "fab/gerbers/fab-readiness.md",
-      "sha256": "718740c7755a84c742e53bce8b9576ae1245583cb4c2d4d6772698c853f0e07e",
+      "sha256": "5e31d82f9d2762371c6b8c5c49850e4ca69630516ade66d3275fbf7c260b0096",
       "status": "NOT READY"
     },
     "Manufacturing": {
@@ -188,7 +188,7 @@
     },
     "Upload procedure": {
       "path": "docs/replica-order-upload-runbook.md",
-      "sha256": "8b9bbc8f80732449d496b897c1a29116621d2d384deaea0c7c6866e8c066d92b",
+      "sha256": "159b889b9fd5ce99ae6b85d350b26814357f14d9fbdae6643a12420f0af3126b",
       "status": "PACKAGE INVALID"
     },
     "Order evidence": {
@@ -224,6 +224,7 @@
     "Factory wire construction: FACTORY WIRE LANDING EVIDENCE HOLD (requires FACTORY WIRE CONSTRUCTION PRESERVED)",
     "DRC disposition: REVIEW REQUIRED (requires READY)",
     "Power trace: NOT READY (requires READY)",
+    "Package geometry: NOT READY (requires READY)",
     "Bring-up coverage: ENDPOINT COVERAGE FAILED / RISKS UNRESOLVED (requires DESIGN RELEASE RISKS CLOSED)",
     "Order readiness: NOT READY (requires RELEASED FOR ORDER)",
     "External Gerber review: NOT READY (requires READY)",
