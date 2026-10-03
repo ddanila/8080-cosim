@@ -78,42 +78,22 @@ stronger.
 
 ## Remaining boundaries after transcription
 
-- Exact sheet-1 detail `PXL_20260718_101824181.MP.jpg` identifies the E8
-  terminal landings: D26 PB4/pin22 reaches E8.3, PB5/pin23 reaches E8.2,
-  and E8.4 carries `CONTRDAT` on conductor 50 to continuation 909. The
-  electrical drawing shows three open terminal circles and omits the bridge.
-  The exact-revision assembly detail `PXL_20260711_114620466.jpg`, native
-  crop `(700,650)-(1600,1150)`, places E8 below D26 and draws a horizontal
-  3–4 bridge; the 1–2 row has no bridge line. Thus the factory intended
-  E8.3-to-E8.4 selection joins PB4 to `CONTRDAT`, while PB5/E8.2 remains
-  separate in that position. The owner front photo
-  `PXL_20260710_200455512.jpg`, crop `(1300,1750)-(2650,2600)`, visibly has
-  the white insulated 3–4 wire fitted. Registered D26 pin22 near `(1610,2270)`
-  has a narrow exposed front run toward its left landing near `(1600,2390)`;
-  pin23's contact-2 route stays separate. An independent May front photo,
-  `PXL_20260519_201907078.jpg` crop `(1050,2450)-(2650,3072)`, also shows
-  both E8 wire ends soldered in place. See
-  `ref/photos/juku-pcb-2/e8-bridge-photo-review.json`. Measure both wire
-  landings to D26.22 and the X9 `CONTRDAT` landing, plus D26.23 isolation,
-  to confirm hidden solder continuity. The former replica PB5 assignment was
-  corrected: board JSON, schematic, and all three PCB pad sets now put
-  D26.22 on `KBD_CONTRDAT` and isolate D26.23 as
-  `D26_PB5_E8_2_BOUNDARY`. The thirteen PB5-to-A50 copper items were removed
-  from both routed snapshots. The PB4-to-A50 route remains open until the
-  physical A50 landing is identified. The exposed E8.4 front
-  trace descends to one joint in the lower cable row near `(2200,2450)`;
-  D26's reflected fit projects it near full-band solder site 6 at
-  `(2140,2375)` in `PXL_20260710_200530933.MP.jpg`. This is a useful probe
-  waypoint, not an A50 assignment: the archived band has fifteen sites for
-  fourteen factory A45–A58 wires. The original .009 СБ connection table,
-  sheet 2, position-153 conductor 6, explicitly pairs board point `А:50`
-  with `X9:9`; the sheet-1 `CONTRDAT` continuation `909` therefore has its
-  factory connector endpoint. Only the physical A50 hole within the owner
-  photo band remains unidentified. A separate revision conflict remains:
-  archived RomBios 3.43m ROM bytes at `1211h..1216h` read PPI Port B and mask
-  PB5 (`DB 05 2F FB E6 20`), whereas the fitted `.009` E8 3–4 bridge selects
-  PB4. The HDL's PB5 stimulus is an RomBios 3.43m compatibility profile, not
-  proof that S21 configuration works through this board's fitted bridge.
+- **E8 keyboard configuration:** exact `.009` sheet 1 assigns D26 PB4/pin22
+  to E8.3, PB5/pin23 to E8.2, and E8.4 to `CONTRDAT` continuation 909.
+  The assembly drawing specifies a 3–4 bridge; May and July owner photos show
+  that wire fitted. The connection table pairs board A50 with X9.9, but the
+  physical A50 hole in the owner-photo cable band is still unidentified.
+  Current JSON, schematic and PCB pads place D26.22 on `KBD_CONTRDAT` and
+  isolate D26.23 as `D26_PB5_E8_2_BOUNDARY`. The PB4-to-A50 copper route remains
+  open. Confirm both bridge landings to D26.22 and X9.9, D26.23-to-E8.2,
+  and PB5 isolation before routing that continuation. Photo registration and
+  probe waypoints are retained in
+  `ref/photos/juku-pcb-2/e8-bridge-photo-review.json`; factory endpoints are in
+  [the assembly wire table](dgsh5-109-009-sb-wire-table.md).
+  A separate firmware/board conflict remains: archive-0037 RomBios 3.43m
+  bytes at `1211h..1216h` (`DB 05 2F FB E6 20`) read PPI Port B and mask PB5,
+  while the fitted bridge selects PB4. The HDL PB5 stimulus is a firmware
+  compatibility profile, not evidence that S21 works through the fitted bridge.
 
 - D96.9 Q2 runs to the joined D101 A0-A3 inputs in the full sheet-3
   overview; D96.11 reaches the D94.2/D99.9/R89.1 island there. Both physical
