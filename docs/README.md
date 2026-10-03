@@ -73,8 +73,8 @@ history.
   replica migration.
 - `8282-pinout-audit.md` — complete physical D58 DRAM read-latch pinout,
   power, and routed data-channel guard.
-- `package-endpoint-coverage.md` — repository-wide guard against undeclared
-  signal, control, or off-board package endpoints.
+- `package-endpoint-coverage.md` — main-board JSON guard for known-chip
+  net endpoint declarations and explicit no-connects, with tagged power exceptions.
 
 ## Current evidence
 
