@@ -159,13 +159,21 @@ Thanks!
 ## What To Do With Replies
 
 1. Record metadata and hashes in a local note first.
-2. For PROM dumps, compare repeated reads and reject all-`00`/all-`FF` files.
+2. For PROM dumps, validate complete repeated captures with the appropriate
+   RE3 or RT4 validator and compare against the adopted table. A uniform dump
+   warrants checking enables, pull-ups, wiring, and device identity; repeated
+   byte agreement alone does not establish a valid acquisition. Preserve the
+   raw evidence while investigating.
 3. For a raw Juku disk image, run:
 
    ```sh
    sync/juk_disk_check.sh
-   EKDOS_PROBE_DISK=/path/to/image sync/ekdos_fdc_probe.py
+   EKDOS_PROBE_DISK=/path/to/image python3 sync/ekdos_fdc_probe.py /tmp/candidate-ekdos-fdc-probe.md
    ```
+
+   The first command checks the vendored disk support. The second probes the
+   candidate image and writes a separate report; compare its identity and
+   results with the adopted baseline before replacing tracked media.
 
 4. For a BASIC cartridge image or launch procedure, compare its length, hash,
    entry metadata, and missing-page coverage against
