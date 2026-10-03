@@ -103,7 +103,7 @@
     },
     "Sourcing": {
       "path": "docs/replica-sourcing-readiness.md",
-      "sha256": "d96ee48504e6ff2b2160bc72ad325afd62337bd0c39ee2943600b1b6c032fe4b",
+      "sha256": "d2c07432311c9961ca6aa674de767cb359db920741707c4abfd10ea03c75ae6b",
       "status": "PARTIAL / PROGRAMMING AND REVIEW BLOCKED"
     },
     "Firmware lineage": {
@@ -188,7 +188,7 @@
     },
     "Upload procedure": {
       "path": "docs/replica-order-upload-runbook.md",
-      "sha256": "c2b5845fc3c7dd3418757406fa26f17c3a7bdd14ebcfe010b7b526ae1fba25c0",
+      "sha256": "fda5389f4a33825e398afea2601872708f9a86b437bf4755159150400001b76b",
       "status": "PACKAGE INVALID"
     },
     "Order evidence": {
