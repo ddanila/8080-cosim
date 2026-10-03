@@ -2,15 +2,11 @@
 
 Status: **PACKAGE REGENERATION REQUIRED / DESIGN HOLD**.
 
-The current Rev A board is a routed physical experiment generated from
-`rev-a-physical.board.json`. After the bounded D1 footprint/clearance correction
-and the U20/U21 active-low address-mux enable correction, U22's two 74HCT393
-halves are now cascaded and both active-high resets are grounded. Stable KiCad
-10.0.5 refilled and saved both inner planes and reported zero error-level
-violations and zero unconnected items.
-`../docs/rev-a-drc-readiness.md` binds that result to the exact board SHA.
-These checks establish file coherence for modeled nets; they do not prove the
-proposed computer will boot or that the design is safe to order.
+Rev A is a routed workbench experiment. [Source DRC](../docs/rev-a-drc-readiness.md)
+binds the recorded zero-error, zero-unconnected result to the exact PCB hash.
+[Manufacturing readiness](../docs/rev-a-manufacturing-readiness.md) owns the
+release requirements. The [Rev B five-board plan](../docs/rev-b-five-board-order-plan.md)
+is the current order target.
 
 ## Current physical baseline
 
@@ -63,24 +59,14 @@ Per-report `READY` states describe the scope named by that report. They are not
 design-release or purchase authorization. The top-level status is tracked in
 `../docs/rev-a-manufacturing-readiness.md`.
 
-## Design blockers
+## Release scope
 
-- T80 and tv80 spin-off tops boot the patched real Juku ROM framebuffer-identical
-  to cosim; this simulation result does not validate the physical routed copper.
-- U5 decode behavior is simulated in both jumper modes. U24's corrected
-  Gray-coded pin/timing contract meets vendored MK4564-12 limits at 4 MHz;
-  neither GAL has been compiled, programmed, or bench-tested on the chosen device.
-- VGA timing activity is proven, but no real-ROM prompt/banner is rendered from
-  the shared DRAM path.
-- The exact HRO TYPE-C-31-M-17 USB-C, Bourns MF-RG300-0-14 PTC, and
-  Littelfuse P4KE6.8A-B TVS candidates are datasheet/footprint guarded. J3/F1/D1
-  still require their documented order-time and first-article checks. Actual
-  oscillator, reset supervisor, DRAM, ROM, GAL, socket, remaining connector,
-  and assembly-process choices still require applicable datasheet/footprint
-  review.
-- The autorouted copper and power/return strategy need independent review.
+Source DRC, simulated boot, timing checks and static part contracts are
+separate evidence. Physical board acceptance, GAL programming, full-board LVS,
+selected-part review and package release remain governed by
+[manufacturing readiness](../docs/rev-a-manufacturing-readiness.md).
 
-## Regeneration commands
+## Validation and export commands
 
 ```sh
 spinoffs/minimal-vga/sim/check.sh
@@ -101,7 +87,7 @@ setup, identical on both platforms:
 
 ```sh
 git submodule update --init external/freerouting
-cd external/freerouting && ./gradlew --no-daemon executableJar
+(cd external/freerouting && ./gradlew --no-daemon executableJar)
 ```
 
 On the compact 200x200 board the router needs three seed nets: the J3 USB-C GND
@@ -127,25 +113,15 @@ for the runtime, `FREEROUTING_JAR` for the jar. The maintained
 `freerouting-router` algorithm is selected explicitly, with the optimizer off
 so machine-global defaults cannot change the production route. The fork retains
 bounded trace combining, headless/offline defaults, and KiCad-compatible SES
-identifiers/grammar. Verified against the Rev-B video card at total DRC 0/0 on
-2026-08-28.
+identifiers/grammar. Route results must pass the current board's DRC and connectivity checks.
 
-`JAVA_HEAP` defaults to ~70% of RAM. Peak heap for this board is under ~1.5 GB,
-so on a memory-constrained machine cap it (`JAVA_HEAP=4096m`) to stop the JVM
-grabbing most of RAM and swapping — unbounded, a route that normally takes ~3
-minutes can balloon to tens of minutes per pass.
+`JAVA_HEAP=auto` selects the script's calculated heap limit. Set an explicit
+limit appropriate to the machine, such as `JAVA_HEAP=4096m` when at least
+that much memory is available for the router. Historical route runtime and
+peak-memory observations are not guarantees for a new source or machine.
 
-## Future assembly policy
+## Assembly outputs
 
-If the design hold is eventually cleared:
-
-- recheck all stock-sensitive CPNs and vendor capabilities immediately before
-  ordering;
-- mount socketed/vintage/programmed ICs only according to the final insertion
-  list;
-- confirm DIP widths, pin 1, polarized parts, USB-C/terminal pinout, and every
-  cable-facing connector from the selected parts' datasheets;
-- save vendor DFM/preview settings and final checksums with the private order
-  record; and
-- never reuse the current ZIP after any schematic, footprint, net, or routing
-  change.
+Use [the sourcing policy](../docs/rev-a-sourcing-plan.md) for socket insertion,
+manual placements, selected-part checks and order-time stock/process review.
+Never reuse an exported ZIP after schematic, footprint, net or routing changes.
