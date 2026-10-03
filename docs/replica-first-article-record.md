@@ -29,7 +29,8 @@ completed record.
 - [ ] Incoming parts were inventoried by reference group, seller/lot, marking,
       and acceptance result; rejected or suspect parts were quarantined.
 - [ ] Static-sensitive parts were stored, handled, and installed using the
-      documented ESD controls.
+      ESD controls recorded for this assembly session; see the handling guidance
+      in [sourcing readiness](replica-sourcing-readiness.md).
 - [ ] Socket, connector, polarized-part, and IC pin-1 orientation received a
       second-person or independent photo review before power.
 - [ ] Solder joints, factory-wire equivalents, cuts/links, contamination, and
@@ -63,25 +64,31 @@ Ambient temperature and relevant setup notes: -
       checked at the board contact.
 - [ ] Current limits and stop thresholds are written into the session record
       before energizing the board.
-- [ ] The first energization uses the staged no-IC configuration from
-      `PLAN.md`; no peripheral is attached early merely for convenience.
+- [ ] A reviewed, per-unit staged power-up procedure is attached, including
+      the initial no-IC configuration, rail checks, current limits, stop
+      thresholds, and the conditions for adding ICs and peripherals.
 
 ## Physical verification matrix
 
 Fill numeric expectations before each test. A result is not PASS without a raw
-evidence path and a named product configuration.
+evidence path and a named product configuration. Tier scope follows
+[PLAN.md](../PLAN.md): Tier 1 covers power, clock/reset, ROM/RAM and serial
+bootstrap; Tier 2 covers peripherals and accepted workloads; Tier 3 compares
+continuity and timing with a surviving `.009` board.
 
 | ID | Configuration and method | Expected / limits | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `T1-PWR` | - | - | NOT RUN | - |
-| `T1-BOOT` | - | - | NOT RUN | - |
-| `T1-VIDEO` | - | - | NOT RUN | - |
-| `T1-KBD` | - | - | NOT RUN | - |
-| `T2-SW` | - | - | NOT RUN | - |
-| `T2-FDC` | - | - | NOT RUN | - |
-| `T2-IO` | - | - | NOT RUN | - |
-| `T2-PSU` | - | - | NOT RUN | - |
-| `T3-FID` | - | - | NOT RUN | - |
+| `T1-PWR` | Staged power and rail checks | - | NOT RUN | - |
+| `T1-CLK` | Clock and reset | - | NOT RUN | - |
+| `T1-BOOT` | ROM/RAM and serial bootstrap | - | NOT RUN | - |
+| `T2-SW` | Accepted software workloads | - | NOT RUN | - |
+| `T2-VIDEO` | Display | - | NOT RUN | - |
+| `T2-KBD` | Keyboard | - | NOT RUN | - |
+| `T2-FDC` | Disk | - | NOT RUN | - |
+| `T2-IRQ` | Interrupts | - | NOT RUN | - |
+| `T2-SOUND` | Sound | - | NOT RUN | - |
+| `T2-IO` | Other fitted I/O | - | NOT RUN | - |
+| `T3-FID` | Original-board continuity and timing comparison | - | NOT RUN | - |
 
 ## Deviations, discrepancies, and rework
 
