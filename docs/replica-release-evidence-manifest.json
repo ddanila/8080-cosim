@@ -93,7 +93,7 @@
     },
     "Owner checks": {
       "path": "docs/owner-measurement-shortlist.md",
-      "sha256": "be2e5e8d7ccdeb4b38cae48e8861f181631fb3550ff8c401e52d408ecb7d5de7",
+      "sha256": "2b5f6ff427b2eb1c395f8edc6db0539e4c060027c0e2e3923a5b2756492c0858",
       "status": "READY"
     },
     "BOM": {
