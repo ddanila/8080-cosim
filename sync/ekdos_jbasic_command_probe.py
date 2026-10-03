@@ -474,7 +474,7 @@ def build_report(
         "implemented as `|` in `JUKU_KEYS`; it is not a typed key.",
         "",
         "The result is a bounded command-launch diagnostic and visible BASIC",
-        "prompt oracle. It proves the post-prompt keyboard path is deterministic,",
+        "prompt oracle. It records the post-prompt keyboard path for this stimulus,",
         "the command triggers further FDC traffic from a real directory-backed",
         "`JBASIC.COM` candidate, and the final framebuffer contains the rendered",
         "`READY` prompt.",
@@ -570,7 +570,7 @@ def build_report(
             "- The final RAM contains the live candidate entry signature plus relocated `ERROR`, `READY`, and `BASIC` strings, proving the command reaches loaded BASIC code/data.",
             "- The final video/mode table records the MAME-mapped timing ports from the checkpoint, making the rendered text prompt auditable against the final control state.",
             "- The fixed-`0xD800` framebuffer now has a positive text oracle: the typed `A>JBASIC` command line and final `READY` prompt are matched by exact 8x7 glyph bitmaps.",
-            "- The uninterrupted `juku_top` disk-BASIC guard now reaches the visible `READY` prompt in HDL; this report remains the faster C-model launch oracle and preserves the live-candidate provenance.",
+            "- The [recorded HDL run](juku-top-jbasic-verilator-probe.md) reached `READY`. This report checks the C-model launch path; see [simulator compatibility](../sync/README.md#simulator-compatibility) for current HDL rerun limits.",
         ]
     )
     if failures:
