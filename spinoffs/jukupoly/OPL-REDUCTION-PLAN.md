@@ -60,7 +60,7 @@ other independent features where possible.
 
 The immediate motivation is the failure observed in DOOM's “The Imp's Song.”
 Several layered, evolving OPL voices became a long constant square tone when
-the current converter retained pitch and approximate carrier level but emitted
+the baseline converter retained pitch and approximate carrier level but emitted
 every melodic note with a `hold` envelope.  The solution must be general; it
 must not contain track numbers, filename checks, or instrument-signature
 overrides for that song.
@@ -98,7 +98,7 @@ These are constraints, not optimization suggestions:
 
 - The target CPU is modeled at 1.70 MHz.  At a nominal 50 Hz music-frame rate,
   one complete frame has about 34,000 CPU cycles, including all sample output.
-- VGZ reductions currently use 143 sample-loop iterations per music frame and
+- Baseline VGZ reductions use 143 sample-loop iterations per music frame and
   measure about 7.12 kHz in the cycle model.
 - The three-tone/percussion sample hot loop owns the 8080 register file and
   stack pointer.  No envelope or LFO work may be inserted into that loop.
@@ -111,9 +111,9 @@ These are constraints, not optimization suggestions:
   32,768 bytes.  Player growth must not overlap the song load address.
 - The existing ABI-v2 MOD player is evidence that frame work is not free: it
   uses 139 samples per frame and about 6.94 kHz instead of the normal 143 and
-  about 7.12 kHz.  This approximately 2.5% measured sample-rate reduction was
-  physically acceptable.  The OPL plan may make the same deliberate trade,
-  but must measure it and remain inside the 10% limit below.
+  about 7.12 kHz. This approximately 2.5% sample-rate reduction is measured
+  in the cycle model; physical MOD listening remains pending. OPL reductions
+  must pass their own timing and listening gates within the 10% limit below.
 
 ## Feasibility guards
 
