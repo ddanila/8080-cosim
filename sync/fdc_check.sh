@@ -324,10 +324,11 @@ physical D93/D94 wiring.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
   `sync/juku_top_periph_bus_check.sh`.
 - Factory sheet 1 proves the behavioral controller's direct system-`DB` path.
-  `docs/fdc-bus-polarity.md` proves two preserved firmware profiles: EktaSoft
-  2.4 and Monitor 3.3 wrap every VG93 transfer in `CMA`, while EktaSoft
-  3.1/3.5/3.7 use NOPs. The adopted third-source archival D15/D16 pair selects
-  EktaSoft 3.7 and the direct-bus/NOP profile. The former remains an unmapped
+  `docs/fdc-bus-polarity.md` records two preserved firmware profiles:
+  archive 24 (RomBios 3.42) and Monitor 3.3 use `CMA` wrappers, while archives
+  31/35 (3.43) and 37 (3.43m) use NOPs. These are static instruction patterns,
+  not proof of execution at every transfer site. The adopted archival D15/D16
+  pair selects archive 37 (3.43m) and the direct-bus/NOP profile. The former remains an unmapped
   diagnostic inversion adjunct (`JUKU_FDC_BUS_INVERT=1`), while physical D100
   is source-proved as the drive-output buffer.
 - The recorded uninterrupted Verilator run in
