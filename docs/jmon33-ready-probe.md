@@ -3,8 +3,9 @@
 Status: **JMON33 MONITOR-IDLE ORACLE READY**
 
 This probe runs the default Juku Monitor 3.3 ROM under cosim with the
-frame interrupt enabled until the deterministic idle framebuffer state is
-reached. The current visible oracle is a solid 8x10 cursor block at
+frame interrupt enabled for a fixed cycle budget, then checks the final
+framebuffer. It does not stop when idle is first reached or measure settling
+time. The visible oracle is a solid 8x10 cursor block at
 `x=8`, `y=20` plus the full VRAM SHA256.
 
 ## Command
@@ -18,15 +19,18 @@ Environment overrides:
 - `JMON33_READY_MAX_CYCLES` default `20000000`
 - `JMON33_READY_FRAME_CYCLES` default `200000`
 
+This run requested `20000000` cycles and a `200000`-cycle frame interval.
+Overrides can change the sampled cursor phase and fail the fixed VRAM oracle.
+
 ## Evidence
 
 | Check | Result |
 | --- | --- |
 | Trace exits cleanly | PASS |
-| jmon33 ROM loaded | PASS |
-| 8259 programmed for MCS-80 vectoring | PASS |
-| Frame interrupt taken at `0xFF54` | PASS |
-| Keyboard matrix ports scanned | PASS |
+| ROM load reports 16384 bytes (explicit `roms/jmon33.bin` input) | PASS |
+| Initial PIC writes are `00h=56h`, `01h=FFh` | PASS |
+| First frame IRQ logged; IRQ trace contains vector `FF54h` | PASS |
+| Keyboard ports `04h` and `05h` each read | PASS |
 | VRAM dump is `9640` bytes | PASS |
 | VRAM SHA256 equals `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397` | PASS |
 | Solid cursor block at `x=8`, `y=20` | PASS |
