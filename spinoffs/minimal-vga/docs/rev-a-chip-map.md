@@ -14,8 +14,10 @@ it is not a released manufacturing BOM.
 
 ## Decode PROMs (Phase 3 — the workbench purpose)
 
-These sockets exist to **test the scarce original Juku bipolar PROMs** in their
-real functional roles; booting the firmware is the self-test.
+These sockets exercise original Juku bipolar PROMs. D6 drives memory decode
+in Mode B; D8 is observed through J95 rather than controlling ROM data.
+A successful boot alone cannot qualify D8: compare its outputs at the tested
+address rows with the expected `.039` table.
 
 | Ref | Juku role | Part | Package | Notes |
 |---|---|---|---|---|
@@ -29,17 +31,18 @@ real functional roles; booting the firmware is the self-test.
 | R44 | MODE_B default pull-down | 10k | TH | Floating/no-shunt defaults to Mode A (safe bring-up). |
 
 **Buffered through the GAL, not into the enables directly.** The РТ4 (U3)
-outputs route into U5, which now consumes corrected reader-3 D0/pin12 as
+outputs route into U5, which consumes physical D0/pin12 as
 active-low `ROM_N`; the GAL equation uses `/DEC_ROM_N`. The РЕ3 (U4) is enabled by ROM select and its output byte is only
 **observed** (via J95): VJUGA's single 27C256 does not need the pager to gate
 data, and the verified twin (`hdl/vjuga_juku_top.v`) likewise only *asserts* on
 D8 rather than routing it into the data path.
 
-**8255 Port C reconciliation.** The firmware writes the memory-map mode to Port C
-bits 0-1 (I/O port `0x06`), so those bits (U30 pins 14/15 = PC0/PC1) are the mode
-**output** feeding U6→U3. The keyboard-encoder readback therefore moves from Port C
-lower (PC0-3) to Port C upper (PC4-7) — an 8255 mode-0 split (lower nibble output,
-upper nibble input). PC2/PC3 are freed.
+**8255 Port C mapping.** PC0/PC1 (U30 pins 14/15, I/O port `0x06`) drive
+memory-overlay mode through U6→U3. The keyboard encoder connects to upper
+Port C: active-low A0/A1/A2 on PC4/PC5/PC6 (pins 13/12/11), and GS on PC7
+(pin 10). This requires mode-0 lower-nibble output and upper-nibble input.
+PC2/PC3 are unused. This is the Rev A fixture wiring; use the Rev B bus contract
+for the modular machine's keyboard interface.
 
 ## DRAM And Arbitration
 
