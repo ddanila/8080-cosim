@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/drc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-10-03T18:26:43",
+    "date": "2026-10-03T18:33:00",
     "ignored_checks": [
         {
             "description": "Footprint has no courtyard defined",
@@ -244,12 +244,12 @@
             "description": "Missing connection between items",
             "items": [
                 {
-                    "description": "Track [P5V] on F.Cu, length 18.1550 mm",
+                    "description": "Track [P5V] on F.Cu, length 6.4385 mm",
                     "pos": {
-                        "x": 55.71,
-                        "y": 194.2
+                        "x": 51.1573,
+                        "y": 189.6473
                     },
-                    "uuid": "ff0774e3-8b99-4c89-87de-a0a1e46593a4"
+                    "uuid": "4056cb37-8a23-4501-8085-d9a4a9969f4c"
                 },
                 {
                     "description": "PTH pad 16 [P5V] of D52",
@@ -321,12 +321,12 @@
                     "uuid": "8d21945e-d7e5-4b16-9381-5628554ddeea"
                 },
                 {
-                    "description": "Track [P5V] on F.Cu, length 4.7904 mm",
+                    "description": "Track [P5V] on F.Cu, length 24.6254 mm",
                     "pos": {
-                        "x": 124.9927,
+                        "x": 100.3673,
                         "y": 251.7977
                     },
-                    "uuid": "a7f101e5-e5fb-4b26-99b0-1ec5df037f63"
+                    "uuid": "71d82890-634b-44e3-b8a5-03f23f896a0c"
                 }
             ],
             "severity": "error",
@@ -758,12 +758,12 @@
                     "uuid": "78d95e9f-278b-4768-bbfe-d5ec06e429a4"
                 },
                 {
-                    "description": "Track [S_OC] on B.Cu, length 1.5000 mm",
+                    "description": "Track [S_OC] on B.Cu, length 0.7071 mm",
                     "pos": {
-                        "x": 209.5,
-                        "y": 71.0
+                        "x": 209.0,
+                        "y": 71.5
                     },
-                    "uuid": "83ca1194-b0ab-4dda-9a4b-a4922f5c6e24"
+                    "uuid": "33c02e0f-ec63-4d22-b2cb-3ffe6d0067a7"
                 }
             ],
             "severity": "error",

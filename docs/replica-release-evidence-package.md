@@ -26,7 +26,7 @@ after any source or report change; use `--check` to detect a stale tracked packe
 | --- | --- |
 | `docs/main-board-unresolved-endpoints.csv` | `8048d1afc5e01e862a46f435110b6f1330318ada8ffa20ce22c06e2d4cff8f56` |
 | `docs/ppi-physical-pin-mapping.json` | `68e4f7b0c27553a0575ce62aab2470aef26618ff797dc69c0f6d74e8e765c08f` |
-| `fab/gerbers/juku_routed-drc.json` | `d12ec04518c52b23cfddfa52df8fb36762d07051a1a30ef2bf3e10ca64fd245b` |
+| `fab/gerbers/juku_routed-drc.json` | `fb9f3eed1719f673a2af0c05d8dcf4d0e85ec4cd80534ce0ee1024bf701e13f6` |
 | `fab/audit/main-board-erc.json` | `8dc45308c5a0d1bbffa0afe564add62a29878af0992873933846a30bedca8525` |
 | `fab/audit/main-board-parity-drc.json` | `1629f10fb0768282ed95e783cb9e4fbf379965cce456c80aea82dee18405ecc6` |
 

@@ -125,7 +125,8 @@ def toolchain_rows(fab_dir):
     fab_text = (fab_dir / "fab-readiness.md").read_text(errors="replace")
     external_text = (fab_dir / "external-gerber-review.md").read_text(errors="replace")
     upload_text = (ROOT / "docs" / "replica-order-upload-runbook.md").read_text(errors="replace")
-    job = json.loads((fab_dir / "juku_routed-job.gbrjob").read_text())
+    job_path = fab_dir / "juku_routed-job.gbrjob"
+    job = json.loads(job_path.read_text()) if job_path.is_file() and job_path.stat().st_size else {}
     generation = job.get("Header", {}).get("GenerationSoftware", {})
     return [
         ("KiCad CLI", first_match(fab_text, r"^KiCad CLI: `([^`]+)`")),
@@ -140,7 +141,7 @@ def toolchain_rows(fab_dir):
                     generation.get("Version", ""),
                 ]
                 if value
-            ),
+            ) or "-",
         ),
         ("External viewer", first_match(external_text, r"^Viewer: `([^`]+)`")),
         ("Upload ZIP format", first_match(upload_text, r"^- Required metadata: (.+)$")),
@@ -214,7 +215,7 @@ def build_report(fab_dir):
     if upload_dir_names != EXPECTED_UPLOAD_DIR_FILES:
         failures.append(
             "upload directory contains unexpected file set: "
-            + ", ".join(sorted(upload_dir_names))
+            + (", ".join(sorted(upload_dir_names)) or "(empty)")
         )
     if upload_hashes.get(upload_zip.name) != zip_digest:
         failures.append("upload SHA256SUMS.txt does not match the final upload ZIP")
@@ -245,7 +246,9 @@ def build_report(fab_dir):
         "Status: **RELEASED FOR ORDER**" in order_text
         and release_gates_ready
     )
-    if failures:
+    if failures and not upload_zip.is_file():
+        status = "DESIGN HOLD / PACKAGE REGENERATION REQUIRED"
+    elif failures:
         status = "PACKAGE INVALID"
     elif released:
         status = "RELEASED FOR UPLOAD"
@@ -261,37 +264,36 @@ def build_report(fab_dir):
         f"Routed PCB SHA256: `{current_board_sha}`",
         f"Fabrication source stamp: `{source_stamp.read_text().strip() if source_stamp.exists() else '-'}`",
         "",
-        "This is the tracked top-level manufacturing packet for the replica main",
-        "board. It separates reproducible package integrity from functional design",
-        "release. A verified package must not be uploaded while the status is",
-        "DESIGN HOLD.",
+        "This packet checks package integrity and reads design-release report markers.",
+        "Only RELEASED FOR UPLOAD authorizes the next upload step. Report markers",
+        "do not substitute for current physical and functional evidence.",
         "",
-        "Archive review adds a physical-layout hold: `docs/ppi-orientation-audit.md`",
-        "records D26 and D27 PPI orientations on the owner board that disagree",
-        "with their current 90° routed footprints. D26 is horizontal with its",
-        "notch at the right, as does D27 under X2 in both factory and owner",
-        "evidence. The current 90° KiCad footprints are left-notched. The",
-        "package-geometry gate below checks outline, layers, and drill export;",
-        "it does not validate IC orientation or physical pin-to-net mapping.",
-        "Release requires a local pin-center fit, corrected PPI footprints and",
-        "routing, and renewed electrical and visual review.",
-        "The current routed PCB has 40/40 net mismatches at the photographed physical",
-        "pin positions on each PPI; see `docs/ppi-physical-pin-mapping.json`.",
-        "The X8 power corner has a separate footprint hold: C31–C33 remain on",
-        "2 mm radial footprints in all PCB variants, while the .009 assembly and",
-        "owner photos show axial cans with about 25–26 mm lead spacing. See",
-        "`docs/x8-electrolytic-footprint-audit.md`; register the six original",
-        "joints and replace/reroute the footprints before fabrication.",
-        "The timer cluster has a separate placement hold: owner component and solder",
-        "photos place D54's lower pin row about 23 mm above the physical bottom edge,",
-        "while the routed row is only 7.38 mm above Edge.Cuts. See",
-        "`docs/photo-registration.md`; D54/D55/D57 and adjacent D26 need a mechanical",
-        "fit before fabrication, regardless of the package-geometry gate below.",
-        "The lower-right mounting hole seen on both board faces is also absent from",
-        "the routed Edge.Cuts; its approximate photo coordinate needs a dimensioned",
-        "fit before adding the drill.",
+        "The current routed board is",
+        f"`{current_board_sha}`.",
+        *(["The upload ZIP is absent in this checkout."] if not upload_zip.is_file() else []),
+        "This command reruns order/package checks and refreshes the order template;",
+        "it does not export Gerbers or correct the board. Refresh with",
+        "`python3 kicad/report_replica_manufacturing_readiness.py`.",
+        "",
+        "## Physical release evidence", "",
+        "- [Source/routed comparison](routed-refresh-audit.md): pad, net, and placement differences.",
+        "- [PPI orientation](ppi-orientation-audit.md) and [pin mapping](ppi-physical-pin-mapping.json): D26/D27 physical mapping.",
+        "- [X8 footprints](x8-electrolytic-footprint-audit.md): C31–C33 axial lead geometry.",
+        "- [Photo registration](photo-registration.md): timer placement and mounting-hole geometry.",
+        "- [Factory wire fidelity](factory-wire-route-fidelity.md): insulated links and landing evidence.",
+        "",
+        "## Historical package provenance", "",
+        "The superseded package used routed-board SHA256",
+        "`3a1f83c8277624f2c04633761de5703550420443839fb3d5e49eea2c8a99e266`.",
+        "Historical upload ZIP SHA256: `90308b962433648cf52d0de44046367380e79f3e653151da75fc08bd9d949a46`.",
+        "Its identity, toolchain, and audit counts are preserved in",
+        "[the historical package record](../ref/routing/zero-open-fabrication-package.json).",
+        "Those results do not authorize the current board or package.",
         "",
         "## Gate Summary",
+        "",
+        "Rows check report presence and configured markers; PASS does not mean",
+        "this generator reran every underlying design check.",
         "",
         "| Gate | Evidence | Bytes | Status |",
         "| --- | --- | ---: | --- |",

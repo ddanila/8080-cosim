@@ -11,7 +11,7 @@
   "supporting_files_sha256": {
     "docs/main-board-unresolved-endpoints.csv": "8048d1afc5e01e862a46f435110b6f1330318ada8ffa20ce22c06e2d4cff8f56",
     "docs/ppi-physical-pin-mapping.json": "68e4f7b0c27553a0575ce62aab2470aef26618ff797dc69c0f6d74e8e765c08f",
-    "fab/gerbers/juku_routed-drc.json": "d12ec04518c52b23cfddfa52df8fb36762d07051a1a30ef2bf3e10ca64fd245b",
+    "fab/gerbers/juku_routed-drc.json": "fb9f3eed1719f673a2af0c05d8dcf4d0e85ec4cd80534ce0ee1024bf701e13f6",
     "fab/audit/main-board-erc.json": "8dc45308c5a0d1bbffa0afe564add62a29878af0992873933846a30bedca8525",
     "fab/audit/main-board-parity-drc.json": "1629f10fb0768282ed95e783cb9e4fbf379965cce456c80aea82dee18405ecc6"
   },
@@ -183,12 +183,12 @@
     },
     "Manufacturing": {
       "path": "docs/replica-manufacturing-readiness.md",
-      "sha256": "f6a5be87f3e090e813a8db0d6967ecf0c50825d1b7c60bcef713a2b44c06cb5f",
+      "sha256": "f373c0afacffc01b569ace71c13523e24bccc9e78ac0f0bb8ca3ef6ee1289649",
       "status": "DESIGN HOLD / PACKAGE REGENERATION REQUIRED"
     },
     "Upload procedure": {
       "path": "docs/replica-order-upload-runbook.md",
-      "sha256": "159b889b9fd5ce99ae6b85d350b26814357f14d9fbdae6643a12420f0af3126b",
+      "sha256": "c2b5845fc3c7dd3418757406fa26f17c3a7bdd14ebcfe010b7b526ae1fba25c0",
       "status": "PACKAGE INVALID"
     },
     "Order evidence": {

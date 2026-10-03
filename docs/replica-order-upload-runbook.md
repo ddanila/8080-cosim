@@ -72,7 +72,7 @@ were freshly verified. Run the manufacturing gate for release checks.
 | Sourcing readiness | `docs/replica-sourcing-readiness.md` | 13453 | PASS |
 | Factory wire construction | `docs/factory-wire-route-fidelity.md` | 16311 | PASS |
 | Checksum file | `fab/gerbers/SHA256SUMS` | 0 | FAIL |
-| Order evidence template | `docs/replica-order-evidence-template.md` | 4239 | PASS |
+| Order evidence template | `docs/replica-order-evidence-template.md` | 4549 | PASS |
 
 ## Order-Time Checks
 
