@@ -10,13 +10,17 @@ this board.
 
 The `custom` branch (submodule `external/freerouting`) carries:
 
-- **Bounded `PolylineTrace.combine()`** — stock recurses with no progress
-  guarantee and hits `StackOverflowError` on degenerate/overlapping trace
-  geometry (e.g. hand-placed locked wires imported from a DSN), so a headless
-  routing job never completes (it then polls the job at 0% CPU forever). The
-  custom build bounds the loop.
-- Stagnation-stop tuning for our dense board (40-pass patience, 0.05 threshold).
-- Headless v1.9 router selection + serialized headless output.
+- **Bounded `PolylineTrace.combine()`** — upstream now uses an iterative loop;
+  the custom build caps successful iterations on degenerate/overlapping traces.
+- **Offline/headless defaults** — telemetry and update checks are disabled, and
+  the GUI is disabled when no display is available.
+- **KiCad-compatible SES output** — original `::N` package identifiers and
+  standard `host_cad` / `host_version` grammar tokens are preserved.
+
+The submodule now pins the maintained `custom` branch revision. The previous
+archive's dense-board stagnation tuning is dropped; current routing defaults
+apply. Its v1.9 scheduler workaround is obsolete because upstream retired that
+router, and the current pipeline already serializes headless output.
 
 ## Use it
 

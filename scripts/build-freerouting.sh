@@ -2,9 +2,9 @@
 # Build the freerouting router FROM OUR SUBMODULE (external/freerouting @ custom)
 # and install it at .tools/freerouting/freerouting.jar -- the jar the routing
 # workflow uses. Do NOT drop a stock freerouting release there: the custom branch
-# carries fixes we depend on (bounded PolylineTrace.combine so headless routing of
-# DSNs with locked wires can't StackOverflow, dense-board stagnation tuning,
-# headless v1.9 routing). See docs/freerouting-build.md.
+# carries fixes we depend on (bounded PolylineTrace.combine for degenerate DSN
+# geometry, headless/offline defaults, and KiCad-compatible Specctra SES output).
+# See docs/freerouting-build.md.
 #
 # The jar is gitignored (~59 MB); the submodule commit is the source of truth, so
 # a fresh checkout runs this once to reproduce the exact router.
@@ -49,7 +49,7 @@ BUILT="$SUB/build/libs/freerouting-current-executable.jar"
 [ -f "$BUILT" ] || { echo "build-freerouting: expected jar not produced: $BUILT" >&2; exit 1; }
 
 # --- verify it really is the custom build, then install ---
-if ! unzip -p "$BUILT" 'app/freerouting/board/PolylineTrace.class' 2>/dev/null | grep -qa "$MARKER"; then
+if ! unzip -p "$BUILT" 'app/freerouting/board/trace/PolylineTrace.class' 2>/dev/null | grep -aF "$MARKER" >/dev/null; then
   echo "build-freerouting: built jar is missing the custom marker -- refusing to install" >&2
   exit 1
 fi
