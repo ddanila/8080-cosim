@@ -1,6 +1,13 @@
 # VJUGA ROM images
 
-Run `build_revb_rom.py` for the complete first-article set. Every 27C256 image
+Build the complete Rev B first-article ROM set from the repository root:
+
+```sh
+python3 spinoffs/minimal-vga/roms/build_revb_rom.py
+python3 spinoffs/minimal-vga/roms/build_revb_rom.py --check
+```
+
+Every 27C256 image
 duplicates its verified 16 KiB member into both halves so direct A0–A14 wiring
 also maps the D800–FFFF overlay correctly. `revb-rom-set.json` is the authority
 for provenance, hashes and the program/readback procedure:
@@ -42,15 +49,14 @@ and **8080-behavior-identical** (both bytes are NOP on the 8080). On a Z80 the
 patched ROM now follows the same control flow.
 
 **Checksum:** the ROM self-tests by summing block-1 (`0x000B..0x07FF`) and
-comparing it to the stored byte at `0x000A`; a mismatch stalls the boot (this is
-exactly what fails the homebrew `ekta43` ROM). The three opcode patches lower
+comparing it to the stored byte at `0x000A`; a mismatch stalls the boot. The three opcode patches lower
 the block-1 sum by `0x38`, so the stored checksum is recomputed from `0x1A` to
 `0xE2`. `0x000A` sits outside the summed range, so the fix does not cascade, and
-the self-test passes again. Verified: the 8080 `cosim` runs the patched ROM
-byte-for-byte identically to the original through 200M cycles (banner + past the
-self-test), confirming no other checksummed block is disturbed.
+the block checksum is restored. The executable boot gate compares original
+and patched ROM framebuffers at its selected video-write limit; it does not
+compare every CPU state or prove all firmware services equivalent.
 
-Only these three bytes are reachable as divergent opcodes during boot; no
+Only these three divergent opcode bytes occur in the traced boot workload; no
 `0xCB/0xDD/0xED/0xFD/0xD9` alternate JMP/CALL/RET encodings are executed, so no
 further opcode patches are needed for the boot path.
 
@@ -68,6 +74,8 @@ cc -O2 -I cosim -o /tmp/mkz80 spinoffs/minimal-vga/tools/make_z80_rom.c cosim/i8
 /tmp/mkz80 roms/ekta37.bin spinoffs/minimal-vga/roms/ekta37_z80.bin
 ```
 
-`sim/boot_check.sh` regenerates this file, checks it is byte-identical to the
-committed copy, confirms cosim is unchanged by the patch, then boots it on the
-VJUGA T80 core in **Z80 mode** and compares the framebuffer to cosim.
+`spinoffs/minimal-vga/sim/boot_check.sh` regenerates this file in a temporary
+directory and checks it against the committed copy. It compares the original
+and patched 8080 framebuffers, then boots the patched image on the VJUGA T80
+core in **Z80 mode** and compares that framebuffer to cosim. This is boot
+coverage, not general 8080/Z80 compatibility or physical EPROM qualification.
