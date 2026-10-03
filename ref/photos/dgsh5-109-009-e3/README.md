@@ -7,13 +7,10 @@ Owner photographs (taken 2026-07-18) of the physical **ДГШ5.109.009 Э3**
 ## Why this matters
 
 This is a *different drawing* from `ref/schematics/juku_es101_processor_module.pdf`,
-which is the earlier **ДГШ5.109.006 Э3**. Until these photos, the `.009 Э3`
-electrical revision was a documented gap: a 2026-07-14 web sweep confirmed it
-was not public anywhere (see `PLAN.md`, "Document gap"), and the repo held the
-`.009` family only as the **ДГШ5.109.009 СБ** assembly/wire-table scan
-(`ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`, sheet-1 photos under
-`ref/photos/dgsh5-109-009-sb/`) — a connection table, not an electrical
-schematic. These photos are the `.009` electrical schematic itself.
+which is the earlier **ДГШ5.109.006 Э3**. These photos provide the `.009`
+electrical schematic; the related **ДГШ5.109.009 СБ** assembly/wire-table scan
+(`ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`, with sheet-1 photos under
+`ref/photos/dgsh5-109-009-sb/`) provides a separate connection-table source.
 
 The decisive difference is **sheet 3**: on the `.006` it is the earlier
 tape/serial subsystem; here it is the **floppy controller** built around the
@@ -71,92 +68,24 @@ agree. This checks rail names, not copper continuity.
 - `PXL_20260718_101637906.jpg` … `PXL_20260718_101648508.jpg` — 4 detail tiles
   (`_101637906`, `_101641055`, `_101644861`, `_101648508`)
 
-## Status / TODO
+## Reviewed interpretation and remaining checks
 
-- [x] Targeted sheet-1 D6 polarity read: D6.12/D0 is drawn directly to
-      D8.15/E through R11, and D6.9/D3 directly to D13.1 through R14; D13 is
-      the only drawn inverter (`docs/d6-physical-decode.md`).
-- [x] Sheet-3 X4 connector read and НГМД reconciliation: all used signal
-      contacts are mapped, and the drawing identifies D100 as the drive-output
-      buffer rather than the inferred FDC data-bus buffer
-      (`ref/schematics/fdc-x4-ngmd-wire-map.md`).
-- [x] Sheet-1/3 FDC source read: D93 DAL0-DAL7 join D0-D7 directly; D26
-      PC2/PC4/PC5/PC6 supply MOTOR EN/FM-MFM/D_SEL/S.SEL; D28.2 cascades to
-      D28.3 to generate the complementary drive selects.
-- [x] Sheet-3 input/open-collector pull-ups reconciled with the `.009 СБ`
-      assembly drawing: R79-R85 and R98 are modeled at their registered
-      positions with exact values and endpoints.
-- [x] Sheet-3 D97/D102/D101 write-precompensation chain transcribed with all
-      timing passives; target copper resolves the drawing's duplicated R99 and conflicting R86; D101 input junctions are source-closed but physically pending
-      (`ref/schematics/fdc-write-precomp-map.md`).
-- [x] Sheet-1 D26 PA6/pin38 label is `IMDRG`, not the former `PREN` reading;
-      its `(3)` continuation matches sheet-3 `IMDRG (1)` at D101 VA/OE0_N
-      pin1. Physical continuity remains to be checked
-      (`docs/d26-imdrg-source-review.md`).
-- [x] Sheet-3 D95 clock mux completely transcribed: D40's 1/2 MHz rails feed
-      D93 CLK, its 4/8 MHz rails feed D106 DOWN, FM/MFM and 5-inch/8-inch are
-      the shared selects, and both enables are grounded
-      (`ref/schematics/fdc-clock-mux-map.md`).
-- [x] Owner continuity plus sheets 2/3 reconcile the long 1 MHz slot route:
-      D40.11 reaches D59.5, tied D92.2/.3, and externally tied D95.5/.6.
-      This exposes a pending atomic correction to the source model's former
-      `LATCH_B`/`VID_MUX_G` split and D92 `PHI2TTL` attribution
-      (`docs/d40-d59-d92-d95-1mhz-route.md`).
-- [x] Sheet-3 D106 recovery counter completely transcribed: R78 pulls UP and
-      all four preset inputs high, D95 clocks DOWN, RAW READ drives /LOAD,
-      CLR is grounded, Q3 drives D28.9, and the five undrawn outputs are NC
-      (`ref/schematics/fdc-recovery-counter-map.md`). Factory-pair registration
-      and the D106/D28-local owner view close R78 placement and value at 10K.
-- [x] Sheet-3 D96 read-clock toggle completely transcribed: WREQ_N drives both
-      asynchronous controls, /Q feeds D, D28.8 clocks section 1, Q drives
-      D93 RCLK, and section 2 implements the DRQ/INTRQ conditioner while its
-      pin-8 complement remains an independently photo-proved test landing
-      (`ref/schematics/fdc-read-clock-toggle-map.md`).
-- [x] Exact-revision unused sections reconciled: the drawing omits D28's last
-      two inverter pairs only from the earlier partial frame; the exact frame
-      restores them in the IRQ conditioner. D98 buffer pair 4, D97 Q/pin13,
-      and D102 /Q/pin4 remain guarded NCs. A full-resolution re-read of
-      `_101641055` instead joins D96 /CLR2/pin13 to D99 B2/pin10 at a marked
-      junction; their remote source is still unread
-      (`docs/d96-d99-junction-source-review.md`;
-      `ref/schematics/fdc-unused-pin-dispositions.md`).
-- [x] Sheet-1/3 D93 static paths reconciled: `RES (3)` lands on D93.19, and
-      sheet 3 directly ties TEST/pin22 to WF/VFOE/pin33. The drawn reset-polarity
-      tension remains an explicit scope check
-      (`ref/schematics/fdc-controller-static-map.md`).
-- [x] Sheet-3 D93 HLT/RG paths reconciled: the full overview traces D99.4
-      Q1_N to HLT/pin23 on a rail separate from D94.14/D101.7 and E11.
-      E11 post 1 reaches D99.5 Q2, while its drawn 2-3 selection feeds
-      D28.6/R84 READY to pin32; RG/pin25 is deliberately
-      omitted between the explicit pin-24 and pin-26 paths
-      (`ref/schematics/fdc-hlt-rg-map.md`).
-- [x] Sheet-3 D99 timing paths reconciled: grounded A1/CLR1,
-      C17/C18/R97/R103 timing networks, and unused pin13 are modeled and
-      structurally guarded. The overlapping detail frames join D99.11 CLR2_N
-      to MOTOR EN; original-board continuity remains unmeasured. D99.12
-      joins D100.9 OE_N, and D99.5 Q2 drives D100.7 A7. D99.4 is drawn to
-      D93.23 HLT, while D101.7 joins D94.14 on the next lower rail.
-      Original-board D99.4-D93.23 continuity remains unmeasured. D99.10 and
-      D100.11 have separate sheet-1 continuations
-      (`ref/schematics/fdc-d99-timing-map.md`).
-- [x] Sheet-3 DRQ/INTRQ conditioner reconciled: D28 sections 5/6, R93/R95,
-      and D96 section 2 are restored. D96.9 reaches the common D101 A0–A3
-      input conductor in the full overview; D96.11 reaches the
-      D94.2/D99.9/R89.1 line there. Physical continuity remains pending
-      (`ref/schematics/fdc-irq-conditioner-map.md`).
-- [x] Transcribe each sheet into a reviewed net/wire interpretation and
-      reconcile against `kicad/juku.board.json` and the `.006 Э3`; record any
-      `.006`→`.009` divergences (esp. sheet-3 FDC vs tape).
-- [x] Cross-check the sheet-3 FDC nets against `ref/wd1772-vg93/` predictions
-      and the physical-board evidence in `ref/photos/dgsh5-109-009-sb/`.
-- [x] Sheet-2 D54/D55/D56 timing crossings owner-verified on 2026-07-21:
-      D54.17/H.SYNC DSL reaches D56.10, D55.17/VERT SYNC DSL reaches D56.2,
-      and D56.12/Q2_N reaches tied D55.15/CLK1 and D55.18/CLK2. D56.5/Q2
-      reaches D34.9. These exact-revision paths supersede the older `.006`
-      scan chase that joined D57.17/SYNC B to both D56 triggers.
+The [electrical audit](../../schematics/dgsh5-109-009-e3-notes.md)
+checksum-guards all 23 source frames and indexes the reviewed sheet-1/2
+revision differences and sheet-3 circuit transcriptions. Use those linked
+reports for net assignments, source conflicts and physical continuity limits.
 
-The reviewed diff-first index is
-`ref/schematics/dgsh5-109-009-e3-notes.md`; it checksum-guards every source
-frame and links each fully transcribed sheet-3 circuit plus the sheets-1/2
-divergence dispositions. Prediction-only analog behavior remains correctly
-separate from drawing-proved connectivity.
+The long D40.11–D59.5–D92.2/.3–D95.5/.6 1 MHz route is adopted in the
+source model, HDL, schematic and checked routed endpoints. It is no longer a
+pending model correction; whole-board routing release remains held. See
+[the route review](../../../docs/d40-d59-d92-d95-1mhz-route.md).
+
+D93 reset polarity is resolved: active-high RESET enters D13.9, and D13.8
+supplies D93.19 MR_N. For the remaining D96 continuity/clear checks and
+D99/D100 sheet continuations, use [the FDC handoff](../../../docs/fdc-hardware-handoff.md).
+D101 input junctions and its selected write-data path are source-closed;
+physical continuity and waveform quality remain bring-up checks.
+
+Drawing-derived connectivity, photo registration and modeled behavior do not
+prove original-board copper continuity or analog timing. The source frames
+remain acquisition evidence.
