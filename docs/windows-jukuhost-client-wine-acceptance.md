@@ -34,10 +34,9 @@ sync/jukuhost_win32_wine_e2e.sh build/win32-wine-e2e/JUKUWIN.EXE
 
 The first command passed portable payload/configuration/device-selection
 tests, the Win32 API shim, two byte-identical builds, PE/import/resource audit,
-the real PE self-test under Wine, and exact package validation. The second
-command passed the stock, retained C11, and C12 protocol sessions. The middle
-command kept one native host process alive across a complete simulated stock
-target restart and reached `A>` before and after it. The complete Wine
+the real PE self-test under Wine, and exact package validation. The second command kept one native host process alive across a complete
+simulated stock target restart and reached `A>` before and after it. The third
+command executed the PE in stock, retained C11 and C12 protocol sessions. The complete Wine
 protocol run is intentionally local-only rather than part of ordinary CI.
 
 ## Accepted protocol evidence
@@ -83,4 +82,8 @@ inside its disposable prefix and refreshes Wine before each case.
 W4 still requires the exact PE on current Windows with the real adapter and
 CS00000, including UI operation, stable device identity, cold/warm boots,
 A:/B:, controlled writes, N4, reconnect, shutdown, and endurance evidence.
-W5 separately requires Windows 95 execution and physical serial qualification.
+Windows 95 guest execution has since been recorded in
+[the guest acceptance report](windows-jukuhost-client-win95-acceptance.md).
+That serial path uses a simulator, so physical Windows 95 serial qualification
+remains separate. This Wine record qualifies its named PE and payloads; use
+[the operator guide](windows-jukuhost-client.md) for the current build.
