@@ -2,14 +2,14 @@
 
 Status: **PASS**
 
-This guard regenerates a full cosim machine checkpoint at 30,000
+This guard generates a cosim checkpoint at 30,000
 framebuffer writes on the vendored `media/disks/JUKU1.CPM` `TDD` path.
 This diagnostic stop precedes the first PIC/PPI setup window at
 30,520 writes. The [uninterrupted HDL prompt run](juku-top-fdc-verilator-probe.md)
-covers execution through the EKDOS `A>` prompt at 73,405 writes.
+records execution through the EKDOS `A>` prompt at 73,405 writes.
 
-The generated checkpoint files are not committed. They are an automation
-source for the checkpoint-resumed HDL diagnostics.
+Temporary checkpoint files are deleted when this command finishes.
+Checkpoint-resumed HDL diagnostics generate their own input files.
 
 ## Command
 
@@ -24,6 +24,9 @@ sync/ekdos_checkpoint_reference.py
 - CPU cycles: `1963707`
 - RAM SHA256: `eaa42964cdbc37bce58081edc085c5bcf94e95deed6454230e1aab8f1c3a38d4`
 - VRAM SHA256: `0b94d9d02f9c53bdd86f6f0be9921253eb3f99400ee00e62203eeac17eda1c68`
+
+Only the fields listed in the generator’s `EXPECTED` mapping are compared
+with fixed values. The other state rows and cycle count are observations.
 
 | Field | Value |
 | --- | ---: |
@@ -58,7 +61,7 @@ sync/ekdos_checkpoint_reference.py
 
 ## Boundary
 
-- This guard checks the recorded state fields and RAM/VRAM hashes at
+- This guard checks selected state fields, the write count, and RAM/VRAM hashes at
   this stop. It does not resume the die-accurate HDL CPU.
 - Checkpoint-resumed HDL diagnostics avoid replaying the framebuffer
   draw. The uninterrupted prompt run separately checks execution from reset.
