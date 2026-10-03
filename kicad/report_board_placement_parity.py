@@ -36,7 +36,11 @@ def main() -> int:
     source = placements(SOURCE)
     lines = [
         "# Source-to-routed footprint placement parity", "",
-        "This compares footprint reference, centre, and rotation in the source PCB with both routed variants. Tolerance: 0.01 mm and 0.1°. It does not verify whether the source PCB itself matches the owner board or whether copper follows a moved footprint.", "",
+        "This compares footprint reference, placement anchor, and rotation in the source PCB with both routed variants. Tolerance: 0.01 mm and 0.1°. It does not verify whether the source PCB itself matches the owner board or whether copper follows a moved footprint.", "",
+        "The coordinates are KiCad footprint placement anchors, which can differ",
+        "from package or pad-array centers. Footprint geometry and pad nets are not",
+        "compared. A nonzero exit status reports placement gaps.", "",
+        "## Command", "", "```sh", "/usr/bin/python3 kicad/report_board_placement_parity.py", "```", "",
         "| Routed PCB | Missing source refs | Extra refs | Moved/rotated refs |", "| --- | --- | --- | --- |",
     ]
     details = []
@@ -49,7 +53,7 @@ def main() -> int:
         total_gaps += len(missing) + len(extra) + len(changed)
         lines.append(f"| `{path.relative_to(ROOT)}` | {', '.join(missing) or 'none'} | {', '.join(extra) or 'none'} | {', '.join(changed) or 'none'} |")
         details.append((path, source, routed, changed))
-    lines += ["", "## Position differences", "", "| Routed PCB | Ref | Source centre / rotation | Routed centre / rotation |", "| --- | --- | --- | --- |"]
+    lines += ["", "## Position differences", "", "| Routed PCB | Ref | Source anchor / rotation | Routed anchor / rotation |", "| --- | --- | --- | --- |"]
     for path, source, routed, changed in details:
         for ref in changed:
             lines.append(f"| `{path.name}` | `{ref}` | {fmt(source[ref])} | {fmt(routed[ref])} |")

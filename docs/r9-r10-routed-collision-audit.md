@@ -2,18 +2,13 @@
 
 The exact .009 drawing and owner photo identify R10 as the outer-left and R9 as the inner-right 2 kΩ pull-ups beside D3. `ref/photos/juku-pcb-2/r9-r10-r15-r16-identity-review.json` records the source evidence and photo registration. The source PCB has both footprints at their photo-projected positions; the two routed variants still omit them.
 
-## Temporary insertion trial
+## Local routing conflicts
 
-The retained placement-only trial inserted the source R9/R10 footprints into
-an isolated routed-board copy, remapping pad nets by name. It added 65 DRC
-violations and three open items: 22 shorts, 22 solder-mask bridges, 10 copper
-clearances, six hole clearances, three plated-hole/courtyard collisions and
-two courtyard overlaps. Neither tracked routed board was changed.
-
-These counts describe that trial, not a fresh current-board DRC run. Current
-whole-board findings belong to [factory-wire fidelity](factory-wire-route-fidelity.md).
-The concrete conflicts below explain why copying the footprints alone is
-insufficient; routing needs a reviewed local copper correction.
+A placement-only insertion trial produced shorts and clearances against
+existing signal and power copper. The conflicts below identify the local
+repair area; they are recorded trial observations, not fresh DRC results.
+Current whole-board findings belong to
+[factory-wire fidelity](factory-wire-route-fidelity.md).
 
 The source footprint positions are R10.1 `INT6_RAW` `(211.204,93.578)` mm, R10.2 `P5V` `(211.204,83.418)`, R9.1 `INT7_RAW` `(214.319,94.881)`, and R9.2 `P5V` `(214.319,84.721)`. Representative trial conflicts:
 
@@ -24,29 +19,14 @@ The source footprint positions are R10.1 `INT6_RAW` `(211.204,93.578)` mm, R10.2
 | R9.1 | INTA F.Cu/B.Cu and via `(213.5,95.25)`; P12V F.Cu near `(214.25,94.75)` | Multiple direct shorts and hole clearance failures |
 | R9.2 | INTA via `(214.5,84.5)` and IR7 B.Cu | Direct shorts |
 
-The retained trial's 22 shorting-item DRC records group into
-eight net pairs. Some records refer to the same via on two copper layers,
-so these are report counts rather than 22 independent places to move:
-
-| Conflicting nets | DRC records | Local priority |
-| --- | ---: | --- |
-| `INT7_RAW` / `INTA` | 5 | R9.1 and INTA tracks/via near `(213.5,95.25)` |
-| `P5V` / `INTA` | 4 | R9.2 and INTA via near `(214.5,84.5)` |
-| `INT7_RAW` / `P12V` | 3 | R9.1 and +12 V front track near `(214.25,94.75)` |
-| `INT6_RAW` / `FRAME_INT` | 3 | R10.1 and FRAME_INT via near `(212.125,94.0)` |
-| `INT6_RAW` / `IR7` | 2 | R10.1 and IR7 back tracks near `(211.5,94.0)` |
-| `P5V` / `IR7` | 2 | R9.2 and IR7 back tracks near `(215,85)` |
-| `P5V` / `WREQ_N` | 2 | R10.2 and WREQ_N back tracks near `(210.5,83.25)` |
-| `INT6_RAW` / `P5V` | 1 | R10.1 and +5 V front diagonal |
-
-This list comes from the placement-trial DRC JSON, with each record
-requiring local copper inspection before any track is removed.
-
 ## Cause and correction boundary
 
 The source PCB places D12 at `(224.535,67.630)` mm, rotated 180°, directly above D3, matching the exact .009 assembly and owner photo reviewed in `ref/photos/juku-pcb-2/d12-d3-local-placement.json`. Both routed variants still place D12 at `(202.495,77.090)` mm, rotation 0°, left of D3. That stale D12 placement and its local copper occupy the R9/R10 corridor. This is a source-to-routed placement divergence, not evidence that the photographed R9/R10 body locations are wrong.
 
-The full `kicad/report_board_placement_parity.py` comparison finds no other moved or rotated footprint and no other missing source reference in either routed board: D12 and R9/R10 are the complete source-to-routed footprint placement difference (`docs/board-placement-parity.md`).
+The [placement parity report](board-placement-parity.md) lists the full
+source-to-routed differences. R9/R10 are the two missing references;
+D11, D12, D26, D27, D42, D43, D58, D59, D6, and D9 also differ in position or rotation.
+The local D12/R9/R10 repair is therefore only part of the routed refresh.
 
 A read-only DRC of the source PCB with R9/R10 present found no R9/R10 electrical shorts or copper/hole clearances. It did report one D3/R9 courtyard overlap; that mechanical outline still needs review. The source PCB has many unrelated DRC holds, so this does not release the layout.
 
@@ -71,10 +51,10 @@ courtyard disposition.
 
 Refresh D12 to the source/owner position and redesign the displaced D12, INTA, IR7, P12V, FRAME_INT, and WREQ_N copper around the two resistors. Keep R9/R10 at their registered source locations unless stronger owner evidence changes them. Then connect R10.1 to D3.1, R9.1 to D3.13, both upper pads to +5 V, and compare DRC to the routed baseline. Owner continuity of those four physical joints remains pending independently of the replica layout.
 
-## Whole-board refresh trial
+## Repair scope
 
-`kicad/refresh_routed_from_source.py --output /tmp/juku_d12_refresh_trial.kicad_pcb` was run on a temporary copy only. Its whole-net endpoint rule quarantined seven nets and 2,886 copper items, including 1,382 GND and 992 P5V items, because the added resistors and moved D12 change endpoint sets. The candidate DRC reported 277 violations and 465 unconnected items, versus 176 and 61 on the current routed baseline. This candidate is rejected: it would discard large unrelated power routes. A targeted local relocation/reroute is required; no routed-board D12/R9/R10 mutation was made by either trial.
-
-The `--allow-additive-renames` option retained the added INT6_RAW/INT7_RAW endpoints but still quarantined GND and P5V because D12's power pads moved, leaving 463 opens. An exploratory `--allow-drc-salvage` refresh retained all existing copper and was then passed through `kicad/salvage_routed_copper.py` on a temporary board. DRC removed 55 migrated track/via items in one round; the resulting board has no electrical shorts, copper clearances, track crossings, or hole-clearance blockers. Error-only DRC reports 173 non-electrical violations and 93 unconnected items, compared with 176 and 61 on the current routed board. This is a reproducible *rerouting starting point*, not a completed route: the 32 additional opens need copper repair, and both routed boards remain unchanged.
-
-A bounded exploratory custom FreeRouting run exported the salvaged board to Specctra DSN and began autorouting 144 items (`-mp 3 -mt 10`, JDK 25). It produced no `.ses` before a 180-second timeout, so there is no routed result to import or assess. This timeout is a limit of that trial, not evidence that the opens are impossible to route. Continue with a longer controlled route or targeted local routing, then require KiCad DRC and source-to-routed placement parity before promotion.
+Use a targeted local relocation and reroute. Whole-net quarantine can
+remove unrelated GND/P5V copper when power endpoints move; a salvaged
+refresh still requires open-connection repair. Neither an exploratory
+refresh nor an autorouter launch establishes a completed route. Promote
+a replacement only after DRC and source-to-routed placement review.
