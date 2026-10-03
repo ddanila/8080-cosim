@@ -40,18 +40,15 @@ object layouts, or JSON as a runtime dependency.
 
 ## Subsequent stock-ROM compatibility
 
-The accepted single-host architecture is unchanged. Version `0.3.0-m6` adds
-the exact JF15 stock-assisted CP/M Plus path to the same C executable after a
-CS00000 experiment proved the retired wrapper's fixed core-probe window was
-too short. The C host rejects retired JF1–JF14 stages. Focused regressions delay the V15 core for
-five seconds and boot stock Ekta4401 through V15 to `A>`; the full Linux gate
-and Open Watcom DOS build pass. A retained 2026-08-22 CS00000/EK37 run then
-physically passed the same native C state machine through `A>` and 22 clean
-NetDisk requests with zero retries or UART errors. See
-[portable-c-host-implementation.md](portable-c-host-implementation.md) and
-[cs00000-service-record.md](cs00000-service-record.md). Current recoverable
-stock sessions use the separately implemented JF17 profile; see
-[stock bootstrap and recovery](janet-fastboot.md).
+Version `0.3.0-m6` added the exact JF15 stock-assisted path to the same C
+executable. A retained 2026-08-22 CS00000/EK37 run qualified that native C
+path through `A>` and 22 NetDisk requests with zero retries or UART errors;
+see [the service record](cs00000-service-record.md) for artifact identities
+and capture evidence. The five-second core-delay regression remains in
+`tests/jukuhost_v15_delayed_pty_test.py`.
+
+JF1–JF14 stages are not admitted production inputs. Current recoverable stock
+sessions use JF17; see [stock bootstrap and recovery](janet-fastboot.md).
 
 ## Reproducible gate
 
