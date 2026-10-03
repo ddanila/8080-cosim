@@ -21,8 +21,8 @@ photo `PXL_20260710_200522685.jpg` show D99.2 running to a circular
 component-side landing whose projection has no solder-side annulus. That
 proves it is not a through-hole via. It does **not** prove D99.2 is electrically
 isolated: a front-side branch or an unregistered E12 post remains possible.
-The earlier phrase “isolated test landing” was too strong. No E12 footprint,
-post coordinates, or installed bridge has yet been proved on this board.
+No E12 footprint, post coordinates, or installed bridge has yet been proved
+on this board.
 
 The exact `.009 СБ` assembly photo `PXL_20260711_114600417.jpg` gives a
 bounded physical search region: its native crop `(2100,1900)-(2550,2350)`

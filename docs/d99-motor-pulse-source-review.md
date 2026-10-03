@@ -17,8 +17,8 @@ D26.16↔D99.11 and D99.5↔D100.7 continuity still require direct checks;
 the fitted R97/C17 timing predicts a nominal pulse, not proven motor
 behavior on a powered board.
 
-The prior routed replica contained 226 segments and 28 vias on the false
-`FDC_MOTOR_EN` D26-to-D100 path. They were removed from the routed and
-candidate PCBs because they would preserve the wrong connection. Current
-KiCad DRC reports seven open connections, including both corrected motor
-branches, and no short. Fabrication remains on hold.
+The corrected source topology does not establish routed copper continuity.
+Source/routed drift and open connections remain in
+[the routed audit](routed-refresh-audit.md); fabrication remains held under
+[manufacturing readiness](replica-manufacturing-readiness.md). The retired
+D26-to-D100 connection must not be reused when routing these branches.
