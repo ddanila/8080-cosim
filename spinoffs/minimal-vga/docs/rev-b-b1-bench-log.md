@@ -7,7 +7,8 @@ surplus bare boards do not authorize duplicate builds.
 Record measured observations, not expected values. A failed row stops the ladder
 until its cause and disposition are recorded. Power down before inserting or
 removing any card or IC; the bus uses orientation markings, not foolproof mechanical
-keying. Use the qualified Mean Well GST25A05-P1J through the MF-R300-fused,
+keying. Use the specified Mean Well GST25A05-P1J after its required receipt test,
+through the MF-R300-fused,
 reverse-protected center-positive `J_PWR`. The USB-TTL adapter is data-only and must
 not power the machine.
 

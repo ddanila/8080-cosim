@@ -14,14 +14,12 @@ executed.
 
 ## Rev B modular status
 
-The current Rev B state is summarized in `docs/rev-b-status.md`. Its B1 CPU,
-memory, I/O and five-slot 100×100 backplane boards have generated/routed sources
-that pass the recorded desk gates; their former four-board fabrication ZIPs are
-now historical and must not be uploaded. The B2 video desk model is complete
-through TI.3. `docs/rev-b-five-board-order-plan.md` controls the remaining serial,
-programmable-logic, physical Video-card, JLCPCB-preflight and five-package release
-work. `docs/rev-b-order-readiness.md` and `docs/rev-b-b1-bench-log.md` are preserved
-records of the superseded four-board sequence.
+[Rev B status](docs/rev-b-status.md) summarizes the five-card system and its
+completed desk gates. The [five-board order plan](docs/rev-b-five-board-order-plan.md)
+controls release; physical first-article acceptance remains pending. Use the
+[current bench template](docs/rev-b-b1-bench-log.md) after the authorized order
+arrives. The [former four-board package identities](docs/rev-b-order-readiness.md)
+are historical evidence and must not be uploaded.
 
 ## Rev A monolithic status
 
