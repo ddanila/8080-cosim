@@ -86,6 +86,10 @@ OUTPUT_JSON.write_text(json.dumps({"schema_version": 1,
                                   "d94_pullups": pullups}, indent=2) + "\n")
 lines = ["# FDC upper assembly placement", "",
          "Status: **FACTORY PLACEMENT EVIDENCE / D94 PULL-UPS IDENTIFIED**", "",
+         "Regenerate with `python3 kicad/report_fdc_upper_assembly_placement.py`.",
+         "The guard checks recorded pull-up mappings and selected value-source hashes,",
+         "then calculates placement from recorded anchors and reads source-PCB pad",
+         "centres. It does not prove pad-net assignments or metered continuity.", "",
          "The factory drawing places C12 between photo-fitted D94/D100 and C9 between",
          "photo-fitted D100/D98. Each target is interpolated only between its adjacent",
          "package centres. An independent D94-to-D98 interpolation predicts held-out",
@@ -100,9 +104,12 @@ for item in targets:
         f"{value:+.3f}" for value in item["projected_delta_mm"])
     lines.append(f"| {item['refdes']} | {'/'.join(item['between'])} | {item['fraction']:.6f} | "
                  f"{projected} | {current} | {delta} | {item['observation']} |")
-lines += ["", "Neither owner-photo site exposes a complete electrical path: C12 has no",
-          "unambiguous visible body and C9 is cable-obscured. These remain placement-only",
-          "records and do not validate the inherited `.006` analog net assignments.", "",
+lines += ["", "The later owner image `PXL_20260710_202708344.jpg` shows green two-lead",
+          "bodies in both gaps. C12's visible leads reach D100.20/+5 V and D94.8/GND.",
+          "C9 remains partly cable-obscured; its individual rail joins and both values",
+          "are unproved. The `.009` sheet-1 bypass symbols establish +5 V/GND function",
+          "for both references. Neither site verifies the replica's numbered pad mapping.",
+          "See [late bypass evidence](../ref/photos/juku-pcb-2/fdc-bypass-late-population-review.json).", "",
           "## D94 pull-up row", "",
           "The same factory view labels the three vertical bodies immediately left of D94",
           "as R87, R88, and R89 from left to right. The owner component photograph preserves",

@@ -2,6 +2,11 @@
 
 Status: **FACTORY PLACEMENT EVIDENCE / D94 PULL-UPS IDENTIFIED**
 
+Regenerate with `python3 kicad/report_fdc_upper_assembly_placement.py`.
+The guard checks recorded pull-up mappings and selected value-source hashes,
+then calculates placement from recorded anchors and reads source-PCB pad
+centres. It does not prove pad-net assignments or metered continuity.
+
 The factory drawing places C12 between photo-fitted D94/D100 and C9 between
 photo-fitted D100/D98. Each target is interpolated only between its adjacent
 package centres. An independent D94-to-D98 interpolation predicts held-out
@@ -12,13 +17,12 @@ D100 within `1.309` mm.
 | C12 | D94/D100 | 0.486906 | 253.218, 33.954 | 253.218, 33.954 | -0.000, +0.000 | vertical C12 between D94 and D100; May and early July views show a bare gap, but later July owner image 202708344 shows a fitted green axial body in that exact gap, with one lead to D100.20/+5 V and the other to D94.8/GND; its value and permanent population history remain open |
 | C9 | D100/D98 | 0.561111 | 285.807, 33.590 | 285.807, 33.590 | -0.000, +0.000 | vertical C9 between D100 and D98; earlier overhead owner view is cable-hidden, but later July image 202708344 exposes a green two-lead body in this gap; value and individual rail joins remain open |
 
-The later owner image `PXL_20260710_202708344.jpg` resolves the earlier
-population uncertainty: green two-lead bodies occupy both gaps. C12's visible
-leads reach D100.20/+5 V and D94.8/GND. C9 is still partly obscured by the
-cable, so its individual lead-to-rail assignment and both values remain open.
-The `.009` sheet-1 bypass symbols establish +5 V/GND function for both refs;
-neither site validates the inherited `.006` analog net assignments or the
-replica's numbered pad mapping.
+The later owner image `PXL_20260710_202708344.jpg` shows green two-lead
+bodies in both gaps. C12's visible leads reach D100.20/+5 V and D94.8/GND.
+C9 remains partly cable-obscured; its individual rail joins and both values
+are unproved. The `.009` sheet-1 bypass symbols establish +5 V/GND function
+for both references. Neither site verifies the replica's numbered pad mapping.
+See [late bypass evidence](../ref/photos/juku-pcb-2/fdc-bypass-late-population-review.json).
 
 ## D94 pull-up row
 
