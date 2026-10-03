@@ -35,8 +35,9 @@ Pins 5 and 6 are separate КП12 data inputs and are joined by the external
 junction drawn immediately west of D95, not internally by the package. Owner
 continuity on 2026-07-22 extends that same 1 MHz copper back through D40.11,
 D59.5, and D92.2; sheet 2 also visibly ties D92.2/.3. The consolidated route
-and its pending atomic model correction are recorded in
-`docs/d40-d59-d92-d95-1mhz-route.md`.
+and implemented model correction are recorded in
+[the 1 MHz route review](../../docs/d40-d59-d92-d95-1mhz-route.md).
+`kicad/check_d40_1mhz_route.py` guards the shared `LATCH_B` net.
 
 ## Evidence hierarchy
 

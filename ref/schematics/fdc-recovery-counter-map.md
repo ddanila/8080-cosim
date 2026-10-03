@@ -1,8 +1,7 @@
 # FDC recovery-counter map
 
 This is the reviewed transcription of D106 (К555ИЕ7 / 74LS193) from
-ДГШ5.109.009 Э3 sheet 3. It replaces the earlier topology-based meter-probe
-candidates with primary-source connectivity.
+ДГШ5.109.009 Э3 sheet 3.
 
 | Function | Sheet-3 endpoints | Board model |
 | --- | --- | --- |
