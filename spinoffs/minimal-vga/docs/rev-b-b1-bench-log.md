@@ -77,7 +77,7 @@ cause of the observed draw is understood.
 | 13. Video power-only | Power off; put Video in slot 5 with slot 4 empty; attach VGA before power; check card current, local rails, 25.175 MHz dot clock, sync, and abnormal heat. | pending | pending |
 | 14. DIAG VGA/bus | Refit `DIAG/VJUGA`; confirm stage `80`/`81`, the 40-byte framebuffer pattern and final `FF`. Exercise framebuffer reads/writes, `WAIT_N` ownership and divide-six frame tick; capture contention or timing margin. | pending | pending |
 | 15. EKTA VGA | Refit `EKTA3.7/VJUGA`; confirm stable 640x480 timing and visible output. Record monitor/mode, image evidence, RGB/sync observations and repeated cold/reset boots. | pending | pending |
-| 16. Full NETC10 system | Refit `NETC10/VJUGA`; with VGA active, complete the exact bidirectional ABI 1.4 PROBE/DATA request/reply at PIT-derived 19,200 8N1. Record exact bytes/log, final POST state and the direct 9,600 recovery result separately. | pending | pending |
+| 16. Full NETC10 system | Refit `NETC10/VJUGA`; with VGA active, boot the matching C10/V16 CP/M system and host profile, then complete a bidirectional N4 command/reply. Record the exact ROM/system/host identities, captures, boot and disk framing, final POST state and the direct 9,600 recovery result separately. The standalone loader-v2 byte-pattern test is not this acceptance. | pending | pending |
 
 ## D57 and POST measurement record
 
