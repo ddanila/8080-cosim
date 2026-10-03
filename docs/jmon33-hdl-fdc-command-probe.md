@@ -14,26 +14,26 @@ or `docs/jmon33-idle-command-probe.md`, depending on the checkpoint.
 sync/jmon33_hdl_fdc_command_probe.py
 ```
 
-Environment overrides:
+Recorded environment settings:
 
-- `JMON33_HDL_COMMAND_MAX_MCYC` default `120000`
-- `JMON33_HDL_COMMAND_TIMECAP` default `4000000000`
-- `JMON33_HDL_COMMAND_FRAMEIRQ` default `200000`
-- `JMON33_HDL_COMMAND_KHOLD` default `500000`
-- `JMON33_HDL_COMMAND_KGAP` default `100000`
-- `JMON33_HDL_COMMAND_CHECKPOINT_CYCLES` default `19900000`
-- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT` default `1`
-- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT_CYCLES` default `26050000`
-- `JMON33_HDL_COMMAND_PHASE_START_VRAM` default `210`
-- `JMON33_HDL_COMMAND_HOLD_FRAMES` default `20`
-- `JMON33_HDL_COMMAND_GAP_FRAMES` default `6`
+- `JMON33_HDL_COMMAND_MAX_MCYC` = `120000`
+- `JMON33_HDL_COMMAND_TIMECAP` = `4000000000`
+- `JMON33_HDL_COMMAND_FRAMEIRQ` = `200000`
+- `JMON33_HDL_COMMAND_KHOLD` = `500000`
+- `JMON33_HDL_COMMAND_KGAP` = `100000`
+- `JMON33_HDL_COMMAND_CHECKPOINT_CYCLES` = `19900000`
+- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT` = `1`
+- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT_CYCLES` = `26050000`
+- `JMON33_HDL_COMMAND_PHASE_START_VRAM` = `210`
+- `JMON33_HDL_COMMAND_HOLD_FRAMES` = `20`
+- `JMON33_HDL_COMMAND_GAP_FRAMES` = `6`
 - Expected checkpoint SHA256 `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
-- `JMON33_HDL_COMMAND_KEY_MCYC` default `50000`
-- `JMON33_HDL_COMMAND_DEFER_IFF` default `1`
-- `JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS` default `1`
-- `JMON33_HDL_COMMAND_DISK` default `/home/ddanila/fun/8080-cosim/media/disks/JUKU1.CPM`
-- `JMON33_HDL_COMMAND_TRACEFDC` default `1`
-- `JMON33_HDL_COMMAND_STOPFDC` default `8`
+- `JMON33_HDL_COMMAND_KEY_MCYC` = `50000`
+- `JMON33_HDL_COMMAND_DEFER_IFF` = `1`
+- `JMON33_HDL_COMMAND_FORCE_CLEAN_STATUS` = `1`
+- `JMON33_HDL_COMMAND_DISK` = `/home/ddanila/fun/8080-cosim/media/disks/JUKU1.CPM`
+- `JMON33_HDL_COMMAND_TRACEFDC` = `1`
+- `JMON33_HDL_COMMAND_STOPFDC` = `8`
 - `JMON33_HDL_COMMAND_CASES` selected `T-enter`
 
 ## Evidence
@@ -52,36 +52,29 @@ Environment overrides:
 
 ## Disposition
 
-- The HDL checkpoint harness now has a generic two-key command stimulus
-  path in addition to the fixed EKDOS `TDD` stimulus path.
-- The default checkpoint is the monitor-idle cursor state. A later
-  `JMON33_HDL_COMMAND_KEY_MCYC` delay lets the resumed keyboard scan
-  settle before the command key is pressed.
-- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT=1` generates a per-case
-  cosim checkpoint with the command key already in the monitor
-  keyboard schedule, scales that frame phase into HDL M-cycles,
-  and resumes through the remaining key/Enter path.
-- The default checkpoint is deliberately before the 20,000,000-cycle
-  ready-probe stop, because that stop is visually idle but lands in
-  the frame interrupt vector (`PC=0xFF54`, `IFF=0`).
-- The default checkpoint is the monitor-idle cursor state, so the
-  default expected command hashes come from
-  `docs/jmon33-idle-command-probe.md`, not from reset-time typed
-  command runs.
-- The current HDL rows are diagnostic until their final command
-  framebuffers match the selected cosim oracle.
-- The `Idle cursor` column checks whether the monitor-idle cursor
-  block from the checkpoint survived into the final framebuffer.
-- This proof is scoped to jmon33 monitor commands. Cartridge BASIC remains
-  tracked by `docs/cartridge-basic-boundary.md`.
+- `JMON33_HDL_COMMAND_PHASE_CHECKPOINT=1` generates a per-case cosim
+  checkpoint with the command in the keyboard schedule and scales its
+  frame phase into HDL M-cycles. With phase checkpoints disabled,
+  the runner resumes a shared checkpoint at 19,900,000 cycles by default;
+  `JMON33_HDL_COMMAND_KEY_MCYC` delays key injection after resume.
+- The expected checkpoint hash selects the idle-cursor or early-command
+  framebuffer oracles. Each `PASS` row requires a zero HDL exit code,
+  the expected framebuffer hash and visible blocks, and a command-oracle
+  marker. The generic runner can exit successfully with diagnostic rows;
+  use the [A wrapper](../sync/jmon33_hdl_a_command_probe.py) or
+  [B wrapper](../sync/jmon33_hdl_b_command_probe.py) to require its pinned oracle.
+- `Idle cursor` records whether the checkpoint cursor survived; it is
+  informational and is not a separate pass condition.
+- These are bounded checkpoint-resumed command checks. Cartridge BASIC
+  has a separate [boundary](cartridge-basic-boundary.md).
 
 ## FDC-Specific Disposition
 
 - This wrapper intentionally stops on the FDC trace boundary, so the generic
   command framebuffer result remains `FAIL`/diagnostic.
-- The pass condition is the structural `juku_top` path reading status `0x40`
-  from the disk-backed FDC after the Monitor 3.3 `T` command has entered
-  the write-track/write-protect polling loop.
-- This matches the cosim oracle in `docs/jmon33-fdc-command-probe.md` and
-  removes the previous ambiguity that the HDL `T` path was merely a
-  keyboard-phase mismatch.
+- The wrapper accepts either a write-track command (`OUT 0x1C = 0xFD`)
+  or a write-protect status read (`IN 0x1C = 0x40`) in the trace. It does
+  not require both markers or verify their order.
+- Compare the [cosim FDC oracle](jmon33-fdc-command-probe.md) for the
+  polling-loop interpretation. This check does not prove disk formatting
+  or complete the generic command framebuffer oracle.

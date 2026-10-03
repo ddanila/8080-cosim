@@ -67,12 +67,12 @@ def main() -> int:
         "\n"
         "- This wrapper intentionally stops on the FDC trace boundary, so the generic\n"
         "  command framebuffer result remains `FAIL`/diagnostic.\n"
-        "- The pass condition is the structural `juku_top` path reading status `0x40`\n"
-        "  from the disk-backed FDC after the Monitor 3.3 `T` command has entered\n"
-        "  the write-track/write-protect polling loop.\n"
-        "- This matches the cosim oracle in `docs/jmon33-fdc-command-probe.md` and\n"
-        "  removes the previous ambiguity that the HDL `T` path was merely a\n"
-        "  keyboard-phase mismatch.\n"
+        '- The wrapper accepts either a write-track command (`OUT 0x1C = 0xFD`)\n'
+        '  or a write-protect status read (`IN 0x1C = 0x40`) in the trace. It does\n'
+        '  not require both markers or verify their order.\n'
+        '- Compare the [cosim FDC oracle](jmon33-fdc-command-probe.md) for the\n'
+        '  polling-loop interpretation. This check does not prove disk formatting\n'
+        '  or complete the generic command framebuffer oracle.\n'
     )
     REPORT.write_text(text)
     return 0
