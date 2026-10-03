@@ -1,25 +1,63 @@
 # D104 solder-side registration audit
 
-The former D104 solder fit in `PXL_20260710_200506061.jpg` used nominal columns near x=2212 and x=2350, y=1203–1526. Enlarging the original pixels shows that those anchor points do not form a 2×8 row of package joints. The former pin-8 position `(2213,1203)` sits on the bare interior of a rectangular trace; the former pin-1 `(2211,1526)` is an open annulus in a broad rail; the former pin-9 `(2350,1203)` and pin-10 `(2350,1249)` positions are between the visible soldered-joint columns. Their near-zero algebraic fit residuals only showed that the chosen coordinates made a rectangle. They did not validate pad identity.
+## Current findings
 
-The old fit and its D104.10 no-B.Cu-departure inference are retired from `ref/photos/juku-pcb-2/local-package-registration.json`. The component photo `PXL_20260710_200402344.jpg` identifies the marked notch-down К170УП2 package and its board position; direct owner continuity establishes D104.10 as NC. The rejected fit gave D104.7 no defensible solder-side landing. The D11-local replacement fit below now identifies the package field geometrically; it does not establish D104.7's remote net on B.Cu.
+The component photo `PXL_20260710_200402344.jpg` identifies the marked,
+notch-down К170УП2 package. Direct owner continuity establishes D104.10
+as NC. The exact `.009 Э3` sheet-1 detail draws only receiver sections
+`4→13`, `5→12`, and `6→11`; it omits the fourth `7→10` section.
 
-The overlapping solder photo `PXL_20260710_200509593.jpg` shows the same retired corridor near its left edge (roughly x=300–800, y=1100–1800), including several joint columns, open annuli, and broad rails. That narrow corridor does not rescue the old x≈2212/2350 fit. Extending the crop right to x≈1050 reveals a separate pair of eight-joint vertical columns at x≈767/912, y≈1280–1620; `200506061` repeats the pattern near x≈2565/2710, y≈1140–1480. The pair sits above the independently registered D11 field, whose x≈2705 column starts near y≈1610. Owner component tile `200358952` independently shows marked D104 directly above D11 with nearly aligned left contact columns; the x≈2710 solder column likewise aligns with D11 x≈2705. A D11-local transform fitted from its front and solder package corners is approximately `x_s=4700−0.875*x_c`, `y_s=1610+(601/675)(y_c−1777)`. It maps D104 front corners near `(2283,1240)/(2445,1240)/(2283,1607)/(2445,1607)` to solder `(2702,1132)/(2561,1132)/(2702,1459)/(2561,1459)`, within about 21 px of the observed four corners. This photo-registers the two-column D104 field. Its notch-down orientation puts pin16 at about `(912,1620)` in `200509593` / `(2710,1480)` in `200506061`. The old replica placement put D104's comparable column roughly 14 mm east of D11, but the global panorama registration below shows that D11's former PCB coordinates were the faulty absolute anchor; this relative mismatch does not prove D104 is misplaced. The photographed pin16 joint has no exposed local B.Cu departure, and the front route is cable-covered; its rail still requires continuity measurement. Pin8 near `(2565,1140)` and pin15 near `(2710,1430)` each have short, separate B.Cu links to open holes; neither reaches a known rail in this crop.
+D104.7 has a visible front-copper join to the lower R30 lead. The model
+assigns that lead to GND, but its owner-board ground continuity remains
+unproved. D104.16's +12 V supply also remains a physical rail hold; see
+[the device/source conflict](../ref/schematics/d104-pin16-rail-conflict.json).
 
-An absolute-coordinate cross-check retracts the earlier D104 move estimate.
-The panorama registration maps D104 centre `(939.762,1580.854)` in `200402344`
-to approximately `(195.700,38.900)` mm, matching its current PCB centre
-`(195.695,38.900)` mm. The independent `200358952` view maps its approximate
-centre `(2364,1423.5)` to `(197.333,37.226)` mm. In that same view D11's
-approximate centre `(2440,2114.5)` maps to `(201.012,71.486)` mm, whereas
-the former source and still-current routed D11 centre is `(185.500,65.700)`
-mm. Mapping D104 through D11's *former PCB coordinates* therefore generated the false
-`(181.88,31.90)` mm result. The D11-local transform remains useful for
-matching front and solder pixels, but cannot establish absolute board
-millimetres by itself. The source PCB D11 centre now matches the photo; the
-routed variants retain the old position. Do not move D104 from that
-retracted estimate.
+## Solder-field identity
 
-A focused comparison of `200506061` crop `(2050,900)–(2800,1750)` with `200509593` crop `(250,1050)–(850,1850)` shows the same distinctive tinned bridge bending down from the upper broad rail, its short bright horizontal solder bar, and the lower rail with regularly spaced open drill holes. The second exposure adds contrast to these landmarks but does not reveal eight soldered joints in either of the previously assumed x≈2212/2350 columns. This confirms that the alternate tile is overlapping evidence for the rejected corridor, not an independent registration of D104.7.
+The two eight-joint columns near x≈2565/2710, y≈1140–1480 in
+`PXL_20260710_200506061.jpg` repeat near x≈767/912, y≈1280–1620 in
+`PXL_20260710_200509593.jpg`. They lie above the independently registered
+D11 field. A D11-local two-face transform puts D104's component corners
+within about 21 pixels of those observed solder corners, supporting field
+identity without establishing rail continuity.
 
-The exact `.009 Э3` sheet-1 detail `PXL_20260718_101817644.jpg` draws only D104 receiver sections `4→13`, `5→12`, and `6→11`. It omits the fourth `7→10` section entirely. Reinspection of the registered component tile `(990,1360)–(1220,1770)` resolves the physical input: notch-down DIP16 pin 7 is the second contact down on the right row, near `(1045,1415)`. Its uninterrupted front copper runs right, then down to the lower R30 pad near `(1106,1698)` without touching the upper pad or the adjacent vertical conductor. The upper R30 joint near `(1105,1445)` separately joins a vertical front trace through an open annulus near `(1125,1360)`; that trace disappears beneath the X3 wire bundle before a labeled endpoint can be identified. Composing the component-grid homographies projects the upper/lower joints to about `(2492,1325)`/`(2494,1571)` in overlapping owner tile `200358952`; crop `(2300,950)–(2730,1700)` confirms the separate conductors but again hides the upper trace under the X3 sleeves. Exact sheet-1 crop `PXL_20260718_101820818.MP.jpg` `(2040,1120)–(2900,1740)` prints R30 33к between a ground symbol at its left end and the D12.3/OC SOUT junction at its right end. The drawing does not identify which lead is lower on the installed upright body. Rotated crops of both owner views leave the red body print obscured by a specular stripe, so the installed 33 kΩ value is not independently photo-read. The exact-source model assigns that lower pad to GND and therefore puts D104.7 on GND while retaining D104.10 NC; see `ref/photos/juku-pcb-2/d104-pin7-r30-photo-review.json`. The retired x≈2212/2350 solder fit is irrelevant to the photo-proved front-copper join; the replacement fit above identifies the D104 package field without measuring the R30 ground rail. With power removed, measure D104.7 to R30 lower, the lower lead to known ground, and the upper lead to D12.3/OC SOUT before claiming the owner-board ground rail is closed.
+The notch-down orientation puts pin 16 near `(2710,1480)` in `200506061`.
+It has no exposed local B.Cu departure, and its front route is cable-covered.
+Pin 8 near `(2565,1140)` and pin 15 near `(2710,1430)` each have short,
+separate links to open holes; neither reaches a known rail in this crop.
+
+The rejected x≈2212/2350 corridor in `200506061` does not contain the
+package's 2×8 joint field. It must not be used for pin identity or a
+no-copper-departure inference. A small algebraic rectangle-fit residual
+does not establish that anchors are physical package joints.
+
+## Placement boundary
+
+The panorama maps D104's center in `200402344` to approximately
+`(195.700,38.900)` mm, matching its modeled center. The independent
+`200358952` view gives approximately `(197.333,37.226)` mm. These views
+support coarse placement rather than a move inferred from D11's routed
+coordinates. D11's source center is photo-registered at `(201.012,71.486)`
+mm; its routed center remains `(185.500,65.700)` mm. A package-local
+pixel transform through D11 cannot establish absolute board millimeters.
+
+## R30 and ground continuity
+
+The [pin-7/R30 photo review](../ref/photos/juku-pcb-2/d104-pin7-r30-photo-review.json)
+records the visible trace from D104.7 near `(1045,1415)` to the lower
+R30 joint near `(1106,1698)` in `200402344`. It remains separate from
+R30's upper joint and adjacent vertical conductor. The upper trace passes
+beneath the X3 wire bundle before a labeled endpoint can be identified;
+the overlapping component view does not resolve it.
+
+The exact source prints R30=33 kΩ between GND and D12.3/OC SOUT, but does
+not identify the installed upright body's lower lead. The model assigns
+that lower lead to GND. Neither owner view independently resolves the
+body's resistance marking, so 33 kΩ is a source nominal rather than a
+photo-read installed value.
+
+With power removed, verify D104.7↔R30 lower, R30 lower↔known ground,
+and R30 upper↔D12.3/OC SOUT. Check isolated resistance between R30's
+leads and record both meter polarities before claiming owner rail closure.
+Photo-proved local copper and source-expected rail assignment remain
+separate evidence.
