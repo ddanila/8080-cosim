@@ -43,12 +43,6 @@ clocks = 320 pixels, 16 us horizontal back porch, 241 active lines, and a
 47-line vertical back porch. With the traced clocks this gives 15.625 kHz
 horizontal and `1 MHz / (64 * 313) = 49.920128 Hz` frame rate.
 
-## Executed result
-
-```text
-VIDEO-PIT-TIMING: PASS h=15625Hz line=64000ns frame=313lines/20032000ns v=49.920128Hz active=320x241 D56=5040/223000ns
-```
-
 The test also verifies the typical modeled D56 pulse widths (5.04 us and
 223 us) and the traced `D34_SYNC = D56.Q2 XOR D56.Q_N` truth.
 
