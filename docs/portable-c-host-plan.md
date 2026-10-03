@@ -9,7 +9,11 @@ The Windows product is the GUI described in
 
 - One shared core implements Janet, Fastboot, NetDisk, N4, checksums, media
   bounds, and recovery. Frontends use `jukuhost_runner.h`.
-- Serial operations, protocol waits, and cancellation are bounded. Applied
+- Individual serial operations and bootstrap attempts are bounded. Passive
+  discovery, console-endpoint waiting and zero-timeout disk service may run
+  indefinitely until cancellation; they must remain responsive to Stop.
+  Passive recovery has no restart-count ceiling. See
+  [recovery limits](c11-session-recovery.md#waiting-and-retry-limits). Applied
   framing must be verified; simulator PTY and Wine exceptions must be explicit.
 - Disk images remain file-backed. Snapshot A: preserves the input image;
   writable operations use the CRC-protected transaction journal. B: is read-only.
