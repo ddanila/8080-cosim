@@ -25,10 +25,14 @@ boundaries with the 8080 decoder and execution evidence before extending them.
 
 Memory model (byte-verified; mapping mechanism per the MAME driver): ROM
 `0000-17FF` executes in place; ROM `1800-3FFF` executes at `D800h-FFFFh`
-through memory-mode banking (modes 1/2 map it there for reads, writes fall
-through to the RAM/framebuffer underneath) — the EKDOS monitor vectors at
+through memory-mode banking (modes 1/2 map it there for reads) — the EKDOS monitor vectors at
 runtime `FF50h` are ROM `3F50h`. Addresses in the ctl/skool are ROM file
 offsets.
+
+The runnable cosim and HDL protect this high ROM window from writes.
+Only mode 0's low ROM overlay permits writes to underlying RAM; see
+[the hardware map](../docs/hardware-map.md#cpu-and-memory). Read-address
+relocation alone does not establish write behavior.
 
 The initial code map was seeded by recursive descent from the reset entry
 and the monitor vector table, translating control-flow targets in

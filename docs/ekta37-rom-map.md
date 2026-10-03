@@ -11,11 +11,11 @@ font identified by rendering its bytes as glyphs. Labels live in
 Two boundaries organize the image. The **physical split** at `2000h` is the
 D15/D16 chip edge. The **execution split** at `1800h` ends the in-place
 code: everything above executes at `D800h..FFFFh` through memory-mode
-banking, not a copy — MAME's driver shows modes 1/2 hardware-map ROM
-`1800h-3FFFh` at `D800h-FFFFh` for reads while writes fall through to the
-RAM underneath, which is the framebuffer (`D800h..FDA7h` for the 40x24
-screen). The console code executes from mapped ROM at the very addresses
-whose underlying RAM it paints.
+banking, not a copy: modes 1/2 map ROM `1800h-3FFFh` at `D800h-FFFFh`
+for reads. The runnable cosim and HDL protect that high overlay from writes;
+framebuffer updates require a mapping that exposes RAM. Only mode 0's low
+ROM overlay permits writes to underlying RAM. See
+[the hardware map](hardware-map.md#cpu-and-memory) for the guarded contract.
 
 | ROM range | Size | Share | Region |
 | --- | ---: | ---: | --- |
