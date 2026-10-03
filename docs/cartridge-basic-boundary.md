@@ -18,8 +18,10 @@ optional preservation work does not block main-board fabrication.
 - [Firmware-lineage audit](cartridge-basic-firmware-lineage.md): 7,224 body
   bytes are identical to Monitor 3.3; Monitor 2.2 differs at one byte. The
   bootstrap copies source `0x0200..0x21FF` to runtime `0x0100..0x20FF`, but
-  the public image ends at source `0x20FF`. The missing 256-byte source page
-  is `0x2100..0x21FF`. The shared body does not extend into that page.
+  the public image mapped at `0x0100` ends at source address `0x20FF`.
+  These are mapped addresses, not offsets in the 8,192-byte file. The missing
+  256-byte source page is `0x2100..0x21FF` (would-be file offsets
+  `0x2000..0x20FF`). The shared body does not extend into that page.
 - [Monitor 2.2 audit](jmon22-reconstruction.md): one body byte is recoverable,
   but ROM blocks 6 and 7 remain unresolved. It is not a validated substitute
   for the E5104 firmware/decode pairing.

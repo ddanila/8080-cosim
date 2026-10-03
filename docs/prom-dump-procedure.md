@@ -120,6 +120,7 @@ The index lists **eleven programmed-microcircuit drawings, ДГШ 5.106.037 …
 applicability material separately identifies D94 `.092`; do not infer that its
 bytes are present in the `.037-.047` index. Label every dump by board and socket
 first, then associate a drawing number only when the factory paper trail or
-repeated hardware evidence supports it. The available electrical schematic
-does not contain the complete `.009` FDC support circuit, so continuity evidence
-is still required.
+repeated hardware evidence supports it. The retained exact `.009` electrical sheet 3 now covers the FDC support
+circuit. Its source connections do not prove owner-board copper or powered
+behavior; the remaining physical boundaries are listed in
+[the FDC handoff](fdc-hardware-handoff.md).
