@@ -55,7 +55,7 @@ def main() -> int:
     d105 = chip(board, "D105")
     checks = [
         (
-            "D5 system-controller power contract is routed",
+            "D5 system-controller power endpoints are present in the source model",
             d5.get("pins", {}).get("14") == "VSS_GND"
             and d5.get("pins", {}).get("28") == "VCC_5V"
             and has_nodes(board, "GND", {("D5", "14")})
@@ -119,7 +119,7 @@ def main() -> int:
             "`IOWR_RAW_N`/`IORD` inputs",
         ),
         (
-            "D9 chip-select outputs are routed to the modeled peripherals",
+            "D9 chip-select outputs join the modeled peripheral source nets",
             has_nodes(board, "CS_D10", {("D9", "15"), ("D10", "1")})
             and has_nodes(board, "CS_D26", {("D9", "14"), ("D26", "6")})
             and has_nodes(board, "CS_D11", {("D9", "13"), ("D11", "11")})
@@ -182,8 +182,6 @@ def main() -> int:
     lines = [
         "# I/O decode boundary",
         "",
-        "Status date: 2026-07-22.",
-        "",
         f"Status: **{status}**",
         "",
         "This generated report isolates the sheet-1 I/O decode cluster.",
@@ -206,7 +204,7 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "## Pending Boundary Checks",
+            "## Boundary Evidence",
             "",
             "| Boundary | Result | Current evidence |",
             "| --- | --- | --- |",
@@ -218,8 +216,10 @@ def main() -> int:
             "",
             "## Current Decode Nets",
             "",
-            "| Net | Endpoints | Source note |",
-            "| --- | --- | --- |",
+            "Per-net provenance is retained in [the board model](../kicad/juku.board.json).",
+            "",
+            "| Net | Endpoints |",
+            "| --- | --- |",
         ]
     )
     for name in (
@@ -242,43 +242,27 @@ def main() -> int:
         "CS_D57",
         "FDC_CS_N",
     ):
-        net = board["nets"].get(name, {})
-        lines.append(row([f"`{name}`", f"`{endpoint_text(board, name)}`", net.get("src", "-")]))
+        lines.append(row([f"`{name}`", f"`{endpoint_text(board, name)}`"]))
 
     lines.extend(
         [
             "",
             "## Interpretation",
             "",
-            "- D9, not D2, is the physical I/O chip-select decoder in the current",
-            "  board model; this report guards that D2-as-I/O-decode is not revived.",
-            "- The I/O decoder enable is the traced D7.11 -> R17/C99 -> D9.6 path,",
-            "  with REV on D9.4/D9.5 and BA10..BA12 selecting the eight I/O groups.",
-            "- The exact `.009` assembly view `PXL_20260711_114556899.jpg` places a",
-            "  horizontal C99 immediately below D9 and left of upright R17. Both",
-            "  May close-up `201933909` and overlapping July component views",
-            "  (`200411500` and `200415237`) show no fitted C99 body. A plausible",
-            "  bare horizontal pair repeats below D9 and left of R17: May joints near",
-            "  `(1440,1990)`/`(1600,1990)`, July joints near `(2508,1782)`/",
-            "  `(2680,1782)`. The right joint visibly links to R17's lower physical",
-            "  lead; the upper lead runs under D9 without a visible numbered pin",
-            "  junction. Corrected native D9 package anchors project the July C99",
-            "  left/right candidates near `(3038,1497)`/`(2868,1497)` in solder tile",
-            "  `200525009`, within about 5–7 px of separate joints `(3040,1492)`/",
-            "  `(2875,1495)`. A third joint near `(2818,1515)` matches R17 lower",
-            "  and has a short visible B.Cu link to the right C99 candidate. The",
-            "  older 40–55 px mismatch came from retired D9 component anchors.",
-            "  The left solder candidate has an uninterrupted B.Cu route to the",
-            "  third contact of D2's reflected left row, pin14, grounded by exact",
-            "  `.009` sheet 1. Three-feature geometry strongly favors the pair, but",
-            "  front-to-back same-hole identity and population need confirmation;",
-            "  owner ground continuity has not been metered.",
-            "  See `ref/photos/juku-pcb-2/c99-assembly-photo-review.json`.",
-            "- Remaining work is now narrow: identify the C99 physical landing and",
-            "  identify the upstream source shared by D7.5/D29.3. Native 5150x3603",
-            "  geometry closes D7.12 onto SYNC, D7.13 onto its pin11 feedback node, and D7.4",
-            "  onto MEMW/D29.8 without merging the crossed D29.3 rail. None of the",
-            "  remaining boundaries should be replaced by a simulator-only guess.",
+            '- This generator checks source-model endpoints, provenance markers, HDL',
+            '  text and LVS mapping entries. It does not run LVS or simulation, inspect',
+            '  routed copper, or measure RC timing.',
+            '- D9 is the physical К555ИД7 I/O decoder; D2 is the separate bus/wait PROM.',
+            '  D7.11 feeds R17/C99 and D9.6, with REV on D9.4/.5 and BA10..BA12',
+            '  selecting the eight I/O groups.',
+            '- The [C99 photo review](../ref/photos/juku-pcb-2/c99-assembly-photo-review.json)',
+            '  preserves image identities, fit coordinates and the candidate bare pair.',
+            '  No fitted body is visible. The proposed solder hole has a visible route',
+            '  to source-grounded D2.14, but same-hole identity, population and metered',
+            '  ground continuity remain unconfirmed.',
+            "- D7.5/D29.3's upstream source remains unresolved. D7.12 joins SYNC,",
+            '  D7.13 feeds back from D7.11, and D7.4 joins MEMW/D29.8. Crossed rails',
+            '  without source or continuity evidence must remain separate.',
             "",
         ]
     )
