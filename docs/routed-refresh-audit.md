@@ -14,15 +14,31 @@ is in [factory-wire-route-fidelity.md](factory-wire-route-fidelity.md).
 /usr/bin/python3 kicad/refresh_routed_from_source.py --check-report docs/routed-refresh-audit.md
 ```
 
-The script compares complete endpoint sets and exact pad coordinates per net.
-It reuses copper only when both agree. After an intentional source or routed
-change, update the current-result table with `--report docs/routed-refresh-audit.md`.
+By default, the script compares each named net's complete reference/pad-number
+set and exact pad-center coordinates. It classifies matching nets for track/via
+reuse and removes exact duplicates. Pad shape, drill, layer changes, and copper
+clearance to other nets are not part of this compatibility test. Zones are not
+copied from the routed snapshot.
+
+The default audit is read-only and exits successfully even with quarantined
+nets or pad-net mismatches. `--check-report` checks only the marked table's
+freshness; it does not assert routing readiness. The defaults compare the
+source with `juku_routed.kicad_pcb`; use `--routed` to select the candidate
+snapshot. After an intentional source or routed change, update the table
+with `--report docs/routed-refresh-audit.md`.
 
 Generate a candidate explicitly and inspect it before adopting copper:
 
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py --output /tmp/juku-routed-refresh.kicad_pcb
 ```
+
+The output starts from the source PCB and adds eligible routed tracks/vias.
+`--allow-additive-renames` relaxes endpoint equality for unchanged existing
+pads on one current net. `--allow-drc-salvage` also admits same-name copper
+whose endpoints moved or split; that experimental output requires salvage
+and DRC before adoption. `--exclude-drc` reads supplied violation records;
+it does not run DRC.
 
 ## Current result
 
