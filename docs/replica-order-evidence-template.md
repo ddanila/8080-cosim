@@ -6,9 +6,10 @@ Historical superseded fabrication ZIP SHA256: `90308b962433648cf52d0de4404636738
 This is provenance for the older package; current release requires fresh package verification.
 
 This is a future private order-record template. Do not upload the current
-package or start an order while the design-release report says DESIGN HOLD.
+package or start an order until the manufacturing gate says RELEASED FOR UPLOAD.
 Live DFM, price, and order-number evidence only exists after a released
 design is uploaded and quoted.
+Refresh with `python3 kicad/report_replica_order_evidence_template.py`.
 
 ## Pre-Payment Gate
 
@@ -28,11 +29,14 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 
 ## Required Source Evidence
 
+PASS means a nonempty report contains an accepted status marker; it does
+not mean this generator reran its checks or closed its design risks.
+
 | Purpose | File | Bytes | Status |
 | --- | --- | ---: | --- |
-| Upload runbook | `docs/replica-order-upload-runbook.md` | 5197 | FAIL |
-| Package geometry | `docs/replica-package-geometry-readiness.md` | 1385 | PASS |
-| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3375 | FAIL |
+| Upload runbook | `docs/replica-order-upload-runbook.md` | 5829 | FAIL |
+| Package geometry | `docs/replica-package-geometry-readiness.md` | 583 | FAIL |
+| DRC visual disposition | `docs/replica-fab-drc-disposition.md` | 3564 | FAIL |
 | Bring-up verification points | `docs/replica-bringup-verification-points.md` | 20412 | FAIL |
 
 ## Vendor Options To Record
@@ -90,5 +94,6 @@ Required release result: `replica manufacturing readiness: RELEASED FOR UPLOAD`.
 - missing or empty upload ZIP: fab/gerbers/upload/juku-replica-gerbers-drill.zip
 - missing or empty upload checksum file: fab/gerbers/upload/SHA256SUMS.txt
 - evidence marker missing in docs/replica-order-upload-runbook.md: Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**
+- evidence marker missing in docs/replica-package-geometry-readiness.md: Status: **READY**
 - evidence marker missing in docs/replica-fab-drc-disposition.md: Status: **READY**
 - evidence marker missing in docs/replica-bringup-verification-points.md: Status: **ENDPOINT COVERAGE FAILED** or Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED** or Status: **DESIGN RELEASE RISKS CLOSED**
