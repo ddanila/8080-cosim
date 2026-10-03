@@ -260,7 +260,7 @@ software refresh; the second also read 32 bytes at `4000h` without modifying
 RAM. Ekta4401 and Ekta4402 remain frozen preceding physical baselines, not the
 currently fitted firmware.
 
-The fitted C6 ROM SHA-256 is
+The superseded C6 ROM SHA-256 is
 `0487d5150f9b662a193b3f031aadd90002ee232477d355d3877a757a247c2f09`;
 its D15-low and D16-high halves are respectively
 `8cf403663ed860f7e5ab56f382e42bddf6e8951e478e89313074c03ab31f2750`
@@ -270,11 +270,11 @@ retries or late completions. The complete monitorless physical matrix and its
 remaining display boundary are recorded in
 [`../cpm-plus-juku/docs/cs00015-c6-blind-qualification-20260818.md`](https://github.com/ddanila/cpm-plus-juku/blob/master/docs/cs00015-c6-blind-qualification-20260818.md).
 
-Later source review found a bounded limitation in the immutable fitted C6
+Later source review found a bounded limitation in the immutable historical C6
 `JCGKEYRAW` implementation: the global active-low SHIFT/CTRL returns can make
 the scan stop at column zero before an ordinary modified key's column is
 visited. This does not affect translated keyboard input or unmodified raw-key
-tests. The scanner is corrected on `juku-common` master; the fitted hashes
+tests. The scanner is corrected on `juku-common` master; the historical C6 hashes
 above remain authoritative, and any ROM carrying the fix must receive a new
 candidate name rather than replace the C6 artifacts.
 

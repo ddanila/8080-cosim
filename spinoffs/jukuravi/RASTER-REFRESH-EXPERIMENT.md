@@ -1,7 +1,7 @@
 # Video-slot refresh experiment (pre-registered)
 
-Status: **PREPARED, NOT YET RUN.** This protocol was designed 2026-08-11;
-no physical stage below has been executed.
+Status: **PREPARED, NOT PHYSICALLY QUALIFIED.** No completed physical stage
+is recorded for this protocol. The commands require the firmware setup below.
 
 ## Question
 
@@ -17,14 +17,10 @@ The diagnostic ROMs never program that raster. Whether video-slot `/RAS`
 cycles happen anyway — without the PIT-driven sync/blank chain — is exactly
 the open "shared-DRAM video-slot schedule" boundary
 ([`../../docs/video-slot-timing-audit.md`](../../docs/video-slot-timing-audit.md)).
-That single unknown separates two readings of the recorded CS00024 evidence:
-
-- if video-slot refresh runs regardless of ROM state, then CS00015 surviving
-  multi-minute unrefreshed idles means its refresh hardware works, and
-  CS00024's 5-17 s T34 decay is a **real refresh-path fault**;
-- if video-slot refresh requires the armed raster, the diagnostic
-  environment truly had zero refresh on any board, CS00015's survival was
-  out-of-spec retention luck, and CS00024's decay was datasheet-permitted.
+The CS00024 T34 holds showed decay after 5–17 s, while CS00015 survived
+longer diagnostic idles. That contrast alone does not distinguish missing
+refresh from natural retention differences. The controlled raster/no-raster
+comparison below tests whether arming the timing chain changes retention.
 
 This experiment arms the raster from the T36 loader and measures whether
 that alone preserves RAM through an unrefreshed hold. No ROM burn, no scope.
@@ -77,8 +73,10 @@ simulation deliberately cannot pass the armed long hold; only hardware can.
 ## Stages
 
 One invocation = one cold loader entry = one stage. Hardware RESET between
-stages. CS00024 keeps T36 and uses the default cold-diagnostic entry. CS00015
-keeps Ekta4401, starts from its monitor, and uses `--attach-loader`; type `J`
+stages. For the default cold-diagnostic entry, fit the exact T36 firmware expected
+by the runner (version `1Eh`, CRC16 `C617h`). The alternate entry requires
+an API-v2 service loader, tested with the archived Ekta4401 remix: start
+from its monitor and use `--attach-loader`; type `J`
 once without Enter when the runner asks. The marker, arm snippet, hold code,
 readback, and verdict are identical after entry. A stage that decays may leave
 the loader unrecoverable until RESET — that outcome *is* the measurement,
@@ -98,8 +96,9 @@ python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
   --arm raster-syncb --log-dir spinoffs/jukuravi/sessions/cs00024-raster-syncb
 ```
 
-Healthy CS00015 cross-board control with Ekta4401 (RESET and `J` between
-invocations):
+CS00015 cross-board control requires the Ekta4401 service setup (RESET and
+`J` between invocations). Its currently fitted network ROM is a separate
+configuration; see [the service record](../../docs/cs00015-service-record.md).
 
 ```sh
 python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
@@ -126,15 +125,18 @@ default 1.702).
 
 | Stage | Survives | Decays / no RETURN |
 | --- | --- | --- |
-| `none` (control) | CS00024: contradicts the recorded T34 boundary — investigate before trusting the run. CS00015: consistent with its long recorded idles; still ambiguous between retention luck and always-on slot refresh | CS00024: expected; confirms sensitivity. CS00015: natural retention is shorter than its recorded idle survivals suggest — favors an active refresh source on CS00015 |
-| `raster` | Video-slot refresh works once the raster is armed: the board's refresh hardware is healthy and the diagnostic ROMs simply never armed it. Also closes the slot-schedule question with physical evidence: slots strobe `/RAS` when the raster runs | The armed raster does not refresh this board: a real hardware refresh-path fault upstream of the DRAMs (slot gating, mux enables, or their timing sources) |
-| `raster-syncb` | (given `raster` decayed) `SYNC_B` participates in refresh gating. If the corrected D57S probe first fails on CS00024, a decay here does not clear `SYNC_B` | Consistent with either a `SYNC_B` role blocked by a separately proven channel-2 fault, or `SYNC_B` irrelevance; distinguish on CS00015, whose corrected channel-2 control passes |
+| `none` (control) | Measures retention without the explicit raster writes; survival may reflect natural retention or an already active refresh source | Establishes a decay-consistent baseline only after entry, transport and hold duration are validated |
+| `raster` | A reproducible improvement over `none` supports raster-dependent refresh; it does not directly measure `/RAS` or qualify every refresh path | Arming alone did not preserve the sampled contents; verify actual raster outputs and repeat the cross-board control before locating a hardware fault |
+| `raster-syncb` | Improvement over a failing `raster` stage supports a role for channel-2 programming | Does not distinguish an ineffective `SYNC_B` path from another refresh or transport failure; use the corrected D57S probe and cross-board control |
 
 A `pass` verdict requires RETURN with `A=52h` plus byte-exact marker and
 hold-image readbacks. Partial decay (some rows failed) is reported with the
 per-row map; whole-evidence inversion resembling the cosim decay model
-suggests the hold simply crossed natural retention — compare against the
-control stage before concluding anything about the raster.
+is decay-consistent. Compare against the control stage before drawing a
+raster conclusion. A missing RETURN or transport loss is also classified by
+the runner as decay-consistent, but does not itself prove DRAM decay. Capture
+setup and serial failures must be excluded before using that outcome as a
+hardware diagnosis.
 
 ## Reproduction
 
