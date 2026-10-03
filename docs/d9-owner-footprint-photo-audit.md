@@ -1,29 +1,85 @@
 # D9 owner footprint photo audit
 
-Native owner component crop `(2520,1160)`–`(3100,1610)` in `ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg` resolves the complete marked D9 2×8 contact field at approximately x2590..2977, upper/lower y1318/1480. The former component-photo registration x2640..3011 was shifted about 35–50 pixels right and has been corrected in `ref/photos/juku-pcb-2/local-package-registration.json`. Independent overlapping image `PXL_20260710_200415237.jpg` shows the D9 right contact roughly 160 pixels left of registered D7.7; the corrected primary-image D9.1-to-D7.7 spacing is 149 pixels and maps to roughly 162 pixels at the alternate D7 package scale.
+## Current source and routed placement
 
-The source PCB had D9.1 at `(118.813,109.498)` mm. D8.1 is `(92.222,109.498)` mm at photo x2444, while corrected D9.1 is photo x2977. D8's own 17.78 mm/386 px socket scale predicts D9.1 near x116.77 mm, about 2.04 mm left of the old footprint. Registered D7.7 at `(123.845,109.498)` mm and photo x3126 gives a similar predicted D9.1 near x116.70 mm. The D9 top contact row is about 2 px above D8/D7's upper row, suggesting about 0.1 mm less board y. The source D9 footprint is now at pin1 `(116.77,109.4)` mm, orientation `−90°`; D9.8 is `(98.99,109.4)`, D9.9 `(98.99,117.02)`, and D9.16 `(116.77,117.02)` mm. Its logical pad nets are unchanged.
+The native component crop `(2520,1160)–(3100,1610)` in
+`PXL_20260710_200411500.jpg` resolves D9's complete marked 2×8 field:
+x≈2590..2977, upper/lower y≈1318/1480. The overlapping
+`PXL_20260710_200415237.jpg` independently supports its spacing from D7.
+See the [package registration](../ref/photos/juku-pcb-2/local-package-registration.json).
 
-The generator's D9 entry now matches this saved source footprint at body
-center `(107.88,113.205)` mm and 270° rotation. The source/generator chip
-placement check covers this entry with the other 105 modeled chips.
+D8-local and D7-local scales predict D9.1 near x=116.77/116.70 mm.
+The source PCB uses D9.1 `(116.77,109.4)` mm and −90° orientation;
+its body center is `(107.88,113.205)` mm. The generator matches that
+placement. Both routed variants retain D9.1 `(118.813,109.498)` mm
+and need a coordinated footprint/copper correction. Logical pin nets
+are unchanged.
 
-No tracks cross the proposed D9 source footprint window. Source-board `kicad-cli pcb drc --format json` before/after the D9 move remains **765 violations and 499 unconnected items**; this is still a fabrication hold. Both routed variants retain D9.1 at `(118.813,109.498)` mm and each has about 467 track segments intersecting the broad local `(97..126,106..121)` mm window. They need a copper-aware footprint and route correction, followed by full DRC and connectivity checks.
+Check source/generator placement with:
 
-The corrected D9 frame also changes C88's board-coordinate search. The photo-matched ground/+5 V front holes `(3030,1365)`/`(2978,1530)` project relative to corrected D9 to approximately `(119.21,111.61)`/`(116.82,119.37)` mm. A separate D7-local x fit predicts `(119.24)`/`(116.75)` mm for the same holes, within 0.07 mm. Their center spacing is about 8.12 mm, so the current 5.00 mm pitch ceramic footprint used for C35 cannot simply represent this candidate pair. These are strong placement candidates, but owner same-hole and rail continuity remain unmeasured.
+```sh
+/usr/bin/python3 kicad/check_source_chip_placement_parity.py
+```
 
-Direct KiCad pad inspection confirms C35.1 at `(117.1,120.9)` mm on `RAIL_G` and C35.2 at `(122.1,120.9)` mm on `GND`. The proposed C88 +5 V hole is about 1.56 mm from C35.1, and the proposed C88 ground hole is about 9.4 mm from C35.2. C35 is modeled on `RAIL_G`/GND; `RAIL_G` is the option-selected DRAM pin-8 supply and is +5 V with E4 at the РУ5 setting. Thus C35 and C88 have the same bypass rail roles in that configuration, although this does not identify their physical holes. The .009 assembly omits C35. The older .006 assembly explicitly prints C35 above D67 at the grid’s leftmost top position. The former claim that the owner panorama proves all 32 independent capacitor pairs is withdrawn after the package-contact check below. The grid fit's 0.35 mm local residual only measures spacing consistency *within that grid*; its absolute millimetres use the corner-fiducial panorama registration and are not an independent check against the D9-local frame.
+This checks modeled chip placement, not original-board continuity or DRC.
+A routed repair requires full DRC and connectivity checks.
 
-A direct D9-local photo projection resolves the apparent immediate collision. D9 front pin1 `(2977,1318)` represents board `(116.77,109.4)` mm; its 387 px/17.78 mm horizontal and 162 px/7.62 mm vertical pitches project current C35.1/C35.2 to approximately `(2984,1563)`/`(3093,1563)` in native owner component photo `PXL_20260710_200411500.jpg`. Both predicted positions lie on unperforated board, while the C88 +5 V candidate is a visible drill at `(2978,1530)` with an uninterrupted D9.16 front-copper stem. Thus the current source-PCB *grid-to-D9 alignment* is inconsistent with this local photo, and the calculated 1.56 mm C35/C88 proximity is a model-placement artifact. Do not isolate this as a C35-only placement error.
+## C88 candidates
 
-The same native photo exposes the first bare DRAM package, D67 by the .006/.009 assembly order, with its two top pad columns near `(2843,1776)` and `(3010,1776)` px. D9-local scaling of source-board D67.1 `(115.795,124.21)` and D67.16 `(123.415,124.21)` instead predicts `(2956,1633)` and `(3122,1633)` px, residuals of about `(-113,+143)` and `(-112,+143)` px. The equal offsets and matching ≈167 px package width show that the grid/DRAM row as a group is misplaced relative to D9 in the current source board, not that only C35 is out of place. This is a local photo estimate, not a completed board-wide warp. Keep the .006 4×8 refdes pattern, but do not treat its apparent owner-photo hole pairs as independent capacitor pads until package contacts are excluded. Establish a shared-hole D9-to-grid bridge before moving the group or placing C88. C88's separate GND/+5 V holes still require owner continuity. Both routed boards retain the old D9 placement.
+Photo-matched GND/+5 V front holes `(3030,1365)`/`(2978,1530)` project
+from D9 to approximately `(119.21,111.61)`/`(116.82,119.37)` mm.
+An independent D7-local x fit agrees within 0.07 mm. Their approximate
+8.12 mm spacing cannot be represented by C35's current 5 mm footprint.
+Owner same-hole identity and rail continuity remain unmeasured; see
+[the C88 review](../ref/photos/juku-pcb-2/c88-d9-d7-gap-review.json).
 
-The adjacent bare D66 supplies an independent row check. Its native top columns `(3093,1776)`/`(3260,1776)` compare with D9-scaled source D66.1/D66.16 near `(3202,1633)`/`(3368,1633)`, residuals about `(-109,+143)`/`(-108,+143)` px. The two DRAM packages share the displacement within ≈5 px, while their 250 px inter-package pitch matches source D67→D66 11.30 mm at ≈22.1 px/mm. Direct component-side D67/D66 four-corner fits are now in `ref/photos/juku-pcb-2/local-package-registration.json`; they identify holes and geometry, not copper nets. The package pair makes the group-alignment diagnosis stronger but does not by itself determine the correction for all four DRAM rows.
+C35 is modeled on RAIL_G/GND; RAIL_G is +5 V with E4 at the РУ5 setting.
+C35 and C88 therefore have the same bypass rail roles in that configuration,
+but this does not identify their physical holes. The `.009` assembly omits
+C35; the older `.006` assembly names it above D67.
 
-Expressed in the D9-local scale of 387 px/17.78 mm horizontally and 162 px/7.62 mm vertically, those D67/D66 residuals imply an approximately 5.0–5.2 mm leftward and 6.7 mm downward offset for the first DRAM package row relative to its current source-PCB placement. This is a *local alignment estimate* from two packages, not an absolute placement correction for all four banks. A direct review of the D67 upper corridor in overlapping component photos `200411500` and `200415237`, plus solder photo `200525009`, exposes several isolated drills but no uniquely identifiable separate C35 two-hole pair; their cross-face identity and rails remain unproved. Register a shared D9-to-DRAM hole and test candidate rails before altering any package or decoupler geometry.
+## DRAM-grid alignment hold
 
-The first proposed capacitor-grid midpoint in `docs/photo-registration/solder_grid-rectified.jpg`, `(579.9,631.5)` px, falls within ≈1.7 px of the midpoint `(581.02,632.74)` of independently identified D67.16 and D66.1 solder contacts. Those package contacts are modeled GND and `RAIL_H`, while C35 is modeled `RAIL_G`/GND. Thus this regular two-hole feature cannot by itself prove a separate C35 bypass landing. The corresponding native solder contacts in `PXL_20260710_200525009.jpg` are around y1494; the C88 +5 V candidate is a distinct drilled hole near `(2574,1247)`, roughly 247 px above. C88 is physically separate from these *package* holes, but the true C35 capacitor holes are still unidentified. The earlier blanket claim of 32 fabricated capacitor pairs is reopened for site-by-site review.
+D9-local projection of current source C35 pads lands near
+`(2984,1563)`/`(3093,1563)` in `200411500`, on unperforated board.
+The C88 +5 V candidate is a separate visible drill at `(2978,1530)`
+with a D9.16 front-copper stem. The apparent C35/C88 proximity in board
+coordinates is insufficient evidence for a physical collision.
 
-A second, independent screen tests the current *modeled* C35 footprint relative to D67 rather than using the broad board panorama. C35's source PCB pads are 3.31 mm above D67's top row and +1.305/+6.305 mm from D67.1 in x. The native D67 photo fit projects them near front `(2872,1699)`/`(2981,1699)` in `200411500`; the registered D9 face reflection places their solder counterparts near `(2678,1415)`/`(2570,1415)` in `200525009`. The native solder crop `(2400,1310)`–`(2850,1550)` shows no drilled annulus at either point, only continuous trace/bare board. The overlapping component image `PXL_20260710_200415237.jpg` gives a second front view: the existing tile-to-tile panorama transform projects the modeled C35 pads near its original `(1142,1792)`/`(1250,1792)`, both visible on bare board below the white wire without annuli. This two-face negative rejects the current C35 pad geometry at that local position; a different C35 hole pair remains possible and requires its own registration.
+The independently registered D67 and D66 package fields show a shared
+misalignment against the source DRAM grid. D67's photographed top contacts
+near `(2843,1776)`/`(3010,1776)` differ from D9-scaled source predictions
+by about `(−113,+143)` pixels. D66 gives approximately `(−109,+143)`
+pixels. Package widths and spacing agree, supporting a group-alignment
+problem rather than a C35-only error. At the local scale this implies
+roughly 5.0–5.2 mm leftward and 6.7 mm downward displacement for the first
+row; it does not establish an absolute correction for all four banks.
 
-The existing broad `component_grid` board-to-panorama transform cannot supply that cross-registration. Applying its inverse to the photographed D9.1 `(2977,1318)` gives board position about `(132.79,107.60)` mm, versus D9's D8/D7-checked source position `(116.77,109.4)` mm: a 16.0 mm horizontal and 1.8 mm vertical disagreement. The same transform places photographed D7.7 near `(139.94,107.62)` mm versus its source `(123.845,109.498)` mm, nearly the same offset. Its low *within-grid* fit error therefore must not be used as an accuracy estimate at D9. A local shared-hole bridge across these regions remains necessary; the broad panorama fit cannot authorize a C35 move.
+The broad `component_grid` transform disagrees with independently checked
+D9/D7 positions by about 16 mm horizontally and 1.8 mm vertically.
+Its small residual within the capacitor grid is not an accuracy estimate
+across these regions. Establish a shared-hole D9-to-DRAM bridge before
+moving the group or placing C88.
+
+## C35 hole-identity hold
+
+The first proposed capacitor-grid midpoint in
+`docs/photo-registration/solder_grid-rectified.jpg` is within about 1.7 pixels
+of the midpoint of independently identified D67.16 and D66.1 solder contacts.
+Those package contacts are modeled GND and RAIL_H, not C35's RAIL_G/GND.
+A regular two-hole feature does not independently prove a capacitor landing.
+The corresponding package joints are roughly 247 pixels below C88's
+separate +5 V candidate in `PXL_20260710_200525009.jpg`.
+
+An independent D67-local projection of current C35 geometry places its
+front pads near `(2872,1699)`/`(2981,1699)` in `200411500` and solder
+positions near `(2678,1415)`/`(2570,1415)` in `200525009`. Neither solder
+position has a drilled annulus. The overlapping component view also places
+the projected pads on bare board. This rejects the current C35 geometry
+at that local position; another C35 hole pair remains possible.
+
+Keep the `.006` reference pattern, but identify capacitor holes separately
+from package contacts at each site. Register cross-face identity and test
+candidate rails before changing package or decoupler geometry. The two
+package fits support a local alignment diagnosis, not a completed board-wide
+registration or proof of 32 independent fabricated capacitor pairs.
