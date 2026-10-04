@@ -68,7 +68,7 @@ or VIDEO_OUT node. It contains no sync summing, VT2 output stage, termination, o
 model. Its name is retained only for HDL interface compatibility.
 
 The remaining physical boundary is the shared-DRAM slot timing: arbitration
-through the КП14 muxes and the РЕ3/АГ3 timing network. This check does not claim
+through the КП14 muxes, D53 decoder and D41 timing chain. This check does not claim
 that timing is closed; it locks only the byte-to-pixel serializer and runnable
 juku_top abstract oracle. The companion raster-geometry guard is
 \`sync/video_timing_check.sh\` / \`docs/video-timing-reference.md\`.
