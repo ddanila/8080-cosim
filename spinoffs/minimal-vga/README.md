@@ -51,29 +51,11 @@ are historical evidence and must not be uploaded.
   model, independent refresh, video arbitration, keyboard-style input, and one
   VGA timing frame.
 - An eight-instance logical HDL/KiCad model passes structural comparison.
-- Nine independently authored physical-board LVS stages pass. Stage 1 covers
-  all POWER and CLOCK_RESET placement refs, J93, and the U1 clock/reset/power
-  boundary (17 refs / 9 partitions). Stage 2 closes all 22 decode
-  socket/glue parts plus six exact boundary projections (28 refs / 37
-  partitions / 5 NC pads). Stage 3 closes every U1 Z80 and U2 ROM pin plus
-  C1/C2, with every endpoint on 36 non-power core nets included (35 mapped
-  refs / 38 partitions / 2 NC pads). Stage 4 closes U10-U17 and C6-C13, with
-  every endpoint on 19 non-power DRAM-bank nets included (25 mapped refs / 21
-  partitions / 8 NC pads). Stage 5 closes U20/U21 and C14/C15, including both
-  grounded active-low enables and every endpoint on 25 non-power address-mux
-  nets (19 mapped refs / 27 partitions). Stage 6 closes every U22/C16 pin,
-  including both grounded active-high resets and the low-to-high-half cascade,
-  plus every endpoint on CLK and all eight refresh-row nets (11 mapped refs /
-  11 partitions). Stage 7 closes every U23/C17 pin, all eight counter-output
-  NC declarations, the grounded resets/second clock, and every endpoint on CLK
-  (9 mapped refs / 3 partitions / 8 NC pads). Stage 8 closes every U24/C18 pin,
-  its three state-feedback NC declarations, and every endpoint on all 19
-  refresh-arbitration/DRAM-timing nets (31 mapped refs / 21 partitions /
-  3 NC pads). Stage 9 closes every U30/C19 PPI pin, ten unused-port NC pads,
-  and every endpoint on all 28 bus/decode/mode/keyboard-boundary nets (32
-  mapped refs / 30 partitions / 10 NC pads). All stages include mutation
-  controls. Whole-board coverage remains incomplete; see
-  `docs/rev-a-lvs-coverage.md`.
+- Nine structural HDL/board-JSON LVS slices pass with mutation controls,
+  covering power/clock/reset, decode, CPU/ROM, DRAM bank and muxes, refresh,
+  spare socket, timing and PPI. Whole-board coverage remains incomplete;
+  these comparisons do not establish routed-copper continuity. See
+  [LVS coverage](docs/rev-a-lvs-coverage.md) for exact counts and boundaries.
 - U23 is retained only as an empty DNP spare socket. Its eight outputs have no
   consumers and the verified video timing/request handoff is U40/U41; generated
   assembly artifacts therefore omit U23 from owner IC insertion while still
@@ -103,24 +85,14 @@ are historical evidence and must not be uploaded.
   `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
   A fresh guarded stable-KiCad export and checksum are required.
 
-### CPU choice: real Z80 + a 3-byte-patched ROM
+### CPU and ROM
 
-VJUGA uses a **Z80** so the board runs from a single +5 V rail — the original
-Juku CPU (КР580ВМ80 = 8080) needs +5 / +12 / −5 V, and dropping it removes two
-supplies, which is the whole point of this minimal board.
-
-The Juku firmware is 8080 code, and three of its bytes are 8080 undocumented
-NOPs (`0x08/0x10/0x20` at `0x0021/0x0024/0x0026`) that a Z80 decodes as real
-instructions (`EX AF,AF'`/`DJNZ`/`JR NZ`), so a stock Z80 diverges within the
-first 40 fetches. The fix is a tiny ROM patch: those three opcodes are rewritten
-to `NOP` (`0x00`) and the block-1 self-test checksum at `0x000A` is recomputed —
-four bytes total, length-preserving, and provably 8080-behavior-identical (cosim
-draws the same framebuffer to 200M cycles). See `roms/README.md` and
-`tools/make_z80_rom.c`. The T80 core therefore runs in native **Z80 mode**
-(`Mode => 0`).
-
-(The core can also run the *unpatched* ROM in 8080 mode, `Mode => 2` — a useful
-cross-check, but not the board's configuration.)
+The Z80 supports the experiment's single +5 V supply. The adapted ROM replaces
+three 8080 undocumented NOP opcodes and updates one checksum byte. The boot
+gate compares original and patched 8080 framebuffers at its selected write
+cutoff, then compares the T80 Z80 result; it does not prove every firmware
+service equivalent. See [ROM images](roms/README.md) for the patches, hashes
+and reproduction commands. T80 runs in Z80 mode (`Mode => 0`).
 
 ### What does not work yet
 
