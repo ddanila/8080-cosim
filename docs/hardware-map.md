@@ -72,7 +72,7 @@ bus/wait PROM and must not be described as the I/O decoder.
 
 ## Interrupt and keyboard behavior
 
-- PIT vertical timing feeds the frame interrupt path into the 8259.
+- The source circuit connects PIT vertical timing through D35 to 8259 IR5.
 - D11 RxRDY/TxRDY feed PIC IR2/IR3. The source model assigns IR0 to X2.214
   and IR1 to X2.218/D27 PB7; see [serial handoff](serial-handoff.md).
 - S4 selects IR6 between buffered expansion INT6 and USART SYNDET; HDL fixes
@@ -82,6 +82,18 @@ bus/wait PROM and must not be described as the I/O decoder.
   mouse implementation.
 - Keyboard scanning uses 8255 #0: Port A selects/strobes a column and Port B
   returns encoded key state. This behavior is runnable in the HDL tests.
+
+The runnable interrupt models cover different subsets. Cosim's minimal PIC
+services USART RxRDY/TxRDY on IR2/IR3 and a CPU-cycle-scheduled frame event on
+IR5, subject to the mask and CPU interrupt-enable state. Its frame period is
+a simulation argument, not derived from the PIT counters.
+
+In HDL, `pic_8259` stores two bus-visible register bytes but does not service
+its wired interrupt inputs. The separate `intr_ctl` helper snoops PIC writes
+and injects a three-byte CALL during INTA for the simulation-only `frame_tick`
+input. The physical `frame_int` and USART ready nets do not trigger that helper.
+`sync/inta_bus_check.sh` checks one IR5 CALL sequence against cosim; it does not
+qualify a complete 8259 or PIT-to-CPU interrupt path.
 
 ## Physical-design boundary
 
