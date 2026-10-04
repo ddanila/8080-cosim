@@ -32,9 +32,9 @@ continuity measurements, validate drilled auxiliary holes, or run PCB DRC.
 
 | Ref | Factory operation locality | Current disposition | Closure evidence |
 | --- | --- | --- | --- |
-| D56 | АГ3 timing area: corrected marked-package component fit cross-checks the independently registered solder pads; D56.1/D56.9 are photo-closed to ground and D56.5/D56.12 functional nets are owner-closed; position-159 material remains held | PARTIAL OWNER-CLOSE — corrected D56 component fit retains D56.1/D56.9 ground and D56.5/D56.12 functional nets; item-159 material remains held | four marked-AG3 component corners cross-align with the solder package; two solder views show uninterrupted ground copper through pins 1/8/9; exact .009 E3 plus owner continuity close D56.5->D34.9 and D56.12->D55.15/.18 |
+| D56 | АГ3 timing area: marked-package component fit cross-checks the independently registered solder pads; D56.1/D56.9 are photo-closed to ground and D56.5/D56.12 functional nets are owner-closed; position-159 material remains held | PARTIAL OWNER-CLOSE — D56 component fit retains D56.1/D56.9 ground and D56.5/D56.12 functional nets; item-159 material remains held | four marked-AG3 component corners cross-align with the solder package; two solder views show uninterrupted ground copper through pins 1/8/9; exact .009 E3 plus owner continuity close D56.5->D34.9 and D56.12->D55.15/.18 |
 | D15 | EPROM area: Разрезать cuts the auxiliary A2/A1 bridge between the D15.8- and D15.9-side landings; no replacement wire is drawn in the D15 detail | PHOTO-CLOSED — cut separates the auxiliary D15.8/A2 and D15.9/A1 landings; the clean source net partition matches | two independent component views, reflected solder confirmation, and guarded source pin nets; original auxiliary-hole drill placement remains fabrication-held |
-| D14 | АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes D32.4/GND-to-D14.1 and D14.4-to-fifth auxiliary annulus, while the latter's remote conductor and remaining traces stay held | PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1 and D14.4-to-fifth annulus; remote conductor and remaining drawn traces are held | two independent component views plus notch-oriented factory row registration; map the fifth landing's opposite face and remote conductor, three long traces, and right-row dogleg before full release |
+| D14 | АП2 serial-driver area: registered notch-up orientation maps both package rows; local copper closes D32.4/GND-to-D14.1 and D14.4-to-fifth auxiliary annulus, with a photo-registered fifth-annulus path to D29.10/GND; owner continuity and remaining traces stay held | PARTIAL PHOTO-CLOSE — local copper preserves D32.4/GND-to-D14.1 and D14.4-to-fifth annulus-to-D29.10/GND; owner continuity and remaining drawn traces are held | two independent component views plus notch-oriented factory row registration; cross-face registration and overlapping solder views trace the fifth landing to D29.10/GND; meter this path and map the three long traces and right-row dogleg before full release |
 | D11 | 8251 USART area: the unique L trace registers the long hole column as an auxiliary drilled/copper field, not a package row; four component-side position-159 solder locations are photo-registered, while package-local cross-side review finds no unique matching four-hole field | GEOMETRY REGISTERED / ELECTRICAL HOLD — four position-159 solder locations identified; bridge and remote trace endpoints remain obscured | two component views register the L trace and four-landmark topology; corrected D11 solder registration shifts the projected field, and review of two complete plus two partial solder views finds no unique four-hole match; direct continuity is required |
 
 ## D56 callout-field registration
@@ -66,7 +66,7 @@ grounds both active-low A inputs.
 Both solder views show small bare-board gaps between the D56.5/D56.12
 pads and the adjacent horizontal rail; the separate left annulus belongs
 to that rail. This closes the three-location geometry, not the installed
-assembly material. The package-pad functional nets are now continuity-closed;
+assembly material. The package-pad functional nets are continuity-closed;
 the complete position-159 specification or direct auxiliary-annulus probing is
 still required before changing that separate assembly disposition.
 
@@ -121,7 +121,7 @@ errors check the strip's local scale; they do not measure pin placement.
 | PXL_20260710_200402344.jpg | 0.010 mm | 0.001 mm | 0.010 mm | continuous D32.4/GND-to-D14.1 copper |
 
 The open fifth left-field annulus below D14.4 is reproducible in
-both component views at corrected native coordinates. Its visible short
+both component views at native coordinates. Its visible short
 front-copper stem joins the bottom left-row contact, D14.4. The
 exact `.009` sheet-1 IC power table assigns D14.4 to `GND`, so the
 annulus is a source-ground candidate; owner rail continuity is unmeasured.
