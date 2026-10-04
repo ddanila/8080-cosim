@@ -85,8 +85,12 @@ defined rejection or error reply and never an out-of-bounds access.
 Normal logs record version, requested and applied serial settings, learned
 identity, phase changes, artifact identities, retries, reconnects, media
 writes, failures, and final counters. Optional capture records preserve exact
-TX/RX bytes with monotonic timestamps and remain parseable when the final
-record is truncated. Exit meanings are stable: success/clean stop, command or
+TX/RX bytes with monotonic timestamps. Complete records must remain independently
+decodable when the final record is truncated. The C decoder reports
+`JH_NEED_MORE` for that incomplete record; the current
+[JSON converter](portable-c-host-implementation.md#capture-conversion) rejects
+the truncated capture rather than exporting its complete prefix.
+Exit meanings are stable: success/clean stop, command or
 configuration error, missing or invalid artifact, serial failure, protocol or
 timeout failure, and unsafe media state are distinguishable.
 

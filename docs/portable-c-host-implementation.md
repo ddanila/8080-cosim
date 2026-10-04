@@ -39,6 +39,16 @@ first disk-request event; the caller must select the artifacts used in the
 recorded run. Conversion alone does not prove their transmitted identity or
 physical qualification.
 
+The converter rejects truncated headers, incomplete records and bad record
+CRCs before writing JSON. It does not salvage a complete prefix from an
+interrupted capture. The C record decoder can decode earlier complete records
+and returns `JH_NEED_MORE` for the incomplete tail.
+
+When requesting both outputs, request JSONL is written before boot-result
+validation. A failed conversion can therefore leave a new request file and
+an older boot-result file; use the exit status before accepting either output
+as evidence from that invocation.
+
 ## Verification entry points
 
 | Area | Guard |
