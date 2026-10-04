@@ -162,11 +162,11 @@ odd majority with `--loader-votes 3`, `5`, or `7`. CRC-protected whole-command
 retries remain enabled independently. A bridge whose USB side uses another
 rate must set `--baud` explicitly.
 
-Increasing guard time or votes lengthens each command. On warm CS00024,
-CONFIG repeatedly failed with `strong_crc` at the 6 ms guard, while guard 0
-completed the same bootstrap and exact marker read. Minimize guard and vote count when shortening
-the command is the experiment; do not describe that as improved signal
-integrity.
+Increasing guard time or votes lengthens each command. The warm CS00024
+6 ms CONFIG failure belongs to unrefreshed T34; T36 later passed a 6 ms
+parser-aging test with refresh active. See [the physical record](CS00024-PHYSICAL.md)
+for the distinct test conditions. Reducing guard or votes is a command-duration
+experiment, not proof of improved signal integrity.
 
 `--loader-config-first` is the explicit T28–T34 CS00024 recovery policy. Those
 loaders start at seven votes either way; the option sends the shorter CONFIG
