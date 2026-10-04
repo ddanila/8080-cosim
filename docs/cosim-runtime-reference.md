@@ -212,9 +212,9 @@ watch log.
 ## Interactive console (`JUKU_CONSOLE_PTY`)
 
 `JUKU_CONSOLE_PTY=auto` creates a PTY and prints its slave path; a device path
-attaches an existing one. Characters the firmware passes to the ROM's console
-routine are mirrored to it, and bytes typed into it are queued for the emulated
-key matrix, so `screen /dev/ttysNNN` drives the machine from a terminal.
+attaches an existing one. At the configured output PC, the selected character
+register is mirrored to it. Bytes typed into the PTY are queued for the
+emulated key matrix, so `screen /dev/ttysNNN` drives the machine from a terminal.
 
 Output characters are mirrored verbatim. The firmware emits its own `CR`/`LF`
 pairs, so the terminal must not add newlines. Input converts `LF` to `CR`
@@ -222,11 +222,14 @@ pairs, so the terminal must not add newlines. Input converts `LF` to `CR`
 
 This is a **simulator affordance, not a machine feature**: a real Juku's console
 is its bitmap screen and key matrix, and nothing here changes the ROM or the
-firmware. The hook is the console character-output routine (`D9E3h` in the
-EktaSoft family, which the monitor's `WRCHR` vector at `FFD9h` jumps to);
-`JUKU_CONSOLE_OUT_PC` overrides it for other firmware. Both the banked address
-and its mode-0 ROM alias are matched, because the same routine runs at either
-depending on the memory mode.
+firmware. The default hook is `D9E3h`, the console character-output routine
+used by the adopted ekta37 image. Set `JUKU_CONSOLE_OUT_PC` to the verified
+output entry for another image or resident BIOS (for example,
+`JUKU_CONSOLE_OUT_PC=0xC600`). For any configured PC at or above `C000h`,
+the hook also matches that PC minus `C000h`. It tests numeric PCs without
+checking the active bank, instruction bytes, or ROM identity. Execution of
+unrelated code at either address can therefore produce misleading output;
+PTY text alone does not prove that the firmware rendered those characters.
 
 The hook reads the character from register A by default. A BIOS jump-table
 entry is often easier to identify before its `MOV A,C`; set
