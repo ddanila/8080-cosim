@@ -232,17 +232,20 @@ A23/TTL SOUT, A24/SIN, A25/CTS, A26/DSR, A29/SOUT, A30/RTS, A31/DTP, and
 A32/OC SOUT; the `.009` table supplies the connector-pin mapping. Sheet 1 and
 the registered component photo additionally close A21 through R101 120 ohms
 to +5 V. Junction dots on the same source sheet tie A22/X3.2 directly to the
-OC SOUT node shared by A32/X3.12 and D12.3. The identified A27/A28 solder
-joints have no PCB-copper departure and the older circuit sheet omits both;
-their installed wires to X3.7/.8 are therefore recorded as intentional
-cable-only reserved contacts. The former provisional 2x8 on-board X3 body is
-removed.
+OC SOUT node shared by A32/X3.12 and D12.3. The model retains A27/X3.7 and
+A28/X3.8 as separate two-node harness-only nets; the older circuit sheet
+omits both. This does not establish that the contacts are unused: owner
+continuity identifies X3.7 as signal ground on `CS00015`. Connecting the
+reconstructed A27 landing to a board rail still requires a board-side chase;
+see the [serial handoff boundary](../../docs/serial-handoff.md#boundary).
 
-The adjacent source-drawn OC SOUT network is now complete as well: R18 33k
+The source model includes the adjacent OC SOUT network: R18 33k
 returns `S_OC` to `SER_TXD`/D3.11, and R30 33k biases `S_OC` to ground.
 Assembly and owner photos identify and fit both physical resistor bodies.
-SER_TXD also feeds D3.9; D3.8 drives the tied D12.1/.2 inputs, restoring the
-source-drawn pre-inverter rather than a direct behavioral shortcut.
+The photographed lower R18 joint reaches D3.11; the upper R18-to-D12.3
+route still needs physical confirmation. See the
+[R18 routing boundary](../../docs/r101-r104-d12-exact-source-correction.md).
+`SER_TXD` also feeds D3.9; D3.8 drives the tied D12.1/.2 inputs in the model.
 
 ## Sheet 6 — Лист регистрации изменений (change registration)
 
