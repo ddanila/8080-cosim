@@ -26,17 +26,25 @@ a behavioral reference for interpreting the machine, rather than a runtime
 participant in these comparisons. PCB copper and placement require separate
 physical audits; the LVS path above does not inspect them.
 
-
 Historical sources are authoritative; `board.json` is the machine-readable
 working model. The generated KiCad schematic and the structural HDL are not two
 freely editable sources that synchronize bidirectionally.
 
 ## LVS
 
-`sync/check.sh` elaborates `hdl/juku_top.v` with Yosys and compares its mapped
-instance/pin net partitions with a KiCad netlist. When a compatible KiCad CLI export is unavailable, the checker reads
-`board.json` directly. Yosys treats device internals as black boxes for this
-comparison; LVS checks their mapped connections, not chip behavior.
+`sync/check.sh` regenerates `kicad/juku.kicad_sch` from the board JSON and
+elaborates `hdl/juku_top.v` into `hdl/juku_top.json` with Yosys. When KiCad's
+netlist export succeeds, it writes `kicad/juku.net.xml` and compares that
+export with the HDL. If the CLI is absent or export fails for any reason,
+it compares the board JSON directly. Inspect the printed “real KiCad
+round-trip” or “KiCad-free” line to identify which path ran; a fallback pass
+does not validate schematic export.
+
+Yosys treats device internals as black boxes. LVS checks mapped instance/pin
+connections, not chip behavior. The wrapper also runs glyph coverage and
+board-population checks, conditionally checks routed-board silkscreen overlap
+when KiCad Python is available, and prints a provenance summary. These checks
+do not constitute DRC or a complete physical release audit.
 
 The comparison uses connectivity rather than net names: mapped endpoints are
 equivalent when they are partitioned into the same nets. `sync/map.json`
@@ -49,8 +57,8 @@ Those need separate source and endpoint checks.
 
 The current check is intentionally partial. Unmapped analog parts, placement-
 only footprints, simulation-only ports, power-only ports, and omitted pins
-are outside its proof. A
-green result must never be interpreted as full-board electrical completeness.
+are outside its proof. A green result does not establish full-board electrical
+completeness.
 
 ## Runnable structural model
 
