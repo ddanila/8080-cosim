@@ -109,18 +109,24 @@ requires RESET for at least three clock cycles; the switch-like 250 ms closure
 is deliberately conservative and easy to verify ([Intel MCS-80 Microcomputer
 Systems User's Manual](https://www.bitsavers.org/components/intel/MCS80/98-153B_Intel_8080_Microcomputer_Systems_Users_Manual_197509.pdf)).
 The portable sequencer uses unsigned elapsed time and is tested across the
-`millis()` rollover. The host now deliberately releases DTR for 50 ms and
-reasserts it before each real `--port` session, exercising the classic Nano's
+`millis()` rollover. For a real `--port` session, the host releases DTR for
+50 ms and reasserts it unless `--no-nano-reset` or `--attach-loader` is set.
+This exercises the classic Nano's
 DTR-coupled USB auto-reset circuit shown in the [official classic Nano
 schematic](https://docs.arduino.cc/resources/schematics/A000005-schematics.pdf)
-and starting this sequence. The host logs a successfully sent DTR pulse without
-claiming that the physical reset was observed; its durable completion field is
-set only after the following transport flush also succeeds. Adapters with
+and starts this sequence. The host records DTR-sequence completion only after
+the following transport flush succeeds; this does not prove physical reset.
+Adapters with
 auto-reset disabled require `--no-nano-reset` plus a Nano reset-button press or
-power cycle before the session. A reset-enabled host session now retries only
-when no valid banner or other protocol frame arrives inside its bounded
-pre-banner deadline, performing a fresh DTR sequence for each of at most two
-extra attempts. It never retries decoded partial or invalid protocol evidence.
+power cycle before the session. `--attach-loader` preserves an already-running
+loader and performs no DTR reset.
+
+Missing-banner recovery performs a fresh DTR sequence only when no valid
+banner or other protocol frame arrives within `--banner-timeout`.
+`--reset-retries` sets the number of extra attempts (default 2); it applies
+only when DTR reset is enabled. Decoded partial or invalid protocol evidence
+stops the run. Uploaded-test heartbeat recovery has its own
+`--heartbeat-reset-retries` budget, disabled by default.
 
 D5 is the low-voltage RESET HOLD input. Configure a maintained switch or
 service jumper from D5 to Nano GND; the sketch's `INPUT_PULLUP` makes grounded
@@ -172,12 +178,8 @@ bootloader/upload protocol, not this sketch's compiled ATmega328P behavior.
 ## Remaining physical harness qualification
 
 The reset driver cannot make a bench session safe or unattended until the real
-S1 contact pair is measured and the isolated harness is built. Session-start
-restart and missing-banner recovery are now host-commanded through DTR.
-Local reset hold is guarded through the active-low D5 service input.
-Host-side uploaded-test heartbeat supervision and default-off bounded
-DTR/re-upload recovery are now guarded. That software does not authorize the
-measurement-gated board-side S1 connection.
+S1 contact pair is measured and the isolated harness is built. Software tests
+of DTR recovery and the D5 hold input do not qualify that board-side connection.
 The Nano-side derived-clock/`-MRDC`/RESET inputs and report are guarded, but
 their board-side target nodes and conditioning may be assigned only after
 continuity identifies accessible points and voltage/polarity/loading are
