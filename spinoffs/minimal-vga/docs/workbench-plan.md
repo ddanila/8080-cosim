@@ -21,8 +21,9 @@ The fixture provides two GAL22V10 decode modes:
 
 - Mode A supplies internal ROM/RAM decode with the scarce PROM sockets empty.
 - Mode B uses D6's active-low `ROM_N` output for ROM selection; the internal
-  ROM-selection boolean is its inverse. D8's byte is observed in both modes
-  rather than used to select ROM data.
+  ROM-selection boolean is its inverse. Both modes instantiate D8, but its
+  output byte is unused and the boot guard does not check it. Physical D8
+  acceptance requires a separate output-table capture.
 
 U10–U17 are 4164-class DIP-16 sockets; KM4164B-10 is the western baseline.
 U2 uses the 28C256 pin contract with the patched `ekta37_z80` image; alternate

@@ -83,10 +83,10 @@ SPARE_N     = 1
 
 These are generated from the same decode the simulation proves byte-identical to
 cosim (`hdl/vjuga_juku_top.v` + the real `.038` РТ4 table via `decode_prom`).
-`ROM_CE_N` is active-low (0 = ROM selected). Mode B matches the reference memory
-overlay in **every** memory-map mode; Mode A reproduces **mode 0** (the boot
-path checked by `sim/vjuga_boot_check.sh`; later firmware operations may
-select other overlay modes):
+`ROM_CE_N` is active-low (0 = ROM selected). Mode B uses the reference D6
+ROM selection; Mode A supplies the fixed low-16-KiB ROM window for mode 0.
+The boot comparison checks a bounded mode-0 workload, not all memory-map modes.
+These ROM-select examples do not establish complete RAM/cartridge decode:
 
 | Cycle (MREQ_N=0) | mode | Mode A `ROM_CE_N` | Mode B `ROM_CE_N` | reference |
 |---|---|---|---|---|
@@ -98,8 +98,11 @@ select other overlay modes):
 | A=0xD800 | 1 | 1 (A-only, ≠ref) | 0 | 0 (ROM overlay) |
 
 The "A-only ≠ref" rows are why Mode A is a **bring-up baseline** (mode 0), not a
-full memory-map model: reproducing modes 1-3 needs the Port C mode bits, which is
-the role of the real РТ4 in Mode B. Run `sim/vjuga_boot_check.sh` for
+full memory-map model. Mode B supplies the РТ4 ROM selection from the Port C
+mode bits, but U5's RAM selection remains the complement of ROM selection.
+In mode 2, the reference twin separately suppresses RAM access in the cartridge
+window (`0x4000–0xBFFF`) and returns `0xFF`; these U5 equations do not implement
+that isolation. Run `sim/vjuga_boot_check.sh` for
 the two-mode boot comparison; the table summarizes the decode equations.
 
 Notes:

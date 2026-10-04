@@ -70,20 +70,19 @@ module vjuga_juku_top #(
     endfunction
     wire is_cart = (mode == 2'b10) && (A >= 16'h4000 && A <= 16'hBFFF);
 
-    // ---- Phase 2: route the ROM/RAM decision through the real Juku PROMs so
-    // booting self-tests them. D6 (К556РТ4 decode_prom) decides ROM vs RAM;
-    // D8 (К155РЕ3 re3_prom) is the ROM-select pager. Both reused verbatim from
+    // D6 (К556РТ4 decode_prom) selects ROM for the bounded boot comparison.
+    // D8 (К155РЕ3 re3_prom) is instantiated for the ROM-select pager, but its
+    // output is unused and unchecked here. Both models are reused from
     // hdl/devices.v with the validated .038/.039 dumps. D6 inputs mirror the Juku
     // (A6=/PC1, A5=/PC0, A7=0); corrected reader-3 packing preserves D0 as
-    // active-low ROM_N. If either chip misbehaves on the bench,
-    // the boot diverges from cosim -- that is the chip test.
+    // active-low ROM_N. Framebuffer agreement does not qualify physical chips.
     tri1 d6_rom_n, d6_ram_n, d6_rev, d6_roe;
     decode_prom U_D6 (.a({1'b0, ~portc[1], ~portc[0], A[11], A[12], A[13], A[14], A[15]}),
                       .v_en_n(1'b0),
                       .rom_n(d6_rom_n), .ram_n(d6_ram_n), .rev(d6_rev), .roe_n(d6_roe));
     // Mode B (J94 = B): the D6 РТ4 active-low D0/ROM_N decides ROM vs RAM.
     // Mode A (J94 = A): the coarse decode
-    // the U5 GAL derives from A15/A14 alone (ROM = low 32K), needing neither the
+    // the U5 GAL derives from A15/A14 alone (ROM = low 16 KiB), needing neither the
     // РТ4 nor the Port C mode bits -- the western-parts bring-up baseline.
     wire is_rom_promB = ~d6_rom_n;           // physical D0/ROM_N low selects D8 and the ROM window
     wire is_rom_intA  = (A[15:14] == 2'b00);

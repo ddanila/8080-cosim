@@ -33,7 +33,8 @@ record; superseded packages must not be uploaded.
   PROM tables. Both Mode B (D6 decode) and Mode A (U5's coarse A15/A14 decode)
   match the same bounded framebuffer oracle. This exercises the modeled
   memory path; it does not qualify socketed chips or prove detection of every
-  chip fault. Mode B uses D6 D0/pin12 as active-low `ROM_N`.
+  chip fault. D8's output is unused and is not checked by this guard. Mode B
+  uses D6 D0/pin12 as active-low `ROM_N`.
 - The pinned T80 core also executes a built-in synthetic ROM (smoke test).
 - The synthetic test exercises CPU ROM/RAM/I/O cycles, a bit-sliced DRAM
   model, independent refresh, video arbitration, keyboard-style input, and one
@@ -190,12 +191,15 @@ Established simulation evidence:
 
 - `sim/boot_check.sh` matches the cosim framebuffer at 6000 video writes.
 - `sim/vjuga_boot_check.sh` matches both jumper modes through the Rev A top
-  using the РТ4/РЕ3 decode models.
+  using the РУ5 DRAM and РТ4 decode models; the instantiated РЕ3 output is
+  unused and unchecked.
 - Decode and U24 DRAM-timing equations are simulated; see
   `sim/u24_dram_timing_check.sh`.
 
 VGA output is waived for Rev A's bench-fixture scope: the guarded framebuffer
-capture is its boot oracle for testing РУ5/РТ4/РЕ3 parts. This waiver does not
+capture is its bounded boot oracle for the РУ5/РТ4 memory path. РЕ3 testing
+requires a separate output-table capture from the debug header, as described
+in the [bench procedure](docs/phase4-bench-bringup.md). This waiver does not
 apply to the five-board Rev B order target.
 
 Before Rev A can become an order candidate:
