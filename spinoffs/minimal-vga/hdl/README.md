@@ -42,15 +42,20 @@ For VHDL tools, compile T80 in this order:
 
 The file list is also captured in `t80-vhdl.files`.
 
-With GHDL, use `-fsynopsys`; T80 uses Synopsys-era IEEE packages:
+With GHDL, use `-fsynopsys`; T80 uses Synopsys-era IEEE packages.
+Run from the repository root:
 
 ```sh
-tmp=$(mktemp -d)
-cd spinoffs/minimal-vga/hdl
-while IFS= read -r f; do
-  ghdl -a --workdir="$tmp" --std=08 -fsynopsys "$f"
-done < t80-vhdl.files
-ghdl -e --workdir="$tmp" --std=08 -fsynopsys T80se
+(
+  set -e
+  tmp=$(mktemp -d)
+  trap 'rm -rf -- "$tmp"' EXIT
+  cd spinoffs/minimal-vga/hdl
+  while IFS= read -r f; do
+    ghdl -a --workdir="$tmp" --std=08 -fsynopsys "$f"
+  done < t80-vhdl.files
+  ghdl -e --workdir="$tmp" --std=08 -fsynopsys T80se
+)
 ```
 
 ## First Smoke Top
