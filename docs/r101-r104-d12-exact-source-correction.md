@@ -8,16 +8,14 @@ Original-resolution `.009 Э3` sheet 1
 to board point **21 / PULLUP**. The `.009 СБ` assembly
 `PXL_20260711_114556899.jpg` independently labels the horizontal body
 under X3 **R101**. Owner component photo `PXL_20260710_200358952.jpg`
-shows the populated body beside the printed 21 landing. The replica had
-previously labeled its existing 120 Ω A:21/X3.1 footprint **R104**.
-That footprint and its source-model refdes are now **R101**; its two PCB
-pad nets remain `X3_HARNESS_1` and `P5V`.
+shows the populated body beside the printed 21 landing. R101's two PCB
+pad nets are `X3_HARNESS_1` and `P5V`.
 
 A separate exact sheet-1 view
 `ref/photos/dgsh5-109-009-e3/PXL_20260718_101817644.jpg`, crop
 `(1850,1650)–(3050,2550)`, prints **R104 = 470 Ω** from D12 physical
 output pin 5 to rail A. The `.009 СБ` assembly labels a distinct vertical
-R104 body left of D12. R104 is now on
+R104 body left of D12. R104 is on
 `X2_IRQ0` and `P5V` in the source schematic and PCB. The registered owner
 photo `PXL_20260710_200418174.jpg` shows an upright resistor immediately
 left of D12, matching that assembly position. The package legend reads
@@ -66,8 +64,8 @@ The same electrical crop draws the second D12 К155ЛА18 gate explicitly:
 X1.114C `-INT4` joins both D12 inputs 6 and 7. D12 open-collector
 output 5 joins R104's signal terminal and the conductor to X2.214,
 which the model already connects to D10 IR0 and R105. D12 pins 5–7 and
-X1.114C have been assigned these nets in the source and both routed PCB
-variants. The HDL and synchronization map now include the second gate.
+X1.114C carry these nets in the source and both routed PCB variants.
+The HDL and synchronization map include the second gate.
 
 The correction does not establish whole-board routed parity or DRC readiness.
 Current findings are in [the routed audit](routed-refresh-audit.md) and
