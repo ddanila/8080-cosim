@@ -254,8 +254,6 @@ def main() -> int:
             "",
             f"- `ref/firmware/re3_dgsh5.106.113.hex`: `{sha256('ref/firmware/re3_dgsh5.106.113.hex')}`",
             f"- `ref/firmware/re3_dgsh5.106.117.hex`: `{sha256('ref/firmware/re3_dgsh5.106.117.hex')}`",
-            "- `docs/d94-reconstruction-constraints.md`: generated D94 `.092` FDC",
-            "  control/address/firmware boundary; D94 is not used as video-timing evidence.",
             "- [D41 boundary](d41-timing-boundary.md): complete package connectivity",
             "  disposition and the remaining remote rail-17 source boundary.",
             "",
@@ -282,7 +280,6 @@ def main() -> int:
             "- D41 package connectivity is source-closed. Its remote rail-17 origin",
             "  remains a timing-chain boundary. The exact shared-DRAM slot schedule",
             "  around D41/D50-D53 and the D34 signal input remain unresolved.",
-            "- D94 is FDC control and provides no video-slot timing evidence.",
 
         ]
     )

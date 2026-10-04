@@ -42,8 +42,6 @@ python3 scripts/report_video_slot_timing_audit.py
 
 - `ref/firmware/re3_dgsh5.106.113.hex`: `05b582e19bed47c70374859de41c7fb4ce648a6f0b895059f9cf963c5496cb13`
 - `ref/firmware/re3_dgsh5.106.117.hex`: `3c431fdc0005a865aba209a026a3e75cbc1af9bdf1d5d8fc9953954238205f18`
-- `docs/d94-reconstruction-constraints.md`: generated D94 `.092` FDC
-  control/address/firmware boundary; D94 is not used as video-timing evidence.
 - [D41 boundary](d41-timing-boundary.md): complete package connectivity
   disposition and the remaining remote rail-17 source boundary.
 
@@ -70,4 +68,3 @@ python3 scripts/report_video_slot_timing_audit.py
 - D41 package connectivity is source-closed. Its remote rail-17 origin
   remains a timing-chain boundary. The exact shared-DRAM slot schedule
   around D41/D50-D53 and the D34 signal input remain unresolved.
-- D94 is FDC control and provides no video-slot timing evidence.
