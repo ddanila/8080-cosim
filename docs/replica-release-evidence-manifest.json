@@ -113,7 +113,7 @@
     },
     "EPROM programming": {
       "path": "docs/eprom-programming-images.md",
-      "sha256": "3ac191cdbd4fc9b9f57661e190d1be6f2ec8a4f56f13398415c6aa34fa0ef892",
+      "sha256": "2d936196b55149a2a993dc5e69af1db11fe7f074d134202a5a7e9814fce6f28d",
       "status": "ADOPTED ARCHIVE-0037 ROMBIOS 3.43m IMAGES READY"
     },
     "PROM procedure": {

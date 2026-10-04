@@ -124,8 +124,9 @@ programmer selection match the same read-mode pinout and supply limits.
 | 27 | /PGM | +5 V (`P5V`) for read mode |
 | 28 | VCC | +5 V (`P5V`) |
 
-The exporter guards these five pin names and rail assignments in board JSON
-for all eight D15-D22 positions. It does not inspect PCB pads or measure
+The exporter guards pin names and rail assignments for pins 1, 14, 26, 27
+and 28 in board JSON for all eight D15-D22 positions. It does not check
+/CE or /OE connectivity, inspect PCB pads, or measure
 physical socket continuity. Pins 2-13, 15-19, 21,
 23-25 retain the standard A0-A12/D0-D7 mapping recorded in
 `kicad/juku.board.json`. Programming voltage and pulse requirements come from
