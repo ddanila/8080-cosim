@@ -92,17 +92,22 @@ For static, human-speed inspection (5 V-native, no level shifting):
   waveform and pauses. Single stepping does not maintain DRAM retention;
   qualify its refresh/WAIT behavior before using a RAM-dependent trace.
 - **Bus readback**: four 74HC165 parallel-load shift registers chained into the
-  UNO's SPI: A0-A15 (J90+J97), D0-D7 (J91), and `MREQ_N/IORQ_N/RD_N/WR_N/M1_N/
+  UNO's GPIO-driven serial input: A0-A15 (J90+J97), D0-D7 (J91), and `MREQ_N/IORQ_N/RD_N/WR_N/M1_N/
   RFSH_N/WAIT_N` + `DEC_ROM_N` (J98+J95) = 32 bits per snapshot.
 - **Sketch**: `tools/vjuga_single_step/vjuga_single_step.ino` (beside
   `rt4_dumper` — same Arduino conventions). Serial protocol: `s` = one clock,
-  `r` = run the compile-time `RUN_STEPS` count (400), `z` = zero counter; each `M1_N` falling edge prints one
+  `r` = run the compile-time `RUN_STEPS` count (400), `z` = zero the trace counter
+  (not reset the CPU). At 115200 baud, each sampled transition into
+  `M1_N=MREQ_N=RD_N=0` prints one
   line: `F<n>: addr=<hhhh> data=<hh> m1=<b> mreq=<b> rd=<b>`.
 - **Twin reference trace**: `hdl/vjuga_juku_top.v` `+trace=<file>` emits the
   first 256 M1 fetches in the identical line format;
   `tools/vjuga_single_step/gen_reference_trace.sh` produces it on demand
-  (verified: `F0: addr=0000 data=c3` = the reset JP, `F6: addr=0021 data=00` =
-  the patched NOP). Bench session = `diff` against this. Divergence points at
+  (default `DECODE_MODE=0`, Mode B; use `DECODE_MODE=1` for Mode A).
+  The expected early fetches include `F0: addr=0000 data=c3` = the reset JP and
+  `F6: addr=0021 data=00` =
+  the patched NOP. Compare only fetch lines from the same reset, ROM and decode
+  mode, excluding the sketch's `#` status lines. Divergence points at
   the exact fetch.
 
 ## 4.4 Assembly & bring-up ladder
@@ -155,9 +160,10 @@ the superseded bit-reversed interpretation.
 
 ## 4.7 Exit criteria
 
-- Baseline board boots the banner in Mode A, proven by the framebuffer
-  readback (4.2) — not by eyeballing.
-- At least one РУ5, one РТ4, and one РЕ3 part each have a logged PASS in their
-  functional role.
+- Baseline board completes the banner in Mode A; retain a framebuffer capture
+  and matching oracle that cover completion, beyond the bounded default in 4.2.
+- At least one РУ5 and one РТ4 have a recorded PASS for the tested boot workload,
+  and one РЕ3 has a matching observed output table in Mode A. The РЕ3 does not
+  drive the decode in this test; these results do not establish full part qualification.
 - The D6 active-low observation agrees with both twins and the GAL source.
 - A physical-session record identifies every scarce part tested and its capture.
