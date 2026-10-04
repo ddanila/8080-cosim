@@ -137,11 +137,14 @@ opcode-fetch qualifier:
 - D2 itself takes no cycle-type input. For every `A10=0` address - which
   includes all six probes - `IORC_N` and `A14` are don't-cares, `WREQ_N` is
   a region select rather than a cycle qualifier, and the only remaining
-  variable is the free-running `CAS`.
-- D8/D6 ROM selection is address-only (`docs/d8-physical-decode.md`).
+  variable under the stated memory-cycle assumptions is `CAS`. The runnable
+  CAS scaffold is gated by memory access; its physical timing remains open.
+- D8 is an address-only pager enabled by D6 ROM select. D6 also receives
+  mode and control inputs; neither PROM has an explicit M1 input.
+  See `docs/d8-physical-decode.md` for the pager/enable distinction.
 
 A `JMP 106Fh` fetches `C3` as an M1 cycle and `0C 0A` as ordinary read
-cycles, so only the first byte is even nominally a different cycle type -
+cycles, so only the first byte is nominally a different cycle type.
 The listed decode inputs do not select on that distinction. This does not
 rule out physical differences in edge timing, loading, or CPU behavior.
 
