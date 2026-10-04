@@ -188,44 +188,10 @@ These equations sharpen, but do not replace, continuity evidence:
 
 ## Address Space
 
-D94 is a 32 x 8 PROM. The table below uses reader input indices A4..A0;
-the board mapping is now A0=BA0, A1=BA1, A2=IORD, A3=D105.3 qualified /WR,
-and A4=D101.7. D5-D7 are owner/drawing-closed NC.
-
-| Row | A4 | A3 | A2 | A1 | A0 | D7..D0 |
-| ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| 00 | 0 | 0 | 0 | 0 | 0 | `FF` |
-| 01 | 0 | 0 | 0 | 0 | 1 | `FF` |
-| 02 | 0 | 0 | 0 | 1 | 0 | `FF` |
-| 03 | 0 | 0 | 0 | 1 | 1 | `FE` |
-| 04 | 0 | 0 | 1 | 0 | 0 | `F5` |
-| 05 | 0 | 0 | 1 | 0 | 1 | `F5` |
-| 06 | 0 | 0 | 1 | 1 | 0 | `F5` |
-| 07 | 0 | 0 | 1 | 1 | 1 | `FC` |
-| 08 | 0 | 1 | 0 | 0 | 0 | `F9` |
-| 09 | 0 | 1 | 0 | 0 | 1 | `F9` |
-| 10 | 0 | 1 | 0 | 1 | 0 | `F9` |
-| 11 | 0 | 1 | 0 | 1 | 1 | `FC` |
-| 12 | 0 | 1 | 1 | 0 | 0 | `FF` |
-| 13 | 0 | 1 | 1 | 0 | 1 | `FF` |
-| 14 | 0 | 1 | 1 | 1 | 0 | `FF` |
-| 15 | 0 | 1 | 1 | 1 | 1 | `FE` |
-| 16 | 1 | 0 | 0 | 0 | 0 | `FF` |
-| 17 | 1 | 0 | 0 | 0 | 1 | `FF` |
-| 18 | 1 | 0 | 0 | 1 | 0 | `FF` |
-| 19 | 1 | 0 | 0 | 1 | 1 | `FF` |
-| 20 | 1 | 0 | 1 | 0 | 0 | `F5` |
-| 21 | 1 | 0 | 1 | 0 | 1 | `F5` |
-| 22 | 1 | 0 | 1 | 1 | 0 | `F5` |
-| 23 | 1 | 0 | 1 | 1 | 1 | `F5` |
-| 24 | 1 | 1 | 0 | 0 | 0 | `F9` |
-| 25 | 1 | 1 | 0 | 0 | 1 | `F9` |
-| 26 | 1 | 1 | 0 | 1 | 0 | `F9` |
-| 27 | 1 | 1 | 0 | 1 | 1 | `F9` |
-| 28 | 1 | 1 | 1 | 0 | 0 | `FF` |
-| 29 | 1 | 1 | 1 | 0 | 1 | `FF` |
-| 30 | 1 | 1 | 1 | 1 | 0 | `FF` |
-| 31 | 1 | 1 | 1 | 1 | 1 | `FF` |
+D94 is a 32 x 8 PROM, indexed by reader inputs A4..A0. The raw bytes
+are retained in [the hexadecimal table](../ref/physical-proms/validated/d94_092.raw.hex).
+The board mapping is A0=BA0, A1=BA1, A2=IORD, A3=D105.3 qualified /WR,
+and A4=D101.7.
 
 ## Reconstruction Boundary
 
@@ -249,7 +215,7 @@ and A4=D101.7. D5-D7 are owner/drawing-closed NC.
 - Closed A3 source: D94.13 belongs to D105.3 qualified peripheral `/WR`.
   D5.27 is the distinct raw `IOWR_N` input to D7.10; a simultaneous
   operating-level capture is useful corroboration, not a missing join.
-- Runnable-model disposition: the behavioral FDC now consumes the
+- Runnable-model disposition: the behavioral FDC consumes the
   physical table's `/RE` and `/WE`. A3 consumes the owner-closed D105.3
   `iowr_n` conductor. The CS7 decoded enable is source-closed; only
   pulled-high A4 runtime behavior remains a simulation fit. Yosys/LVS preserves the
@@ -264,7 +230,7 @@ and A4=D101.7. D5-D7 are owner/drawing-closed NC.
 - The traced `V3_RC` RC network is a negative cross-check here, not a
   replacement source for D94: its current nodes are `R17.1`, `C99.1`,
   and `D9.6`, with no D94 signal endpoint in JSON, DSN, or PCB.
-- D94 is now classified as an FDC control/decode PROM because its proved
+- D94 is classified as an FDC control/decode PROM because its proved
   D2/D3 outputs terminate at D93 and D1 serves its support logic.
   It is not evidence for the separate
   shared-DRAM video-slot schedule.

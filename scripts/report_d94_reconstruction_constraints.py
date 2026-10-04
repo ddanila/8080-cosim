@@ -189,19 +189,6 @@ def address_input_observations() -> dict[str, dict[str, str]]:
     return observations
 
 
-def address_space_rows(table: bytes) -> list[str]:
-    rows = []
-    for address in range(32):
-        inputs = {f"A{bit}": (address >> bit) & 1 for bit in range(5)}
-        rows.append(
-            "| "
-            + f"{address:02d} | "
-            + " | ".join(str(inputs[name]) for name in ("A4", "A3", "A2", "A1", "A0"))
-            + f" | `{table[address]:02X}` |"
-        )
-    return rows
-
-
 def verify_minimized_logic(table: bytes) -> bool:
     """Exhaustively guard the minimized active-low output equations."""
     if len(table) != 32:
@@ -617,15 +604,12 @@ def main() -> int:
             "",
             "## Address Space",
             "",
-            "D94 is a 32 x 8 PROM. The table below uses reader input indices A4..A0;",
-            "the board mapping is now A0=BA0, A1=BA1, A2=IORD, A3=D105.3 qualified /WR,",
-            "and A4=D101.7. D5-D7 are owner/drawing-closed NC.",
-            "",
-            "| Row | A4 | A3 | A2 | A1 | A0 | D7..D0 |",
-            "| ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+            "D94 is a 32 x 8 PROM, indexed by reader inputs A4..A0. The raw bytes",
+            "are retained in [the hexadecimal table](../ref/physical-proms/validated/d94_092.raw.hex).",
+            "The board mapping is A0=BA0, A1=BA1, A2=IORD, A3=D105.3 qualified /WR,",
+            "and A4=D101.7.",
         ]
     )
-    lines.extend(address_space_rows(physical_table))
     lines.extend(
         [
             "",
@@ -651,7 +635,7 @@ def main() -> int:
             "- Closed A3 source: D94.13 belongs to D105.3 qualified peripheral `/WR`.",
             "  D5.27 is the distinct raw `IOWR_N` input to D7.10; a simultaneous",
             "  operating-level capture is useful corroboration, not a missing join.",
-            "- Runnable-model disposition: the behavioral FDC now consumes the",
+            "- Runnable-model disposition: the behavioral FDC consumes the",
             "  physical table's `/RE` and `/WE`. A3 consumes the owner-closed D105.3",
             "  `iowr_n` conductor. The CS7 decoded enable is source-closed; only",
             "  pulled-high A4 runtime behavior remains a simulation fit. Yosys/LVS preserves the",
@@ -666,7 +650,7 @@ def main() -> int:
             "- The traced `V3_RC` RC network is a negative cross-check here, not a",
             "  replacement source for D94: its current nodes are `R17.1`, `C99.1`,",
             "  and `D9.6`, with no D94 signal endpoint in JSON, DSN, or PCB.",
-            "- D94 is now classified as an FDC control/decode PROM because its proved",
+            "- D94 is classified as an FDC control/decode PROM because its proved",
             "  D2/D3 outputs terminate at D93 and D1 serves its support logic.",
             "  It is not evidence for the separate",
             "  shared-DRAM video-slot schedule.",
