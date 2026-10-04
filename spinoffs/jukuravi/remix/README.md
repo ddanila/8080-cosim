@@ -19,9 +19,8 @@ These implemented 16 KiB images are built deterministically from the pinned
 - Guard: `sync/ekta4401_check.sh`, test
   [`../../../tests/ekta4401_remix_test.py`](../../../tests/ekta4401_remix_test.py)
 
-`ekta4401` is frozen and physically proven. The separately named, now also
-physically proven successor adds direct fastboot without changing that
-baseline:
+`ekta4401` is frozen. `ekta4402` adds direct fastboot; both have scoped
+CS00015 qualification described under [physical validation](#physical-validation).
 
 - Image: [`ekta4402.bin`](ekta4402.bin), SHA256
   `20ff871307b65523428b6ce21e8153842b54c070cd897826154735af6cea6378`
@@ -146,9 +145,8 @@ intended image.
 
 ## Physical validation
 
-The frozen Ekta4401 pair and its immediately preceding service image were
-programmed and qualified on 2026-08-11; that chronology remains in the
-original session records. The Ekta4402 pair was programmed on
+The frozen Ekta4401 pair was qualified on CS00015 on 2026-08-11.
+The Ekta4402 pair was programmed on
 2026-08-16 through the DOSRAVI/Willem controlled-write path, using only the
 programmer's built-in full read/verify. The programmed devices were labeled
 `Ekta4402low` (D15) and `Ekta4402high` (D16); use the programming-image hashes

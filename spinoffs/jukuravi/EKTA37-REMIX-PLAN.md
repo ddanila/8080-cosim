@@ -38,7 +38,8 @@ reads see ROM, so the demo must remain write-only.
 
 ## Verification and remaining physical work
 
-From the repository root:
+Run from the repository root with Python 3. The full simulator guard also
+requires Bash, a C11 compiler (`CC`, default `cc`), and POSIX PTY support:
 
 ```sh
 python3 spinoffs/jukuravi/remix/build_ekta4401.py --check
