@@ -10,6 +10,7 @@ machine equations. It does not translate the PLA into HDL.
 ## Command
 
 ```sh
+(cd ref/wd1772-vg93 && sha256sum -c SHA256SUMS)
 python3 scripts/export_wd1772_pla.py
 python3 scripts/report_wd1772_pla_inspection.py
 ```

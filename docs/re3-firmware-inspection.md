@@ -10,8 +10,8 @@ they are **not** the processor-module D8 `.039` or D94 `.092` contents.
 ## Command
 
 ```sh
-python3 scripts/report_re3_firmware_inspection.py
 sync/reference_artifact_check.sh
+python3 scripts/report_re3_firmware_inspection.py
 ```
 
 The writer compares retained HEX bytes with hard-coded transcriptions and
