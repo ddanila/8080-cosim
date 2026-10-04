@@ -242,9 +242,17 @@ console such as C9 N4.
 Pair it with `JUKU_REALTIME_HZ` for hands-on use — at full simulation speed
 a session runs faster than a human can type into it. `JUKU_KEYS` and the
 console share one key queue: the scripted string plays first and anything
-typed afterwards queues behind it. The [runner](../tools/juku_run.py) accepts
-`--max-speed --keys TDD` to submit the disk-boot command and continue accepting
-interactive input. These are runner options, not arguments to the `trace` binary.
+typed afterwards queues behind it. For example, from the repository root:
+
+```sh
+python3 tools/juku_run.py --disk-image media/disks/JUKPROG2.CPM \
+  --attach --max-speed --keys TDD
+```
+
+The [runner](../tools/juku_run.py) attaches the current terminal with `--attach`;
+without it, connect a terminal program to the printed console PTY. `--disk-image`
+provides the local media needed by `TDD`. Detach with Ctrl-] when using
+`--attach`. These are runner options, not arguments to the `trace` binary.
 
 Direct `trace` runs delay queued matrix input until
 `JUKU_KEY_START_VRAM` framebuffer writes (default `42000`, chosen for the
