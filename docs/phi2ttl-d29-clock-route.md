@@ -46,47 +46,22 @@ connectivity still require measurement. Both owner dates also show no
 separate component body at the visible C29 position; this is owner
 population evidence only, since the candidate annuli remain unpaired.
 
-Three front sites left of R106 matter here: two filled-looking joints at
-approximately `(2258,2517)` and `(2258,2576)`, and an open annulus at
-`(2264,2745)`. The middle joint has a visible narrow front trace to the
-lower annulus, while the upper joint is separate in this view. Thus the
-adjacent upper/middle sites are the stronger C29 pad-pair candidates; the
-lower annulus may be a downstream via. The May owner photo independently
-shows the same three-site pattern without a capacitor body. A corrected
-four-package cross-face fit projects the upper site and R106 upper lead to
-`(1947,2189)` and `(1889,2188)` solder pixels; the visible corresponding
-joints near `(1940,2175)` and `(1880,2175)` have a short continuous copper
-bridge. The same solder run turns down to R35's lower lead near `(1830,2225)`;
-its front joint projects near `(1831,2238)`. Thus the photographed R35-lower,
-R106-upper, and C29-upper sites share the source-drawn post-R35 RC node.
-The middle site's through match is supported by relative geometry: its
-projected solder-side separation from the lower open annulus is
-`(-3.8,+173.0)` px versus about `(0,+172)` px for the visible middle joint
-and wide-rail hole, a 3.9 px vector difference. Combined with the continuous
-front trace, this strongly supports the middle candidate reaching that rail.
-The wide rail runs left without a break to the registered D56.8 ground
-contact near `(879,2425)` and the board-edge return. D56.8's ground
-identity was independently closed by the two-face factory-modification
-review, so this gives the middle C29 candidate a photo-supported ground
-route despite the absence of a nearby D39.7/D92.7/D38.7 solder bridge. See
-`ref/photos/juku-pcb-2/c29-landing-pair-review.json`. This node's physical
-D35.13 continuation, actual C29 population, and physical value still need
-independent evidence before adding C29 to the PCB model.
-The exact assembly drawing shows D35 with its notch at the top, and owner
-component tile `PXL_20260710_200445914.jpg` shows the marked К155ЛН5 in
-that posture. The lower-right contact's route toward fitted 5K1 R60
-corroborates the orientation because sheet 2 assigns R60 to D35.8.
-D35.13 is the second contact down on the right row, near `(2408,1540)`
-in `200445914` and `(2504,838)` in overlap `200455512`. A D57-based
-cross-face fit projects it near solder `(1829,719)` in `200530933.MP`,
-beside the expected D35 row joint; the D55 held-out centre misses by
-about 11 px. Neither face visibly carries an uninterrupted route from
-that joint to the post-R35 node; see
-`ref/photos/juku-pcb-2/d35-pin13-photo-review.json`.
-Inspect the C29 area on both faces and measure the lower
-body's resistance and both lead
-connections before treating C29 as absent/DNP or promoting R106's physical
-identity. The drawing does not print a C29 unit.
+The upper and middle front joints beside R106 are the stronger C29 pad-pair
+candidates. Cross-face geometry and visible copper support the upper joint
+joining R35's lower lead and R106's upper lead on the post-R35 node; the
+middle candidate reaches the D56.8-grounded rail. The lower open annulus
+may be a downstream via. These findings do not establish C29's population
+or its physical value. Native coordinates, fit residuals, and the May
+cross-check are retained in
+[the C29 landing review](../ref/photos/juku-pcb-2/c29-landing-pair-review.json).
+
+The assembly and marked owner package agree on D35's notch-up orientation,
+but neither face exposes an uninterrupted route from D35.13 to the post-R35
+node. Registered probe sites and the cross-face fit limits are in
+[the D35 pin-13 review](../ref/photos/juku-pcb-2/d35-pin13-photo-review.json).
+Measure that continuation, R106's resistance and both lead connections,
+and inspect C29 on both faces before assigning physical values or DNP status.
+
 Full-resolution `.009` sheet-2 photo `PXL_20260718_101908284.jpg` prints
 only `56` beside C29, with no unit glyph; the neighboring C6 also uses bare
 `56` and is modeled as 56 pF. With the drawing's 910 Ω R106, 56 pF gives
