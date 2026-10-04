@@ -93,6 +93,10 @@ is a separate boundary. The position-159 callout material itself remains held.
 
 ## Command
 
+Run from the repository root with Bash, Python 3, and Icarus Verilog
+(\`iverilog\` and \`vvp\`). The command overwrites this report; set \`AG3_REPORT\`
+to select another output path. Simulation files are temporary.
+
 \`\`\`sh
 sync/ag3_check.sh
 \`\`\`
