@@ -56,9 +56,14 @@ sync/jukuhost_m2_check.sh
 ```
 
 It compares the frozen Python-era oracle with the sole supported C host, then
-runs stock, stock-assisted JF15, reset-safe stock JF17, C8/JF16, disk, console,
-reconnect, recovery,
-wrapper, and current network-ROM fault regressions. See
+runs stock, stock-assisted JF15, C8/JF16, disk, console, reconnect, media,
+wrapper, and current network-ROM fault regressions. The dedicated stock-JF17
+target-reset test is a separate entry point:
+
+```sh
+python3 tests/jukuhost_stock_recovery_cosim_test.py
+```
+ See
 `docs/portable-c-host-m2-acceptance.md` for the accepted result and exact
 platform-port boundary.
 
