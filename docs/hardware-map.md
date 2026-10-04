@@ -73,8 +73,13 @@ bus/wait PROM and must not be described as the I/O decoder.
 ## Interrupt and keyboard behavior
 
 - PIT vertical timing feeds the frame interrupt path into the 8259.
-- USART-ready and expansion/mouse inputs occupy additional 8259 lines; exact
-  physical switch/routing boundaries are recorded by the generated reports.
+- D11 RxRDY/TxRDY feed PIC IR2/IR3. The source model assigns IR0 to X2.214
+  and IR1 to X2.218/D27 PB7; see [serial handoff](serial-handoff.md).
+- S4 selects IR6 between buffered expansion INT6 and USART SYNDET; HDL fixes
+  it to INT6. Expansion INT7 feeds IR7 through D3. See
+  [the S4 boundary](s4-interrupt-boundary.md). MAME's optional mouse uses IR6,
+  but that reference behavior does not establish replica wiring or a cosim
+  mouse implementation.
 - Keyboard scanning uses 8255 #0: Port A selects/strobes a column and Port B
   returns encoded key state. This behavior is runnable in the HDL tests.
 
