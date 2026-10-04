@@ -22,8 +22,9 @@ Referenced units (with their own drawing numbers):
 | A4 | Блок НГМД Е6502 | `ДГШ3.065.008` → `ref/photos/dgsh3-065-008-e3/` |
 | A5 | Устройство отображения | МС6105.09 |
 
-The main processor board itself is `ДГШ3.031.007` (A1's internals include the
-`ДГШ5.109.009` module documented under `ref/photos/dgsh5-109-009-e3/`).
+`ДГШ3.031.007` identifies the E5101 operator-console assembly A1. The
+processor module has the separate designation `ДГШ5.109.009`; see
+[its electrical drawing](../dgsh5-109-009-e3/README.md).
 
 ## Photos
 
