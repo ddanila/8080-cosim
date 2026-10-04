@@ -78,17 +78,28 @@ necessarily covers `MR`, `MW`, `IR`, and `IW`; separate interrupt guards exercis
 path. `sync/inta_bus_check.sh` runs a focused synthetic PIC/EI loop through both
 CPUs and requires the typed `IA` sequence `CD D4 FE` end-to-end.
 
+`sync/i8080_check.sh` tests the C core against independent expected results:
+immediate arithmetic/logic across all byte operands, INR/DCR and rotates,
+valid packed-BCD addition followed by DAA, and selected stack, I/O, EI-delay and
+undocumented-opcode cases. Its DAA sweep covers decimal operands 0–99 and both
+input carries, not every arbitrary A/flag state. It requires a C compiler.
+
 `sync/i8080_vm80a_diff_check.sh` is the complementary instruction-boundary
 guard. It generates 8,192 isolated cases: all 256 opcode bytes crossed with all
-32 combinations of the architectural S/Z/AC/P/C flags, while register, memory,
-immediate, and I/O operands rotate through `00`, `01`, `0F`, `10`, `7F`, `80`,
-`FE`, and `FF`. Each case seeds the C core and vm80a at the same clean M1
+32 combinations of the architectural S/Z/AC/P/C flags. Selected registers and
+byte operands use eight boundary patterns; addresses and remaining memory use
+deterministic patterns, direct jump/call operands and preloaded stack words use
+`3456h`, and input ports return `port XOR A5h`. These choices are correlated, not an independent operand
+cross-product. Each case seeds the C core and vm80a at the same clean M1
 boundary, executes exactly one instruction, and compares A/BC/DE/HL/SP/PC,
 flags, interrupt enable, halt, final memory effects, and port output. Memory
 writes are compared by final address/value rather than physical order: for
 example, XTHL may write the same two final stack bytes in a different bus order,
 which is not an architectural-state difference. This guard is exhaustive over
-opcode and initial flag combinations, not over the full 8080 state space.
+opcode and initial flag combinations, not over the full 8080 state space. It
+does not compare cycle counts, read-bus ordering, WAIT behavior or asynchronous
+interrupt acceptance. It requires a C compiler and Icarus Verilog; the bus and
+interrupt guards above cover separate boundaries.
 
 ## EktaSoft block-1 checksum convention
 
