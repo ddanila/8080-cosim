@@ -77,6 +77,14 @@ A hole snap or accurate pad projection is not electrical evidence by itself.
 
 ## Reproduce the registration aids
 
+Run from the repository root with the original JPEGs materialized through
+[Git LFS](git-lfs-policy.md#local-use). Contact sheets and endpoint overlays
+require ImageMagick's `magick` command. Panorama generation and rectification
+require OpenCV and NumPy; the crop and detail renderers require Pillow, with
+NumPy also used by the cross-registration and layer-handoff renderers.
+The `/usr/bin/python3` commands below assume that interpreter has those
+packages and KiCad's `pcbnew` module for the board-based tools.
+
 ```sh
 python3 scripts/photo_registration.py validate
 python3 scripts/photo_registration.py solve
