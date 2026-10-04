@@ -12,32 +12,13 @@ The digital twin boots the preserved ROM set. Current PCB routing and package
 release remain on design hold; see
 [manufacturing readiness](replica-manufacturing-readiness.md).
 Additional media and silicon reads are requested for preservation and
-board-variant detection, not because the adopted PROM/EPROM set is incomplete:
+board-variant detection, not because the adopted PROM/EPROM set is incomplete.
 
-- Baltijets doc 007 confirms the programmed-part drawings, but the small-PROM
-  byte tables are marked `на диске` instead of printed.
-- The current FDC cosim vendors public Arti `JUKU1/JUKU2` disk images and
-  boots `media/disks/JUKU1.CPM` to the EKDOS `A>` prompt, but physical-media
-  provenance is still useful.
-- D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` now have validated repeated
-  physical tables. D8/D94 have three independent read events each, retained
-  under two board-name aliases; those aliases do not prove cross-board reads.
-  Independent acquisitions or original
-  programming-disk files would provide optional further provenance. D94's
-  D0 hidden load remains incomplete; exact `.009` sheets close its `CS7` enable source.
-- The third-source archival `JUKUROM0/1` pair is adopted as the D15/D16 archive-37
-  RomBios 3.43m content. Further EPROM reads may expose a board variant but are not a
-  content or release gate.
-- Disk-side `JBASIC.COM` now reaches a visible `READY` prompt in cosim and
-  uninterrupted HDL, but the public 8 KiB removable-memory BASIC cartridge
-  remains a Monitor 3.3 compatibility boundary: its bootstrap needs bytes
-  beyond the public payload. A complete image or confirmed launch procedure
-  is still useful.
-- The public Monitor 2.2 image has damaged physical chips 7 and 8. The upstream
-  catalog records a couple of errors in chip 7 and 50 divergences across seven
-  chip-8 reads, but the public ZIP and Git history retain only the final
-  concatenated image. The original per-read captures could resolve the two
-  remaining bad ROM blocks without speculative byte repair.
+The adopted D2/D6/D8/D94 tables and archive-0037 RomBios 3.43m pair
+already support the runnable model. Independent reads and factory media can
+corroborate those artifacts or identify board variants. Complete cartridge
+BASIC material, original Monitor 2.2 recovery reads, and evidence for the
+remaining physical FDC paths address separate open boundaries listed below.
 
 Supporting records:
 
