@@ -16,7 +16,7 @@ versions. The table uses the ROMs’ embedded `RomBios` banners.
 
 | file | size | SHA-1 | role |
 |---|---|---|---|
-| `jmon33.bin`  | 16K | `76407d99bf83035ef526d980c9468cb04972608c` | **Juku Monitor v3.3** — default BIOS (MAME `ROM_BIOS(0)`), interrupt-driven |
+| `jmon33.bin`  | 16K | `76407d99bf83035ef526d980c9468cb04972608c` | **Juku Monitor v3.3** — MAME default BIOS (`ROM_BIOS(0)`), interrupt-driven |
 | `ekta24.bin`  | 16K | `a7185d747c94cd519868692ed3d10fade90dd6d5` | EktaSoft '88, Serial #0024, RomBios 3.42 |
 | `ekta31.bin`  | 16K | `73d62c032be1de06c0dd5618f4abccd4d0f3a329` | EktaSoft '88, Serial #0031, RomBios 3.43 |
 | `ekta32.bin`  | 16K | `57311d53f6fe1e87e0755990f400253caccd4795` | EktaSoft '88, Serial #0032, RomBios 2.43 |
@@ -34,6 +34,18 @@ partially repaired binary is distributed.
 `ekta37.bin` uses frame interrupts and PIC-driven USART service in its Janet
 path; it is not a wholly polled firmware. See [the boot-path analysis](../docs/ekta37-netbios-notes.md)
 for its banked runtime addresses and serial contract.
+
+## Selecting an image
+
+The repository’s paired CPU-bus guard selects `roms/ekta37.bin` explicitly;
+MAME’s default BIOS is `jmon33.bin`. The standalone C trace uses the relative
+path `ekta43.bin` when its first argument is omitted, so pass a ROM path
+explicitly when following the repository workflows.
+
+`jbasic11.bin` is a cartridge image, not the main CPU boot ROM. See
+[the runtime reference](../docs/cosim-runtime-reference.md) for the paired
+guard and [the hardware map](../docs/hardware-map.md) for the cartridge
+address mapping.
 
 ## Rights status
 
