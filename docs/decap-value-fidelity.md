@@ -13,6 +13,18 @@ grid slot is distinct from the absent
 `.009` C83 callout between D41/D40. Six non-field placement/population
 dispositions and all factory capacitance values remain open.
 
+## Command
+
+Run from the repository root:
+
+```sh
+python3 scripts/report_decap_value_fidelity.py
+```
+
+A zero exit status confirms the guarded model, population and placement
+contracts. Physical HOLD rows and the unresolved historical value census
+remain release limits even when those contracts pass.
+
 ## Checks
 
 | Check | Result | Evidence |
