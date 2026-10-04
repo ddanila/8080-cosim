@@ -14,12 +14,10 @@ Two electrical-schematic revisions of the processor module exist; **keep both**:
 The checksum-guarded reviewed transcription/divergence index is
 [the electrical audit](dgsh5-109-009-e3-notes.md).
 
-`juku_es101_processor_module.pdf` is the primary factory electrical schematic
-for the ДГШ5.109.006 processor module. It outranks emulator inference for the
-circuits it depicts, but it is not the complete `.009` FDC-era target by
-itself: sheet 3 shows the earlier tape subsystem, while the official `.009`
-parts list, the `.009 Э3` photos, and physical-board evidence establish the
-later FDC population.
+## Retained `.006` electrical scan
+
+The factory scan takes precedence over emulator inference within its depicted
+revision and circuit scope.
 
 - Drawing: `ДГШ5.109.006 Э3` — processor module electrical schematic.
 - Source: https://arti.ee/juku/
@@ -35,7 +33,9 @@ Sheet 1 of the same document is photographed in
 `ref/photos/dgsh5-109-009-sb/`. The reviewed transcription is
 [the assembly wire table](dgsh5-109-009-sb-wire-table.md).
 
-## PDF page mapping
+## `.006` electrical PDF page mapping
+
+The following page order belongs to `juku_es101_processor_module.pdf`.
 
 | PDF page | Sheet | Rendered PNG | Main contents |
 | ---: | ---: | --- | --- |
