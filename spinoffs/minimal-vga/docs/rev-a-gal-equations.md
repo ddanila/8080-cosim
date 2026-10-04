@@ -146,10 +146,9 @@ Pinout:
 | 23 | STATE2 | registered feedback output, no external load |
 | 24 | VCC | power |
 
-Pin 13 is the GAL22V10's twelfth input/OE pin; assigning `RAS_N` there was an
-invalid eleven-output contract. Pins 14-23 are the ten real macrocells. The
-corrected contract uses seven functional outputs and three registered state
-bits. `DRAM_OE_N` was removed because 4164 DOUT enable is controlled by CAS.
+Pin 13 is the GAL22V10's twelfth input/OE pin. Pins 14-23 provide ten
+macrocells: seven functional outputs and three registered state bits.
+The 4164 DOUT enable is controlled by CAS.
 
 The programming reference is `hdl/u24_dram_timing.v`, guarded by
 `sim/u24_dram_timing_check.sh`. It uses this cyclic Gray sequence, so every
