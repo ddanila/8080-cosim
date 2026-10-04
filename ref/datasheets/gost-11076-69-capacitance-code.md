@@ -16,8 +16,8 @@ not reproduce the standard.
 
 This mapping would apply to a clearly photographed `1Н5` marking. Native crops
 of C20 and C22 do not show that complete code. Two later angles show bare `22`
-on each body, matching exact sheet 3's design numerals. The former assignment
-of 1.5 nF to those two parts is retracted; their installed units remain open.
+on each body, matching exact sheet 3's design numerals. The standard does not establish
+a 1.5 nF installed value for either part; their units remain open.
 
 Section 2 distinguishes full and abbreviated (coded) markings. For coded
 markings it requires digits for the nominal, a letter for the unit and decimal

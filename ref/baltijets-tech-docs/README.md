@@ -31,13 +31,12 @@ tables rather than printed in the PDF:
 Implication for the replica plan:
 
 - This factory packet does not print the `.037/.038/.039/.092` programming
-  tables. Repeated physical captures now preserve all four tables under
+  tables. Repeated physical captures preserve all four tables under
   `ref/physical-proms/validated/`; the disk-held originals remain valuable
   independent corroboration rather than a content blocker.
 - `ДГШ5.106.092` is explicitly amended to `К155РЕ3` in the factory paperwork,
-  matching the .009 parts list and the physical D94 package. It is not an
-  abstract/removed placeholder; its programmed bits are physically captured,
-  while incomplete copper destinations remain unresolved.
+  matching the .009 parts list and the physical D94 package. Its programmed
+  bits are physically captured; incomplete copper destinations remain unresolved.
 
 ## Doc 002 schematics/components
 
@@ -80,7 +79,7 @@ Implication:
 - RAS/CAS/refresh and RF/video adjustment data still need to come from another
   adjustment document in the Baltijets set, not this parts-list PDF.
 
-### Passive-designator search boundary (2026-10-02)
+### Passive-designator coverage
 
 Visually checked all eight pages of `006 Parts list.pdf` and pages 18–22 of
 `010 Parts list.pdf` for a `.009` processor-board reference-designator list.
@@ -93,7 +92,7 @@ R21–R28 resistors to D8 outputs. The `.009` schematic/element list and board
 photos remain the relevant sources for those mappings; neither factory packet
 is a substitute for a physical continuity check at the C85 candidate site.
 
-## Doc 003 adjustment-instructions pass
+## Doc 003 adjustment instructions
 
 `003 Adjustment instructions.pdf` is the expected E5104 adjustment/check packet
 (`ДГШ3.031.011 Д2`). It is a factory bring-up and acceptance document, not a
@@ -119,7 +118,7 @@ Implication:
   cadence instead of inventing its own final smoke test.
 - RAS/CAS timing and PROM byte contents are still not printed here.
 
-## Doc 009 FDD-unit pass
+## Doc 009 FDD unit
 
 `009 FDDs.pdf` is the floppy unit packet `ДГШ3.065.008`: assembly drawing,
 schematic, element list, and technical description. It is useful for the Tier-2
@@ -140,7 +139,7 @@ Implication:
 - The real-drive path needs +5 V/+12 V power with the drive connector polarity
   checked against the original drawing before use.
 
-## Doc 011 cable pass
+## Doc 011 cable assemblies
 
 `011 Cable.pdf` contains three cable assemblies rather than one processor-board
 pinout. Pages 4-5 describe `ДГШ4.853.042`: a 1.5 m cable with two identical
@@ -154,12 +153,12 @@ Implication:
 
 - The `.042` hardware is consistent with a 23-contact inter-unit cable,
   but this scan does not prove straight-through wiring or identify processor X4.
-- The separately recovered processor `.009` and НГМД schematics now establish
+- The processor `.009` and НГМД schematics establish
   the [X4/XS5 signal map](../schematics/fdc-x4-ngmd-wire-map.md) by exact
   contact-number agreement. That drawing-level map does not prove physical
   cable continuity; preserve the cable as a separate measurement boundary.
 
-## Doc 014 removable-memory-expander pass
+## Doc 014 removable memory expander
 
 `014 External storage.pdf` is not floppy storage. It is the removable 32K memory
 expander (`Сменный расширитель`) packet `ДГШ5.106.102`, with module
@@ -175,7 +174,7 @@ Implication:
 - This document feeds the BASIC/removable-memory path and physical cartridge
   recreation, not the FDD cable plan.
 
-## Doc 015 floppy-disk label pass
+## Doc 015 floppy-disk labels
 
 `015 Floppy disk.pdf` is a one-page assembly drawing for disk label `ДГШ5.106.105
 СБ`. The table maps the base designation to `JUKU-1`, suffix `-01` to `JUKU-2`,
