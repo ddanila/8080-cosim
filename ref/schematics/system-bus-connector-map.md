@@ -9,7 +9,8 @@ The two drawings independently agree on every exposed data, address, and
 listed control contact. They do **not** agree on all power contacts, so the
 `.106.103` card must not be treated as a drop-in `.009` expansion card.
 
-Regenerate with:
+Run from the repository root with Python 3 (standard library only).
+The command replaces this report:
 
 ```sh
 python3 scripts/report_system_bus_connector_map.py

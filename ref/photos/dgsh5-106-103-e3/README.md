@@ -7,7 +7,7 @@ Owner photographs (2026-07-18) of **ДГШ5.106.103 Э3 «Модуль ЗУ-32к
 Contents: memory array, address decoding/buffering, a РЕ3 PROM, and the
 **card-edge bus connector XP** exposing
 the system-bus core — address `-ADR0…-ADRF`, data `-D0…-D7`, and control
-(`-MRDC`, `-IORD`, `-AMWTC`, `-ADRSTB`, `-INHIBIT`, etc.).
+(`-IOM`, `-MRDC`, `-AMWTC`, and `-INHIBIT`).
 
 ## Connector scope
 
