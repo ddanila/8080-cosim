@@ -74,6 +74,22 @@ raster behavior, but schematic/measurement evidence wins when they disagree.
 
 ## Physical artifacts
 
+`kicad/gen_kicad_pcb.py` creates a new board from the JSON, its placement
+tables and footprint mappings. It overwrites the selected output rather than
+updating an existing board or preserving its routed copper. To inspect a
+fresh preview, use a Python environment with `pcbnew` and the KiCad footprint
+libraries installed:
+
+```sh
+mkdir -p build
+python3 kicad/gen_kicad_pcb.py kicad/juku.board.json build/juku-preview.kicad_pcb
+```
+
+Inspect its printed overlap results and run placement, endpoint and DRC checks
+before adopting the output. A printed overlap `FAIL` does not make the generator
+exit nonzero. Generating this preview does not refresh the routed boards or
+fabrication package.
+
 The source and routed PCB may contain more footprints than the LVS-mapped HDL.
 KiCad DRC can also report zero unconnected items when a footprint pad has never
 been assigned a net. Consequently physical release needs all of the following:
