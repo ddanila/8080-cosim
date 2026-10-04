@@ -99,12 +99,20 @@ over the exact extent of an output sample, so an impulse shorter than one WAV
 sample retains its proportional energy rather than being lost.  Retriggered
 or overlapping intervals are merged.
 
-Produce a 96 kHz reference WAV with:
+The wrapper requires a C11-capable `cc` and compiles the renderer in temporary
+storage on each invocation. It changes to the repository root before running,
+so relative input/output paths are interpreted there; use absolute paths for
+files elsewhere. Produce a 96 kHz reference WAV with:
 
 ```sh
 spinoffs/jukupoly/render_jukupoly_wav.sh \
   spinoffs/jukupoly/firmware/three-voice.com /tmp/three-voice.wav
 ```
+
+`--max-seconds` defaults to 300 seconds of modeled CPU execution. The
+transient must return before that limit; a timeout exits with an error before
+writing the WAV. Increase the limit for longer scores; it is not an excerpt
+length option.
 
 The default 20 Hz DC blocker converts the unipolar electrical impulses into a
 playback-safe acoustic reference.  `--dc-block 0` retains the raw, idle-zero
