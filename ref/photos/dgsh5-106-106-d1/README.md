@@ -4,7 +4,7 @@ Owner photographs (2026-07-18) of **ДГШ5.106.106 Д1 «Таблица про�
 — the factory hex listing of the `ДГШ5.106.106` ROM contents. Three sheets
 («Листов 3»), covering the full **0000–07FF (2 KiB)** address range.
 
-## Why this matters
+## Artifact scope
 
 The printed bytes identify a 2 KiB BASIC cartridge page. The reconstructed
 image is `ref/reconstructed-firmware/dgsh5-106-106-d1.bin`, not a mainboard
@@ -12,12 +12,9 @@ PROM table or D15/D16 BIOS half. See the
 [reconstruction report](../../../docs/dgsh5-106-106-rom-table.md) for hashes
 and the archive/photo adjudication.
 
-Observations from the listing:
-
-- Reset vector at 0000: `C3 07 01` = `JMP 0107h` (8080/Z80).
-- Later region contains ASCII BASIC interpreter strings — e.g. `?REDO FROM
-  START`, `OUT OF DATA`, `OVERFLOW`, `DIVISION BY ZERO`, `SYNTAX ERROR`,
-  `STRING TOO LONG` — i.e. this ROM carries (part of) the BASIC.
+The first bytes are `C3 07 01` (`JMP 0107h`), followed later by BASIC
+interpreter strings. These content observations do not establish a mainboard
+reset mapping or a runnable cartridge entry address.
 
 ## Sheets
 

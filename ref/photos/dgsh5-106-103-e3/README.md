@@ -4,16 +4,15 @@ Owner photographs (2026-07-18) of **ДГШ5.106.103 Э3 «Модуль ЗУ-32к
 электрическая принципиальная»** — a 32K memory (ЗУ) expander card, «Введён с
 15.08.88 г.».
 
-Contents: К565РУ-family DRAM/SRAM array with К555-series address decoders/latches
-(РА3/РА13/555 buffers), a РЕ3 ROM, and the **card-edge bus connector XP** exposing
+Contents: memory array, address decoding/buffering, a РЕ3 PROM, and the
+**card-edge bus connector XP** exposing
 the system-bus core — address `-ADR0…-ADRF`, data `-D0…-D7`, and control
 (`-MRDC`, `-IORD`, `-AMWTC`, `-ADRSTB`, `-INHIBIT`, etc.).
 
-## Why this matters
+## Connector scope
 
-The XP pinout here is the **system-bus (backplane) connector** as seen by a
-peripheral card — directly relevant to the bus-connector cross-check and to the
-rev-B backplane work (`spinoffs/minimal-vga`). The
+The XP pinout records the system bus as drawn for this peripheral card. It
+is comparison evidence, not a VJUGA Rev B bus specification. The
 [connector cross-check](../../schematics/system-bus-connector-map.md) compares
 XP with the processor connector and terminal-level interconnect drawing; the
 rail conflict below prevents treating it as a compatible expansion card.
