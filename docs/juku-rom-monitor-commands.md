@@ -8,9 +8,11 @@ handlers are not independently decoded. All handler labels live in the
 
 ## The boot screen is a monitor prompt
 
-After the banner/configuration screen, the ROM waits at a command prompt —
-nothing boots without input (a keyless cosim boot idles indefinitely, and
-the CI boot automation must type `TDD` to reach EKDOS). The command set is
+The stock EktaSoft ROMs wait at a command prompt after the banner/configuration
+screen. Their cosim disk-boot guards type `TDD` to reach EKDOS. Enhanced
+JukuNet ROMs have a separate automatic-boot contract; see
+[machine deployment status](machine-deployment-status.md).
+The stock command set is
 a classic machine-code monitor, dispatched through a `[letter][address]`
 table. Every EktaSoft image and Monitor 3.3 carries the same command letters;
 handler addresses vary:
