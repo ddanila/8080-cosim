@@ -38,8 +38,8 @@ RETAINED_EVIDENCE = [
 ]
 
 ORDER_CHECKS = [
-    "Confirm `fab/gerbers/order-readiness.md` says `RELEASED FOR ORDER`; do not upload while it reports any unreleased status.",
-    "After release, upload only `upload/juku-replica-gerbers-drill.zip` for PCB fabrication.",
+    "Require the pre-upload command above to exit successfully with `replica manufacturing readiness: RELEASED FOR UPLOAD` and confirm `fab/gerbers/order-readiness.md` says `RELEASED FOR ORDER`; do not upload while either gate is unreleased.",
+    "After release, upload only `fab/gerbers/upload/juku-replica-gerbers-drill.zip` for PCB fabrication.",
     "Confirm vendor preview matches `docs/replica-package-geometry-readiness.md`: 2-layer board, 310 mm x 266 mm Edge.Cuts box, and one mixed-plating Excellon drill file.",
     "Confirm top/bottom copper, soldermask, silkscreen, and edge-cuts all render with the same orientation as `fab/gerbers/review/tracespace/`.",
     "Select 1.6 mm FR-4 unless deliberately changed after DFM review.",

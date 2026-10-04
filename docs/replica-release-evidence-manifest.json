@@ -188,7 +188,7 @@
     },
     "Upload procedure": {
       "path": "docs/replica-order-upload-runbook.md",
-      "sha256": "b3c5a5f5c6303facd0a44a565d2e4b6838749f66a9933bf5e7d84755f7646114",
+      "sha256": "380b376b7d507a316bfe59a5994a2b302292119b1555c750ef0e673ee09dbb65",
       "status": "PACKAGE INVALID"
     },
     "Order evidence": {
