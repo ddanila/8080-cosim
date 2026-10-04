@@ -11,6 +11,12 @@ The CMA profile's hardware origin and the physical checks below remain open.
 
 ## Command
 
+Run from the repository root with Python and a C compiler (`CC`, default
+`cc`), the preserved ROMs, and `media/disks/JUKU1.CPM` available.
+The generator compiles a temporary trace executable and overwrites this
+report. Its scenarios also overwrite `cosim/vram.bin`; preserve that file
+first if its current contents are needed. Checkpoints use a temporary directory.
+
 ```sh
 python3 scripts/report_fdc_bus_polarity.py
 ```
