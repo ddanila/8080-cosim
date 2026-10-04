@@ -62,7 +62,7 @@ FD1791/FD1793 counter/separator made from exactly these logic families:
 | read-clock toggle | 74LS74 | D96 КМ555ТМ2 | wiring closed; section-1 restart phase undefined; section-2 clear joins D99 B2, remote source open |
 
 The manufacturer topology was useful as a search constraint, but the
-recovered Juku sheet is now authoritative for the actual wiring.
+recovered Juku sheet is authoritative for the actual wiring.
 
 D96.8 (/Q2) reaches a proved isolated component-side test landing. Sheet 3
 draws section 2 as the local DRQ/INTRQ path: D96.10/.12 share the
@@ -72,7 +72,7 @@ a marked junction and shares their unresolved sheet-1 source.
 Primary SN74LS74A truth makes the shared /PRE2/D2 node set-only
 while /CLR2 is inactive:
 condition low presets Q2, while condition high makes a CLK2 edge capture
-one. The now-drawn pin13 clear conductor could reset Q2; its
+one. The source-drawn pin13 clear conductor could reset Q2; its
 remote source requires continuity and powered capture with pins8-12.
 Sheet 3 directly closes section 1
 as the active toggle: /Q pin6 feeds D pin2, D28.8 clocks pin3, Q pin5
@@ -125,7 +125,7 @@ a conditional D96.11-to-D28.11/DRQ route that conflicts with the drawing;
 direct continuity must resolve it before changing either net. See
 [D96 clock source review](d96-clock2-source-review.md).
 
-Recovered `.009` Э3 sheet 3 now closes Juku's write-precompensation chain:
+Recovered `.009` Э3 sheet 3 closes Juku's write-precompensation chain:
 D93.31 drives D97.10; D97 and D102 provide three delay taps to D101.10/.11/.12;
 D93.17 EARLY and D93.18 LATE select them on D101.2/.14; D101.9 then drives
 D100.6. The associated C16/C19/C20/C22 timing networks and R100/R102/R108
@@ -243,8 +243,8 @@ DRQ/INTRQ feed the local D28/D96 conditioner, not D10 directly.
   owner/drawing-closed; the recorded D29.4/IORD recheck is optional
   corroboration. The `.092` table is physically captured.
 - Before real FDC bring-up, confirm physical D96.9 Q2-to-D101 A0-A3
-  continuity, D96.11 CLK2-to-D94.2/D99.9 continuity, and whether sheet-3
-  D96.13 /CLR2 joins D99.10 B2; identify the shared clear/B2 source separately. Capture WREQ_N at pins1/4 with Q1/pin5
+  continuity, D96.11 CLK2-to-D94.2/D99.9 continuity, and the source-drawn
+  D96.13 /CLR2-to-D99.10 B2 join; identify the shared clear/B2 source separately. Capture WREQ_N at pins1/4 with Q1/pin5
   and /Q1/pin6 because simultaneous async release leaves restart phase
   undefined. Check the photographed D96.11-to-D28.11/DRQ candidate
   against the separate source nets; D96.9's onward physical route remains
@@ -268,7 +268,7 @@ DRQ/INTRQ feed the local D28/D96 conditioner, not D10 directly.
   and D93.15-.19/.26-.32/.34-.36 are source-connected.
   D28/D95/D97/D98/D102/D106 are source-closed. D96's local read-clock
   and section-2 copper paths are source-closed, but D96.11's D94.2 branch
-  and missing clear mechanism need verification; physical waveform
+  and the unresolved remote clear source need verification; physical waveform
   quality remains a bring-up check.
   D93.40 to `P12V` is already owner-confirmed.
 - Keep `docs/fdc-readiness.md` as the HDL/media behavior guard; this
