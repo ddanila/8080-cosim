@@ -126,10 +126,10 @@ step runs. Western parts throughout until step (g).
 | g | Chip tests — ONE scarce part at a time into the proven baseline, re-run the step (e) readback after each swap | matching capture for the tested boot workload; broader part qualification remains separate |
 | h | D6 polarity guard (see 4.6) | `DEC_ROM_N` low during reset fetch and agrees with the corrected twin |
 
-Step (g) order (increasing blast radius, decreasing part count):
+Step (g) order:
 
-1. **К565РУ5 DRAM** — swap KM4164 → РУ5 one socket at a time (or full bank if
-   impatient; one-at-a-time localizes a bad part to a socket). Still Mode A.
+1. **К565РУ5 DRAM** — swap KM4164 → РУ5 one socket at a time in Mode A;
+   retain a capture before and after each swap.
 2. **D8 К155РЕ3** into U4 (still Mode A — the РЕ3 is *observed*, not load-bearing):
    Profile CTL / J95.5-12 must show the `.039` pattern (`0xEF` ROM-low rows,
    `0xDF` ROM-high rows) as the boot walks the ROM.
@@ -141,13 +141,13 @@ mode, result, capture file. The scarce parts are irreplaceable — cold board fo
 insertion, orientation double-checked against the chip-map pinout, no hot-swap,
 and note the bipolar PROMs pull real current (power budget: ~130 mA each).
 
-## 4.5 What a failure looks like (per chip class)
+## 4.5 Interpreting mismatches
 
-| Part | Failure signature on the bench |
+| Part | Observation and next check |
 |---|---|
-| РУ5 bit-slice | banner differs from cosim in exactly one bit lane of every wrong byte → the failing socket = the bit index |
-| D8 РЕ3 | J95 readback byte wrong at specific `A[15:11]` rows while the boot still passes (Mode A) → dead/shorted output pin or bad row, harmless to the baseline |
-| D6 РТ4 | Mode B boot diverges or dies at the first decode boundary the bad output crosses; Profile CTL shows `ROM_CE_N`/`DEC_ROM_N` disagreeing with the twin's decode at a known address |
+| РУ5 bit-slice | A repeatable mismatch confined to one data bit identifies a lane to inspect. Check capture wiring, socket contacts and that lane's circuit; compare with the known-good part before attributing it to the inserted chip. |
+| D8 РЕ3 | Incorrect J95 bytes at known `A[15:11]` rows require checking address mapping, output packing, socket contacts and capture timing against the physical dump. Mode A does not use these outputs for decode, but a passing boot does not prove the inserted part electrically harmless. |
+| D6 РТ4 | If Mode B diverges, compare `ROM_CE_N` and `DEC_ROM_N` with the twin at the same address and firmware mode. Check the PROM/socket/GAL path and repeat the Mode A baseline before assigning a cause. |
 
 ## 4.6 D6 polarity guard
 
