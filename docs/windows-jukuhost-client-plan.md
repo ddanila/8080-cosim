@@ -1,8 +1,10 @@
 # Windows Juku host product contract
 
-The implemented product is a portable folder containing `JUKUWIN.EXE`,
-`JUKUWIN.INI`, `README.md`, `MANIFEST.json` and `SHA256SUMS`. Boot payloads are
-embedded; disk images remain external. The current operator guide is
+The portable host package contains `JUKUWIN.EXE`, `JUKUWIN.INI`, `README.md`,
+`MANIFEST.json` and `SHA256SUMS`. The published floppy transfer bundle adds
+the CP/M development disk and its license, uses `README.TXT`, `MANIFEST.JSN`
+and `SHA256.TXT`, and preselects Stock ROM. Boot payloads are embedded in
+the executable; disk images remain separate files. The current operator guide is
 [windows-jukuhost-client.md](windows-jukuhost-client.md), and qualification is
 tracked in
 [windows-jukuhost-client-implementation.md](windows-jukuhost-client-implementation.md).

@@ -16,5 +16,8 @@ Windows CI release uses the floppy bundle, so publishing it needs neither a
 sibling checkout nor live downloads of CP/M source archives.
 
 To rebuild the media, run `make out/cpm-plus-juku-dev.img` in the pinned
-`cpm-plus-juku` checkout. B: music/application media is not included in the
+`cpm-plus-juku` checkout. Copy `out/cpm-plus-juku-dev.img` to `CPM3.IMG` and
+`out/cpm-plus-juku-dev.report.json` to `cpm3-report.json` in this directory,
+then update the manifest as described above. The Windows build does not
+refresh these files. B: music/application media is not included in the
 floppy bundle.

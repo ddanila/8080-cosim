@@ -92,8 +92,10 @@ Alternatively, copy the contents of the files folder to a formatted floppy.
 
 MANIFEST.JSN records the build, embedded boot payloads and CP/M image source.
 SHA256.TXT checks every delivered file except itself. LICENSE.TXT contains
-redistribution notices. Windows 95 and physical Windows serial qualification
-remain pending; the CI checks are recorded on the workflow run.
+redistribution notices. A local Windows 95 VM passed selftest, configuration
+save and an interactive C12 CP/M session. Physical Windows serial qualification
+remains pending; the CI checks are recorded on the workflow run. See:
+https://github.com/ddanila/8080-cosim/blob/HEAD/docs/windows-jukuhost-client-win95-acceptance.md
 
 https://github.com/ddanila/8080-cosim
 '''
