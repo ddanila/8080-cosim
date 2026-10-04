@@ -7,8 +7,10 @@ Exact `.009` assembly wire table `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`
 The current [cable registration](../ref/photos/juku-pcb-2/x6-cable-registration.json)
 places A:3 at July component pixel `(3036,1816)` in `200418174`, beside
 VT2/R65. VD3 is a distinct glass body about 400 pixels to the right; the
-registration rejects an A:3-to-VD3.2/SOUND_CLAMP assignment. The May view
-`201927098` corroborates that separation. A:4 at `(3154,1788)` appears on
+registration does not support identifying the A:3 joint as a VD3 lead.
+That spatial separation does not rule out a remote electrical connection;
+A:3-to-SOUND_CLAMP continuity remains unmeasured. The May view
+`201927098` corroborates the body separation. A:4 at `(3154,1788)` appears on
 a separate wide ground strip.
 
 The D102-local transform in
