@@ -145,15 +145,16 @@ review against the corrected package fit.
 
 - Known: D2 is a socketed К556РТ4 PROM and current project evidence
   identifies it as programmed drawing `ДГШ5.106.037`.
-- Known: the older behavioral D2 I/O-decode model is not physical D2
-  programming truth; D9 is the current chip-select decoder.
-- Known: all eight inputs are traced and D0/pin12 feeds D30 READY data.
-  The factory symbol draws only D0; pins9-11 are explicit no-connects.
+- Known: D2 supplies READY data; D9 is the chip-select decoder.
+- Known: all eight inputs have modeled net assignments, but the five
+  scan-provenance address routes still need an exact .009 chase.
+  D0/pin12 feeds D30 READY data; the factory symbol draws only D0,
+  and pins 9-11 are explicit no-connects.
 - Known: X1.107B/-BLOCK, R1.2, D13.13, and D105.10 form the pulled-up
   edge-bus `H`; R1 is 2 kΩ to +5 V. H gates CPU DBIN through D105
   into D5 and is not the −5 V supply.
 - Known: `ref/physical-proms/validated/d2_037.raw.bin` is the 256-byte
   authoritative raw low-nibble image, reproduced from 6 independent acquisitions.
-- Remaining closure is complete cycle timing around the now-closed `H`
+- Remaining closure is complete cycle timing around the continuity-closed `H`
   edge plus historical corroboration, not D2 content or raw
   electrical polarity.
