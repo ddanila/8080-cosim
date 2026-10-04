@@ -136,32 +136,18 @@ the new-host path.
 
 ### Subsequent `Wait` state: host parser defect
 
-A subsequent EK37 run accepted Janet identity `02 -> 01` but left the stock
-loader visibly in `Wait`. This did not reproduce a target USART or mainboard
-failure. The binary capture shows a truncated data-frame header
-`E4 E4 02 01 07` immediately followed by repeated valid directed poll frames.
-The C parser treated the first byte of the next poll as a length of 228 and,
-after the resulting checksum failure, retained an old complete poll rather
-than the newest incomplete frame prefix. It consequently received 22,667
-bytes but transmitted only 18 before its stock-bootstrap timeout.
-
-Host `0.3.1-m6` recovers to the newest incomplete Janet sync/header, and the
-exact truncated-header/repeated-poll pattern is a portable core regression.
-All Linux host gates, including complete stock-V15 cosim boot, pass with the
-fix. The diagnostic run itself was postponed when CS00000 was switched off;
-no additional hardware conclusion is drawn from this failed host session.
-The retained log and capture begin at
-[`cs00000-ek37-diag06-20260822T162818Z.log`](evidence/juku-serial/cs00000-ek37-diag06-20260822T162818Z.log).
+A subsequent EK37 `Wait` state was traced to a C-host parser defect, with
+no additional target USART or mainboard conclusion. Host `0.3.1-m6` fixed
+recovery after a truncated Janet data header followed by directed polls;
+`host/tests/core_test.c` retains that physical-capture regression. The
+[failed-session capture](evidence/juku-serial/cs00000-ek37-diag06-20260822T162818Z.log)
+records the original evidence.
 
 ### Post-fix physical confirmation and DIAG 0.6
 
-The next cold experiment used fixed host `0.3.1-m6` and the latest CP/M Plus
-native recovery image. The already-active EK37 Janet session was learned as
-`02 -> 01`; the one-record stock bootstrap completed with five ACKs and zero
-rejects. JF15 then acknowledged after two probes, accepted its extension and
-9,267-byte compressed stream with CRC16/IBM `1C42`, and reached NetDisk v3
-without extension or stream retries. The first valid disk request arrived
-8.234 seconds after host start.
+The subsequent physical run used fixed host `0.3.1-m6` and the recorded CP/M
+Plus native recovery image with EK37 fitted. Janet/JF15 completed and entered
+NetDisk v3 without bootstrap rejects or extension/stream retries.
 
 At the physical `A>` prompt, bare `DIAG` detected the fitted EK37 ROM and
 showed the new no-argument help behavior. `DIAG ALL` then reported every test
