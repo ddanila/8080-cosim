@@ -2,7 +2,7 @@
 
 Status: **EKDOS JBASIC PROMPT ORACLE PINNED**
 
-This generated report drives the factory ROMBIOS boot sequence to EKDOS,
+This generated report drives the adopted `roms/ekta37.bin` image to EKDOS,
 waits for the `A>` prompt bitmap, then types the disk command
 `JBASIC` on the vendored programming disk. The keyboard wait marker is
 implemented as `|` in `JUKU_KEYS`; it is not a typed key.
@@ -20,7 +20,12 @@ JBASIC_COMMAND_MAX_CYCLES=900000000 JBASIC_COMMAND_FRAME_CYCLES=200000 \
   sync/ekdos_jbasic_command_probe.py
 ```
 
-The wrapper compiles its own trace and sets the keyboard/checkpoint inputs.
+Requires Python 3, a C compiler (`CC`, default `cc`), and the vendored
+ROM, disk and live-candidate files. The wrapper compiles its own trace
+and sets the keyboard/checkpoint inputs. Temporary build and checkpoint
+files are deleted on exit; `cosim/vram.bin` is overwritten and retained.
+The report is overwritten even on a failed oracle (exit code 1); an
+optional first argument selects another report path.
 Its default disk is `media/disks/JUKPROG2.CPM`; to select another image,
 set `JBASIC_COMMAND_DISK` to its absolute path. Keyboard timing overrides
 are `JBASIC_KEY_HOLD_FRAMES` (default 6) and `JBASIC_KEY_GAP_FRAMES` (default 8).
