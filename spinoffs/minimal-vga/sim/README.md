@@ -6,6 +6,10 @@ decode modes, the Rev B tier suite, framebuffer-readback validation, U24 DRAM
 timing, logical LVS, nine Rev A physical-design JSON/HDL LVS slices, and
 Rev A PCB/package checks.
 
+Initialize the T80/tv80 submodules before running the aggregate. The tv80 boot
+guard exits successfully with `SKIP` when its core is absent; aggregate success
+alone does not prove every listed check ran.
+
 ## Rev B entry points
 
 ```sh
