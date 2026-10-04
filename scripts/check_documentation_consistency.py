@@ -124,14 +124,13 @@ def main() -> int:
         with photo_endpoints.open(newline="", encoding="utf-8") as handle:
             photo_rows = list(csv.DictReader(handle))
         state_counts = Counter(row.get("review_state", "") for row in photo_rows)
-        confidence_counts = Counter(row.get("confidence", "") for row in photo_rows)
         photo_doc = read("docs/photo-registration.md")
         expected_photo_markers = (
             f"endpoint table contains {len(photo_rows)} reviewed rows",
             f"| `accepted` | {state_counts['accepted']} |",
             f"| `measurement` | {state_counts['measurement']} |",
-            f"Confidence metadata consists of {confidence_counts['local-package-fit']} `local-package-fit`, {confidence_counts['registration-only']}",
-            f"`registration-only`, and {confidence_counts['registration+unique-hole-snap']} `registration+unique-hole-snap` rows",
+            "Confidence categories and individual fit methods are recorded in\n`ref/photos/juku-pcb-2/endpoints.csv`",
+            "A hole snap or accurate pad projection is not electrical evidence by itself.",
         )
         for expected in expected_photo_markers:
             if expected not in photo_doc:

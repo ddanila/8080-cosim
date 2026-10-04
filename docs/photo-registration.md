@@ -70,9 +70,7 @@ net. All 81 nonblank candidate labels now resolve to their stated pad in
 `kicad/juku.board.json`. R102.1 and R108.1, for example, carry the sheet-3
 RC net names while their remote owner-board paths remain unproved.
 
-Confidence metadata consists of 429 `local-package-fit`, 155
-`registration-only`, and 14 `registration+unique-hole-snap` rows. The remaining
-confidence categories and individual fit methods are recorded in
+Confidence categories and individual fit methods are recorded in
 `ref/photos/juku-pcb-2/endpoints.csv`. Projected regions and hole snaps retain
 their evidence limits even when the coordinates match the model.
 A hole snap or accurate pad projection is not electrical evidence by itself.
