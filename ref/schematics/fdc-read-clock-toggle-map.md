@@ -51,3 +51,24 @@ This closes logical connectivity and the runnable section-1 divide-by-two
 contract while explicitly holding section 2 for functional verification.
 Clock amplitude, pull-up rise time, duty cycle, and separator lock margin remain
 bench bring-up measurements.
+
+## Verification
+
+From the repository root:
+
+```sh
+python3 kicad/check_fdc_read_clock_toggle.py
+sync/d96_check.sh
+```
+
+The Python guard checks selected JSON nets, source-PCB pad nets, endpoint
+review states, source-photo hashes, literal HDL markers, and the D96 LVS map
+entry. It uses the standard library and accepts an LFS pointer's declared
+object hash when JPEG bytes are absent; it does not inspect photographed copper
+or run LVS.
+
+The Bash guard needs Icarus Verilog (`iverilog` and `vvp`) and `sha256sum`.
+It verifies the preserved TI datasheet hash and simulates the two D96 device
+contracts, then overwrites `docs/d96-read-clock-readiness.md` (or `D96_REPORT`).
+It does not run the complete recovery counter/separator or prove physical
+restart phase and lock margin.
