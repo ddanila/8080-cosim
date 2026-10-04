@@ -29,15 +29,15 @@ Environment overrides (defaults for the direct command above):
 - `JMON33_COMMAND_REPORT` overrides the report output path.
 
 Selected oracle: `idle`. Timing overrides can change the final framebuffer
-and fail the fixed hashes. I/O sample counts are diagnostic, not pass criteria.
+and fail the fixed hashes.
 
 ## Evidence
 
-| Case | Keys | Exit | Stop PC | Cycles | Port `0x05` samples | Active key values | Visible blocks | Pixels | VRAM SHA256 | Result |
-| --- | --- | ---: | --- | ---: | ---: | --- | --- | ---: | --- | --- |
-| A-enter | `A\n` | `0` | `0xFF54` | `60000002` | `5015` | `0x84`, `0x8F`, `0xAF`, `0xE4`, `0xEF` | `x=8,y=20`, `x=8,y=60` | `160` | `af3cfaefcc1f43604a02a2b2f95449a12c1b7a02a14581aea0bbfa06df51283a` | PASS |
-| T-enter | `T\n` | `0` | `0xFF54` | `60000002` | `5015` | `0x88`, `0x8F`, `0xAF`, `0xE4`, `0xEF` | `x=8,y=20`, `x=296,y=60` | `160` | `9da43c195487eae0eeac8c65725a3251ff502642025b745a16691a1d7044bae3` | PASS |
-| B-enter | `B\n` | `0` | `0xFF54` | `60000006` | `5015` | `0x8C`, `0x8F`, `0xAF`, `0xE4`, `0xEF` | `x=8,y=20`, `x=0,y=80` | `160` | `891fb09d78847a92e8417b1fb8ab81f160555725853b1d21bf29e25348bad0b0` | PASS |
+| Case | Keys | Exit | Stop PC | Cycles | Visible blocks | VRAM SHA256 | Result |
+| --- | --- | ---: | --- | ---: | --- | --- | --- |
+| A-enter | `A\n` | `0` | `0xFF54` | `60000002` | `x=8,y=20`, `x=8,y=60` | `af3cfaefcc1f43604a02a2b2f95449a12c1b7a02a14581aea0bbfa06df51283a` | PASS |
+| T-enter | `T\n` | `0` | `0xFF54` | `60000002` | `x=8,y=20`, `x=296,y=60` | `9da43c195487eae0eeac8c65725a3251ff502642025b745a16691a1d7044bae3` | PASS |
+| B-enter | `B\n` | `0` | `0xFF54` | `60000006` | `x=8,y=20`, `x=0,y=80` | `891fb09d78847a92e8417b1fb8ab81f160555725853b1d21bf29e25348bad0b0` | PASS |
 
 ## Disposition
 

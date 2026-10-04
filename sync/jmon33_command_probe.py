@@ -295,7 +295,7 @@ def main() -> int:
     lines.append("")
     REPORT.write_text("\n".join(lines))
     print(f"JMON33-COMMAND-PROBE: {'PASS' if passed else 'FAIL'}")
-    print(f"Wrote {REPORT.relative_to(ROOT)}")
+    print(f"Wrote {os.path.relpath(REPORT, ROOT)}")
     return 0 if passed else 1
 
 
