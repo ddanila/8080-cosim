@@ -1,231 +1,70 @@
-# VJUGA Rev A staged full-board LVS coverage
+# VJUGA Rev A structural LVS coverage
 
-Status date: 2026-07-23.
+Status: **NINE SLICES PASS / WHOLE BOARD INCOMPLETE**.
 
-Status: **STAGE 9 PASS / WHOLE BOARD INCOMPLETE**.
+The slices compare independently authored structural HDL with
+`kicad/rev-a-physical.board.json` through explicit pin maps. They check model
+connectivity, including power nets and declared no-connect pads. They do not
+read the routed PCB or establish copper continuity.
 
-Nine independently authored physical-board LVS slices are executable:
+## Coverage and commands
 
-```sh
-spinoffs/minimal-vga/sync/rev_a_power_clock_reset_lvs.sh
-spinoffs/minimal-vga/sync/rev_a_decode_lvs.sh
-spinoffs/minimal-vga/sync/rev_a_cpu_rom_lvs.sh
-spinoffs/minimal-vga/sync/rev_a_dram_bank_lvs.sh
-spinoffs/minimal-vga/sync/rev_a_dram_mux_lvs.sh
-spinoffs/minimal-vga/sync/rev_a_refresh_counter_lvs.sh
-spinoffs/minimal-vga/sync/rev_a_spare_socket_lvs.sh
-spinoffs/minimal-vga/sync/rev_a_dram_timing_lvs.sh
-spinoffs/minimal-vga/sync/rev_a_ppi_lvs.sh
-```
+Run the listed scripts from the repository root. Each lives under
+`spinoffs/minimal-vga/sync/`; its matching `rev_a_<name>_map.json` defines exact
+pins and boundary projections, and `hdl/rev_a_<name>_lvs.v` defines the structural
+model. A runner returns `SKIP` with exit zero when Yosys is unavailable; verify
+that the comparison actually ran.
 
-They compare their structural HDL with `kicad/rev-a-physical.board.json`
-through independent maps. Unlike the older eight-instance logical comparison,
-these slices model individual physical pads, opt power rails into `sync/lvs.py`,
-compare declared no-connect pads, and identify complete (non-boundary)
-instances whose every physical pin must remain mapped and owned.
-Maps may also name endpoint-closed board nets; every physical endpoint on those
-nets must then be present in the projection.
+| Slice / runner | Complete physical instances |
+| --- | --- |
+| [Power, clock and reset](../sync/rev_a_power_clock_reset_lvs.sh) | J1, J3, F1, D1, C50, R6, R30/R31; U50/U51, R4/R5, J96, C24/C25; J93 |
+| [Decode](../sync/rev_a_decode_lvs.sh) | U3/U4 PROM sockets, U5 GAL, U6 inverter, J94/J95, R32–R44, C26–C28 |
+| [CPU and ROM](../sync/rev_a_cpu_rom_lvs.sh) | U1/U2, C1/C2 |
+| [DRAM bank](../sync/rev_a_dram_bank_lvs.sh) | U10–U17, C6–C13 |
+| [DRAM address muxes](../sync/rev_a_dram_mux_lvs.sh) | U20/U21, C14/C15 |
+| [Refresh counter](../sync/rev_a_refresh_counter_lvs.sh) | U22, C16 |
+| [Empty spare socket](../sync/rev_a_spare_socket_lvs.sh) | U23 (DNP), C17 |
+| [DRAM timing](../sync/rev_a_dram_timing_lvs.sh) | U24, C18 |
+| [PPI](../sync/rev_a_ppi_lvs.sh) | U30, C19 |
 
-These comparisons check declared model connectivity. They do not read the PCB
-or establish copper continuity; routing, DRC, and physical measurements require
-their separate checks. The runners return `SKIP` with exit zero if Yosys is
-unavailable, so verify that each requested slice actually ran.
+“Complete” requires every physical pin of that instance to be mapped and owned.
+Other mapped instances are partial boundary projections. All slices except
+power/clock/reset also require every endpoint on the non-power nets touched by
+their complete instances to be in the map. The comparator checks partitions of
+instance/pad endpoints, so matching net names alone cannot satisfy LVS.
 
-## Closed in stage 1
+The runners test temporary defective board models and require mismatches:
+miswired pads, incorrect no-connect declarations and, where endpoint closure is
+required, added unmapped consumers. Exact mutations and expected diagnostics
+live in the scripts; the committed board model is not modified.
 
-The comparison maps 17 physical references, marks 16 of them complete, and
-matches nine connectivity partitions:
+## Important physical-model constraints
 
-- the complete PCB placement `POWER` block: J1, J3, F1, D1, C50, R6, R30,
-  and R31;
-- the complete PCB placement `CLOCK_RESET` block: U50, U51, R4, R5, J96, C24,
-  and C25;
-- the J93 power-debug header; and
-- U1 pins 6, 11, 26, and 29 as the external CLK, VCC, RESET_N, and GND
-  boundary.
+- J3's duplicated VBUS, GND and shield contacts have unique pad identities.
+- U1's INT_N, NMI_N and BUSRQ_N inputs are tied to VCC; HALT_N and BUSACK_N
+  are explicitly NC. Each DRAM package has separate DIN/DOUT pads and an NC
+  pin 1 for the selected 4164/РУ5-compatible population.
+- U20/U21 active-low enables (pin 15) and U22 active-high reset inputs
+  (pins 2/12) are grounded. U22.6 clocks U22.13 for the refresh cascade.
+- The unpopulated U23 socket retains CLK on pin 1, grounded pins 2/7/12/13,
+  VCC on pin 14 and eight NC outputs.
+- U24 pin 13 is `DECODE_WAIT_N`; pins 21–23 are state-feedback macrocells
+  declared PCB NC. Its behavior and timing have a separate guard:
+  `spinoffs/minimal-vga/sim/u24_dram_timing_check.sh`.
+- U30's column-driver boundary ends at R16–R23 pin 1; encoded-row inputs
+  end at U31. This does not cover the complete keyboard network.
 
-The modeled partitions are VCC_RAW, VCC, GND, USB_CC1, USB_CC2, PWR_OK,
-OSC_OE_N, CLK, and RESET_N. Net names do not establish a match; the comparator
-checks the partition of mapped instance/pad endpoints. J3's duplicated VBUS,
-GND, and shield contacts have unique logical pad names, so one missing or
-mis-bound contact cannot hide behind another contact on the same net.
+## Remaining coverage and release boundary
 
-The runner also makes a temporary copy of the board model, moves J3.A9 from
-VCC_RAW to GND, and requires LVS to fail. This mutation is the negative control
-for both physical-pad sensitivity and the opt-in power-net path. The committed
-board is never modified.
+Independent structural HDL and pin maps are still required for:
 
-## Closed in stage 2
+- the remaining U31 encoder, resistor-to-J30 keyboard matrix and connector;
+- U40 VGA timing interface, U41 serializer, J40 connector and resistor path;
+- diagnostic LEDs and remaining observation headers/boundaries;
+- decouplers C3–C5 and C20–C23, which have no complete-instance owner.
 
-`rev_a_decode_lvs.sh` closes the complete decode PROM/socket/glue group:
-
-- U3 RT4 and U4 RE3 sockets, U5 decode GAL, and U6 mode-bit inverter;
-- J94 mode jumper and J95 decode observation header;
-- R32-R43 output pull-ups, R44 mode pull-down, and C26-C28 decoupling; and
-- every non-power external endpoint those parts touch on U1, U2, U24, U30,
-  J97, and J98.
-
-The comparison maps 28 references: 22 completeness-checked decode parts and
-six boundary projections. It matches 37 connectivity partitions plus all five
-intentional no-connect pads (U5.23 and U6.6/.8/.10/.12). The boundary
-projections do not claim full coverage of U1, U2, U24, U30, J97, or J98; they
-make the decode nets exact while those devices await their owning stages.
-All 35 non-power decode nets are endpoint-closed.
-
-Two temporary mutations are required to fail: moving U3.12 from DEC_ROM_N to
-DEC_RAM_N, and deleting the U6.6 no-connect declaration. These prove both
-model-connectivity and intentional-NC sensitivity.
-
-## Closed in stage 3
-
-`rev_a_cpu_rom_lvs.sh` makes U1 Z80, U2 ROM, and their C1/C2 decouplers complete
-owned instances. It maps all 40 CPU pins and all 28 ROM pins, including the
-CPU's VCC-tied INT_N, NMI_N, and BUSRQ_N inputs and its explicit HALT_N/BUSACK_N
-no-connect pads.
-
-The comparison maps 35 references: four complete core parts and 31 exact
-boundary projections. It matches 38 connectivity partitions, both intentional
-CPU NC pads, and proves all 36 non-power core nets endpoint-closed: A0-A15,
-D0-D7, CPU controls, clock/reset/wait, and the three ROM control nets.
-
-Three temporary mutations must fail: moving U1.30 from A0 to A1, deleting the
-U1.18 no-connect declaration, and adding an otherwise-unmapped U23.3 endpoint
-to A0. The last control proves that endpoint closure rejects a newly introduced
-consumer even when the mapped partition itself would otherwise be unchanged.
-
-## Closed in stage 4
-
-`rev_a_dram_bank_lvs.sh` makes U10-U17 and their C6-C13 decouplers complete
-owned instances. It maps every pad on all eight 4164-class packages, including
-both DIN and DOUT pads on each data bit and the eight explicit pin-1
-no-connects used by the selected 4164/РУ5-compatible population.
-
-The comparison maps 25 references: 16 complete bank parts and nine exact
-boundary projections. It matches 21 connectivity partitions, all eight NC
-pads, and proves all 19 non-power bank nets endpoint-closed: D0-D7,
-DRAM_A0-DRAM_A7, RAS_N, CAS_N, and DRAM_WE_N.
-
-Three temporary mutations must fail: moving U10.2 from D0 to D1, deleting the
-U10.1 no-connect declaration, and adding an otherwise-unmapped U23.3 endpoint
-to DRAM_A0.
-
-## Closed in stage 5
-
-`rev_a_dram_mux_lvs.sh` makes both 74HCT157 address muxes U20/U21 and their
-C14/C15 decouplers complete owned instances. It maps every mux pad, including
-pin 15 on each device as a second GND endpoint so the corrected active-low
-enable cannot return to a floating island. Its endpoint-closed
-`REFRESH_ROW3` boundary includes both U22.6 and U22.13, guarding the corrected
-low-half-to-high-half refresh-counter cascade.
-
-The comparison maps 19 references: four complete mux parts and 15 exact
-boundary projections. It matches 27 connectivity partitions and proves all 25
-non-power mux nets endpoint-closed: A0-A7, DRAM_A0-DRAM_A7, ADDRMUX_SEL, and
-REFRESH_ROW0-REFRESH_ROW7.
-
-Four temporary mutations must fail: moving U20.2 from A0 to A1, moving U21.4
-from DRAM_A4 to DRAM_A5, restoring the former floating U20.15/U21.15
-ADDRMUX_OE_N island, and adding an otherwise-unmapped U23.3 endpoint to
-ADDRMUX_SEL. Together they prove input, output, corrected-enable power, and
-endpoint-closure sensitivity.
-
-## Closed in stage 6
-
-`rev_a_refresh_counter_lvs.sh` makes the cascaded 74HCT393 refresh counter U22
-and its C16 decoupler complete owned instances. It maps every physical pad,
-including both active-high reset inputs on GND and both U22.6 and U22.13 on
-`REFRESH_ROW3`, so the low-half Q3 output clocks the high half.
-
-The comparison maps 11 references: two complete refresh-counter parts and nine
-exact boundary projections. It matches 11 connectivity partitions and proves
-all nine non-power nets touched by U22 are endpoint-closed: CLK and
-REFRESH_ROW0-REFRESH_ROW7.
-
-Six temporary mutations must fail: moving U22.1 from CLK to REFRESH_TICK,
-moving U22.3 from REFRESH_ROW0 to REFRESH_ROW1, moving the U22.13 cascade clock
-from REFRESH_ROW3 to GND, restoring the former floating U22.2/U22.12
-REFRESH_CLR island, falsely declaring U22.8 NC, and adding an otherwise-unmapped
-U23.3 endpoint to REFRESH_ROW0. Together they prove clock input, output order,
-cascade, corrected reset power, no-connect, and endpoint-closure sensitivity.
-
-## Closed in stage 7
-
-`rev_a_spare_socket_lvs.sh` makes the explicitly empty U23 DNP socket and its
-C17 decoupler complete owned instances. It maps every physical pad: U23.1
-remains on CLK for optional probing, pins 2/7/12/13 are grounded, pin 14 is on
-VCC, and all eight counter outputs are declared NC.
-
-The comparison maps nine references: two complete spare-socket parts and seven
-exact CLK boundary projections. It matches three connectivity partitions,
-matches eight NC pads, and proves that the sole non-power net touched by U23,
-CLK, is endpoint-closed.
-
-Six temporary mutations must fail: moving U23.1 from CLK to GND, moving the
-grounded U23.13 second clock to CLK, moving C17.1 from VCC to GND, deleting the
-U23.3 NC declaration, wiring U23.8 to CLK, and adding an otherwise-unmapped
-U31.15 endpoint to CLK. Together they prove the retained probe clock,
-grounded-inactive topology, decoupling rails, complete NC set, output
-isolation, and endpoint-closure sensitivity.
-
-## Closed in stage 8
-
-`rev_a_dram_timing_lvs.sh` makes the U24 GAL22V10 DRAM-timing/arbitration
-device and C18 decoupler complete owned instances. It maps all 24 U24 pads,
-including the corrected pin-13 `DECODE_WAIT_N` input, seven functional output
-macrocells on pins 14-20, and the three state-feedback macrocells on pins 21-23
-that are explicit PCB no-connects. Behavioral programming and timing remain
-independently guarded by `hdl/u24_dram_timing.v` and
-`sim/u24_dram_timing_check.sh`.
-
-The comparison maps 31 references: two complete timing parts and 29 exact
-boundary projections. It matches 21 connectivity partitions, matches three NC
-pads, and proves all 19 non-power nets touched by U24 are endpoint-closed.
-Those nets cover clock/reset, memory decode/read/write, observed refresh,
-video request/acknowledge, four refresh-row bits, decode/CPU wait, RAS/CAS/WE,
-address-mux select, and refresh tick.
-
-Eight temporary mutations must fail: moving U24.3 from `RAM_CE_N` to
-`MEM_RD_N`, moving U24.8 from `REFRESH_ROW0` to `REFRESH_ROW1`, moving the
-corrected U24.13 input from `DECODE_WAIT_N` to `RAS_N`, moving U24.14 from
-`RAS_N` to `CAS_N`, moving C18.1 from VCC to GND, deleting the U24.21 NC
-declaration, falsely declaring U24.20 NC, and adding an otherwise-unmapped
-U30.18 endpoint to `WAIT_N`. Together they prove representative decode,
-refresh, input/output, power, no-connect, and endpoint-closure sensitivity.
-
-## Closed in stage 9
-
-`rev_a_ppi_lvs.sh` makes the U30 82C55 PPI and C19 decoupler complete owned
-instances. It maps all 40 U30 pads, including A0/A1, the eight-bit data bus,
-reset and I/O decode controls, four encoded-row inputs, eight column-driver
-outputs, the PC0/PC1 memory-mode outputs, and ten explicit unused-port
-no-connects.
-
-The comparison maps 32 references: two complete PPI parts and 30 exact boundary
-projections. It matches 30 connectivity partitions, matches ten NC pads, and
-proves all 28 non-power nets touched by U30 are endpoint-closed. The column
-drivers close at R16-R23 pin 1 and the encoded-row inputs close at U31, leaving
-the resistor-to-J40 and remaining encoder network for an independent keyboard
-stage.
-
-Ten temporary mutations must fail: moving U30.9 from A0 to A1, U30.34 from D0
-to D1, U30.5 from `IO_RD_N` to `IO_WR_N`, U30.13 from `KBD_ROW_A0_N` to
-`KBD_ROW_A1_N`, U30.4 from `KBD_COL0_DRV` to `KBD_COL1_DRV`, and U30.14 from
-PC0 to PC1; moving C19.1 from VCC to GND; deleting the U30.18 NC declaration;
-falsely declaring U30.10 NC; and adding an otherwise-unmapped U31.15 endpoint
-to `KBD_ROW_A0_N`. Together they prove representative bus, control, keyboard,
-mode, power, no-connect, and endpoint-closure sensitivity.
-
-## Still open
-
-This is staged progress, not a full-board release disposition. The remaining
-physical groups still need independent structural HDL and pin maps:
-
-- the remaining U31 encoder, resistor-to-J40 keyboard matrix, and connector;
-- VGA timing, serializer, connector, and resistor path; and
-- diagnostic LEDs and the remaining observation headers/boundaries.
-
-Until those groups are compared and a final all-reference aggregate passes—or
-the owner records the explicit compensated-review waiver—the whole-board LVS
-bare-board gate remains open. The direct contracts in
-`kicad/check_rev_a_physical.py` remain useful guards, but do not substitute for
-independently authored structural LVS.
+The whole-board LVS bare-board gate remains open until those groups and a final
+all-reference aggregate pass, or the owner records the explicit compensated-review
+waiver. Direct contracts in `kicad/check_rev_a_physical.py` do not substitute for
+independent structural LVS. Routing, DRC, package freshness and physical acceptance
+remain separate gates; see [manufacturing readiness](rev-a-manufacturing-readiness.md).
