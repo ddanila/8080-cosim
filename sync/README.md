@@ -1,8 +1,8 @@
 # Verification entry points
 
 `sync/` contains the LVS comparison, fast behavioral regressions, and focused
-subsystem/deep diagnostics. Generated reports under `docs/` record evidence from their source data and
-checks; use the subsystem guides for implementation contracts. Run the commands
+subsystem/deep diagnostics. Generated reports under `docs/` record evidence
+from their source data and checks; use the subsystem guides for implementation contracts. Run the commands
 below from the repository root.
 
 ## Connectivity
@@ -63,9 +63,8 @@ target-reset test is a separate entry point:
 ```sh
 python3 tests/jukuhost_stock_recovery_cosim_test.py
 ```
- See
-`docs/portable-c-host-m2-acceptance.md` for the accepted result and exact
-platform-port boundary.
+See [native host acceptance](../docs/portable-c-host-m2-acceptance.md) for the
+accepted result and exact platform-port boundary.
 
 The retained C8 rollback and separately named C9/C10 bounded-host gates are:
 
@@ -89,7 +88,7 @@ It verifies the locally vendored Open Watcom toolchain, builds the 16-bit host
 twice byte-identically, runs its self-test under DOSBox-X, and exercises the
 actual EXE through emulated COM1 against stock 9,600-baud Janet and retained C8
 19,200-baud Fastboot/NetDisk/N4. See
-`docs/portable-c-host-m2.2-dos-acceptance.md`. Physical Pocket8086 timing and
+[DOS acceptance](../docs/portable-c-host-m2.2-dos-acceptance.md). Physical Pocket8086 timing and
 CS00015 behavior remain the separate M2.3 gate.
 
 The native Windows Juku host desk gate is:
@@ -168,6 +167,11 @@ and Icarus Verilog are available; missing tools produce a skip warning. `CI_GATE
 overrides only the remote-CI check; `git push --no-verify` bypasses the complete
 hook and should be reserved for a deliberate, documented exception.
 
+The remote-CI query uses GitHub CLI's selected repository. Set
+`GH_REPO=ddanila/8080-cosim` when pushing so the hook checks the user's fork;
+see [the local CI gate](../docs/development-workflow.md#local-ci-gate) for
+its sampling limits.
+
 See [CI budgets and local-only coverage](../ci/README.md) for workflow
 selectors, bounded profiles, and checks that require a local run.
 
@@ -217,8 +221,7 @@ verify current-source execution after resolving simulator compatibility.
 - `jmon33_ready_probe.py`, `jmon33_command_probe.py`, and
   `jmon33_hdl_probe.sh` — Monitor 3.3 reference and structural checks.
 - `jmon33_checkpoint_deep_check.sh` — long checkpoint-resumed cursor/A/B/FDC-T
-  checks, kept out of push CI because of runtime. Its superseded cursor
-  intermediate is written to a temporary file.
+  checks, kept out of push CI because of runtime.
 - `jukuravi_d55_clock_audit.sh` — slow full-ROM T31 negative control plus T34
   clean, D55-data, D54-clock, D56-clock, and D9-select structural fault matrix.
   The current rerun stops in T31: bitmap `18` differs from the expected `08`
@@ -233,9 +236,8 @@ verify current-source execution after resolving simulator compatibility.
   for layout, concurrency controls, and prerequisites; this is a regression
   entry point.
 
-Checkpoint load/resume tools remain useful for narrowing regressions, but their
-old intermediate report files are not project milestones. The uninterrupted
-reset-to-prompt reports are the stronger evidence where both exist.
+Use checkpoint load/resume tools to narrow regressions. Use uninterrupted
+reset-to-prompt reports to establish the complete boot path.
 
 ## Reference and generated-evidence checks
 
