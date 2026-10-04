@@ -87,7 +87,7 @@ conflict directly at `101A, 102A, 103A`: the card grounds
 those contacts while the exact `.009` processor sheet-1 power corner
 labels them +5 V. The card additionally uses `106A` for +5 V. This is
 not resolved by signal-name inference. The `.009` drawing remains
-normative for the replica; no processor-board rail was changed.
+normative for the replica.
 
 ## System-level cable map (`ДГШ3.031.011 Э6`)
 
@@ -106,7 +106,6 @@ modules are installed simultaneously.
 
 ## Disposition
 
-- The main-board data/address/control model is independently corroborated.
 - The conflicting power assignments remain a variant boundary; retain the
   exact `.009` rail map for the replica.
 - A future `.106.102` drawing or backplane wiring table is required before
