@@ -24,11 +24,11 @@ before extending code boundaries; the byte round trip cannot prove them.
 - [`ekta37/ekta37.ctl`](ekta37/ekta37.ctl) — hand-maintained knowledge.
 - [`ekta37/ekta37.skool`](ekta37/ekta37.skool) — generated disassembly.
 
-Memory model (byte-verified; mapping mechanism per the MAME driver): ROM
-`0000-17FF` executes in place; ROM `1800-3FFF` executes at `D800h-FFFFh`
-through memory-mode banking (modes 1/2 map it there for reads) — the EKDOS monitor vectors at
-runtime `FF50h` are ROM `3F50h`. Addresses in the ctl/skool are ROM file
-offsets.
+The ROM contains code and data. In reset mode 0, the emulator maps all
+ROM offsets `0000h-3FFFh` at the same CPU addresses. In modes 1/2, it maps
+ROM offsets `1800h-3FFFh` at `D800h-FFFFh` for reads; the EKDOS monitor
+vectors at runtime `FF50h` are ROM `3F50h`. This is banking, not a copy of
+the high ROM into RAM. Addresses in the ctl/skool are ROM file offsets.
 
 The runnable cosim and HDL protect this high ROM window from writes.
 Only mode 0's low ROM overlay permits writes to underlying RAM; see
@@ -47,8 +47,9 @@ as understanding grows, never by editing the skool.
 - [`ekta43/ekta43.ctl`](ekta43/ekta43.ctl) — hand-maintained knowledge.
 - [`ekta43/ekta43.skool`](ekta43/ekta43.skool) — generated disassembly.
 
-Same memory model as ekta37 (verified: same `JMP 0017h` entry, same monitor
-vector table shape at ROM `3F50h`, same `+C000h` relocation of `1800-3FFF`).
+The emulator uses the same banking for this image as for ekta37. Static
+landmarks include the same `JMP 0017h` entry and monitor-vector table shape
+at ROM `3F50h`; those bytes alone do not verify physical memory decoding.
 Seeded landmarks include the boot PIT programming at `01DCh`, the shared
 alternative/restore D54/D55 parameter routines (`0F03h`/`0F2Fh`), and the
 AT keyboard layout table at `14AFh` — resident low ROM, consistent with an
@@ -97,13 +98,13 @@ reference for jmon22's untrusted blocks 6-7, subject to the donor constraints in
   FDC 1791/2.
 - [`ekta31/`](ekta31/ekta31.ctl) — Serial #0031, RomBios 3.43, 40x24.
 - [`ekta32/`](ekta32/ekta32.ctl) — Serial #0032, RomBios 2.43; the stock
-  sibling of the homebrew #0043 and the reference for isolating its
-  AT-keyboard modification.
+  comparison image for #0043, whose banner declares an IBM AT keyboard.
+  The banners alone do not establish its source ancestry.
 - [`ekta35/`](ekta35/ekta35.ctl) — Serial #0035, RomBios 3.43, 53x24, Juss
   keyboard.
 
-All four share the ekta37 memory model (verified: `JMP 0017h` entries,
-`3F50h` vector tables, `+C000h` relocation) and are seeded the same way.
+The emulator uses the ekta37 banking for all four images. They have
+`JMP 0017h` entries and `3F50h` vector tables and are seeded the same way.
 See [`../docs/ektasoft-rombios-lineage.md`](../docs/ektasoft-rombios-lineage.md)
 for their identity and configuration matrix.
 
