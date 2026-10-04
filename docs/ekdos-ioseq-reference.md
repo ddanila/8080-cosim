@@ -13,6 +13,13 @@ timestamps, or physical clock timing. Counts and cycles below are observed.
 
 ## Command
 
+Run from the repository root with Python 3 and a C compiler (`CC`, default
+`cc`). The command builds a temporary oracle, overwrites `cosim/vram.bin`,
+and replaces this report even when the trace checks report a regression.
+Preserve the framebuffer first if needed. `EKDOS_IOSEQ_MAX_CYCLES` and
+`EKDOS_IOSEQ_FRAME_CYCLES` override the default 20,000,000-cycle limit and
+200,000-cycle frame interval; changed settings may change the evidence.
+
 ```sh
 sync/ekdos_ioseq_reference.py
 ```
