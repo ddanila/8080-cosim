@@ -14,6 +14,10 @@ in the expanded board model are tracked in the board-fidelity ledger.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The guard reads the source PCB text directly; KiCad is not required.
+It overwrites this report after the source and model checks pass.
+
 ```sh
 python3 scripts/report_native_capacitor_values.py
 ```
@@ -42,9 +46,6 @@ python3 scripts/report_native_capacitor_values.py
 | `C19` | `22` | 22 pF | sheet 3 prints 22 at C19 and two owner angles show 22, but the body lacks a complete GOST unit code |
 | `C20` | `22` | 22 pF | sheet 3 and later owner angles both show bare 22, while the opposite face reads ±5 tolerance; the installed unit remains unverified |
 | `C22` | `22` | 22 pF | sheet 3 and two later owner angles both show bare 22; one angle also reads ±10 tolerance, but the installed unit remains unverified |
-
-Owner views show bare `22` on both C20/C22 bodies, matching the
-sheet numerals without independently proving their capacitance unit.
 
 ## Deliberate holds
 

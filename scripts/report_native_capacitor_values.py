@@ -142,6 +142,10 @@ lines = [
     "",
     "## Command",
     "",
+    "Run from the repository root with Python 3 (standard library only).",
+    "The guard reads the source PCB text directly; KiCad is not required.",
+    "It overwrites this report after the source and model checks pass.",
+    "",
     "```sh",
     "python3 scripts/report_native_capacitor_values.py",
     "```",
@@ -180,9 +184,6 @@ lines += [
 ]
 for refdes, item in target_held_nominals.items():
     lines.append(f"| `{refdes}` | `{item['sheet_literal']}` | {item['normalized_source_nominal']} | {item['reason']} |")
-
-lines += ["", "Owner views show bare `22` on both C20/C22 bodies, matching the",
-          "sheet numerals without independently proving their capacitance unit."]
 
 lines += [
     "",
