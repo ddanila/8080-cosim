@@ -13,15 +13,11 @@ The unambiguous local circuit is:
 | conditioned output | D96.9 `Q2` runs to the common D101 A0–A3 input conductor in the full sheet-3 overview; target continuity pending |
 | section-2 clear | D96.13 `/CLR2` joins D99.10 `B2` at a marked junction and continues to sheet 1; remote source unresolved |
 
-The electrical drawing labels a second `10к` pull-up on raw DRQ as `R94`.
-Owner inspection and continuity on 2026-07-20 confirm that drawing: physical
-R94 is immediately above D28, with one side on D28.11/D93.38 and the other on
-+5 V. Its body may be hidden by the video cable. The previously photographed
-`220`-ohm body below-left of D98 is therefore not R94; its identity and both
-endpoints remain unassigned, and its retained photo record is explicitly
-marked superseded rather than discarded. The board JSON, KiCad source, HDL,
-and routed PCB now carry the corrected 10k R94 pull-up plus a
-separate `RUNK1` 220-ohm physical placeholder with two measurement boundaries.
+The drawing and owner continuity identify R94 as the 10k pull-up immediately
+above D28, joining D28.11/D93.38 to +5 V. The video cable can obscure it.
+The separate 220-ohm body below-left of D98 is modeled as `RUNK1`, with
+unassigned endpoints. Its photo record's R94 identification is superseded;
+see [the physical evidence summary](../photos/juku-pcb-2/BODGE-TRIAGE.md#factory-wire-link-evidence).
 
 Exact `.009` sheet 1 source-closes IR0 to X2.214/R105 and
 IR1 to X2.218/D27 PB7/R107, separately from this conditioner. These source
@@ -30,7 +26,7 @@ D96.9/.11 pad locations and show that
 D96.9 has no exposed local B.Cu departure. A later D96.11 solder review
 finds a conditional route toward D28.11/DRQ, conflicting with the separate
 source nets; direct continuity must resolve it before either net is changed.
-That exhausted photo chase is recorded in
+The retained photo review is recorded in
 `ref/photos/juku-pcb-2/d96-irq-photo-exhaustion.json`.
 
 The nearby continuation annotations include distinct plain/primed variants.

@@ -18,8 +18,7 @@ The quoted `"1"` arrow on both section-1 asynchronous controls is a continuation
 to sheet 1 already closed as `WREQ_N`; it is not a literal logic-high
 annotation. A separate full-resolution sheet-3 region draws D96 section 2 in
 the DRQ/INTRQ conditioner. Its `/Q2` pin8 nevertheless reaches an independently
-photo-proved one-sided component test landing. A full-resolution re-read of
-`PXL_20260718_101641055.jpg` finds `/CLR2` pin13 joined to D99.10 at a
+photo-proved one-sided component test landing. `PXL_20260718_101641055.jpg` shows `/CLR2` pin13 joined to D99.10 at a
 marked junction; the common sheet-1 source is still unread.
 
 Tying WREQ_N to both `/CLR1` and `/PRE1` invokes the SN74LS74A simultaneous-
@@ -31,7 +30,7 @@ behavior.
 The SN74LS74A truth table constrains section 2: the conditioned node drives
 both `/PRE2` and D2. Low asynchronously sets Q2; high makes a rising CLK2
 edge capture one. With `/CLR2` inactive, neither path clears Q2 after it has
-been set. The now-visible D99.10/D96.13 conductor supplies a possible clear
+been set. The source-drawn D99.10/D96.13 conductor supplies a possible clear
 path, but its sheet-1 source is still unknown. Trace that source and capture
 the clear waveform before calling this half a complete conditioner. This
 constraint is guarded by `sync/d96_check.sh`.
