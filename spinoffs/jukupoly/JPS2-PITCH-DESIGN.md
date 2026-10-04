@@ -18,12 +18,11 @@ This slice has two deliberately separate parts:
    not turn FM-modulator-only VIB or one-sided additive VIB into whole-note
    pitch modulation.
 
-[`OPL-PITCH-M5.json`](OPL-PITCH-M5.json) records 30,118 direct common-pitch
-melodic key-ons across the two known DOOM packs.  After logical layering,
-22,829 melodic logical notes remain conservative direct candidates and 21,017
-are selected by the M2 three-voice allocation.  Of 7,264 valid held-key
-melodic pitch events, 6,495 occur while that exact logical note owns a target
-channel.  Protected-v1 onset regressions remain zero.  Delivery additionally requires the target and physical evidence below.
+[The source analysis](OPL-PITCH-M5.json) records direct common-pitch
+candidates, logical layering, three-voice allocation and held-key events that
+retain target-channel ownership. Protected-v1 onset regressions remain zero.
+Target execution and physical qualification are established separately by the
+evidence below.
 
 ## Compatibility boundary
 
