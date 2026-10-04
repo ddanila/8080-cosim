@@ -25,9 +25,7 @@ The board JSON, schematic, all three PCB pad maps, HDL bus ordering, and
 8286 pinout audit now use these exact rows. D29.1 is on PHI2TTL; D35.13 is
 on the separate post-R35 node. The three passive parts R35, R106, and C29
 exist in the source model but await footprint placement and owner measurements.
-The old D29.1/.2/.3/.6 photo seeds in `endpoints.csv` were misplaced on chip
-bodies in component view `200354648` and on inter-row traces in solder view
-`200509593`. The corrected component probe centres are approximately
+The D29.1/.2/.3/.6 component probe centres are approximately
 `(2213,1438)/(2265,1438)/(2318,1438)/(2478,1438)`; reflected solder
 centres are `(2489,1588)/(2441,1588)/(2393,1588)/(2249,1588)`. Both
 sets follow the visible ten-contact lower row and left-notch pin count;
@@ -55,11 +53,15 @@ separate local strokes, correcting the earlier claimed output tie.
 
 ## Verification and routing hold
 
+Run from the repository root with Python's standard library:
+
 ```sh
 python3 scripts/report_8286_pinout_audit.py
 ```
 
-This verifies source-model endpoints and LVS mapping data. Current routing
+This regenerates [the pinout audit](8286-pinout-audit.md), checking selected
+source-model endpoints and LVS mapping data. It does not run LVS or inspect
+PCB copper. Current routing
 and DRC holds are recorded in [factory-wire fidelity](factory-wire-route-fidelity.md)
 and [the routed audit](routed-refresh-audit.md). Physical continuity and
 R35/R106/C29 placement/value questions remain open.
