@@ -32,8 +32,11 @@ tracked in
 ## Release acceptance
 
 The build must pass `sync/jukuhost_win32_check.sh`. The actual executable must
-pass the stock/C11/C12 Wine-to-simulator matrix, including reset and reconnect
-behavior, with the recorded parity emulation boundary.
+pass the stock/C11/C12 Wine-to-simulator matrix with the recorded parity
+emulation boundary. The current wrapper tests one boot and timed disk service
+per mode; it does not reset the target, replace the host, disconnect serial,
+or exercise GUI Stop/close. Reset and reconnect remain release requirements
+requiring separate evidence; a Wine matrix pass does not satisfy them.
 
 Native API shims, Wine and the successful Windows 95 guest C12 run establish
 separate desk/guest results. Physical qualification still requires the real

@@ -71,6 +71,11 @@ checks clean exit, boot/service evidence, a host-reported disk-read request, A: 
 image size, and unchanged A: base contents; it does not assert these exact
 timings, counters, or working-copy hashes.
 
+Each case starts one headless host and one simulator. Disk service ends through
+`--disk-timeout` (20 seconds for stock, 8 for C11/C12). The harness does not
+restart either process or interrupt the serial bridge, so its clean-stop
+assertion does not cover GUI Stop/close, target-reset recovery or reconnect.
+
 All three cases mounted a 409,600-byte A: base as a new snapshot working image,
 served disk reads, stopped cleanly with host exit zero, retained a raw capture,
 and passed capture framing/CRC validation and host-event conversion. The C11 and C12 cases also mounted

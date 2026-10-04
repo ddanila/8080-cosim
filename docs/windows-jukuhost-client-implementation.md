@@ -35,7 +35,7 @@ are in [windows-jukuhost-client.md](windows-jukuhost-client.md).
 | --- | --- | --- |
 | Native build/API shims | Payload, configuration, device selection, partial I/O, cancellation, timer, file replacement and PE/package checks | Does not execute native Windows drivers |
 | Windows Server 2022 CI | Actual PE self-test, repeated GUI Listen, Stop during reconnect, early failure and session logs | Uses failure fixtures and an unavailable COM port; no serial-to-board session |
-| Wine | Executable self-test and stock/C11/C12 simulator boot, A:/B:, captures and clean stop | Wine's explicit parity-readback exception is byte emulation, not physical UART qualification |
+| Wine | Executable self-test and headless stock/C11/C12 simulator boot, A:/B:, captures and timeout-driven clean stop | No target-reset, reconnect or GUI Stop/close test; parity-readback exception provides byte emulation, not physical UART qualification |
 | Original Windows 95 guest | Executable self-test, GUI, C12 boot, DIR and target-reset recovery | COM1 connects to the simulator; no physical adapter or board was used |
 
 The Wine and guest results are recorded in
