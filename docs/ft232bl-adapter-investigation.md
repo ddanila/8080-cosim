@@ -11,19 +11,15 @@ retains the device configuration, measurements and limits of that result.
 The exact product is the
 [Diymore multifunction converter](https://www.diymore.cc/products/usb-to-serial-rs232-uart-ttl-rs485-db9-adapter-converter-module-for-ftdi-ft232bm-bl-provide-the-usb-driver-for-linux-for-windows).
 Linux enumerated it as `0403:6001`, bound it to `ftdi_sio`, and created
-`/dev/serial/by-id/usb-FTDI_USB__-__Serial-if00-port0`. Its USB descriptor has
-`bcdDevice=4.00`, no serial string, 64-byte bulk endpoints, and reports a
-bus-powered 90 mA configuration. The USB ID alone does not identify the FTDI
-generation, but the product photograph and the owner's board both show an
+`/dev/serial/by-id/usb-FTDI_USB__-__Serial-if00-port0`. The USB ID alone does
+not identify the FTDI generation, but the product photograph and the owner's
+board both show an
 `FT232BL` package. The socketed line-interface parts are a `MAX232CPE` and a
 MAX485-family transceiver.
 
 FTDI describes the BL as the lead-free FT232BM, its second-generation USB UART,
 not as an FT232R. The [FT232BL/BQ datasheet](https://ftdichip.com/wp-content/uploads/2020/08/DS_FT232BL_BQ.pdf)
-specifies 7/8 data bits, 1/2 stop bits, odd/even/mark/space/no parity,
-line-break support, and RS-232 rates through 1 Mbaud. Linux exposed the normal
-16 ms receive latency timer. Neither that latency nor the generation's speed
-limit can turn a repeated 90-second Janet request into zero received bytes.
+supports the 8N1/8O1 formats and rates used in the recorded tests below.
 
 The two shunts occupy the `TXD` and `RXD` rows of a three-column header whose
 silkscreen reads `RS232-RS485`. The photograph therefore supports a
@@ -211,5 +207,4 @@ configuration. Compare a new capture with the August 28 result before
 changing host software or Juku components. If reception again becomes silent,
 verify the cable and module signal-ground bonds, map the selector/DB9 paths
 by powered-off continuity, and observe MAX232 RIN and ROUT under an
-independently referenced driver. The former ground, receiver and selector
-hypotheses are fallback diagnostic checks, not current unresolved faults.
+independently referenced driver.
