@@ -75,8 +75,8 @@ SHA-256 sources remain shared with Linux. DOS adds only platform services:
 - explicit 9,600/8O1 and 19,200/8N1 or 8O1 programming, FIFO detection,
   receive clearing on a framing transition, TX drain, bounded polls, and UART
   line-error counters;
-- a wrap-safe BIOS/PIT clock and idle polling;
-- local `CON` input/output, with F10 as an idle-only clean exit;
+- a BIOS/PIT clock with midnight rollover handling and monotonic clamping;
+- local `CON` input/output, with a polled F10 stop request during disk service;
 - DOS filesystem synchronization and file-backed media access.
 
 A: and B: are never allocated as complete memory buffers. Identity hashes are
@@ -117,8 +117,13 @@ JUKU.BAT
 
 The package defaults to COM1, local `CON`, C8 direct Fastboot at 19,200/8N1,
 NetDisk v3 at 19,200/8O1 with three-record read-ahead, writable snapshot A:,
-read-only native B:, text logging, and binary capture. F10 exits cleanly while
-the session is idle.
+read-only native B:, text logging, and binary capture.
+
+Wait for target disk activity to finish before pressing F10. The host polls
+F10 through the local console during disk service and requests shutdown;
+it does not enforce a target-idle condition or wait for a partial request to
+complete. F10 is not polled during bootstrap or serial reconnect. Use the
+physical M2.3 gate below to qualify shutdown on the actual machine.
 
 ## Automated acceptance
 
