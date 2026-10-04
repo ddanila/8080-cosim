@@ -2,8 +2,12 @@
 
 These GIFs show simulator runs. Their timestamps include host scheduling;
 they are not byte-identical output guarantees or recordings of a physical
-display. Each combines framebuffer changes with timestamped host
-output on a single monotonic timeline. `JUKU_REALTIME_HZ=1700000` prevents the
+display. Each combines framebuffer changes with timestamped host output.
+The renderer rebases framebuffer timestamps to the first frame and compresses
+framebuffer gaps over 60 seconds to one nominal frame period; host log timestamps
+retain their elapsed times. GIF delays have a 10 ms minimum and are quantized by
+the format. Use the retained logs for timing analysis rather than GIF playback.
+`JUKU_REALTIME_HZ=1700000` prevents the
 emulator from exceeding the selected effective execution-rate approximation;
 it does not reproduce all physical READY or host-scheduling delays. The native
 C `jukuhost` retains the scenario's 9,600- or 19,200-baud serial timing.

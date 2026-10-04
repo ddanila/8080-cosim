@@ -38,8 +38,9 @@ criteria are separate from the replica main board.
 These simulator captures pair the native Juku framebuffer on the left with
 timestamped Janet host activity on the right. The simulator is paced at the
 approximately 1.7 MHz effective CPU execution rate, the serial links use their
-stated baud rates, and GIF
-delays preserve the measured scenario timeline.
+stated baud rates. GIF playback approximates the presentation timeline;
+framebuffer timestamp normalization and delay quantization are described in
+[the capture guide](media/demos/README.md).
 
 ### Stock ROM and CP/Mish CP/M 2.2
 
