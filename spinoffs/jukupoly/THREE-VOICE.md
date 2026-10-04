@@ -130,24 +130,19 @@ sync/jukupoly_wav_check.sh
 
 ## Physical qualification
 
-Both images ran on CS00000 with the C10 JukuNet ROM, Fastboot V16, NetDisk v3
-at 19200 baud, and CP/M Plus 3.1:
+The quiet and loud images both ran on CS00000 with C10 JukuNet,
+Fastboot V16, NetDisk v3 at 19,200 baud and CP/M Plus 3.1. Both returned
+cleanly; physical listening found the quiet image too soft and the loud
+image substantially stronger.
 
-| Run | Image | Delivery | Cycle-model music interval | Host command-to-prompt | Result |
-|---|---:|---|---:|---:|---|
-| quiet | 161 bytes | cold network boot | 9.052 s | 11.949 s | clean return; low volume |
-| loud | 163 bytes | live N4 reattach | 9.075 s | 13.677 s | clean return; strong bench result |
+Console captures establish delivery and return to a fresh `A>` prompt.
+Listening supplies the physical audio observation. The source and cycle
+regression establish stack restoration and final PIT silence writes;
+command-to-prompt timing does not measure audio duration.
 
-The host intervals include CP/M directory lookup, COM loading, and CCP reload;
-they are not presented as audio-duration measurements.  In both cases the N4
-console shows `TRIVOICE` followed by a fresh `A>` prompt, confirming return
-to CP/M. The source and cycle regression check stack restoration and the final
-PIT silence writes; the console does not measure the speaker signal. The
-operator's listening result supplies the physical audio observation.
-
-Exact quiet/loud binaries, console transcripts, raw host captures, commands,
-logs, and hashes are retained in
-[`sessions/cs00000-three-voice-physical/`](sessions/cs00000-three-voice-physical/README.md).
+The [physical session record](sessions/cs00000-three-voice-physical/README.md)
+retains exact quiet/loud binaries, hashes, timings, transcripts, raw host
+captures and operator observations.
 
 ## Compiled-pattern continuation
 
