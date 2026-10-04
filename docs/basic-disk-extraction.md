@@ -1,6 +1,6 @@
 # BASIC disk extraction
 
-Status: **BASIC DISK FILES EXTRACTED**
+Status: **ARTIFACTS GENERATED; ALLOCATION MAPPING UNRESOLVED**
 
 This generated report extracts BASIC-relevant CP/M files from the
 vendored Arti Juku disk images. The directory-backed extractor uses the
