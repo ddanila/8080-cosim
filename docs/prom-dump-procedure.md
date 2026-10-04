@@ -57,7 +57,10 @@ array **twice**, require identical; also sanity-check the dump isn't all-0x00/al
 Capture each row as `AA,RR,OK`, where `AA` is the two-digit address and `RR`
 is the raw two-digit output-pin byte (`D0..D7` = bits 0..7). Validate repeated
 logs with the tracked Nano reader at `tools/re3_dumper/re3_dumper.ino` and host
-validator:
+validator. See [RE3 acquisition](re3-physical-dumps.md) for the complete wiring,
+115200-baud capture setup, and repeat command. Run validation from the repository
+root with Python 3; `--out-dir` writes tables and a manifest:
+
 
 ```sh
 python3 scripts/validate_re3_dump.py read-1.txt read-2.txt read-3.txt \
@@ -117,7 +120,7 @@ close the `CS7` shared-enable source.
 
 If a future owner dump differs from `ref/physical-proms/validated/*.bin`, keep
 it as a candidate board variant until repeated reads and socket provenance are
-sound. The old D8 reconstruction is historical comparison material only.
+sound.
 
 ## Drawing cross-reference — ДГШ 3.031.006 ВС
 The index lists **eleven programmed-microcircuit drawings, ДГШ 5.106.037 …
@@ -125,7 +128,6 @@ The index lists **eleven programmed-microcircuit drawings, ДГШ 5.106.037 …
 applicability material separately identifies D94 `.092`; do not infer that its
 bytes are present in the `.037-.047` index. Label every dump by board and socket
 first, then associate a drawing number only when the factory paper trail or
-repeated hardware evidence supports it. The retained exact `.009` electrical sheet 3 now covers the FDC support
-circuit. Its source connections do not prove owner-board copper or powered
+repeated hardware evidence supports it. The exact `.009` electrical sheet 3 covers the FDC support circuit. Its source connections do not prove owner-board copper or powered
 behavior; the remaining physical boundaries are listed in
 [the FDC handoff](fdc-hardware-handoff.md).
