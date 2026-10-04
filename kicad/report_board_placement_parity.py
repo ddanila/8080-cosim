@@ -43,7 +43,7 @@ def main() -> int:
         "## Command", "", "```sh", "/usr/bin/python3 kicad/report_board_placement_parity.py", "```", "",
         "| Routed PCB | Missing source refs | Extra refs | Moved/rotated refs |", "| --- | --- | --- | --- |",
     ]
-    details = []
+    details = {}
     total_gaps = 0
     for path in ROUTED:
         routed = placements(path)
@@ -52,11 +52,12 @@ def main() -> int:
         changed = sorted(ref for ref in source.keys() & routed.keys() if differs(source[ref], routed[ref]))
         total_gaps += len(missing) + len(extra) + len(changed)
         lines.append(f"| `{path.relative_to(ROOT)}` | {', '.join(missing) or 'none'} | {', '.join(extra) or 'none'} | {', '.join(changed) or 'none'} |")
-        details.append((path, source, routed, changed))
-    lines += ["", "## Position differences", "", "| Routed PCB | Ref | Source anchor / rotation | Routed anchor / rotation |", "| --- | --- | --- | --- |"]
-    for path, source, routed, changed in details:
         for ref in changed:
-            lines.append(f"| `{path.name}` | `{ref}` | {fmt(source[ref])} | {fmt(routed[ref])} |")
+            details.setdefault((ref, source[ref], routed[ref]), []).append(path.name)
+    lines += ["", "## Position differences", "", "| Routed PCB | Ref | Source anchor / rotation | Routed anchor / rotation |", "| --- | --- | --- | --- |"]
+    for (ref, source_pos, routed_pos), boards in details.items():
+        label = "Both variants" if len(boards) == len(ROUTED) else ", ".join(f"`{name}`" for name in boards)
+        lines.append(f"| {label} | `{ref}` | {fmt(source_pos)} | {fmt(routed_pos)} |")
     lines += [
         "", "The source PCB now places D11 at the two-view owner-photo position; both routed variants retain the old D11 position and copper. The exact .009 assembly and owner component image place D12 above D3 (`ref/photos/juku-pcb-2/d12-d3-local-placement.json`); the source PCB has that corrected placement. Both routed variants retain D12's old left-of-D3 estimate inside the corrected D11 area and omit source-placed R9/R10. D26, D27, D6, and D9 also differ as listed above; see their individual placement audits and `docs/r9-r10-routed-collision-audit.md`.", "",
     ]
