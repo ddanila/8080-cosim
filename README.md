@@ -85,7 +85,7 @@ its image definition change.
    from or checked against that model.
 4. `hdl/juku_top.v` is independently maintained structural Verilog and is
    checked against the modeled connectivity by `sync/`.
-5. `cosim/` and the current upstream MAME Juku driver are behavioral oracles;
+5. `cosim/` and the vendored MAME Juku driver (`ref/mame_juku.cpp`) are behavioral references;
    they are not substitutes for missing physical wiring evidence.
 
 ## Board previews
@@ -114,7 +114,7 @@ release.
 - [docs/replica-manufacturing-readiness.md](docs/replica-manufacturing-readiness.md)
   — fabrication-package integrity and the current design hold.
 
-## Quick checks
+## Verification commands
 
 ```sh
 sync/check.sh
@@ -123,9 +123,9 @@ sync/cosim_check.sh
 python3 scripts/check_documentation_consistency.py
 ```
 
-The long reset-to-EKDOS/BASIC and Monitor 3.3 diagnostics are intentionally
-separate from the fast default checks; `sync/README.md` identifies their entry
-points.
+`sync/cosim_check.sh` is a deep guard and can take substantially longer than
+the other commands. The long reset-to-EKDOS/BASIC and Monitor 3.3 diagnostics
+have separate entry points listed in `sync/README.md`.
 
 ## Layout
 

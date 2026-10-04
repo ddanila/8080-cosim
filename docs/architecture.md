@@ -42,6 +42,11 @@ The comparison uses connectivity rather than net names: mapped endpoints are
 equivalent when they are partitioned into the same nets. `sync/map.json`
 contains the refdes/instance and pin/port mappings.
 
+The comparator drops constant connections and nets with fewer than two
+endpoints after mapping and exclusions. It therefore does not prove constant
+straps, singleton ownership, or intentional no-connects for this main-board map.
+Those need separate source and endpoint checks.
+
 The current check is intentionally partial. Unmapped analog parts, placement-
 only footprints, simulation-only ports, power-only ports, and omitted pins
 are outside its proof. A
