@@ -49,6 +49,10 @@ The guarded contract is:
 
 ## Command
 
+Run from the repository root with Bash and Icarus Verilog (\`iverilog\` and
+\`vvp\`). On a passing simulation, the script overwrites this report; set
+\`IE7_REPORT\` to choose another output path. Simulation files are temporary.
+
 \`\`\`sh
 sync/ie7_check.sh
 \`\`\`
@@ -70,8 +74,9 @@ sheet 3 independently closes the board wiring around D106: D95.9 clocks DOWN,
 R78 pulls UP and all four preset inputs high, D97.4/D93.27 RAW READ drives
 /LOAD, CLR is grounded, Q3 drives D28.9, and Q0-Q2 plus /CO and /BO are explicit
 no-connects. The downstream D28/R85/D96 waveform quality and separator lock
-margin remain board bring-up measurements even though D96 connectivity is now
-source-closed. The separate source-map guard is:
+margin remain board bring-up measurements. D96 section 1 has source-closed
+read-clock connectivity; section 2 retains its clear-source and physical
+continuity boundaries. The separate source-map guard is:
 
 \`\`\`sh
 python3 kicad/check_fdc_recovery_counter.py
