@@ -21,6 +21,10 @@ navigation and status definitions; superseded experiments remain in Git history.
 - [Pocket8086 DOS host M2.2 desk acceptance](portable-c-host-m2.2-dos-acceptance.md)
 - [Portable C host macOS physical check](portable-c-host-macos-physical-check.md)
 - [Juku host configuration](jukuhost-config.md)
+- [Windows Juku host user guide](windows-jukuhost-client.md)
+- [Windows host build/API/package acceptance](windows-jukuhost-client-desk-acceptance.md)
+- [Windows host Wine protocol acceptance](windows-jukuhost-client-wine-acceptance.md)
+- [Windows 95 guest acceptance](windows-jukuhost-client-win95-acceptance.md)
 - [CRT decoder fork baseline](crt-decoder-baseline.md)
 - [Architecture and verification boundaries](architecture.md)
 - [Project invariant: one evidence-rooted machine](vision.md)
@@ -109,7 +113,7 @@ Each result applies only to the inputs and scope named by its report.
 
 ### Twin
 
-- [Deep cosim CPU-bus guard — reference](cosim-runtime-reference.md)
+- [Cosim runtime and CPU-bus reference](cosim-runtime-reference.md)
 - [juku_top uninterrupted JBASIC READY probe](juku-top-jbasic-verilator-probe.md)
 - [FDC readiness](fdc-readiness.md)
 - [D96 FDC read-clock readiness](d96-read-clock-readiness.md)
