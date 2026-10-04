@@ -141,20 +141,19 @@ recorded in Git history.
 ## Real-time pacing (`JUKU_REALTIME_HZ`)
 
 By default `cosim` runs as fast as the host allows. Set `JUKU_REALTIME_HZ` to a
-cycle rate (or the shorthand `1`, meaning the nominal 2 MHz clock from
-`ref/juku-machine-facts.json`) and the run is paced so that **wall-clock time
-equals machine time**. The pacer sleeps only when simulated time has run ahead
-of real time, on a ~1 ms slice; it never speeds a slow host up, so it cannot
-hide a model that is lagging. `tests/cosim_realtime_test.py` guards the
+cycle rate (or the shorthand `1`, meaning 2 MHz) to pace execution toward that
+rate. Every roughly 2,000 simulated cycles, the pacer checks elapsed wall time
+and sleeps if execution is more than 0.5 ms ahead. The check interval is about
+1 ms at 2 MHz and changes with the selected rate. A slow host can still lag;
+inspect modeled and wall times before comparing results.
+`tests/cosim_realtime_test.py` guards the
 default, both spellings of the rate, proportionality at 10x, and rejection of
 a malformed value.
 
 For machine-time measurement, run unpaced and divide the reported `cyc=` by
 the selected clock rate. For experiments involving host scheduling, serial
 turnaround or a bench stopwatch, enable pacing: otherwise host latency is
-charged against a guest executing faster than the physical machine. A slow
-host can still lag the requested rate; inspect modeled and wall times before
-comparing results.
+charged against a guest executing faster than the physical machine.
 
 An interactive tool may instead need maximum CPU speed while retaining a
 native helper process on the emulated USART. Set `JUKU_USART_HOST_SYNC_MS` to
@@ -199,9 +198,9 @@ attaches an existing one. Characters the firmware passes to the ROM's console
 routine are mirrored to it, and bytes typed into it are queued for the emulated
 key matrix, so `screen /dev/ttysNNN` drives the machine from a terminal.
 
-Characters are passed through verbatim in both directions. The firmware
-emits its own `CR`/`LF` pairs, so the console must not synthesise newlines --
-doing so doubles every line break on the attached terminal.
+Output characters are mirrored verbatim. The firmware emits its own `CR`/`LF`
+pairs, so the terminal must not add newlines. Input converts `LF` to `CR`
+(Return) and `DEL` to Backspace before queueing matrix keystrokes.
 
 This is a **simulator affordance, not a machine feature**: a real Juku's console
 is its bitmap screen and key matrix, and nothing here changes the ROM or the
@@ -282,5 +281,6 @@ prompt exists is discarded, which looks exactly like the machine ignoring
 you. `JUKU_DISK=... tools/juku_run.py` then `T`, `D`, `D` reaches a CP/M
 `A>` from the vendored floppy; a bare `--netboot` of a *disk* system such as
 `EKDOS230.BIN` will instead hit `Disk Read error` after handoff, because
-that system expects a drive. Guarded by `tests/cosim_console_test.py`,
-which reads the boot banner out of the terminal and types a command back in.
+that system expects a drive. `tests/cosim_console_test.py` checks the console
+with the committed `ekta4401` remix: it reads the banner and sends `H`, then
+requires the help response. It does not exercise this disk-boot sequence.
