@@ -133,6 +133,11 @@ at `D300h`, to have been reached. Inspect the verdict and compared-event count
 when using the result as coverage evidence. A malformed or short reference
 trace, absent default event class, mismatch or missing verdict fails the gate. Stack pushes write high byte first, matching the 8080 bus order.
 
+The HDL `dram_64kx1` model initializes all cells to zero and retains them
+without charge decay. Those are simulator assumptions, not physical power-on
+contents or retention evidence. A passing boot does not prove that hardware
+refresh preserves RAM.
+
 The functional DRAM model holds RAS through the CAS column phase. It latches
 row/column addresses at their strobes and strobes DIN on the later falling
 edge of CAS or WE, covering early and delayed writes. A sub-nanosecond settling
