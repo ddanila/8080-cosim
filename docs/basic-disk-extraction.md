@@ -11,7 +11,12 @@ their allocation mapping is not resolved by this extractor.
 
 ## Command
 
+Run from the repository root. Verify retained identities before the writer
+replaces the extracted files, checksum manifest, README and this report.
+
 ```sh
+(cd media/disks && sha256sum -c SHA256SUMS)
+(cd ref/extracted-software && sha256sum -c SHA256SUMS)
 python3 scripts/extract_basic_disk_files.py
 ```
 
