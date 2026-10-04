@@ -168,7 +168,7 @@ listed above for identity checks.
 The Ekta4401 pair first booted physically in CS00015. With no display attached,
 typing `J` alone (no Enter) entered the resident service loader. The retained session
 [`../sessions/cs00015-ekta4401-first-j-physical/`](../sessions/cs00015-ekta4401-first-j-physical/)
-attached to API v2, passed PROBE without changing RAM, and reported 128-row
+attached to API v2, passed PROBE without uploading a payload, and reported 128-row
 refresh enabled at `07A9h`, with no transport mismatch. Subsequent retained
 sessions uploaded, read back, and executed D57 probes successfully, proving
 the complete LOAD → READ → RUN → result path rather than only the READY frame.
@@ -178,10 +178,8 @@ source addresses adjusted for its layout. On 2026-08-16
 the fitted successor was requalified directly: `J` entered service mode, two
 no-reset host attaches completed with zero encoded-symbol mismatch, both
 passed API-v2 PROBE and reported software refresh enabled for all 128 rows at
-`07A9h`, and the second returned a 32-byte READ from `4000h`. The first capture
-in the retained directory contains zero traffic because the host timeout
-expired before the operator entered `J`; it is negative timing chronology,
-not a firmware result. Exact RX/TX and JSON evidence is retained under
+`07A9h`, and the second returned a 32-byte READ from `4000h`. Exact RX/TX and JSON evidence, including the unsuccessful initial attach,
+is retained under
 [`../sessions/cs00015-ekta4402-j-physical/`](../sessions/cs00015-ekta4402-j-physical/).
 
 Direct `N` on the same fitted pair also physically boots the separately

@@ -29,7 +29,7 @@ python3 spinoffs/jukuravi/host.py \
 ```
 
 The second command additionally used `--read-address 4000 --read-length 32`.
-PROBE and READ are non-destructive here; neither capture uploads or runs a RAM
-snippet. The result directly qualifies Ekta4402's inherited `J` handler,
+Neither capture uploads or runs a RAM snippet. PROBE and READ use the
+reserved loader workspace; they do not overwrite the requested data range. The result directly qualifies Ekta4402's inherited `J` handler,
 loader segment copy, serial/PIT restore, API-v2 negotiation, refresh service,
 and bidirectional READ path on physical CS00015.
