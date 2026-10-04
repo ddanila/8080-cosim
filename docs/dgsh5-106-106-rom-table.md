@@ -10,6 +10,9 @@ the photographed factory row, producing a byte-exact 2 KiB image.
 
 ## Reproduce
 
+Run from the repository root with Python 3 (standard library only).
+The writer replaces the binary, hex listing, checksum manifest and this report.
+
 ```sh
 python3 scripts/reconstruct_dgsh5_106_106.py
 ```
@@ -20,7 +23,10 @@ python3 scripts/reconstruct_dgsh5_106_106.py
 - Readable hex: `ref/reconstructed-firmware/dgsh5-106-106-d1.hex`
 - Manifest: `ref/reconstructed-firmware/SHA256SUMS`
 - SHA256: `2cd7398b167ceebc256614b9de4cd8953b858e4f35722e57723559d990fc80a6`
-- Reset vector: `C3 07 01` = 8080 `JMP 0107h`
+- First bytes: `C3 07 01` = 8080 `JMP 0107h`
+
+These are file bytes; the jump does not establish a reset vector or a
+runnable cartridge entry without a verified loading and address map.
 
 The result equals `roms/jbasic11.bin[0000:0800]` exactly. This identifies
 the printed `.106.106` program as the first 2 KiB page of the preserved
