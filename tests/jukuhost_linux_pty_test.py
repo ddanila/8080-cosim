@@ -172,18 +172,32 @@ def main() -> int:
             os.write(serial_master, console_block(6, b"HELLO"))
             assert read_exact(serial_master, 5)[:4] == b"DJ\x06\x00"
             assert read_exact(console_master, 5) == b"HELLO"
-            os.write(console_master, b"K")
-            time.sleep(0.05)
-            os.write(serial_master, request(0x20, 7))
-            console_reply = read_exact(serial_master, 6)
-            assert console_reply[:5] == b"DJ\x07\x02K"
+            # Console and serial are independent PTYs. An empty poll is valid
+            # until the runner reads the queued key; elapsed sleep is no barrier.
+            sequence = 7
+            key_sent = False
+            deadline = time.monotonic() + 3.0
+            while True:
+                os.write(serial_master, request(0x20, sequence))
+                header = read_exact(serial_master, 4)
+                assert header[:3] == b"DJ" + bytes((sequence,)), header.hex()
+                assert header[3] in (0, 2), header.hex()
+                reply = header + read_exact(serial_master, 2 if header[3] == 2 else 1)
+                assert not checksum(reply), reply.hex()
+                sequence = (sequence + 1) & 0xFF
+                if header[3] == 2:
+                    assert reply[4] == ord("K"), reply.hex()
+                    break
+                assert time.monotonic() < deadline, "console key did not arrive"
+                if not key_sent:
+                    os.write(console_master, b"K")
+                    key_sent = True
 
             # Fill the host-to-target PTY queue with valid N4 poll replies,
             # then interrupt while the writer is back-pressured. This pins
             # Ctrl+C as a clean lifecycle stop even when it lands inside a
             # partial serial write rather than in the idle read loop.
             os.set_blocking(serial_master, False)
-            sequence = 8
             while True:
                 burst = b"".join(
                     request(0x20, (sequence + index) & 0xFF)
