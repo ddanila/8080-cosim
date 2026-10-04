@@ -106,18 +106,16 @@ deferred to a later routine at `2E89h..2E98h`):
 - D57 counter 0: control `1Fh`, count `32h` (BCD 32), giving 2400 baud
   in all eight images.
 
-The one qualitative split is D57 channel 2 (`SYNC_B`), and it tracks the
-**firmware generation across both families**, not the family:
+D57 channel 2 (`SYNC_B`) has two boot configurations, grouped by the
+images' banner versions:
 
-- **2.x generation** — Monitor 2.2 (jmon22), RomBios 2.43/2.43m
+- **2.x versions** — Monitor 2.2 (jmon22), RomBios 2.43/2.43m
   (#0032/#0043): control `9Fh`, count `32h` (BCD 32) — mode 3;
-- **3.x generation** — RomBios 3.42 (#0024), 3.43/3.43m
+- **3.x versions** — RomBios 3.42 (#0024), 3.43/3.43m
   (#0031/#0035/#0037), Monitor 3.3 (jmon33): control `B0h`, count `FFFFh`
   — binary mode 0.
 
-These bytes show use of channel 2 across both generations. They do not
-establish a 38.4 kHz output or a 53 ms timeout: the exact `.009` topology
-clocks D57.18 from D55.13 `/VER RTR` at approximately 49.92 Hz, independently
+The exact `.009` topology clocks D57.18 from D55.13 `/VER RTR` at approximately 49.92 Hz, independently
 of the 1.23 MHz channel-0 clock. With that input, enabled counting and no
 reprogramming, count 32 gives a nominal mode-3 period of about 0.641 s;
 65535 clocks in mode 0 take about 21.9 minutes. Actual OUT2 behavior also
@@ -132,8 +130,8 @@ All six EktaSoft images also carry the same pair of later D54/D55
 parameter routines (near `0EFCh..0F39h`): one alternative set
 (`16h→11h`, `02h` or `04h`→`12h`, `0112h→15h`, `45h→16h`) and one
 restoring the boot set. They appear in the 40-column and 53-column
-configurations alike, so they are shared runtime code, not the wide-screen
-mode. The alternative set's D54 channel-2 byte is `02h` in #0024 and
+configurations alike; their presence alone does not identify the display
+mode they select. The alternative set's D54 channel-2 byte is `02h` in #0024 and
 #0043 and `04h` in #0031/#0032/#0035/#0037; no version pattern or
 interpretation is attached.
 
