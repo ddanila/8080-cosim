@@ -130,10 +130,14 @@ When global board projection misses a physical pad row, add direct anchors to
 
 Similarity fits need at least two anchors; affine fits need exactly three.
 Include an independent held-out check for either model. The script checks
-errors for declared check anchors but does not reject their absence.
-Regenerate the local fit report
-before applying it: the application script consumes that report without
-recomputing its fit or checking input freshness.
+declared check anchors against an 8 px limit by default
+(`--max-check-error-px` overrides it), but does not reject their absence.
+It also rejects projected pads from different references less than 10 px
+apart in the same source image.
+Regenerate the local fit report and require a successful exit before applying
+it: the fitter writes the report even when these checks fail. The application
+script consumes that report without recomputing its fit, checking input
+freshness, or verifying that the fitter passed.
 
 Applying a fit rewrites matching seed observations in `endpoints.csv`, including
 coordinates, confidence, and selected review notes. It can also change the
