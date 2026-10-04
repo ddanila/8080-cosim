@@ -191,7 +191,7 @@ def build() -> tuple[str, str]:
     bringup_current = bool(declared and declared.group(1) == source[SOURCES[0]])
     manufacturing = (ROOT / "docs/replica-manufacturing-readiness.md").read_text()
     routed_declared = re.search(
-        r"The current routed board is\s*`([0-9a-f]{64})`", manufacturing
+        r"Routed PCB SHA256:\s*`([0-9a-f]{64})`", manufacturing
     )
     manufacturing_current = bool(
         routed_declared and routed_declared.group(1) == source[SOURCES[3]]

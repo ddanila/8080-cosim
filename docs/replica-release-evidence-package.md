@@ -65,7 +65,7 @@ Exact report digests are recorded in the machine-readable manifest linked below.
 
 ## BOM snapshot
 
-- CSV: [replica-dual-config-bom.csv](replica-dual-config-bom.csv) (`a5a356d249a57b4259516b009afc1983fd4c560484ee060074d0a798eacf305d`)
+- CSV: [replica-dual-config-bom.csv](replica-dual-config-bom.csv) (`ea0fbe96979dd01cf0a369ee946511b69c9a07bf9f8c9f1619fc057b2c190f34`)
 - 122 lines; 377 positions; 273 planned populated; 104 empty or pending.
 - Bring-up report board-JSON hash matches current source: **yes**.
 - Manufacturing report routed-PCB hash matches current source: **yes**.
