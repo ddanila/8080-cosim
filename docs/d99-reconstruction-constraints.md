@@ -9,6 +9,10 @@ timing constraints without assigning the remote sheet-1 sources.
 
 ## Command
 
+Run from the repository root with Python 3. The simulation additionally
+requires Bash and Icarus Verilog (`iverilog` and `vvp`). The report generator
+overwrites this file; the simulation overwrites `docs/ag3-oneshot-readiness.md`.
+
 ```sh
 python3 scripts/report_d99_reconstruction_constraints.py
 python3 kicad/check_d99_source_paths.py
