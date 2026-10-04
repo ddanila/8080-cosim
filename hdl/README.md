@@ -66,7 +66,7 @@ currently stops on an additional D57 failure bit before reaching its T34 cases.
   and its first three outputs are wired to the accepted local FDC controls.
   D4-D7 are proved no-connects; exact `.009` sheets close D9.7 `CS7` to
   D94.15/D93.3. D0's hidden load beyond its measured pull-up remains open.
-- 4 official FDC-support devices have package pins and power endpoints in
+- Some FDC-support devices have package pins and power endpoints in
   the board model but retain untraced functional pins or explicit boundary
   nets;
   [the footprint inventory](../docs/unmodeled-footprint-inventory.md) owns
@@ -101,7 +101,7 @@ currently stops on an additional D57 failure bit before reaching its T34 cases.
   substitutions. [Factory-wire fidelity](../docs/factory-wire-route-fidelity.md)
   owns the endpoint, routing, and landing-fit checks; HDL transparency does
   not establish physical construction.
-- 55 modeled nets still carry source-risk annotations requiring
+- Modeled nets with source-risk annotations still require
   physical evidence or an explicit redesign before fabrication release.
 - The runnable video path reads DRAM through a simulation-only second port.
   Physical D41/D42/D43 and mux/decode instances exist. Their ИР16 falling-edge
@@ -121,7 +121,9 @@ currently stops on an additional D57 failure bit before reaching its T34 cases.
 - CPU DRAM transactions are functionally closed: RAS spans row through CAS,
   and the РУ5 model implements early/delayed asynchronous writes without a
   synthetic sampling clock. Exact D36/R57 delays and DOUT turn-off remain
-  physical evidence boundaries.
+  physical evidence boundaries. The DRAM cells are initialized to zero and
+  have no charge-decay model; successful runs do not prove physical power-on
+  contents, retention, or refresh sufficiency.
 - Simulation-only CPU sampling, keyboard stimulus, framebuffer access, and
   interrupt helpers are excluded from LVS by an explicit allowlist in
   `sync/lvs.py`.
