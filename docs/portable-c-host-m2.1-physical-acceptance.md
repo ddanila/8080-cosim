@@ -49,8 +49,9 @@ boot benchmarks.
 The cold logs contain aggregate `retries=382` and `retries=186`. These are
 fully explained pre-target counters: `jukuhost` increments that field once per
 32 unanswered resident-scanner probes while the board is still off or has not
-yet been reset. The structured request traces prove zero NetDisk checksum,
-range, duplicate or retransmission retries after the target appears. Fastboot's
+yet been reset. The host-generated request traces report zero NetDisk checksum,
+range, duplicate or retransmission retries after the target appears; they are
+not an independent decode of the captured RX/TX bytes. Fastboot's
 final completion byte was not observed in either cold run; the designed
 fallback did not resend the already accepted stream, and the first valid
 NetDisk request confirmed completion.

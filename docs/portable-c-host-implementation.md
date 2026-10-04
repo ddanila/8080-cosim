@@ -20,6 +20,25 @@ runtime contract and remaining physical qualification.
 The runnable Python host is retired. Frozen non-runnable protocol fixtures
 remain available to compare wire bytes and behavior.
 
+## Capture conversion
+
+`tools/jukuhost_evidence.py` checks capture framing and record CRCs, then
+converts the host's request-event messages to JSON. It does not independently
+decode or compare the captured RX/TX protocol frames. For example, from the
+repository root:
+
+```sh
+python3 tools/jukuhost_evidence.py \
+  docs/evidence/juku-serial/cs00000-ek37-c-host-v15-20260822T103131Z.cap \
+  --requests-jsonl /tmp/jukuhost-requests.jsonl
+```
+
+Optional `--boot-result` output requires `--system` and `--fast-stage`. It
+hashes those supplied files and derives completion from host events and the
+first disk-request event; the caller must select the artifacts used in the
+recorded run. Conversion alone does not prove their transmitted identity or
+physical qualification.
+
 ## Verification entry points
 
 | Area | Guard |
