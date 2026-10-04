@@ -70,15 +70,13 @@ another and "best" is only defined relative to a target machine. The
 53-column screen is not a 2.43-line trait (#0035 pairs it with 3.43 and
 NetBios), and #0024 even targets a different FDC chip.
 
-The only banner-visible difference between #0043 and official #0032 is the
-IBM AT keyboard. The 53x24 screen, TapeBios, and card-mounted FDC are the
-2.43-line configuration, not homebrew additions. #0043 therefore offers our
-`.009` board nothing over the adopted 3.43m image: the board's FDC is on
-the motherboard, its keyboard is the original matrix, and the network BIOS
-exists only in the 3.4x line. #0037's banner matches those broad target
-features, supporting its adoption; the unresolved PB4/PB5 S21 boundary above
-prevents claiming complete firmware-to-board compatibility. The NetBios boot path
-itself is analyzed in [`ekta37-netbios-notes.md`](ekta37-netbios-notes.md).
+Compared with #0032, #0043 changes the banner-declared keyboard to IBM AT;
+its 53x24 screen, TapeBios and card-mounted FDC remain the 2.43-line
+configuration. For the `.009` board, #0037's motherboard FDC, original
+matrix keyboard and NetBios are the closer banner-declared match. This
+supports its adoption without proving complete firmware-to-board compatibility:
+the PB4/PB5 S21 boundary remains unresolved. The NetBios boot path is analyzed
+in [the network BIOS notes](ekta37-netbios-notes.md).
 
 ## Content kinship
 
