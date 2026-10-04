@@ -118,7 +118,7 @@ Do you have any of the following?
 - Baltijets doc 007 programming-disk files for .037/.038/.039/.092 PROMs
   or the .040-family EPROMs; independent physical reads are also useful.
 - An independently acquired JUKU-1 / ДГШ5.106.105 disk image, with provenance
-  and checksum, to compare with the preserved public JUKU1/JUKU2 images.
+  and checksum, to compare with the preserved public JUKU1.CPM image.
 - A different/larger BASIC cartridge image or a hardware-confirmed Monitor
   3.3 launch procedure. Disk JBASIC reaches READY, but the public 8 KiB
   cartridge's required runtime page remains unresolved.
@@ -146,7 +146,9 @@ Thanks!
    warrants checking enables, pull-ups, wiring, and device identity; repeated
    byte agreement alone does not establish a valid acquisition. Preserve the
    raw evidence while investigating.
-3. For a raw Juku disk image, run:
+3. For a raw Juku disk image, run from the repository root with Bash,
+   Python 3, and a C compiler. The probe builds its temporary C oracle and
+   overwrites `cosim/vram.bin`; preserve that file first if needed.
 
    ```sh
    sync/juk_disk_check.sh
