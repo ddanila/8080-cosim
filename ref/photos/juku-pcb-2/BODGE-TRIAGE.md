@@ -10,7 +10,7 @@ and remaining physical boundaries.
 - Primary electrical evidence: the exact `.009` schematic photographs,
   official `.009` parts list, and owner continuity readings. The older `.006`
   scan under `ref/schematics/` requires revision reconciliation.
-- Physical placement evidence: `es101_emaplaat.pdf`, the 50 owner board photos
+- Physical placement evidence: `es101_emaplaat.pdf`, the 52 owner board photos
   in this directory, and the 26 owner photographs of the authoritative
   `ДГШ5.109.009 СБ` assembly drawing under `ref/photos/dgsh5-109-009-sb/`.
 - The current normalized endpoint record is `kicad/juku.board.json`.
@@ -35,7 +35,7 @@ two assemblies must not be mixed.
 | D94 | К155РЕ3, program `.092` | validated physical table adopted from three independent matching reads; owner continuity maps R87/R88/R89 as the +5 V pull-ups on D94.4/D94.3/D94.2, while R8 2 kΩ is the pull-up-only D94.1 branch. Full-resolution visual inspection closes D94.5 as NC; D93.1 alone owns the visible open stub. Owner continuity and exact `.009` source review close D4-D7 as NC; those outputs are invariant released in the adopted table. |
 | D95, D101 | К555КП12 | FDC quadrant multiplexers |
 | D97, D99, D102 | К155АГ3 | FDC quadrant one-shots; owner photo shows the 8901 packages |
-| D100 | КР580ВА87 | FDC data-bus buffer |
+| D100 | КР580ВА87 | FDC drive-output buffer; D93 connects directly to DB0–DB7 |
 | D105 | К155ЛА3 | official wait/MRD gate; modeled and routed from sheet-1 evidence |
 | D106 | К555ИЕ7 | FDC quadrant counter |
 | D107 | КР580ВА86 | low-address bus buffer |
@@ -60,8 +60,9 @@ D2 pad identities remain registered on both faces. The earlier claim that
 paired D2/D4 solder fits close D2 pins 1/3/5/6/7 to D4 pins 1/3/5/6/7 was
 withdrawn after correcting the D4 contact columns and row count. The five
 address routes remain modeled but lack a complete photo or exact `.009` source
-chase; see `d2-d4-column-row-audit.json`. Three matching reads, including a
-full power cycle, preserve the physical `.037` table.
+chase; see `d2-d4-column-row-audit.json`. Repeated accepted captures preserve the physical `.037` table;
+[the capture manifest](../../physical-proms/validated/d2_037.dump.json)
+identifies the six independent reads and their aliases.
 The factory symbol draws only D0/pin 12 on the RT4 output side; package outputs
 pins 9-11 have no destination and are explicit no-connects in the board model.
 
@@ -112,9 +113,21 @@ explicit columns below remove that ambiguity.
 | 10 | А:14 | D1.15 - D35.12 | PHI2 |
 | 13 | А:19 | D5.26 - D7.2 | MEMW branch |
 | 14 | А:20 | D3.10 - A23.1 - X3.3 | serial `S_TTL` path; owner read includes the installed X3 cable; enlarged sheet-1 review confirms the adjacent vertical package is D104, not D14 |
-| - | D26.23 - X9.9 | keyboard/tape connector line |
-| 11 / А:17 | Component photo 200358952 at `(914,1154)` and solder photo 200509593 at `(2145,1155)` show the same dedicated tinned pad printed `17`; sheets 2-5 row 11 documents А:17 - S1:1, ~19 cm | promoted as `A17.1` on `RES_RC`; board position approximately `(115.8,27.1)` mm from the adjacent `(114.4,13.3)` mounting-hole transfer |
-| 12 / А:18 | Validated component and solder fits place the white bracket-switch lead on D98.7 and show no PCB-copper departure from that pad; sheets 2-5 row 12 documents А:18 - S1:2, ~3 cm | promoted as `D98_Y3_S1_2`; the photographed 220-ohm part below-left of D98 is separate and currently unassigned, not the А:17 link and not R94 |
+| 6 (keyboard item 153) | А:50 | D26.22 - A50.1 - X9.9 | CONTRDAT; D26.23 is a separate E8 boundary |
+| 11 | А:17 | A17.1 - S1.1 | RES_RC, dedicated landing |
+| 12 | А:18 | D98.7 - S1.2 | bracket-switch lead, no local PCB departure |
+
+**11 / А:17:** Component photo 200358952 at `(914,1154)` and solder photo
+200509593 at `(2145,1155)` show the dedicated tinned pad printed `17`.
+Factory row 11 documents А:17 - S1:1, approximately 19 cm. It is modeled as
+`A17.1` on `RES_RC`, near `(115.8,27.1)` mm using the adjacent
+`(114.4,13.3)` mounting-hole transfer.
+
+**12 / А:18:** Validated component and solder fits place the white
+bracket-switch lead on D98.7 with no visible PCB-copper departure. Factory
+row 12 documents А:18 - S1:2, approximately 3 cm. The model net is
+`D98_Y3_S1_2`. The separate 220-ohm body below-left of D98 is unassigned,
+not the А:17 link and not R94.
 
 The settled wire links are represented in the board model with endpoint
 provenance and guarded by `kicad/check_factory_wire_links.py`. Sheet-1 assembly
@@ -162,8 +175,10 @@ It proves all three D104 К170УП2 receivers: SIN 4->13, CTS 5->12, and DSR
 pull-up at D12.5/`X2_IRQ0`; installed resistance and remote continuity remain
 open. See [the source correction](../../../docs/r101-r104-d12-exact-source-correction.md). Source junction dots tie A22/X3.2 to the same OC SOUT
 node as A32/X3.12 and D12.3. A27/A28 show no solder-side copper departure and
-are absent from the older circuit sheet, so their installed X3.7/.8 wires are
-intentional cable-only reserved contacts rather than missing PCB traces.
+are absent from the older circuit sheet. The source model retains X3.7/.8 as
+cable-only harness nets. Owner continuity identifies X3.7 as signal ground on
+CS00015; that does not establish the photographed target's A27 rail connection.
+See [the serial handoff](../../../docs/serial-handoff.md) for this distinction.
 The source-drawn OC SOUT bias network is also restored: assembly and owner
 photos identify R18 as the diagonal 33k link from `S_OC` to `SER_TXD`/D3.11,
 and R30 as the long vertical 33k link from `S_OC` to ground. Their fitted
@@ -180,65 +195,25 @@ a direct D93 INTRQ/DRQ assignment. See [the serial handoff](../../../docs/serial
 
 ## Factory solder-side cuts and patches
 
-The new `ДГШ5.109.009 СБ` photographs settle another class of apparent
-“bodge.” Its factory `Вид В` detail explicitly calls out positions 150 and 159
-on the mounting side and draws local assembly areas at D56, D15, D14, and D11.
-Close-ups `PXL_20260711_114626340.jpg`, `114633498.jpg`, and
-`114638730.MP.jpg` preserve those instructions. These features are therefore
-revision-controlled assembly operations, not owner-board damage or optional
-cleanup candidates.
+The `ДГШ5.109.009 СБ` factory `Вид В` details document operations at D56,
+D15, D14 and D11. The original close-ups `PXL_20260711_114626340.jpg`,
+`114633498.jpg` and `114638730.MP.jpg` are preserved in the assembly-photo
+archive. Only D15 explicitly says `Разрезать`; note 11 identifies position
+150 as tubing fitted at solder locations. Position 159's material remains
+unresolved. These are factory assembly instructions, but the drawing alone
+does not prove every resulting electrical endpoint.
 
-Only D15 explicitly says `Разрезать`. Assembly note 11 identifies position 150
-as tubing fitted at solder locations, not a cut instruction. The detail is
-authoritative for the existence and locality of each operation,
-but it is not a copper schematic and does not by itself prove every endpoint.
-The replica must preserve the resulting electrical topology; any future
-artwork reconstruction must reconcile the unmodified copper with the factory
-cuts/patches before replacing them with an equivalent clean trace.
+| Area | Accepted local evidence | Remaining boundary |
+| --- | --- | --- |
+| D15 | Auxiliary cut separates the D15.8/A2 and D15.9/A1 landings; the source model keeps those nets separate | Auxiliary-hole drill coordinates are not fabrication-qualified |
+| D56 | Marked AG3 package is registered; D56.1/.9 are photo-grounded and D56.5/.12 functional nets are owner-closed | Position-159 material and auxiliary-annulus disposition |
+| D14 | Local copper closes D32.4/GND to D14.1 and D14.4 to the fifth auxiliary annulus | Remote conductor, remaining traces and target-board continuity |
+| D11 | Four component-side solder locations and auxiliary field are registered | Unique cross-face match, bridge, pin/net and remote endpoints |
 
-The enlarged D15 detail (`114633498`) further shows that its explicit
-`Разрезать` mark is on an auxiliary vertical trace between the final two of
-four drawn holes beside the package, approximately between the eighth and ninth
-visible D15 pad levels. It is not a cut made directly at a D15 lead. Two
-independent component photographs (`200354648`/`200411500`) resolve the same
-executed cut between its final two auxiliary annuli with 0.059 mm worst-case
-cross-view separation. Reflected solder view `200514102` shows short copper
-departures from the upper landing to D15.8/A2 and from the lower landing to
-D15.9/A1. The operation therefore removes an original A2/A1 bridge; no
-replacement conductor is drawn in the D15 detail, and the clean source PCB's
-separate A2/A1 nets match the resulting factory topology. The locally fitted
-landing centres remain navigation evidence rather than fabrication-ready drill
-coordinates (`factory-modification-registration.json`).
-
-Three overlapping component photographs identify the actual D56 as the
-notch-down `К155АГ3 8901` package at the right board edge. Held-out-validated
-component and reflected package fits replace the displaced global endpoint
-seeds; two solder photographs fix the drawing's three locations as the separate
-left annulus plus D56.5/D56.12. Assembly note 11 says to
-fit tubing positions 157 and 150 at solder locations, disproving the former
-position-150-equals-cut reading. Bare-board gaps separate both package pads
-from the adjacent rail, but the installed item-159 conductor/material remains
-electrically held; no D56 net partition is promoted without continuity or the
-missing position-159 specification row.
-
-For D14, notch-oriented component registration maps the first four holes in
-the five-hole left field to D14.1-.4 and the four-hole right row to D14.8-.5.
-Two views show uninterrupted copper from D32.4/GND to D14.1 at the
-callout leader, closing that local link. The fifth auxiliary landing is
-registered in both component views; its conductor, three long drawn traces,
-right-row dogleg, and their remote endpoints remain held. Both reflected solder
-overlaps put D14 into the same scraped/reworked two-row field, while the package
-body hides the component-side dogleg, so D14.2/.7 now require direct continuity.
-
-For D11, two component views register an auxiliary drilled/copper field
-beside the package, not a 14-pad package row. Owner crops show bare substrate
-across the local left-to-junction front gap; the projected solder-side annuli
-also have no visible local copper bridge. A remote or fitted conductor remains
-possible. The lower-exit solder hole is a candidate, not a proved cross-face
-match. All four solder overlaps have been reviewed without closing the full
-four-hole pattern. D11 pin/net, bridge, upper-rail and remote endpoints remain
-held for direct continuity. Registration details and navigation coordinates are
-in [the factory modification report](../../../docs/factory-modification-disposition.md#d11-position-159-field-registration).
+The [factory modification report](../../../docs/factory-modification-disposition.md)
+owns the source identities, fits, coordinates and detailed dispositions.
+Preserve the resulting topology when reconstructing artwork; registration
+coordinates alone do not qualify a trace or drill for fabrication.
 
 ## Placement conclusions retained
 
