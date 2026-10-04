@@ -59,7 +59,7 @@ def run_probe(max_cycles, frame_cycles, disk_path):
         env = os.environ.copy()
         env["JUKU_KEYS"] = "TDD"
         if disk_path:
-            env["JUKU_DISK"] = str(disk_path)
+            env["JUKU_DISK"] = str(disk_path.resolve())
         else:
             env.pop("JUKU_DISK", None)
         proc = subprocess.run(
@@ -212,6 +212,9 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
         f"EKDOS_PROBE_MAX_CYCLES={max_cycles} EKDOS_PROBE_FRAME_CYCLES={frame_cycles} \\",
         f"  EKDOS_PROBE_DISK={shlex.quote(disk_label) if disk_selected else 'none'} sync/ekdos_fdc_probe.py",
         "```",
+        "",
+        "Run this command from the repository root. Disk paths are resolved from",
+        "the caller's working directory before starting the trace in `cosim/`.",
         "",
         "## Summary",
         "",

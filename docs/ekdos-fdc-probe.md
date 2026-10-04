@@ -18,6 +18,9 @@ EKDOS_PROBE_MAX_CYCLES=250000000 EKDOS_PROBE_FRAME_CYCLES=200000 \
   EKDOS_PROBE_DISK=media/disks/JUKU1.CPM sync/ekdos_fdc_probe.py
 ```
 
+Run this command from the repository root. Disk paths are resolved from
+the caller's working directory before starting the trace in `cosim/`.
+
 ## Summary
 
 - Trace exit code: 0
