@@ -151,7 +151,7 @@ def main() -> int:
         (
             "Video counter address nets VA0-VA15 are present in the board JSON",
             va_ok,
-            "`kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage",
+            "`kicad/juku.board.json` VA0-VA15 counter endpoints on D44-D47",
         ),
         (
             "D53 bank/RAS ladder outputs are present in the board JSON",
@@ -159,7 +159,7 @@ def main() -> int:
             "`kicad/juku.board.json` D53_Y0_R49..D53_Y3_R52",
         ),
         (
-            "PIT video/baud timing endpoints are source-complete",
+            "Selected PIT video/baud timing endpoints are present in the board JSON",
             net_has(board, "HOR_RTR", ("D54", "13"))
             and net_has(board, "VERT_SYNC", ("D55", "17"))
             and net_has(board, "CLK_123M", ("D103", "11"), ("D57", "9"))
@@ -236,6 +236,11 @@ def main() -> int:
         "video slot schedule through the КП14 muxes, D53 decoder and D41 timing chain.",
         "",
         "## Command",
+        "",
+        "Run from the repository root with Python 3. The generator reads the",
+        "board JSON, HDL/LVS source, and referenced reports; no simulator is",
+        "required. It overwrites this report with PASS/FAIL results and exits",
+        "with status 1 if any audit check fails.",
         "",
         "```sh",
         "python3 scripts/report_video_slot_timing_audit.py",

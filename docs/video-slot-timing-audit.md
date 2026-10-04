@@ -8,6 +8,11 @@ video slot schedule through the КП14 muxes, D53 decoder and D41 timing chain.
 
 ## Command
 
+Run from the repository root with Python 3. The generator reads the
+board JSON, HDL/LVS source, and referenced reports; no simulator is
+required. It overwrites this report with PASS/FAIL results and exits
+with status 1 if any audit check fails.
+
 ```sh
 python3 scripts/report_video_slot_timing_audit.py
 ```
@@ -25,9 +30,9 @@ python3 scripts/report_video_slot_timing_audit.py
 | Physical CPU/video mux and D53 decode instances exist in `juku_top` | PASS | `hdl/juku_top.v` |
 | D48-D52 КП14 inversion and three-state behavior are datasheet-guarded | PASS | `docs/kp14-readiness.md`: SN74LS/S258 truth table |
 | D59 complementary CPU/video mux-enable inverter is source-traced | PASS | sheet-2 D59.5->E14/video /G; inverted D59.6->E13/CPU /G |
-| Video counter address nets VA0-VA15 are present in the board JSON | PASS | `kicad/juku.board.json` VA0-VA15 from D44-D47 into the mux stage |
+| Video counter address nets VA0-VA15 are present in the board JSON | PASS | `kicad/juku.board.json` VA0-VA15 counter endpoints on D44-D47 |
 | D53 bank/RAS ladder outputs are present in the board JSON | PASS | `kicad/juku.board.json` D53_Y0_R49..D53_Y3_R52 |
-| PIT video/baud timing endpoints are source-complete | PASS | exact .009 E3 D54 HOR RTR, D55 VERT SYNC, D57 CLK0/GATE0, and D57 CLK2=/VER RTR labels |
+| Selected PIT video/baud timing endpoints are present in the board JSON | PASS | exact .009 E3 D54 HOR RTR, D55 VERT SYNC, D57 CLK0/GATE0, and D57 CLK2=/VER RTR labels |
 | D42/D43 serializer control/serial nets are present in the board JSON | PASS | `kicad/juku.board.json` LOAD_VID / D43_DS / D42_Q |
 | D41 package timing connectivity is source-closed | PASS | `docs/d41-timing-boundary.md` |
 | Runnable video still uses the abstract raster/read port | PASS | `hdl/juku_top.v` runnable adjunct |
