@@ -44,7 +44,8 @@ For JPS v1 and capability `01h` it remains the original
 `LDA ch1_volume`.  For capability `03h` it becomes a same-size jump to the
 tremolo preparation routine.  Consequently disabled tremolo adds no
 instruction, call, branch, or cycle to normal frame preparation.  The
-64-byte sample loop is neither moved semantically nor changed byte-for-byte.
+assembled 64-byte sample loop remains byte-identical to the baseline; runtime
+operand updates continue as described below.
 
 ## Packet encoding
 

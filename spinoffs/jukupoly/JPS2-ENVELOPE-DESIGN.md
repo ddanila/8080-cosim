@@ -21,8 +21,9 @@ An enhanced player accepts:
 At song start the player patches the three tone-parser call operands and the
 three envelope-update call operands.  A v1 song continues to call the existing
 routines directly, with the same per-frame instructions and cycles.  Only v2
-uses the enhanced routines.  The 64-byte sample hot loop is never patched or
-changed.
+uses the enhanced routines. The assembled 64-byte sample loop matches the
+frozen baseline. Playback retains its existing self-modifying phase, volume,
+percussion-pointer and sample-count operands.
 
 ## Tone packet
 
