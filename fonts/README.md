@@ -24,7 +24,9 @@ or during fabrication.
 
 ## Glyph check
 
-Run from the repository root:
+Run from the repository root with Python 3. This check uses only the standard
+library and the repository font file; KiCad and font installation are not
+required:
 
 ```sh
 python3 kicad/check_silk_glyphs.py
@@ -32,7 +34,7 @@ python3 kicad/check_silk_glyphs.py
 
 By default this checks `juku.kicad_pcb`, `juku_routed.kicad_pcb` and
 `juku_routed_candidate.kicad_pcb` under `kicad/`. Positional board paths replace
-that list. It rejects unapproved explicit font faces and checks characters in
+that list; relative paths resolve from the caller's directory. It rejects unapproved explicit font faces and checks characters in
 Reference/Value properties, `gr_text` and `fp_text` against the repository
 font's character map, regardless of layer or visibility.
 
