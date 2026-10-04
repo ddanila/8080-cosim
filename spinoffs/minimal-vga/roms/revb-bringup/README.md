@@ -14,7 +14,7 @@ Behavior (all output on the 8251 USART, port 0x08 data / 0x09 ctl-status):
 
 ```
 VJUGA rev B bring-up
-RAM PASS            (walking A5/5A + address-in-cell over 0x4000..0xD6FF)
+RAM PASS            (fixed A5/5A + low-address-byte tests over 0x4000..0xD6FF)
 ROM OK              (whole-ROM checksum == 0 mod 256)
 READY               (then the serial monitor)
 ```
