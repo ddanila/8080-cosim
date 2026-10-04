@@ -84,15 +84,15 @@ Monitor 2.2.
 
 ## Boot PIT programming across the lines and families
 
-All six EktaSoft images boot with the **same decoded PIT write sequence**
+All six EktaSoft images boot with the **same decoded D54/D55 raster write sequence**
 (exact offsets: #0024 `01C3h`, #0031/#0035/#0037 `01D4h`, #0032 `01E2h`,
 #0043 `01DCh`): the byte-identical D54/D55 raster values (64 us lines,
 313-line frames, identical porches) that
 [`video-pit-timing.md`](video-pit-timing.md) proves drive the autonomous
 raster and that the CS00024 experiment replays
 ([`../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md`](../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md)),
-plus the D57 counter-0 control `1Fh` and count `32h` (BCD 32)
-for 2400 baud in every image.
+All six also use D57 counter-0 control `1Fh` and count `32h` (BCD 32)
+for nominal 2400 baud. D57 channel-2 programming differs as described below.
 
 The Monitor family programs the same timing chain with equivalent values
 and different encodings (jmon22 offset `0051h` inline; jmon33 offsets
