@@ -46,11 +46,8 @@ The original board's installed firmware and powered PB4/PB5 behavior remain
 the necessary discriminators; this is a revision boundary, not a reason to
 reinterpret the E8 terminal numbers.
 
-Consequently `ekta43.bin` — the "homebrew" image with the stale block-1
-checksum — is **not built on the newer 3.43 line**. It is a 1990 build of
-the *older* RomBios 2.43 line, sharing its configuration with official
-serial #0032. It does not include the 3.43 line at all, despite being
-chronologically the newest banner year.
+The 1990 `ekta43.bin` banner identifies RomBios 2.43m, while #0032 identifies
+2.43. Banner year alone does not establish code ancestry or feature coverage.
 
 ## Banner-declared configurations
 
@@ -63,10 +60,9 @@ chronologically the newest banner year.
 | #0037 | 3.43m | 40x24/+wnd | Juku' Qwerty | Fdc 1793 on MBoard | NetBios |
 | #0043 | 2.43m | 53x24/+wnd | **IBM AT** | Fdc 1793 on Card | TapeBios |
 
-Every configuration axis varies independently — screen width, keyboard
-family (Juku matrix, the E5103 "Juss" variant, IBM AT), FDC chip and
-location, network versus tape BIOS — so no image is a feature superset of
-another and "best" is only defined relative to a target machine. The
+The banners describe different screen, keyboard, FDC, and secondary-BIOS
+configurations; they do not establish that one image is a feature superset.
+The
 53-column screen is not a 2.43-line trait (#0035 pairs it with 3.43 and
 NetBios), and #0024 even targets a different FDC chip.
 
