@@ -61,10 +61,12 @@ remains unrouted at the newly connected routed-board pads too.
 This is an endpoint screen, not a geometric proof of all copper connectivity;
 KiCad DRC still holds the boards for other gaps.
 
-Run the screen with:
+Run from the repository root with KiCad’s `pcbnew` available to Python.
+The system Python below provides it on the documented Linux setup; adjust
+the interpreter path for your KiCad installation:
 
 ```sh
-python3 kicad/check_package_rail_pad_coverage.py
+/usr/bin/python3 kicad/check_package_rail_pad_coverage.py
 ```
 
 It compares the unassigned pad and missing-endpoint sets with the recorded
