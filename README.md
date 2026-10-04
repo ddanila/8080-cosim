@@ -70,11 +70,14 @@ The capture inputs, dependencies, and regeneration commands are documented in
 
 Downstream projects can consume the digest-pinned
 `ghcr.io/ddanila/8080-cosim-smoke-kit` OCI image instead of cloning this whole
-repository. The kit contains the Linux simulator, the static native
-`jukuhost`, frozen non-runnable Python test fixtures, required ROMs, and a
-machine-readable interface manifest at
-`/opt/8080-cosim/smoke-kit.json`. It is republished only when those inputs or
-its image definition change.
+repository. This Linux amd64 artifact image contains the simulator, static
+`jukuhost`, frozen non-runnable Python test fixtures, and the three ROMs listed
+in [its manifest](.github/smoke-kit/smoke-kit.json), installed at
+`/opt/8080-cosim/smoke-kit.json`. Its `scratch` image supplies no shell or
+simulator shared libraries; copy the artifacts into a compatible runtime as
+defined by [the Dockerfile](.github/smoke-kit/Dockerfile). Selected input changes
+on `master` and manual dispatch publish `v2` and a source-SHA tag. Pin a digest
+for a fixed artifact; `v2` is a moving tag.
 
 ## Evidence and source hierarchy
 
