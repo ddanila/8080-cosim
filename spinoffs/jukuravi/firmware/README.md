@@ -76,17 +76,15 @@ page checksum; the CPU wrapper covers the ALU/flags,
 register-pair, INX/DAD, stack, and PUSH/POP paths. Both write their structured
 results from `4E00h` and return.
 
-Initialize the shared sources. The build compiles the pinned zmac submodule and
-uses its Intel 8080 mode; no separately installed assembler is required:
+From the repository root, initialize the shared sources and verify the
+committed diagnostic binaries. The build uses the pinned zmac source in Intel
+8080 mode, compiling it if the executable is absent; no separately installed
+assembler is required:
 
 ```sh
 git submodule update --init --recursive
-python3 spinoffs/jukuravi/firmware/build_shared_memory.py
 python3 spinoffs/jukuravi/firmware/build_shared_memory.py --check
-python3 spinoffs/jukuravi/firmware/build_shared_cpu.py
 python3 spinoffs/jukuravi/firmware/build_shared_cpu.py --check
-python3 spinoffs/jukuravi/firmware/build_smoke.py
-python3 spinoffs/jukuravi/firmware/build_smoke.py --check
 cc -O2 -Wall -Wextra -o /tmp/jukuravi-shared-memory-test \
   tests/jukuravi_shared_memory_test.c cosim/i8080.c
 /tmp/jukuravi-shared-memory-test \
@@ -98,7 +96,9 @@ cc -O2 -Wall -Wextra -o /tmp/jukuravi-shared-cpu-test \
 ```
 
 The host prerequisites for zmac are `make`, `bison`, and a C/C++ compiler. Set
-`ZMAC` only to deliberately override the pinned assembler.
+`ZMAC` only to deliberately override the pinned assembler. Omit `--check`
+from a builder only when intentionally replacing its tracked binary after a
+source change; review that diff before using the image on hardware.
 
 ## Build and verify
 
