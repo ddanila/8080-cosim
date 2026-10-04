@@ -13,14 +13,18 @@ software-refresh loop**; its only contribution is programming the D54/D55
 raster PITs once at boot (`ekta37` offsets `01D4h..0221h`, decoded in
 [`../../docs/video-pit-timing.md`](../../docs/video-pit-timing.md)).
 
-The diagnostic ROMs never program that raster. Whether video-slot `/RAS`
-cycles happen anyway — without the PIT-driven sync/blank chain — is exactly
-the open "shared-DRAM video-slot schedule" boundary
-([`../../docs/video-slot-timing-audit.md`](../../docs/video-slot-timing-audit.md)).
+Diagnostic firmware can program the raster: the shared RAM-diagnostic builder
+calls `emit_video_pit_init`, which emits the Ekta D54/D55 sequence. Later PIT
+tests can change that state. Consequently, `--arm none` means no additional
+raster writes by this experiment; it does not disable timing established by
+boot or prove that video-slot refresh is absent. The actual shared-DRAM
+video-slot schedule remains an open
+[hardware boundary](../../docs/video-slot-timing-audit.md).
+
 The CS00024 T34 holds showed decay after 5–17 s, while CS00015 survived
-longer diagnostic idles. That contrast alone does not distinguish missing
-refresh from natural retention differences. The controlled raster/no-raster
-comparison below tests whether arming the timing chain changes retention.
+longer diagnostic idles. That contrast alone does not distinguish ineffective
+refresh from natural retention differences. The controlled comparison below
+tests whether explicitly replaying the raster setup changes retention.
 
 This experiment arms the raster from the T36 loader and measures whether
 that alone preserves RAM through an unrefreshed hold. Once the required
@@ -75,8 +79,7 @@ simulation deliberately cannot pass the armed long hold; only hardware can.
 
 ## Stages
 
-One invocation = one cold loader entry = one stage. Hardware RESET between
-stages. For the default cold-diagnostic entry, fit the exact T36 firmware expected
+Run one stage per invocation and RESET the board between stages. For the default cold-diagnostic entry, fit the exact T36 firmware expected
 by the runner (version `1Eh`, CRC16 `C617h`). The alternate entry requires
 an API-v2 service loader, tested with the archived Ekta4401 remix: start
 from its monitor and use `--attach-loader`; type `J`
@@ -86,7 +89,7 @@ the loader unrecoverable until RESET — that outcome *is* the measurement,
 recorded in the JSON capture. Run the commands below from the repository root.
 
 ```sh
-# Control: no raster. CS00024 prediction: decay (validates sensitivity).
+# Control: no additional raster writes; existing timing is retained.
 python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
   --arm none --log-dir spinoffs/jukuravi/sessions/cs00024-raster-control
 
