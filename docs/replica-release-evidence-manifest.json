@@ -103,7 +103,7 @@
     },
     "Sourcing": {
       "path": "docs/replica-sourcing-readiness.md",
-      "sha256": "a74b5f0b4f3120576c5ef9237bfb59d551381f3783c0ae41d5dfa6893730e9cd",
+      "sha256": "253a855977e430ad0c0bb41e0fbed7e5a399d51283ea98ffc43fcfc739ced701",
       "status": "PARTIAL / PROGRAMMING AND REVIEW BLOCKED"
     },
     "Firmware lineage": {

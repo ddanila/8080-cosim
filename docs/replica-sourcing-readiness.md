@@ -125,12 +125,12 @@ against drawings/board photos before ordering final quantities.
 4. Program or dump PROM/EPROM rows only after provenance is recorded; keep
    checksums, device settings, adapter identity, and confidence/verify results
    with the programmer log.
-5. Install sockets first, then passives/connectors, then power-rail checks with
-   no ICs seated. Independently review polarized parts, connectors, and pin-1
-   orientation before power.
-6. Close design-release risks before fabrication and assembly. Carry the
+5. Close design-release risks before fabrication and assembly. Carry the
    released `docs/replica-bringup-verification-points.md` checks into each
    `docs/replica-first-article-record.md` and verify the assembled unit.
+6. Install sockets first, then passives/connectors, then power-rail checks with
+   no ICs seated. Independently review polarized parts, connectors, and pin-1
+   orientation before power.
 7. Seat only the clock/reset/ROM-fetch minimum set first; compare bus behavior
    against `sync/boot_check.sh` and cosim traces.
 8. Add RAM, video, keyboard, and FDC in staged groups, never as one full-board
