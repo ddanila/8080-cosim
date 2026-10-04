@@ -56,7 +56,7 @@ currently stops on an additional D57 failure bit before reaching its T34 cases.
   surrounding clock/control timing; see
   [the READY bench](../docs/d2-ready-path-check.md).
 - D6's validated `.038` table and chip-removed separate pins 11/12 remain the
-  structural/LVS truth. Runnable simulation now selects from that physical table
+  structural/LVS truth. Runnable simulation selects from that physical table
   through `U_DECODE`. All four outputs connect directly
   with no simulation-only polarity correction. Capture provenance and the
   corrected channel order are in
@@ -72,7 +72,7 @@ currently stops on an additional D57 failure bit before reaching its T34 cases.
   [the footprint inventory](../docs/unmodeled-footprint-inventory.md) owns
   that boundary.
 - The shared К555ИЕ7/74LS193 primitive used by video counters D44-D47 and
-  representing FDC-area D106 now has its complete standard digital contract
+  representing FDC-area D106 has its complete standard digital contract
   guarded. Recovered sheet 3 also closes and LVS-maps its actual board straps,
   RAW READ load, selected recovery clock, grounded clear, Q3 output, and five
   explicit no-connects; only physical waveform quality remains a bench check.
@@ -81,7 +81,7 @@ currently stops on an additional D57 failure bit before reaching its T34 cases.
   The device model preserves the datasheet's Q=/Q=high result when WREQ
   asserts both asynchronous controls;
   restart phase is undefined, while divide-by-two behavior after release is
-  guarded. Section 2 is structurally restored from the exact sheet:
+  guarded. Section 2 follows the exact sheet:
   wired D28.10/.12 feeds /PRE2 and D2. CLK2 is source-joined to
   D94.2/D99.9/R89.1, with physical continuity pending;
   Q2 feeds D101 A0–A3 in the full sheet-3 overview, with physical continuity
