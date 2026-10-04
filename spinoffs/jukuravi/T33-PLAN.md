@@ -2,9 +2,12 @@
 
 Status: **COMPLETED 2026-08-05; no re-burn was required**
 
-The already-burned T32 ROM is version `1Bh`, CRC16 `D62B`, SHA-256
+The tests used T32 version `1Bh`, CRC16 `D62B`, SHA-256
 `61832807cd7e52c02384844649776efa75bb3ef25795a8124d795230ed5b5ce2`.
-All commands use its loader API v2 through X3 at 2400 baud.
+The recorded setup used its loader API v2 through X3 at 2400 baud. T32 is
+no longer fitted in CS00015; see the
+[current service record](../../docs/cs00015-service-record.md). Reproduction
+requires a compatible diagnostic-loader setup and NASM to build the probe.
 
 ## Supporting physical signature
 
@@ -50,8 +53,11 @@ loader still active. Evidence is under
 
 The source and clean/fault expectations are guarded by
 `tests/jukuravi_cpu_a12_increment_test.py`.
-The helper handles a fresh T32 boot by default; pass `--attach-loader` only
-when the board is already silent with loader API v2 resident.
+Start the helper before RESET for a fresh T32 boot; it checks `1B/D62B`.
+`--attach-loader` uses an already-resident API-v2 loader without checking that
+cold-boot identity. The helper exits 0 for either recognized `CLEAN` or
+`D1 FAULT CONFIRMED` output, and 2 for an unrecognized result; exit 0 alone
+does not mean the CPU passed.
 
 ## ROM WAIT comparison
 
