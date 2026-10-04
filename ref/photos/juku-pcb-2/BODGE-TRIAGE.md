@@ -98,8 +98,7 @@ drawing agree on these endpoints:
 
 The factory table has two different number spaces: `Провод` is the conductor
 position within assembly item 155, while `А:N` is the number printed at both
-PCB endpoints. Earlier shorthand called the latter a "wire number"; the
-explicit columns below remove that ambiguity.
+PCB endpoints. Use both columns when identifying a link.
 
 | Conductor position | Board point | Measured/guarded endpoints | Meaning/state |
 | ---: | ---: | --- | --- |
@@ -137,18 +136,16 @@ The sheets 2-5 connection table (`ДУБЛИКАТ` scan) documents both far end
 switch S1. The component photo plus package fit closes `А:18` as D98.7, while
 matching labeled component/solder views close `А:17` as a dedicated board pad.
 
-Owner inspection and continuity on 2026-07-20 correct the former R94 photo
-assignment. Actual R94 is the 10k pull-up immediately above D28, from
-D28.11/D93.38 to +5 V; the video cable can obscure it. The visible 220-ohm
-body below-left of D98 is a different, currently unassigned component. Its four
-registered photo observations remain preserved in `r94-photo-exhaustion.json`,
-now explicitly marked as a superseded identification. It is separate from the
-white wire-18 connection at D98.7.
+Owner inspection and continuity identify R94 as the 10k pull-up immediately
+above D28, from D28.11/D93.38 to +5 V; the video cable can obscure it.
+The unassigned 220-ohm component below-left of D98 is separate from R94
+and the white wire-18 connection at D98.7. Its retained photo observations
+are in `r94-photo-exhaustion.json`; that record's R94 identification is superseded.
 
 S1 itself is mounted on the top connector bracket, as shown both by sheet 1
 and owner component photograph `PXL_20260710_200402344.jpg`; it is not a
 two-pin PCB header. The PCB-side objects are the remote wire landings `А:17`
-and `А:18`, with `А:18` now proved at D98.7. The generated source PCB now
+and `А:18`, with `А:18` at D98.7. The generated source PCB
 excludes S1 from its footprint set and includes the physical `A17` one-pad
 landing; the switch remains in the schematic as an off-board harness component.
 
@@ -160,10 +157,9 @@ schematic harness. This preserves all existing D26 keyboard nets and the two
 +5 V conductors without depicting the remote connector body on the PCB.
 
 Factory sheet 2 likewise separates the X8 bracket connector from PCB points
-A59..A62. The four numbered landings now carry -12 V, +12 V, +5 V, and ground;
+A59..A62. The four numbered landings carry -12 V, +12 V, +5 V, and ground;
 the schematic harness records the six 300 mm conductors, including the paired
-+5 V and ground wires. The former provisional six-pad on-board X8 connector is
-therefore removed.
++5 V and ground wires. X8 has no on-board connector footprint.
 
 The X3 serial connector is also bracket-mounted. Registered component and
 solder views show its twelve cable wires terminating in one PCB row labeled
@@ -185,7 +181,7 @@ and R30 as the long vertical 33k link from `S_OC` to ground. Their fitted
 10.16 mm and 12.7 mm footprints match the photographed terminals.
 The same source block shows SER_TXD feeding both D3.11 and D3.9; D3.8 then
 drives tied D12.1/.2 before D12.3 produces OC SOUT. That physical inverter
-stage is now modeled instead of the former direct SER_TXD-to-D12 shortcut.
+stage is represented in the model.
 
 Sheet 1 also explicitly ties D10 PIC SP/EN pin 16 to the `A` (+5 V) rail,
 selecting standalone master mode. Exact `.009` source evidence assigns IR0 to
@@ -217,14 +213,11 @@ coordinates alone do not qualify a trace or drill for fabrication.
 
 ## Placement conclusions retained
 
-- Board outline: `310 x 266 mm` from the owner-measured physical target. An
-  earlier scan-frame interpretation of the assembly drawing produced 279 mm
-  and is not used by the PCB generator.
+- Board outline: `310 x 266 mm` from the owner-measured physical target.
 - The DRAM rows use roughly `11.25 mm` horizontal and `25 mm` vertical pitch.
 - The `.158/.009` target populates D84-D91; empty D60-D83 footprints are real
   expansion sockets, not missing ICs from the official populated-parts list.
-- D105 is horizontal below D13. A former extra `LA3B` sighting was a duplicate
-  and is not a real part.
+- D105 is horizontal below D13.
 - The connector and mounting geometry is captured by the generated KiCad
   source; values and positions that remain uncertain are reported by the
   generated boundary/readiness documents.
