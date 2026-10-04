@@ -296,50 +296,18 @@ be deterministic and inspectable in a JSON trace.
 
 ## Target representation
 
-### Envelope
+| Layer | Target representation and contract |
+| --- | --- |
+| [Envelope](JPS2-ENVELOPE-DESIGN.md) | Host-fitted 4-bit peak/sustain levels and compact ADSR stages; key-off starts release and `EGT` controls keyed sustain |
+| [Tremolo](JPS2-TREMOLO-DESIGN.md) | One shared fractional LFO with bounded per-tone attenuation; enable only direct AM that survives quantization |
+| [Pitch/vibrato](JPS2-PITCH-DESIGN.md) | Host-precomputed deltas and one shared fractional LFO; temporary steps preserve the base pitch and prevent drift |
 
-Do not translate raw OPL rate nibbles directly into the current arbitrary
-Juku speed numbers.  OPL rates are nonlinear and may be pitch-dependent.
-Instead, use the oracle to fit a compact attack/decay/sustain/release curve at
-the 50 Hz target rate and serialize already-resolved targets and increments.
-
-The implemented compact envelope uses resolved 4-bit peak/sustain levels,
-rate masks and off/attack/decay/sustain/release stages. The exact packet and
-per-channel state are defined in [the envelope contract](JPS2-ENVELOPE-DESIGN.md).
-There is no higher-resolution speaker amplitude hidden behind that representation.
-
-Key-off must start release instead of immediately deleting the voice.  `EGT`
-must decide whether a keyed note rests at sustain or continues its percussive
-decay.  Attacks shorter than one 20 ms frame may correctly quantize to an
-immediate attack.
-
-### Tremolo
-
-OPL tremolo uses a shared-running LFO with per-operator enable and global
-depth.  Implement at most one fractional phase accumulator and a small fixed
-table.  Per logical voice, store only enable and precomputed effective depth.
-If tremolo exists only on an FM modulator and the oracle shows mainly a timbre
-change, do not falsely turn it into large square-wave amplitude modulation.
-
-The 3.7 Hz source LFO has about 13.5 target frames per cycle at 50 Hz.  A
-fractional accumulator is required so it does not become an incorrectly
-rounded fixed-period oscillator.  Shallow modulation which cannot survive the
-4-bit output mapping may be omitted, but that decision must come from the
-quantized oracle comparison.
-
-### Vibrato
-
-Use one shared fractional vibrato phase and a small OPL-shaped lookup table.
-The importer precomputes the shallow/deep phase-step deviations for each base
-note.  At the frame boundary, the player selects a signed delta and forms the
-temporary step used for the next sample batch.  It must retain an unmodulated
-base step so vibrato cannot accumulate into pitch drift.
-
-The pinned DOOM source LFO is 6.068835788 Hz, or about 8.24 target frames per
-cycle at 50 Hz.  Its 16-bit target phase increment is 7,955.  This is coarse
-but representable.  Runtime multiplication by the current phase step is not
-allowed; if the precomputed-delta update misses G2, use a still smaller table
-or host-baked sparse pitch automation.
+The linked contracts own packet layouts, state, constants and build flags.
+Fit against the isolated oracle rather than translating raw Yamaha rate codes
+into arbitrary target speeds. FM-modulator changes do not establish direct
+amplitude or pitch modulation. All three layers share G2's measured cycle
+budget; sparse host-baked changes or explicit omission remain fallbacks when
+runtime effects cannot meet it.
 
 ### Mid-note effects and legato
 
