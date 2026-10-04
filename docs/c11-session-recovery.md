@@ -66,7 +66,7 @@ expires. See [the configuration guide](jukuhost-config.md) for defaults.
 | checked capture/log failure, media setup/journal failure, or artifact rejection | no safe ROM remedy | host stops with its specific fatal exit | these failures do not enter automatic rediscovery |
 | permanent power, cable, UART, RAM, or ROM fault | may remain silent or repeat POST failure | waits/retries only where transport remains observable | operator/hardware repair is still required |
 
-The later, separately identified stock `JF17` profile now applies the same
+The separately identified stock `JF17` profile applies the same
 receive-only principle at a stable 9,600/8O1: a checked Janet load request
 means reset ROM, while a checked `JD` request means live NetDisk. It does not
 change this C11 wire contract or the historical 19,200-baud JF15 artifact.
@@ -91,9 +91,9 @@ restart, zero service retries, and clean writable-journal behavior.
 
 ## Exact C11 artifact boundary
 
-The earlier desk-only C11 build is superseded and must not be programmed.
-The current per-release manifest identifies the recovery loader and ROM pair;
-older candidate hashes remain in Git history.
+The [C11 release manifest](../spinoffs/jukuravi/network-rom/juku-network-rom-abi1.4-c11.json)
+identifies the recovery loader and exact ROM pair below. Use these identities
+when qualifying or programming C11.
 
 The recovery C11 pair is:
 
@@ -101,7 +101,7 @@ The recovery C11 pair is:
 - D15: `a94e8fa2911fd3f7e715c6086d237b45fe630e71e8e14786bdcce435d99a8134`;
 - D16: `ac80ca047adeff842a911266ff1c054e30ac4628e925ea9fbb1be54e872b9581`.
 
-D16 is unchanged because the discovery loader lives in the lower D15 half.
+The discovery loader lives in the lower D15 half.
 Physical programming and the raster/listening acceptance remain separate
 operator gates.
 
