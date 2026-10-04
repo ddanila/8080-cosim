@@ -1,6 +1,6 @@
 # Source-to-routed footprint placement parity
 
-This compares footprint reference, placement anchor, and rotation in the source PCB with both routed variants. Tolerance: 0.01 mm and 0.1°. It does not verify whether the source PCB itself matches the owner board or whether copper follows a moved footprint.
+This compares footprint reference, placement anchor, and rotation in the source PCB with both routed variants. Tolerance: 0.01 mm per coordinate and 0.1° by the shortest angular difference. It does not verify whether the source PCB itself matches the owner board or whether copper follows a moved footprint.
 
 The coordinates are KiCad footprint placement anchors, which can differ
 from package or pad-array centers. Footprint geometry and pad nets are not
@@ -32,4 +32,11 @@ compared. A nonzero exit status reports placement gaps.
 | Both variants | `D6` | (66.550, 109.360) mm / 270.0° | (54.910, 117.905) mm / 90.0° |
 | Both variants | `D9` | (116.770, 109.400) mm / 270.0° | (118.813, 109.498) mm / 270.0° |
 
-The source PCB now places D11 at the two-view owner-photo position; both routed variants retain the old D11 position and copper. The exact .009 assembly and owner component image place D12 above D3 (`ref/photos/juku-pcb-2/d12-d3-local-placement.json`); the source PCB has that corrected placement. Both routed variants retain D12's old left-of-D3 estimate inside the corrected D11 area and omit source-placed R9/R10. D26, D27, D6, and D9 also differ as listed above; see their individual placement audits and `docs/r9-r10-routed-collision-audit.md`.
+## Placement evidence
+
+The tables report current source/routed differences. Photo qualification
+and routing constraints are recorded separately:
+
+- [D11 cross-view placement](../ref/photos/juku-pcb-2/d11-placement-crossview-audit.json)
+- [D12/D3 local placement](../ref/photos/juku-pcb-2/d12-d3-local-placement.json)
+- [R9/R10 routed collision audit](r9-r10-routed-collision-audit.md)
