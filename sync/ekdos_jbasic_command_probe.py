@@ -517,7 +517,6 @@ def build_report(
         f"- Final VRAM SHA256: `{vram['sha256']}`",
         f"- Final lit pixels: {vram['lit_pixels']}",
         f"- Final fixed-framebuffer nonzero lines: {vram.get('nonzero_lines', 0)} (`{vram.get('first_nonzero_line', -1)}`..`{vram.get('last_nonzero_line', -1)}`)",
-        f"- Final fixed-framebuffer first bytes: `{vram.get('top_bytes', 'missing')}`",
         f"- Visible command line: `{screen['command_text']}` at scanline {screen['command_y']} ({'yes' if screen['command_visible'] else 'no'})",
         f"- Visible BASIC prompt: `{screen['ready_text']}` at scanline {screen['ready_y']} ({'yes' if screen['ready_visible'] else 'no'})",
         f"- Visible block cursor: scanline {screen['cursor_y']} ({'yes' if screen['cursor_visible'] else 'no'})",
@@ -567,11 +566,11 @@ def build_report(
             "",
             "## Disposition",
             "",
-            "- `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` now preserves the raw live-load `JBASIC.COM` candidate from that disk.",
+            "- `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` preserves the raw live-load `JBASIC.COM` candidate from that disk.",
             "- The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extractor maps it to erased bytes; it is not used for this launch probe.",
-            "- The final RAM contains the live candidate entry signature plus relocated `ERROR`, `READY`, and `BASIC` strings, proving the command reaches loaded BASIC code/data.",
+            "- The guard requires at least six candidate entry bytes at RAM `0x0100` and the `ERROR`, `READY`, and `BASIC` strings somewhere in RAM. It does not verify the complete loaded binary or the relocation of those strings.",
             "- The final video/mode table records the MAME-mapped timing ports from the checkpoint, making the rendered text prompt auditable against the final control state.",
-            "- The fixed-`0xD800` framebuffer now has a positive text oracle: the typed `A>JBASIC` command line and final `READY` prompt are matched by exact 8x7 glyph bitmaps.",
+            "- The fixed-`0xD800` framebuffer has a positive text oracle: the typed `A>JBASIC` command line and final `READY` prompt are matched by exact 8x7 glyph bitmaps.",
             "- The [recorded HDL run](juku-top-jbasic-verilator-probe.md) reached `READY`. This report checks the C-model launch path; see [simulator compatibility](../sync/README.md#simulator-compatibility) for current HDL rerun limits.",
         ]
     )

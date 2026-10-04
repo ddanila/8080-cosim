@@ -77,7 +77,6 @@ def main() -> int:
         raise SystemExit(f"legacy emulator modes changed: {legacy_modes}")
 
     later_docs = [
-        "docs/juku-top-fdc-alignment.md",
         "docs/juku-top-fdc-verilator-probe.md",
         "docs/juku-top-jbasic-verilator-probe.md",
         "docs/ekdos-jbasic-command-probe.md",
