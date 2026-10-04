@@ -15,47 +15,13 @@ attempting a Verilator rerun.
 sync/juku_top_fdc_probe.sh
 ```
 
-Environment overrides:
+Harness defaults and all overrides are defined in
+[`sync/juku_top_fdc_probe.sh`](../sync/juku_top_fdc_probe.sh).
+The bare command uses the default early-FDC stop; it does not reproduce
+this recorded prompt run. Use the recorded settings below for that case,
+subject to the simulator compatibility limit above.
 
-- `JUKU_TOP_FDC_DISK` default `media/disks/JUKU1.CPM`
-- `JUKU_TOP_FDC_SIM` default `icarus`; optional `verilator`
-- `JUKU_TOP_FDC_KEYAT` default `42000`
-- `JUKU_TOP_FDC_KHOLD` default `900000`
-- `JUKU_TOP_FDC_KGAP` default `900000`
-- `JUKU_TOP_FDC_FRAMEIRQ` default `80000`
-- `JUKU_TOP_FDC_FRAMEPHASE` default `0`
-- `JUKU_TOP_FDC_FRAMEMCYC` default `0`; when nonzero, overrides
-  `JUKU_TOP_FDC_FRAMEIRQ` and schedules frame ticks on machine-cycle boundaries;
-  in this mode `JUKU_TOP_FDC_FRAMEPHASE` is the absolute first machine-cycle tick
-- `JUKU_TOP_FDC_TRACEPROGRESS` default `5000`
-- `JUKU_TOP_FDC_VRAMSTOP_SYNC` default `0`; when nonzero, stops at the next
-  CPU SYNC after `JUKU_TOP_FDC_MAXVRAM` for architectural state comparison
-- `JUKU_TOP_FDC_TRACEIO` default `0`
-- `JUKU_TOP_FDC_TRACECHK` default `0`
-- `JUKU_TOP_FDC_TRACEPPI` default `1`
-- `JUKU_TOP_FDC_TRACEIRQ` default `1`
-- `JUKU_TOP_FDC_TRACEFDC` default `1`
-- `JUKU_TOP_FDC_STOPIO` default `0`
-- `JUKU_TOP_FDC_STOPFDC` default `1`
-- `JUKU_TOP_FDC_STOPFDCDATA` default `0`; when nonzero, stops after N
-  decoded FDC data-register reads
-- `JUKU_TOP_FDC_STOPPIC` default `0`
-- `JUKU_TOP_FDC_STOPPPI` default `0`
-- `JUKU_TOP_FDC_STOPPROMPT` default `0`; set to `1` to stop when the
-  EKDOS `A>` bitmap appears at `x=0`, `y=70`
-- `JUKU_TOP_FDC_JBASICKEYS` default `0`; set to `1` to type
-  `JBASIC` + Enter after the EKDOS `A>` bitmap is observed
-- `JUKU_TOP_FDC_STOPJBASICCMD` default `0`; set to `1` to stop when
-  the `A>JBASIC` command line bitmap appears
-- `JUKU_TOP_FDC_STOPJBASICREADY` default `0`; set to `1` to stop when
-  the BASIC `READY` bitmap appears
-- `JUKU_TOP_FDC_COMMAND_KEY_MCYC` default `0`; optional minimum machine
-  cycle before post-prompt command-key injection
-- `JUKU_TOP_FDC_STOPPC` optional hexadecimal CPU PC stop hook
-- `JUKU_TOP_FDC_STOPPC_SKIP` default `0`; matching PC entries to skip
-- `JUKU_TOP_FDC_TIMEOUT` default `60` seconds
-
-Current values: `DISK=media/disks/JUKPROG2.CPM SIM=verilator KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=0 FRAMEPHASE=49891 FRAMEMCYC=50761 TRACEPROGRESS=10000 VRAMSTOP_SYNC=0 TRACEIO=0 TRACECHK=0 TRACEPPI=0 TRACEIRQ=0 TRACEFDC=0 STOPIO=0 MAXVRAM=85000 TIMECAP=30000000000 STOPFDC=0 STOPFDCDATA=0 STOPPIC=0 STOPPPI=0 STOPPROMPT=0 JBASICKEYS=1 STOPJBASICCMD=0 STOPJBASICREADY=1 COMMAND_KEY_MCYC=0 STOPPC=none STOPPC_SKIP=0 TIMEOUT=900`.
+Recorded settings: `DISK=media/disks/JUKPROG2.CPM SIM=verilator KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=0 FRAMEPHASE=49891 FRAMEMCYC=50761 TRACEPROGRESS=10000 VRAMSTOP_SYNC=0 TRACEIO=0 TRACECHK=0 TRACEPPI=0 TRACEIRQ=0 TRACEFDC=0 STOPIO=0 MAXVRAM=85000 TIMECAP=30000000000 STOPFDC=0 STOPFDCDATA=0 STOPPIC=0 STOPPPI=0 STOPPROMPT=0 JBASICKEYS=1 STOPJBASICCMD=0 STOPJBASICREADY=1 COMMAND_KEY_MCYC=0 STOPPC=none STOPPC_SKIP=0 TIMEOUT=900`.
 
 ## Evidence
 
