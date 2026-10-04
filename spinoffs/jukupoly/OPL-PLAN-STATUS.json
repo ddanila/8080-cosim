@@ -212,7 +212,7 @@
   "overall_status": "physical-qualification-pending",
   "plan": {
     "path": "OPL-REDUCTION-PLAN.md",
-    "sha256": "c036dab3c34616803f655bd51469d5d7bf499ed522828733ec8c56885709f644"
+    "sha256": "6a19144842f7e6c5565195706c6f7e7b5ea711458ab8a6237ddd25b4f6d4538a"
   },
   "remaining_required_actions": [
     {
@@ -222,6 +222,6 @@
       "requires_external_state": "powered physical CS00000 and operator"
     }
   ],
-  "report_sha256": "3423a95ef6af63444cbb2c9df536e6e0a0062e7c109fb882bb1f4da9513762f1",
+  "report_sha256": "ca4fb8639b3ed4c114361187e10da593b597bc1cafff61746ed0a6f976b8dd26",
   "schema": "jukupoly-opl-plan-status-v1"
 }

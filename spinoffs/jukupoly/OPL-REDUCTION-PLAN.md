@@ -151,10 +151,10 @@ sample rate, rather than this rounded iteration count, is authoritative.
 
 For a feature to be enabled by default in VGZ library songs:
 
-- the measured effective sample rate must remain at least 90% of the G0 VGZ
-  baseline;
-- with the current approximately 7.12 kHz VGZ rate, the provisional hard floor
-  is approximately 6.41 kHz;
+- the measured effective sample rate must remain at least 90% of the frozen
+  G0 `doomgate` profile: the shared floor is 6,401.146221 Hz, recorded in
+  [OPL-ENVELOPE-M3.json](OPL-ENVELOPE-M3.json) and consumed by the generic pack
+  builder. The lower minimum across all G0 fixtures is not this delivery gate;
 - all newly enabled OPL work is combined when applying this limit--envelope,
   tremolo, vibrato, pitch handling, Escape polling, and worst normal row work
   are not granted separate 10% budgets;
@@ -270,18 +270,17 @@ Build synthetic VGM fixtures which isolate:
 
 ### Accurate host oracle
 
-Integrate a pinned, attributed Nuked OPL3 revision as a build-time analysis
-dependency or tool.  It should be able to render the complete mix and each OPL
-channel in isolation.  At 50 Hz analysis points, derive:
+`tools/jukupoly_opl_oracle.c` uses the pinned Nuked OPL3 submodule to render
+timed register streams and emit channel-state probes at 50 Hz. The probes
+include frequency number/block, key state, operator attenuation and envelope
+stage, connection, AM/VIB enables, and LFO state. They are register-derived
+measurements, not waveform pitch detection or perceptual loudness estimates.
 
-- fundamental pitch and instantaneous pitch deviation;
-- perceptual/RMS level and attack energy;
-- key and envelope state;
-- effective tremolo depth;
-- whether modulator changes primarily affect loudness or timbre.
-
-The oracle result is test evidence, not data that must be stored verbatim in
-the song.
+`firmware/opl_oracle.py` isolates selected keyed spans while preserving their
+register context. The [voice differential workflow](OPL-VOICE-DIFFERENTIAL.md)
+renders those streams and computes RMS contours from the reference and target
+audio separately. Host reduction uses the oracle state to fit compact target
+packets; the full probe stream is not stored in the JPS song.
 
 ### Logical voices
 
