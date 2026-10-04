@@ -6,6 +6,10 @@ Result: **PASS** — 12 fitted devices, 25 table endpoints, checked in board JSO
 
 ## Command
 
+Run from the repository root with KiCad’s `pcbnew` available to the chosen Python.
+The command below uses the system Python; adjust its path for your KiCad installation.
+The command overwrites this report.
+
 ```sh
 /usr/bin/python3 scripts/check_sheet3_power_table.py
 ```

@@ -46,7 +46,9 @@ def main() -> int:
         "# Exact .009 sheet-2 IC power-table audit", "",
         f"Source: `{SOURCE}`; original pixels `(0,2150)-(3072,3920)`. Row labels also appear in `PXL_20260718_101924004.jpg`.", "",
         f"Result: **{'FAIL' if missing else 'PASS'}** for the unambiguous mapped columns — {len(rows)} modeled positions ({fitted_count} factory-fitted ICs and {empty_count} empty expansion sockets), {count} audited rail endpoints, {len(missing)} missing model endpoints. The ИР16 and РУ4 columns remain outside this pass.", "",
-        "## Command", "", "```sh", "python3 scripts/check_sheet2_power_table.py", "```", "",
+        "## Command", "",
+        'Run from the repository root with Python 3 (standard library only).',
+        "The command overwrites this report.", "", "```sh", "python3 scripts/check_sheet2_power_table.py", "```", "",
         "| Ref | Population | Model type | Table pin:rail entries | Model |", "| --- | --- | --- | --- | --- |",
     ]
     lines += [f"| `{ref}` | {'empty socket' if ref in EMPTY_DRAM_SOCKETS else 'factory-fitted'} | `{kind}` | `{entries}` | {result} |" for ref, kind, entries, result in rows]

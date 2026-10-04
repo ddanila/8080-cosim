@@ -166,7 +166,9 @@ lines = [
     "is guarded as a hold rather than claimed source-closed. The older `.006`",
     "sheet supports designations; exact `.009 Э3` sheet 2 controls the VD3",
     "polarity reading and is separately hash-checked.", "",
-    "## Command", "", "```sh", "python3 scripts/report_native_semiconductors.py", "```", "",
+    "## Command", "",
+    'Run from the repository root with Python 3 (standard library only).',
+    "The command overwrites this report.", "", "```sh", "python3 scripts/report_native_semiconductors.py", "```", "",
     "## Source-closed designations and pin maps", "", "| Ref | Device | Package | Physical pins | PCB nets by pin |",
     "| --- | --- | --- | --- | --- |",
 ]

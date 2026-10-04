@@ -14,6 +14,9 @@ polarity reading and is separately hash-checked.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The command overwrites this report.
+
 ```sh
 python3 scripts/report_native_semiconductors.py
 ```

@@ -6,6 +6,9 @@ Result: **PASS** for the unambiguous mapped columns — 54 modeled positions (30
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The command overwrites this report.
+
 ```sh
 python3 scripts/check_sheet2_power_table.py
 ```
