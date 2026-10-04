@@ -300,10 +300,10 @@ does not stop cosim. Use `--keep-logs` and inspect the host log/capture when
 qualifying a network session. In `--attach` mode, Ctrl-] leaves the bridge and
 shuts down the session; it does not leave the emulator running in the background.
 
-Type boot keys **one at a time with a beat between them**: the emulated
-matrix consumes a keystroke every few frames, and anything typed before its
-prompt exists is discarded, which looks exactly like the machine ignoring
-you. `JUKU_DISK=... tools/juku_run.py` then `T`, `D`, `D` reaches a CP/M
+Wait for each expected boot prompt before typing the next key. The simulator
+queues matrix contacts; it does not synchronize them to visible prompts.
+Startup scans can consume an early contact before the intended command handler
+is ready. `JUKU_DISK=... tools/juku_run.py` then `T`, `D`, `D` reaches a CP/M
 `A>` from the vendored floppy; a bare `--netboot` of a *disk* system such as
 `EKDOS230.BIN` will instead hit `Disk Read error` after handoff, because
 that system expects a drive. `tests/cosim_console_test.py` checks the console
