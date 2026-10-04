@@ -44,11 +44,11 @@ Direct `N` has booted
 CP/M Plus through NetDisk-v3 and N4, and the inherited `J` service has passed
 two physical API-v2 attaches with zero transport mismatch.
 
-**This is not a factory image.** Its banner says so: the stock identity line
+**These are not factory images.** The stock identity line
 `'EktaSoft '88  Serial #0037` is replaced, same length, by
-`'EktaSoft&D.Sukharev '26#01` — the co-author is named in the banner and the
-year is '26. The file name encodes serial **44** (one past #0043, the highest
-known factory serial) and build **01**; 44 is this project's convention, not
+`'EktaSoft&D.Sukharev '26#01` for Ekta4401 or the corresponding `#02` line
+for Ekta4402. The file names encode serial **44** (one past #0043, the highest
+known factory serial) and build **01** or **02**; 44 is this project's convention, not
 a factory-assigned number. No byte of the archival #0037 pair is affected;
 that image remains the replica content truth.
 
@@ -59,7 +59,9 @@ The floppy subsystem (`2325h-29FFh`) is removed; a Net-only machine. Its
 vector contract keeps its shape. The reclaimed space stores the **T36
 loader engine verbatim** — never relocated, never re-assembled:
 
-Source ranges below include the start and exclude the end.
+The stored ROM addresses below are for **Ekta4401**. Source ranges include
+the start and exclude the end; both releases use the same RAM destinations
+and copied T36 bytes.
 
 | Segment | T36 source | stored at | copied to | bytes |
 | --- | --- | --- | --- | ---: |
@@ -69,7 +71,11 @@ Source ranges below include the start and exclude the end.
 | CRC table | `0900-0A00` | ROM `3B18h` | `0900h` | 256 |
 | refresh handler | `1070-1113` | ROM `3C18h` | `1070h` | 163 |
 
-`J` (runtime `FCBBh`) disables interrupts, forces **memory mode 1**, copies
+Ekta4402 stores the CRC table at `3B27h` and refresh handler at `3C27h`;
+the first three segments remain at the addresses above. Its `J` handler is
+at runtime `FCCAh`, versus `FCBBh` in Ekta4401.
+
+`J` disables interrupts, forces **memory mode 1**, copies
 the five segments to the exact addresses T36 assembled them for, and jumps
 to the loader entry (`0A0Ch`). Mode 1 is the trick that makes this work
 with no relocation: it maps ROM only at `D800h-FFFFh`, so the whole low
@@ -79,11 +85,12 @@ T36 restore routine at `0CE1h` to program the 8251 and its 2400-baud D57
 counter 0 before entering the loader. Service mode is one-way until RESET —
 the same contract NetBios has.
 
-Service footprint: 1,732 B in the reclaimed floppy region and 532 B
-in the `F900h` gap. Together with the monitor additions and `V`, the image still has 394 B
-free there.
-
 ## Monitor additions
+
+This offset table describes **Ekta4401**. Ekta4402 adds the `N` table entry
+and help text, moving `H` to runtime `F93Ah` and `V` to `F9EEh`; its `N`
+handler and direct core start at `FD3Eh` and `FD64h`. The builders' metadata
+records each release's layout.
 
 | Change | ROM bytes |
 | --- | --- |
@@ -95,7 +102,7 @@ free there.
 | Table pointer repointed (`LXI H,F900h`) | `1924-1925` |
 | Eight chunk checksums regenerated | `0008-000A`, `1806-180A` |
 
-The table, help and visual block occupies 536 bytes of the `3900h` free gap.
+The Ekta4401 table, help and visual block occupies 536 bytes of the `3900h` free gap.
 The 313-byte high-ROM `V` block copies its 291-byte body to hidden low RAM at
 `1200h`, disables interrupts, selects all-RAM mode 3, and paints twelve
 generated 40x241 write-only frames. Explicit symmetric X distance and scaled
@@ -166,7 +173,8 @@ refresh enabled at `07A9h`, with no transport mismatch. Subsequent retained
 sessions uploaded, read back, and executed D57 probes successfully, proving
 the complete LOAD → READ → RUN → result path rather than only the READY frame.
 
-Ekta4402 preserves those exact loader segments and `J` handler. On 2026-08-16
+Ekta4402 preserves the copied loader bytes and `J` behavior, with the ROM
+source addresses adjusted for its layout. On 2026-08-16
 the fitted successor was requalified directly: `J` entered service mode, two
 no-reset host attaches completed with zero encoded-symbol mismatch, both
 passed API-v2 PROBE and reported software refresh enabled for all 128 rows at
