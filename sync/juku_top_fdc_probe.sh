@@ -226,6 +226,14 @@ elif [ "$rc" -eq 124 ]; then
   status="HDL JUKU_TOP FDC PROBE TIMED OUT BEFORE FDC I/O"
 fi
 
+emit_trace() {
+  local trace_text
+  trace_text=$(grep "$2" "$OUT" || true)
+  if [ -n "$trace_text" ]; then
+    printf '## %s\n\n```text\n%s\n```\n' "$1" "$trace_text"
+  fi
+}
+
 cat > "$REPORT" <<EOF
 # $REPORT_TITLE
 
@@ -345,35 +353,11 @@ Current values: \`DISK=$DISK SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP
 - I/O summary line: \`${io_summary:-none}\`
 - FDC state line: \`${fdc_state:-none}\`
 
-## Checksum Trace
-
-\`\`\`text
-$(grep '^\[CHKHDL' "$OUT" || true)
-\`\`\`
-
-## PPI0 Trace
-
-\`\`\`text
-$(grep '^\[PPI0\]' "$OUT" || true)
-\`\`\`
-
-## Raw I/O Trace
-
-\`\`\`text
-$(grep '^\[RAWIO\]' "$OUT" || true)
-\`\`\`
-
-## IRQ Trace
-
-\`\`\`text
-$(grep '^\[IRQ\]' "$OUT" || true)
-\`\`\`
-
-## FDC Trace
-
-\`\`\`text
-$(grep '^\[FDC\]' "$OUT" || true)
-\`\`\`
+$(emit_trace 'Checksum Trace' '^\[CHKHDL')
+$(emit_trace 'PPI0 Trace' '^\[PPI0\]')
+$(emit_trace 'Raw I/O Trace' '^\[RAWIO\]')
+$(emit_trace 'IRQ Trace' '^\[IRQ\]')
+$(emit_trace 'FDC Trace' '^\[FDC\]')
 
 ## Scope
 

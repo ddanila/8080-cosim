@@ -104,36 +104,6 @@ Current values: `DISK=media/disks/JUKU1.CPM SIM=verilator KEYAT=42000 KHOLD=9000
 - I/O summary line: `[IO] raw_ios=22945 raw_reads=16765 raw_writes=6180 pic_ios=190 pic_reads=0 pic_writes=190 ppi_ios=11613 ppi_reads=5847 ppi_writes=5766 ppi_key_reads=552 fdc_ios=10925 fdc_reads=10854 fdc_writes=71 frame_ticks=53 intr_edges=32 inta_edges=96`
 - FDC state line: `[FDCSTATE] data_reads=10752 buffer_pos=0 buffer_len=0`
 
-## Checksum Trace
-
-```text
-
-```
-
-## PPI0 Trace
-
-```text
-
-```
-
-## Raw I/O Trace
-
-```text
-
-```
-
-## IRQ Trace
-
-```text
-
-```
-
-## FDC Trace
-
-```text
-
-```
-
 ## Scope
 
 - `STOPPROMPT=1` stops on the EKDOS `A>` bitmap. `JBASICKEYS=1` with

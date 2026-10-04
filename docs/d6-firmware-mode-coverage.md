@@ -72,7 +72,6 @@ Recorded Verilator results remain subject to the current
 
 | Evidence | Port C | D6 A6/A5 |
 | --- | ---: | --- |
-| `docs/juku-top-fdc-alignment.md` | `0x04` | `11` |
 | `docs/juku-top-fdc-verilator-probe.md` | `0x04` | `11` |
 | `docs/juku-top-jbasic-verilator-probe.md` | `0x04` | `11` |
 
