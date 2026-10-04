@@ -33,11 +33,20 @@ python3 tools/jukuhost_evidence.py \
   --requests-jsonl /tmp/jukuhost-requests.jsonl
 ```
 
-Optional `--boot-result` output requires `--system` and `--fast-stage`. It
-hashes those supplied files and derives completion from host events and the
-first disk-request event; the caller must select the artifacts used in the
-recorded run. Conversion alone does not prove their transmitted identity or
-physical qualification.
+Optional `--boot-result` output requires `--system` and `--fast-stage`.
+The caller must supply the artifacts used in the recorded run: the converter
+hashes those files without comparing them to transmitted RX/TX bytes.
+`--serial`, `--disk-baud` and `--disk-protocol` are caller-supplied metadata,
+not detected settings. Their defaults are empty, `19200` and `3`; specify
+`--disk-baud 9600` for a stock JF17 session.
+
+Boot version comes from host completion or missing-final-reply events
+(V17 takes precedence over V16, then V15). The converter uses the first
+logged disk request, regardless of its status, without checking that it
+follows the selected boot event. It does not separate recovery attempts.
+`completion_confirmed` records whether a matching completion message exists.
+For captures spanning restarts, inspect event order before treating this
+summary as evidence for a particular boot.
 
 The converter rejects truncated headers, incomplete records and bad record
 CRCs before writing JSON. It does not salvage a complete prefix from an
