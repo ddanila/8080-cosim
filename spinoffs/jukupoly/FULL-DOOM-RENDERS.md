@@ -72,8 +72,8 @@ wide-pitch kick/snare/cymbal cluster does not meet that condition.
 ## Reproduction
 
 Run from the repository root with Python 3.10+, a C compiler, cpmtools,
-FFmpeg with `libmp3lame`, and `ffprobe`. Initialize submodules for Nuked OPL3 and zmac;
-the player builder builds zmac with `make` if needed, or uses `ZMAC`.
+FFmpeg with `libmp3lame`, and `ffprobe`. Initialize the Nuked OPL3 submodule
+and follow the [assembler setup](README.md#reproduce) for zmac.
 
 These commands replace named outputs and the two tracked JSON reports. Use
 new output/report paths to compare a rerun with the retained September 2

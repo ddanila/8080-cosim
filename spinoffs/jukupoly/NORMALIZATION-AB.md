@@ -56,9 +56,9 @@ python3 spinoffs/jukupoly/tools/build_normalization_ab.py \
 ```
 
 Use Python 3.10+ and cpmtools (`mkfs.cpm`, `cpmcp`, and `cpmls` on PATH).
-The builder uses the project disk definitions automatically. It builds the
-pinned zmac submodule with `make` when its executable is absent; initialize
-submodules first, or set `ZMAC` to an existing compatible executable.
+The builder uses the project disk definitions automatically. Follow the
+[assembler setup](README.md#reproduce) for the pinned zmac build or a
+compatible `ZMAC` override.
 Mount the resulting native `normalization-ab.cpm` image as drive B: with
 the host's read-only media policy; the builder does not write-protect the file.
 See [the hosting guide](../../docs/janet-fastboot.md) for media policies. The exact

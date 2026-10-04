@@ -15,8 +15,8 @@ evidence.
 ## Build a new experiment
 
 Run from the repository root with Python 3.10+, FFmpeg and a C compiler
-available as `cc`. Initialize the zmac submodule; the builder uses `make`
-if its executable is absent, or uses `ZMAC`.
+available as `cc`. Follow the [assembler setup](README.md#reproduce) for
+the pinned zmac build or an explicit `ZMAC` override.
 
 The converter accepts uncompressed 8/16/24/32-bit integer PCM WAVs and
 downmixes multiple channels by averaging them. Compressed and floating-point

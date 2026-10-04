@@ -67,8 +67,9 @@ envelopes and bounded re-articulations; the 8080 does not emulate an OPL LFO.
 
 Use Python 3.10+, Git and a C compiler available as `cc`. Initialize the
 Nuked OPL3 and zmac submodules; the script verifies the pinned Nuked revision
-and builds both host renderers. The player builder builds zmac with `make`
-if needed, or uses `ZMAC`.
+and builds both host renderers. Follow the
+[assembler setup](README.md#reproduce) for the zmac build requirements or
+a compatible `ZMAC` override.
 
 Extract the source from the pinned DOOM archive identified in
 [the full-pack guide](FULL-DOOM-RENDERS.md). The archive is not committed.

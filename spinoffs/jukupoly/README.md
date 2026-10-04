@@ -555,6 +555,12 @@ oracle, cycle renderer, reducers and report writers. Generated qualification
 reports retain exact inputs, measurements and hashes. External copyrighted
 source packs are required for rebuilding their reductions and are not committed.
 
+Run from the repository root with Python 3.10+ and a C compiler available as
+`cc` for the host regressions. Initialize the pinned assembler source with
+`git submodule update --init --recursive`. When zmac is absent, the builder
+runs `make` using Bison and `gcc` with `-std=gnu17`; these tools must be
+installed. `ZMAC` can select an existing compatible assembler instead.
+
 Build the default player and run the music, library, baseline and envelope
 gates with:
 
