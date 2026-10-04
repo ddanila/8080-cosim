@@ -28,6 +28,10 @@ allowing high-ROM writes corrupts the independently guarded Monitor 3.3 idle
 framebuffer. `hdl/sim/mem_decode_tb.v`, the Monitor 3.3 oracle, and the default
 EKDOS WBOOT reload guard preserve this asymmetric contract.
 
+The HDL DRAM model starts with zeroed cells and does not simulate charge
+decay. Paging and boot checks therefore do not qualify physical power-on
+contents, retention, or refresh sufficiency; see [the HDL boundaries](../hdl/README.md#model-boundaries).
+
 The repository BIOS is 16 KiB across D15/D16. The physical ROM-pager PROM D8
 uses the validated `.039` table recovered from three matching reads, including
 a power-cycled capture. The older behavioral reconstruction remains under
