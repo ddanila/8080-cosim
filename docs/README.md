@@ -27,7 +27,7 @@ history.
   and superseded-versus-current programming hashes.
 - `c12-runtime-console.md` — C12 ABI 1.5 runtime video/bank switching,
   atomicity and state map, distinct discovery identity, 4x4 qualification,
-  included improvement ledger, and remaining CP/M/physical gates.
+  and remaining CP/M/physical gates.
 - `portable-c-host-plan.md` — subordinate implementation and qualification plan
   for a Linux-first portable C Janet/Fastboot/NetDisk/N4 host, an Open Watcom
   Windows 95 build, headless Wine-to-simulator automation, and remaining physical-COM validation.
@@ -104,8 +104,8 @@ findings. Every status applies only to the boundary named by the report.
   localization),
   `ras-resistor-bank.md` (photo-closed R49-R56 placement and values),
   `native-resistor-values.md` (25 literal sheet/photo values; no axial holds),
-  `native-capacitor-values.md` (C7/C8/C99 literal sheet values with nine
-  target holds), `native-semiconductors.md` (VD1/VD4 target `КД521В` bodies,
+  `native-capacitor-values.md` (source nominal values, physical registration
+  and installed-value holds), `native-semiconductors.md` (VD1/VD4 target `КД521В` bodies,
   the restored reset-diode footprint, VT1/VT2/VD3/VD5 native markings,
   transistor E-C-B package pinouts, and generated PCB pad/net guards),
   `master-oscillator-boundary.md`,
@@ -115,8 +115,8 @@ findings. Every status applies only to the boundary named by the report.
   `unmodeled-footprint-inventory.md`, `d93-pin40-photo-chase.md`,
   `owner-measurement-shortlist.md`.
 - Programmable parts: `firmware-gap-ledger.md`,
-  `d15-d16-firmware-lineage.md` (factory designations, exact archival EktaSoft
-  3.7 pair identity, and the still-open physical-content boundary),
+  `d15-d16-firmware-lineage.md` (factory designations, exact
+  archive-0037 RomBios 3.43m pair identity, and the physical-content boundary),
   `ektasoft-rombios-lineage.md` (serial-vs-RomBios-version identity of the
   vendored EktaSoft images, the two RomBios lines, and the homebrew #0043
   kinship/checksum analysis),
@@ -186,7 +186,8 @@ findings. Every status applies only to the boundary named by the report.
   producing 15.625 kHz/313-line raster timing matched to the 320x241 reference
   geometry; this does not execute the ROM or validate physical slot timing),
   `d99-reconstruction-constraints.md` (grounded-clear constant section 1,
-  D94-D1 access trigger, fitted RC timing, and five remote-pin boundaries),
+  D94-D1 access trigger, source-nominal RC predictions, and measurement-gated
+  signal pins),
   `video-readout-readiness.md`, `x7-output-stage-model.md` (guarded static
   emitter-follower transfer with a primary TI LS86 comparison driver plus an
   explicit exact-К555ЛП5 boundary),
