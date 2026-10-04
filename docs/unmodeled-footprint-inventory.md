@@ -9,6 +9,11 @@ and endpoint-coverage proof, followed by complete route/package regeneration.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The generator reads board JSON, PCB/DSN text, and evidence markers
+and overwrites this report. A successful exit validates the inventory
+and its evidence bookkeeping; it can still report a design hold.
+
 ```sh
 python3 scripts/report_unmodeled_footprint_inventory.py
 ```
@@ -86,14 +91,14 @@ design release until measured or explicitly dispositioned.
   buffer; its two enable groups and six A/Y pairs follow the device sheet.
   Exact-revision sheet 3 uses five pairs and explicitly omits pair 4/pins 9-10:
   <https://static.chipdip.ru/lib/493/DOC048493374.pdf>.
-  The five used buffers and both grounded enable groups are now structural-only
+  The five used buffers and both grounded enable groups are structural-only
   HDL and LVS-visible; pair 4 remains an explicit structural no-connect.
 - `D28` is typed as the К155ЛН3 six-inverter open-collector family.
   Factory `.009` sheet 3 closes all six sections through drive-select, READY,
   separator-clock, and DRQ/INTRQ conditioner paths. The drawing instead omits
   D98.9/.10 and complementary outputs D97.13/D102.4. The exact sheet-3
-  D96.13-D99.10 junction is now retained as a sheet-1 source boundary.
-  All six D28 sections are now structural-only HDL and LVS-visible.
+  D96.13-D99.10 junction is retained as a sheet-1 source boundary.
+  All six D28 sections are structural-only HDL and LVS-visible.
 
 ## Footprint-Only ICs
 
@@ -102,12 +107,12 @@ design release until measured or explicitly dispositioned.
 
 ## Promoted FDC Pin Boundaries
 
-These devices now have physical pin models and routed power pins. Their
-listed signal pins are either unnetted or carried by a source-risk boundary
+These devices have declared pin models. Listed pins, including declared
+supply pins, are either unnetted or carried by a source-risk boundary
 until continuity or an explicit disposition is proved. Source-closed nets and
 documented intentional no-connects are excluded.
 
-| Ref | Untraced functional pins |
+| Ref | Untraced declared pins |
 | --- | --- |
 | `D96` | 9:Q2, 13:CLR2_N |
 | `D99` | 2:B, 4:Q_N, 5:Q2, 10:B2, 11:CLR2_N, 12:Q2_N |
@@ -123,5 +128,6 @@ documented intentional no-connects are excluded.
    exact-source route. X1.107B/R1 close `H`;
    remaining priority belongs to D94 and the FDC (D30.8/.11 are owner-closed)
    support cluster. Physical D2 truth and its measured D0 path are adopted.
-4. `READY FOR DESIGN RELEASE` is emitted only when no footprint or
-   promoted FDC functional pin remains outside the net model.
+4. `ENDPOINT INVENTORY CLOSED` requires no footprint-only ICs or
+   untraced declared pins on the selected FDC devices, with evidence
+   markers present. It does not establish whole-board design release.
