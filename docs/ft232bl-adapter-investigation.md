@@ -160,8 +160,8 @@ stream and switch from 19,200/8N1 to 19,200/8O1 NetDisk. The final V16 reply
 was missed, but the intended NetDisk confirmation followed. By the end of the
 session the host had completed 22 reads serving 66 records, with zero retries
 and zero UART errors. The host's final exit status 4 occurred only after the
-USB serial device itself disappeared during shutdown; it does not qualify the
-successful CS00000 traffic or indicate a target-side failure.
+USB serial device itself disappeared during shutdown; that exit status does
+not invalidate the preceding CS00000 traffic or establish a target-side failure.
 
 This qualifies the corrected selector orientation, FT232BL/MAX232 data path,
 external ground reference, CS00000 C9 boot, framing handoff, and sustained
@@ -169,6 +169,8 @@ read traffic together. The capacitor replacement corrects the documented
 plain-MAX232 mismatch, but its independent effect is not isolated because the
 selector orientation was corrected in the same revisit. The historical
 failure was therefore hardware configuration, not a host-parser defect.
+This recorded session does not establish endurance or compatibility with every
+machine.
 
 ### Earlier comparison evidence
 
@@ -206,19 +208,6 @@ Therefore a healthy, correctly grounded MAX232 must accept a healthy Juku
 K170AP2 waveform. If a scope later shows that it does not, the result diagnoses
 this board, this socketed component, its selector/contact path, or its ground;
 it does not establish a generic MAX232-versus-Juku incompatibility.
-
-## Current conclusion
-
-The August 28 retest qualifies the corrected selector configuration and
-onboard MAX232/DB9 path for the recorded C9/V16 boot and NetDisk session.
-The earlier zero-receive diagnosis is superseded: the selector shunts were
-installed 90 degrees from the photographed orientation. Charge-pump
-capacitors were also replaced during the successful revisit, so their
-independent effect was not isolated.
-
-The earlier local and far-end loopbacks alone did not prove compatibility
-with an external driver. The successful Juku traffic supplies that evidence;
-it does not establish endurance or compatibility with every machine.
 
 ## If the symptom returns
 
