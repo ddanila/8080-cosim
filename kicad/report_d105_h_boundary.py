@@ -145,7 +145,7 @@ checks.append(("Promoted routed PCB preserves the measured D105 nets",
                "six checked D105 path pad nets" if not routed_mismatches else "; ".join(routed_mismatches)))
 
 ok = all(result for _, result, _ in checks)
-status = "D105 H/DBIN + X1.107B/R1 ROUTED CLOSURE VERIFIED" if ok else "D105 HANDOFF FAILED"
+status = "D105 H/DBIN + X1.107B/R1 MODEL AND PAD NETS VERIFIED" if ok else "D105 HANDOFF FAILED"
 lines = [
     "# D105 H/DBIN boundary", "", f"Status: **{status}**", "",
     "The native full-resolution sheet closes edge contact `X1.107B` (`-BLOCK`)",
@@ -157,10 +157,10 @@ lines = [
     "D105.9/.10 feed one NAND and tied D105.4/.5 invert it again, so D105.6",
     "drives D5.4 as `DBIN AND H`. Tied D105.12/.13 receive `MEMW`, while",
     "D105.11 drives D30.13.", "",
-    "The authoritative board JSON, source PCB, HDL, and promoted routed PCB now",
+    "The authoritative board JSON, source PCB, HDL, and routed PCB",
     "preserve the checked D105 path. This guard checks the six routed pad nets",
-    "listed below; it does not run whole-board DRC or verify all source pads.",
-    "Current routing and fabrication remain held; see",
+    "listed below; it does not test routed copper continuity, run whole-board DRC,",
+    "or verify all source pads. Current routing and fabrication remain held; see",
     "[the routed audit](routed-refresh-audit.md) and",
     "[manufacturing readiness](replica-manufacturing-readiness.md).", "",
     "| Check | Result | Evidence |", "| --- | --- | --- |",
