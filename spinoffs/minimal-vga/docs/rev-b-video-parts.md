@@ -1,22 +1,23 @@
 # VJUGA rev B Video exact parts — R5.V4
 
-Status: **PASS / FROZEN 2026-08-28.** This is the mechanical purchasing input used by
-the completed R5.V5 layout, not purchase authorization. Stock figures are dated evidence only and must be
-refreshed during R5.J3. The executable source is `kicad/revb/video-parts.json`.
+Status: **PASS / FROZEN 2026-08-28.** This is the mechanical parts contract used
+by the R5.V5 layout. The exact MPNs, drawings, supplier links and dated stock
+snapshot are retained in [`video-parts.json`](../kicad/revb/video-parts.json).
+Recheck availability before purchase; this guide does not authorize an order.
 
 ## No-substitution parts
 
-| Function | Exact MPN | Frozen package / reason | Availability snapshot |
-|---|---|---|---|
-| VGA output | **NorComp `200-015-213L537`** | Female HD15, right-angle THT, board locks, 4-40 flange. The manufacturer layout is an unusual 7+8 solder-tail pattern; neither generic KiCad 5+5+5 footprint matches. | Mouser: 359 immediately available, minimum 1 |
-| Pixel clock | **ECS `ECS-100A-251.7`** | 25.175 MHz, 5 V TTL, full DIP-14 four-lead can; pins 1 NC, 7 case/GND, 8 output, 14 +5 V. | DigiKey: 1,167, minimum 1 |
-| Framebuffer | **Alliance `AS6C1008-55PCN`** | 128Kx8, 55 ns, 32-PDIP, 15.24 mm rows. | DigiKey: 1,503, minimum 1 |
-| U5/U6/U7 | **Microchip `ATF22V10C-15PU`** | 5 V EEPLD, 24-PDIP, 7.62 mm rows; exactly the device targeted by the reproducible JEDECs. | DigiKey: 964, minimum 1 |
-| Card base bus | **Samtec `TSW-139-08-S-S-RA`** | 1x39, 2.54 mm, right-angle male, 5.84 mm mating post, 2.29 mm solder tail, 30 microinch gold. | DigiKey: 1 plus 75 factory stock, minimum 1 |
-| Card extension bus | **Samtec `TSW-110-08-S-S-RA`** | Same construction, 1x10. | Samtec: 1,805 ships-tomorrow stock, minimum 1 |
-| Backplane base sockets | **Samtec `SSW-139-01-S-S`** | 1x39 vertical female, 2.54 mm, 30 microinch gold, 8.51 mm body. | DigiKey: 599 factory plus 181 marketplace stock |
-| Backplane extension sockets | **Samtec `SSW-110-01-S-S`** | Same construction, 1x10. | Samtec: 854 ships-tomorrow stock, minimum 1 |
-| Video bulk capacitor | **Panasonic `ECA-1HM470`** | 47 uF/50 V polarized radial, 6.3 x 12.2 mm, 2.50 mm lead pitch. | DigiKey Estonia: 35,465, minimum 1 |
+| Function | Exact MPN | Frozen package / reason |
+|---|---|---|
+| VGA output | **NorComp `200-015-213L537`** | Female HD15, right-angle THT, board locks, 4-40 flange. The manufacturer layout is an unusual 7+8 solder-tail pattern; neither generic KiCad 5+5+5 footprint matches. |
+| Pixel clock | **ECS `ECS-100A-251.7`** | 25.175 MHz, 5 V TTL, full DIP-14 four-lead can; pins 1 NC, 7 case/GND, 8 output, 14 +5 V. |
+| Framebuffer | **Alliance `AS6C1008-55PCN`** | 128Kx8, 55 ns, 32-PDIP, 15.24 mm rows. |
+| U5/U6/U7 | **Microchip `ATF22V10C-15PU`** | 5 V EEPLD, 24-PDIP, 7.62 mm rows; exactly the device targeted by the reproducible JEDECs. |
+| Card base bus | **Samtec `TSW-139-08-S-S-RA`** | 1x39, 2.54 mm, right-angle male, 5.84 mm mating post, 2.29 mm solder tail, 30 microinch gold. |
+| Card extension bus | **Samtec `TSW-110-08-S-S-RA`** | Same construction, 1x10. |
+| Backplane base sockets | **Samtec `SSW-139-01-S-S`** | 1x39 vertical female, 2.54 mm, 30 microinch gold, 8.51 mm body. |
+| Backplane extension sockets | **Samtec `SSW-110-01-S-S`** | Same construction, 1x10. |
+| Video bulk capacitor | **Panasonic `ECA-1HM470`** | 47 uF/50 V polarized radial, 6.3 x 12.2 mm, 2.50 mm lead pitch. |
 
 Substitution requires checking the drawing, changing the MPN and footprint together,
 rerunning the negative controls, and repeating R5.V6. Similar-looking HD15 connectors
@@ -74,7 +75,17 @@ headroom against the 2 A design limit. The barrel jack is the sole power input;
 USB-TTL is data-only. Supply receipt limits and routed voltage-drop evidence
 are in the [five-card power contract](rev-b-five-card-power.md).
 
-Run:
+## Verification
+
+The parts checker pins 14 part groups, derives the 23-socket quantities, checks
+selected package/connector geometry against library footprints, and reconciles
+the oscillator current with the power model. Its two negative controls alter
+the socket quantity and VGA footprint selection. It checks that sourcing fields
+are present, but does not fetch drawings or confirm live inventory. Routed
+placement and assembled clearances are covered by the separate
+[PCB](rev-b-video-pcb.md) and [mating](rev-b-mating-report.md) checks.
+
+Run from the repository root with the KiCad footprint library installed:
 
 ```sh
 . spinoffs/minimal-vga/kicad/revb/env.sh
@@ -84,6 +95,11 @@ done
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_footprints.py video --self-test
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_parts.py --self-test
 ```
+
+`check_revb_footprints.py` resolves and **rewrites** `footprints.<card>.json`;
+review any resulting diff. It exits successfully with `SKIP` if
+`KICAD_FOOTPRINTS` is unavailable. The Video parts checker requires those maps
+and the relevant library files; missing files fail verification.
 
 Primary drawings: [NorComp 200-series HD15](https://content.norcomp.net/rohspdfs/Connectors/2YY/200-015-213LYYY.pdf),
 [ECS-100X oscillator](https://ecsxtal.com/store/pdf/ECF-100X.pdf),
