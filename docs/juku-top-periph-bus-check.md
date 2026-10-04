@@ -38,12 +38,12 @@ sync/juku_top_periph_bus_check.sh
 | One missed read-byte deadline sets LOST DATA and exposes sector 2 byte 1 (`0x5C`) through the top-level bus | PASS |
 | A missing Type-II track/sector ID holds BUSY without DRQ for three revolutions and completes RNF on the fourth | PASS |
 | Type-II `C/S` mismatch holds BUSY without DRQ for four index pulses and completes RNF on the fifth | PASS |
-| E-delayed, index-gated Type-III Read Track reconstructs one MFM revolution through logical DB and both diagnostic profile families | PASS |
+| E-delayed, index-gated Type-III Read Track drains 6,250 bytes and checks selected gap, sync, ID, CRC and data bytes in all three bus profiles | PASS |
 | Type-II multi-read traverses vendored sectors 9/10 and ends at sector 11 with RNF | PASS |
 | ROMBIOS `0xA2` write-sector preloads across the 22-byte ID-to-write-gate interval, streams 512 bytes through D94-decoded port `0x1F`, and reads them back from a writable copy | PASS |
 | Write Sector `a0=1` records an `F8` deleted-data mark and Read Sector reports RECORD TYPE bit 5 through the decoded bus | PASS |
 | Type-II deleted multi-write re-arms the 22-byte preload interval, preserves `F8` marks on sectors 9/10, and ends at sector 11 with RNF | PASS |
-| E-delayed, index-gated Type-III Write Track persists sectors 1-10 and an `F8` mark through logical DB and both diagnostic profile families | PASS |
+| E-delayed, index-gated Type-III Write Track sends sectors 1-10, verifies all data bytes in sectors 1/10 and checks sector 4 for an `F8` mark in all three bus profiles | PASS |
 | CMA-profile CPU bytes cross the unmapped inversion adjunct for restore, seek, media read, and write/readback | PASS |
 
 ## Stop State
@@ -66,7 +66,9 @@ sync/juku_top_periph_bus_check.sh
   boundary. See [D94 constraints](d94-reconstruction-constraints.md).
 - A separate forced-low A4 check exercises the alternate register-3 D0 branch;
   D0 has only the measured R8 2 kΩ pull-up in the observed hardware scope.
-- Two opt-in builds route the behavioral controller through an unmapped profile adjunct.
+- The script runs logical DB and two diagnostic builds, each with read-only media
+  and a writable temporary copy. The diagnostic builds route the behavioral
+  controller through an unmapped profile adjunct.
   Their CPU-side FDC bytes are complemented like CMA-profile firmware. Both use
   actual D93 `/RE` for direction, not raw `IORD`; this keeps the adjunct one-way when
   D94's low-A4 branch suppresses the controller read strobe. One build qualifies
@@ -76,5 +78,5 @@ sync/juku_top_periph_bus_check.sh
   the pinned EKDOS no-key read, shifted-`T` read, PIC vector, motor latch, and
   first FDC restore command when reached. The harness then extends the same path
   to media-backed single/multiple-record and reconstructed whole-track reads,
-  plus opt-in temporary-copy single/multiple-record writes and whole-track
+  plus temporary-copy single/multiple-record writes and whole-track
   format/readback.
