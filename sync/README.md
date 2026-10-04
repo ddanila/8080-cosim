@@ -220,11 +220,13 @@ verify current-source execution after resolving simulator compatibility.
   because the D57 bit is also set. No T34 case is reached; see
   [the D55 audit](../docs/jukuravi-d55-diagnostic-audit.md) for the recorded
   earlier matrix and the current failure boundary.
-- `janet_netboot_check.sh` — frozen Python-era fixture regression: five
-  parallel stock-ROM NetBios clients served only through simulator D11 PTYs;
-  proves Janet retry/turn handling, exact 52-sector system installation at
-  `B400h`, and the `CA00h` cold-start handoff for every `media/system/*.BIN`
-  image. It is not an operational host command.
+- `janet_netboot_check.sh` — frozen Python-era fixture regression through
+  simulator D11 PTYs. It boots the five vendored systems plus an optional
+  external image, then checks automatic station discovery with a nondefault
+  client. It verifies byte-exact staging and resident installation before the
+  cold-start handoff. See [the NetBios notes](../docs/ekta37-netbios-notes.md)
+  for layout, concurrency controls, and prerequisites; this is a regression
+  entry point.
 
 Checkpoint load/resume tools remain useful for narrowing regressions, but their
 old intermediate report files are not project milestones. The uninterrupted
