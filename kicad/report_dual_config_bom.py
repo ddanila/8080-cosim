@@ -112,7 +112,7 @@ FUNCTIONAL_SUBSTITUTE = {
     "BUF8286": "Intel 8286 / compatible bus transceiver",
     "BUF8287": "Intel 8287 / compatible bus transceiver",
     "VABUS": "Intel 8287 / compatible bus transceiver",
-    "IR82": "8282/8283-class latch; verify polarity/package",
+    "IR82": "Intel 8282-compatible non-inverting DIP-20 latch; verify pinout",
     "RU5": "Mostek MK4564-12 dual-in-line option; E4 2-3/+5 V required; bench-test received parts",
     "EPROM8K": "2764 / 27C64 / M2764 EPROM, programmed per ROM split",
     "DEC_PROM": "74S287/82S129-class 256x4 bipolar PROM, programmed",

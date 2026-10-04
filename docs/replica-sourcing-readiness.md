@@ -40,8 +40,8 @@ Refresh with `python3 kicad/report_replica_sourcing_readiness.py`.
 | BUF8286 | КР580ВА86 | Intel 8286 / compatible bus transceiver | 3 | D4, D29, D107 | Continuity/orientation check; verify no bus fight during first ROM fetch. |
 | BUF8287 | КР580ВА87 | Intel 8287 / compatible bus transceiver | 1 | D100 | Continuity/orientation check; verify the recovered drive-output channels and shared control before attaching X4. |
 | CPU8080 | КР580ИК80А | Intel 8080A / compatible 8080 CPU | 1 | D1 | Run in a known-good 8080 tester or minimal NOP/ROM-fetch jig before seating. |
-| IR82 | КР580ИР82 | 8282/8283-class latch; verify polarity/package | 1 | D58 | Verify latch polarity around DRAM write-data path. |
-| PIC8259 | КР580ВН59 | 8259A PIC | 1 | D10 | Socket; verify frame interrupt vectoring before FDC IRQs. |
+| IR82 | КР580ИР82 | Intel 8282-compatible non-inverting DIP-20 latch; verify pinout | 1 | D58 | Verify the non-inverting DRAM read-data path RDO-to-DB and OE control; the remote STB source remains open. |
+| PIC8259 | КР580ВН59 | 8259A PIC | 1 | D10 | Socket; verify frame IR5 and USART IR2/IR3 vectoring; do not infer a direct FDC IRQ connection. |
 | PIT8253 | КР580ВИ53 | 8253 or 8254 PIT | 3 | D54, D55, D57 | Socket; verify programmed divisors and video-sync outputs. |
 | PPI8255 | КР580ВВ55А | 8255A / 82C55 PPI | 2 | D26, D27 | Socket; verify keyboard/Port C mode bits against twin during bring-up. |
 | RU5 | К565РУ5Г | Mostek MK4564-12 dual-in-line option; E4 2-3/+5 V required; bench-test received parts | 8 | D84, D85, D86, D87, D88, D89, D90, D91 | MK4564-12 static compatibility is guarded; require E4 2-3/+5 V and buy tested DIP spares only after approval. |
