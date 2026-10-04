@@ -39,6 +39,25 @@ simulated stock target restart and reached `A>` before and after it. The third
 command executed the PE in stock, retained C11 and C12 protocol sessions. The complete Wine
 protocol run is intentionally local-only rather than part of ordinary CI.
 
+## Rerunning the current source
+
+From the repository root, run:
+
+```sh
+sync/jukuhost_win32_wine_e2e.sh
+```
+
+Without an argument, the wrapper builds
+`build/win32-wine-e2e/JUKUWIN.EXE` before running the protocol harness.
+An optional EXE path tests that existing artifact without rebuilding it.
+The recorded command above assumes that artifact already exists.
+
+The wrapper requires `wine`, `wineboot`, `xvfb-run`, and `socat` on `PATH`.
+It prints `SKIP` and exits zero if any is missing, before building or checking
+the EXE path. Exit zero alone therefore does not prove a protocol run.
+The ordinary desk gate requires only the first three for its Wine self-test;
+its build, API-shim, PE and package checks still run without Wine.
+
 ## Accepted protocol evidence
 
 | Case | Serial path | First disk request | Final service counters |

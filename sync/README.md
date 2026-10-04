@@ -2,7 +2,8 @@
 
 `sync/` contains the LVS comparison, fast behavioral regressions, and focused
 subsystem/deep diagnostics. Generated reports under `docs/` record evidence from their source data and
-checks; use the subsystem guides for implementation contracts.
+checks; use the subsystem guides for implementation contracts. Run the commands
+below from the repository root.
 
 ## Connectivity
 
@@ -12,8 +13,15 @@ sync/check.sh
 
 The script regenerates the KiCad schematic from `kicad/juku.board.json`,
 elaborates `hdl/juku_top.v` with Yosys, and compares mapped endpoint
-partitions. It uses a real KiCad netlist when compatible `kicad-cli` is
-available and the board JSON directly otherwise.
+partitions. A successful KiCad XML export enables the schematic round trip.
+If the CLI is missing or the export fails for any reason, the script compares
+the board JSON directly instead. Check the printed `real KiCad round-trip`
+or `KiCad-free` mode: a fallback pass does not validate schematic export.
+The command rewrites the schematic and HDL JSON, and the KiCad XML when exported.
+
+It also checks silkscreen glyphs and board population, conditionally checks
+silkscreen overlap when KiCad Python is available, and prints a provenance
+summary. These additional checks do not establish routed connectivity or DRC.
 
 Placement-only footprints, unnetted pins, analog passives, and explicit
 simulation-only ports are outside this result. The comparison also drops HDL
@@ -88,13 +96,15 @@ sync/jukuhost_win32_check.sh
 It tests the embedded stock/C11/C12 catalog, strict INI and serial selection,
 Win32 COM behavior through an API shim, two byte-identical Open Watcom GUI
 builds, the exact legacy-safe PE import/resource boundary, and the exact
-self-contained package. It runs the fast compiled self-test under Wine when
-Wine is available and reports an explicit skip otherwise. The longer,
+self-contained package. It runs the fast compiled self-test when `wine`,
+`wineboot`, and `xvfb-run` are available; otherwise that self-test is explicitly
+skipped. The longer,
 developer-invoked `sync/jukuhost_win32_wine_e2e.sh` maps Wine `COM1` through a
 PTY bridge and runs the actual PE against stock/JF17, C11, and C12 co-simulation; it
-is deliberately outside the ordinary CI gate. See
-`docs/windows-jukuhost-client-wine-acceptance.md` and
-`docs/windows-jukuhost-client-desk-acceptance.md`.
+is deliberately outside the ordinary CI gate. It also needs `socat` and exits
+zero with `SKIP` if any prerequisite is absent. See the
+[Wine rerun instructions](../docs/windows-jukuhost-client-wine-acceptance.md#rerunning-the-current-source)
+and [desk acceptance](../docs/windows-jukuhost-client-desk-acceptance.md).
 [Windows 95 guest execution](../docs/windows-jukuhost-client-win95-acceptance.md)
 has also passed against the simulator. Physical serial qualification on
 Windows still requires the real adapter and board.
