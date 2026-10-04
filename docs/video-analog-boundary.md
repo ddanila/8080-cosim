@@ -15,7 +15,8 @@ continuity remains unmeasured. Its image controls are preserved in the
 ## Command
 
 Run from the repository root with Python 3 (standard library only).
-The command replaces this report after its source-model checks pass.
+The command replaces this report with its source-model check results
+and exits with status 1 if any listed check fails.
 
 ```sh
 python3 scripts/report_video_analog_boundary.py
