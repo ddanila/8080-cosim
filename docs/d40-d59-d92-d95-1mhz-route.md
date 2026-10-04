@@ -5,9 +5,7 @@ Owner continuity: 2026-07-22 (as recorded in the canonical `LATCH_B` provenance)
 Status: **OWNER-CONTINUITY CLOSED / CURRENT ROUTING RELEASE HELD**
 
 This note records the long timing trace measured on the target `.009` board
-and reconciles it with both recovered electrical-schematic revisions. It
-supersedes the earlier interpretation that left D59.5 without a dynamic source
-and placed D92.2/.3 on the separately drawn `PHI2TTL` conductor.
+and reconciles it with both recovered electrical-schematic revisions.
 
 ## Measured route
 
@@ -66,9 +64,9 @@ input codes, just as its pins 3/4 duplicate the 2 MHz source.
 This is a coherent single-driver net: D40.11 is the output, while D59.5,
 D92.2/.3, and D95.5/.6 are inputs.
 
-## Implemented model correction
+## Current model
 
-The canonical JSON now represents the physical conductor as one `LATCH_B`
+The canonical JSON represents the physical conductor as one `LATCH_B`
 net containing:
 
 - D40.11, D37.2, D54.9/.15/.18, and D95.5/.6;
@@ -77,9 +75,8 @@ net containing:
 
 The later exact `.009` R35 correction puts D39.1, D53.4, D30.3, D29.1,
 and R35.1 on `PHI2TTL`; D35.13 is on the separate `PHI2_POST_R35` RC node
-with R35.2, R106.1, and C29.1. The HDL drives the D59 input and both D92 timing inputs from D40 Q3
-instead of the former fixed-high/D35 phase assumptions. The generated
-schematic passes the mapped LVS check.
+with R35.2, R106.1, and C29.1. The HDL drives the D59 input and both D92
+timing inputs from D40 Q3.
 The structural Yosys/LVS view applies D59's complementary outputs to D48-D51.
 Runnable simulation retains a CPU-only MA-bus scaffold while video uses its
 SIM-ONLY second DRAM port; it does not apply an unproved D41/D53 slot schedule
@@ -91,10 +88,11 @@ as `kicad/apply_d40_1mhz_route.py`. The checker also guards the later `.009`
 R35 split: D29.1 and R35.1 belong to `PHI2TTL`, while D35.13 belongs to
 `PHI2_POST_R35`.
 
-Check the source model and source PCB from the repository root:
+Check the source model and source PCB from the repository root using Python
+with KiCad's `pcbnew` module:
 
 ```sh
-python3 kicad/check_d40_1mhz_route.py kicad/juku.kicad_pcb
+/usr/bin/python3 kicad/check_d40_1mhz_route.py kicad/juku.kicad_pcb
 ```
 
 With no board argument, the checker also inspects the routed snapshots and
@@ -108,7 +106,6 @@ Its exact checker is retained in
 Subsequent source corrections leave current whole-board connectivity held;
 see [the routed audit](routed-refresh-audit.md) and
 [factory-wire fidelity](factory-wire-route-fidelity.md) for the current state.
-The original route-search and copper-repair sequence remains in Git history.
 
 ## D96 exclusion
 
