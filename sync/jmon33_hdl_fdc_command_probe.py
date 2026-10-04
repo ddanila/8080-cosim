@@ -76,6 +76,7 @@ def main() -> int:
         "fixed report rather than the new output. For a separate report, invoke\n"
         "`sync/jmon33_hdl_command_probe.py` directly with the desired settings.\n\n"
     ) + text[intro_end:]
+    text = text.split("\n## Disposition\n", 1)[0].rstrip() + "\n"
     text += (
         "\n"
         "## FDC-Specific Disposition\n"
