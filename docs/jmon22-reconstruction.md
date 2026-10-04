@@ -9,6 +9,10 @@ manifest; no partially repaired ROM binary is published.
 
 ## Command
 
+Run from the repository root with Python's standard library and the
+listed ROM files available. The command overwrites this report and
+`ref/reconstructed-firmware/jmon22-consensus-patch.json`.
+
 ```sh
 python3 scripts/report_jmon22_reconstruction.py
 ```
@@ -109,7 +113,6 @@ The original multi-read captures or a second Monitor 2.2 dump remain required.
 
 ## Preservation rule
 
-- Original SHA256: `1b68f89ae4355391f434b3fae34e95cb4b150bf4bbcb967b5b177d48cd390589`.
 - Hypothetical one-byte-patched SHA256: `37c3d2db23dbccb8b7a81a2510f320d50e30f04a260fa6c8efd132241a4675a5`.
 - Patch manifest: `ref/reconstructed-firmware/jmon22-consensus-patch.json`.
 - Do not treat the hypothetical hash as a runnable or complete Monitor 2.2
