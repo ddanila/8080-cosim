@@ -38,7 +38,10 @@ the Juku-specific HDL clocks remain authoritative for count progression.
 
 ## Model boundaries
 
-- D2's physical inputs, validated `.037` table, and D0/WAIT handoff are modeled.
+- D2's traced inputs, captured `.037` table, open-collector D0 output and
+  D30 READY sampling are modeled. Complete WAIT duration still depends on
+  surrounding clock/control timing; see
+  [the READY bench](../docs/d2-ready-path-check.md).
 - D6's validated `.038` table and chip-removed separate pins 11/12 remain the
   structural/LVS truth. Runnable simulation now selects from that physical table
   through `U_DECODE`. All four outputs connect directly
@@ -61,8 +64,8 @@ the Juku-specific HDL clocks remain authoritative for count progression.
   explicit no-connects; only physical waveform quality remains a bench check.
 - D96's КМ555ТМ2 section 1 is sheet-closed and LVS-mapped: WREQ_N controls
   /CLR and /PRE, /Q feeds D, D28.8 clocks the toggle, and Q drives D93 RCLK.
-  The device model now preserves the datasheet's Q=/Q=high result when WREQ
-  asserts both asynchronous controls instead of assigning clear priority;
+  The device model preserves the datasheet's Q=/Q=high result when WREQ
+  asserts both asynchronous controls;
   restart phase is undefined, while divide-by-two behavior after release is
   guarded. Section 2 is structurally restored from the exact sheet:
   wired D28.10/.12 feeds /PRE2 and D2. CLK2 is source-joined to
