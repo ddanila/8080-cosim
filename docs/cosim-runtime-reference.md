@@ -1,4 +1,4 @@
-# Deep cosim CPU-bus guard — reference
+# Cosim runtime and CPU-bus reference
 
 `sync/cosim_check.sh` compares the runnable `juku_top` model
 with the C emulator (`cosim`) through ordered CPU-bus events.
@@ -103,20 +103,18 @@ interrupt guards above cover separate boundaries.
 
 The boot ROM stores at `0x000A` the eight-bit additive sum of bytes
 `0x000B..0x07FF`. This is the convention exercised by the checksum routine at
-`0x03E0`; `cosim/trace.c` logs its computed/stored comparison. The archived
-`ekta24/31/32/35/37.bin` images satisfy it, storing
-`7B`/`D3`/`8F`/`EE`/`1A`, respectively. These filename numbers are serials,
-not RomBios versions; see [the lineage notes](ektasoft-rombios-lineage.md).
+`0x03E0`; `cosim/trace.c` logs its computed/stored comparison. Per-image
+identities and checksum findings belong to
+[the lineage notes](ektasoft-rombios-lineage.md). Filename numbers identify
+serials, not RomBios versions.
 `ekta43.bin` (serial #0043, RomBios 2.43m) is the counterexample: it stores
 `F2` while its covered bytes sum to `57`. The boot harness patches its in-memory
 checksum byte and logs the change; the source file remains unchanged. The
 patch condition tests the stored byte and computed sum, not the filename or
 whole-image hash.
 
-Jukuravi rung 5a deliberately uses these exact offsets rather than inventing a
-second short-ROM convention. Its D15-only diagnostic reserves `0x000A`, starts
-framed protocol tables at `0x0800`, and recomputes all 2,037 covered bytes at
-runtime before touching the USART or RAM.
+Diagnostic-ROM checksum and build identities are documented in
+[the Jukuravi firmware guide](../spinoffs/jukuravi/firmware/README.md).
 
 ## Bus and DRAM model boundary
 
