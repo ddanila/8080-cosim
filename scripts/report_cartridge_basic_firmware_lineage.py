@@ -62,6 +62,11 @@ def main() -> int:
         ]
         monitor_results.append((label, path, data, body, mismatches, checksum_rows(data)))
 
+    failed_blocks = [str(block) for block, _, _, _, passed in monitor_results[0][5] if not passed]
+    failed_block_text = ", ".join(failed_blocks)
+    if len(failed_blocks) > 1:
+        failed_block_text = ", ".join(failed_blocks[:-1]) + ", and " + failed_blocks[-1]
+
     zero_gap = cart[CART_BODY_END:0x1F00]
     bootstrap = cart[BOOTSTRAP_OFFSET:0x2000]
     if bootstrap[:len(BOOTSTRAP_PREFIX)] != BOOTSTRAP_PREFIX:
@@ -184,26 +189,11 @@ def main() -> int:
             "",
             "## Monitor 2.2 integrity",
             "",
-            "The Monitor 2.2 reset code verifies eight 2 KiB ROM blocks using checksum",
-            "bytes at offsets `0x0003..0x000A`. The public museum image fails three",
-            "blocks before it can exercise an early-firmware BASIC path: blocks 3, 6, and 7.",
-            "",
-            "| Block | Covered bytes | Stored | Computed | Result |",
-            "| ---: | --- | ---: | ---: | --- |",
-        ]
-    )
-    jmon22 = monitor_results[0]
-    for block, start, end, stored, passed in jmon22[5]:
-        computed = sum(jmon22[2][start : end + 1]) & 0xFF
-        lines.append(
-            f"| `{block}` | `0x{start:04X}..0x{end:04X}` | `0x{stored:02X}` | "
-            f"`0x{computed:02X}` | {'PASS' if passed else 'FAIL'} |"
-        )
-
-    lines.extend(
-        [
-            "",
-            "The dedicated `docs/jmon22-reconstruction.md` audit proves that the",
+            "The public Monitor 2.2 image has failing 2 KiB checksum blocks "
+            + failed_block_text
+            + ".",
+            "The [Monitor 2.2 audit](jmon22-reconstruction.md#checksum-boundary)",
+            "records the full checksum table and proves that the",
             "block-3 failure is the sole BASIC-body mismatch: replacing `0x9A` at",
             "`0x1EFC` with the `0xDA` found in both Monitor 3.3 and this cartridge",
             "exactly closes the stored checksum. It leaves the original dump unchanged",

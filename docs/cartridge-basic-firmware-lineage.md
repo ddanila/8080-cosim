@@ -74,22 +74,9 @@ validated donor for the absent source page.
 
 ## Monitor 2.2 integrity
 
-The Monitor 2.2 reset code verifies eight 2 KiB ROM blocks using checksum
-bytes at offsets `0x0003..0x000A`. The public museum image fails three
-blocks before it can exercise an early-firmware BASIC path: blocks 3, 6, and 7.
-
-| Block | Covered bytes | Stored | Computed | Result |
-| ---: | --- | ---: | ---: | --- |
-| `0` | `0x0004..0x07FF` | `0xD2` | `0xD2` | PASS |
-| `1` | `0x0800..0x0FFF` | `0x72` | `0x72` | PASS |
-| `2` | `0x1000..0x17FF` | `0x0A` | `0x0A` | PASS |
-| `3` | `0x1800..0x1FFF` | `0x33` | `0xF3` | FAIL |
-| `4` | `0x2000..0x27FF` | `0x6E` | `0x6E` | PASS |
-| `5` | `0x2800..0x2FFF` | `0x31` | `0x31` | PASS |
-| `6` | `0x3000..0x37FF` | `0x91` | `0x51` | FAIL |
-| `7` | `0x3800..0x3FFF` | `0x58` | `0xB5` | FAIL |
-
-The dedicated `docs/jmon22-reconstruction.md` audit proves that the
+The public Monitor 2.2 image has failing 2 KiB checksum blocks 3, 6, and 7.
+The [Monitor 2.2 audit](jmon22-reconstruction.md#checksum-boundary)
+records the full checksum table and proves that the
 block-3 failure is the sole BASIC-body mismatch: replacing `0x9A` at
 `0x1EFC` with the `0xDA` found in both Monitor 3.3 and this cartridge
 exactly closes the stored checksum. It leaves the original dump unchanged
