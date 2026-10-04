@@ -52,7 +52,7 @@ Confirm that the exported stream includes every write in the chosen workload.
 | CH0-7 | A0-A7 | J90.1-8 |
 | CH8-15 | D0-D7 | J91.1-8 |
 | CH16-21 | `MREQ_N` `IORQ_N` `RD_N` `WR_N` `M1_N` `RFSH_N` | J98.1-6 |
-| CH22 | `ROM_CE_N` | U2.20 clip or J95 spare |
+| CH22 | `ROM_CE_N` | U2.20 clip |
 | CH23 | `DEC_ROM_N` (D6 РТ4 O1) | J95.1 |
 | trigger | `RESET_N` rising | J91.10 |
 
