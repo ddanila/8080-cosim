@@ -38,7 +38,7 @@ PHOTOS = {
 }
 
 MARKERS = {
-    "docs/x6-a3-video-source-conflict-review.md": ("A:3", "VD3.2", "R67", "VIDEO"),
+    "docs/x6-a3-video-source-conflict-review.md": ("A:3", "SOUND_CLAMP", "R67", "VIDEO"),
     "docs/omitted-resistor-census.md": ("R9, R10", "PXL_20260718_101754468.jpg", "four-anchor photo fit"),
     "docs/vt2-009-source-review.md": ("PXL_20260718_101927794.jpg", "PXL_20260718_101932581.jpg", "VD3 polarity discrepancy"),
     "docs/d6-physical-decode.md": ("D6.12", "D8.15", "D13.1"),
