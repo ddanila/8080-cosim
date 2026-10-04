@@ -23,8 +23,11 @@ LFS, verified before use, and expanded only into the ignored `.tools/` tree.
 | C compiler | Open Watcom C x86 16-bit 2.0 beta, 2026-08-20 02:17:35 |
 | linker | Open Watcom Linker 2.0 beta, 2026-08-20 02:13:42 |
 
-`tools/bootstrap-open-watcom.sh` verifies and extracts the archive;
-`tools/open-watcom-env.sh` configures it for the DOS and Win32 builds.
+`tools/bootstrap-open-watcom.sh` verifies the archive and extracts it when
+the cached `wcl` is missing or not executable. It otherwise reuses the extraction and
+checks the `wcl` banner, without revalidating every extracted file; see the
+[bootstrap contract](../third_party/open-watcom-v2/README.md#bootstrap).
+`tools/open-watcom-env.sh` configures that directory for DOS and Win32 builds.
 Run the commands below from the repository root on a Linux x86-64 build host
 with Bash, Python 3, `unzip`, `sha256sum`, and GNU `stat`. Materialize the
 vendored archive with Git LFS before building; the bootstrap rejects an LFS
