@@ -7,7 +7,7 @@ high or low. The physical package supply pins must be checked separately.
 
 | Instance and screened pin | Drawing/model reading | Disposition |
 | --- | --- | --- |
-| D52.8, D52.16 | The exact .009 sheet-2 microcircuit power table gives К531КП14 pin 8 to ground and pin 16 to +5 V. D48–D51 already have those assignments. | Genuine omitted package supply nets. Modeled in `kicad/juku.board.json` and PCB pad nets; routed track endpoints remain absent. See `d52-supply-pin-correction.json`. |
+| D52.8, D52.16 | The exact .009 sheet-2 microcircuit power table gives К531КП14 pin 8 to ground and pin 16 to +5 V. D48–D51 already have those assignments. | Package supplies modeled in `kicad/juku.board.json` and PCB pad nets; routed track endpoints remain absent. See `d52-supply-pin-correction.json`. |
 | D25.11 | The VABUS turnaround `T` signal belongs to `D25_T`; sheet reconstruction traces its D7.6 branch. Other VABUS instances may tie this functional input high. | Do not add D25.11 to +5 V. |
 | D106.5 | `UP` input of the IE7 counter; exact FDC recovery-counter reconstruction groups it with R78.1 and preset-high inputs on `D106_PRESET_HIGH`. Other counters may directly tie their `UP` input high. | Do not merge D106.5 with +5 V without proving the resistor topology. |
 | D99.3 | `/CLR1` functional input of the AG3 one-shot. Registered owner component copper ties it to D96.7 ground; its `GND` net assignment is already present. Other AG3 clear inputs differ. | No missing supply pin; keep D99.3 on GND. |
@@ -21,14 +21,11 @@ package-supply omission.
 
 ## Single-instance and one-rail follow-up
 
-The same net inventory exposed D8 and D92 with no package-supply nodes,
-and D2 with only two grounded chip-enable inputs. Their missing package
-pins are now modeled and PCB pad-labeled; see
-`d8-d92-supply-pin-correction.json` and
-`d2-package-supply-correction.json`. A follow-up canonical-pin check found
-D34 К555ЛП5 with logic-input rail ties but no package pin7/14 supply;
-the exact-device PDF confirms the omission, now corrected in the model
-and PCB pad labels (`d34-package-supply-correction.json`). None of these
+D8, D92, D2, and D34 have their package-supply nodes modeled in JSON
+and labeled in the PCB. The supporting records are
+`d8-d92-supply-pin-correction.json`, `d2-package-supply-correction.json`,
+and `d34-package-supply-correction.json`; the latter cites the exact-device
+PDF for D34 К555ЛП5 pins 7/14. None of these
 eight pads has a touching power track in the unrouted source PCB. The other one-rail classes
 from this screen have explicit
 different arrangements: the 32 РУ5 DRAM packages use `RAIL_G`/`RAIL_H`
