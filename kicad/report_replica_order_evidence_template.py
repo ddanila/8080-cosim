@@ -19,7 +19,7 @@ REQUIRED_EVIDENCE = [
         "Bring-up verification points",
         "docs/replica-bringup-verification-points.md",
         (
-            "Status: **ENDPOINT COVERAGE FAILED**",
+            "Status: **ENDPOINT COVERAGE FAILED / RISKS UNRESOLVED**",
             "Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED**",
             "Status: **DESIGN RELEASE RISKS CLOSED**",
         ),

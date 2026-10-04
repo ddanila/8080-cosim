@@ -37,7 +37,7 @@ not mean this generator reran its checks or closed its design risks.
 | Upload runbook | `docs/replica-order-upload-runbook.md` | FAIL |
 | Package geometry | `docs/replica-package-geometry-readiness.md` | FAIL |
 | DRC visual disposition | `docs/replica-fab-drc-disposition.md` | FAIL |
-| Bring-up verification points | `docs/replica-bringup-verification-points.md` | FAIL |
+| Bring-up verification points | `docs/replica-bringup-verification-points.md` | PASS |
 
 ## Vendor Options To Record
 
@@ -96,4 +96,3 @@ not mean this generator reran its checks or closed its design risks.
 - evidence marker missing in docs/replica-order-upload-runbook.md: Status: **PACKAGE VERIFIED / DESIGN RELEASE SEPARATE**
 - evidence marker missing in docs/replica-package-geometry-readiness.md: Status: **READY**
 - evidence marker missing in docs/replica-fab-drc-disposition.md: Status: **READY**
-- evidence marker missing in docs/replica-bringup-verification-points.md: Status: **ENDPOINT COVERAGE FAILED** or Status: **EVIDENCE INDEX READY / RISKS UNRESOLVED** or Status: **DESIGN RELEASE RISKS CLOSED**
