@@ -342,7 +342,7 @@ def main() -> int:
         (
             "P0",
             "D6 PROM footprint orientation and placement",
-            "Owner component photo 200411500 shows the marked КР556РТ4А D6 in the left blue 2×8 socket with its notch at the right. Physical pin 1 is upper-right, pin 8 upper-left, pin 9 lower-left, and pin 16 lower-right. The nearer D8 package calibrates the approximate D6 owner contact frame near (67.03,109.36)/(48.88,109.36)/(48.88,116.89)/(67.03,116.89) mm for pins 1/8/9/16. The source PCB D6 footprint is corrected to −90 degrees with pin 1 at (66.55,109.36) mm and pin 8 at (48.77,109.36) mm; source DRC improved 770→765 violations with 499 unconnected unchanged. Both routed variants retain the old +90-degree end assignment and a center about 5.9 mm right of the D8-local photo estimate. Refit neighboring copper before changing either routed board; preserve the source-proved logical pin nets and rerun full DRC/connectivity afterward. The C87 front candidate column is outside D6's photographed left end, around x45.05 mm on this approximate D8-local scale",
+            "Owner photos establish D6's right-facing notch: pin1 upper-right, pin8 upper-left, pin9 lower-left, pin16 lower-right. The source footprint uses −90 degrees; both routed variants retain +90 degrees and displaced pin sites. Use the [D6 photo audit](d6-owner-footprint-photo-audit.md) for the approximate placement and pin coordinates. Refit neighboring copper against multiple package contacts, preserve logical pin nets, and rerun full DRC/connectivity after correcting the routed boards. C87's nearby candidate holes remain unproved",
             "`docs/d6-owner-footprint-photo-audit.md`; `ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg`; `ref/photos/juku-pcb-2/local-package-registration.json`; source and routed KiCad PCBs",
             "corrects a photographed PROM end reversal that would invalidate physical pin and local copper placement",
         ),
@@ -384,7 +384,7 @@ def main() -> int:
         (
             "P0",
             "D11 physical placement and copper",
-            "Two independent owner component photos register marked D11 near (201.01,71.49) mm; the source PCB now matches after a DRC-checked move, while both routed boards remain at (185.50,65.70) mm. Four primary pin corners agree with the second view top corners within about 0.66 mm. R18/R104 joints in the D11 crop also match their independent D3-local source positions within about 1 mm. Correct routed D12 and D11 placements together, redesign both copper layers, and preserve every pin-net assignment. The D11-local photo-to-solder fit is independent of the PCB placement discrepancy",
+            "Two-view owner registration places D11 near (201.01,71.49) mm, matching the source PCB; both routed boards remain centered at (185.50,65.70) mm. Correct routed D12 and D11 placements together using the [cross-view audit](../ref/photos/juku-pcb-2/d11-placement-crossview-audit.json), redesign both copper layers, preserve every pin-net assignment, and rerun DRC/connectivity",
             "`ref/photos/juku-pcb-2/d11-placement-crossview-audit.json`; `docs/photo-registration.md`; source and routed KiCad PCBs",
             "restores the photographed package location while retaining the established D11 electrical mapping",
         ),
@@ -398,7 +398,7 @@ def main() -> int:
         (
             "P0",
             "D42/D43 orientation and supply closure",
-            "Two owner component close-ups show right-facing notches on both fitted К555ИР16 packages. The overlapping July solder tiles locate D43 and D42 2x7 fields beside D58. Both physical pin7 contacts join the same broad upper strip as D58.10; the strip visibly continues to the terminal engraved GND. Both pin14 contacts join the lower strip shared with D58.20; tracing left through the screw-area detour reaches registered D26.26, whose broad path reaches the engraved +5 V terminal. The photographed rail paths are closed; optional power-off continuity provides independent electrical confirmation. The unrouted source PCB and generator use 270-degree footprints; both routed variants retain the former 90-degree positions. All 28 same-site pad nets differ, and a footprint-only routed trial creates 38 shorts and 25 additional unconnected items. A pin-aware copper reroute and DRC review are required",
+            "Owner photos establish right-facing notches and trace D42.7/D43.7 to GND and D42.14/D43.14 to +5 V through the D58/D26 shared strips. Optional power-off continuity provides independent electrical confirmation. The source PCB and generator use 270-degree footprints; both routed variants retain 90-degree pin sites. Correct the routed orientation with a pin-aware copper reroute and DRC/connectivity review; rotating the footprints alone creates shorts. See the [orientation audit](../ref/photos/juku-pcb-2/d42-d43-orientation-audit.json) for photo contacts and rail paths",
             "`ref/photos/juku-pcb-2/d42-d43-orientation-audit.json`; `ref/photos/juku-pcb-2/d26-d58-plus5-strip-review.json`; `ref/routing/d42-d43-orientation-copper-impact.json`; `ref/schematics/sheet2-ir16-power-table-conflict.json`",
             "prevents the photographed 14-pin end reversal from reaching fabrication",
         ),
