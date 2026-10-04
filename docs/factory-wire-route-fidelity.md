@@ -33,12 +33,12 @@ and every parity, DRC, and construction condition below to be ready.
 - Explicit assembly-wire island splits: `7/10`
 - Same-net copper substitutions still held: `3/10`
 - Promoted DRC unconnected items: `59`
-- Historical pre-promotion candidate audit:
+- Routed-candidate board audit:
   - Candidate/source pad identities equal: `FAIL`
   - Candidate/source pad-net mismatches: `3`
   - Candidate/source moved pads (>50 nm): `210`
-  - Link nets carrying historical candidate copper: `9/10`
-  - Historical candidate DRC unconnected items: `59`
+  - Link nets carrying candidate copper: `9/10`
+  - Candidate DRC unconnected items: `59`
 - Required release state: twenty registered and modeled landing terminals,
   ten split island pairs, ten explicit assembly-wire closures, exact source
   parity, and zero electrical/unconnected DRC findings.
@@ -49,7 +49,8 @@ between separately named copper islands. A9/A12/A13 lack five evidence-gated
 landing coordinates, so their endpoints remain same-net copper routes. A7B
 and A14B are also masked candidates, and W7.1/W14.1 still need relocation. This
 construction hold is additional to the electrical and placement holds.
-The candidate audit is a separate snapshot and does not authorize the promoted board.
+The candidate results are regenerated from `kicad/juku_routed_candidate.kicad_pcb`;
+they do not authorize the promoted board.
 
 ## Link audit
 
@@ -106,7 +107,7 @@ Current dispositions are:
 | A8 | D5-side A8A is accepted. A8B lacks a proved copper/island assignment; the 19 cm table value is not an approved cut length. See `a8b-corrected-trace-review.json`. |
 | A9 | Both ends remain unpromoted. The former remote candidate traces to D92.1/ROE, not D38.12/SYNC. Do not merge SYNC with nearby D38.10/13. See `a9b-corrected-trace-review.json`. |
 | A10 | A10A is fitted to D50.1. A10B lacks an identified wire landing; require cable-to-D41.13 continuity. The former 131.355 mm chord is invalid; retain the 13.5 cm source reading separately. |
-| A11 | Both distinct surface landings are fitted on MEMR. Their 119.177 mm chord exceeds the revised 11.5 cm source reading; measure the replacement cut length. |
+| A11 | Both distinct surface landings are fitted on MEMR. Their 119.177 mm chord exceeds the 11.5 cm source reading; measure the replacement cut length. |
 | A12 | Both coordinates/island assignments remain held. Candidate joints near the C96 supply-group region do not prove a RAM_OUT_EN wire termination. See `c96-a12-solder-review.json`. |
 | A13 | A13A lacks ROE continuity and a traced cable destination; A13B has a strong D92.1/ROE photo-trace candidate but still requires continuity. See `a13a-c95-d50-candidate-review.json` and the A13 boundary guard. |
 | A19 | Both distinct MEMW surface landings are fitted; the 94.721 mm span agrees with the approximate 9.5 cm source length. |
