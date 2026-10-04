@@ -198,11 +198,13 @@ For current recoverable CP/M Plus sessions, use the
 stock system; the subsequent CP/Mish results describe the named historical
 images, not the current CP/M Plus implementation.
 
+On Linux, build the host with Bash and a C99 compiler (`CC`, default `cc`).
 Connect the Juku serial interface through the appropriate electrical-level
 adapter, start the server, then type `TN` at a configured physical Juku ROM
 prompt (no Enter). Use `TN0201` only if the ROM asks for `N=` and `S=`:
 
 ```sh
+sync/jukuhost_linux_build.sh
 build/jukuhost --serial /dev/ttyUSB0 \
     --system media/system/EKDOS230.BIN --boot-only
 ```
@@ -265,16 +267,11 @@ completed `DIR` on the native game disk, and started `TETRIS.COM`. The same
 dual-drive implementation is therefore physically validated on both CS00014
 and CS00015.
 
-## Relevance to current work
+## Diagnostic relevance
 
-Period NetBios ran on exactly the components the Jukuravi diagnostics
-exercise: the 8251 through X3, clocked by D57 counter 0. The Jukuravi
-"upload over the 8251 and execute" service model is functionally a
-re-creation of the machine's own production network-boot path. Channel 0's
-health is therefore both a diagnostic-link and a period-function concern. The legacy CS00024 channel-2 `99/99` samples do not establish a D57
-fault: they were read before a guaranteed vertical-retrace clock edge.
-[The corrected D57 probe](cs00024-t36-diagnosis.md#d57-channel-2-timing-correction)
-has a positive control on CS00015 and still requires a CS00024 rerun.
+NetBios and the Jukuravi upload service use the same onboard 8251/X3 path,
+clocked by D57 counter 0. Qualification of that path matters to both network
+boot and the diagnostic link; it does not qualify D57's other channels.
 
 ## Reproduction
 
