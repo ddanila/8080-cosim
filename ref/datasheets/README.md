@@ -63,18 +63,12 @@ unless the text interpretation identifies exact-device evidence.
 - SN74LS86A Texas Instruments PDF, used only as an LS-TTL XOR output-current
   comparison for exact-revision D34 К555ЛП5:
   `https://www.ti.com/lit/ds/symlink/sn74ls86a.pdf`
-- Exact-device К555ЛП5 data sheet preserved from Electronics & Communications;
-  it supplies the Soviet-device voltage, fanout, input-current, and timing limits
-  (the fanout/input currents imply 0.4 mA source and 8 mA sink full-fanout
-  loads) but no explicit output-current test condition or nonlinear output curve:
+- Exact-device К555ЛП5 data sheet preserved from Electronics & Communications:
   `https://static.insales-cdn.com/files/1/1346/27395394/original/%D0%9A555%D0%9B%D0%9F5.pdf`
-- Period КТ315-family reference scan preserved by Promelec. Its old KT-13
-  outline and E-C-B lead order match the installed КТ315Б package:
+- Period КТ315-family reference scan preserved by Promelec:
   `https://cdn.promelec.ru/upload/items/2020/02/06/kt315_.pdf`
-- SN54S138 Texas Instruments primary manufacturer PDF, used only as the
-  pin/function-compatible Schottky-TTL timing comparison for exact-revision
-  D53 КР531ИД7; its 12 ns maximum at the published 5 V/25 C/15 pF test point
-  is not promoted into an exact Soviet-part guarantee or an HDL delay:
+- SN54S138 Texas Instruments manufacturer PDF, used as a compatible-device
+  timing comparison for D53 КР531ИД7:
   `https://www.ti.com/lit/ds/symlink/sn54s138.pdf`
 - HRO TYPE-C-31-M-17 official product page and manufacturer drawing, used to
   guard the VJUGA Rev-A J3 six-contact power-only pin map and land pattern:
