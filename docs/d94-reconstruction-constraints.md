@@ -71,9 +71,9 @@ Board JSON and the regenerated KiCad schematic own connectivity.
 
 ## KiCad PCB Cross-check
 
-This table records the authoritative source PCB used by the promoted route.
-Its D94 pad nets are checked directly against the board model; the routed
-candidate identity gate separately proves the promoted board has the same pads.
+This table checks D94 pad nets in `kicad/juku.kicad_pcb` against the
+board model. It does not compare either routed variant or establish
+routed placement/copper parity; see [placement parity](board-placement-parity.md).
 
 | Pin | Role | PCB Net | Result |
 | ---: | --- | --- | --- |
@@ -240,11 +240,9 @@ and A4=D101.7. D5-D7 are owner/drawing-closed NC.
   D0/pin1 has only R8 2 kΩ to +5 V in the measured scope.
 - Known content: three matching reads including a power-cycled read yield
   raw SHA256 `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0`.
-- Known pull-up values: alternate-angle owner photography reads `6К2` on
-  R87 and R88; R89 is partly socket-obscured but visually identical. The
-  equipment list's separately designated `ДГШ5.087.009` group contains
-  exactly three МЛТ-0,125 6.2 kΩ ±5% parts as corroboration. The readable
-  target-board pair and identical third body close R87/R88/R89 as 6.2 kΩ.
+- R87/R88/R89 are modeled as 6.2 kΩ; direct photo reads and the
+  separately designated BOM's corroboration limits are recorded in
+  [upper assembly placement](fdc-upper-assembly-placement.md#d94-pull-up-row).
 - Closed CS/enable upstream source: D9.7 `CS7` reaches D94.15 and D93.3
   on exact .009 sheets 1 and 3; owner continuity confirms the local branch.
 - Unknown: D0 hidden-branch status.
