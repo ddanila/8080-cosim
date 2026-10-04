@@ -60,8 +60,9 @@ a Force Interrupt leaves earlier sectors changed and later ones untouched.
 
 The raw file cannot encode arbitrary ID order/geometry, data-address-mark type,
 damaged headers, or noncanonical gap/flux content. The loader therefore keeps
-an explicit normal/deleted bit for each sector. WD1793 Write Sector `a0` and
-representable Write Track `FB`/`F8` fields update it; Read Sector and
+an explicit normal/deleted bit for each sector. WD1793 Write Sector
+uses command bit 0 to select normal (`0`) or deleted (`1`) data; representable
+Write Track `FB`/`F8` fields likewise update the mark; Read Sector and
 reconstructed Read Track consume it. By default, closing and reopening the raw
 image resets every mark to normal because no such bits exist on disk.
 
@@ -81,7 +82,8 @@ valid raw image.
 
 ## Guard
 
-Run:
+Run from the repository root with Bash, Python 3 with Unix PTY support, and
+a C11 compiler (`CC`, default `cc`):
 
 ```sh
 sync/juk_disk_check.sh
