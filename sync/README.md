@@ -180,7 +180,10 @@ Also run a changed report's own command when it is outside these lists. These
 options do not refresh every generated report or execute the uninterrupted
 Verilator prompt runs.
 
-`--check` uses `git diff` against the index for tracked files under `docs/`,
+Regeneration stops at the first failing command and leaves earlier outputs in
+place. `--check` still runs the writers; it is not a read-only inspection.
+Only after all selected commands succeed does it use `git diff` against the
+index for tracked files under `docs/`,
 `ref/`, and three named Rev A candidate reports. It includes pre-existing
 unstaged edits in those paths and excludes staged changes and untracked files.
 Review `git status --short` and both unstaged and staged diffs before committing
