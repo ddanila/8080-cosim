@@ -30,8 +30,11 @@ Next physical checks: A:3 to VT2 emitter, R65's two ends, VD3's two ends, and X6
 
 ## Model guard
 
+Run from the repository root with KiCad’s `pcbnew` available to Python.
+The command below uses the system Python; adjust its path for your installation.
+
 ```sh
-python3 kicad/check_x6_offboard_landings.py
+/usr/bin/python3 kicad/check_x6_offboard_landings.py
 ```
 
 The guard checks source-PCB pad centres, nets, surface-pad attributes, JSON

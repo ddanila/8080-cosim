@@ -182,8 +182,11 @@ That audit does not check the НГМД source-frame hashes, establish cable
 continuity, or inspect all connector pins. The modeled processor-side contacts
 and all 23 PCB cable landings have a separate check:
 
+Run from the repository root with KiCad’s `pcbnew` available to Python.
+The command below uses the system Python; adjust its path for your installation.
+
 ```sh
-python3 kicad/check_x4_offboard_landings.py
+/usr/bin/python3 kicad/check_x4_offboard_landings.py
 ```
 
 This checks landing positions, net names, and selected circuit endpoints;
