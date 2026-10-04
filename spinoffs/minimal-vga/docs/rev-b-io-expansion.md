@@ -4,12 +4,17 @@ Status: **CONTRACT FROZEN / HDL AND PCB MODEL QUALIFIED / BENCH ACCEPTANCE PENDI
 
 This is the pin-level contract for the expanded I/O card in
 [the five-board order plan](rev-b-five-board-order-plan.md). The machine-readable
-authority is [io-expansion.json](../kicad/revb/io-expansion.json); run its exhaustive arithmetic and decode check
-with:
+authority is [io-expansion.json](../kicad/revb/io-expansion.json). From the
+repository root, check its arithmetic and declared decode regions with:
 
 ```sh
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_io_expansion.py
 ```
+
+This checker evaluates the declared regions across all 256 ports and both
+IORQ/M1 states, checks clock/current arithmetic and selected pin contracts, and
+confirms the board's U7 `/4` tap. The [GAL checker](rev-b-gal-equations.md)
+separately evaluates the implemented decode equations.
 
 ## Address and decode decision
 
@@ -26,7 +31,7 @@ low for active `PIC_INT`, but never sources the shared bus line.
 
 ## Timer and serial clock
 
-U7 already divides the 4.9152 MHz oscillator. Its `/4` node becomes
+U7 divides the 4.9152 MHz oscillator. Its `/4` node supplies
 `PIT_CLK0=1.2288 MHz`; D57 channel 0 count four produces 307.2 kHz and drives
 both 8251 clock inputs for exact 19,200 baud at x16. Channel 1 receives the
 2.000 MHz CPU clock and drives the sound transistor. Channel 2 is deliberately
@@ -55,10 +60,9 @@ The LED latch does not depend on the PIT or USART.
 
 ## Power and physical consequences
 
-The conservative expansion allowance is 304 mA, raising the I/O-card allowance
-from 150 mA to 454 mA and the five-card allowance from 1,351 mA to 1,655 mA.
-That leaves 345 mA under the 2 A design limit. Completed R5.I7 qualification
-binds the exact populated set and routed voltage-drop model in
+The I/O-card current allowance is 454 mA; the complete five-card allowance is
+1,655 mA, leaving 345 mA under the 2 A design limit. The exact populated set
+and routed voltage-drop model are recorded in
 [the five-card power contract](rev-b-five-card-power.md). These modeled margins
 do not establish measured board current or physical supply acceptance.
 
@@ -76,13 +80,32 @@ gate, and the generated `rev-b-mating-report.md`.
 
 ## R5.I2 executable evidence
 
-`sim/revb_io_expansion_check.sh` runs the machine contract and five hardware-rate
-HDL cases. PIT normal, direct 19,200 and direct 9,600 must pass. A wrong U7 tap
-and a POST address alias must fail. The positive cases program and latch D57
-channel 0, measure count-four output, measure a full 5,102-clock channel-1 mode-3
-period, prove POST reset/retention/read silence and M1 exclusion, and loop byte
-`A6h` through the real root 8251 model. The retained per-card, 47-byte bring-up,
-two decode-mode EKTA, chip-level TTL-video and serial-console checks also pass.
+Run from the repository root:
+
+```sh
+spinoffs/minimal-vga/sim/revb_io_expansion_check.sh
+```
+
+The script runs the JSON contract check and five HDL cases using 2 MHz CPU and
+approximately 4.9152 MHz baud-master clocks. PIT-normal, direct 19,200 and direct
+9,600 modes must pass; wrong PIT-tap and POST-alias variants must fail. Icarus
+Verilog is required; its absence exits 2 rather than skipping the simulations.
+
+Each positive case checks:
+
+- POST clear at reset, retained `A5h` after a write to `20h`, read silence at
+  that port, and no POST change during an M1-low acknowledge cycle;
+- PIT channel 0 programmed to count four, with a rising-edge period of 16 baud
+  master clocks, and a latched count in `1..4`;
+- selected USART clock periods of 16 or 32 baud-master clocks;
+- channel 1 mode-3 count 5,102, with a rising-edge period of 5,102 CPU clocks;
+- `A6h` TX-to-RX loopback through the root 8251 model and POST clear after activity.
+
+Period checks allow one clock either side of the expected count. The bus driver
+is synthetic, and loopback directly joins the model's TX/RX wires. These cases
+do not run a ROM, exercise the backplane electrical boundary, or measure the
+sound transistor/transducer. Integrated firmware and serial-console checks are
+listed separately in the [execution guide](rev-b-execution-guide.md).
 
 ## Physical acceptance
 
