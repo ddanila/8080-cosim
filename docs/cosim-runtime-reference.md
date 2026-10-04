@@ -264,14 +264,18 @@ paced with a console PTY, optionally attaches a floppy image
 `jukuhost` on a second PTY, and prints the device to attach to (or bridges the
 current terminal with `--attach`). It builds `build/jukuhost` on demand,
 retains a text log plus raw capture when `--keep-logs` is selected, and has no
-Python-host fallback. The launcher resolves ROM and disk-image paths before starting cosim in its
+Python-host fallback. An existing `build/jukuhost` is reused without a freshness
+check; run `sync/jukuhost_linux_build.sh` after host-source changes. `--host`
+selects an existing executable and never rebuilds it. The launcher resolves ROM and disk-image paths before starting cosim in its
 run directory. Supply an absolute path for `--trace`: that prebuilt executable
 path is passed unchanged. Other inherited path-valued cosim settings also
 resolve from the run directory, so use absolute paths for them.
 
 The launcher defaults to NetDisk protocol 2 at 9600 baud; the standalone
 `jukuhost` defaults to protocol 3 at 19200. Select the protocol and baud required
-by the served system explicitly when using another profile.
+by the served system explicitly when using another profile. These disk
+settings are passed only with `--disk`; `--netboot` starts a boot-only host
+and does not use them.
 
 For a CP/Mish dual-network-drive session, `--drive-b` accepts a physical
 800 KiB `.JUK` image. The C host requires A: to be exactly 409,600 bytes
