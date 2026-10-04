@@ -112,7 +112,7 @@ physical D93/D94 wiring.
   Address, Read Track, and writable Write Track formatting,
   track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
   motor-not-ready behavior.
-- For every accepted Type-II/III opcode, `E=1` now holds BUSY with DRQ low for
+- For every accepted Type-II/III opcode, `E=1` holds BUSY with DRQ low for
   30,000 ticks / 15 ms at 2 MHz or 60,000 CPU-equivalent ticks / 30 ms at
   1 MHz before ID search or
   the Type-III index wait begins; `E=0` starts without that interval. C advances
@@ -132,7 +132,7 @@ physical D93/D94 wiring.
   establishes physical D93.32 continuity or its waveform. The drawing assigns
   READY through D28.6 and the E11 2-3 selection with R84; the fitted selector
   and board path require the checks in [the hardware handoff](fdc-hardware-handoff.md).
-- C and HDL now share the WD1793 interrupt contract for the modeled commands:
+- C and HDL share the WD1793 interrupt contract for the modeled commands:
   loading a command clears pending INTRQ, normal/error completion raises it,
   and reading status acknowledges it. Type-IV Force Interrupt `0xD0` terminates
   an active transfer silently; `0xD1` arms not-ready-to-ready, `0xD2` arms
@@ -145,7 +145,7 @@ physical D93/D94 wiring.
   active Type-II/III byte stream. The
   modeled window is 64 2 MHz-equivalent ticks, i.e. one 32 us MFM byte at the
   Juku image's 250 kbit/s data rate. An unserviced read byte is overwritten by
-  the next assembled byte, sets LOST DATA, and the command continues. An
+  the next assembled byte, sets LOST DATA, and the command continues.
   Write Sector raises its matching-ID DRQ across the datasheet's 22-byte MFM
   ID-to-write-gate interval (1,408 nominal ticks): a supplied first byte is
   held without changing media, while an unserviced preload terminates with
@@ -194,7 +194,7 @@ physical D93/D94 wiring.
   completes with INTRQ and Record Not Found on the fifth. C, standalone HDL,
   and the decoded top-level bus guard cover the exact four/five-pulse boundary;
   matching `C=1` reads and writes cover both side values.
-- A command-start Type-II search with no matching track or sector ID now keeps
+- A command-start Type-II search with no matching track or sector ID keeps
   BUSY asserted and DRQ low for the datasheet's full four revolutions, then
   raises INTRQ with Record Not Found on the fourth index pulse. Exact read and
   write guards cover three-versus-four pulses, and the decoded top-level test
@@ -305,7 +305,7 @@ physical D93/D94 wiring.
   These are behavioral fixtures in
   [the ROMBIOS test](../tests/rombios_fdc_write_test.c), not physical-device
   qualification. Printer status and auxiliary input/output remain unimplemented.
-- All 24 RAM-drive endpoint writes and 24 reads now enter through installed
+- All 24 RAM-drive endpoint writes and 24 reads enter through installed
   EKDOS BIOS vectors `SETTRK=0xCA1E`, `SETSEC=0xCA21`, `SETDMA=0xCA24`,
   `READ=0xCA27`, and `WRITE=0xCA2A`. Setter effects are checked in the shared
   work area, WRITE types 0 and 2 are both exercised, and every public I/O call
@@ -341,85 +341,31 @@ physical D93/D94 wiring.
 - `docs/juku-top-fdc-alignment.md` summarizes the recorded reset-to-prompt
   boundary. Report checks do not establish execution of the current source.
 
-## Write-path provenance
+## Firmware test provenance
 
-- Vendored `EKDOS30.ASM` defines `DKWR=0x12` and passes it to the ROMBIOS
-  `RWFLOPPY` entry at `0xFF59`.
-- Exact `roms/ekta37.bin` disassembly branches on request `0x12` at `0xE67C`,
-  selects WD1793 command `0xA0` or `0xA2` at `0xE69F/0xE6A4`, writes the
-  command to port `0x1C` at `0xE6AB`, and loops 512 bytes from memory to the
-  data register at port `0x1F` from `0xE6AF`.
-- `tests/rombios_fdc_write_test.c` executes the complete public `RWFLOPPY`
-  deblocking/cache wrapper and its nested `FLOPPY` handler from the vendored ROM
-  in an authentic boot-initialized RAM environment instead of duplicating them
-  as test-side port writes or patching the ROM epilogue.
-- The firmware path intentionally stops at its proved single-sector contract.
-  The independent command guard additionally covers multiple-record Type-II
-  continuation, Read Address, reconstructed Read Track, and representable Juku
-  MFM Write Track formatting and the datasheet one-byte LOST DATA contract, but
-  neither model claims arbitrary-flux, rotational, or general timing conformance.
+[The ROMBIOS fixture](../tests/rombios_fdc_write_test.c) executes the adopted
+`ekta37` ROM and boot-installed EKDOS services. It calls the public
+`RWFLOPPY` entry, BIOS vectors, and `RAMDISKSEL`; it does not substitute
+test-side port writes for those firmware paths. Exact instruction addresses,
+DMA patterns, cache fields, and expected command sequences belong to that
+fixture and [the EKDOS source inspector](../scripts/report_ekdos_source_inspection.py).
 
-## RWFLOPPY deblocking provenance
+The guarded firmware contracts include:
 
-- The EKDOS request block at `0xD61A..0xD62F` supplies drive, 16-bit track,
-  logical sector, cache state, and DMA address to the `0xFF59 -> 0xE80B`
-  wrapper. Its physical-sector calculation at `0xE8B2` maps four consecutive
-  128-byte logical records onto one 512-byte FDC sector.
-- The guard seeds physical sector 3 with a nonzero byte pattern, starts with a
-  cold-cache write to logical record 9, then writes records 10 and 12 from two
-  other DMA patterns. The first `DKWR` itself issues `0x80` to preserve the host
-  sector before changing one record. Reading records 9 through 12 into four
-  different DMA buffers reproduces all three new patterns and the untouched
-  original record 11, issues no further FDC command, and preserves `HSTWRT=1`.
-  Reading record 13 then crosses into physical sector 4, takes one dirty-cache
-  flush before the new read, and yields `0x80, 0xA2, 0x80`.
-- Physical readback requires the changed first, second, and fourth 128-byte
-  records plus the untouched original third record. This exercises the full
-  four-way deblocking layout, cold read-before-write, and coalescing while
-  distinguishing them from direct 512-byte model-side sector injection.
-- The unallocated-write branch at ROM `0xE83E` copies CP/M write type `C`, and
-  `C=2` seeds the 32-record sequence at `0xE84F`. Matching drive/track/sector
-  progression clears the preread flag at `0xE89E`; after four writes the guard
-  requires `UNACNT=28`, `HSTWRT=1`, and zero FDC commands. The host-sector
-  transition then flushes once and reads the next sector, giving `0xA2,0x80`.
-- When `SEKDSK` equals the RAM-drive number at `0xCA36`, `RWFLOPPY` branches to
-  `0xEA3B`. Track bit 0 selects the lower (`0x4000`) or upper (`0x8000`) 16 KiB
-  half, track bits above it choose one of six 32 KiB banks, and the 128-sector
-  track maps sector bit 0 to the 128-byte half of a 256-byte page. The ROM moves
-  each record as four 32-byte slices, selects/restores banks through port `0x04`,
-  and stages data at `0xD200`; direct backing-store checks guard both track
-  halves as well as public readback.
-- EKDOS `MDISKPAR` independently fixes the geometry at 128 records per track,
-  block shift 3 (1 KiB), and `DSM=191`: 192 KiB total, exactly six 32 KiB banks
-  or twelve track halves. The executable guard writes every low/high endpoint
-  before reading any back, so aliasing between banks, halves, or endpoint
-  records cannot pass by immediate overwrite/readback coincidence.
-- Source arithmetic fixes `BIOS=0xCA00`, hence standard jump-table entry 10
-  (zero-based index 9) is `SELDSK=0xCA1B`; the prompt checkpoint guards the
-  actual jump opcode and adjacent `NoofRamDisk=2`. `SELDSK` returns DPH offsets
-  `+0/+16/+32`; the C-drive DPH has null translation and points to the exact
-  15-byte `MDISKPAR` DPB. Its caller uses stack `0xD6F8`, while `DoFunction`
-  saves that stack and temporarily owns source-defined `STAK=0xD2FC`.
-- The source inspector requires archival evidence for all seventeen exercised
-  BIOS vectors and derives their standard three-byte table addresses. It
-  deliberately guards the damaged PUNCH spelling `DP RTNEMPTY` as preserved
-  evidence; the adjacent READER line retains `JMP RTNEMPTY`.
-  The prompt checkpoint independently requires a live `JMP` opcode at each
-  derived address; actual calls then prove their destinations and ABI rather
-  than treating opcode presence as behavioral evidence.
-- `RAMDISKSEL` does not merely select a register. Its probe relies on a failed
-  bank command leaving ordinary RAM visible: it saves byte `0x4000`, attempts
-  a complemented write after selecting bank 0, restores bank 6, and returns
-  `0xFF` if ordinary RAM changed. A working bank instead receives the ROM's
-  12-byte signature at `0x4000`, zeroed signature-entry tail, and `0xE5` in the
-  first byte of directory entries 1..63. A matching signature bypasses this
-  initialization; a retained byte guards that idempotent path.
-- In the read-only phase, the exact command sequence is initial preread `0x80`,
-  ten rejected `0xA2` retries from EKDOS `VIARV=10`, then the requested next-
-  sector read `0x80`. The controller returns WRITE PROTECT throughout the retry
-  loop and accepts no payload bytes. The wrapper nevertheless returns zero
-  `ERRC` because the final successful read replaces the flush error; byte-for-
-  byte media comparison proves that this masking does not imply a write.
+- Four 128-byte logical records per 512-byte floppy sector, with cold
+  read-before-write, dirty-cache coalescing, and untouched-record preservation.
+- CP/M write type 2's unallocated-write sequence, which suppresses prereads
+  until the host-sector transition requires a flush and a new read.
+- All twelve RAM-drive track halves across six 32 KiB banks: 192 KiB total,
+  including endpoint alias checks and restoration of normal bank selection.
+- Installed BIOS vector calls, drive selection, sector translation, and
+  RAM-drive signature initialization and reopening without reformatting.
+
+The read-only dirty-flush case is a firmware failure boundary: ten rejected
+write attempts leave media unchanged, but the following successful read
+replaces the flush error and returns `ERRC=0`. A zero firmware return therefore
+does not establish that dirty data was saved. Printer status and auxiliary
+input/output remain unimplemented, as stated in the passing scope above.
 
 ## Commands
 
@@ -460,7 +406,7 @@ historical execution; the default report check does not rerun that simulation.
   index-event semantics are guarded, but the board's physical D93.32 READY
   source, event pulse widths, and rotational timing remain outside this
   byte-level shim.
-- Physical D93 DRQ and reset are now owner-closed: DRQ reaches D28.11 and the
+- Physical D93 DRQ and reset are owner-closed: DRQ reaches D28.11 and the
   10k R94 pull-up to +5 V; D1.12 RESET reaches D13.9 and inverted D13.8 drives
   D93.19 plus the outer-bus rightmost middle-row contact (top view). INTRQ and
   the clock waveform still require bench calibration
