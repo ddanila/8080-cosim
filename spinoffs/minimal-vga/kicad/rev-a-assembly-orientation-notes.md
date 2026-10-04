@@ -1,36 +1,28 @@
 # Rev A Assembly Orientation Notes
 
-Status: first-pass order-package notes; review against selected factory parts
-before upload.
+Status: **DESIGN HOLD / DRAFT ASSEMBLY INSTRUCTIONS**. Follow
+[manufacturing readiness](../docs/rev-a-manufacturing-readiness.md) before release.
 
 ## Factory Assembly Intent
 
 - Factory should mount the rows present in the generated JLCPCB BOM/CPL:
   sockets, assigned passives, selected connectors/protection/reset parts, and
   diagnostic LEDs where practical.
-- Rows marked `Manual`, `DNP`, or `Do not populate` in the engineering BOM are
-  deliberately excluded from the factory BOM/CPL and written to
-  `manual-assembly.csv`.
+- Non-socket rows marked `Manual`, `DNP`, or `Do not populate` in the engineering
+  BOM are excluded from factory BOM/CPL and written to `manual-assembly.csv`.
+  The exporter always includes `U*` DIP socket footprints as factory sockets,
+  even if their engineering row has one of those labels. U23 gets a socket
+  but no IC insertion row.
 - Do not factory-populate the socketed ICs themselves: Z80, ROM, DRAM, 8255,
   GAL/PAL, and 74xx logic ICs are owner/post-assembly insertion items unless
   the BOM is explicitly changed.
 
 ## Manual / Non-Factory Placements
 
-Review `manual-assembly.csv` before ordering. Rev A currently expects manual
-installation or later CPN/footprint resolution for:
-
-- `D1` exact Littelfuse P4KE6.8A-B/C1666224 +5V pulse TVS; its
-  datasheet, polarity, and corrected DO-41 geometry are guarded by
-  `../docs/rev-a-tvs-candidate.md`, while stock and first-article checks remain.
-- `J30` keyboard bring-up header.
-- `J94`, `J95`, `J96`, `J97`, and `J98` decode/clock/control bring-up
-  headers and selector jumpers.
-- `R6` PWR_OK link and `R15` keyboard encoder enable link.
-- `R32`, `R33`, `R34`, `R35`, `R36`, `R37`, `R38`, `R39`, `R40`, `R41`,
-  `R42`, and `R43` open-collector decode-PROM pull-ups.
-- `U50` clock oscillator.
-- `U51` reset supervisor.
+Review `manual-assembly.csv` and the
+[current manual-row list](../docs/rev-a-sourcing-plan.md#current-manual-rows)
+before ordering. These placements need manual installation or further part/process
+qualification; the generated file owns their exact exported identities.
 
 If any of these should be factory-mounted, change the engineering BOM row back
 to factory assembly and assign/verify an orderable CPN before export.

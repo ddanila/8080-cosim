@@ -8,6 +8,8 @@ import pcbnew
 
 
 DESIGNATOR_RE = re.compile(r"^([A-Z]+)([0-9]+)$")
+# Factory installs the spare socket, but its IC position must remain empty.
+POST_ASSEMBLY_DNP_REFS = {"U23"}
 
 
 def natural_key(ref):
@@ -104,7 +106,10 @@ def build_report(board_path, out_dir):
             issues.append("missing from JLCPCB BOM")
         if ref not in cpl_refs:
             issues.append("missing from JLCPCB CPL")
-        if ref not in post_refs:
+        if ref in POST_ASSEMBLY_DNP_REFS:
+            if ref in post_refs:
+                issues.append("DNP spare must not appear in post-assembly list")
+        elif ref not in post_refs:
             issues.append("missing from post-assembly list")
         if ref in manual_refs:
             issues.append("also listed as manual/non-factory")
@@ -115,7 +120,11 @@ def build_report(board_path, out_dir):
                 issues.append("BOM sourcing does not identify socket sourcing")
             if (bom_row.get("MPN") or "").strip():
                 issues.append("BOM MPN should stay empty for owner-supplied socketed ICs")
-            if "owner inserts" not in (bom_row.get("Notes") or "").lower():
+            notes = (bom_row.get("Notes") or "").lower()
+            if ref in POST_ASSEMBLY_DNP_REFS:
+                if "empty" not in notes or "dnp" not in notes:
+                    issues.append("BOM notes do not state empty DNP socket")
+            elif "owner inserts" not in notes:
                 issues.append("BOM notes do not state owner insertion")
         if post_row:
             if "owner-supplied" not in (post_row.get("Action") or "").lower():
@@ -147,7 +156,8 @@ def build_report(board_path, out_dir):
         "",
         "This report verifies the Rev A assembly policy that factory assembly",
         "mounts sockets only for socketed `U*` devices, while owner-supplied ICs",
-        "are inserted after factory assembly.",
+        "are inserted after factory assembly. U23 is a factory-mounted spare socket",
+        "that must remain empty (DNP) and absent from the insertion list.",
         "",
         "## Summary",
         "",

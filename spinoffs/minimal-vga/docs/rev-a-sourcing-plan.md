@@ -13,11 +13,15 @@ they must be rechecked only after functional design release.
 | --- | --- |
 | Z80, ROM, DRAM, 8255, GAL/PAL, DIP logic | socketed; owner-supplied IC insertion after board assembly |
 | Sockets, ordinary passives, protection, connectors, diagnostics | factory candidate if the selected process and parts support them |
-| Rows marked `Manual`, `DNP`, or `Do not populate` | excluded from factory BOM/CPL and installed or left empty per the final record |
+| Non-socket rows marked `Manual`, `DNP`, or `Do not populate` | excluded from factory BOM/CPL and installed or left empty per the final record |
 | Programmed ROM/GAL devices | program and verify before insertion; retain source and readback hashes |
 
-The generated assembly BOM must describe sockets at the `U*` designators, not
-the owner-supplied ICs. `post-assembly-insertion.csv` owns the later IC list.
+The exporter recognizes `U*` DIP socket footprints and includes them as factory
+sockets regardless of the engineering row's `Assembly` label. This rule does not
+apply to U40's header, U50's oscillator or U51's supervisor. U23 receives a socket
+but stays empty (DNP); it is excluded from `post-assembly-insertion.csv`. That
+file lists the other socketed ICs for later insertion, subject to the selected
+decode mode in the [orientation notes](../kicad/rev-a-assembly-orientation-notes.md).
 Never upload the engineering BOM as a factory placement BOM.
 
 ## Part classes to freeze
