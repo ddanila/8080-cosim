@@ -79,7 +79,7 @@ so a pulse cannot overlap and flatten the following sample.  Its conservative
 `8000h` TPA boundary leaves room for about 8.0 seconds of audio at the default
 rate.  Source recordings and generated
 transients are not committed when their copyright does not permit it.
-The reported first speech trial and its verification limits are recorded in
+Build instructions and verification limits are in
 [`PCM-SPEECH-EXPERIMENT.md`](PCM-SPEECH-EXPERIMENT.md).
 
 The percussion bank is unpacked 4-bit PCM.  This costs memory but makes the hot

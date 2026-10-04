@@ -148,6 +148,7 @@ an editor-independent player: three tonal channels with per-note detune,
 legato, persistent attack/decay/hold envelopes, channel-1 slide, and one
 concurrent filtered-sample percussion channel.  Its first score is a credited
 seven-second reduction of George Stone's 1991 Windows MIDI demonstration
-“Trip Through the Grand Canyon.”  The 4,327-byte player currently passes the
-cycle model at 7.186 kHz and passed a CS00000 physical listening run on
-2026-08-30, returning cleanly to CP/M after playback.
+“Trip Through the Grand Canyon.” See the project overview for current player
+measurements and the
+[retained Canyon listening record](sessions/cs00000-jukupoly-canyon-physical/README.md)
+for the exact image tested on CS00000.

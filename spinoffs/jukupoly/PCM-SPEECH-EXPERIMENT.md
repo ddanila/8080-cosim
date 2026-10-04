@@ -1,49 +1,35 @@
 # Juku packed-PCM speech experiment
 
-Date: 2026-09-05
-
-## Result
-
-Standalone speech was reported intelligible in a calibrated 1.70 MHz cycle-model
-trial. Its audio and recognition inputs were not retained, so the repository
-does not independently establish intelligibility or physical speaker quality.
-The dedicated player uses the D57 channel-1 mode-0 output as a pulse-width DAC,
-stores two 4-bit samples per byte, and emits 8,056.872 samples/s.  Its hot loop
-is strict Intel 8080 code and takes 422 cycles per packed pair.  The generic
-implementation is `firmware/jukupoly-pcm-0100.asm` with the WAV converter
+The dedicated player uses the D57 channel-1 mode-0 output as a pulse-width DAC
+and stores two 4-bit samples per byte. At the default 1.70 MHz effective CPU
+rate it emits 8,056.872 samples/s. Its strict Intel 8080 hot loop takes 422
+cycles per packed pair, except the final iteration, which takes three fewer.
+The implementation is `firmware/jukupoly-pcm-0100.asm` with the WAV converter
 `firmware/build_jukupoly_pcm.py`.
 
-The phrase tested was:
-
-> Я твой слуга, я твой работник.
-
-The trial used an independently resynthesized Russian voice, not the original
-Kraftwerk recording. After high-frequency pre-emphasis and an eight-semitone
-pitch reduction preserving duration, it produced a 2.803-second, 11,350-byte
-program. The cycle-level D57 render was reported to transcribe as the exact
-sentence above using the `turbo` Whisper model without a text prompt.
-
-The source audio, program and rendered extracts were not committed, so this
-recognition result cannot be rechecked from the repository. The checked-in
-synthetic regression verifies playback mechanics; it does not establish speech
-intelligibility or physical speaker quality.
+The checked-in synthetic regression verifies playback mechanics. Speech
+intelligibility and physical speaker quality remain unverified by retained
+evidence.
 
 ## Build a new experiment
 
-Given a PCM WAV you may use, these commands apply pre-emphasis, build the
-transient and render its D57 output. They do not recreate the uncommitted
-voice synthesis or pitch-shifted trial input:
+Run from the repository root with Python 3.10+, FFmpeg and a C compiler
+available as `cc`. Initialize the zmac submodule; the builder uses `make`
+if its executable is absent, or uses `ZMAC`.
+
+Given an uncompressed integer PCM WAV, these commands apply pre-emphasis,
+build the CP/M program and render its D57 output:
 
 ```sh
 ffmpeg -i phrase.wav -af 'treble=g=9:f=2000' phrase-preemphasized.wav
 python3 spinoffs/jukupoly/firmware/build_jukupoly_pcm.py \
-  phrase-preemphasized.wav SLUGA.COM --preview phrase-u4.wav
+  phrase-preemphasized.wav SPEECH.COM --preview phrase-u4.wav
 spinoffs/jukupoly/render_jukupoly_wav.sh \
   --lead 0 --tail 0 --sample-rate 96000 \
-  SLUGA.COM phrase-juku-render.wav
+  SPEECH.COM phrase-juku-render.wav
 ```
 
-The converter derives its target rate from the measured CPU clock, performs a
+The converter derives its target rate from `--cpu-hz` (default 1700000), performs a
 32-tap band-limited resample, peak-normalises, limits D57 codes so consecutive
 pulses cannot overlap, and rejects images crossing the conservative `8000h`
 TPA boundary.  The checked-in regression assembles a synthetic WAV, executes
