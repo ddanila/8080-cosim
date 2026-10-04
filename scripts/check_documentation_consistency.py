@@ -1928,7 +1928,7 @@ def main() -> int:
                 "blocks 3, 6, and 7",
                 "`HL=0x0200`, `DE=0x0100`, and",
                 "`0x2100..0x21FF` (`256` bytes, exactly one page)",
-                "still identifies\n`JBASIC11.BIN` as `8K`",
+                "Public image mapped span | `0x0100..0x20FF` (`8192` bytes)",
             ):
                 if marker not in cartridge_lineage:
                     failures.append(

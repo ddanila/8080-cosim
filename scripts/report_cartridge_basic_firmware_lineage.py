@@ -24,8 +24,6 @@ BOOTSTRAP_OFFSET = 0x1F00
 BOOTSTRAP_ADDRESS = CARTRIDGE_LOAD_BASE + BOOTSTRAP_OFFSET
 BOOTSTRAP_PREFIX = bytes.fromhex("21 00 02 11 00 01 01 00 20")
 BOOTSTRAP_LOOP = bytes.fromhex("7e 12 23 13 0b 78 b1 c2 09 20 c3 00 01")
-CATALOG_URL = "https://j3k.infoaed.ee/tarkvara-kataloog/"
-CATALOG_CHECKED = "2026-07-22"
 
 
 def sha256(data: bytes) -> str:
@@ -143,13 +141,13 @@ def main() -> int:
         [
             "",
             "The Monitor 3.3 slice is byte-identical to the cartridge slice. Monitor",
-            "2.2 differs at only one byte. This proves that the public cartridge and",
-            "the onboard BASIC are the same firmware lineage, and it supplies the",
-            "entire meaningful BASIC body already present in the 8 KiB cartridge.",
+            "2.2 differs at only one byte. The match establishes shared BASIC bytes",
+            "over the compared span; it does not supply the absent source page.",
             "",
             "## Relocation range contract",
             "",
-            "The 22-byte bootstrap at cartridge offset `0x1F00` executes at",
+            "If the cartridge is mapped at `0x0100`, its 22-byte bootstrap at",
+            "file offset `0x1F00` lies at",
             f"`0x{BOOTSTRAP_ADDRESS:04X}`. Its literal 8080 operands load",
             f"`HL=0x{source_start:04X}`, `DE=0x{destination_start:04X}`, and",
             f"`BC=0x{copy_length:04X}`; the guarded loop copies one byte, increments",
@@ -165,14 +163,6 @@ def main() -> int:
             "",
             "The copy count is therefore direct firmware evidence for a 256-byte",
             "shortfall; it is not inferred from a failed runtime experiment.",
-            "",
-            "## Public artifact recheck",
-            "",
-            f"The [Juku software catalog]({CATALOG_URL}) was rechecked on",
-            f"{CATALOG_CHECKED}. Its `JUKUROMS` inventory still identifies",
-            "`JBASIC11.BIN` as `8K` and exposes no larger cartridge BASIC image.",
-            "That public inventory therefore ends at the same `0x20FF` mapped",
-            "source boundary and cannot supply the required `0x2100..0x21FF` page.",
             "",
             "## Cartridge suffix",
             "",

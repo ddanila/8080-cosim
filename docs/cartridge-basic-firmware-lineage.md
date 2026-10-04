@@ -30,13 +30,13 @@ Mismatch detail:
 - Monitor 2.2: cartridge `0x1C34=0xDA`; Monitor ROM `0x1EFC=0x9A`.
 
 The Monitor 3.3 slice is byte-identical to the cartridge slice. Monitor
-2.2 differs at only one byte. This proves that the public cartridge and
-the onboard BASIC are the same firmware lineage, and it supplies the
-entire meaningful BASIC body already present in the 8 KiB cartridge.
+2.2 differs at only one byte. The match establishes shared BASIC bytes
+over the compared span; it does not supply the absent source page.
 
 ## Relocation range contract
 
-The 22-byte bootstrap at cartridge offset `0x1F00` executes at
+If the cartridge is mapped at `0x0100`, its 22-byte bootstrap at
+file offset `0x1F00` lies at
 `0x2000`. Its literal 8080 operands load
 `HL=0x0200`, `DE=0x0100`, and
 `BC=0x2000`; the guarded loop copies one byte, increments
@@ -52,14 +52,6 @@ HL/DE, decrements BC, and repeats until BC is zero.
 
 The copy count is therefore direct firmware evidence for a 256-byte
 shortfall; it is not inferred from a failed runtime experiment.
-
-## Public artifact recheck
-
-The [Juku software catalog](https://j3k.infoaed.ee/tarkvara-kataloog/) was rechecked on
-2026-07-22. Its `JUKUROMS` inventory still identifies
-`JBASIC11.BIN` as `8K` and exposes no larger cartridge BASIC image.
-That public inventory therefore ends at the same `0x20FF` mapped
-source boundary and cannot supply the required `0x2100..0x21FF` page.
 
 ## Cartridge suffix
 
