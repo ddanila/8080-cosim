@@ -56,7 +56,7 @@ Confirm that the exported stream includes every write in the chosen workload.
 | CH23 | `DEC_ROM_N` (D6 РТ4 O1) | J95.1 |
 | trigger | `RESET_N` rising | J91.10 |
 
-## 4.2 Framebuffer readback without video hardware (the bench boot oracle) — DONE
+## 4.2 Framebuffer readback without video hardware
 
 The bench twin of `sim/vjuga_boot_check.sh`: capture every memory write during
 boot (Profile FB), filter to `0xD800-0xFFFF`, replay the stream into a
@@ -83,7 +83,7 @@ Implemented replay path:
    cutoff and initial framebuffer state for capture and oracle; retain the ROM
    identity and cutoff with each result.
 
-## 4.3 Arduino UNO single-step rig — DONE (sketch + reference trace)
+## 4.3 Arduino UNO single-step rig
 
 For static, human-speed inspection (5 V-native, no level shifting):
 
@@ -109,6 +109,15 @@ For static, human-speed inspection (5 V-native, no level shifting):
   the patched NOP. Compare only fetch lines from the same reset, ROM and decode
   mode, excluding the sketch's `#` status lines. Divergence points at
   the exact fetch.
+
+The readback and reference-trace commands require Python 3, Icarus Verilog
+(`iverilog` and `vvp`), and the initialized
+`spinoffs/minimal-vga/external/tv80` submodule. Readback also requires a C
+compiler (`CC`, default `cc`). Both wrappers print `SKIP` and exit zero if
+tv80 is missing; that is not a verification pass. The reference-trace wrapper
+accepts any nonempty trace even if simulation fails, so inspect its length and
+contents before comparison. A generated trace does not establish successful
+boot completion.
 
 ## 4.4 Assembly & bring-up ladder
 
