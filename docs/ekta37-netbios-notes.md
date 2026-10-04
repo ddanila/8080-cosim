@@ -66,9 +66,9 @@ file positions, not runtime addresses.
   on one line, only the active talker driving it, every frame
   error-checked. This fits the documented school deployment — one
   teacher station with floppy drives and printer serving diskless student
-  machines. The boot subset is now capture-derived below; unrelated Janet
+  machines. The boot subset is capture-derived below; unrelated Janet
   services and the monitor call `FF7Ah`'s general contract remain untraced.
-- The `FF89h` calls install interrupt/service handlers. Functional cosim now
+- The `FF89h` calls install interrupt/service handlers. Functional cosim
   proves D11 `RxRDY -> D10 IR2` and `TxRDY -> D10 IR3`: without those two PIC
   requests the stock code never drains its transmit descriptor or consumes a
   received frame.
@@ -116,11 +116,11 @@ one-record copier followed by 7,680 resident bytes. That copier targets
 `B000h` and enters `C600h`, supporting CP/Mish's 51K RAM-console layout while
 leaving ordinary 52K `JUKUSYS` recognition byte-for-byte compatible.
 
-One simulator-only input distinction is explicit: the ROM's `1209h..123Bh`
-hardware-configuration scan samples PB5 high for the unstrapped/onboard-D11
-setting. Ordinary keyboard-idle reads remain the drawing-derived `CFh`; merging
-those two contexts had previously made all configuration switches look closed
-and selected the absent `F0h..F3h` expansion interface.
+The simulator's S21 compatibility profile supplies active-low switch state
+on PB5 while keyboard columns 8–15 are selected. An open switch reads high;
+ordinary idle columns read `CFh`. This depends on the selected column, not
+the caller's PC, so RAM-resident systems can read the same switch profile.
+The ROM's `1209h..123Bh` scan uses that behavior for onboard-D11 selection.
 
 This PB5 behavior is specific to the archived `ekta37.bin` ROM. At offsets
 `1211h..1216h` in `roms/ekta37.bin`, the bytes `DB 05 2F FB E6 20` read PPI
@@ -134,7 +134,7 @@ firmware/configuration behavior needs a matching ROM readback or a powered
 PB4/PB5 observation before claiming the S21 path works on this revision.
 The four other archived #0024/#0031/#0032/#0035 images use the same PB5
 mask; #0043 has a different read sequence and no evidence for a PB4 S21
-scan (`docs/ektasoft-rombios-lineage.md`).
+scan; see [the lineage audit](ektasoft-rombios-lineage.md).
 
 The regression boots the five vendored system images plus an optional external
 system, with up to five concurrent clients by default (`JUKU_NETBOOT_JOBS`
@@ -301,7 +301,3 @@ python3 cosim/dis8080.py roms/ekta37.bin 34B0 200
 # Stock client + host-server regression for every archived system:
 sync/janet_netboot_check.sh
 ```
-
-External context (not load-bearing for the claims above):
-[juku3000 project](https://j3k.infoaed.ee/),
-[Juku E5104 at Arvutimuuseum](https://arvutimuuseum.ee/cs00000/).
