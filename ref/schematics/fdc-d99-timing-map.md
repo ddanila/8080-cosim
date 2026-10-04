@@ -66,23 +66,13 @@ destination without promoting the adjacent D99.4 rail.
 
 ## Physical route limits
 
-The registered board-photo points put D99.4 at solder-image
-`PXL_20260710_200522685.jpg` `(1124.714,901.429)`, D101.7 in that
-image at `(2112.714,1260.286)`, and D94.14 in
-`PXL_20260710_200506061.jpg` at `(1945.714,1177.714)`; see
-`ref/photos/juku-pcb-2/endpoints.csv`. A native-resolution recheck finds
-their plated landings but no uninterrupted visible copper route between
-these three points. The component-side D99 package is crossed by the cable,
-and a route can change sides through a plated hole. This photo result
-therefore neither confirms nor refutes the owner's D94.14-D101.7 continuity
-or D99.4's separate remote route.
-
-The original-pixel solder crop `(900,750)-(1350,1100)` of `200522685`
-locates D99.4 near `(1125,901)` as a discrete fourth joint in its visible
-row. It has no visible local B.Cu departure. The next joint to the right has
-a separate upward copper trace; that neighboring trace must not be assigned
-to D99.4. A front-face route beneath the installed D99 package remains
-possible, so this narrows the probe site but does not settle D99.4's route.
+The registered photos locate D99.4 but show no visible local B.Cu departure.
+The upward trace on the neighboring joint must not be assigned to D99.4.
+Cable and package obscure the component-side route, so photographs neither
+confirm nor refute its remote continuity. Keep D99.4 separate from the
+owner-proved D94.14/D101.7 island. Registered probe coordinates and the
+power-off continuity check are in
+[the D99 route review](../../docs/d99-q1n-a4-conflict-photo-review.md).
 
 ## Unresolved sheet-1 continuations
 
