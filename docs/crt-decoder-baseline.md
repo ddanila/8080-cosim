@@ -69,24 +69,16 @@ exists in local Git history; a shallow checkout may skip that check.
 | Compiler | g++ 15.2.0 |
 | Dependency isolation | No host packages installed. Ubuntu packages libhackrf-dev 2026.01.3-1, libhackrf0 2026.01.3-1, and libsdl2-dev 2.32.10+dfsg-6 were downloaded and extracted under /tmp; the already-installed libsdl2-2.0-0 2.32.10+dfsg-6 runtime was copied into that temporary sysroot. |
 
-## Results
+## Recorded CI
 
-| Test | Result | Time | Max RSS |
-| --- | --- | ---: | ---: |
-| CTest | 1/1 passed | 0.61 s | 20604 KiB |
-| direct synth_ntsc | 29 frames; 7854 lines; 7/7 bars | 0.62 s | 19128 KiB |
-| fork Linux CI | full RF/IQ build + CTest + synth_ntsc PASS ([run 29885055666](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29885055666)) | 42 s | GitHub-hosted runner |
-| baseband source CTest | PASS; 5 validation/transform cases | included in CI | GitHub-hosted runner |
-| generated baseband E2E | 5 frames; 5/5 exact grayscale bars | included in CI | GitHub-hosted runner |
-| WP1 fork Linux CI | full build + 3 CTests + synth_ntsc PASS ([run 29886015187](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29886015187)) | 27 s | GitHub-hosted runner |
-| non-NTSC profile E2E | 12500 Hz / 200 lines; 5/5 bars + measured JSON | included in CI | GitHub-hosted runner |
-| negative profile fixtures | 5/5 lock failures distinguished | included in CI | GitHub-hosted runner |
-| WP2 fork Linux CI | full build + 5 CTests + synth_ntsc PASS ([run 29886839537](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29886839537)) | 42 s | GitHub-hosted runner |
-| synthetic Juku-timing E2E | 15625 Hz / 313 lines; 5/5 bars | included in CI | GitHub-hosted runner |
-| WP3 synthetic fork Linux CI | full build + 6 CTests + synth_ntsc PASS ([run 29888769589](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29888769589)) | 46 s | GitHub-hosted runner |
+- [WP0 build and synthetic NTSC](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29885055666)
+- [WP1 float32/baseband](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29886015187)
+- [WP2 explicit profiles and negative fixtures](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29886839537)
+- [WP3 synthetic Juku timing](https://github.com/ddanila/famicom-rf-hackrf-decoder/actions/runs/29888769589)
 
-The direct run reported 87 coasted lines and still recovered all seven
-golden color bars within the upstream tolerance.
+Exact build/test measurements and environment details remain in the
+[baseline record](../ref/video/decoder-fork-baseline.json). These are
+recorded results; this report generator does not rerun the decoder.
 
 ## Compiler warnings
 
