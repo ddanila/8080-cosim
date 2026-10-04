@@ -12,6 +12,9 @@ external X3 loopback or full protocol-mode coverage.
 
 ## Command
 
+Run from the repository root with Python 3. The generator overwrites
+`docs/serial-handoff.md`, including when a checked invariant fails.
+
 ```sh
 python3 scripts/report_serial_handoff.py
 ```
@@ -19,7 +22,15 @@ python3 scripts/report_serial_handoff.py
 The generator checks JSON endpoint and provenance invariants, selected HDL
 and test-source markers, and recorded diagnostic evidence. It does not
 run the USART simulation, perform LVS, inspect PCB copper, or measure
-line levels. Run `sync/serial_check.sh` separately for device behavior.
+line levels. For device behavior, run the guard from the repository root
+with Bash, Python 3, and Icarus Verilog (`iverilog` and `vvp`):
+
+```sh
+sync/serial_check.sh
+```
+
+The guard uses temporary simulation files and regenerates this report
+after the USART simulation passes.
 
 ## Checks
 
