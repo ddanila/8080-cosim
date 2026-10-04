@@ -71,6 +71,7 @@ AUTHENTIC_MARK = {
     "UP2": "К170УП2",
     "C_KM": "КМ ceramic capacitor",
     "C_ELEC": "axial electrolytic",
+    "C_ELEC_AXIAL": "axial electrolytic",
     "R_AXIAL": "axial resistor",
     "R_TRIM": "СП3-22б trimmer",
     "C_TRIM": "trimmer capacitor",
@@ -145,6 +146,7 @@ FUNCTIONAL_SUBSTITUTE = {
     "UP2": "RS-232/line-receiver substitute required; verify +/-12 V interface",
     "C_KM": "modern ceramic capacitor with matching value/voltage/lead spacing",
     "C_ELEC": "modern electrolytic matching measured body, lead spacing, value, voltage, and polarity",
+    "C_ELEC_AXIAL": "modern axial electrolytic matching capacitance, voltage, polarity, body, and lead spacing",
     "R_AXIAL": "modern axial resistor, matching value and power rating",
     "R_TRIM": "modern vertical trimmer matching footprint/value",
     "C_TRIM": "modern trimmer capacitor matching footprint/value",
@@ -239,7 +241,7 @@ def group_key(chip):
     elif chip.get("assembly_dnp"):
         action = "leave-empty"
         note = note or "Target-assembly DNP; retain schematic intent and the fabricated footprint, but do not fit the part."
-    if typ in {"R_AXIAL", "C_KM", "C_ELEC", "D_DIODE", "XTAL", "R_TRIM", "C_TRIM", "WIRE_LINK"}:
+    if typ in {"R_AXIAL", "C_KM", "C_ELEC", "C_ELEC_AXIAL", "D_DIODE", "XTAL", "R_TRIM", "C_TRIM", "WIRE_LINK"}:
         return typ, value, marking, action, note
     return typ, "", marking, action, note
 
@@ -261,7 +263,7 @@ def action_for(typ, pop_count, socket_count):
 
 
 def row_action(typ, value, pop_count, socket_count):
-    if typ in {"R_AXIAL", "C_KM", "C_ELEC", "D_DIODE", "R_TRIM", "C_TRIM"} and not value:
+    if typ in {"R_AXIAL", "C_KM", "C_ELEC", "C_ELEC_AXIAL", "D_DIODE", "R_TRIM", "C_TRIM"} and not value:
         return "circuit-review"
     return action_for(typ, pop_count, socket_count)
 

@@ -16,7 +16,7 @@ Refresh with `python3 kicad/report_replica_sourcing_readiness.py`.
 
 ## Summary
 
-- BOM lines: 121
+- BOM lines: 122
 - Populate-now component positions: 273
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
@@ -31,7 +31,7 @@ Refresh with `python3 kicad/report_replica_sourcing_readiness.py`.
 | leave-empty | 3 | 0 |
 | mechanical-review | 12 | 17 |
 | program/dump | 5 | 6 |
-| source-now | 78 | 223 |
+| source-now | 79 | 223 |
 
 ## Buy Early / Acceptance-Test First
 

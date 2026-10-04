@@ -19,7 +19,7 @@ readiness report.
 - Board component positions: 377
 - Populate for current functional .009 build: 273
 - Do not populate now (empty/DNP/pending): 104
-- Unique BOM lines: 121
+- Unique BOM lines: 122
 
 ## Sockets
 
@@ -93,7 +93,8 @@ before ordering, including any additional sockets required for bring-up.
 | source-now | CLK_PHASE | К155ЛН5 | 74LS04/74LS14-class inverter; verify phase/timing use | 1 | 1 | 0 | D35 | - |
 | source-now | CPU8080 | КР580ИК80А | Intel 8080A / compatible 8080 CPU | 1 | 1 | 0 | D1 | - |
 | source-now | CT16_CTR | КР531ИЕ17 | 74F/74S163-class fast counter; verify timing | 1 | 1 | 0 | D40 | - |
-| source-now | C_ELEC_AXIAL | C_ELEC_AXIAL | select exact substitute after circuit review | 2 | 2 | 0 | C17, C18 | - |
+| source-now | C_ELEC_AXIAL 120 мкФ | axial electrolytic 120 мкФ | modern axial electrolytic matching capacitance, voltage, polarity, body, and lead spacing | 1 | 1 | 0 | C17 | - |
+| source-now | C_ELEC_AXIAL 47 мкФ | axial electrolytic 47 мкФ | modern axial electrolytic matching capacitance, voltage, polarity, body, and lead spacing | 1 | 1 | 0 | C18 | - |
 | source-now | C_KM 15 нФ | КМ ceramic capacitor 15 нФ | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C8 | - |
 | source-now | C_KM 160 | КМ ceramic capacitor 160 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C99 | - |
 | source-now | C_KM 24 | КМ ceramic capacitor 24 | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C21 | - |
