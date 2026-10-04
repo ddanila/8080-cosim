@@ -1,6 +1,6 @@
 # 2026-07-18 factory-drawing legibility audit
 
-Status: **COMPLETE / NO RE-SHOOT REQUIRED FOR THE RECORDED SCOPE**
+Status: **RECORDED EXTRACTION COVERED / TARGETED CLARIFICATION REMAINS**
 
 This audit walks every drawing in the owner-photo batch against its overview
 and overlapping detail frames.  “Usable” means every circuit/table region is
@@ -20,11 +20,15 @@ reviewed extraction; it does not claim that overview frames alone are readable.
 
 ## Re-shoot shortlist
 
-None for the planned extraction scope.  A flatter, higher-contrast sheet-2
-overview would be cosmetically better, but it would not close a current
-electrical boundary: the eight detail tiles already cover that sheet.  Any
-future re-shoot request should therefore name a newly discovered ambiguous
-pin or continuation rather than repeat the whole batch.
+The retained tiles support the recorded extractions; that coverage does not
+make every conductor unambiguous. The [D7 inhibit-source review](../ref/schematics/d7-d29-inhibit-upstream-review.json)
+records fold displacement and multiple candidate control strokes preventing
+an upstream assignment for D7.5/D29.3. A clearer, flatter scan of that path or
+physical continuity is still needed.
+
+Further photo requests should name the unresolved pin or continuation and
+its existing evidence limits. Use [the measurement shortlist](owner-measurement-shortlist.md)
+for current targets; repeating the whole batch is not required by this audit.
 
 Original photos remain the evidence.  Enhanced/rotated crops are disposable
 reading aids and are not substituted for or committed beside them.
