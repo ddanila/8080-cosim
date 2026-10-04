@@ -233,6 +233,12 @@ def main() -> int:
         "",
         "## Command",
         "",
+        "Run from the repository root with Python, a C compiler (`CC`, default",
+        "`cc`), and `roms/jmon33.bin`. The probe builds a temporary executable",
+        "and overwrites the selected report; its parent directory must exist.",
+        "Each case restores the prior `cosim/vram.bin` contents, or removes the",
+        "new dump if initially absent, after sampling on normal completion.",
+        "",
         "```sh",
         f"JMON33_COMMAND_ORACLE={shlex.quote(oracle)} "
         f"JMON33_COMMAND_START_VRAM={shlex.quote(os.environ.get('JMON33_COMMAND_START_VRAM', '0'))} \\",
