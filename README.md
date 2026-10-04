@@ -90,8 +90,10 @@ its image definition change.
 
 ## Board previews
 
-These renders show the current routed engineering artifact, not a fabrication
-release.
+These saved renders show a routed engineering snapshot and may lag the current
+PCB. Refresh them with `kicad/render_views.sh` after reviewing board changes;
+the [renderer](kicad/render_views.sh) documents its KiCad, font and rasterizer
+requirements. Use the PCB and release reports to assess the current design.
 
 | 3D | 2D |
 | --- | --- |
