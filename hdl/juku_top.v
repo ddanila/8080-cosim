@@ -339,8 +339,8 @@ module juku_top #(
 `endif
     net_boundary U_D7B3LNK (.a(1'b0), .b(d7_b3_inhib_status));  // shared source is unread; low preserves the existing boot-safe D25 turnaround scaffold
     la3_gate    U_D7     (.a(d7_a1_w), .b(d7_b1_w), .y(io_strobe_h),
-                          .a2(memr_n_d7), .b2(memw_n_d7p2), .y2(d7_y2_amw_n), // sect2: pin2 <- MEMW through W19; pin1 <- D92.13 through W11 / -MRD; pin3 destination remains a boundary
-                          .a3(memw_n), .b3(d7_b3_inhib_status), .y3(d25_t_w),  // native sheet: pin4 T-joins MEMW/D29.1; pin5 shares D29.3 -INHIB source
+                          .a2(memr_n_d7), .b2(memw_n_d7p2), .y2(d7_y2_amw_n), // sect2: pin2 <- MEMW through W19; pin1 <- D92.13 through W11 / -MRD; pin3 -> D29.2 (source-drawn; owner continuity pending)
+                          .a3(memw_n), .b3(d7_b3_inhib_status), .y3(d25_t_w),  // native sheet: pin4 T-joins MEMW/D29.8; pin5 shares D29.3 -INHIB source
                           .a4(iord_n), .b4(iowr_raw_n), .y4(io_cycle_h));  // D7.8 -> D105.1 + D6.A7: high during either I/O cycle
     decode_prom U_DECODE (.a({io_cycle_h, d3_o4_d6_a6, d3_o6_d6_a5, BA[11], BA[12], BA[13], BA[14], BA[15]}),
                           .v_en_n(d6_v_enable),

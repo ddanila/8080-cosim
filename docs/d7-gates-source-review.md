@@ -74,12 +74,9 @@ archived image section does not identify its upstream endpoint. Preserve
 is resolved. The registered owner solder probes are D7.5 near (2300,1029) in
 200525009 and D29.3 near (2393,1588) in 200509593; the latter is the
 third contact counted from D29.1 near (2489,1588). These are in separate
-photo tiles and do not prove the source-drawn join. The full-sheet photo `PXL_20260718_101754468.jpg` shows this
-conductor inside the dense central control bundle, but folds and overlapping
-strokes prevent a unique upstream device-pin attribution. See
-`ref/schematics/d7-d29-inhibit-upstream-review.json`; do not assign a nearby
-D5, D22, or ROM-select line by proximity.
-The overlap review in that JSON records fold displacement among parallel
-control lines. Although the crops expose D5.25 `/IORD`, D5.27 `/IOWR`, and
-D5.26 MWR nearby, broken and shifted strokes prevent tracing any of them to
-the inhibit conductor. No remote pin or unique junction is established.
+photo tiles and do not prove the source-drawn join. The full-sheet and overlapping detail views do not identify the upstream
+source: folds displace parallel control strokes, and no unique remote pin or
+junction can be followed. The registration and excluded D5-control readings
+are retained in
+[the inhibit-source review](../ref/schematics/d7-d29-inhibit-upstream-review.json).
+Do not assign a nearby D5, D22, or ROM-select line by proximity.
