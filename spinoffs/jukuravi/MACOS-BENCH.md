@@ -33,7 +33,7 @@ retries.
 
 | Capture | Result | Supported claim |
 | --- | --- | --- |
-| `sessions/macos-first-contact/20260806T094437.578482Z.*` | error, attach timeout, 0 bytes both directions | negative evidence only: `--attach-loader` without a resident loader produces no traffic and times out |
+| `sessions/macos-first-contact/20260806T094437.578482Z.*` | error, attach timeout, 0 bytes both directions | attach timed out with no observed traffic; this capture does not identify the board state |
 | `sessions/macos-t32-attach/20260806T111703.706101Z.*` | error, attach timeout, 35 bytes received, 0 sent | negative evidence only: attach against a freshly reset board leaves the ROM banner unanswered until its handshake fails |
 | `sessions/macos-t32-coldboot/20260806T112016.594609Z.*` | ok | full cold boot, exact `1B/D62B`, bitmap `08`, zero mismatches |
 | `sessions/macos-t32-attach2/20260806T112113.469673Z.*` | ok | control-only reattach to the resident loader after the cold boot |
@@ -45,10 +45,9 @@ handshake. With a cold T32 diagnostic ROM, complete a full session before
 reattaching without RESET. Service ROMs with an explicit `J` loader entry have
 a separate setup described in [the diagnostic guide](README.md).
 
-Both the macOS smoke session and the corresponding Linux control had zero
-store retries and handshake mismatches. Their elapsed times do not establish
-a cause for the difference or qualify throughput. Judge these captures by the
-verified identity, upload/readback result and transport counters.
+The macOS smoke session and Linux control both had zero store retries and
+handshake mismatches. These captures qualify the recorded identity, verified
+upload/readback, and transport behavior; they do not qualify throughput.
 
 ## Relevance to CS00024
 
