@@ -311,7 +311,7 @@ def main() -> int:
             and set(nodes(board, "FRAME_INT")) == {("D35", "8"), ("D10", "23"), ("R60", "1")}
             and all(["D35", pin] in board.get("no_connects", []) for pin in ("1", "2"))
             and all(["D35", pin] not in board.get("no_connects", []) for pin in ("3", "4", "5", "6", "8", "9")),
-            "exact .009 E3: D55.13 active-low VER RTR -> D35.9/.8 -> FRAME INT/R60 -> D10.23 and D57.18/CLK2; POF drives D35.3/.5 and R39.1, D35.4 joins D42.10/D37.13, D37.12 shares numbered rail 3 with D42.9/D43.9 while D37.11 reaches D34.12, and D35.6/R38.1 drive SHIFT_G",
+            "exact .009 E3: D55.13 active-low VER RTR -> D35.9 and D57.18/CLK2; D35.8 -> FRAME INT/R60 -> D10.23; POF drives D35.3/.5 and R39.1, D35.4 joins D42.10/D37.13, D37.12 shares numbered rail 3 with D42.9/D43.9 while D37.11 reaches D34.12, and D35.6/R38.1 drive SHIFT_G",
         ),
         (
             "D30 common asynchronous-control conductor uses the native D38-side status strobe",
