@@ -174,25 +174,13 @@ errors. Its retained evidence begins at
 
 ### USB/RS-232 adapter comparison
 
-The August 22 Diymore FT232BL module trials left EK37 in `Wait` with
-zero host receive bytes. Local DB9 and full-harness far-end loops passed,
-but those loops did not establish interoperability with an independently
-referenced RS-232 driver. The module's onboard DB9 route remained unqualified;
-these results did not establish a Juku USART fault or a defective adapter.
-
-Restoring the CP2102 + MAX3232 chain without changing CS00000, EK37, the
-Juku-side cable, or host artifacts immediately completed Janet/JF15 boot,
-reached `A>`, served 30 reads / 90 records, and stopped with exit 0 and zero
-UART errors. The control evidence begins at
-[`cs00000-ek37-cp2102-control-20260822T202538Z.boot.json`](evidence/juku-serial/cs00000-ek37-cp2102-control-20260822T202538Z.boot.json).
-
-The later [adapter investigation](ft232bl-adapter-investigation.md) retains
-the device identity, wiring and measurements. On August 28, corrected selector
-orientation and replacement charge-pump capacitors enabled C9/V16 boot and
-22 NetDisk reads / 66 records with zero retries or UART errors through the
-onboard MAX232/DB9 route. The independent effect of the capacitor replacement
-was not isolated. The final host exit 4 followed USB-device disappearance
-during shutdown; it does not invalidate the completed traffic.
+The [adapter investigation](ft232bl-adapter-investigation.md) owns the
+Diymore FT232BL wiring, comparison captures, and August 28 qualification.
+Corrected selector orientation and replacement charge-pump capacitors enabled
+CS00000 C9/V16 boot and retry-free NetDisk reads through the onboard MAX232/DB9
+route. The capacitor replacement's independent effect was not isolated.
+Earlier receive silence does not establish a Juku USART fault; the unchanged
+machine also passed the [CP2102/MAX3232 control](evidence/juku-serial/cs00000-ek37-cp2102-control-20260822T202538Z.boot.json).
 
 ## Remaining work
 
