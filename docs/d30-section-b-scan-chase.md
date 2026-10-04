@@ -23,7 +23,7 @@ and does not independently establish the measured `.009` routes.
   rail field, but no unique labeled destination or unambiguous junction survives
   in this scan. Apparent alignment with a bus rail is not evidence for tying a
   push-pull 7474 output to that bus.
-- D30.9 is omitted from the factory symbol and remains the already-recorded
+- D30.9 is omitted from the factory symbol and remains an
   explicit no-connect. The visible section-B output is D30.8, so it cannot be
   dispositioned as an unused package half.
 - Direct owner continuity remains authoritative for D30.1/.4/.10/.12/R5 and
@@ -33,7 +33,7 @@ The exact `.009` sheet and direct target-board continuity agree: D30.1,
 D30.4, D30.10, and D30.12 are one conductor with R5.2; R5.1 goes to
 +5 V. D38.8 drives that common active-low STB conductor.
 
-Direct owner continuity on the physical `.009` board now closes both routes:
+Direct owner continuity on the physical `.009` board closes both routes:
 D30.11 reaches D105.2 on the D13.4/D11.20 clock conductor, and D30.8
 reaches D29.7 on a conductor separate from raw IOWR.
 
@@ -58,7 +58,11 @@ the independent chip-removed owner measurement proves the net continuity.
 See `ref/photos/juku-pcb-2/d30-pin8-pin11-photo-registration.json` for the
 image identities and registration evidence.
 
-Reproduce the model checks and this report with:
+Run from the repository root with Python 3 (standard library only). The
+generator checks board-JSON endpoints and R5 provenance, then replaces this
+report after those checks pass. It reports the scan hash without comparing it
+to a pinned identity. It does not reread the scan, validate photo fits, inspect
+PCB copper, or repeat physical continuity measurements.
 
 ```sh
 python3 scripts/report_d30_section_b_scan_chase.py
