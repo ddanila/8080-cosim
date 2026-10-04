@@ -57,21 +57,19 @@ Every source receives the same host-side candidate policy:
    sample-rate, pitch-table, duration, Escape-polling, and clock gates pass.
 
 Failure never weakens a gate and never selects a hand-authored alternative.
-The exact generic v1 conversion for that source is delivered instead. Across
-the two packs, 16 candidates exceed the two-level per-note mean-envelope
-error limit, three lose a significant envelope direction, one has an
-unrepresentable bounded re-articulation, and five exceed the 32,767-byte JPS
-hard limit; reasons can overlap. No final candidate failed timing.
+The exact generic v1 conversion for that source is delivered instead. Per-track
+failure reasons and gate totals belong to
+[the recorded pack report](DOOM-GENERIC-ENHANCED-PACK.json).
 
-The fixed-patch classification rule is source-agnostic.
-When the primary variable-pitch/chord classifier finds nothing, at least eight
-repeated simultaneous attacks on three channels, containing at least two
-pitches within one octave, constitute fixed-harmony evidence. The usual
-wide-pitch kick/snare/cymbal cluster does not meet that condition.
+Fixed-harmony classification is source-agnostic and distinguishes repeated
+chord attacks from wide-pitch percussion clusters. The exact thresholds are
+implemented by [the generic converter](tools/build_jukupoly_generic_pack.py)
+and its voice-classification helpers.
 
 ## Reproduction
 
-Run from the repository root with Python 3.10+, a C compiler, cpmtools,
+Run from the repository root with Python 3.10+, a C11 compiler available as
+`cc`, cpmtools,
 FFmpeg with `libmp3lame`, and `ffprobe`. Initialize the Nuked OPL3 submodule
 and follow the [assembler setup](README.md#reproduce) for zmac.
 
