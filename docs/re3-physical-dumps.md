@@ -45,8 +45,9 @@ Asserted contents:
 
 This differs at 19 of 32 addresses from the former reconstructed fallback.
 The validated physical image therefore supersedes that fallback as content
-truth. HDL now preserves the reader-proved open-collector behavior: raw zero
-sinks a socket-select rail, while raw one or disabled output releases it.
+truth. HDL models the open-collector contract: raw zero sinks a socket-select
+rail, while raw one or disabled output releases it. The reader samples enabled
+outputs; it does not test disabled-output release.
 `docs/d8-physical-decode.md` exhaustively reduces the table to the exact D15/D16
 select equations and proves the other six outputs are invariant released.
 
@@ -67,6 +68,26 @@ carry distinct programs. The dump establishes content identity. Exact `.009` dra
 to D94.15/D93.3; owner continuity closes D3 to D93.2 and the other adopted
 control paths. D4–D7 are no-connects. D0’s hidden branch remains open; see
 [d94-reconstruction-constraints.md](d94-reconstruction-constraints.md).
+
+## Capture and validation
+
+The reader emits one dump at startup over 115200-baud serial; send `D` to
+repeat it. Preserve complete logs with their `AA,RR,OK` rows and record the
+physical board, socket, wiring, and power-cycle events separately.
+
+Run from the repository root with Python 3. For three new independent reads:
+
+```sh
+python3 scripts/validate_re3_dump.py read-1.txt read-2.txt read-3.txt \
+  --out-dir dump-output --name d8_039_reread
+```
+
+The validator requires at least two complete, stable, matching 32-address
+captures. It writes raw/asserted binaries, raw hex, and a JSON manifest into
+the selected directory, replacing same-named outputs. It checks reported
+stability and byte agreement; it does not authenticate wiring, board identity,
+or independence. If inputs include filename aliases, supply
+`--independent-capture-count` and `--alias-note` to preserve that distinction.
 
 The retained serial transcripts, canonical binaries, hexadecimal views,
 validation manifests, and checksums are under `ref/physical-proms/`.
