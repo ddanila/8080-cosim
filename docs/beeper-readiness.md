@@ -2,21 +2,25 @@
 
 Status: **STANDALONE SOUND TOGGLE AND JSON HANDOFF GUARDED**
 
-The Icarus test instantiates D57's PIT primitive, writes control 76h and
-count 4 to channel 1, and requires at least two SOUND transitions during
-40 input clocks. It does not verify tone frequency, complete CPU I/O
-decoding, analog drive, or audible output.
+The Icarus test instantiates D57's PIT primitive and writes control 76h
+and count 4 to channel 1. It counts SOUND transitions throughout the
+simulation, waits 40 input clocks after programming, and requires at
+least two transitions in total. It does not verify tone frequency,
+complete CPU I/O decoding, analog drive, or audible output.
 
 - D57 is the third 8253 PIT (`0x18..0x1B`), and channel 1 / `OUT1` is the
   traced `SOUND` source.
-- `hdl/sim/beeper_path_tb.v` programs D57 channel 1 with a small reload value
-  and requires `OUT1` to toggle.
 - `kicad/juku.board.json` independently carries the traced handoff:
   `D57.OUT1 -> R90 -> VT1/VD4/R91 clamp -> R48 -> SPKR`.
 - The July target-board view directly reads VD4 as `КД521В`; an independent May view corroborates the grade-В reverse face;
   the retained sheet supplies its cathode/anode connectivity.
 
 ## Command
+
+Run from the repository root with Bash, Python 3, and Icarus Verilog
+(`iverilog` and `vvp`). Simulation files are temporary and removed on
+exit. After the HDL and JSON checks pass, the command overwrites this
+report at its fixed path, `docs/beeper-readiness.md`.
 
 ```sh
 sync/beeper_check.sh
