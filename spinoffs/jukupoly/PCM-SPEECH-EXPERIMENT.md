@@ -18,8 +18,10 @@ Run from the repository root with Python 3.10+, FFmpeg and a C compiler
 available as `cc`. Initialize the zmac submodule; the builder uses `make`
 if its executable is absent, or uses `ZMAC`.
 
-Given an uncompressed integer PCM WAV, these commands apply pre-emphasis,
-build the CP/M program and render its D57 output:
+The converter accepts uncompressed 8/16/24/32-bit integer PCM WAVs and
+downmixes multiple channels by averaging them. Compressed and floating-point
+WAV inputs are unsupported. These commands apply pre-emphasis, build the
+CP/M program and render its D57 output:
 
 ```sh
 ffmpeg -i phrase.wav -af 'treble=g=9:f=2000' phrase-preemphasized.wav

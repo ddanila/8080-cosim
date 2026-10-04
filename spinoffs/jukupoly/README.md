@@ -74,8 +74,8 @@ spinoffs/jukupoly/render_jukupoly_wav.sh \
 ```
 
 The builder performs a 32-tap band-limited resample, peak normalisation, and
-4-bit packing.  It caps the largest pulse code for the selected sample period,
-so a pulse cannot overlap and flatten the following sample.  Its conservative
+4-bit packing. Its pulse-code cap uses the average sample interval; pulses
+can still overlap at the shorter alternating interval. Its conservative
 `8000h` TPA boundary leaves room for about 8.0 seconds of audio at the default
 rate.  Source recordings and generated
 transients are not committed when their copyright does not permit it.
