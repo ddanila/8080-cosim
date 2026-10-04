@@ -11,7 +11,17 @@ Narva and scanned in November 2024. `000 Info.pdf` is text-searchable; the other
 PDFs are image scans. The adjacent `.txt` files are `pdftotext` outputs and
 contain no useful body OCR for the scan-only PDFs beyond sparse metadata.
 
-`SHA256SUMS` records the fetched PDF hashes.
+## Verify retained PDFs
+
+From the repository root, run:
+
+```sh
+sha256sum -c ref/baltijets-tech-docs/SHA256SUMS
+```
+
+The manifest uses repository-relative paths and checks the retained PDF bytes.
+It does not cover adjacent text extractions or verify the reviewed readings
+below. Those readings refer to the preserved scans, not a fresh download.
 
 ## Doc 007 ROM/programming references
 
