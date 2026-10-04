@@ -70,6 +70,11 @@ def main() -> int:
         "checkpoint is already inside the FDC polling loop. The HDL run stops after\n"
         "eight FDC events and checks for a write-track or write-protect trace marker;\n"
         "it does not require a completed command or matching command framebuffer.\n\n"
+        "Keep `JMON33_HDL_COMMAND_REPORT` unset when using this wrapper. It always\n"
+        "reads and rewrites `docs/jmon33-hdl-fdc-command-probe.md`; a report override\n"
+        "redirects only the underlying runner and leaves the wrapper checking the\n"
+        "fixed report rather than the new output. For a separate report, invoke\n"
+        "`sync/jmon33_hdl_command_probe.py` directly with the desired settings.\n\n"
     ) + text[intro_end:]
     text += (
         "\n"

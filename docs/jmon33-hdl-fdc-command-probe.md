@@ -8,6 +8,12 @@ checkpoint is already inside the FDC polling loop. The HDL run stops after
 eight FDC events and checks for a write-track or write-protect trace marker;
 it does not require a completed command or matching command framebuffer.
 
+Keep `JMON33_HDL_COMMAND_REPORT` unset when using this wrapper. It always
+reads and rewrites `docs/jmon33-hdl-fdc-command-probe.md`; a report override
+redirects only the underlying runner and leaves the wrapper checking the
+fixed report rather than the new output. For a separate report, invoke
+`sync/jmon33_hdl_command_probe.py` directly with the desired settings.
+
 ## Command
 
 ```sh
