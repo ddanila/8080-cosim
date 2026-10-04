@@ -6,10 +6,8 @@ analyzer sampling and programmed-GAL behavior still require qualification.
 Use [manufacturing readiness](rev-a-manufacturing-readiness.md) for current
 routing/package holds before planning fabrication.
 
-Phase 4 turns the fabricated Rev-A board into the working bench fixture: the
-board boots the banner with western parts, then tests the scarce Juku
-РУ5/РТ4/РЕ3 chips one at a time, with every observation comparable to the
-verified simulation twin.
+The planned physical sequence is to boot Rev A with western parts, then test
+the scarce Juku РУ5/РТ4/РЕ3 chips one at a time against the simulation twin.
 
 ## 4.0 Implemented observability interfaces
 
@@ -25,11 +23,12 @@ These interfaces are present in the board model (`rev-a-physical.board.json`).
 `check_rev_a_physical.py` requires J96/J97/J98 and checks their signal assignments.
 The NOP plug is an external fixture, with no added PCB copper.
 
-## 4.1 Fixed analyzer channel maps (RP2350, 24 channels, 5 V-tolerant inputs)
+## 4.1 Planned analyzer channel maps (24 data channels plus capture clock)
 
-Two named capture profiles, so captures are comparable across sessions. The
-analyzer's TXU-series level shifters + 5 V input select let it hang directly on
-the bus.
+These profiles define the required signals for an external analyzer. The
+repository does not implement or qualify RP2350 capture firmware or its input
+hardware. Before connecting, verify the selected analyzer's 5 V input interface,
+channel count, capture-clock support and sampling timing.
 
 **Profile FB (framebuffer readback — the workhorse):**
 
@@ -38,12 +37,13 @@ the bus.
 | CH0-7 | A0-A7 | J90.1-8 |
 | CH8-15 | A8-A15 | J97.1-8 |
 | CH16-23 | D0-D7 | J91.1-8 |
-| capture clock | `MEM_WR_N` (falling edge = one memory write) | J97.9 |
+| write strobe | `MEM_WR_N` (sampling edge requires qualification) | J97.9 |
 | trigger | `RESET_N` rising | J91.10 |
 
-24 data channels + a dedicated clock pin is exactly the budget: each
-`MEM_WR_N` falling edge latches one `(addr, data)` pair — no sample-rate
-guessing, no idle samples.
+The profile requires 24 data channels plus a dedicated strobe input. Select
+the sampling edge or delay after measuring address/data validity relative to
+`MEM_WR_N`; the channel map alone does not prove one valid sample per write.
+Confirm that the exported stream includes every write in the chosen workload.
 
 **Profile CTL (control view — single-step and decode debug):**
 
