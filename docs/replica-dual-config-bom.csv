@@ -28,6 +28,7 @@ leave-empty,RU5,,К565РУ5Г / 565РУ5Г,Mostek MK4564-12 dual-in-line option;
 mechanical-review,C_ELEC,"47,0","opposite-end-lead metal-can electrolytic (owner candidate) 47,0","modern electrolytic matching measured body, lead spacing, value, voltage, and polarity",1,1,0,C1,C1,"Owner C1 is an opposite-end-lead metal can with about 20 mm vertical joint span; upper lead photo-joins D13.7/GND, lower lead is marked +. Source PCB still uses a 2 mm radial footprint. Confirm hole coordinates and lower reset-net path, then select a matching footprint and part before sourcing."
 mechanical-review,DISPLAY_CONN,,bracket display connector X6; exact mechanical fit pending,select exact substitute after circuit review,1,1,0,X6,X6,
 mechanical-review,EXPANSION_CONN,,СНП59-96 Р-20-2-В,select exact substitute after circuit review,1,1,0,X1,X1,
+mechanical-review,FDC_CONN,,bracket-mounted floppy-drive connector X4,connector and harness matching the factory contact map and measured bracket fit,1,1,0,X4,X4,"Verify bracket fit, mating connector, contact numbering, and harness continuity before sourcing."
 mechanical-review,JUMPER2,,wire/link,select exact substitute after circuit review,1,1,0,E5,E5,
 mechanical-review,JUMPER3,,wire/link,select exact substitute after circuit review,4,4,0,"E1, E2, E3, E4","E1, E2, E3, E4",
 mechanical-review,JUMPER4,,wire/link,select exact substitute after circuit review,2,2,0,"E13, E14","E13, E14",
@@ -37,7 +38,8 @@ mechanical-review,POWER_CONN,,СНО51-30/56х9В-23 power connector,select exac
 mechanical-review,SERIAL_CONN,,РГ1Н-1-4 12-contact serial socket (cable mate РШ2Н-1-23/-24),select exact substitute after circuit review,1,1,0,X3,X3,
 mechanical-review,SW,,switch,select exact substitute after circuit review,2,2,0,"S1, S4","S1, S4",
 mechanical-review,SW_DIP6,,DIP switch,select exact substitute after circuit review,1,1,0,S3,S3,
-program/dump,DEC_PROM,,КР556РТ4А,"74S287/82S129-class 256x4 bipolar PROM, programmed",1,1,0,D6,D6,Contents remain a PROM-truth item: prefer Baltijets disk files or hardware dump before programming.
+mechanical-review,WIRE_PAD,,factory PCB wire landing,fabricated PCB landing; no separately purchased part,56,56,0,"A17, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A45, A46, A47, A48, A49, ... (+38)","A17, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A45, A46, A47, A48, A49, ... (+38)","Counted as board positions, not purchased components; verify landing geometry and factory-wire endpoints before fabrication."
+program/dump,DEC_PROM,,КР556РТ4А,"74S287/82S129-class 256x4 bipolar PROM, programmed",1,1,0,D6,D6,Program from the validated physical D6 `.038` table; retain device settings and readback evidence.
 program/dump,EPROM8K,,2764/M2764-class EPROM in .009 build; К573РФ5 on .006 BOM,"2764 / 27C64 / M2764 EPROM, programmed per ROM split",7,2,5,"D15, D16, D17, D18, D20, D21, D22","D15, D16",Only D15/D16 are populated in the .009 functional build; D17-D22 are expansion/empty sockets.
 program/dump,RE3_PROM,,К155РЕ3,"74188/82S23-class 32x8 bipolar PROM, programmed",1,1,0,D8,D8,D8 `.039` content comes from the validated repeated physical table; the former reconstruction is superseded.
 program/dump,RE3_PROM_092,,К155РЕ3,"74188/82S23-class 32x8 bipolar PROM, programmed",1,1,0,D94,D94,D94 `.092` content comes from the validated repeated physical table; complete strobe gating remains continuity-gated.
@@ -58,7 +60,6 @@ source-now,C_KM,560,КМ ceramic capacitor 560,modern ceramic capacitor with mat
 source-now,D_DIODE,КД521В,Soviet diode/zener per value КД521В,modern diode/zener matching value and power,2,2,0,"VD1, VD4","VD1, VD4",
 source-now,D_DIODE,КС147,Soviet diode/zener per value КС147,modern diode/zener matching value and power,1,1,0,VD5,VD5,
 source-now,D_DIODE,КС147Г,Soviet diode/zener per value КС147Г,modern diode/zener matching value and power,1,1,0,VD3,VD3,
-source-now,FDC_CONN,,FDC_CONN,select exact substitute after circuit review,1,1,0,X4,X4,
 source-now,IE10_CTR,,К555ИЕ10,SN74LS161A-compatible synchronous binary counter; D103 /13 behavior guarded,1,1,0,D103,D103,
 source-now,IE7_CTR,,К555ИЕ7,"SN74LS193-compatible up/down counter; standard behavior guarded, verify board wiring",5,5,0,"D44, D45, D46, D47, D106","D44, D45, D46, D47, D106",
 source-now,IO_DEC138,,К555ИД7,74LS138 / 74HCT138 decoder,1,1,0,D9,D9,
@@ -119,5 +120,4 @@ source-now,WIRE_LINK,~23 cm (held),factory insulated assembly wire ~23 cm (held)
 source-now,WIRE_LINK,~24 cm (held),factory insulated assembly wire ~24 cm (held),insulated hookup wire cut and installed to the documented route length,1,1,0,W7,W7,Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper.
 source-now,WIRE_LINK,~6 cm,factory insulated assembly wire ~6 cm,insulated hookup wire cut and installed to the documented route length,1,1,0,W20,W20,Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper.
 source-now,WIRE_LINK,~9.5 cm,factory insulated assembly wire ~9.5 cm,insulated hookup wire cut and installed to the documented route length,1,1,0,W19,W19,Populate as an insulated point-to-point assembly conductor; do not substitute etched PCB copper.
-source-now,WIRE_PAD,,WIRE_PAD,select exact substitute after circuit review,56,56,0,"A17, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A45, A46, A47, A48, A49, ... (+38)","A17, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A45, A46, A47, A48, A49, ... (+38)",
 source-now,XTAL,16 МГц,РК-171 16 MHz crystal 16 МГц,16 MHz HC-49/metal-can crystal matching footprint/load,1,1,0,Z1,Z1,

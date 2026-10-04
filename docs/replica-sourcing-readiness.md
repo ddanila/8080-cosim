@@ -20,7 +20,7 @@ Refresh with `python3 kicad/report_replica_sourcing_readiness.py`.
 - Populate-now component positions: 273
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
-- Mechanical/circuit-review lines: 35
+- Mechanical/circuit-review lines: 37
 - Order posture: do not treat as a complete kit until the gated rows below are closed
 
 ## Action Totals
@@ -29,9 +29,9 @@ Refresh with `python3 kicad/report_replica_sourcing_readiness.py`.
 | --- | ---: | ---: |
 | circuit-review | 23 | 27 |
 | leave-empty | 3 | 0 |
-| mechanical-review | 12 | 17 |
+| mechanical-review | 14 | 74 |
 | program/dump | 5 | 6 |
-| source-now | 79 | 223 |
+| source-now | 77 | 166 |
 
 ## Buy Early / Acceptance-Test First
 
@@ -99,6 +99,7 @@ against drawings/board photos before ordering final quantities.
 | mechanical-review | C_ELEC 47,0 | opposite-end-lead metal-can electrolytic (owner candidate) 47,0 | 1 | C1 | Owner C1 is an opposite-end-lead metal can with about 20 mm vertical joint span; upper lead photo-joins D13.7/GND, lower lead is marked +. Source PCB still uses a 2 mm radial footprint. Confirm hole coordinates and lower reset-net path, then select a matching footprint and part before sourcing. |
 | mechanical-review | DISPLAY_CONN | bracket display connector X6; exact mechanical fit pending | 1 | X6 | select exact substitute after circuit review |
 | mechanical-review | EXPANSION_CONN | СНП59-96 Р-20-2-В | 1 | X1 | select exact substitute after circuit review |
+| mechanical-review | FDC_CONN | bracket-mounted floppy-drive connector X4 | 1 | X4 | Verify bracket fit, mating connector, contact numbering, and harness continuity before sourcing. |
 | mechanical-review | JUMPER2 | wire/link | 1 | E5 | select exact substitute after circuit review |
 | mechanical-review | JUMPER3 | wire/link | 4 | E1, E2, E3, E4 | select exact substitute after circuit review |
 | mechanical-review | JUMPER4 | wire/link | 2 | E13, E14 | select exact substitute after circuit review |
@@ -108,6 +109,7 @@ against drawings/board photos before ordering final quantities.
 | mechanical-review | SERIAL_CONN | РГ1Н-1-4 12-contact serial socket (cable mate РШ2Н-1-23/-24) | 1 | X3 | select exact substitute after circuit review |
 | mechanical-review | SW | switch | 2 | S1, S4 | select exact substitute after circuit review |
 | mechanical-review | SW_DIP6 | DIP switch | 1 | S3 | select exact substitute after circuit review |
+| mechanical-review | WIRE_PAD | factory PCB wire landing | 56 | A17, A21, A22, A23, A24, A25, A26, A27, A28, A29, A30, A31, A32, A45, A46, A47, A48, A49, ... (+38) | Counted as board positions, not purchased components; verify landing geometry and factory-wire endpoints before fabrication. |
 
 ## Minimum Acceptance Ladder
 

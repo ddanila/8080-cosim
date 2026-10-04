@@ -97,6 +97,8 @@ AUTHENTIC_MARK = {
     "JUMPER3": "wire/link",
     "JUMPER4": "wire/link",
     "WIRE_LINK": "factory insulated assembly wire",
+    "WIRE_PAD": "factory PCB wire landing",
+    "FDC_CONN": "bracket-mounted floppy-drive connector X4",
 }
 
 
@@ -156,11 +158,15 @@ FUNCTIONAL_SUBSTITUTE = {
     "L_TAPPED": "custom/recovered tapped coil or documented three-terminal RF replacement",
     "XTAL": "16 MHz HC-49/metal-can crystal matching footprint/load",
     "WIRE_LINK": "insulated hookup wire cut and installed to the documented route length",
+    "WIRE_PAD": "fabricated PCB landing; no separately purchased part",
+    "FDC_CONN": "connector and harness matching the factory contact map and measured bracket fit",
 }
 
 
 TYPE_NOTES = {
-    "DEC_PROM": "Contents remain a PROM-truth item: prefer Baltijets disk files or hardware dump before programming.",
+    "WIRE_PAD": "Counted as board positions, not purchased components; verify landing geometry and factory-wire endpoints before fabrication.",
+    "FDC_CONN": "Verify bracket fit, mating connector, contact numbering, and harness continuity before sourcing.",
+    "DEC_PROM": "Program from the validated physical D6 `.038` table; retain device settings and readback evidence.",
     "WAIT_PROM": "D2 uses the preservation-grade physical `.037` table from six independent accepted acquisitions, including a power-cycled capture.",
     "RE3_PROM": "D8 `.039` content comes from the validated repeated physical table; the former reconstruction is superseded.",
     "RE3_PROM_092": "D94 `.092` content comes from the validated repeated physical table; complete strobe gating remains continuity-gated.",
@@ -174,6 +180,8 @@ TYPE_NOTES = {
 PROGRAM_TYPES = {"DEC_PROM", "WAIT_PROM", "RE3_PROM", "RE3_PROM_092", "EPROM8K"}
 EMPTY_SOCKET_TYPES = {"RU5", "EPROM8K"}
 MECHANICAL_TYPES = {
+    "WIRE_PAD",
+    "FDC_CONN",
     "EXPANSION_CONN",
     "SERIAL_CONN",
     "POWER_CONN",
