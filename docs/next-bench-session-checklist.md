@@ -130,9 +130,13 @@ readback. See `ref/photos/juku-pcb-2/e8-bridge-photo-review.json` and
 
 ## Programmable-parts corroboration (optional, Tier-3)
 
-- Independent re-reads of the D2/D6/D8/D94 PROMs, and dumps of the D15/D16
-   EPROMs, only as corroboration of the validated captures
-   (`docs/community-prom-media-request.md`).
+- Independent re-reads of D2/D6/D8/D94 can corroborate the validated physical
+  PROM captures.
+- D15/D16 owner-board reads would establish fitted EPROM contents for comparison
+  with the adopted archival pair; that pair is not an owner-board capture.
+  These reads are optional preservation work, not replica release gates. See
+  [firmware lineage](d15-d16-firmware-lineage.md) and
+  [the acquisition request](community-prom-media-request.md).
 
 The D6 output-order and D94 static-output blockers are closed; the highest-value
 remaining D94 bench item is the chip-removed D0 continuity check above. The

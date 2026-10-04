@@ -17,7 +17,7 @@
     "portable C host 0.3.1-m6 post-truncation-fix boot and physical ROM-independent DIAG 0.6 ALL pass with EK37",
     "restored CP2102 plus MAX3232 control boot after an unqualified Diymore FTDI adapter comparison",
     "CP/M Plus prompt and sustained 19,200-baud NetDisk v3",
-    "100 percent successful repeated cold starts with EktaSoft 3.7 #0037 after #0031 no-display starts",
+    "owner-reported repeated cold starts all successful with RomBios 3.43m / serial #0037 after #0031 no-display starts; run count not recorded",
     "corrected C12 80x24 glyph recheck, warm-boot override preservation and default restoration",
     "corrected C12 cold-state and DIAG ALL checks after owner RESET and power cycle; host started after checkerboard"
   ],
