@@ -18,8 +18,10 @@ with `HEAD`, and an unavailable change set selects all lanes.
 The watched-write checkpoint test has its own workflow. Changes to `cosim/`,
 its test, CI helpers, or workflow configuration run the same Linux/macOS
 matrix; a weekly schedule and manual dispatch also exercise runner updates.
-It supplies its own ROM, so documentation and reference-image changes do not
-need those two jobs. Its checkout includes only the cosim sources and test.
+It supplies its own ROM, so reference-image changes and documentation outside
+the watched directories skip those two jobs. Changes under `cosim/`, `ci/`,
+or `.github/` trigger the matrix even when they only edit Markdown. Its checkout
+includes only the cosim sources and test.
 
 Generic CI retains Markdown links and release-status consistency on every
 push. The consistency check also runs the automatic-completion freshness
