@@ -34,7 +34,6 @@ are `JBASIC_KEY_HOLD_FRAMES` (default 6) and `JBASIC_KEY_GAP_FRAMES` (default 8)
 - Final keyboard position/phase: `11` / `0`
 - Stop PC: `FED4`
 - Cycles: 900000003
-- Mode switches: 3414027
 - WD1793 data reads (`0x1F`): 19968
 - Live JBASIC candidate: `ref/extracted-software/JUKPROG2_JBASIC_live_candidate.COM`
 - Live JBASIC candidate SHA256: `b1ae68b464c245a888c8e6bbf07037960f5a92d4e968c956c6205a1de6cfc545`
@@ -70,26 +69,10 @@ are `JBASIC_KEY_HOLD_FRAMES` (default 6) and `JBASIC_KEY_GAP_FRAMES` (default 8)
 - Final PPI Port C latch: `0x05`
 - Final VRAM writes: 77306
 
-| Port | Function | Last | OUT count | IN count |
-| ---: | --- | ---: | ---: | ---: |
-| 0x10 | screen width / PIT0 counter 0 | 0x64 | 1 | 0 |
-| 0x11 | horizontal blank / PIT0 counter 1 | 0x24 | 1 | 0 |
-| 0x12 | horizontal front porch / PIT0 counter 2 | 0x08 | 1 | 0 |
-| 0x13 | PIT0 control | 0x93 | 3 | 0 |
-| 0x14 | screen height / PIT1 counter 0 | 0x01 | 2 | 0 |
-| 0x15 | vertical blank / PIT1 counter 1 | 0x00 | 2 | 0 |
-| 0x16 | vertical front porch / PIT1 counter 2 | 0x25 | 1 | 0 |
-| 0x17 | PIT1 control | 0x34 | 3 | 0 |
-| 0x18 | PIT2 counter 0 | 0x32 | 1 | 0 |
-| 0x19 | PIT2 counter 1 | 0x03 | 20 | 0 |
-| 0x1A | PIT2 counter 2 | 0xFF | 8964 | 8962 |
-| 0x1B | PIT2 control | 0x80 | 8956 | 0 |
-
 ## Disposition
 
 - `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` preserves the raw live-load `JBASIC.COM` candidate from that disk.
 - The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extractor maps it to erased bytes; it is not used for this launch probe.
 - The guard requires at least six candidate entry bytes at RAM `0x0100` and the `ERROR`, `READY`, and `BASIC` strings somewhere in RAM. It does not verify the complete loaded binary or the relocation of those strings.
-- The final video/mode table records the MAME-mapped timing ports from the checkpoint, making the rendered text prompt auditable against the final control state.
 - The fixed-`0xD800` framebuffer has a positive text oracle: the typed `A>JBASIC` command line and final `READY` prompt are matched by exact 8x7 glyph bitmaps.
 - The [recorded HDL run](juku-top-jbasic-verilator-probe.md) reached `READY`. This report checks the C-model launch path; see [simulator compatibility](../sync/README.md#simulator-compatibility) for current HDL rerun limits.

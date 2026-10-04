@@ -40,22 +40,6 @@ PROMPT_MARKER_RE = re.compile(
     r"\[KBD\] prompt wait marker consumed at g_vw=([0-9]+) cyc=([0-9]+) pos=([0-9]+)"
 )
 PORT_RE = re.compile(r"^\s*0x([0-9A-Fa-f]{2})\s*:\s*([0-9]+)(?:\s+last=0x([0-9A-Fa-f]{2}))?")
-STATE_PORT_RE = re.compile(r"^last:([0-9A-Fa-f]{2}),out:([0-9]+),in:([0-9]+)$")
-
-VIDEO_PORT_LABELS = {
-    0x10: "screen width / PIT0 counter 0",
-    0x11: "horizontal blank / PIT0 counter 1",
-    0x12: "horizontal front porch / PIT0 counter 2",
-    0x13: "PIT0 control",
-    0x14: "screen height / PIT1 counter 0",
-    0x15: "vertical blank / PIT1 counter 1",
-    0x16: "vertical front porch / PIT1 counter 2",
-    0x17: "PIT1 control",
-    0x18: "PIT2 counter 0",
-    0x19: "PIT2 counter 1",
-    0x1A: "PIT2 counter 2",
-    0x1B: "PIT2 control",
-}
 
 SCREEN_GLYPHS = {
     ">": (
@@ -240,27 +224,6 @@ def parse_state(state_text: str) -> dict[str, str]:
     return state
 
 
-def parse_state_ports(state: dict[str, str]) -> dict[int, dict[str, int]]:
-    ports: dict[int, dict[str, int]] = {}
-    for key, value in state.items():
-        if not key.startswith("port_"):
-            continue
-        try:
-            port = int(key.removeprefix("port_"), 16)
-        except ValueError:
-            continue
-        match = STATE_PORT_RE.match(value)
-        if not match:
-            continue
-        last, out_count, in_count = match.groups()
-        ports[port] = {
-            "last": int(last, 16),
-            "out": int(out_count),
-            "in": int(in_count),
-        }
-    return ports
-
-
 def parse_ports(stdout: str) -> dict[str, dict[int, dict[str, int | None]]]:
     section: str | None = None
     ports: dict[str, dict[int, dict[str, int | None]]] = {"out": {}, "in": {}}
@@ -422,7 +385,6 @@ def build_report(
     marker = parse_prompt_marker(proc.stderr)
     stop = parse_stop(proc.stderr)
     state = parse_state(state_text)
-    state_ports = parse_state_ports(state)
     ports = parse_ports(proc.stdout)
     vram = vram_summary()
     screen = screen_text_summary()
@@ -505,7 +467,6 @@ def build_report(
         f"- Final keyboard position/phase: `{state.get('kbd_pos', 'missing')}` / `{state.get('kbd_phase', 'missing')}`",
         f"- Stop PC: `{stop.get('pc', 0):04X}`" if stop else "- Stop PC: not parsed",
         f"- Cycles: {stop.get('cycles', 0)}" if stop else "- Cycles: not parsed",
-        f"- Mode switches: {stop.get('switches', 0)}" if stop else "- Mode switches: not parsed",
         f"- WD1793 data reads (`0x1F`): {data_reads}",
         f"- Live JBASIC candidate: `{rel(LIVE_CANDIDATE)}`",
         f"- Live JBASIC candidate SHA256: `{live['candidate_sha256']}`",
@@ -541,25 +502,8 @@ def build_report(
             f"- Final memory mode: `{state.get('mode', 'missing')}`",
             f"- Final PPI Port C latch: `0x{state.get('portc', 'missing')}`",
             f"- Final VRAM writes: {state.get('vram_writes', 'missing')}",
-            "",
-            "| Port | Function | Last | OUT count | IN count |",
-            "| ---: | --- | ---: | ---: | ---: |",
         ]
     )
-    for port in range(0x10, 0x1C):
-        row = state_ports.get(port, {"last": 0, "out": 0, "in": 0})
-        last = f"0x{row['last']:02X}" if row["out"] or row["in"] or row["last"] else "-"
-        lines.append(
-            table_row(
-                [
-                    f"0x{port:02X}",
-                    VIDEO_PORT_LABELS[port],
-                    last,
-                    row["out"],
-                    row["in"],
-                ]
-            )
-        )
 
     lines.extend(
         [
@@ -569,7 +513,6 @@ def build_report(
             "- `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` preserves the raw live-load `JBASIC.COM` candidate from that disk.",
             "- The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extractor maps it to erased bytes; it is not used for this launch probe.",
             "- The guard requires at least six candidate entry bytes at RAM `0x0100` and the `ERROR`, `READY`, and `BASIC` strings somewhere in RAM. It does not verify the complete loaded binary or the relocation of those strings.",
-            "- The final video/mode table records the MAME-mapped timing ports from the checkpoint, making the rendered text prompt auditable against the final control state.",
             "- The fixed-`0xD800` framebuffer has a positive text oracle: the typed `A>JBASIC` command line and final `READY` prompt are matched by exact 8x7 glyph bitmaps.",
             "- The [recorded HDL run](juku-top-jbasic-verilator-probe.md) reached `READY`. This report checks the C-model launch path; see [simulator compatibility](../sync/README.md#simulator-compatibility) for current HDL rerun limits.",
         ]
