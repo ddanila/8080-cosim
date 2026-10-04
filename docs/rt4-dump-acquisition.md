@@ -14,18 +14,12 @@ captures; the older D6 streams classify as an exact bit reversal.
 by a К556РТ4 reader. It is applicable to D2 `.037` and D6 `.038`; it does not
 read the different К155РЕ3 used for D8 or D94.
 
-The original Nano wiring used D13 for PROM D3/pin 9. Revision 2 removed that
-loading ambiguity; revision 3 then reused the RE3 board and exposed the actual
-problem: the host-side four-channel packing did not match the physical pin
-order. Before each dump revision 3 tests release with both enables high and with
-each enable high separately, requiring all four pulled-up outputs to read stable
-`F`.
+The original reader used Nano D13 for PROM D3/pin 9, introducing a loading
+ambiguity. Reader 3 uses the wiring below; independent socket continuity fixes
+pins 12..9 as D0..D3. Its D6 table is authoritative, and the original streams
+remain preserved as reversed-channel captures.
 
-The session proved the former D6 artifact was an exact four-channel bit reversal.
-Socket continuity confirms reader-3 pin12..pin9 map to D0..D3; the corrected
-table executes directly and the old sim-only D0/D3 fit is retired.
-
-This D13 caveat does not leave D2's board-used output ambiguous. D2 D0/pin12
+The original D13 caveat does not leave D2's board-used output ambiguous. D2 D0/pin12
 was sampled on Nano D10 with its own external pull-up; only D3 used Nano D13,
 and D2 D3 is an intentional board no-connect. Direct continuity also places
 D0 on D30.2 and R6. The executable guard `sync/d2_ready_path_check.sh` therefore
@@ -52,9 +46,9 @@ changed/missing mapping or enable check. Re-read known D2 first and require
 byte identity with the validated `d2_037.raw.bin`. Then capture D6 three times,
 including a separate power cycle.
 
-The physical reader's established flashing path is USBasp ISP, detected on the
-2026-07-19 workstation as USB ID `16c0:05dc`. Remove the PROM from the reader
-socket before flashing, run the following commands from the repository root,
+Flash through USBasp ISP with `arduino-cli`, the Arduino AVR board core, and
+`avrdude` installed. Remove the PROM from the reader socket before flashing.
+Run the following commands from the repository root,
 then disconnect USBasp and reconnect the Nano's normal USB serial interface for
 the 115200-baud capture:
 
