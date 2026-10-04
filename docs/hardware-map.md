@@ -21,6 +21,11 @@ connection.
 | 2 | cartridge at `4000-BFFF`, BIOS at `D800-FFFF` | other addresses are RAM |
 | 3 | none | all RAM |
 
+This table describes the software-visible overlay convention. In cosim,
+`JUKU_CART` supplies the optional cartridge image; an absent cartridge reads
+`FFh` in its window. It does not establish the physical cartridge mapping,
+which remains an [open boundary](cartridge-basic-boundary.md).
+
 Mode 0 reads the low BIOS overlay while writes to `0x0000..0x3FFF` reach
 underlying RAM. The `ekta37.bin` (RomBios 3.43m) low-stack dispatcher uses this behavior for
 its return frame at `0x00E4..0x00E5`, then restores the caller's mapping. The high BIOS and cartridge windows remain write-protected overlays;
@@ -47,7 +52,7 @@ a power-cycled capture. The older behavioral reconstruction remains under
   exact shared-memory slot schedule remains unresolved. D41 package
   connectivity is source-closed; source closure does not establish its dynamic
   arbitration schedule or every remote timing-bundle connection. D94 `.092` is constrained as FDC control,
-  not video-slot timing. See `video-slot-timing-audit.md`.
+  not video-slot timing. See [the slot timing audit](video-slot-timing-audit.md).
 
 ## I/O map
 
