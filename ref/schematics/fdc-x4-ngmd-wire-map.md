@@ -4,9 +4,8 @@ Status: **REVIEWED CONNECTOR AND PASSIVE TRANSCRIPTION / SOURCE MODEL ALIGNED**
 
 This note reconciles the processor-module floppy connector on
 `ДГШ5.109.009 Э3`, sheet 3, with the recovered НГМД block
-`ДГШ3.065.008 Э3`. Two read passes were made over the native detail frames
-and contrast-enhanced crops, with the overview frames used as an independent
-layout check.
+`ДГШ3.065.008 Э3`. Native detail frames and overview frames provide the
+source evidence listed below.
 
 The drawings establish connector intent, not target-board copper continuity.
 Owner continuity still outranks them where it exists. No separate external
@@ -83,7 +82,7 @@ floppy control assignment is therefore:
 | D26 endpoint | Sheet-1 continuation | Sheet-3 endpoint / disposition |
 | --- | ---: | --- |
 | PC2 / pin 16 | 1 | `MOTOR EN` -> D99 `/CLR2`/pin 11; D99 Q2/pin 5 separately drives D100 A7/pin 7 |
-| PC3 / pin 17 | 2 | `5\"/8\"` -> D95 clock-mux A1/pin 2 |
+| PC3 / pin 17 | 2 | `5″/8″` -> D95 clock-mux A1/pin 2 |
 | PC4 / pin 13 | 3 | `FM/MFM` -> D93 DDEN/pin 37 and D95 clock-mux A0/pin 14 |
 | PC5 / pin 12 | 4 | `D_SEL` -> D28 input pin 1 |
 | PC6 / pin 11 | 5 | `S.SEL` -> D100 A8/pin 8 |
