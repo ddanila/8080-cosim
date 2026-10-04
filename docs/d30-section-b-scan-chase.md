@@ -1,10 +1,10 @@
-# D30 section-B sheet-1 scan chase
+# D30 section-B clock and output connections
 
 Status: **OWNER CONTINUITY CLOSED / OLDER SCAN AMBIGUITY RETAINED**
 
-The full-resolution `.006` electrical sheet was re-read specifically for the two
-formerly unresolved D30 section-B conductors. This audit records why the scan
-alone was ambiguous and how direct target-board continuity closes both routes.
+Direct target-board continuity closes D30 section B's clock and output
+connections. The older `.006` scan remains ambiguous at those conductors
+and does not independently establish the measured `.009` routes.
 
 ## Source
 
@@ -35,7 +35,7 @@ D30.4, D30.10, and D30.12 are one conductor with R5.2; R5.1 goes to
 
 Direct owner continuity on the physical `.009` board now closes both routes:
 D30.11 reaches D105.2 on the D13.4/D11.20 clock conductor, and D30.8
-reaches D29.7. The latter supersedes the prior raw-IOWR assignment at D29.7.
+reaches D29.7 on a conductor separate from raw IOWR.
 
 ## Model guards
 
@@ -56,7 +56,7 @@ In solder photo `200537608`, the corresponding lower-row joints are near
 `(3040,730)/(2860,730)`. These registrations identify visual probe sites;
 the independent chip-removed owner measurement proves the net continuity.
 See `ref/photos/juku-pcb-2/d30-pin8-pin11-photo-registration.json` for the
-image identities, registration evidence, and rejected earlier coordinates.
+image identities and registration evidence.
 
 Reproduce the model checks and this report with:
 
