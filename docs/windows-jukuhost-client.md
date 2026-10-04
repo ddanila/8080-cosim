@@ -140,6 +140,14 @@ The capture is the same CRC-protected byte/event format used by the Linux and
 DOS host. Evidence failure stops a run rather than silently discarding the
 record.
 
+After a clean GUI stop, cleanup uses `keep_sessions` (default 20) to retain
+the newest recognized session folders by timestamped name. It attempts to delete
+`JUKUHOST.LOG` and `JUKUHOST.CAP` in older folders, including earlier failed
+sessions, then removes empty folders. Extra files do not protect those logs
+or captures. Copy important sessions elsewhere or set `keep_sessions=0` to
+disable cleanup. Headless runs do not perform this cleanup; the separate
+startup log `JUKUWIN.LOG` is unaffected.
+
 ## Configuration
 
 `JUKUWIN.INI` is strict ASCII text. Relative image and evidence paths are
@@ -171,7 +179,7 @@ keep_sessions=20
 ```
 
 `serial` may instead be an explicit `COM1` through `COM256`. An empty B: image
-ejects B:. `keep_sessions=0` disables automatic evidence retention cleanup.
+ejects B:. `keep_sessions` accepts 0 through 10000.
 
 For automated diagnosis, `JUKUWIN.EXE --selftest` verifies the portable core,
 configuration round trip, and every embedded payload on two successive worker
