@@ -2,8 +2,8 @@
 
 Status: **REV-A MODEL RETAINED / PHYSICAL CHIP QUALIFICATION PENDING**
 
-Rev A is the single-board fixture for exercising original Juku DRAM and
-PROMs in their functional roles. It remains a simulation and bench reference;
+Rev A is the single-board fixture for exercising original Juku DRAM and D6
+memory decode, and observing D8 outputs. It remains a simulation and bench reference;
 the current first-article order is controlled by
 [the Rev B five-board plan](rev-b-five-board-order-plan.md). Rev A's completed
 software steps do not establish fabricated hardware or order readiness.
@@ -12,18 +12,22 @@ software steps do not establish fabricated hardware or order readiness.
 
 `hdl/vjuga_juku_top.v` uses the Verilog tv80 Z80 core and the root project's
 `hdl/devices.v` models for К565РУ5 DRAM, D6 `.038` memory decode and D8 `.039`
-ROM paging. The boot guard compares the framebuffer with cosim at the bounded
-and full-banner write counts. The earlier VHDL top remains a POC reference.
+ROM paging. The boot guard compares the framebuffer with cosim in both decode
+modes at a selected write count (default `WRITES=6000`). That bounded comparison
+does not establish a completed banner or full RAM test. The earlier VHDL top
+remains a POC reference.
 
 The fixture provides two GAL22V10 decode modes:
 
 - Mode A supplies internal ROM/RAM decode with the scarce PROM sockets empty.
-- Mode B conditions the real D6/D8 socket outputs. D6's active-low `ROM_N`
-  output is inverted when deriving the internal ROM-selection boolean.
+- Mode B uses D6's active-low `ROM_N` output for ROM selection; the internal
+  ROM-selection boolean is its inverse. D8's byte is observed in both modes
+  rather than used to select ROM data.
 
 U10–U17 are 4164-class DIP-16 sockets; KM4164B-10 is the western baseline.
-The ROM socket carries the 27C256 `ekta37_z80` image. Testing original D15/D16
-EPROMs and FDC parts is outside this fixture's scope. D2 WAIT/READY is optional.
+U2 uses the 28C256 pin contract with the patched `ekta37_z80` image; alternate
+EPROMs require compatibility review. Original D15/D16 EPROMs, FDC parts and
+the D2 WAIT/READY PROM are outside the implemented fixture's scope.
 See [the chip map](rev-a-chip-map.md),
 [GAL equations](rev-a-gal-equations.md) and
 [power budget](rev-a-power-budget.md) for the physical contract.
@@ -51,16 +55,9 @@ Rev A connectivity. A software pass does not qualify a socketed physical part.
 clock-control headers, single-step wiring and per-board records. Keep the
 western Mode A baseline first, then insert one scarce chip at a time.
 
-| Part | Functional role | Required observation |
-| --- | --- | --- |
-| К565РУ5 | DRAM bank | boot RAM test passes and captured framebuffer matches cosim |
-| D8 К155РЕ3 `.039` | ROM pager | expected socket selects and successful boot |
-| D6 К556РТ4 `.038` | memory decode | J95.1/D6.12 is low during reset ROM selection; correct overlay and boot in Mode B |
-| D2 К556РТ4 `.037` | optional WAIT/READY | correct DRAM-access wait timing |
-
 Record board/part identity, settings, capture files and failures with each
 physical result. Release requires independently reviewed schematic/copper,
 complete connectivity evidence, fresh DRC and package review. Bench completion
-requires the assembled baseline banner plus at least one physically passing
-DRAM, РТ4 and РЕ3 in their functional roles. Completed development stages and
-resolved sequencer bugs are retained in Git history.
+uses the bring-up procedure's exit criteria: completed baseline banner,
+recorded DRAM and D6 boot-workload comparisons, and a matching observed D8 table.
+These are bounded physical results; full chip qualification remains separate.
