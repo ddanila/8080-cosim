@@ -25,27 +25,15 @@ are historical evidence and must not be uploaded.
 
 ### What works
 
-- **The VJUGA top boots the real Juku firmware on a Z80.** `sim/boot_check.sh`
-  runs the T80 core in **Z80 mode** against a 3-byte-patched ROM
-  (`roms/ekta37_z80.bin`) with the Juku memory map, and draws a framebuffer
-  byte-for-byte identical to the recreation's `cosim` oracle after 6000 video
-  writes (the same map and oracle the main `sync/boot_check.sh` uses). No FDC
-  and no interrupts are needed — the banner draws exactly as cosim runs it. See
-  `hdl/juku_boot_top.vhd`.
-- **A Verilog twin boots the same ROM on `tv80` through the real Juku chips.**
-  `sim/vjuga_boot_check.sh` runs `hdl/vjuga_juku_top.v` (tv80 Z80 core + the real
-  `dram_64kx1` РУ5 DRAM, the real `decode_prom` D6 К556РТ4, and the real
-  `re3_prom` D8 К155РЕ3 — all reused verbatim from `hdl/devices.v` with the
-  validated dumps) and matches the cosim framebuffer byte-for-byte at 6000 video
-  writes. Booting exercises the DRAM and both PROMs in the functional path
-  (workbench goals 2 and 3): a bad socketed chip diverges the boot. Corrected
-  reader-3 packing proves D6 D0/pin12 is active-low `ROM_N`; Mode B now consumes
-  that polarity directly.
-- **Both decode modes boot byte-identical.** `sim/vjuga_boot_check.sh` builds and
-  boots the twin in Mode B (the real D6 РТ4 drives the decode) *and* Mode A (the
-  U5 GAL's internal A15/A14 baseline, РТ4 socket empty), and requires each to
-  match the cosim framebuffer — so every physical `MODE_B` jumper setting (J94)
-  has a proven simulated counterpart.
+- `sim/boot_check.sh` runs the patched Juku ROM on T80 in Z80 mode and
+  compares the framebuffer with cosim after 6,000 video writes. This checks a
+  bounded boot workload, not a complete banner, prompt or physical display.
+- `sim/vjuga_boot_check.sh` runs the tv80 twin with the shared РУ5 DRAM,
+  D6 decode-PROM and D8 pager models from `hdl/devices.v`, using the validated
+  PROM tables. Both Mode B (D6 decode) and Mode A (U5's coarse A15/A14 decode)
+  match the same bounded framebuffer oracle. This exercises the modeled
+  memory path; it does not qualify socketed chips or prove detection of every
+  chip fault. Mode B uses D6 D0/pin12 as active-low `ROM_N`.
 - The pinned T80 core also executes a built-in synthetic ROM (smoke test).
 - The synthetic test exercises CPU ROM/RAM/I/O cycles, a bit-sliced DRAM
   model, independent refresh, video arbitration, keyboard-style input, and one
