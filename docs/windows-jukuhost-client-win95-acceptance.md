@@ -18,10 +18,8 @@ and not physical Windows serial qualification.
   using the same UART settings as the Wine end-to-end harness.
 - JUKUWIN SHA-256:
   `00a89db0b15c2c234ea7af792d6c78792d783771d1b9eb9efac6b206cd895ea1`.
-  Built with the checked embedded payload catalog. Unrelated rebuilt stock
-  payloads in the sibling `out` directory differed from the catalog, so the
-  documented no-external-payload-source build path was used. No catalog
-  identities were silently updated.
+  Built from the checked embedded payload catalog without an external payload
+  source; catalog identities were unchanged.
 
 ## Required Windows 95 compatibility
 
