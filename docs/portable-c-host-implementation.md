@@ -46,6 +46,9 @@ python3 tools/jukuhost_evidence.py \
   --requests-jsonl /tmp/jukuhost-requests.jsonl
 ```
 
+Output parent directories must already exist. Each successful output write
+replaces the destination through a sibling `.tmp` file.
+
 Optional `--boot-result` output requires `--system` and `--fast-stage`.
 The caller must supply the artifacts used in the recorded run: the converter
 hashes those files without comparing them to transmitted RX/TX bytes.
