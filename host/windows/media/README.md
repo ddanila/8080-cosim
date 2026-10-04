@@ -9,7 +9,12 @@ binds both the image and report hashes. `LICENSE.TXT` accompanies binary
 redistribution. When rebuilding, replace the image and report together, then
 update the manifest's source revision, image size/hash, and report hash.
 
-The CI build packages these pinned bytes, so publishing a Windows artifact
-needs neither a sibling checkout nor live downloads of CP/M source archives.
-The reproducible upstream build command is `make out/cpm-plus-juku-dev.img`.
-B: music/application media is deliberately not included in the host bundle.
+The floppy transfer packager, `tools/package-jukuwin-floppy.py`, verifies these
+identities and bundles `CPM3.IMG` with its license. The portable host folder
+created by `tools/package-jukuhost-windows.py` contains no disk image. The
+Windows CI release uses the floppy bundle, so publishing it needs neither a
+sibling checkout nor live downloads of CP/M source archives.
+
+To rebuild the media, run `make out/cpm-plus-juku-dev.img` in the pinned
+`cpm-plus-juku` checkout. B: music/application media is not included in the
+floppy bundle.
