@@ -9,6 +9,10 @@ machine equations. It does not translate the PLA into HDL.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only) and
+`sha256sum`. The exporter overwrites the normalized JSON/CSV and
+`ref/wd1772-vg93/SHA256SUMS`; the report writer overwrites this file.
+
 ```sh
 (cd ref/wd1772-vg93 && sha256sum -c SHA256SUMS)
 python3 scripts/export_wd1772_pla.py
