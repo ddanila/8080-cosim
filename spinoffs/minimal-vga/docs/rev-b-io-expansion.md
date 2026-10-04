@@ -62,12 +62,13 @@ binds the exact populated set and routed voltage-drop model in
 [the five-card power contract](rev-b-five-card-power.md). These modeled margins
 do not establish measured board current or physical supply acceptance.
 
-R5.I4 implements this contract in the generated board source, including the
+The generated board source implements this contract, including the
 socket, one local 100 nF capacitor per U1--U9, defined gates, all clock/output
-test points, both jumpers, POST bit labels, and sound network. R5.I5 retains the
-100x100 mm two-layer policy: bounded attempt-1 routing reaches DRC 0/0, the nine
-front-side capacitors preserve a measured 3.24 mm card-stack clearance, and the
-reviewed top/bottom renders carry complete GOST reference plus value/role silk.
+test points, both jumpers, POST bit labels, and sound network. The I/O card uses
+a 100x100 mm two-layer PCB with nine front-side capacitors and GOST reference
+plus value/role silkscreen. The [mating report](rev-b-mating-report.md) records
+a minimum 3.24 mm card-stack gap computed from the populated STEP models;
+physical fit remains part of first-article acceptance.
 
 Executable PCB-model evidence is `check_revb_io_board_expansion.py --self-test`,
 `check_revb_io_pcb.py --self-test`, `sync/revb_lvs.sh io`, the total KiCad DRC
