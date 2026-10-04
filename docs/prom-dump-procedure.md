@@ -1,4 +1,4 @@
-# PROM dump procedure — the 4 socketed chips (+2 EPROMs)
+# PROM and EPROM acquisition
 
 Validated physical D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are
 preserved under `ref/physical-proms/validated/`. Further captures and factory
@@ -16,20 +16,23 @@ but their programming tables are marked `на диске`. The optional
 [community request](community-prom-media-request.md) covers independent dumps
 and `JUKU-1` media.
 
-## What to pull (label each with its socket refdes + board # before removing!)
+## Devices
+
+Label each device by board and socket before removal.
+
 | Chip | Where | Type | Organization | Dump method |
 |---|---|---|---|---|
 | К155РЕ3 (D94; record socket identity) | serial/FDC corner socket | bipolar PROM, 74188/82S23 class | 32 × 8 | MCU sweep (below) |
 | К155РЕ3 (D8; record socket identity) | CPU-cluster socket | same | 32 × 8 | MCU sweep |
 | КР556РТ4А (D6) | CPU cluster, socketed | bipolar PROM, 74S287/387 class | 256 × 4 | MCU sweep |
 | КР556РТ4А (D2) | CPU cluster, socketed | same | 256 × 4 | MCU sweep |
-| M2764AF1 ×2 (D15/D16) | ROM sockets | standard 2764 EPROM | 8K × 8 | any programmer (TL866 etc.) |
+| M2764AF1 ×2 (D15/D16) | ROM sockets | standard 2764 EPROM | 8K × 8 | programmer supporting the exact device |
 
 **Handling:** photograph each socket before pulling, note pin-1 orientation,
 use normal ESD precautions, and remove devices gently with an IC extractor so
 old sockets and pins are not bent.
 
-## M2764A (easy, do first)
+## M2764A reads
 A programmer whose current device list explicitly supports the exact 2764/M2764
 variant can read these EPROMs; verify the selected device and orientation before
 insertion. Dump both twice, then compare the combined result with the documented

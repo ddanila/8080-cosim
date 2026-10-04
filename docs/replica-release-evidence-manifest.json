@@ -118,7 +118,7 @@
     },
     "PROM procedure": {
       "path": "docs/prom-dump-procedure.md",
-      "sha256": "2301a39f6c13504cd7ffa27ba588c181f51571cd0904a2b0ede3a74331cd6e0f",
+      "sha256": "b75d8a09b02c4f40e7ecefa94a760f40828e4218cfaf7f784162779c2fd0e6c1",
       "status": "NO STATUS FIELD"
     },
     "ERC and parity": {
