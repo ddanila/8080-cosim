@@ -10,6 +10,14 @@ Initialize the T80/tv80 submodules before running the aggregate. The tv80 boot
 guard exits successfully with `SKIP` when its core is absent; aggregate success
 alone does not prove every listed check ran.
 
+The aggregate requires Bash, Python 3, a C compiler, Icarus Verilog, GHDL
+with Synopsys IEEE package support, and Yosys. Its physical checks also use
+KiCad CLI, KiCad Python and footprint libraries; the full Rev B tier has the
+additional dependencies listed in [its execution guide](../docs/rev-b-execution-guide.md#verification-commands).
+It regenerates schematic/netlist and report outputs and overwrites
+`cosim/vram.bin`. Save any framebuffer you need and inspect the working-tree
+diff afterward. This aggregate is broader than hosted CI.
+
 ## Rev B entry points
 
 ```sh
