@@ -15,6 +15,10 @@ or command prompt. LVS is a separate guard; this script does not run it.
 sync/juku_top_periph_bus_check.sh
 ```
 
+Requires Bash and Icarus Verilog (`iverilog` and `vvp`). Builds, logs
+and writable disk copies are temporary and removed on exit. The report path
+is selected by `JUKU_TOP_PERIPH_BUS_REPORT`; its parent must already exist.
+
 ## Evidence
 
 | Check | Result |
@@ -73,10 +77,4 @@ sync/juku_top_periph_bus_check.sh
   actual D93 `/RE` for direction, not raw `IORD`; this keeps the adjunct one-way when
   D94's low-A4 branch suppresses the controller read strobe. One build qualifies
   `/OE` with FDC chip-select and the other grounds it like D23-D25. These are
-  executable firmware diagnostics, not physical D100 or measured copper assignments.
-- It remains a fast lower-level guard: the top-level peripheral decode mirrors
-  the pinned EKDOS no-key read, shifted-`T` read, PIC vector, motor latch, and
-  first FDC restore command when reached. The harness then extends the same path
-  to media-backed single/multiple-record and reconstructed whole-track reads,
-  plus temporary-copy single/multiple-record writes and whole-track
-  format/readback.
+  bus-profile diagnostics; they do not establish physical D100 wiring or copper assignments.
