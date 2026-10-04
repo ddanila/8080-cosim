@@ -86,7 +86,9 @@ from its monitor and use `--attach-loader`; type `J`
 once without Enter when the runner asks. The marker, arm snippet, hold code,
 readback, and verdict are identical after entry. A stage that decays may leave
 the loader unrecoverable until RESET — that outcome *is* the measurement,
-recorded in the JSON capture. Run the commands below from the repository root.
+recorded in the JSON capture. Run the commands below from the repository root
+with Python 3 on Linux or macOS and permission to access the serial device;
+the host uses the POSIX `termios`/`fcntl` backend.
 
 ```sh
 # Control: no additional raster writes; existing timing is retained.
@@ -156,8 +158,12 @@ cosim decay model is decay-consistent, not a unique physical signature.
 
 ## Reproduction
 
+The static check needs Python 3 on a POSIX system: it imports `pty` and `tty`
+even when no simulator is requested. The full Linux gate also needs Bash and
+a C11 compiler (`CC`, default `cc`).
+
 ```sh
-# Static snippet-exactness guards (any machine):
+# Static snippet-exactness guards (no simulator):
 python3 tests/jukuravi_raster_retention_test.py
 
 # Full deterministic flow through cosim (Linux; part of jukuravi_t36_check):
