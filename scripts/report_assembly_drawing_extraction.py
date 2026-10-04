@@ -180,7 +180,7 @@ def main() -> int:
         (
             "Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18",
             marker(bodge_text, "S1 itself is mounted on the top connector bracket", "two-pin PCB header", "А:17", "А:18")
-            and marker(read(WIRE_TABLE_MD), "S1 is bracket-mounted", "D98.7", "former generated two-pin", "S1 header"),
+            and marker(read(WIRE_TABLE_MD), "S1 is bracket-mounted", "D98.7", "S1 remains an off-board schematic/mechanical part", "`A17` is a one-pad PCB footprint"),
             "sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12",
         ),
         (
@@ -209,13 +209,13 @@ def main() -> int:
         (
             "X9 is schematic-only and its reversed ribbon nets use provisional PCB landings A45-A58",
             x9_landings.returncode == 0
-            and marker(read(WIRE_TABLE_MD), "X9 row is now promoted", "A45", "A58", "schematic-only"),
+            and marker(read(WIRE_TABLE_MD), "The source PCB represents X9 with fourteen one-pad", "A45", "A58", "schematic-only"),
             "sheets 4-5 X9 wire table; `kicad/check_x9_offboard_landings.py` checks nets, while `ref/photos/juku-pcb-2/x9-solder-row-registration.json` holds physical placement open",
         ),
         (
             "X8 is schematic-only and its six-conductor cable uses PCB landings A59-A62",
             x8_landings.returncode == 0
-            and marker(read(WIRE_TABLE_MD), "X8 cable is now promoted", "A59", "A62", "schematic-only"),
+            and marker(read(WIRE_TABLE_MD), "The model represents this X8 cable as four physical one-pad PCB landings", "A59", "A62", "schematic-only"),
             "sheet 2 X8 power-cable table; `kicad/check_x8_offboard_landings.py`",
         ),
         (
@@ -227,7 +227,7 @@ def main() -> int:
         (
             "X3 is schematic-only and its cable uses photo-fitted PCB landings A21-A32",
             x3_landings.returncode == 0
-            and marker(read(WIRE_TABLE_MD), "X3 is now promoted", "A21", "A32", "schematic-only"),
+            and marker(read(WIRE_TABLE_MD), "The model represents X3 with the photographed single-row", "A21", "A32", "schematic-only"),
             "sheet 1 circuit; sheets 4-5 cable table; owner photos; `kicad/check_x3_offboard_landings.py`",
         ),
         (
