@@ -43,9 +43,8 @@ Asserted contents:
 10: 00 00 00 00 00 00 00 00 10 10 10 10 20 20 20 20
 ```
 
-This differs at 19 of 32 addresses from the former reconstructed fallback.
-The validated physical image therefore supersedes that fallback as content
-truth. HDL models the open-collector contract: raw zero sinks a socket-select
+The validated raw image is the adopted content reference.
+HDL models the open-collector contract: raw zero sinks a socket-select
 rail, while raw one or disabled output releases it. The reader samples enabled
 outputs; it does not test disabled-output release.
 `docs/d8-physical-decode.md` exhaustively reduces the table to the exact D15/D16
