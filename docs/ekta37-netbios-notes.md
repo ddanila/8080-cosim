@@ -136,9 +136,11 @@ The four other archived #0024/#0031/#0032/#0035 images use the same PB5
 mask; #0043 has a different read sequence and no evidence for a PB4 S21
 scan (`docs/ektasoft-rombios-lineage.md`).
 
-The regression runs the five vendored clients plus an optional external system
-in parallel and stops before the first
-`CA00h` instruction. Every destination byte must match its source image:
+The regression boots the five vendored system images plus an optional external
+system, with up to five concurrent clients by default (`JUKU_NETBOOT_JOBS`
+controls concurrency). It then repeats the first image with `TN0907` to check
+automatic station discovery. Each client stops before the first `CA00h`
+instruction. Every destination byte must match its source image:
 
 | Image | 0100h staging | B400h system | handoff |
 | --- | ---: | ---: | ---: |
@@ -275,6 +277,15 @@ fault: they were read before a guaranteed vertical-retrace clock edge.
 has a positive control on CS00015 and still requires a CS00024 rerun.
 
 ## Reproduction
+
+Run the inspection commands from the repository root. The regression requires
+Bash, Python 3 with Unix PTY support, and a C compiler (`CC`, default `cc`)
+with AddressSanitizer and UndefinedBehaviorSanitizer support. It runs the
+native host-core checks and Python protocol checks before the ROM boot cases;
+if `clang` is available, the core checks also use it. Compiled executables,
+client captures, and RAM checkpoints are created in temporary directories and
+removed when their checks exit; simulator captures do not overwrite
+`cosim/vram.bin`.
 
 ```sh
 python3 - <<'EOF'
