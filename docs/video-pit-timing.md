@@ -21,7 +21,7 @@ python3 scripts/report_video_pit_timing.py
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Exact ekta37 PIT write sequence remains present | PASS | ROM offsets 0x01D4..0x0222, filtered to ports 0x10..0x17 |
-| 8253 model implements the video-used BCD and modes 1/2 | PASS | BCD reload conversion, hardware one-shot, rate generator, latch-command preservation |
+| 8253 source contains the required BCD and mode-1/2 markers | PASS | text markers for count conversion, modes 1/2 and latch-command handling |
 | Autonomous top-level PIT/one-shot timing passes | PASS | VIDEO-PIT-TIMING: PASS h=15625Hz line=64000ns frame=313lines/20032000ns v=49.920128Hz active=320x241 D56=5040/223000ns |
 | Physical PIT/D56 cascade endpoints remain exact | PASS | board JSON D54/D55/D56 plus HOR_RTR/VER_RTR endpoint sets |
 | Independent MAME raster geometry agrees with the ROM divisors | PASS | 512x313 total, 320x241 active, H porches 64/128 px, V porches 25/47 lines |
@@ -43,12 +43,16 @@ clocks = 320 pixels, 16 us horizontal back porch, 241 active lines, and a
 47-line vertical back porch. With the traced clocks this gives 15.625 kHz
 horizontal and `1 MHz / (64 * 313) = 49.920128 Hz` frame rate.
 
-The test also verifies the typical modeled D56 pulse widths (5.04 us and
-223 us) and the traced `D34_SYNC = D56.Q2 XOR D56.Q_N` truth.
+The simulation requires two frame events and at least 626 line events,
+with a 45 ms simulated timeout. Event handlers check observed blanking
+and porch transitions, modeled D56 pulse widths (5.04 us and 223 us),
+and `D34_SYNC = D56.Q2 XOR D56.Q_N`. There is no separate minimum-event
+assertion for each porch or pulse-width check. Active geometry is derived
+from the programmed counts and blanking intervals; no pixels are fetched.
 
 ## Deliberate boundary
 
-This closes autonomous digital raster timing, not video memory arbitration.
+This tests the programmed digital timing model over the bounded run above.
 D41/D50/D51/D52/D53 slot control, D34_SIG, fetched framebuffer bytes, the
 VT2 stage, and loaded VIDEO_OUT voltage remain separate open boundaries. The
 abstract `vid_out` is still only a framebuffer oracle and is not composite.

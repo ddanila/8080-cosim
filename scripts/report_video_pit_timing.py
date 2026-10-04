@@ -104,7 +104,7 @@ def main() -> int:
             "ROM offsets 0x01D4..0x0222, filtered to ports 0x10..0x17",
         ),
         (
-            "8253 model implements the video-used BCD and modes 1/2",
+            "8253 source contains the required BCD and mode-1/2 markers",
             all(
                 marker in devices
                 for marker in (
@@ -112,7 +112,7 @@ def main() -> int:
                     "3'd2: if (!gate0)", "RL=00",
                 )
             ),
-            "BCD reload conversion, hardware one-shot, rate generator, latch-command preservation",
+            "text markers for count conversion, modes 1/2 and latch-command handling",
         ),
         (
             "Autonomous top-level PIT/one-shot timing passes",
@@ -183,12 +183,16 @@ def main() -> int:
         "47-line vertical back porch. With the traced clocks this gives 15.625 kHz",
         "horizontal and `1 MHz / (64 * 313) = 49.920128 Hz` frame rate.",
         "",
-        "The test also verifies the typical modeled D56 pulse widths (5.04 us and",
-        "223 us) and the traced `D34_SYNC = D56.Q2 XOR D56.Q_N` truth.",
+        "The simulation requires two frame events and at least 626 line events,",
+        "with a 45 ms simulated timeout. Event handlers check observed blanking",
+        "and porch transitions, modeled D56 pulse widths (5.04 us and 223 us),",
+        "and `D34_SYNC = D56.Q2 XOR D56.Q_N`. There is no separate minimum-event",
+        "assertion for each porch or pulse-width check. Active geometry is derived",
+        "from the programmed counts and blanking intervals; no pixels are fetched.",
         "",
         "## Deliberate boundary",
         "",
-        "This closes autonomous digital raster timing, not video memory arbitration.",
+        "This tests the programmed digital timing model over the bounded run above.",
         "D41/D50/D51/D52/D53 slot control, D34_SIG, fetched framebuffer bytes, the",
         "VT2 stage, and loaded VIDEO_OUT voltage remain separate open boundaries. The",
         "abstract `vid_out` is still only a framebuffer oracle and is not composite.",
