@@ -18,34 +18,32 @@ That numerical range deliberately also covers resident code in compact legacy
 layouts, so it is a broad fetched-opcode safety gate rather than a per-program
 code-size oracle.
 
-For attributable CP/M transient stack measurements, `trace` has a separate
-command-scoped interface. Send `SIGUSR2` immediately before submitting the
-command: the emulator arms on the next `0100h` entry, excludes resident BDOS
-excursions reached by `CALL 0005h` or the equivalent `JMP 0005h` tail call,
-follows internal CALL/RET depth, and freezes the SP low-water result at the
-top-level return. For a tail call it records the existing return address from
-the transient stack, waits for that exact address rather than merely the next
-instruction in the broad TPA address range, and mirrors the implicit unwind.
-That return may be the page-zero warm-boot vector rather than another TPA
-instruction; the tracer observes and freezes that non-TPA exit explicitly.
-It also freezes a top-level tail return into a still-resident CCP inside the
-broad TPA range, using semantic call depth rather than mistaking CCP execution
-for continued transient stack use.
-It also recognizes BDOS function 0 reached by either form as a non-returning
-system reset. This distinction is required by ordinary DRI PL/M startup code
-and small assembly utilities and prevents the
-following CCP/BDOS stack from being charged to the completed transient. Send
-`SIGUSR1` after the prompt to write the configured
-`JUKU_CHECKPOINT_PREFIX` `.ram` and `.state` files without stopping execution.
-Repeated requests are generation-counted, so one emulator session can measure
-a complete command matrix. The state records entry SP, the anchor and low SP
-of the deepest segment, minimum and maximum segment anchors, segment count,
-observed bytes, explicit SP writes, measurement generation, and armed/frozen
-status. `SIGTERM` and `SIGINT` retain the final stop-and-checkpoint behavior.
-The CP/M Plus compiler comparison uses this interface for all six
-representative programs and checks the exact results during its strict rebuild
-gate; the DRI utility admission matrix additionally exercises function-0 and
-BDOS-tail termination.
+## Command stack measurements and checkpoints
+
+Set `JUKU_CHECKPOINT_PREFIX` to the output path prefix, then use:
+
+- `SIGUSR2` immediately before submitting a CP/M command: arm measurement
+  for its next `0100h` entry.
+- `SIGUSR1` after the prompt: write `.ram` and `.state` without stopping.
+- `SIGTERM` or `SIGINT`: stop and write the final checkpoint.
+
+The stack measurement excludes resident BDOS work reached through `CALL 0005h`
+or `JMP 0005h`. It tracks call depth and the exact stacked return address,
+including page-zero and resident-CCP returns, and freezes at the command's
+exit. BDOS function 0 terminates the measurement without waiting for a return.
+The state records entry SP, segment anchors, low SP, observed bytes, explicit
+SP writes, generation and armed/frozen status. These command-scoped fields
+avoid attributing subsequent CCP/BDOS stack use to the transient.
+
+Each checkpoint overwrites the same prefix's files: RAM first, then state,
+without an atomic pair replacement. A live reader can see an incomplete or
+mixed pair; coordinate reads between requests and retain copies needed for
+comparison. `checkpoint_generation` in `.state` counts dumps, including the
+final dump; it is not an archive index or a generation tag in the RAM file.
+Repeated command measurements have their own generation counter. Standard
+signals can coalesce, so send and observe requests one at a time.
+
+## CP/M Plus disk trace
 
 For CP/M Plus NetDisk analysis, set
 `JUKU_CPM_DISK_TRACE=/path/to/disk-trace.txt`. With the documented C6 native
