@@ -8,8 +8,12 @@ registration; this is not evidence that the design omits the controller.
 
 ## Reproduction
 
+Run from the repository root using Python with KiCad's `pcbnew` module.
+The command overwrites this report; it reads the board and text records,
+so materialized photograph bytes are not required.
+
 ```sh
-python3 kicad/report_d93_pin40_photo_chase.py
+/usr/bin/python3 kicad/report_d93_pin40_photo_chase.py
 ```
 
 The guard checks D93 identity/pin role, JSON/source-PCB net assignment,

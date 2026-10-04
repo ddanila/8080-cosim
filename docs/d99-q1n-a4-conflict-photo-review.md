@@ -50,3 +50,8 @@ and [the routed audit](routed-refresh-audit.md).
 python3 kicad/check_d99_source_paths.py
 python3 kicad/check_d93_hlt_rg.py
 ```
+
+Run these from the repository root with Python's standard library. They check
+selected JSON net membership, timing-part values and registration entries,
+and literal connection markers in `hdl/juku_top.v`. They do not compile or
+simulate the HDL, inspect PCB copper, or verify the owner measurements.
