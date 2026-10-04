@@ -118,16 +118,13 @@ def main() -> int:
         "windows are uncovered. This is compatible with the replica's 2764 choice",
         "but cannot identify bytes, version, or factory program number.", "",
         "## Bounded conclusion", "",
-        "- `JUKUROM0/1` match only `ekta37.bin` among the eight guarded candidates.",
         "- The independent archival pair is adopted as the D15/D16 content source",
         "  for the replica; it exactly supplies the guarded `ekta37.bin` image.",
         "- No surviving paper cross-reference binds factory drawing numbers",
         "  `ДГШ5.106.087/.041` to the archival filenames. Under the project's",
         "  adopted-dump rule this remains provenance nuance, not a content gate.",
-        "- The photographed D15/D16 package markings establish compatible fitted",
-        "  hardware but do not independently identify the bytes.",
         "- `ekta37.bin` belongs to the direct-bus/NOP family proved in",
-        "  `docs/fdc-bus-polarity.md`. That makes it electrically consistent with",
+        "  [the FDC polarity audit](fdc-bus-polarity.md). That makes it electrically consistent with",
         "  the recovered `.009` D93 bus, but does not explain the historical CMA",
         "  family; explaining those non-adopted variants is optional historical work.",
         "- Future physical EPROM reads or original `.087/.041` programming media",
@@ -135,7 +132,7 @@ def main() -> int:
         "  release gates.",
         "- The Arvutimuuseum `CS00015` service work found three differing bytes in its",
         "  fitted D15.  This remains machine-specific evidence pending retention of the",
-        "  raw captures and exact offset/value diff; see `docs/cs00015-service-record.md`.", "",
+        "  raw captures and exact offset/value diff; see [the service record](cs00015-service-record.md).", "",
     ])
     REPORT.write_text("\n".join(lines))
     print(f"Wrote {REPORT.relative_to(ROOT)}")
