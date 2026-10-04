@@ -43,20 +43,26 @@ are described in the [Video PCB guide](rev-b-video-pcb.md).
 
 The generated board has 23 populated digital packages and 398 physical package
 pins. Full structural LVS covers every one, including supply pins, and matches 106
-multi-endpoint nets. The independent pin guard hashes all 398 `(ref,type,pin,net)`
+multi-endpoint nets. This LVS compares the structural HDL with
+`video.board.json`, not extracted PCB copper. The independent pin guard hashes all 398 `(ref,type,pin,net)`
 records and separately spells out the SRAM, adder, control GAL, unused-input and bus
 isolation contracts. Its self-test rejects both a swapped U16 input and a missing U21
 select pin. The LVS negative test makes the same two mutations in a temporary board
 and requires `sync/lvs.py` to report a mismatch.
 
-## SRAM phase and WAIT closure
+The guard also checks that the frequency limits recorded in
+`video-digital-audit.json` exceed the dot clock and that the fetch/WAIT arithmetic
+is consistent, with at least 20 ns calculated fetch margin. These are checks of
+the frozen assumptions; the script does not retrieve datasheets, calculate
+loaded propagation delays or measure the assembled board.
+
+## SRAM phase and WAIT budget
 
 One video byte occupies 16 dots. `FETCH` is high for phases 12-15 in every
 horizontal group, including blanking; it is not gated by H/V active video.
 This includes the prefetch at dots 796-799 before the next line. The scan address
 has a conservatively credited three dot periods (119.166 ns) before the phase-0
-shifter load. The
-guarded path budget is 15 ns ACT157 selection + 55 ns SRAM access + 20 ns shifter
+shifter load. The assumed path budget is 15 ns ACT157 selection + 55 ns SRAM access + 20 ns shifter
 setup = 90 ns, leaving 29.166 ns. The adder settles hundreds of nanoseconds earlier,
 immediately after the preceding byte increment, and is not part of that last-edge path.
 
@@ -65,16 +71,21 @@ the CPU cannot touch FD. A simultaneous CPU framebuffer request enables U7's
 open-drain `WAIT_N` low driver; the backplane 4.7 kohm resistor supplies the high
 level. The maximum raw overlap is four dots (158.888 ns). At 2.000 MHz the Z80 may
 insert a full wait state, after which U7 selects CPU address/data direction and only
-then permits OE# or WE#. The HDL collision checks verify write completion and exclusive FD/D ownership.
-This does not establish physical Z80 wait sampling or analog bus timing.
+then permits OE# or WE#. The GAL equation oracle checks the digital ownership
+outputs. The HDL WAIT test checks the expected phase signal and completion of
+81 synthetic writes, including a forced phase-12 collision and active/blanking
+writes. It uses a reduced raster and a bus driver that obeys WAIT, not a Z80 CPU.
+These checks do not establish physical wait sampling or analog bus timing.
 
 R5.V3 expresses this phase/ownership table in three tracked GAL sources. U6 uses a
 registered, illegal-state-recovering modulo-six divider clocked by the dot-640
 `RB_STROBE`; `FRAME_TICK` is a roughly 25.4 us pulse on line 524 of every sixth VGA
 frame. The equation oracle exhausts all 1024 horizontal and vertical counter states,
 all divider states, all 32 address classes, four memory modes, reset and read/write
-ownership. The timing simulations prove the fetch collision and six-frame spacing,
-and the integrated TTL-card boot remains byte-identical to cosim.
+ownership. The reduced-raster frame-divider test observes three ticks across
+18 frames with six-frame spacing. The full-raster scanout test checks sync and pixel output.
+The separate integrated TTL-card boot compares framebuffer output with cosim;
+it is not run by `revb_video_check.sh`.
 
 The routed-board gate checks the source-local 33 ohm clock resistor, bounds the
 seven-load clock tree to 200 mm and the `PIXEL`/`VID_PIXEL` routes to 30/45 mm,
@@ -93,7 +104,9 @@ lengths are recorded in the [Video PCB guide](rev-b-video-pcb.md).
 - [TI CD74HCT245 transceiver](https://www.ti.com/lit/ds/symlink/cd74hc245.pdf)
 - [Microchip ATF22V10C](https://ww1.microchip.com/downloads/en/DeviceDoc/doc0735.pdf)
 
-## Reproduction
+## Verification
+
+Run from the repository root:
 
 ```sh
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_digital.py --self-test
@@ -102,3 +115,16 @@ spinoffs/minimal-vga/sim/revb_video_check.sh
 spinoffs/minimal-vga/sync/revb_lvs.sh video
 spinoffs/minimal-vga/sync/revb_video_lvs_mutation_check.sh
 ```
+
+`build_revb_gals.sh` requires Galette 0.3.0 and compares freshly compiled outputs
+with the five tracked GAL artifact sets; it does not update them unless given
+`--update`. The equation oracle checks the source equations and recorded artifact
+hashes, not a physical GAL's programmed contents.
+
+`revb_video_check.sh` runs timing-parameter, crop, scanout, WAIT, frame-divider and
+address-generator checks. Its crop check reads the existing `cosim/vram.bin`;
+it neither generates that framebuffer nor identifies which boot produced it.
+Missing or incorrectly sized VRAM skips the crop check. Missing Icarus skips the
+HDL simulations, and missing Yosys skips LVS. Inspect these messages before
+interpreting an overall successful exit. For integrated firmware boot commands,
+see the [execution guide](rev-b-execution-guide.md).
