@@ -608,9 +608,11 @@ def main() -> int:
     system_media_readme = read("media/system/README.md")
     if "Those bytes still need" in system_media_readme:
         failures.append("system-media README still describes the dumped PROMs as missing")
-    for marker in ("Validated physical dumps for all", "ref/physical-proms/"):
-        if marker not in system_media_readme:
-            failures.append(f"system-media README omits current PROM status: {marker!r}")
+    prom_readme = read("ref/physical-proms/README.md")
+    for marker in ("validated/d2_037.raw.bin", "validated/d6_038.raw.bin",
+                   "validated/d8_039.raw.bin", "validated/d94_092.raw.bin"):
+        if marker not in prom_readme:
+            failures.append(f"physical-PROM README omits validated table: {marker!r}")
 
     board = read("kicad/juku.board.json")
     try:

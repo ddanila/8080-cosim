@@ -37,7 +37,13 @@ staging record. The stock NetBios loads the resulting 6,784-byte executable
 at `0100h`; it copies the exact 6,656 system bytes to `B400h` and jumps `CA00h`.
 No source image is modified.
 
+Run from the repository root with Bash and a C compiler (`CC`, default `cc`).
+The simulator guard also requires Python 3 and POSIX PTYs. Build the native
+host before starting a physical serial session:
+
 ```sh
+sync/jukuhost_linux_build.sh
+
 # Configured physical Juku: start this, then type TN (no Enter).
 # Use TN0201 only if NetBios prompts for maximum/own station numbers.
 build/jukuhost --serial /dev/ttyUSB0 \
@@ -54,6 +60,3 @@ the `CA00h` handoff; it does not inject RAM. It stops before the first
 `CA00h` instruction and therefore does not prove a subsequent CP/M prompt or
 filesystem operation. Those require the separate disk/boot guards. Production
 C-host evidence belongs to [the host acceptance report](../../docs/portable-c-host-m2-acceptance.md).
-
-Validated physical dumps for all four small PROMs are maintained separately
-in [the physical PROM reference](../../ref/physical-proms/README.md).
