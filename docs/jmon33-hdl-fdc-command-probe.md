@@ -57,6 +57,9 @@ Recorded environment settings:
   frame phase into HDL M-cycles. With phase checkpoints disabled,
   the runner resumes a shared checkpoint at 19,900,000 cycles by default;
   `JMON33_HDL_COMMAND_KEY_MCYC` delays key injection after resume.
+- In phase-checkpoint mode, `kbd=2/0` means the two-key schedule has
+  already finished in cosim. Such a run checks the resumed command
+  framebuffer without exercising command entry through HDL keyboard pins.
 - The expected checkpoint hash selects the idle-cursor or early-command
   framebuffer oracles. Each `PASS` row requires a zero HDL exit code,
   the expected framebuffer hash and visible blocks, and a command-oracle
