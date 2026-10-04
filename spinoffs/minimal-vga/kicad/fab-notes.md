@@ -13,8 +13,9 @@ is the current order target.
 - 200 x 200 mm, four copper layers: `F.Cu`, `In1.Cu`, `In2.Cu`, and `B.Cu`.
 - 119 footprints, 133 PCB nets, and 2,887 tracks/vias in the current source.
 - Parts and functional-block borders are aligned to a 0.2" (5.08 mm) grid;
-  decoupling caps sit at each chip's short side. In1.Cu is a filled GND plane and
-  In2.Cu a filled VCC plane; the two board layers carry the signal routing.
+  capacitor positions follow the [placement rules](../docs/rev-a-placement-rules.md).
+  In1.Cu is a filled GND plane and In2.Cu a filled VCC plane; F.Cu/B.Cu carry
+  the signal routing.
 - Four corner mounting holes and two-sided assembly/silkscreen review output.
 - Factory-assembly exports are drafts. Socketed ICs are intended for owner
   insertion; factory files primarily describe sockets, passives, connectors,

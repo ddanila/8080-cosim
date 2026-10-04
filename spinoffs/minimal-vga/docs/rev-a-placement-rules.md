@@ -18,11 +18,12 @@ Diagnostic LEDs have paired local resistors at the right. U40 is a passive
 video header, so C22 is placed with the spare capacitors rather than treated
 as an active-device decoupler.
 
-`IC_CAP` associates each active IC with a local 100 nF capacitor. Placement
-uses the package short side, normally above the body; `CAP_DIR` supplies the
-clock/reset exceptions. DRAM capacitors therefore form a row above their
-owners. The current algorithm derives offsets from body dimensions and grid
-rounding, rather than enforcing a fixed 5–10 mm distance to a power pin.
+`IC_CAP` associates IC/socket positions with 100 nF capacitors, including the
+unpopulated U23 socket. Most capacitors are placed above the rotated footprint
+bounding box; U50's is to its left and U51's below. This is not always the package
+short side. DRAM capacitors form a row above their owners. Offsets come from
+bounding-box dimensions and grid rounding, without a power-pin distance limit.
+C3, C4, C19 and C22 occupy spare-capacitor positions.
 
 ## Rules for changes
 
@@ -43,6 +44,26 @@ rounding, rather than enforcing a fixed 5–10 mm distance to a power pin.
 Routing feedback can expose placement problems; fabrication readiness also
 requires the [manufacturing checks](rev-a-manufacturing-readiness.md) and
 [physical LVS coverage](rev-a-lvs-coverage.md).
+
+## Placement check
+
+From the repository root, with KiCad Python and footprint libraries available:
+
+```sh
+spinoffs/minimal-vga/kicad/check_rev_a_placement.sh
+```
+
+The wrapper generates a temporary PCB without zones, checks it and deletes it;
+it does not overwrite the retained routed board. The checker compares component
+and text bounding boxes, requiring overlap greater than 0.3 mm on both axes to
+report a collision. It also checks component bodies against computed block
+boundaries, with an exception for edge connector J3.
+
+The check excludes intended connector pin labels, permits standalone labels
+contained within a component body, and skips a component's own reference/value
+pair. Standalone text is checked only on front silkscreen. This is a placement
+screen; it does not check routed clearance, 3-D fit or capacitor return paths.
+Routed DRC, mechanical fit and electrical return-path review remain separate.
 
 ## Layout references
 
