@@ -158,7 +158,7 @@ crashes, loops, halts, corrupts the reserved workspace, or cannot return.
 Useful control-only operations:
 
 ```sh
-# Confirm that the resident loader responds without changing RAM.
+# Confirm that the resident loader responds without uploading a payload.
 python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 \
   --attach-loader --probe-loader
 
@@ -176,7 +176,7 @@ majority can then be selected with `--loader-votes 3`, `5`, or `7`. The host
 records timestamp-matched raw RX, raw TX, and decoded JSON for every session.
 Run `python3 spinoffs/jukuravi/host.py --help` for the complete parameter set.
 
-CS00024 exposed a different boundary: its short seven-vote CONFIG command
+The historical T31/T34 CS00024 setup exposed a different boundary: its short seven-vote CONFIG command
 passes, while its longer seven-vote bootstrap PROBE reproducibly crosses a
 strong-CRC boundary involving the `C000h` parser state. The explicit
 `--loader-config-first` policy sends CONFIG before PROBE and then uses the
@@ -294,11 +294,12 @@ expected signatures and interpretation.
 
 ### Session logs
 
-Every run writes one `<timestamp>.json` plus matching `.rx.bin` and `.tx.bin`
-into a per-run directory under [`sessions/`](sessions). `--log-dir` names that
-directory; it defaults to `sessions/default`, resolved relative to `host.py`
-rather than the working directory, so runs launched from the repository root do
-not scatter log directories there. Use a descriptive name per experiment:
+Each completed run writes `<timestamp>.json` plus matching `.rx.bin` and
+`.tx.bin` in the directory selected by `--log-dir`. Multiple runs can share
+that directory. The default is [`sessions/default`](sessions), resolved relative
+to `host.py`; an explicit relative path is resolved from the working directory.
+An interrupted process may leave only the raw files. Use a descriptive directory
+for an experiment:
 
 ```sh
 python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 \
@@ -323,7 +324,8 @@ contract. Its important properties are:
 - framed CRC-8 transport plus a command CRC-16 recomputed from the ROM's parser
   RAM;
 - verified, idempotent LOAD/READ/CRC operations and bounded host retries;
-- replay-safe RUN IDs, so a lost response does not execute a snippet twice;
+- RUN replay protection for the same execution ID while the ROM's invocation
+  cache survives; a new host invocation uses a new ID;
 - host reattachment, partial-upload recovery, and RAM inspection without RESET;
 - CALL/RET execution with A and caller-selected RAM as the result interface.
 
