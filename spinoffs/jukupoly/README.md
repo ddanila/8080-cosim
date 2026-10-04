@@ -681,41 +681,21 @@ filter boundary.
 
 ## Physical qualification
 
-On 2026-08-30, the exact 4,327-byte image above ran through the unmodified
-internal speaker of physical Juku CS00000.  `jukuhost` reattached to the live
-resident NetDisk session without a hardware reset.  A `WBOOT` refreshed the
-directory after the private volume was substituted; `JUKUPOLY` then loaded,
-played, and returned to a fresh `A>` prompt.
+The recorded CS00000 runs used its unmodified internal speaker and returned
+to CP/M. Exact payloads, hashes, host captures, listening observations and
+configuration are retained in these records:
 
-The prompt returned 13.152 seconds after the command.  This includes CP/M file
-lookup/load and CCP reload, whereas the cycle-qualified music interval is
-7.440 seconds.  The operator assessed the result as “not bad; player ok.”
-Together, the listening observation and clean return qualify the engine on the
-physical speaker.  The cycle regression—not the listening run—is the evidence
-for true concurrent three-tone-plus-percussion execution.
+| Workload | Qualification and evidence |
+| --- | --- |
+| [Canyon](sessions/cs00000-jukupoly-canyon-physical/README.md) | Base engine listening and clean return |
+| [One-minute Suspense](sessions/cs00000-jukupoly-suspense-physical/README.md) | Listening and clean return; simulator coverage was a bounded window |
+| [Full Suspense](sessions/cs00000-jukupoly-suspense-full-physical/README.md) | Complete physical playback, including later layer transitions, and clean return |
+| [M6 mixed library](sessions/cs00000-jukupoly-m6-physical/README.md) | Enhanced/control playback, Escape and quit; Imp's compact envelope failed listening and was replaced by a generic fit fallback |
 
-The exact player, console transcript, raw host capture, command, log, and
-hashes are retained in
-[`sessions/cs00000-jukupoly-canyon-physical/`](sessions/cs00000-jukupoly-canyon-physical/README.md).
-
-The one-minute Suspense image was also physically qualified on 2026-08-30.
-It returned to CP/M 64.541 seconds after the command and received the operator
-assessment “sounds good.”  Exact evidence and hashes are retained in
-[`sessions/cs00000-jukupoly-suspense-physical/`](sessions/cs00000-jukupoly-suspense-physical/README.md).
-
-The complete 2:44 `SUSPFULL.COM` reduction then cold-booted and played on the
-same machine.  It remained stable through the later layer transitions and
-returned to CP/M 170.108 seconds after the command.  The operator assessed it
-as “works very good.”  Exact full-song evidence and hashes are retained in
-[`sessions/cs00000-jukupoly-suspense-full-physical/`](sessions/cs00000-jukupoly-suspense-full-physical/README.md).
-
-The guarded M6 mixed DOOM library was physically exercised on 2026-09-01.
-Four enhanced tracks, one unchanged-v1 control, Escape, library quit, and the
-clean CP/M return executed on CS00000.  The session also supplied the decisive
-negative result for the Imp compact-envelope candidate, which now selects a
-generic fit fallback.  The listening matrix, exact tested and corrected disk
-hashes, host statistics, and raw-capture hashes are retained in
-[`sessions/cs00000-jukupoly-m6-physical/`](sessions/cs00000-jukupoly-m6-physical/README.md).
+Listening and command-to-prompt timing do not prove simultaneous synthesis
+or exact audio duration. The cycle regression supplies the evidence for
+concurrent three-tone-plus-percussion execution. Qualification applies to the
+recorded payloads; later candidates retain their separate acceptance gates.
 
 ## Five-tone feasibility
 
