@@ -34,9 +34,8 @@ The five archived stock-system inputs remain byte-identical:
 | `EKDOSVSW.BIN` | `8c70eda07c2cde8e73a0e664d7ff51356b4559649fad6df24f45784f3076e994` |
 
 The module paths and hashes above identify the immutable M0 repository state.
-At M2 their implementations moved to `tests/fixtures/legacy_janet_*.py` and
-lost all runnable entry points. They remain PTY regression/diagnostic fixtures;
-the original `tools/janet_*.py` production commands no longer exist.
+The retained implementations at `tests/fixtures/legacy_janet_*.py` serve as
+non-runnable PTY regression/diagnostic fixtures.
 
 `tests/fixtures/jukuhost/python-era-v1.txt` is the compact, standalone wire
 oracle. `tests/jukuhost_contract_test.py` proves that it still agrees with the
@@ -67,11 +66,10 @@ The C host must reproduce all behavior used by the accepted operational path:
   safety, host replacement and reconnect, clean shutdown, human-readable logs,
   counters, and optional raw byte capture.
 
-Fastboot V1 through V14 were valuable hardware experiments and remain valid
-historical builders and regression inputs. They are not separate admitted
-production protocols for the C runtime. JF15 is the admitted legacy
-compatibility exception. Current stock reset recovery uses the separately
-identified JF17 profile at 9,600/8O1; JF16 serves direct network-ROM boot.
+The production C runtime admits JF15 for stock-assisted compatibility,
+JF16 for direct network-ROM boot, and JF17 for stock reset recovery.
+Fastboot V1–V14 remain historical builders and regression inputs. Stock reset
+recovery uses JF17 at 9,600/8O1.
 Artifact validation requires exact magic, layout, length, metadata and CRCs.
 See the [stock recovery guide](janet-fastboot.md) for current operation.
 
