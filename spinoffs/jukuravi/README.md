@@ -311,10 +311,12 @@ expected signatures and interpretation.
 
 ### Session logs
 
-Each completed run writes `<timestamp>.json` plus matching `.rx.bin` and
-`.tx.bin` in the directory selected by `--log-dir`. Multiple runs can share
-that directory. The default is [`sessions/default`](sessions), resolved relative
+`host.py` writes `<timestamp>.json` plus matching `.rx.bin` and `.tx.bin`
+in the directory selected by `--log-dir`. Multiple runs can share that
+directory. Its default is [`sessions/default`](sessions), resolved relative
 to `host.py`; an explicit relative path is resolved from the working directory.
+The batch and retention runners use the same file format with their own default
+directories; check the selected runner's `--help`.
 An interrupted process may leave only the raw files. Use a descriptive directory
 for an experiment:
 
@@ -324,9 +326,9 @@ python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 \
   --log-dir spinoffs/jukuravi/sessions/t32-probe
 ```
 
-The runs cited as physical evidence in [`T31-PHYSICAL.md`](T31-PHYSICAL.md) and
-[`T32-PHYSICAL.md`](T32-PHYSICAL.md) are committed, so those directories must
-not be pruned.
+Preserve committed captures cited by physical records, including
+[`T31-PHYSICAL.md`](T31-PHYSICAL.md), [`T32-PHYSICAL.md`](T32-PHYSICAL.md)
+and [`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md).
 
 The optional Nano bridge has a 115200-baud USB side, so it requires explicit
 `--baud 115200`; its Juku-side `SoftwareSerial` rate must match the installed
@@ -363,21 +365,12 @@ bash sync/jukuravi_t35_check.sh
 bash sync/jukuravi_t36_check.sh
 ```
 
-The T28 suite pins the reference implementation of loader API v2. The T31
-suite pins the T31 service image and executes the uploaded speaker demo
-through the real host/cosim PTY path. The same host code is used for cosim and
-the physical serial port. The T32 suite additionally executes all eight
-upper-ROM entries, reattaches after each one, and verifies its unique RAM
-marker. The T35 suite preserves the historical binary and physical captures.
-The T36 suite derives CPU A0..A6 from the drawings/datasheet, proves a complete
-128-row sweep, performs a 1,025-byte verified upload and idle reattach,
-exercises every refresh operation and torn-disable fallback, and requires exact
-T35 to decay as the one-row negative control while preserving T34 and T35. It
-also pins both physical T36 sessions and reproduces the legacy raw D57 result
-in focused cosim; that reproduction does not establish a channel-2 fault.
+The gates bind their named firmware revisions and test the host/cosim path;
+they do not establish physical acceptance. T35 remains the one-row refresh
+negative control. Use T36 for the corrected 128-row software-refresh contract.
+The legacy D57 cosim result does not establish a physical channel-2 fault.
 
-The diagnostic ladder, fault injection coverage, image hashes, and older ROM
-revisions are documented in [`firmware/README.md`](firmware/README.md). That
-history is retained because it identifies reproducible binaries and isolates
-which hardware test first introduced each behavior; it is not part of the
-normal bench workflow.
+See [the firmware guide](firmware/README.md) for gate scopes, exact-image
+hashes, probe selection and hardware boundaries. Historical revision names
+identify archived binaries and regressions, rather than additional steps in
+the normal bench workflow.
