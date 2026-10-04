@@ -47,14 +47,17 @@ corrected scanner under C6 filenames would invalidate its physical identity.
 From `8080-cosim`:
 
 ```sh
-python3 spinoffs/jukuravi/network-rom/build_network_rom.py
+python3 spinoffs/jukuravi/network-rom/build_network_rom.py --check
 sync/network_first_rom_abi_check.sh
 sync/network_first_rom_hdl_check.sh
 python3 tests/janet_disk_server_test.py
 ```
 
-The ABI gate rebuilds the images, executes C4 through C12 against the practical
-C-model twin, and checks exact manifests, fixed vectors, stack guards,
+`--check` rebuilds in temporary storage and compares the checked artifacts;
+omit it only when intentionally regenerating the ROM binaries and manifests.
+
+The ABI gate checks image freshness and executes release-specific fixtures
+against the practical C-model twin. It checks exact manifests, fixed vectors, stack guards,
 interrupt ownership, overlay protection, all S21 geometries, locale pixels,
 keyboard behavior, cursor phases, runtime mode/bank transitions, invalid-call
 atomicity, and resident serial activity.  The focused
@@ -84,29 +87,17 @@ sync/jukuhost_c10_cosim_check.sh
 sync/jukuhost_c11_cosim_check.sh
 ```
 
-The deterministic, explicitly non-physical C12 package is produced from
-`cpm-plus-juku` with `make c12-simulator-candidate`. Its manifest records
-`physical_programming_authorized: false`; physical promotion remains a
-separate decision.
+Package targets in `cpm-plus-juku`:
 
-The burn-ready C10 package, its independent reproducibility check, and the
-programming/acceptance worksheet are produced from `cpm-plus-juku` with
-`make c10-release-candidate`.
+| Command | Scope |
+| --- | --- |
+| `make c6-release-candidate` | Retained C6 gate, including local/N4 checks and 64-cycle read/write/reconnect soak, followed by packaging and reproducibility checks |
+| `make c10-release-candidate` | C10 gates, programming artifacts, physical worksheet and reproducibility check |
+| `make c11-release-candidate` | C11 gates, programming artifacts, focused visual worksheet and reproducibility check |
+| `make c12-simulator-candidate` | C12 simulator gates and reproducible non-physical package; manifest declares `physical_programming_authorized: false` |
 
-The C11 burn-ready package and focused visual worksheet are produced with
-`make c11-release-candidate`.
-
-From `cpm-plus-juku`, the complete C6 release gate is:
-
-```sh
-make c6-release-candidate
-```
-
-It re-runs the ROM ABI gate, exercises both authoritative local console and N4
-remote console paths, performs the 64-cycle read/write/reconnect soak, and
-then writes a byte-reproducible candidate containing the combined ROM, named
-D15/D16 halves, matching CP/M system and bootstrap, A:/B: volumes, fallback
-slot, manifests, hashes, and the complete ROM/RAM/vector map.
+Packages bind the ROM pair, matching system/bootstrap, disk volumes and
+manifests. Producing a package does not establish physical acceptance.
 
 ## Deterministic artifacts
 
@@ -218,11 +209,13 @@ authentication and write-back caching remain explicit non-goals until their
 
 ## Acceptance boundary
 
-Simulator qualification proves automatic boot, exact memory/ABI contracts,
-local console/keyboard/cursor integration, N4 block output, A:/B: media,
-sequential reads, synchronous writes, diagnostics, warm boot, absent/corrupt
-host recovery, duplicate replies, modeled 8251 overrun recovery, stateless
-server replacement, and long read/write/reconnect operation.
+The release-specific simulator gates cover memory/ABI contracts, console,
+keyboard, media and transport faults. Full CP/M workloads, host replacement
+and long read/write/reconnect results belong to the named release and gate;
+they do not transfer automatically to every successor. In particular, the
+older C12 production-host stress extension recorded USART overruns and a
+missed warm-boot prompt. Its failure and the distinct passing C12 checks are
+described in [C12 qualification](../../../docs/c12-runtime-console.md#companion-implementation-and-remaining-qualification).
 
 The 2026-08-18 C6 halves were programmed, verified, and fitted in
 CS00015. Repeated automatic boot, local keyboard, sound, A:/B:, sequential
