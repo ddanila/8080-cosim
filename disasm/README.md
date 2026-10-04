@@ -15,8 +15,9 @@ prefixes can make a `c` block's tail consume bytes past its boundary, producing
 overlapping entries — the round-trip guard then fails with a shifted,
 longer binary. An 8080 may execute these undocumented bytes with semantics
 that differ from Z80; encountering one is not proof that the region is data.
-The seed generators conservatively stop discovery there. Establish code
-boundaries with the 8080 decoder and execution evidence before extending them.
+The initial seeds conservatively stopped discovery there. Establish instruction
+lengths and control flow against the CPU implementation and execution evidence
+before extending code boundaries; the byte round trip cannot prove them.
 
 ## ekta37 (EktaSoft '88 Serial #0037, RomBios 3.43m)
 
@@ -71,9 +72,8 @@ reads; the ctl marks them untrusted data and excludes them from code
 discovery. The Monitor family boots differently from EktaSoft: only ~200
 bytes of boot code run in place (checksum verifier over the stored table at
 `0003h-000Ah`, PIT init, PPI init), then `3F40h-3FFFh` is copied to
-`FF40h-FFFFh` and everything dispatches through that relocated vector table
-and interrupts — so static seeding is deliberately minimal here, and the
-shared BASIC body (`03C8h..`) is documented by title rather than decoded.
+`FF40h-FFFFh` for the relocated vector table. Static seeding is deliberately
+minimal here, and the shared BASIC body (`03C8h..`) is documented by title rather than decoded.
 It differs from jmon33 at the proven repair byte `1EFCh`; the vendored
 disassembly preserves that mismatch.
 
@@ -85,9 +85,8 @@ disassembly preserves that mismatch.
 All eight block checksums pass under the same convention as jmon22
 (byte-verified: stored table at `0003h-000Ah`, block 0 covering
 `0004h-07FFh`). Same Monitor memory model: short in-place boot, then the
-`3F40h-3FFFh` vector region is copied to `FF40h-FFFFh` and everything
-dispatches through it. Unlike jmon22, no blocks are excluded for known read
-damage, so descent includes the vector slots. Passing additive checksums
+`3F40h-3FFFh` vector region is copied to `FF40h-FFFFh`. Unlike jmon22, no blocks
+are excluded for known read damage, so descent includes the vector slots. Passing additive checksums
 does not prove that every byte is historically correct. Use it as a comparison
 reference for jmon22's untrusted blocks 6-7, subject to the donor constraints in
 [the reconstruction report](../docs/jmon22-reconstruction.md).
@@ -141,7 +140,8 @@ sync/disasm_check.sh
 
 For each of the nine images, the guard checks the pinned ROM SHA256,
 byte-identical regeneration of its vendored skool from the ctl, and exact
-ROM-byte reassembly with `skool2bin.py`.
+ROM-byte reassembly with `skool2bin.py`. These checks preserve bytes and generated
+text; they do not verify comments, code/data classification or runtime mapping.
 
 The guard installs SkoolKit 10.0 in a temporary environment only when
 `sna2skool.py` is absent from `PATH`. Otherwise it uses the installed commands
@@ -156,5 +156,9 @@ PATH="$HOME/.venvs/skoolkit/bin:$PATH" bash sync/disasm_check.sh
 - SkoolKit emits **Z80 mnemonics** for this 8080 machine. Round-trip is
   unaffected, but read carefully: byte `08h` displays as `EX AF,AF'`, which
   on the real КР580ВМ80А/8080 is an undocumented NOP; Z80-only semantics
-  must never be inferred from the listing. Cross-check questionable
-  instructions with `cosim/dis8080.py` (exact Intel mnemonics).
+  must never be inferred from the listing.
+- `cosim/dis8080.py` renders documented instructions with Intel mnemonics, but
+  returns one-byte `DB` entries for undocumented opcodes. In particular, it
+  does not consume the two operands of `CBh` or `DDh/EDh/FDh`; linear output
+  after one of those bytes can be misaligned. Check `cosim/i8080.c` and execution
+  evidence for their modeled JMP/CALL semantics (`D9h` is modeled as RET).
