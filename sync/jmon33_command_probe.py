@@ -255,17 +255,16 @@ def main() -> int:
         "- `JMON33_COMMAND_REPORT` overrides the report output path.",
         "",
         f"Selected oracle: `{oracle}`. Timing overrides can change the final framebuffer",
-        "and fail the fixed hashes. I/O sample counts are diagnostic, not pass criteria.",
+        "and fail the fixed hashes.",
         "",
         "## Evidence",
         "",
-        "| Case | Keys | Exit | Stop PC | Cycles | Port `0x05` samples | Active key values | Visible blocks | Pixels | VRAM SHA256 | Result |",
-        "| --- | --- | ---: | --- | ---: | ---: | --- | --- | ---: | --- | --- |",
+        "| Case | Keys | Exit | Stop PC | Cycles | Visible blocks | VRAM SHA256 | Result |",
+        "| --- | --- | ---: | --- | ---: | --- | --- | --- |",
     ]
     for result in results:
         case = result["case"]
         stop = result["stop"]
-        active = ", ".join(f"`0x{value:02X}`" for value in result["active_values"]) or "-"
         blocks = ", ".join(f"`x={x},y={y}`" for x, y in result["blocks"]) or "-"
         ok = (
             result["proc"].returncode == 0
@@ -275,8 +274,8 @@ def main() -> int:
         lines.append(
             f"| {case.name} | `{case.keys.encode('unicode_escape').decode() if case.keys is not None else '<none>'}` | "
             f"`{result['proc'].returncode}` | `0x{stop.get('pc', 0):04X}` | "
-            f"`{stop.get('cycles', 0)}` | `{result['in05_count']}` | {active} | "
-            f"{blocks} | `{result['visible_pixels']}` | `{result['sha'] or 'missing'}` | "
+            f"`{stop.get('cycles', 0)}` | "
+            f"{blocks} | `{result['sha'] or 'missing'}` | "
             f"{'PASS' if ok else 'FAIL'} |"
         )
 
