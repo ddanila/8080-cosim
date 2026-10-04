@@ -201,7 +201,14 @@ Developers can run the actual PE against the stock, C11, and C12 simulators:
 sync/jukuhost_win32_wine_e2e.sh
 ```
 
-The default invocation rebuilds `JUKUWIN.EXE` first. It needs 32-bit Wine,
+The default invocation rebuilds `JUKUWIN.EXE` first. To test an existing binary
+without rebuilding it, pass its path:
+
+```sh
+sync/jukuhost_win32_wine_e2e.sh /path/to/JUKUWIN.EXE
+```
+
+It needs 32-bit Wine,
 `wineboot`, Xvfb, `socat`, Python 3, a C compiler, and the sibling
 `cpm-plus-juku` stock recovery and C11/C12 outputs, including their disk images
 and the application B: image (or set `CPM_PLUS_JUKU_ROOT`). It creates an
