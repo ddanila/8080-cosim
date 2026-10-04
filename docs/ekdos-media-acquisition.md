@@ -43,7 +43,8 @@ not a fabrication blocker.
 
 ## Verification
 
-Run from the repository root. Check both source and extracted-file identities
+Run from the repository root with Bash, Python 3, `sha256sum`, and a C11
+compiler (`CC`, default `cc`). Check source and extracted-file identities
 before the report writers and extractor replace generated outputs:
 
 ```sh
@@ -62,6 +63,10 @@ sync/juku_top_fdc_prompt_check.sh
 The extractor rewrites the extracted binaries, their README and checksum
 manifest, and the BASIC extraction report. Review the resulting diff;
 regeneration is not a substitute for verifying the previous identities.
+The C probe builds a temporary oracle and overwrites `cosim/vram.bin` and,
+by default, `docs/ekdos-fdc-probe.md`, including when the prompt check fails.
+Preserve the framebuffer first if needed; use an explicit report path for
+exploratory runs.
 
 The HDL command above verifies retained report evidence. A fresh
 HDL run requires the explicit deep flag and a compatible simulator; see
