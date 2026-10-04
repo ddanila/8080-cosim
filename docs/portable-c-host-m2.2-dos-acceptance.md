@@ -23,10 +23,8 @@ LFS, verified before use, and expanded only into the ignored `.tools/` tree.
 | C compiler | Open Watcom C x86 16-bit 2.0 beta, 2026-08-20 02:17:35 |
 | linker | Open Watcom Linker 2.0 beta, 2026-08-20 02:13:42 |
 
-`tools/bootstrap-open-watcom.sh` and `tools/open-watcom-env.sh` are implemented
-here. There is no Kolobok checkout, build step, downloaded helper, or runtime
-dependency. The implemented DOS and Win32 builds use this pinned compiler
-lineage.
+`tools/bootstrap-open-watcom.sh` verifies and extracts the archive;
+`tools/open-watcom-env.sh` configures it for the DOS and Win32 builds.
 
 ## Accepted executable
 
@@ -125,7 +123,7 @@ It performs four materially different checks:
 1. two independent warning-as-error builds and a byte comparison;
 2. the actual 16-bit `JUKUHOST.EXE --selftest` under headless DOSBox-X with an
    8086 CPU profile;
-3. the actual EXE through emulated COM1 and a paced TCP/PTTY bridge to the Juku
+3. the actual EXE through emulated COM1 and a paced TCP/PTY bridge to the Juku
    simulator, completing stock Janet bootstrap at 9,600/8O1 and installing the
    CP/M 2.2 payload byte-for-byte at `B400h` before its `CA00h` entry;
 4. the same executable and COM1 path against the C8 ROM, completing or safely
