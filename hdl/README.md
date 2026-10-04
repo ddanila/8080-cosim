@@ -35,6 +35,11 @@ They are not generic cycle-accurate replacements for every original IC mode.
 The 8253 slice implements binary/BCD count loading, LSB/MSB access formats,
 live or latched count reads, first-latch ownership, and the video-used modes;
 the Juku-specific HDL clocks remain authoritative for count progression.
+D57 channel 2 uses the active-low D55 OUT1 (`VER RTR`) signal, approximately
+49.92 Hz under the stock raster setup. Immediate count-read diagnostics must
+allow for that clock; the
+[D55 audit](../docs/jukuravi-d55-diagnostic-audit.md#structural-simulation-matrix)
+currently stops on an additional D57 failure bit before reaching its T34 cases.
 
 ## Model boundaries
 
@@ -56,7 +61,8 @@ the Juku-specific HDL clocks remain authoritative for count progression.
 - 4 official FDC-support devices have package pins and power endpoints in
   the board model but retain untraced functional pins or explicit boundary
   nets;
-  `docs/unmodeled-footprint-inventory.md` owns that boundary.
+  [the footprint inventory](../docs/unmodeled-footprint-inventory.md) owns
+  that boundary.
 - The shared К555ИЕ7/74LS193 primitive used by video counters D44-D47 and
   representing FDC-area D106 now has its complete standard digital contract
   guarded. Recovered sheet 3 also closes and LVS-maps its actual board straps,
