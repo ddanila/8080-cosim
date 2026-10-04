@@ -176,9 +176,9 @@ majority can then be selected with `--loader-votes 3`, `5`, or `7`. The host
 records timestamp-matched raw RX, raw TX, and decoded JSON for every session.
 Run `python3 spinoffs/jukuravi/host.py --help` for the complete parameter set.
 
-The historical T31/T34 CS00024 setup exposed a different boundary: its short seven-vote CONFIG command
-passes, while its longer seven-vote bootstrap PROBE reproducibly crosses a
-strong-CRC boundary involving the `C000h` parser state. The explicit
+The [recorded T34 CS00024 tests](CS00024-PHYSICAL.md#t34-cold-boots-and-loader-discriminator-2026-08-09)
+passed the short seven-vote CONFIG command, while the longer seven-vote
+bootstrap PROBE repeatedly failed strong CRC in the `C000h` parser state. The explicit
 `--loader-config-first` policy sends CONFIG before PROBE and then uses the
 requested one-vote width. It is not the default and must not be used to hide a
 failed exact-cookie PROBE; the PROBE still runs immediately after CONFIG and
