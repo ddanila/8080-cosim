@@ -128,6 +128,8 @@ the mapping boundary closes.
 
 ## Workflow
 
+Run from the repository root:
+
 ```sh
 # Install the expected version:
 python3 -m venv ~/.venvs/skoolkit && ~/.venvs/skoolkit/bin/pip install skoolkit==10.0
@@ -159,5 +161,3 @@ PATH="$HOME/.venvs/skoolkit/bin:$PATH" bash sync/disasm_check.sh
   on the real КР580ВМ80А/8080 is an undocumented NOP; Z80-only semantics
   must never be inferred from the listing. Cross-check questionable
   instructions with `cosim/dis8080.py` (exact Intel mnemonics).
-- SkoolKit is pinned to 10.0; a version bump must regenerate the skool and
-  re-run the guard.
