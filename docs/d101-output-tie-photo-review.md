@@ -47,10 +47,14 @@ continuity remains a separate probe.
 
 ## Model guard
 
+Run from the repository root with Python's standard library:
+
 ```sh
 python3 kicad/check_fdc_precomp_network.py
 ```
 
-The guard checks the canonical JSON output nets, R99 connection to the
-D96.9/input island, and structural HDL/LVS mappings. It does not establish
-physical isolation, copper routing, or analog precompensation timing.
+The guard checks selected canonical JSON nets, including R99's connection to
+the D96.9/input island, component values and NC declarations. It verifies
+D97/D101/D102 instance entries in `sync/map.json` and literal HDL connection
+markers. It does not run LVS or compile/simulate the HDL, and does not
+establish physical isolation, copper routing, or analog precompensation timing.
