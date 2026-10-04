@@ -142,6 +142,11 @@ def endpoint_coverage(board: dict, pcb_nets: dict[tuple[str, str], str], exclude
 
 
 def category_for(name: str, source: str) -> str:
+    # These source notes mention rejected sound connections.
+    if name == "X6_A3_BOUNDARY":
+        return "video/analog"
+    if name == "D59_O10_TAG10":
+        return "timing/I/O"
     text = f"{name} {source}".upper()
     if name.startswith(("FDC_", "D93_")):
         return "FDC"
@@ -164,8 +169,14 @@ def category_for(name: str, source: str) -> str:
 
 
 def action_for(category: str, name: str, source: str) -> str:
-    if name in {"FDC_INTRQ", "FDC_DRQ"}:
-        return "Continuity-check WD1793 pin to 8259 input before EKDOS bring-up."
+    if name == "X6_A3_BOUNDARY":
+        return "With power off, check A:3 to VT2.1/R65.1; keep VIDEO_OUT separate until continuity proves the join."
+    if name == "D59_O10_TAG10":
+        return "With power off, trace the remote endpoint of D59.10; keep it separate from SOUND and assembly wire W10."
+    if name == "FDC_INTRQ":
+        return "With power off, check D93.39 to D28.13/R93.1 and the R93 pull-up to +5 V."
+    if name == "FDC_DRQ":
+        return "With power off, check D93.38 to D28.11/R94.1 and the R94 pull-up to +5 V; resolve D28.11-to-D96.11 continuity before merging DRQ and CLK2."
     if name == "FDC_DDEN":
         return "Confirm density-control level against drive/emulator behavior."
     if category == "FDC":

@@ -33,9 +33,8 @@ Successful generation does not require endpoint coverage or risk closure.
 | FDC | 3 |
 | logic | 28 |
 | memory/decode | 2 |
-| sound/analog | 2 |
-| timing/I/O | 6 |
-| video/analog | 14 |
+| timing/I/O | 7 |
+| video/analog | 15 |
 
 ## KiCad PCB Endpoint Coverage
 
@@ -108,7 +107,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `D34_SYNC` | timing/I/O | `D34.8, R62.1` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D36_CAS_IN` | memory/decode | `D36.12, D36.13` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and output pin11 reaches... | Probe during ROM/RAM stage; compare address/control timing to twin. |
 | `D58_STB_TAG5` | logic | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `D59_O10_TAG10` | sound/analog | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10. The other modeled... | Bench-check waveform/current path with speaker disconnected first. |
+| `D59_O10_TAG10` | timing/I/O | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10. The other modeled... | With power off, trace the remote endpoint of D59.10; keep it separate from SOUND and assembly wire W10. |
 | `D94_D0_BOUNDARY` | logic | `D94.1, R8.1` | exact .009 E3 sheet 1 PXL_20260718_101817644.jpg draws R8=2k from +5 V to -WREQ; sheet 3 PXL_20260718_101633062.jpg traces D94.1 through the top bundle to WREQ (1), establishing... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D99_B2_SHEET1_BOUNDARY` | logic | `D99.10, D96.13` | exact .009 Э3 sheet-3 photo PXL_20260718_101641055.jpg joins D99 B2/pin10 to D96 section-2 active-low clear/pin13 at a marked junction; their shared conductor continues to sheet... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `D99_Q2N_BOUNDARY` | logic | `D99.12, D100.9` | Exact .009 Э3 sheet-3 detail PXL_20260718_101641055.jpg: D99 section-2 Q_N/pin12 descends and turns left to D100 OE_N/pin9. This line crosses D100 T/pin11 without a junction dot... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
@@ -137,7 +136,7 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
 | `TIMING_TAG17` | logic | `D36.2, D41.6` | scan sheet-2 full-resolution (D41 control-bundle crop): numbered timing rail 17 has direct junctions to D41 load pin6 and D36 second NAND input pin2; the unique remote driver re... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `TIMING_TAG2` | logic | `D38.4, D34.4` | Exact .009 sheet-2 PXL_20260718_101911242.jpg draws D34.4 upward to top conductor 2; overlapping exact .009 PXL_20260718_101908284.jpg crop (950,3200)-(2350,4000) shows numbered... | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
 | `VT2_BASE` | timing/I/O | `R62.2, R63.2, R64.1, VT2.3` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible | Verify with continuity, scope, or logic-analyzer trace during staged bring-up. |
-| `X6_A3_BOUNDARY` | sound/analog | `AX603.1, X6.1` | Factory .009 assembly wire table item 151 proves A:3 to bracket X6.1; independent system drawing ДГШ3.031.011 Э6 identifies X6 as the display cable; exact .009 Э3 sheet 2 labels... | Bench-check waveform/current path with speaker disconnected first. |
+| `X6_A3_BOUNDARY` | video/analog | `AX603.1, X6.1` | Factory .009 assembly wire table item 151 proves A:3 to bracket X6.1; independent system drawing ДГШ3.031.011 Э6 identifies X6 as the display cable; exact .009 Э3 sheet 2 labels... | With power off, check A:3 to VT2.1/R65.1; keep VIDEO_OUT separate until continuity proves the join. |
 | `XTAL16M` | video/analog | `D39.10, D103.2, D42.9, D43.9, D37.12` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin10. It is separate fr... | Scope/capture video or timing node during video bring-up. |
 
 ## Design-release disposition
