@@ -51,9 +51,10 @@ Current routing and fabrication remain held; see
 ## Reproduction
 
 ```sh
-python3 kicad/report_d105_h_boundary.py
+/usr/bin/python3 kicad/report_d105_h_boundary.py
 ```
 
+Requires Python 3 with KiCad `pcbnew` and the retained source images.
+The command overwrites this report with the checked model and pad results.
+
 Any source-net change requires renewed routing and package verification.
-Rejected local copper trials are retained in Git history; they are not
-evidence of current whole-board routing readiness.

@@ -169,10 +169,12 @@ for name, result, evidence in checks:
     lines.append(f"| {name} | {'PASS' if result else 'FAIL'} | `{evidence}` |")
 lines += [
     "", "## Reproduction", "",
-    "```sh", "python3 kicad/report_d105_h_boundary.py", "```", "",
+    "```sh", "/usr/bin/python3 kicad/report_d105_h_boundary.py", "```", "",
+    "Requires Python 3 with KiCad `pcbnew` and the retained source images.",
+    "The command overwrites this report with the checked model and pad results.",
+    "",
     "Any source-net change requires renewed routing and package verification.",
-    "Rejected local copper trials are retained in Git history; they are not",
-    "evidence of current whole-board routing readiness.",
+
 ]
 REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
 print(status)
