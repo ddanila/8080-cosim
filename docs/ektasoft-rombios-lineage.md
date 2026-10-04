@@ -151,10 +151,12 @@ no bootstrap banner as dumped.
 
 ## Monitor family notes
 
-The Monitor images share a per-block checksum convention distinct from
-EktaSoft's single block-1 sum: eight stored bytes at `0003h..000Ah`, block
+The Monitor images share a per-block checksum layout: eight stored bytes at
+`0003h..000Ah`, block
 0 covering `0004h..07FFh` and blocks 1-7 covering their full 2 KiB. This
-is the convention that diagnoses jmon22's corrupt blocks
+is distinct from EktaSoft's eight checksums across two header regions,
+described in [the remix guide](../spinoffs/jukuravi/remix/README.md#checksum-convention).
+The Monitor convention diagnoses jmon22's corrupt blocks
 ([`jmon22-reconstruction.md`](jmon22-reconstruction.md)); jmon33 passes
 all eight (byte-verified). This makes it a checksum-consistent comparison
 image, not an independent proof of every byte's correctness. Monitor boot is
@@ -170,8 +172,7 @@ The block-1 convention (additive sum of `000Bh..07FFh` stored at `000Ah`,
 verified by the boot routine at `03E0h`) is documented in
 [`cosim-runtime-reference.md`](cosim-runtime-reference.md). All five
 official images pass. #0043 stores stale `F2h` against computed `57h` —
-the fingerprint of a post-build modification that never regenerated the
-checksum. The vendored binary is preserved unmodified; `cosim/trace.c`
+a checksum inconsistency whose cause is not established by the sum alone. The vendored binary is preserved unmodified; `cosim/trace.c`
 applies an explicitly logged `F2h -> 57h` load-time compatibility patch so
 the image can boot in simulation.
 
