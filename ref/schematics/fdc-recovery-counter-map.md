@@ -29,3 +29,18 @@ therefore uses the photographed 10.16 mm axial landing span and registered centr
 
 The sheet closes logical connectivity. Physical clock amplitude, edge quality,
 and recovery timing remain bench bring-up measurements.
+
+## Verification
+
+Run from the repository root with Python 3 (standard library only):
+
+```sh
+python3 kicad/check_fdc_recovery_counter.py
+```
+
+The guard checks selected JSON nets, no-connects, R78 value and placement
+metadata, source-photo identities, source-PCB pad nets, literal HDL markers,
+and the D106 LVS instance mapping. It does not run LVS, simulate the counter,
+or inspect routed copper. See [the counter readiness report](../../docs/ie7-counter-readiness.md)
+for the separate primitive simulation; that check does not qualify the complete
+read separator or physical recovery timing.

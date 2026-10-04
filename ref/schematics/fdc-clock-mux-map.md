@@ -53,7 +53,7 @@ Python's standard library. It checks selected board-JSON nets and provenance,
 retired boundary names, literal HDL mux markers, and the D95 LVS map entry.
 It does not run LVS, inspect PCB copper, or simulate clock selection.
 
-The complete D106 digital contract is now transcribed separately in
-`fdc-recovery-counter-map.md`. Exact analog timing at D93/D106 remains a
+The D106 source wiring is recorded in
+[the recovery-counter map](fdc-recovery-counter-map.md). Exact analog timing at D93/D106 remains a
 bring-up boundary: closing the clock conductors does not claim measured edge
 rate, duty cycle, oscillator accuracy, or separator lock margin.
