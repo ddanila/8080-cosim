@@ -32,6 +32,13 @@ juku_top abstract oracle. The companion raster-geometry guard is
 VIDEO_WRITES=6000 sync/video_readout_check.sh
 ```
 
+The check requires Bash, Python 3, Icarus Verilog (`iverilog` and `vvp`),
+and the archived `roms/ekta37.bin`. It runs from the repository root and
+rewrites the named captures and generated hex inputs under `hdl/sim`.
+The first argument selects the report path (default
+`docs/video-readout-readiness.md`); its parent directory must exist. An
+alternate report path does not isolate the capture files.
+
 ## Evidence
 
 | Artifact | Bytes | Check |
