@@ -112,9 +112,6 @@ after the USART simulation passes.
 
 - D11 is bus-visible at the decoded `0x08..0x0B` USART window, with
   BA0, DB0-DB7, `IORD`, `IOWR`, and `CS_D11` wired.
-- Native sheet 2 sends D57 `OUT0` through `BAUD R.`; native sheet 1
-  visibly forks that conductor to D11 TxC and RxC. `PIT_BAUD` is
-  source-closed rather than retained as an assumed USART-end fork.
 - D11 serial-side pins are carried through the modeled D14/D32/D3/D12
   output drivers and D104 receiver to X3 signal pins. D3.10 reaches
   X3.3 through the explicit W20 assembly-wire closure.
@@ -165,5 +162,6 @@ after the USART simulation passes.
   IR2/IR3 as well; see [interrupt behavior](hardware-map.md#interrupt-and-keyboard-behavior).
 - Full-resolution sheet 1 proves D11.16 `SYNDET` on the lower S4 throw.
   D11.18 `TXEMPTY` is absent from the drawn USART symbol and modeled NC.
-- External X3 loopback, electrical levels, and full 8251 sync/parity
-  modes remain Tier-2 bench/software work after that PCB-truth boundary.
+- This guard does not qualify external X3 loopback, electrical levels,
+  or the complete 8251 synchronous and parity-mode behavior. Physical
+  session qualifications belong to their machine-specific records.
