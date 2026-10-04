@@ -134,15 +134,12 @@ occupies, so absolute read counts there are dominated by framebuffer
 traffic and do not prove command execution on their own. Enable the frame interrupt (cosim `argv[4]`) so the keyboard is scanned,
 and begin typing only after the banner has been painted.
 
-Current signals: `H` reads the help text region **+161 bytes** over control;
-`V` adds **3,213** mapped-ROM reads, **1,988,036** copied-body reads and
-**127,494 accepted framebuffer writes**;
-`J` reads its handler region **+21,590** and produces
-**22,178 USART events** where the control run produces exactly zero. The
-transmitted bytes are the loader's own READY frame
-(`A5 5A A3 0B 02 20 0A 00 7F FF ...` — API v2, capabilities, workspace,
-one-vote bootstrap), and a PTY-attached run stops with the PC inside the
-copied loader in memory mode 1.
+The guard requires `H` to walk the help text, `V` to execute its copied body
+and produce accepted framebuffer writes, and `J` to run the service handler
+and emit USART traffic against a silent control. It prints the measured
+deltas; these are workload observations rather than fixed API values. The
+service emits the loader's API-v2 READY frame with a one-vote bootstrap, and
+a PTY-attached run stops with the PC inside the copied loader in memory mode 1.
 
 The visual guard captures the first completed frame directly from C-cosim
 bus writes after the demo selects mode 3. It compares every framebuffer byte
@@ -158,11 +155,8 @@ programmed and qualified on 2026-08-11; that chronology remains in the
 original session records. The Ekta4402 pair was programmed on
 2026-08-16 through the DOSRAVI/Willem controlled-write path, using only the
 programmer's built-in full read/verify. The programmed devices were labeled
-`Ekta4402low` (D15) and `Ekta4402high` (D16). Their exact committed SHA-256
-values are `ee87c5b199b409c97909f0eb2b7cfd24cbee2537569bbcdec378631ec8fc85d5`
-and `e76587d94189ce8d1cf33ee95cb50f68f5d62280a9dd675ded006eb32232e6e7`;
-their concatenation is the guarded Ekta4402 image
-`20ff871307b65523428b6ce21e8153842b54c070cd897826154735af6cea6378`.
+`Ekta4402low` (D15) and `Ekta4402high` (D16); use the programming-image hashes
+listed above for identity checks.
 
 The Ekta4401 pair first booted physically in CS00015. With no display attached,
 typing `J` alone (no Enter) entered the resident service loader. The retained session
