@@ -12,13 +12,12 @@ audible path.  It adds one shared 3.7 Hz attenuation LFO and a per-tone depth
 of zero through three Juku mixer levels.  It does not emulate an OPL waveform,
 FM-modulator timbre changes, feedback, vibrato, or independent LFO phases.
 
-[`OPL-TREMOLO-M4.json`](OPL-TREMOLO-M4.json) establishes that exact source AM
-survives independent 4-bit quantization in 69,978 of 405,454 direct-AM channel
-frames and never changes any of the 232,212 FM-modulator-only channel frames.
-[`OPL-TREMOLO-CANDIDATE-M4.json`](OPL-TREMOLO-CANDIDATE-M4.json) establishes
-one real joint envelope/tremolo fit worth carrying through a reversible target
-experiment. Delivery additionally requires the target, full-track and listening
-evidence listed below.
+[The host analysis](OPL-TREMOLO-M4.json) records where direct source AM
+survives 4-bit quantization and verifies that FM-modulator-only channel levels
+remain unchanged. [The candidate fit](OPL-TREMOLO-CANDIDATE-M4.json) supplies
+the joint envelope/tremolo comparison. Implemented target, full-track and
+physical-listening qualification are scoped by the evidence below; a host fit
+alone does not authorize delivery.
 
 ## Compatibility boundary
 
