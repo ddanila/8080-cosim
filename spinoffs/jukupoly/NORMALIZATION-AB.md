@@ -59,7 +59,9 @@ Use Python 3.10+ and cpmtools (`mkfs.cpm`, `cpmcp`, and `cpmls` on PATH).
 The builder uses the project disk definitions automatically. It builds the
 pinned zmac submodule with `make` when its executable is absent; initialize
 submodules first, or set `ZMAC` to an existing compatible executable.
-The resulting `normalization-ab.cpm` is a read-only native B: disk. The exact
+Mount the resulting native `normalization-ab.cpm` image as drive B: with
+the host's read-only media policy; the builder does not write-protect the file.
+See [the hosting guide](../../docs/janet-fastboot.md) for media policies. The exact
 [prepared disk](sessions/cs00014-normalization-ab/normalization-ab.cpm) is also
 retained for use without rebuilding. Warm-boot
 CP/M after exchanging media, then run `B:JUKEBOX`.
@@ -73,9 +75,8 @@ reach a component peak of 15; a second normalization leaves them unchanged.
 
 All six A/B payloads completed full 8080 cycle simulation under the exact
 trial player. Each pair has identical frame counts, frame timing, sample-loop
-timing, PIT-write counts and Escape-poll counts. Simulated durations are
-97.051225, 174.639148 and 256.727122 seconds per pair. Detailed measurements,
-payload identities and the disk hash are in
+timing, PIT-write counts and Escape-poll counts. Exact durations, payload
+identities and the disk hash are in
 [NORMALIZATION-AB.json](NORMALIZATION-AB.json).
 
 On CS00014, stock JF17 / 9600 recovery hosting and a CP/M warm boot
