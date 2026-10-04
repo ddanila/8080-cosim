@@ -47,6 +47,11 @@ protocol run is intentionally local-only rather than part of ordinary CI.
 | C11 | passive beacon and V16/NetDisk at 19,200 | 8.646 s | 18 requests, 51 records, 0 retries, 0 UART errors |
 | C12 | passive beacon and V16/NetDisk at 19,200 | 8.664 s | 18 requests, 51 records, 0 retries, 0 UART errors |
 
+These timings and counters describe the recorded run. The current harness
+checks clean exit, boot/service evidence, a decoded disk-read request, A: working
+image size, and unchanged A: base contents; it does not assert these exact
+timings, counters, or working-copy hashes.
+
 All three cases mounted a 409,600-byte A: base as a new snapshot working image,
 served disk reads, stopped cleanly with host exit zero, retained a raw capture,
 and passed independent capture decoding. The C11 and C12 cases also mounted
