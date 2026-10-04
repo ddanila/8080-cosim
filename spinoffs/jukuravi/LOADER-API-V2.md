@@ -115,6 +115,13 @@ replaces the cached invocation; RESET or corrupt workspace can lose it.
 One-way JUMP and non-returning CALL code cannot service retries. A genuinely
 new invocation must use a new execution ID.
 
+The host reuses the execution ID for retries within one RUN operation, but
+generates a new random ID for each new invocation. The CLI cannot resume an
+earlier execution ID after process loss. Reattaching and calling retained code
+is therefore a new execution, not a query for the previous CALL's outcome.
+After an uncertain non-idempotent result, inspect its application-defined RAM
+state before deciding whether to call it again.
+
 If the host disappears while the loader is receiving, eight bounded idle receive
 periods discard the partial parser, restore that ROM's boot-vote default,
 reset the stack, and return to frame sync. T35/T36 also invalidate the exact
@@ -134,7 +141,7 @@ python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 \
 python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 \
   --load task.bin --load-address 4000 --load-only
 
-# In a later host process: attach, call retained code, read its result, no RESET.
+# In a later host process: execute retained code again, without RESET.
 python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 --attach-loader \
   --probe-loader --run-address 4000 --run-mode call \
   --result-address 4100 --result-length 16
@@ -155,10 +162,9 @@ odd majority with `--loader-votes 3`, `5`, or `7`. CRC-protected whole-command
 retries remain enabled independently. A bridge whose USB side uses another
 rate must set `--baud` explicitly.
 
-That advice applies to an electrically marginal cable. It is the wrong
-direction for a proven destructive elapsed-time/RAM boundary: warm CS00024
-repeated CONFIG `strong_crc` at the 6 ms guard, while guard 0 completed the same
-bootstrap and exact marker read. Minimize guard and vote count when shortening
+Increasing guard time or votes lengthens each command. On warm CS00024,
+CONFIG repeatedly failed with `strong_crc` at the 6 ms guard, while guard 0
+completed the same bootstrap and exact marker read. Minimize guard and vote count when shortening
 the command is the experiment; do not describe that as improved signal
 integrity.
 
