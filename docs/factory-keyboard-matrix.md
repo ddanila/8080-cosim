@@ -9,7 +9,7 @@ checks.
 
 Regenerate with `python3 scripts/report_keyboard_matrix.py`.
 `sync/keyboard_matrix_check.sh` also requires the generated report to match the
-tracked copy.
+existing copy.
 
 ## Coordinate result
 
