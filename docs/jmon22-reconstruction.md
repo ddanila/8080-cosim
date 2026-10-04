@@ -80,9 +80,9 @@ independent dump, or another byte-identical firmware source is recovered.
 
 ## Related-ROM donor search
 
-For the seven guarded related ROMs, the audit tests each one-byte checksum repair with three source bytes
-available on each side against all seven other tracked 16 KiB monitor/BIOS
-images. This covers all 2,048 block-6 positions and 2,045 block-7
+The audit searches the seven guarded related 16 KiB monitor/BIOS images
+for each one-byte checksum repair with three unchanged source bytes on
+each side. This covers all 2,048 block-6 positions and 2,045 block-7
 positions; only the ROM's final three bytes lack right-hand context. A donor
 must contain the proposed replacement byte with the same three bytes on each
 side, so a moved routine can match without assuming a fixed ROM address.
