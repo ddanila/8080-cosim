@@ -59,7 +59,12 @@ The unqualified HDL command above verifies retained report evidence. A fresh
 HDL run requires the explicit deep flag and a compatible simulator; see
 [simulator compatibility](../sync/README.md#simulator-compatibility).
 
-For a new raw image, record source, filename, geometry, and SHA256 in
-`media/disks/README.md`, then run with
-`EKDOS_PROBE_DISK=/path/to/image sync/ekdos_fdc_probe.py` before considering it
-adopted.
+For a new raw image, preserve its source, filename, geometry, and SHA256, then
+write the probe result separately:
+
+```sh
+EKDOS_PROBE_DISK=/path/to/image sync/ekdos_fdc_probe.py /tmp/candidate-ekdos-fdc-probe.md
+```
+
+Compare that result with the adopted baseline. Record accepted media and its
+provenance in `media/disks/README.md`.
