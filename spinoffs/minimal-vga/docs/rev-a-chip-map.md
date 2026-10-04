@@ -34,8 +34,9 @@ address rows with the expected `.039` table.
 outputs route into U5, which consumes physical D0/pin12 as
 active-low `ROM_N`; the GAL equation uses `/DEC_ROM_N`. The РЕ3 (U4) is enabled by ROM select and its output byte is only
 **observed** (via J95): VJUGA's single U2 ROM does not need the pager to gate
-data, and the verified twin (`hdl/vjuga_juku_top.v`) likewise only *asserts* on
-D8 rather than routing it into the data path.
+data. The twin (`hdl/vjuga_juku_top.v`) instantiates D8 but does not route its
+output byte into the ROM data path. Its boot testbench does not assert on that
+byte, so framebuffer agreement does not establish D8 output coverage.
 
 **8255 Port C mapping.** PC0/PC1 (U30 pins 14/15, I/O port `0x06`) drive
 memory-overlay mode through U6→U3. The keyboard encoder connects to upper
