@@ -159,8 +159,9 @@ bytes. The exact-signature fault injection remains useful for testing the
 software discriminator after valid timing, not as proof that CS00024 has that
 fault. Primary source: [Intel 1979 Peripheral Design Handbook, 8253 section](https://www.bitsavers.org/components/intel/_dataBooks/1979_Intel_Peripheral_Design_Handbook.pdf).
 
-D57.18 is `VERT_RTR` in the board JSON, HDL and project PCBs. Current
-whole-board routing and package release remain held; see
+D57.18 is `VERT_RTR` in the board JSON, HDL and project PCBs. The
+[correction evidence](../ref/routing/d57-clock-correction.json) binds its
+recorded DRC/parity result to exact board hashes. Current whole-board routing and package release remain held; see
 [the routed audit](routed-refresh-audit.md) and
 [manufacturing readiness](replica-manufacturing-readiness.md).
 
