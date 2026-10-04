@@ -32,13 +32,15 @@ extra checkouts cannot conceal failures on hosted runners.
 | Workflow | Trigger and coverage |
 | --- | --- |
 | Generic | Every push and pull request; syntax, Markdown, evidence consistency, native Linux host, disassembly and board guards |
-| HDL | Relevant source/input changes, daily schedule and manual dispatch; lanes selected by `hdl-ci.json`, with unknown paths selecting all lanes |
+| HDL | Relevant source/input changes, tag pushes, daily schedule and manual dispatch; `hdl-ci.json` selects lanes after the workflow is triggered |
 | Checkpoint | Relevant inputs, weekly Monday 04:43 UTC schedule and manual dispatch; watched-write checkpoint test on Linux and macOS |
 | Reports | Listed generator/input changes and manual dispatch; generated-report freshness, PROM captures and photo evidence |
 | Windows host | Listed host, packaging and guide changes, or manual dispatch; reproducible PE/package checks and Windows Server 2022 runtime checks; public release publication on `master` |
 | Smoke kit | Listed simulator/host/container inputs on `master`, or manual dispatch; publishes the downstream simulator container |
 
 Exact path filters and assertions are in [the workflows](../.github/workflows).
+Within an invoked HDL workflow, unknown paths select all lanes; paths excluded
+by the workflow trigger do not reach that selector. Tag pushes force all lanes.
 The Windows runtime checks do not establish physical serial or Windows 95
 qualification. Report checks verify their listed artifacts; they do not amount
 to a semantic review of every document.
@@ -57,11 +59,11 @@ to a semantic review of every document.
 - Rev B tier suite: `--ci` runs behavioral card, bus, serial, ROM-system,
   bring-up and video checks, with 1000-write decode-mode boot prefixes. Hosted
   CI splits these into independent `REVB_CI_GROUP=cards` and `system` matrix
-  jobs; a local `--ci` invocation defaults to both. The default
-  `bash spinoffs/minimal-vga/sim/revb_tier_suite.sh` retains full GAL synthesis,
-  physical PCB, DRC and manufacturing-release checks with Galette/KiCad.
-  Some local physical gates explicitly skip when KiCad/`pcbnew` is unavailable;
-  inspect those outcomes before treating a local run as release evidence.
+  jobs; a local `--ci` invocation defaults to both. The default full suite
+  includes GAL compilation, physical PCB, DRC and release-source checks.
+  Some individual checks can skip missing tools, but R5.I7 fails without
+  KiCad Python. See the [Rev B execution guide](../spinoffs/minimal-vga/docs/rev-b-execution-guide.md#verification-commands)
+  for dependencies, generated outputs and the separate package-validation gate.
   A green hosted run does not qualify manufacturing release.
 - The existing deep cosim/full-banner and hardware/endurance checks remain
   outside hosted CI.
