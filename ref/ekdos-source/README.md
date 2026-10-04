@@ -26,14 +26,6 @@ payloads.
   4.x and a DEC Rainbow-derived 80-track, double-sided disk format. Its monitor
   calls include `FLOPPY`, `START`, and `RWFLOPPY`, matching the ROMBIOS/FDC
   interface exercised by the current `TDD` probes.
-- The files help controller and media-behavior work, but they are not the
-  source of the D2/D6/D8/D94 programming tables. Repeated physical captures now
-  close the byte-level truth for all four small PROMs. The open work is circuit
-  timing and physical connectivity. D94's address destinations are owner-closed
-  and its enable is source-closed; its hidden D0 load and surrounding FDC paths
-  retain separate evidence gaps. Use
-  [D6 decode](../../docs/d6-physical-decode.md) and
-  [D94 constraints](../../docs/d94-reconstruction-constraints.md) for the
-  current boundaries. A future Baltijets
-  programming disk would be independent corroboration rather than a required
-  content fallback.
+- D2/D6/D8/D94 programming evidence is maintained separately in
+  [the physical PROM reference](../physical-proms/README.md), with links to
+  the decode and circuit constraints.
