@@ -83,7 +83,7 @@ from its monitor and use `--attach-loader`; type `J`
 once without Enter when the runner asks. The marker, arm snippet, hold code,
 readback, and verdict are identical after entry. A stage that decays may leave
 the loader unrecoverable until RESET — that outcome *is* the measurement,
-recorded in the JSON capture.
+recorded in the JSON capture. Run the commands below from the repository root.
 
 ```sh
 # Control: no raster. CS00024 prediction: decay (validates sensitivity).
@@ -117,7 +117,8 @@ python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
   --log-dir spinoffs/jukuravi/sessions/cs00015-ekta4401-raster-syncb
 ```
 
-On the macOS bench use `--port /dev/cu.usbserial-0001`
+On macOS select the adapter's actual `cu.*` node with `--port`; the recorded
+`/dev/cu.usbserial-0001` is a session-specific example
 ([`MACOS-BENCH.md`](MACOS-BENCH.md)). Run the same three stages on CS00015
 as the cross-board control when practical. The default 25 s hold sits past
 the proven 5-17 s CS00024 boundary; `--hold-seconds` adjusts it, and the
