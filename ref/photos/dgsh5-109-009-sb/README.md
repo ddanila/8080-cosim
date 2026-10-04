@@ -39,8 +39,7 @@ What the drawing is authoritative for:
   solder, marking, cable dressing, Z1 mounting on лакоткань/ВК-9).
 - Revision history: change-table rows `ен147279`, `ен147160`, `ен147074`,
   `ен139546`, `ен164807`, `ен157459`, `ен157937` with dates and signatures
-  (`ен147074` corrected from an earlier `ен47074` reading against the sheet-6
-  registration list).
+  cross-referenced against the sheet-6 registration list.
 
 Sheets 2-6 of this document (the таблица соединений referenced by note 8 and
 the change-registration sheet) were acquired on 2026-07-11 as an owner

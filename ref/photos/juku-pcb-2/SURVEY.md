@@ -1,6 +1,7 @@
 # Board #2 photo survey
 
-Target: processor module `7.102.158`, 50 owner photographs taken in 2026.
+Target: processor module `7.102.158`, 50 owner photographs from the main
+session plus two supplemental X3 views (52 retained photographs).
 
 ## Confirmed observations
 
@@ -28,16 +29,15 @@ Target: processor module `7.102.158`, 50 owner photographs taken in 2026.
   for VD1 in the reset-RC corner, and the direct designation plus independent
   grade-В reverse face for VD4 in the traced beeper clamp.
   VD1 is visibly populated at the sheet-1 +5 V/reset-RC position.
-- The nominally "missing" ЛЕ4 package is present but decapped, with die and
+- The ЛЕ4 package is present but decapped, with die and
   bond wires visible.
 - The clock/video corner visibly includes ИЕ17/74S169-class, ИР16, ЛП5, ЛА3,
   ИЕ10, and ЛА1 devices. Refdes and exact role come from the official documents
   and board model, not package sighting alone.
-- The 2026-07-10 batch adds a complete overlapping solder-side grid. Later
-  package-row corrections withdrew the claimed D2.1/.3/.5/.6/.7 photo routes;
-  their `A10/A14/A12/A15/A9` names remain model assignments pending an exact
-  `.009` line chase or continuity. Chip-removed owner continuity also corrected
-  the early D94 mapping: D94.15 reaches D93.3/`FDC_CS_N`, D94.3 reaches
+- The 2026-07-10 batch adds a complete overlapping solder-side grid. D2.1/.3/.5/.6/.7
+  lack complete photo routes; their `A10/A14/A12/A15/A9` names remain model
+  assignments pending an exact `.009` line chase or continuity. Chip-removed
+  owner continuity establishes the D94 mapping: D94.15 reaches D93.3/`FDC_CS_N`, D94.3 reaches
   D93.4/`FDC_RE_N`, D94.4 reaches D93.2/`FDC_WE_N`, and D94.2 reaches D99.9.
   See `d2-d4-column-row-audit.json` and `docs/photo-registration.md`.
 - Seven later 2026-07-10 component-side photographs show the same FDC-equipped
@@ -64,8 +64,7 @@ close the X3 serial connector's physical identity:
   К170УП2, КР580ВВ51А). The blue connector stamped `СНО51-30-23 8903`
   corroborates the BOM's X8 power-connector designation.
 
-This supersedes the former СНП59-30-23-В labeling of X3 (a BOM part-name-map
-mislabel; the 30-contact СНП59 is X2's parallel connector).
+The 30-contact СНП59 designation belongs to X2’s parallel connector.
 
 ## Limitations
 
