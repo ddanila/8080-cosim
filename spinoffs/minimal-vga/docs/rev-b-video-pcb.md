@@ -20,22 +20,22 @@ package, factory and order gates.
   plane.
 - All 23 bypass capacitors have their VCC pad within 12.85 mm of the corresponding
   IC supply pad. C5, C7-C11 and C21 are mounted on B.Cu between their front-side
-  socket rows; the populated STEP model reports 4.16 mm
-  minimum adjacent-card clearance. The other bypass parts and 47 uF bulk capacitor
+  socket rows. The current five-card [mating report](rev-b-mating-report.md)
+  records a 3.24 mm minimum assembled gap at Memory–I/O; the I/O–Video gap
+  is 15.62 mm with slot 4 empty. The other bypass parts and 47 uF bulk capacitor
   are front-side.
-- `R_CLK` is a 33 ohm source resistor 6.27 mm from oscillator U1.8. Its pre-resistor
+- `R_CLK` is a 33 ohm source resistor 6.28 mm from oscillator U1.8. Its pre-resistor
   `DOTCLK_RAW` route is 6.56 mm; the seven-load `DOTCLK` tree is 174.05 mm over the
   continuous return plane.
 - The active pixel chain remains within its audited bounds: `PIXEL` is
   25.28 mm and `VID_PIXEL` is
   41.77 mm. The three ACT-to-RGB-resistor routes are 15.84, 11.03 and 14.40 mm.
-- R5.J2 makes the adjacent U22.9/U22.10 `V_END` tie a deterministic 2.54-mm F.Cu
-  under-socket strap. This preserves the exact DRC-clean route intent and prevents
-  the global router from consuming that trivial local channel.
+- The generator fixes the U22.9/U22.10 `V_END` tie as a locked 2.54-mm F.Cu
+  under-socket strap.
 
 Recorded KiCad 10.0.5 DRC: **0 violations and 0 unconnected items**.
-Full Video structural LVS remains in sync
-at 23 mapped instances and 106 matched nets.
+Video structural LVS compares the HDL pin netlist with `video.board.json`: 23
+mapped instances and 106 matched nets. It does not extract routed PCB copper.
 
 ## Machine-enforced contract
 
@@ -43,23 +43,35 @@ at 23 mapped instances and 106 matched nets.
 solid pad connections, isolated-island removal, one filled island per plane, absence
 of signal tracks on the inner layers, track/via floors, the two-net 0.15 mm exception,
 all 23 local bypasses, VGA and bus presentation, source-resistor proximity and bounded
-clock/pixel/RGB route lengths. Its negative controls inject a two-layer board, split
-plane, inner-layer signal, wrong-side bypass, unauthorized thin net and long pixel path;
-all must be rejected.
+clock/pixel/RGB route lengths. Its seven negative controls mutate the extracted
+inspection data: two-layer stack, project-rule limit, split-plane count, inner-layer
+signal, bypass side, thin-track net and pixel-route length. All must be rejected.
+Without `pcbnew`, this checker exits successfully with a `SKIP` message.
 
-Reproduce from the generated board source:
+## Check the retained layout
+
+Run from the repository root. Inspect any `SKIP` output: missing tools do not
+establish a passing layout. DRC needs KiCad CLI, the physical checker needs
+KiCad Python, and LVS needs Yosys.
 
 ```sh
-unset KICAD_CLI KICAD_PYTHON KICAD_FOOTPRINTS
 . spinoffs/minimal-vga/kicad/revb/env.sh
-"$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/gen_revb_pcb.py video
-python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py video --placement
-spinoffs/minimal-vga/kicad/revb/route_revb_pcb.sh video
-python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py video --total
-"$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_video_pcb.py --self-test
+revb_have KICAD_CLI && revb_have KICAD_PYTHON && {
+  python3 spinoffs/minimal-vga/kicad/revb/check_revb_drc.py video --total &&
+  "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_video_pcb.py --self-test
+}
 spinoffs/minimal-vga/sync/revb_lvs.sh video
 spinoffs/minimal-vga/sync/revb_video_lvs_mutation_check.sh
 ```
+
+## Regenerate for layout work
+
+`gen_revb_pcb.py video` replaces the tracked board with generated placement;
+`route_revb_pcb.sh video` imports a new route into that board. Use these only
+when deliberately revising the layout. Routing requires FreeRouting and Java 25,
+can skip when dependencies are absent, and does not promise an identical route.
+A replacement layout needs placement/total DRC, physical/LVS checks, visual review
+and package requalification under the five-board release plan.
 
 The committed routed source pair is `fab/minimal-vga/revb/video.kicad_pcb` plus
 `video.kicad_pro`; KiCad 10 stores the intentional 0.15 mm track and 0.30 mm edge

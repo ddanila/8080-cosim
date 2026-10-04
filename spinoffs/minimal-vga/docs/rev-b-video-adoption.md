@@ -7,12 +7,11 @@ obligation is met.
 
 ## Adopted work
 
-- **Project:** [mengstr/TTL640x480](https://github.com/mengstr/TTL640x480)
+- **Project:** [mengstr/TTL640x480 at the adopted revision](https://github.com/mengstr/TTL640x480/tree/ea1ecd063d500982263c76a795abd84f77ccb59a)
 - **Pinned commit:** `ea1ecd063d500982263c76a795abd84f77ccb59a`
 - **License:** **MIT**, © 2019 **SmallRoomLabs** (permissive — copying and derivative
   works allowed with attribution; the full text is preserved verbatim in
-  `LICENSE-TTL640x480` beside this note). This is a genuine *adoption*, unlike the salfter
-  RC2014-compat files, which are all-rights-reserved and were reference-only.
+  [`LICENSE-TTL640x480`](LICENSE-TTL640x480) beside this note).
 
 ## What we adopt (the timing chain, redrawn)
 
@@ -53,5 +52,8 @@ ours:
 
 ## Attribution
 
-Per the MIT license, attribution is carried in this note, in `LICENSE-TTL640x480`, and as
-a silk credit line on the Video card ("VGA TIMING (c) 2019 SmallRoomLabs MIT").
+Attribution is retained in this note and the full notice in
+[`LICENSE-TTL640x480`](LICENSE-TTL640x480), matching the
+[pinned upstream license](https://github.com/mengstr/TTL640x480/blob/ea1ecd063d500982263c76a795abd84f77ccb59a/LICENSE).
+The current Video PCB has no attribution silkscreen line; preserve the license
+notice when distributing copies or substantial portions of the adopted work.
