@@ -77,7 +77,9 @@ A5 5A 40 02 01 FLAGS CRC
 ```
 
 `FLAGS` bit 0 is ENABLED, bit 1 RESET RELEASED, bit 2 CLOCK SEEN, and bit 3
-`-MRDC` SEEN; bits 4–7 are reserved. The host validates the frame, stores the
+`-MRDC` SEEN; bits 4–7 are reserved. Bits 1–3 latch observations during the
+window: RESET RELEASED means D6 was sampled low at least once, not that reset
+stayed released throughout. The host validates the frame, stores the
 decoded result in session and per-attempt JSON, and prints it. A valid report
 followed by no ROM banner is evidence, so the host stops instead of blindly
 reset-retrying.
@@ -142,7 +144,7 @@ S1.2 with the D98/D97 read-data branch, while S1.3 remains unresolved. Measure
 which pair closes in the reset position and its polarity/voltage before placing
 the isolated contact across any pair.
 
-Build and test with:
+Build and test from the repository root:
 
 ```sh
 sync/jukuravi_nano_check.sh
