@@ -2,9 +2,10 @@
 
 Status: **PLANNING ESTIMATE / DESIGN HOLD**.
 
-This is a first-pass +5 V current budget for choosing the input fuse and supply
-path. It is intentionally conservative until the exact socketed IC vendors are
-frozen.
+This is a +5 V planning allowance for the input fuse and supply path, pending
+exact socketed-part selection and measured current. The rows are budgeting
+assumptions, not a parts-count audit or measured load. Their 1.812 A sum is
+rounded to **1.81 A** for the fuse checks.
 
 ## Assumptions
 
@@ -58,18 +59,31 @@ committed fit are guarded by `rev-a-ptc-candidate.md`.
 - Role on Rev A: gross short / wiring fault protection, not precise load
   limiting.
 
-At the datasheet's 23 C point this is 1.66x the 1.81 A planning budget with
-both bipolar PROMs inserted. With both sockets empty, the budget is ~1.55 A;
-one fitted PROM adds ~130 mA. These estimates depend on population, not Mode A/B.
-The margin
-falls to 1.44x at 40 C and 1.16x at 60 C, so ambient/board temperature is a real
-qualification gate rather than an implicit room-temperature assumption. The
-part should avoid nuisance trips during room-temperature bring-up and remains
-useful for gross faults, but trace width, connector rating, ambient temperature
-rise, and final IC choices must be checked before ordering. Note the bipolar
-РТ4/РЕ3 add real heat when socketed — verify local decoupling (C26/C27) and
-socket contact before a chip test.
+With both PROMs fitted, the recorded hold-current/budget ratios are 1.66x at
+23 C, 1.44x at 40 C and 1.16x at 60 C. With both sockets empty, the planning
+budget is about 1.55 A; each fitted PROM adds about 130 mA regardless of Mode A/B.
+These ratios do not qualify nuisance-trip behavior or fault clearing. Final IC
+loads, source capability, trace/connector ratings and board temperature remain
+physical acceptance requirements. Include C26/C27 and socket contacts in the
+review before testing the bipolar PROMs.
 
 USB-C is kept as a convenience 5 V input. Without PD/current negotiation, do not
 assume it can supply the full planning budget from every host/charger. The screw
 terminal / bench supply path remains the safer primary bring-up input.
+
+## Software check
+
+Run from the repository root with KiCad's Python (`pcbnew`):
+
+```sh
+. spinoffs/minimal-vga/kicad/revb/env.sh
+"$KICAD_PYTHON" spinoffs/minimal-vga/kicad/report_rev_a_power_budget.py
+```
+
+This writes `fab/minimal-vga/power-budget-readiness.md`. Its `READY` status
+checks the fixed 1.81 A allowance and required documentation phrases, F1's BOM
+identity and footprint, selected power-entry pad nets, and the room-temperature
+hold-current ratio. It does not sum the table, derive part currents from
+population/datasheets, solve routed voltage drop or test fuse response.
+The separate [PTC candidate guard](rev-a-ptc-candidate.md) checks preserved
+part evidence and fit; physical qualification and design release remain open.
