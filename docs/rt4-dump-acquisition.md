@@ -33,18 +33,10 @@ pins D2 raw `0` as READY low and raw `F`/disabled as pulled-up READY high.
 The corrected-reader session exposed D6's channel-order error without changing
 the already validated D2 table.
 
-## Earlier revision-2 wiring
+## Reader-3 wiring
 
-- PROM A0-A7/pins 5,6,7,4,3,2,1,15 -> Nano D2-D9.
-- PROM D0-D3/pins 12,11,10,9 -> Nano D10,D11,D12,A0. Leave Nano D13 open.
-- PROM /CE pin 13 -> GND; /CE pin 14 -> Nano A1.
-- PROM pin 8 -> GND and pin 16 -> regulated +5 V. Fit an individual external
-  1k-4.7k pull-up from every data output to +5 V.
-- Require `# disabled_raw=F,stable=OK` before accepting a dump. First re-read
-  known D2 and require byte identity with `d2_037.raw.bin`; then capture D6
-  three times including a power cycle.
-
-### Reusing the K155RE3 Nano reader
+Earlier revision-2 captures remain supported by the validator. Their wiring is
+recorded in `tools/rt4_dumper/rt4_dumper.ino`.
 
 `tools/re3_board_rt4_dumper/re3_board_rt4_dumper.ino` is reader revision 3.
 It reuses the tracked K155RE3 Nano reader wiring after moving the four external
@@ -56,8 +48,9 @@ D0-D3 to Nano D4,D3,D2,A1, and the two active-low enables to Nano D5,D6.
 Revision 3 checks output release three ways before reading: both enables high,
 pin 14 high by itself, and pin 13 high by itself. All three checks must report
 stable raw `F`. The host validator accepts this exact mapping and rejects any
-changed/missing mapping or enable check. The same D2-first discriminator and
-three-capture D6 procedure below applies unchanged.
+changed/missing mapping or enable check. Re-read known D2 first and require
+byte identity with the validated `d2_037.raw.bin`. Then capture D6 three times,
+including a separate power cycle.
 
 The physical reader's established flashing path is USBasp ISP, detected on the
 2026-07-19 workstation as USB ID `16c0:05dc`. Remove the PROM from the reader
@@ -74,10 +67,7 @@ avrdude -c usbasp -p m328p \
   -U flash:w:tools/re3_board_rt4_dumper/build/re3_board_rt4_dumper.ino.hex:i
 ```
 
-Use the verified system `avrdude` flashing path above. On the recorded
-workstation the Snap Arduino uploader failed with USBasp. The adapter's
-old-firmware SCK warning was non-fatal when device identification, writing,
-and verification succeeded; require those checks on each upload.
+Require successful device identification, writing, and verification on each upload.
 
 ISP programming may erase the Nano serial bootloader; that does not affect the
 reader firmware, but later serial-port uploads require reburning the bootloader.
