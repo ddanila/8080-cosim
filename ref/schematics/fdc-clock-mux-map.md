@@ -4,7 +4,8 @@ Status: **REVIEWED PRIMARY-SOURCE TRANSCRIPTION / SOURCE MODEL ALIGNED**
 
 Recovered `ДГШ5.109.009 Э3` sheet 3 closes every functional pin of D95
 К555КП12. D95 is the dual clock selector for the ВГ93 controller and the ИЕ7
-read separator; it is no longer an owner-continuity boundary.
+read separator. Its source wiring is accounted for; this does not establish
+owner-board continuity for every connection.
 
 ## Exact circuit
 
@@ -47,11 +48,10 @@ and implemented model correction are recorded in
 | D95 output-B continuation into D106 pin 4 | `ref/photos/dgsh5-109-009-e3/PXL_20260718_101644861.jpg` | `8b8ad8abdf5cdf8c235cc942592ebe6c0019ec8ad90ae9958267fbc154bb0e67` |
 | Independent whole-sheet topology check | `ref/photos/dgsh5-109-009-e3/PXL_20260718_101633062.jpg` | `5f58dff9c2e1f8237f1c54e44a7ff5db2381b7c503d5e25466fcd219915f7047` |
 
-The sheet-2 1 MHz rail had already been source-closed as `LATCH_B`; D40's
-other counter taps were already traced at pins 12, 13, and 14. This
-transcription therefore extends existing clock conductors and does not invent
-new oscillator sources. `kicad/check_fdc_clock_mux.py` guards the complete
-board-JSON mapping, retired boundary names, structural HDL mux, and LVS map.
+From the repository root, run `python3 kicad/check_fdc_clock_mux.py` with
+Python's standard library. It checks selected board-JSON nets and provenance,
+retired boundary names, literal HDL mux markers, and the D95 LVS map entry.
+It does not run LVS, inspect PCB copper, or simulate clock selection.
 
 The complete D106 digital contract is now transcribed separately in
 `fdc-recovery-counter-map.md`. Exact analog timing at D93/D106 remains a
