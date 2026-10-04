@@ -8,10 +8,10 @@ waits for the `A>` prompt bitmap, then types the disk command
 implemented as `|` in `JUKU_KEYS`; it is not a typed key.
 
 The result is a bounded command-launch diagnostic and visible BASIC
-prompt oracle. It records the post-prompt keyboard path for this stimulus,
-the command triggers further FDC traffic from a real directory-backed
-`JBASIC.COM` candidate, and the final framebuffer contains the rendered
-`READY` prompt.
+prompt oracle. It checks keyboard progress, at least 19,000 FDC data
+reads over the whole run, a short raw-candidate entry prefix in RAM,
+and the rendered `READY` prompt. It does not resolve the directory/raw
+allocation mapping described in [BASIC extraction](basic-disk-extraction.md).
 
 ## Command
 
