@@ -40,9 +40,12 @@ V16.
 Passive discovery and waiting for a configured console endpoint continue until
 the host is stopped; `timeout` does not bound those waits. It bounds each
 bootstrap attempt. Failed attempts return to discovery without applying the
-ordinary `boot_restarts` count limit. Named serial-device reopen attempts are
-bounded by `reconnect_timeout`; recovery requires the path to return within
-that window. See [the configuration guide](jukuhost-config.md) for defaults.
+ordinary `boot_restarts` count limit. Each named serial-device reopen window
+is bounded by `reconnect_timeout`, but passive recovery repeats those windows
+until the path returns or the host is stopped. Zero disables reopening;
+capture/log failures and inherited descriptors cannot use this recovery path.
+An ordinary session without passive recovery stops when its reopen window
+expires. See [the configuration guide](jukuhost-config.md) for defaults.
 
 ## Recovery matrix
 
@@ -56,7 +59,7 @@ that window. See [the configuration guide](jukuhost-config.md) for defaults.
 | reset during V16 | fresh C11 beacon/`JR16` | abandons partial stream and rediscovers | full authenticated retransmission |
 | complete V16 body with bad CRC | CRC failure returns loader to discovery loop | sees a later beacon and retries complete V16 | no partial image executed |
 | incomplete length/body/CRC after accepted `JZ` | blocks waiting for the remaining bytes; scanner timeout is inactive | boot deadline returns host to passive discovery | no partial image executed; a checked reset/restart is needed if the sender cannot complete the transfer |
-| host process replaced | resident ROM times out and retries the request | replacement validates `JD` and serves it | no manual resume flag |
+| host process replaced | CP/M's NetDisk client times out and retries the request | replacement validates `JD` and serves it | no manual resume flag |
 | named serial device disappears | target continues bounded request retries or C11 discovery | host retries reopen in bounded configured windows, then rediscovers | recovers when the device path returns |
 | configured console PTY is absent or replaced | target continues bounded N4 retries | host waits for the endpoint before boot, or reopens it and rediscovers after loss | no successful boot is abandoned for a missing relay |
 | capture/log/media/artifact failure | no safe ROM remedy | host stops with its specific fatal exit | unsafe or unaudited state is not hidden |
