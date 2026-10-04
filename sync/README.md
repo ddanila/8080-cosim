@@ -193,6 +193,10 @@ verify current-source execution after resolving simulator compatibility.
   intermediate is written to a temporary file.
 - `jukuravi_d55_clock_audit.sh` — slow full-ROM T31 negative control plus T34
   clean, D55-data, D54-clock, D56-clock, and D9-select structural fault matrix.
+  The current rerun stops in T31: bitmap `18` differs from the expected `08`
+  because the D57 bit is also set. No T34 case is reached; see
+  [the D55 audit](../docs/jukuravi-d55-diagnostic-audit.md) for the recorded
+  earlier matrix and the current failure boundary.
 - `janet_netboot_check.sh` — frozen Python-era fixture regression: five
   parallel stock-ROM NetBios clients served only through simulator D11 PTYs;
   proves Janet retry/turn handling, exact 52-sector system installation at
