@@ -111,7 +111,7 @@ def main() -> int:
     indexed = len(photos) == 26 and all(path.stem.replace(".MP", "")[-9:] in photo_text for path in photos)
     checks = [
         (
-            "All 26 photographed sheet-1 views are local, real JPEGs, and indexed",
+            "All 26 sheet-1 files have JPEG signatures, exceed 1 MB, and are indexed",
             indexed and real_jpegs,
             "`ref/photos/dgsh5-109-009-sb/`",
         ),
@@ -283,8 +283,11 @@ def main() -> int:
         "is promoted as a copper netlist.",
         "",
         "Regenerate with `python3 scripts/report_assembly_drawing_extraction.py`.",
-        "The checks below cover the source PCB and retained assembly evidence;",
-        "they do not qualify the routed PCB or close manufacturing holds.",
+        "The checks combine source-PCB guards with expected text markers in the",
+        "retained records. The inventory checks JPEG signatures, sizes and indexing;",
+        "its hashes record current file bytes without comparing pinned digests.",
+        "These checks do not reread the drawing, qualify routed copper, or close",
+        "manufacturing holds.",
         "",
         "## Extraction checks",
         "",

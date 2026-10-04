@@ -9,14 +9,17 @@ document the wire/cable connection table and change registration. Neither
 is promoted as a copper netlist.
 
 Regenerate with `python3 scripts/report_assembly_drawing_extraction.py`.
-The checks below cover the source PCB and retained assembly evidence;
-they do not qualify the routed PCB or close manufacturing holds.
+The checks combine source-PCB guards with expected text markers in the
+retained records. The inventory checks JPEG signatures, sizes and indexing;
+its hashes record current file bytes without comparing pinned digests.
+These checks do not reread the drawing, qualify routed copper, or close
+manufacturing holds.
 
 ## Extraction checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| All 26 photographed sheet-1 views are local, real JPEGs, and indexed | PASS | `ref/photos/dgsh5-109-009-sb/` |
+| All 26 sheet-1 files have JPEG signatures, exceed 1 MB, and are indexed | PASS | `ref/photos/dgsh5-109-009-sb/` |
 | Factory local solder/copper details are guarded without treating position 150 as a cut | PASS | `BODGE-TRIAGE.md`; Вид В photos 114626340/114633498/114638730 |
 | D94/D100/D98 retain the corrected horizontal assembly posture | PASS | source `kicad/juku.kicad_pcb`; `kicad/check_fdc_cluster_placement.py` |
 | D106/D28/D96 row follows registered owner-photo spacing | PASS | two-sided D106/D28 fits; D96 component fit; `kicad/check_d28_d106_photo_placement.py` |
