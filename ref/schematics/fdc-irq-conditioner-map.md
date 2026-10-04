@@ -23,8 +23,7 @@ marked superseded rather than discarded. The board JSON, KiCad source, HDL,
 and routed PCB now carry the corrected 10k R94 pull-up plus a
 separate `RUNK1` 220-ohm physical placeholder with two measurement boundaries.
 
-The earlier direct D93.38/.39-to-D10.19/.18 assignment came from MAME and is
-now retired. Exact `.009` sheet 1 source-closes IR0 to X2.214/R105 and
+Exact `.009` sheet 1 source-closes IR0 to X2.214/R105 and
 IR1 to X2.218/D27 PB7/R107, separately from this conditioner. These source
 assignments do not establish owner-board continuity. Registered component and solder views fix the
 D96.9/.11 pad locations and show that
@@ -39,7 +38,7 @@ They are drawing cross-references, not logic-high labels, and repeated-looking
 marks do not justify joining unrelated arrows. The overview supplies a
 continuous drawn path from D96.9 to D101 A0, independent of those annotations;
 D96.11's drawn source is D94.2, while its target-board continuity remains
-unmeasured. See `docs/d96-clock2-source-review.md`.
+unmeasured. See [the clock-source review](../../docs/d96-clock2-source-review.md).
 
 ## Device-logic contradiction
 
@@ -53,9 +52,18 @@ and 13 plus a powered capture of
 pins8-13 is therefore required. The exact board transcription remains intact;
 no missing clear net is inferred from the functional contradiction.
 
-Guard:
+## Verification
+
+Run from the repository root:
 
 ```sh
 python3 kicad/check_d93_irq_conditioner.py
 sync/d96_check.sh
 ```
+
+The Python guard uses the standard library to check selected JSON nets,
+values, NC declarations, recorded photo metadata, and literal HDL markers.
+JPEG dimensions are checked when image bytes are present; LFS pointers supply
+only the declared object hash. It does not inspect copper or execute HDL.
+The [toggle map](fdc-read-clock-toggle-map.md#verification) describes the
+separate device simulations and their prerequisites.
