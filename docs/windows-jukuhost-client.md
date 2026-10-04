@@ -156,6 +156,10 @@ atomic replacement where the OS provides it; the legacy fallback retains a
 recovery backup. It saves when **Listen** is pressed and uses no registry
 settings.
 
+The example below selects C12, enables automatic listening, and mounts an
+optional B: image. Adjust it for the fitted ROM and available media; the
+bundled INI uses the Stock ROM/manual-start settings described above.
+
 ```ini
 [juku]
 mode=c12
