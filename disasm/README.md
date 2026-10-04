@@ -88,17 +88,14 @@ All eight block checksums pass under the same convention as jmon22
 `3F40h-3FFFh` vector region is copied to `FF40h-FFFFh` and everything
 dispatches through it. Unlike jmon22, no blocks are excluded for known read
 damage, so descent includes the vector slots. Passing additive checksums
-does not prove that every byte is historically correct. Its primary purpose is
-structural: a comparison reference for jmon22's untrusted blocks 6-7
-(`3F40h-3FFFh` is 55% positionally identical to jmon22's; block 6 is ~1%
-and will need routine-level alignment). Notable anchors: the ENSV TA Kub.I /
-AT EKB credit, the Bootstrap v3.3 / FDC 1791 banner, and the
-checksum-failure UI that reports the failing EPROM number.
+does not prove that every byte is historically correct. Use it as a comparison
+reference for jmon22's untrusted blocks 6-7, subject to the donor constraints in
+[the reconstruction report](../docs/jmon22-reconstruction.md).
 
 ## Covered-line variants (ekta24, ekta31, ekta32, ekta35)
 
 - [`ekta24/`](ekta24/ekta24.ctl) — Serial #0024, RomBios 3.42, Juss keyboard,
-  FDC 1791/2; the oldest serial.
+  FDC 1791/2.
 - [`ekta31/`](ekta31/ekta31.ctl) — Serial #0031, RomBios 3.43, 40x24.
 - [`ekta32/`](ekta32/ekta32.ctl) — Serial #0032, RomBios 2.43; the stock
   sibling of the homebrew #0043 and the reference for isolating its
