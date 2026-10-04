@@ -1,5 +1,7 @@
 # D7 sheet-1 gate-output crossing
 
+## D7.11 and D105.3 remain separate
+
 Source: exact `.009 Э3` sheet-1 detail
 `ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg`, native crop
 `(950,3220)–(1600,3760)`. The lower pin-3 output is visibly labeled
@@ -10,17 +12,19 @@ native crop. No source-drawn D7.11/D105.3 output tie is established here.
 The exact pixel coordinates and model disposition are recorded in
 `ref/schematics/d7-d105-output-crossing-correction.json`.
 
-The owner-board model already keeps D7.11 on `PROM_EN` and D105.3 on
+The model keeps D7.11 on `PROM_EN` and D105.3 on
 qualified peripheral `/WR` (`IOWR`), matching the separate local source
 strokes. Owner continuity closes D105.3 to D94.13, D29.5, D10.2,
 D11.10, D26.36, and D27.36. D7.11 has not been tested directly against
 D105.3, but such a measurement is an optional check for a hidden remote or
-factory-modified path, not a source-required tie. Its probe sites are D7.11
-near solder `(2245,1193)` in `200525009` and D105.3 near component
+factory-modified path, not a source-required tie. D7's probe sites are listed
+below; D105.3 is near component
 `(1108,1680)` in `200439607` / solder `(2807,1190)` in `200537608`.
 Keep the model nets separate; see
 `ref/photos/juku-pcb-2/d105-pin3-photo-review.json`. D7.3 remains a
 different source branch to D29.2 as read in the D29 detail below.
+
+## D7.3 to D29.2 source path
 
 The exact sheet-1 D29 detail in `PXL_20260718_101813438.jpg` crop
 `(1000,3040)–(1740,3540)` adds a readable destination: the D7 NAND
@@ -31,7 +35,10 @@ pin-3 output, rising stroke, and D29.2 landing in one view; this is the separate
 This closes D7.3→D29.2 **on the source drawing**, while owner-board continuity
 remains to be checked. D29.5 instead belongs to the owner-closed D105.3/IOWR island.
 
-The component-side board view `ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg` locates the marked D7 and its complete lead rows (pin 3 near `(3338,1320)`, pin 11 near `(3285,1485)`). The pin-3 visible copper runs north; no component-face bridge to pin 11 appears beside the package. This fits their separate source branches. Any remote D7.11-to-D105.3 path would need independent physical evidence.
+The component-side board view `ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg`
+locates the marked D7 and its complete lead rows (pin 3 near `(3338,1320)`,
+pin 11 near `(3285,1485)`). The pin-3 visible copper runs north; no
+component-face bridge to pin 11 appears beside the package.
 
 The same owner crop `(3100,1100)–(3500,1650)` reads **КР1533ЛА3** on the populated D7 body (upside down in the photo). This confirms the D7 package identity and a later-series body marking than the generic drawn `ЛА3`. The body marking does not establish remote connectivity.
 
