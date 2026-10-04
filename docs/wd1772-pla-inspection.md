@@ -50,13 +50,16 @@ signal meanings, chip timing, or equivalence to the Juku VG93 circuitry.
 | `9` output columns (zero-based) | 0, 1, 5, 8, 9, 10, 11 |
 | Raw output field | `9911191199991111111` |
 
-## Duplicate Labels
+## Duplicates
 
-| Label class | Duplicates |
+Counts are distinct labels or terms occurring more than once across the table.
+Full rows are preserved in [the normalized export](../ref/wd1772-vg93/wd1772pla.normalized.json).
+
+| Class | Repeated values |
 | --- | --- |
-| A labels | `A00` x2, `A01` x2, `A02` x2, `A03` x2, `A04` x2, `A05` x2, `A06` x2, `A07` x2, `A08` x2, `A09` x2, `A10` x2, `A11` x2, `A12` x2, `A13` x2, `A14` x2, `A16` x2, ... (+42) |
-| R labels | `R008` x2, `R062` x2, `R063` x2, `R064` x2, `R065` x2, `R066` x2, `R085` x2, `R104` x2 |
-| Input/output terms | `0010101011001110101/1001101001001111111` x2, `0011001011011110011/0101110110110111011` x2, `0100001111101110010/0101110111110101111` x2, `0111011111111111100/0001100010010011111` x2, `1001011111111111001/0111111111111111111` x2, `1111001111110000000/0111111111111111111` x2, `1111011111001100110/0111111010010011111` x2, `1111110011001111111/0000110010100101010` x2, `1111111100110011111/1111111111111111111` x2, `1111111111111111111/1111111111111111111` x3 |
+| A labels | 58 |
+| R labels | 8 |
+| Input/output terms | 10 |
 
 ## Footer Guide Rows
 

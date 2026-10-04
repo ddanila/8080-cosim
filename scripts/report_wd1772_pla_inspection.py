@@ -13,18 +13,8 @@ def table_row(values: list[object]) -> str:
     return "| " + " | ".join(str(value).replace("|", "/") for value in values) + " |"
 
 
-def duplicate_summary(counter: Counter[object], limit: int = 16) -> str:
-    def render_key(key: object) -> str:
-        if isinstance(key, tuple):
-            return "/".join(str(part) for part in key)
-        return str(key)
-
-    dupes = [f"`{render_key(key)}` x{count}" for key, count in sorted(counter.items()) if count > 1]
-    if not dupes:
-        return "-"
-    if len(dupes) <= limit:
-        return ", ".join(dupes)
-    return ", ".join(dupes[:limit]) + f", ... (+{len(dupes) - limit})"
+def duplicate_summary(counter: Counter[object]) -> int:
+    return sum(count > 1 for count in counter.values())
 
 
 def main() -> int:
@@ -103,9 +93,12 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "## Duplicate Labels",
+            "## Duplicates",
             "",
-            "| Label class | Duplicates |",
+            "Counts are distinct labels or terms occurring more than once across the table.",
+            "Full rows are preserved in [the normalized export](../ref/wd1772-vg93/wd1772pla.normalized.json).",
+            "",
+            "| Class | Repeated values |",
             "| --- | --- |",
             table_row(["A labels", duplicate_summary(a_counts)]),
             table_row(["R labels", duplicate_summary(r_counts)]),
