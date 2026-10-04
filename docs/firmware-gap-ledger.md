@@ -76,13 +76,9 @@ owning reports and commands for those checks.
 - Do not substitute the guarded `.113/.117` RE3 scans for D8 `.039`
   or D94 `.092`; they are lineage evidence, not matching processor
   module programming tables.
-- D94 content and all A0-A4 input destinations are owner-closed. Its
-  physical table now drives the runnable FDC `/RE` and `/WE` inputs;
-  A3 already consumes the owner-closed D105.3 qualified `/WR` conductor.
-  CS7/D9.7 is the source-closed enable. Runnable A4 is held high;
-  the D101 precompensation chain is structural-only. D0's hidden load
-  remains unresolved. Firmware content alone does not release the FDC
-  hardware; see [D94 constraints](d94-reconstruction-constraints.md).
+- D94 firmware content does not release the FDC hardware. See
+  [D94 constraints](d94-reconstruction-constraints.md) for the input/enable
+  mapping, runnable-model limits, and unresolved D0 load continuity.
 
 ## Optional Preservation Follow-up
 
