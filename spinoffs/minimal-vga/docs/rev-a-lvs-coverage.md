@@ -26,6 +26,11 @@ instances whose every physical pin must remain mapped and owned.
 Maps may also name endpoint-closed board nets; every physical endpoint on those
 nets must then be present in the projection.
 
+These comparisons check declared model connectivity. They do not read the PCB
+or establish copper continuity; routing, DRC, and physical measurements require
+their separate checks. The runners return `SKIP` with exit zero if Yosys is
+unavailable, so verify that each requested slice actually ran.
+
 ## Closed in stage 1
 
 The comparison maps 17 physical references, marks 16 of them complete, and
@@ -69,7 +74,7 @@ All 35 non-power decode nets are endpoint-closed.
 
 Two temporary mutations are required to fail: moving U3.12 from DEC_ROM_N to
 DEC_RAM_N, and deleting the U6.6 no-connect declaration. These prove both
-routed-connectivity and intentional-NC sensitivity.
+model-connectivity and intentional-NC sensitivity.
 
 ## Closed in stage 3
 
