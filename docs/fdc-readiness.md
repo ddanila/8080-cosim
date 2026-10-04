@@ -201,7 +201,7 @@ physical D93/D94 wiring.
   directions. Two control families remain exercised solely as unmapped
   firmware-profile diagnostics. The same exhaustive guard proves D23-D25's
   physical bidirectional behavior, including D25's traced turnaround input.
-  Factory sheet 1 independently assigns physical D100 to drive outputs, not DB.
+  Factory sheet 3 assigns physical D100 to the drive outputs.
 - The decoded top-level harness runs multi-read over vendored sectors 9/10,
   multi-write/readback, and a full 6,230-write MFM track format over an isolated
   writable copy in the logical DB build and both unmapped inversion-profile builds.
@@ -270,7 +270,7 @@ physical D93/D94 wiring.
   This is a guarded historical firmware boundary, not claimed error safety.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
   `sync/juku_top_periph_bus_check.sh`.
-- Factory sheet 1 proves the behavioral controller's direct system-`DB` path.
+- Factory sheet 3 establishes D93's direct system-`DB` path.
   `docs/fdc-bus-polarity.md` records two preserved firmware profiles:
   archive 24 (RomBios 3.42) and Monitor 3.3 use `CMA` wrappers, while archives
   31/35 (3.43) and 37 (3.43m) use NOPs. These are static instruction patterns,

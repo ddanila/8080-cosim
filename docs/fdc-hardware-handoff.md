@@ -107,7 +107,7 @@ collects period VG93 support circuits. Its Figure 16 shows a second
 useful comparison circuit, but its preset and clear straps are not reused
 where the primary Juku sheet differs.
 
-Factory `.009` sheet 1 joins D106.7 to D28.9; D28.8 clocks
+Factory `.009` sheet 3 joins D106.7 to D28.9; D28.8 clocks
 D96.3, and D96.5 supplies D93.26 RCLK. Sheet 3 joins D97.4/D93.27
 RAW READ to D106.11 /LOAD and grounds D106.14 CLR.
 D95.7 supplies D93.24 with selected 1/2 MHz, while D95.9 independently
@@ -120,10 +120,10 @@ D93 DRQ/INTRQ drive D28.11/.13, wired open-collector outputs D28.10/.12
 feed D96.10/.12 through the R95 pull-up, and R93 pulls INTRQ high.
 D96.9 Q2 feeds D101 A0-A3; D96.11 CLK2 is source-joined to D94.2, while D96.13
 shares D99.10 B2's sheet-1 boundary and needs its source identified.
-Registered
-two-sided photos prove neither pad departs on B.Cu, while the F.Cu chase
-and the drawing's plain/primed continuation marks remain non-unique; see
-`ref/schematics/fdc-irq-conditioner-map.md`.
+D96.9 has no exposed local B.Cu departure. A later solder review identifies
+a conditional D96.11-to-D28.11/DRQ route that conflicts with the drawing;
+direct continuity must resolve it before changing either net. See
+[D96 clock source review](d96-clock2-source-review.md).
 
 Recovered `.009` Э3 sheet 3 now closes Juku's write-precompensation chain:
 D93.31 drives D97.10; D97 and D102 provide three delay taps to D101.10/.11/.12;
@@ -162,18 +162,18 @@ remain open. Its selects and both outputs are source/owner-closed.
 
 | Net / path | Status | Endpoint / purpose | Evidence boundary |
 | --- | --- | --- | --- |
-| `DB0` | WIRED | system DB directly to `D93.7` | factory `.009` sheet 1 + WD1793 datasheet |
-| `DB1` | WIRED | system DB directly to `D93.8` | factory `.009` sheet 1 + WD1793 datasheet |
-| `DB2` | WIRED | system DB directly to `D93.9` | factory `.009` sheet 1 + WD1793 datasheet |
-| `DB3` | WIRED | system DB directly to `D93.10` | factory `.009` sheet 1 + WD1793 datasheet |
-| `DB4` | WIRED | system DB directly to `D93.11` | factory `.009` sheet 1 + WD1793 datasheet |
-| `DB5` | WIRED | system DB directly to `D93.12` | factory `.009` sheet 1 + WD1793 datasheet |
-| `DB6` | WIRED | system DB directly to `D93.13` | factory `.009` sheet 1 + WD1793 datasheet |
-| `DB7` | WIRED | system DB directly to `D93.14` | factory `.009` sheet 1 + WD1793 datasheet |
+| `DB0` | WIRED | system DB directly to `D93.7` | factory `.009` sheet 3 + WD1793 datasheet |
+| `DB1` | WIRED | system DB directly to `D93.8` | factory `.009` sheet 3 + WD1793 datasheet |
+| `DB2` | WIRED | system DB directly to `D93.9` | factory `.009` sheet 3 + WD1793 datasheet |
+| `DB3` | WIRED | system DB directly to `D93.10` | factory `.009` sheet 3 + WD1793 datasheet |
+| `DB4` | WIRED | system DB directly to `D93.11` | factory `.009` sheet 3 + WD1793 datasheet |
+| `DB5` | WIRED | system DB directly to `D93.12` | factory `.009` sheet 3 + WD1793 datasheet |
+| `DB6` | WIRED | system DB directly to `D93.13` | factory `.009` sheet 3 + WD1793 datasheet |
+| `DB7` | WIRED | system DB directly to `D93.14` | factory `.009` sheet 3 + WD1793 datasheet |
 | `FDC_RE_N` / `FDC_CS_N` / `FDC_WE_N` | WIRED | D94 D2/D3 to D93 RE/WE with R88/R87 pull-ups; D94 enable pin15 to D93 CS; D94 D1 to D99.9/R89 | direct owner continuity for all three controls and corrected D1 destination |
 | D94.5 no-connect / `D93_1_OPEN_STUB` | WIRED | D94 output D4 is a PCB no-connect; D93.1 owns the short open stub | owner continuity plus full-resolution exposed-socket photograph recheck |
 | `BA0` / `BA1` | WIRED | register select to D93 A0/A1 | scan |
-| `FDC_DDEN` | OWNER-VERIFY | density control to D93 DDEN | MAME-derived PC4; cross-check on hardware |
+| `FDC_DDEN` | OWNER-VERIFY | density control to D93 DDEN | exact .009 sheets 1 and 3; target-board continuity pending |
 | `FDC_INTRQ` | WIRED | D93 INTRQ into local D28/R93 conditioner | exact .009 sheet 3 |
 | `FDC_DRQ` | WIRED | D93 DRQ into local D28 conditioner and 10k R94 pull-up | exact .009 sheet 3 plus owner continuity/identification |
 | `X2_IRQ0` / `X2_PB7` | WIRED | source-closed D10 IR0/IR1 external inputs (not assigned to FDC) | exact .009 sheet 1; retired as inferred FDC destinations |
@@ -248,10 +248,9 @@ DRQ/INTRQ feed the local D28/D96 conditioner, not D10 directly.
   continuity, D96.11 CLK2-to-D94.2/D99.9 continuity, and whether sheet-3
   D96.13 /CLR2 joins D99.10 B2; identify the shared clear/B2 source separately. Capture WREQ_N at pins1/4 with Q1/pin5
   and /Q1/pin6 because simultaneous async release leaves restart phase
-  undefined. The registered solder
-  view excludes B.Cu departures at both pads, and the obscured F.Cu
-  paths plus non-unique drawing marks do not prove PIC joins. Direct D93.39/38-to-D10.18/19
-  was a retired MAME-era assumption: sheet 3 instead proves the local
+  undefined. Check the photographed D96.11-to-D28.11/DRQ candidate
+  against the separate source nets; D96.9's onward physical route remains
+  unproved. Sheet 3 establishes the local
   D28/R93/R95/D96 path. Primary device truth makes the shared
   /PRE2/D2 wiring set-only while /CLR2 is inactive; capture
   pins8-13 during request and acknowledge. D93.19 is source-connected to
