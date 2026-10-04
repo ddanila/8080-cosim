@@ -85,7 +85,8 @@ mode=read-only
 
 Required sections are `[host]` with `port`, `[system]` with `file`, `size`
 and `sha256`, and `[disk_a]` with `file`, `size`, `sha256`, `geometry` and
-`mode`. Snapshot A: also requires `base`. Optional artifact sections must
+`mode`. A: requires `geometry=juku-cpm3`; `base` is required for snapshot mode
+and rejected for read-only or direct mode. Optional artifact sections must
 contain all three identity fields; a fallback requires both fallback sections.
 Drive B is optional and requires its complete file identity, geometry and mode.
 
