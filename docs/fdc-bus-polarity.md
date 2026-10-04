@@ -4,7 +4,7 @@ Status: **FIRMWARE PROFILES PROVED / ARCHIVE-0037 DIRECT-BUS PROFILE ADOPTED**
 
 The listed firmware contains two VG93 I/O byte-pattern profiles: CMA beside
 each recognized register-transfer pattern, or NOP at those same boundaries.
-Factory sheet 1 now proves D93 DAL0..DAL7 connect directly to system
+Factory sheet 3 proves D93 DAL0..DAL7 connect directly to system
 DB0..DB7 and D100 instead buffers eight floppy-drive outputs. The adopted
 third-source `ekta37.bin` ROM pair selects the direct-bus/NOP profile; only
 the historical reason for the non-adopted CMA profile remains open.
@@ -60,7 +60,7 @@ are not falsely classified as this register-mapped VG93 template.
 
 Configuration consequence:
 
-- Factory sheet 1 requires a direct physical D93 data bus; D100 cannot
+- Factory sheet 3 requires a direct physical D93 data bus; D100 cannot
   explain or select either firmware profile.
 - `ekta31.bin`, `ekta35.bin`, and `ekta37.bin` match the direct bus. `ekta24.bin`
   and Monitor 3.3 retain systematic CMA sites whose hardware context is
@@ -81,7 +81,7 @@ The data path is now source-proved without an intervening D100:
   ВК38 differ only in the duration/source timing of the two write strobes.
 - Board topology is bit-for-bit from D1 CPU `DC0..DC7` through D5 to system
   `DB0..DB7`. Those same rails directly join D15/D16 and D93 pins 7..14;
-  factory sheet 1 shows no intervening permutation or inverter.
+  factory sheets 1 and 3 show no intervening permutation or inverter.
 - The guarded functional D15+D16 images concatenate exactly to the known
   `fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`
   ekta37 image. Its reset bytes are `C3 17 00` (8080
@@ -95,7 +95,7 @@ straight board topology, and every direct system-bus ROM/peripheral path.
 
 ## Physical evidence
 
-- Factory sheet 1 directly joins D93 pins 7..14 to DB0..DB7.
+- Factory sheet 3 directly joins D93 pins 7..14 to DB0..DB7.
 - Sheet 3 assigns D100 inputs to D93 DIR/STEP/HLD/TG43/WG, a
   write-data/precompensation path, D99 Q2 motor pulse, and PPI side select.
   D100 outputs land on X4 drive-control contacts 9..20.
