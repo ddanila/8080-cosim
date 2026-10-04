@@ -1,6 +1,9 @@
 # FDC write-precomp source map
 
-The recovered ДГШ5.109.009 Э3 sheet 3 closes the target board's write-data delay and precompensation chain. The model adopts every non-conflicting sheet connection, while direct target-board continuity remains authoritative where the factory electrical drawing is internally inconsistent.
+ДГШ5.109.009 Э3 sheet 3 establishes the source wiring of the write-data delay
+and precompensation chain. The model adopts the non-conflicting sheet
+connections; direct target-board continuity takes precedence where the drawing
+is inconsistent. Physical continuity limits are listed below.
 
 | Function | Closed path |
 |---|---|
@@ -52,6 +55,9 @@ Primary image: `ref/photos/dgsh5-109-009-e3/PXL_20260718_101648508.jpg`. Target 
 python3 kicad/check_fdc_precomp_network.py
 ```
 
-The guard checks canonical JSON connections and resistor values, unresolved
-C20/C22 installed values, and structural HDL/LVS mappings. It does not
-validate installed analog timing, physical continuity, or routed copper.
+Run from the repository root with Python's standard library. The guard checks
+selected JSON connections, resistor values, unresolved C20/C22 installed values,
+literal HDL markers, and D97/D101/D102 LVS map entries. It does not run LVS or
+simulate the HDL. See [the guard's scope](../../docs/d101-output-tie-photo-review.md#model-guard).
+Installed analog timing, physical continuity, and routed copper require
+separate verification.
