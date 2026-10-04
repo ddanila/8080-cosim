@@ -2,7 +2,7 @@
 
 This analysis combines static observations of the pinned binaries with
 the cited drawing and owner-photo evidence. The snippet at the end reproduces
-serial/version strings and a selected boot-raster comparison; it does not
+serial/version strings, positional differences, and a selected boot-raster comparison; it does not
 reproduce every analysis below or verify physical compatibility. This complements the generated
 [`d15-d16-firmware-lineage.md`](d15-d16-firmware-lineage.md), which
 establishes archival identity for the adopted pair; this note explains how
@@ -22,11 +22,11 @@ version. The `ektaNN.bin` names come from the serials:
 | `ekta37.bin` | EktaSoft '88, Serial #0037 | **3.43m** | `fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27` |
 | `ekta43.bin` | EktaSoft **'90**, Serial #0043 | **2.43m** | `39e3ca8978b369632d03c658300654445b898139009f188cb154e2f901238ba7` |
 
-Serial order does not follow version order (the lowest serial carries
-RomBios 3.42), so these are per-machine configuration builds rather than a
-release sequence. Two RomBios lines are present: **2.43** (serials #0032
-and #0043) and **3.42/3.43** (the other four). The adopted replica image is
-serial #0037, RomBios 3.43m.
+Serial order does not follow banner version order: #0032 carries 2.43
+between two serials carrying 3.43. The banners identify **2.43/2.43m**
+(serials #0032 and #0043) and **3.42/3.43/3.43m** (the other four); they
+do not establish the release sequence. The adopted replica image is serial
+#0037, RomBios 3.43m.
 
 ## S21 read versus the `.009` E8 bridge
 
@@ -62,8 +62,7 @@ The 1990 `ekta43.bin` banner identifies RomBios 2.43m, while #0032 identifies
 
 The banners describe different screen, keyboard, FDC, and secondary-BIOS
 configurations; they do not establish that one image is a feature superset.
-The
-53-column screen is not a 2.43-line trait (#0035 pairs it with 3.43 and
+The 53-column screen is not a 2.43-line trait (#0035 pairs it with 3.43 and
 NetBios), and #0024 even targets a different FDC chip.
 
 Compared with #0032, #0043 changes the banner-declared keyboard to IBM AT;
@@ -74,16 +73,14 @@ supports its adoption without proving complete firmware-to-board compatibility:
 the PB4/PB5 S21 boundary remains unresolved. The NetBios boot path is analyzed
 in [the network BIOS notes](ekta37-netbios-notes.md).
 
-## Content kinship
+## Binary comparison
 
-Byte-positional diffs are large against every sibling (12,328..13,814 of
-16,384 bytes), so no image is a byte-patch of another. Content-addressed
-comparison (fraction of #0043's non-trivial 8-byte chunks found anywhere in
-the candidate) ranks its kinship: **43% with #0032** versus 35% with #0037.
-Both facts together read as rebuilt/relocated images from shared source
-lines, with #0043 closest to the 2.43 line — consistent with
-[`fdc-bus-polarity.md`](fdc-bus-polarity.md), which already grouped serials
-#0032/#0043 by their shared port-`1Ch/1Dh` bit-stream storage routine.
+Comparing #0043 with the other five EktaSoft images gives 12,328–13,814
+unequal byte positions out of 16,384 (reproduced below). This measures
+positional differences; it does not establish source ancestry or distinguish
+changed code from relocated code. The [FDC bus analysis](fdc-bus-polarity.md)
+identifies a shared port-`1Ch/1Dh` bit-stream routine in #0032/#0043 and
+Monitor 2.2.
 
 ## Boot PIT programming across the lines and families
 
@@ -183,6 +180,12 @@ roms = {n: Path(f"roms/{n}.bin").read_bytes()
 for n, b in roms.items():
     print(n, [s.decode() for s in re.findall(rb"[ -~]{5,}", b)
               if b"Serial" in s or b"RomBios" in s])
+reference = roms["ekta43"]
+for n, b in roms.items():
+    assert len(b) == len(reference) == 16384
+    if n != "ekta43":
+        print("ekta43 versus", n, "unequal byte positions:",
+              sum(x != y for x, y in zip(reference, b)))
 def runs(rom):
     out, i, cur = [], 0, []
     while i < len(rom) - 3:
