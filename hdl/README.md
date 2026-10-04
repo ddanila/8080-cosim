@@ -33,8 +33,11 @@ The CPU, memory/ROM paging, populated bit-sliced DRAM bank, PPI/PIT/USART
 behavior, FDC boot subset, serializer, and raster helper are functional models.
 They are not generic cycle-accurate replacements for every original IC mode.
 The 8253 slice implements binary/BCD count loading, LSB/MSB access formats,
-live or latched count reads, first-latch ownership, and the video-used modes;
-the Juku-specific HDL clocks remain authoritative for count progression.
+live or latched count reads, first-latch ownership, and video modes 1/2.
+Mode 3 uses a decrement-by-two path guarded for the even divisors used here.
+Modes 0/4/5 share a reload/toggle fallback in [the device model](devices.v);
+this does not establish their complete 8253 behavior. Count progression uses
+the Juku-specific HDL clocks.
 D57 channel 2 uses the active-low D55 OUT1 (`VER RTR`) signal, approximately
 49.92 Hz under the stock raster setup. Immediate count-read diagnostics must
 allow for that clock; the
