@@ -12,9 +12,10 @@ These implemented 16 KiB images are built deterministically from the pinned
   SHA256 `bf3fca487b20c937c4b2e04c8f89a6ee1b46c49a52f2ea0ed9d56d713c92478b`
 - Builder: [`build_ekta4401.py`](build_ekta4401.py) (`--check` verifies the
   committed image rebuilds identically)
-- MAME launcher: [`run_mame.sh`](run_mame.sh) (run without arguments, then
-  enter `V` at the monitor prompt; MAME's custom-ROM checksum warning is
-  expected)
+- MAME launcher: [`run_mame.sh`](run_mame.sh) selects Ekta4401 with BIOS
+  `3.43m_37`; it requires MAME and `roms/jbasic11.bin`. Enter `V` at the
+  monitor prompt. The custom-ROM checksum warning is expected. Extra
+  arguments are passed to MAME, not used to select Ekta4402.
 - Guard: `sync/ekta4401_check.sh`, test
   [`../../../tests/ekta4401_remix_test.py`](../../../tests/ekta4401_remix_test.py)
 
@@ -87,22 +88,10 @@ the same contract NetBios has.
 
 ## Monitor additions
 
-This offset table describes **Ekta4401**. Ekta4402 adds the `N` table entry
-and help text, moving `H` to runtime `F93Ah` and `V` to `F9EEh`; its `N`
-handler and direct core start at `FD3Eh` and `FD64h`. The builders' metadata
-records each release's layout.
+`H` lists the expanded command set; `V` runs the visual demo. Ekta4402 also
+adds `N` for direct fastboot. The builders' metadata records each release's
+handler addresses and patch layout.
 
-| Change | ROM bytes |
-| --- | --- |
-| Banner identity line | `00DF-00F9` (in place, same length) |
-| Command dispatch table relocated + `H`, `J`, `V` added | `3900-3937` (runtime `F900h`) |
-| `H` handler (`LXI B,text` / `CALL DA6Bh` / `RET`) | `3937-393E` |
-| Help text, including `V ?` | `393E-39DF` |
-| `V` diamond-tunnel demo + `JUKU 2026` mark | `39DF-3B18` |
-| Table pointer repointed (`LXI H,F900h`) | `1924-1925` |
-| Eight chunk checksums regenerated | `0008-000A`, `1806-180A` |
-
-The Ekta4401 table, help and visual block occupies 536 bytes of the `3900h` free gap.
 The 313-byte high-ROM `V` block copies its 291-byte body to hidden low RAM at
 `1200h`, disables interrupts, selects all-RAM mode 3, and paints twelve
 generated 40x241 write-only frames. Explicit symmetric X distance and scaled
