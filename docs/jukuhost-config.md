@@ -135,9 +135,8 @@ JF17 stock recovery uses 9,600, while C11/C12 JF16 recovery uses 19,200. It is
 receive-only until target state is known, so a silent CP/M music player is not
 disturbed. A checked Janet request or C11/C12 beacon during NetDisk triggers a
 complete reboot; a replacement host recognizes already-running CP/M from its
-next checked request. Named serial-device loss is retried in bounded
-`reconnect_timeout` windows while recovery remains armed; a configured console
-PTY is likewise awaited before boot and reopened after a loss.
+next checked request. A configured console PTY is awaited before boot and
+reopened after a loss; named serial-device recovery is described below.
 See [`c11-session-recovery.md`](c11-session-recovery.md).
 
 With `recover_session=no`, `boot_restarts` bounds complete bootstrap
