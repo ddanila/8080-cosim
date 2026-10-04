@@ -15,9 +15,6 @@ The filenames retain recorded board labels. Their read-event identity comes
 from the validated manifest, including its alias notes:
 
 - `sukharev_reference` names reads from Danila Sukharev's reference board.
-  Its PROMs are intact. The board has had
-  capacitors removed by palladium hunters and has a separate decapped logic IC,
-  thought to be an ЛЕ4-class part; neither condition describes the PROMs.
 - `arvutimuuseum_CS00015` identifies a different physical machine held by
   Arvutimuuseum, inventory/machine identifier `CS00015`.
 
@@ -65,8 +62,9 @@ SHA256 c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489
 
 Six named inputs represent three independent read events, including a
 power-cycled capture. The two board-name sets are aliases, as recorded in
-`validated/d8_039.dump.json`; all retained inputs agree byte-for-byte. The physical table differs from the old
-reconstructed fallback at 19 of 32 addresses and therefore supersedes it.
+`validated/d8_039.dump.json`; all retained inputs agree byte-for-byte. The
+physical table differs from the old reconstructed fallback at 19 of 32
+addresses and therefore supersedes it.
 
 ```text
 validated/d8_039.raw.bin
@@ -84,8 +82,8 @@ Active-low asserted table:
 
 Six named inputs represent three independent read events, including a
 power-cycled capture. The two board-name sets are aliases, as recorded in
-`validated/d94_092.dump.json`; all retained inputs agree byte-for-byte, and the resulting table differs from D8 at 25 of
-32 addresses.
+`validated/d94_092.dump.json`; all retained inputs agree byte-for-byte. The
+resulting table differs from D8 at 25 of 32 addresses.
 
 ```text
 validated/d94_092.raw.bin
