@@ -68,7 +68,7 @@ def main() -> None:
         checks.append((f"{ref} uses the Intel DIP-20 logical pin names", actual == PHYSICAL))
         expected = EXPECTED_NET_PINS[ref]
         observed = {net: endpoint_net.get((ref, pin)) for net, pin in expected.items()}
-        checks.append((f"{ref} address-channel pad assignments match sheet 1", observed == {n: n for n in expected}))
+        checks.append((f"{ref} channel pad assignments match sheet 1", observed == {n: n for n in expected}))
 
     d29_actual = {pin: name for pin, name in chips["D29"]["pins"].items() if pin in PHYSICAL}
     checks.append(("D29 uses the Intel DIP-20 logical pin names", d29_actual == PHYSICAL))

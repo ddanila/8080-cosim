@@ -27,15 +27,15 @@ python3 scripts/report_8286_pinout_audit.py
 | Check | Result |
 | --- | --- |
 | D4 uses the Intel DIP-20 logical pin names | PASS |
-| D4 address-channel pad assignments match sheet 1 | PASS |
+| D4 channel pad assignments match sheet 1 | PASS |
 | D107 uses the Intel DIP-20 logical pin names | PASS |
-| D107 address-channel pad assignments match sheet 1 | PASS |
+| D107 channel pad assignments match sheet 1 | PASS |
 | D23 uses the Intel DIP-20 logical pin names | PASS |
-| D23 address-channel pad assignments match sheet 1 | PASS |
+| D23 channel pad assignments match sheet 1 | PASS |
 | D24 uses the Intel DIP-20 logical pin names | PASS |
-| D24 address-channel pad assignments match sheet 1 | PASS |
+| D24 channel pad assignments match sheet 1 | PASS |
 | D25 uses the Intel DIP-20 logical pin names | PASS |
-| D25 address-channel pad assignments match sheet 1 | PASS |
+| D25 channel pad assignments match sheet 1 | PASS |
 | D29 uses the Intel DIP-20 logical pin names | PASS |
 | D29 physical input/output pads match all eight exact .009 sheet-1 rows | PASS |
 | D100 uses the Intel 8287 DIP-20 pin names | PASS |
