@@ -6,16 +6,9 @@ Qualified implementation: `f332a2d885f09e3fbae7b6e2609bfc0ac7fd78fb`
 
 Result: **PASS at the available non-Windows desk boundary**
 
-This is the historical pre-Wine/C12 acceptance. The 2026-09-04 C12-capable
-artifact and local runtime result in
-[windows-jukuhost-client-wine-acceptance.md](windows-jukuhost-client-wine-acceptance.md)
-supersede its artifact size, payload count, and unavailable-Wine statements.
-
-This revision-qualified record proves build/API/package behavior only. It
-contains no execution of the PE on Windows or Wine, no physical COM timing and
-no Windows-to-board interoperability result. Later Wine and Windows 95 guest
-evidence is linked from [the implementation guide](windows-jukuhost-client-implementation.md);
-physical serial qualification remains separate.
+This historical pre-Wine/C12 record qualifies build/API/package behavior for
+the named revision. Later binaries and runtime results have separate acceptance
+records linked below.
 
 ## Artifact
 
@@ -77,11 +70,9 @@ and hashes then passed.
 
 ## Qualification boundary
 
-The recorded host lacked Windows and Wine. The accepted binary was compiled
-and audited, but its self-test and GUI were not executed as Windows processes.
-API shims do not establish driver/device-instance behavior or serial timing.
-No physical Windows-to-CS00000 boot, disk/write safety, N4, reconnect, shutdown
-or endurance run belongs to this record.
+The accepted binary was compiled and audited, but not executed on Windows or
+Wine. API shims do not establish driver behavior, physical serial timing or
+Windows-to-board interoperability.
 
 Current runtime evidence belongs to
 [Wine acceptance](windows-jukuhost-client-wine-acceptance.md) and

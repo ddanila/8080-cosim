@@ -19,7 +19,8 @@ are in [windows-jukuhost-client.md](windows-jukuhost-client.md).
   cancellation for Stop, close and Windows shutdown.
 - Serial selection supports explicit COM names and stable device-instance IDs.
   Ambiguous unidentified adapters require selection.
-- A: uses exclusive snapshot or read-only access; B: is read-only. Writes use
+- A: supports snapshot or read-only access; B: is read-only. Writable images
+  are opened exclusively; read-only opens permit sharing. Writes use
   the shared transaction journal. Configuration uses flushed temporary files
   and a backup/restore fallback where atomic replacement is unavailable.
 - Each run gets its own evidence directory. Startup and session diagnostics

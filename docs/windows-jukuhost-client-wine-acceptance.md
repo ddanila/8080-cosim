@@ -48,13 +48,13 @@ protocol run is intentionally local-only rather than part of ordinary CI.
 | C12 | passive beacon and V16/NetDisk at 19,200 | 8.664 s | 18 requests, 51 records, 0 retries, 0 UART errors |
 
 These timings and counters describe the recorded run. The current harness
-checks clean exit, boot/service evidence, a decoded disk-read request, A: working
+checks clean exit, boot/service evidence, a host-reported disk-read request, A: working
 image size, and unchanged A: base contents; it does not assert these exact
 timings, counters, or working-copy hashes.
 
 All three cases mounted a 409,600-byte A: base as a new snapshot working image,
 served disk reads, stopped cleanly with host exit zero, retained a raw capture,
-and passed independent capture decoding. The C11 and C12 cases also mounted
+and passed capture framing/CRC validation and host-event conversion. The C11 and C12 cases also mounted
 the 819,200-byte B: image. Base and working-copy identities matched after each
 read-only workload:
 
@@ -66,8 +66,10 @@ The Wine stock run attached from a checked directed Janet poll, transferred
 the complete JF17 body, and then served 22 checked requests. All three runs
 missed an optional final reply and used
 valid NetDisk requests as the end-to-end confirmation; no compressed body was
-resent. Capture decoding identifies JF17 with entry, effective boot, and disk
-rates all at 9,600, and independently identifies the C11/C12 V16 pairs.
+resent. Capture conversion derives JF17 versus V16 from host events, hashes the
+payload files selected by the harness, and records its specified disk rate. It does not
+independently authenticate payloads from RX/TX bytes; see
+[capture conversion](portable-c-host-implementation.md#capture-conversion).
 
 ## Wine-specific boundary
 
