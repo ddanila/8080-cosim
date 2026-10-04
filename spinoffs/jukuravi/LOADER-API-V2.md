@@ -129,7 +129,10 @@ disable signature, so recovery is refresh-on. A new host can attach without
 RESET, issue RESYNC, inspect retained RAM, resume an interrupted upload, or call
 already-resident code.
 
-Examples from the repository root:
+Examples use the Python host on Linux or macOS; its `termios`/`fcntl` serial
+backend requires a POSIX system and access to the selected serial device.
+Run from the repository root with Python 3. `task.bin` is your own cooperative
+payload, linked for `4000h`; `4100h` must be its agreed result block.
 
 ```sh
 # Upload, verify, call, collect A and a 16-byte result block.
@@ -187,7 +190,7 @@ python3 spinoffs/jukuravi/host.py --port /dev/ttyUSB0 \
   --attach-loader --load spinoffs/jukuravi/firmware/return-4000.bin \
   --load-address 4000 --load-only \
   --loader-benchmark-passes 10 --no-loader-readback \
-  --log-dir spinoffs/jukuravi/sessions/speed-v1-g6
+  --log-dir /tmp/jukuravi-loader-benchmark
 ```
 
 `--loader-benchmark-passes` requires `--load-only`, rejects `--loader-resume`,
