@@ -42,9 +42,6 @@ Overrides can change the sampled cursor phase and fail the fixed VRAM oracle.
 - Stop PC: `0xFF54`
 - Cycles: `20000009`
 - Mode: `1`
-- Mode switches: `43`
-- Actual VRAM SHA256: `f18897c84ae0697adc779c60de95eb32c869ae7f000f4a2007aa9c64df8e2397`
-- Write pages: `0x0000=589645, 0xD600=1488, 0xD700=5778, 0xDB00=42, 0xDC00=28, 0xFD00=8, 0xFF00=192`
 
 ## Remaining Boundary
 
