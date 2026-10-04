@@ -79,12 +79,7 @@ conductor inside the dense central control bundle, but folds and overlapping
 strokes prevent a unique upstream device-pin attribution. See
 `ref/schematics/d7-d29-inhibit-upstream-review.json`; do not assign a nearby
 D5, D22, or ROM-select line by proximity.
-An overlap recheck aligns distinctive upper package landmarks across
-`101813438`, `101809608`, and `101805510`, but the lower fold shifts the
-projected conductor by about 14 pixels among parallel control lines. No
-remote pin or unique junction is established by those photo translations.
-The original-pixel `101805510` crops `(0,2850)–(2150,3450)` and
-`(2050,2800)–(3072,3550)` expose D5.25 `/IORD`, D5.27 `/IOWR`, and D5.26
-MWR as distinct nearby departures; their strokes are broken or shifted by
-the vertical fold. None can be assigned to the projected inhibit row from
-these photographs.
+The overlap review in that JSON records fold displacement among parallel
+control lines. Although the crops expose D5.25 `/IORD`, D5.27 `/IOWR`, and
+D5.26 MWR nearby, broken and shifted strokes prevent tracing any of them to
+the inhibit conductor. No remote pin or unique junction is established.
