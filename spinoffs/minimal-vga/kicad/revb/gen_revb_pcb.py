@@ -27,7 +27,7 @@ board_spec = json.load(open(os.path.join(HERE, f"{CARD}.board.json")))
 fpmap = json.load(open(os.path.join(HERE, f"footprints.{CARD}.json")))
 
 # KiCad outline text is intentionally used for all printable silk.  The exact face
-# is a local generation dependency (not redistributed by this repository); the
+# is shipped in fonts/gost.ttf and must be installed locally for generation;
 # generated Gerbers contain polygons and therefore do not require the font at fab.
 SILK_STYLE = json.load(open(os.path.join(HERE, "silkscreen-style.json")))
 SILK_FONT = SILK_STYLE["font_family"]
