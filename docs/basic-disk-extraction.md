@@ -22,13 +22,13 @@ python3 scripts/extract_basic_disk_files.py
 
 ## Generated artifacts
 
-| Path | Source | SHA256 |
-| --- | --- | --- |
-| ref/extracted-software/JUKPROG2_JBASIC.COM | `JUKPROG2.CPM` directory `JBASIC.COM` | 73cc53939c501c382e610e4e81dbf19cc5154d83545757b5155ccf70a2351d9c |
-| ref/extracted-software/JUKPROG2_JBASIC_live_candidate.COM | `JUKPROG2.CPM` raw live-load candidate at `0x2DE00` | b1ae68b464c245a888c8e6bbf07037960f5a92d4e968c956c6205a1de6cfc545 |
-| ref/extracted-software/JUKU1_JBASIC_raw_candidate.COM | `JUKU1.CPM` raw candidate at `0x67000` | 85522b5b662b8c353c2aad8167bea0b5fc4a94ec71cc87ea91a7a2c551255c4d |
+| Path | Source |
+| --- | --- |
+| ref/extracted-software/JUKPROG2_JBASIC.COM | `JUKPROG2.CPM` directory `JBASIC.COM` |
+| ref/extracted-software/JUKPROG2_JBASIC_live_candidate.COM | `JUKPROG2.CPM` raw live-load candidate at `0x2DE00` |
+| ref/extracted-software/JUKU1_JBASIC_raw_candidate.COM | `JUKU1.CPM` raw candidate at `0x67000` |
 
-## Extraction checks
+## Extraction observations
 
 | Disk | Source | Name | Bytes | Blocks | First bytes | Strings | SHA256 |
 | --- | --- | --- | ---: | --- | --- | --- | --- |
@@ -52,3 +52,7 @@ python3 scripts/extract_basic_disk_files.py
   signatures alone do not establish that it is a working executable.
 - Artifact hashes identify the emitted bytes, not a validated CP/M
   allocation mapping or physical-disk qualification.
+- Successful generation means the source files were readable, both
+  directories contained a `JBASIC.COM` entry, and the outputs were written.
+  The writer does not assert expected hashes, payload lengths, entry bytes,
+  or string signatures; the observations above need separate validation.
