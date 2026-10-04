@@ -156,7 +156,8 @@ Build and test from the repository root:
 sync/jukuravi_nano_check.sh
 ```
 
-The always-available host test sends all 256 byte values plus the exact
+The host test requires a C++11 compiler (`CXX`, default `c++`). It sends all
+256 byte values plus the exact
 version-8 ACK through the shared bridge core in both directions, checks the
 per-direction work bound and counters, and proves reset assertion, release,
 recovery, rollover, long HOLD, HOLD release, and post-ready reassertion
@@ -164,7 +165,10 @@ boundaries. It also proves default-off liveness transparency, exact D2/D3/D6/D7
 roles and active-low polarity, the 100 ms and rollover boundaries, reset-cycle
 latch clearing, and the exact report CRC. When `arduino-cli` and the
 `arduino:avr` core are installed, the same guard also compiles the actual Nano
-sketch. To upload manually after a successful build:
+sketch. Otherwise it prints `JUKURAVI-NANO-AVR: SKIP` and can still exit zero
+after the host tests pass. Check that AVR result before claiming the sketch
+compiled. The guard removes its temporary build outputs. To compile and upload
+manually:
 
 ```sh
 arduino-cli compile --fqbn arduino:avr:nano:cpu=atmega328 \
