@@ -9,7 +9,8 @@ It uses archive-37 `ekta37.bin` (RomBios 3.43m) to exercise
 image, so this guard stays reproducible without network access. Set
 `EKDOS_PROBE_DISK=/path/to/image` to run the same path through another
 raw Juku disk image, or set `EKDOS_PROBE_DISK=none` for the legacy
-no-image boundary.
+no-image boundary. If the default disk is absent and no override is set,
+the script also selects that no-image probe.
 
 ## Command
 
@@ -20,6 +21,13 @@ EKDOS_PROBE_MAX_CYCLES=250000000 EKDOS_PROBE_FRAME_CYCLES=200000 \
 
 Run this command from the repository root. Disk paths are resolved from
 the caller's working directory before starting the trace in `cosim/`.
+Python 3 and a C compiler (`CC`, default `cc`) are required; the trace
+executable is compiled in a temporary directory for each run.
+
+The run overwrites `cosim/vram.bin` and writes the report even when its
+oracle fails. Save any capture you need before running it. The optional
+first argument selects the report path (default `docs/ekdos-fdc-probe.md`);
+its parent directories are created automatically.
 
 ## Summary
 
