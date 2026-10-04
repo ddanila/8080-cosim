@@ -140,9 +140,8 @@ D5.26 is `MEMW_N`; D105.12/.13 invert it onto D30.13.
 ## Adoption result
 
 Board JSON, structural HDL, generated KiCad artifacts, and D2/D30/D105 reports
-now adopt these measurements. The old `D2.12 -> D105.9`, direct CPU-to-D5
-DBIN, and installed-PROM D6.11/D6.12 join are retired. The promoted routed PCB
-preserves the six D105 path pad nets checked by the linked boundary report.
+adopt the continuity results above. The promoted routed PCB preserves the six
+D105 path pad nets checked by the [boundary report](d105-h-boundary.md).
 Whole-board source/routed drift remains a separate hold in
 [the routed audit](routed-refresh-audit.md). Complete WAIT/READY timing also
 remains unqualified; these continuity measurements do not establish it.
