@@ -2,6 +2,8 @@
 """Run KiCad DRC and pin the result to the exact committed Rev-A PCB."""
 from __future__ import annotations
 
+from datetime import datetime, timezone
+
 import hashlib
 import json
 import os
@@ -75,7 +77,7 @@ def main() -> int:
 
     violations = result.get("violations", [])
     unconnected = result.get("unconnected_items", [])
-    passed = not violations and not unconnected
+    passed = completed.returncode == 0 and not violations and not unconnected
     status = "CURRENT SOURCE DRC CLEAN" if passed else "DRC FAILED"
     board_text = board.read_text(encoding="utf-8")
     file_version = re.search(r"\(version\s+(\d+)\)", board_text)
@@ -84,16 +86,13 @@ def main() -> int:
     lines = [
         "# Rev A current-source DRC readiness",
         "",
-        "Status date: **2026-07-23**.",
+        f"Checked (UTC): **{datetime.now(timezone.utc).date().isoformat()}**.",
         "",
         f"Status: **{status}**.",
         "",
-        "This report binds a full KiCad error-level DRC result to the exact routed",
-        "Rev-A PCB after the D1 DO-41 correction, the U20/U21 active-low",
-        "address-mux enable correction, the U22 refresh-counter cascade",
-        "correction, and inner-plane refill. It does not release fabrication;",
-        "package regeneration, vendor preview, sourcing, and human review remain",
-        "separate gates.",
+        "This report binds KiCad's error-level DRC result to the exact PCB hash below.",
+        "It does not include warning-level violations, refill zones or qualify fabrication.",
+        "See [manufacturing readiness](rev-a-manufacturing-readiness.md) for release gates.",
         "",
         "## Result",
         "",
@@ -101,26 +100,11 @@ def main() -> int:
         f"- Board SHA-256: `{sha256(board)}`",
         f"- KiCad CLI: `{cli}`",
         f"- KiCad version: `{version}`",
+        f"- DRC command exit code: `{completed.returncode}`",
         f"- Board file version: `{file_version.group(1) if file_version else 'unknown'}`",
         f"- Board generator version: `{generator_version.group(1) if generator_version else 'unknown'}`",
         f"- Error-level DRC violations: **{len(violations)}**",
         f"- Unconnected items: **{len(unconnected)}**",
-        "",
-        "## Refill disposition",
-        "",
-        "- U20.15 and U21.15 are the active-low enables of the two 74HCT157",
-        "  address multiplexers. The correction moves both pads and their four",
-        "  retained F.Cu segments from the former floating `ADDRMUX_OE_N` island",
-        "  to GND; filled In1.Cu then provides the return connection.",
-        "- U22.2 and U22.12 are the 74HCT393 active-high reset inputs. The",
-        "  correction moves both pads and the three retained former",
-        "  `REFRESH_CLR` trace segments to GND.",
-        "- U22.6 (1Q3) is cascaded to U22.13 (2CP) on `REFRESH_ROW3` with eight",
-        "  signal segments and two through vias, forming the intended 8-bit",
-        "  refresh-row counter.",
-        "- The saved post-correction board passes DRC after a stable-KiCad refill.",
-        "  The prior fabrication package predates these source changes and is stale;",
-        "  package freshness requires a new guarded export and checksum.",
         "",
         "## Command",
         "",
@@ -128,10 +112,14 @@ def main() -> int:
         "python3 spinoffs/minimal-vga/kicad/report_rev_a_drc_readiness.py",
         "```",
         "",
-        "The saved board already contains current zone fills. Refill and save zones",
-        "with the same KiCad generation after any pad, track, via, or zone change,",
-        "then regenerate this report. Gerber/drill export, package-integrity checks,",
-        "vendor preview, and human release review remain separate gates.",
+        "Run from the repository root with KiCad 10 or newer; `KICAD_CLI` overrides",
+        "the repository locator. Optional positional arguments select the PCB and output",
+        "report paths. The command overwrites this report by default, including on DRC failure.",
+        "",
+        "Refill and save zones with a compatible KiCad version after pad, track, via or",
+        "zone changes before running this check. A clean result requires command success,",
+        "zero error-level violations and zero unconnected items. Package freshness, vendor",
+        "preview and human release review remain separate gates.",
         "",
     ]
     report.parent.mkdir(parents=True, exist_ok=True)
@@ -141,7 +129,7 @@ def main() -> int:
         "REV-A DRC: "
         f"{len(violations)} violations / {len(unconnected)} unconnected"
     )
-    return 0 if passed and completed.returncode == 0 else 1
+    return 0 if passed else 1
 
 
 if __name__ == "__main__":

@@ -14,7 +14,7 @@ filled In1.Cu GND and In2.Cu VCC planes:
 
 - Source: `spinoffs/minimal-vga/kicad/rev-a-physical.kicad_pcb`
 - SHA-256: `1326703605818b168dff3fd9f0879d36f8494393e8f8567ca7894061c7419650`
-- [Recorded source DRC](rev-a-drc-readiness.md): KiCad 10.0.5, zero error-level
+- [Recorded source DRC](rev-a-drc-readiness.md): KiCad 10.0.6, zero error-level
   violations and zero unconnected items after saved inner-plane fills.
 
 The retained fabrication export is stale; do not upload or order it. It predates

@@ -50,7 +50,7 @@ The exporter requires `kicad-cli` and Python `pcbnew` from the same KiCad major
 version and verifies that Python can load the board before writing package
 output. The retained PCB requires KiCad 10 or newer. The repository locators
 prefer working Flatpak wrappers, then probe other installed tools; they do not
-pin the selected version to the recorded 10.0.5 run. Use `KICAD_CLI` and
+pin the selected version to the recorded DRC run. Use `KICAD_CLI` and
 `KICAD_PYTHON` to select a coherent installation.
 
 Export writes into the existing output directory; it does not clear old outputs
