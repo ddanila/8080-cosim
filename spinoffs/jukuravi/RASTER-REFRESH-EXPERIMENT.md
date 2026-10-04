@@ -123,7 +123,10 @@ On macOS select the adapter's actual `cu.*` node with `--port`; the recorded
 as the cross-board control when practical. The default 25 s hold sits past
 the proven 5-17 s CS00024 boundary; `--hold-seconds` adjusts it, and the
 loop is sized from the measured effective rate (`--effective-mhz`,
-default 1.702).
+default 1.702). The JSON's `hold_seconds_estimated` describes that modeled
+loop duration. `hold_seconds_measured` also includes host upload, verification
+and RUN/RETURN transport; it is not a direct measurement of the unrefreshed
+interval.
 
 ## Pre-registered interpretation
 
@@ -133,14 +136,20 @@ default 1.702).
 | `raster` | A reproducible improvement over `none` supports raster-dependent refresh; it does not directly measure `/RAS` or qualify every refresh path | Arming alone did not preserve the sampled contents; verify actual raster outputs and repeat the cross-board control before locating a hardware fault |
 | `raster-syncb` | Improvement over a failing `raster` stage supports a role for channel-2 programming | Does not distinguish an ineffective `SYNC_B` path from another refresh or transport failure; use the corrected D57S probe and cross-board control |
 
-A `pass` verdict requires RETURN with `A=52h` plus byte-exact marker and
-hold-image readbacks. Partial decay (some rows failed) is reported with the
-per-row map; whole-evidence inversion resembling the cosim decay model
-is decay-consistent. Compare against the control stage before drawing a
-raster conclusion. A missing RETURN or transport loss is also classified by
-the runner as decay-consistent, but does not itself prove DRAM decay. Capture
-setup and serial failures must be excluded before using that outcome as a
-hardware diagnosis.
+The runner's JSON verdicts have these limits:
+
+| Verdict | Meaning |
+| --- | --- |
+| `pass` | RETURN with `A=52h` and byte-exact marker and hold-image readbacks |
+| `decayed` | Both readbacks completed, but at least one byte differs; the per-row map records the differences |
+| `no_return` | A host session error occurred during the hold upload/verification/RUN operation; execution of the hold is not established by this label alone |
+| `incomplete` | The stage did not reach a verdict, for example because entry failed, RETURN had the wrong A, or later readback failed |
+
+Read the session error and operation evidence alongside the verdict. A mismatch
+or missing RETURN alone does not prove DRAM decay: exclude setup and transport
+failures, verify that the hold ran, and compare against the control stage
+before drawing a raster conclusion. Whole-evidence inversion resembling the
+cosim decay model is decay-consistent, not a unique physical signature.
 
 ## Reproduction
 
