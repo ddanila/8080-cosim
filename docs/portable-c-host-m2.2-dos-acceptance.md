@@ -25,6 +25,10 @@ LFS, verified before use, and expanded only into the ignored `.tools/` tree.
 
 `tools/bootstrap-open-watcom.sh` verifies and extracts the archive;
 `tools/open-watcom-env.sh` configures it for the DOS and Win32 builds.
+Run the commands below from the repository root on a Linux x86-64 build host
+with Bash, Python 3, `unzip`, `sha256sum`, and GNU `stat`. Materialize the
+vendored archive with Git LFS before building; the bootstrap rejects an LFS
+pointer in its place.
 
 ## Accepted executable
 
@@ -88,8 +92,11 @@ After building, run:
 tools/package-jukuhost-dos.py
 ```
 
-The packager verifies the selected system, Fastboot and disk payloads against
-the adjacent `cpm-plus-juku` C8 manifest. It copies the locally built EXE;
+The default output is `build/dos-package/`. The packager requires the prebuilt
+`out/cpm-plus-juku-c8-manifest.json` and its named payloads under the adjacent
+`cpm-plus-juku` checkout; `--cpm-root` selects a different checkout. It verifies
+the selected system, Fastboot and disk payloads against that manifest, without
+building them. It copies the locally built EXE;
 executable reproducibility is checked by the separate DOS gate. A clean output
 directory contains the generated 8.3-safe names: `JUKUHOST.EXE`, `JUKUHOST.INI`, `JUKU.BAT`, `SYSTEM.BIN`,
 `FAST16.BIN`, `BASE.IMG`, `APPS.JUK`, `README.TXT`, and `MANIFEST.SHA`.
