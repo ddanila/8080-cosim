@@ -106,6 +106,13 @@ with the corrected test.
 
 ## Structural simulation matrix
 
+**Current rerun is not passing.** With the current HDL, the first T31 case
+returns bitmap `18` rather than the guard's expected `08`. Its four D55 reads,
+four latches and four unclocked latches match the negative-control predicate,
+but the additional D57 bit stops the script before any T34 case runs. Resolve
+that bitmap expectation against the D57 clock model before claiming a fresh
+complete matrix pass. The table below records the earlier results.
+
 `sync/jukuravi_d55_clock_audit.sh` enables clocked Mode-0 count transfers in
 all three structural PITs, drives the physical 16 MHz and 2 MHz timing ratio,
 executes the complete ROM through the CPU, and stops at the first post-PIT
@@ -121,7 +128,7 @@ written count is still waiting for a D55 clock.
 | T34, D56 Q2_N held low | `08` | 6 | 6 | 4 | detects channel-1/2 clock-path fault |
 | T34, D9/CS_D55 disabled | `08` | 6 | 6 | 0 | detects select-path fault |
 
-The clean and all five adversarial cases passed. The matrix
+The recorded clean and all five adversarial cases passed. That matrix
 proves the corrected predicate is sensitive to the intended functional path
 and no longer creates a clean-board D55 failure solely from missing setup
 clocks. It also proves why the result must not be labeled “D55 package bad.”
