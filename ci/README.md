@@ -75,13 +75,9 @@ are available. Git must be configured to use that hook (for example,
 Missing tools skip the deep guard with a warning. Run
 `sync/cosim_check.sh` manually when the hook did not run it.
 
-The hook also runs `scripts/ci_gate.sh` before the deep guard. With an
-available, authenticated `gh`, it queries the latest 15 `master` runs and
-blocks a push if a workflow's newest conclusive completed run in that window
-has conclusion `failure`. Running, cancelled and skipped runs are ignored;
-missing authentication or a failed query produces a warning and skips this
-check. It neither waits for running jobs nor establishes that every workflow
-passed at the current commit. Inspect the relevant commit's runs separately.
+The hook also runs `scripts/ci_gate.sh` before the deep guard. See the
+[local CI gate contract](../docs/development-workflow.md#local-ci-gate) for
+repository selection, failure handling and the limits of its recent-run sample.
 
 When a bounded check outgrows its budget, inspect step timings first. Split
 independent checks or add a meaningful, explicitly labelled smoke profile;

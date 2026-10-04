@@ -63,11 +63,27 @@ Photo hashes must validate the materialized bytes or the authenticated LFS
 object identity, as required by the guard. Hosted photo inputs and cache scope
 are declared in `.github/workflows/reports.yml`.
 
-`scripts/ci_gate.sh` samples the latest 15 `master` workflow runs and checks
-each workflow’s newest conclusive result within that sample. It blocks
-`failure`; missing or unauthenticated `gh` and query errors warn and skip.
-This does not prove that every workflow passed on the current commit. Inspect
-the triggered runs for the pushed SHA before claiming CI success.
+## Local CI gate
+
+`scripts/ci_gate.sh` samples the latest 15 `master` workflow runs. For each
+workflow, it selects the newest completed result excluding empty, cancelled
+and skipped conclusions, and blocks only `failure`. Other conclusions,
+including `timed_out`, do not block. Missing or unauthenticated `gh` and query
+errors warn and skip; `CI_GATE=off` explicitly bypasses this gate.
+
+The script does not pass `--repo`: it uses GitHub CLI's selected repository,
+which can differ from the push destination in a fork. Select this repository
+explicitly when invoking it:
+
+```sh
+GH_REPO=ddanila/8080-cosim scripts/ci_gate.sh
+```
+
+The same environment variable applies when the installed pre-push hook invokes
+the gate. The gate neither waits for running jobs nor proves that every
+workflow passed on the current commit. Inspect all triggered runs for the
+pushed SHA before claiming CI success.
+
 Preserve protocol, source and release assertions when repairing a failure.
 Timing expectations live in `sync/ekdos_timing_expected.json`; update them only
 for a justified implementation change and review the regenerated evidence.
