@@ -43,10 +43,14 @@ not a fabrication blocker.
 
 ## Verification
 
+Run from the repository root. Check both source and extracted-file identities
+before the report writers and extractor replace generated outputs:
+
 ```sh
 (cd ref/ekdos-source && sha256sum -c SHA256SUMS)
 (cd media/disks && sha256sum -c SHA256SUMS)
 (cd media/system && sha256sum -c SHA256SUMS)
+(cd ref/extracted-software && sha256sum -c SHA256SUMS)
 python3 scripts/report_ekdos_source_inspection.py
 python3 scripts/report_vendored_disk_catalog.py
 python3 scripts/extract_basic_disk_files.py
@@ -55,7 +59,11 @@ sync/ekdos_fdc_probe.py
 sync/juku_top_fdc_prompt_check.sh
 ```
 
-The unqualified HDL command above verifies retained report evidence. A fresh
+The extractor rewrites the extracted binaries, their README and checksum
+manifest, and the BASIC extraction report. Review the resulting diff;
+regeneration is not a substitute for verifying the previous identities.
+
+The HDL command above verifies retained report evidence. A fresh
 HDL run requires the explicit deep flag and a compatible simulator; see
 [simulator compatibility](../sync/README.md#simulator-compatibility).
 
