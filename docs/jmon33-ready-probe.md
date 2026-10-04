@@ -10,6 +10,12 @@ time. The visible oracle is a solid 8x10 cursor block at
 
 ## Command
 
+Run from the repository root with Python, a C compiler (`CC`, default
+`cc`), and `roms/jmon33.bin`. The probe builds a temporary executable
+and overwrites this report after simulation. It samples `cosim/vram.bin`,
+then restores its previous contents (or removes it if initially absent)
+on normal completion, including a failed oracle result.
+
 ```sh
 sync/jmon33_ready_probe.py
 ```
