@@ -83,6 +83,10 @@ python3 spinoffs/jukupoly/tools/compare_jukupoly_opl_voice.py \
   out/jukupoly-imp-isolated-voice --logical-note 0
 ```
 
+Use a fresh output directory for each comparison. The script overwrites named
+files in an existing directory without clearing it; a failed run can leave
+partial outputs.
+
 Important outputs are:
 
 - `source-logical-notes.json` — selectable source-note catalog;
@@ -94,6 +98,11 @@ Important outputs are:
 - `03-opl-then-juku.wav` — level-matched listening pair; and
 - `comparison.json` plus `envelope-contours.csv` — semantic and perceptual
   evidence.
+
+The printed `JUKUPOLY-VOICE-DIFF: PASS` means evidence generation completed,
+not that the conversion met a quality threshold. Inspect the pitch, envelope
+and loudness metrics in `comparison.json`, the contour CSV and both audio
+renders before accepting the candidate.
 
 The final gate is still human comparison on the physical speaker. Only the
 isolated candidate and then the corrected whole song should be taken to
