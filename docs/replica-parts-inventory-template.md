@@ -37,7 +37,7 @@ Source gates:
 | PIT/PPI/PIC/USART/FDC | received socketed peripheral ICs; D93 is КР1818ВГ93 or guarded FD1793B-01 DIP and the support-logic gate is closed |  |
 | Clock/video glue | received fast counters, muxes, gates, oscillator/crystal, and serializer-related ICs |  |
 | Passives | received resistor/capacitor/diode/transistor values with circuit-review rows resolved |  |
-| Connectors/switches | exact mechanical fit reviewed for X1/X2/X3/X6/X8/X9/S1/S3/S4 |  |
+| Connectors/switches | exact mechanical fit reviewed for X1/X2/X3/X4/X6/X8/X9/S1/S3/S4 |  |
 | Sockets | DIP socket quantities and widths checked against footprints before IC seating |  |
 | PROM/EPROM blanks | received D2/D6 RT4-class, D8/D94 RE3-class, and D15/D16 EPROM blanks |  |
 | Programmed firmware | D2/D6/D8/D94 verified against validated physical tables and D15/D16 against the adopted RomBios 3.43m (archive #0037) split; installed-device readbacks and provenance recorded |  |
@@ -50,7 +50,7 @@ Source gates:
 | D5 |  |  |  |  |  |  |  |
 | D84-D91 |  |  |  |  |  |  |  |
 | D93 |  |  |  |  |  |  |  |
-| X1/X2/X3/X6/X8/X9 |  |  |  |  | fit check |  |  |
+| X1/X2/X3/X4/X6/X8/X9 |  |  |  |  | fit check |  |  |
 | sockets |  |  |  |  | footprint check |  |  |
 
 ## PROM / EPROM Programming Ledger
