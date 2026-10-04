@@ -10,9 +10,13 @@ filename cross-reference is provenance nuance rather than a content gate.
 
 ## Reproduce
 
+Run from the repository root. Verify the retained source and output identities
+before the exporter replaces the images and manifest.
+
 ```sh
+(cd ref/eprom-images && sha256sum -c SHA256SUMS)
 python3 scripts/export_eprom_pair.py
-cd ref/eprom-images && sha256sum -c SHA256SUMS
+(cd ref/eprom-images && sha256sum -c SHA256SUMS)
 ```
 
 ## Mapping and artifacts
