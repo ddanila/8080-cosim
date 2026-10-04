@@ -35,7 +35,7 @@ make the reading uncertain. Connection columns are legible throughout.
 | 5 | А:62 | X8:5 |
 | 6 | А:62 | X8:1 |
 
-This X8 cable is now promoted as four physical one-pad PCB landings `A59`..
+The model represents this X8 cable as four physical one-pad PCB landings `A59`..
 `A62` plus a schematic-only bracket connector. The harness nets preserve the
 single -12 V and +12 V conductors and both duplicated +5 V/GND conductors:
 A59->X8.8, A60->X8.3, A61->X8.6/X8.2, and A62->X8.5/X8.1.
@@ -118,9 +118,8 @@ and A14 at `23` cm.
 
 The final ink readings are `13,5` cm for conductor 6/A10, `19` cm for
 conductor 4/A8 (over a crossed-out `20`), and `11,5` cm for conductor 7/A11.
-The earlier A10/A8 terminal fits are withdrawn; their former 131.355/195.9 mm
-chords do not qualify either installed lead or replacement cut length.
-A10B and A8B still require physical landing evidence. See the current
+A10B and A8B require physical landing evidence before qualifying installed
+lead or replacement cut lengths. See the current
 [wire-fidelity dispositions](../../docs/factory-wire-route-fidelity.md).
 
 A11's accepted 119.177 mm terminal chord exceeds its revised 11.5 cm source
@@ -128,7 +127,7 @@ reading. Measure the installed lead or resolve the discrepancy against a
 physical original before cutting a replacement. Keep source lengths separate
 from physically qualified cut lengths for every link.
 
-All ten on-board link rows are now mapped to electrical endpoints. The owner
+All ten on-board link rows are mapped to electrical endpoints. The owner
 read for `А:20` was made through the installed X3 cable, so the table below
 shows the intervening photographed PCB landing A23 as well as remote X3.3.
 Full-resolution sheet 1 places its short diagonal beside D104 and D3/R18; the
@@ -167,9 +166,8 @@ landings while S1 remains an off-board schematic/mechanical part. The validated
 D98 package fit places the visible white wire-18 lead directly on D98.7, so
 `А:18` is that package pad rather than a separate header pad. Two-sided owner
 photos identify `А:17` as the dedicated pad
-printed `17`, at approximately `(115.8,27.1)` mm. The former generated two-pin
-S1 header was therefore removed; S1 is retained only in the schematic and
-off-board harness contract, while `A17` is a one-pad PCB footprint.
+printed `17`, at approximately `(115.8,27.1)` mm. S1 is retained only in the
+schematic and off-board harness contract, while `A17` is a one-pad PCB footprint.
 
 ## Sheets 4-5 — Провода to X3 and X4
 
@@ -215,8 +213,7 @@ in [the FDC wire map](fdc-x4-ngmd-wire-map.md). X4.1 is retained as an NC harnes
 contact; X4.2–.5 remain explicit boundaries. Source assignments do not prove
 installed cable or target-board copper continuity.
 
-The X9 row is now promoted without changing its already traced keyboard nets:
-the source PCB contains fourteen one-pad `A45` through `A58` placeholders,
+The source PCB represents X9 with fourteen one-pad `A45` through `A58` placeholders,
 and the off-board X9 connector remains schematic-only. The signal nets contain their
 D26 endpoint, numbered A:N landing, and reversed X9 pin; A53/A54 carry the
 two +5 V conductors. The placeholder pad coordinates are not photo-registered:
@@ -226,7 +223,7 @@ D26.26/+5 V rail, but its A53/A54 number and the other slots' A numbers are
 open. The evidence is in `ref/photos/juku-pcb-2/x9-solder-row-registration.json`
 and `ref/photos/juku-pcb-2/x9-plus5-rail-site-review.json`.
 
-X3 is now promoted as the photographed single-row `A21`..`A32` PCB landings
+The model represents X3 with the photographed single-row `A21`..`A32` PCB landings
 feeding schematic-only connector pins 1..12. The older `.006` schematic closes
 A23/TTL SOUT, A24/SIN, A25/CTS, A26/DSR, A29/SOUT, A30/RTS, A31/DTP, and
 A32/OC SOUT; the `.009` table supplies the connector-pin mapping. Sheet 1 and
@@ -249,7 +246,7 @@ route still needs physical confirmation. See the
 
 ## Sheet 6 — Лист регистрации изменений (change registration)
 
-The full-resolution page-5 re-read separates the handwritten revision rows.
+The full-resolution page 5 preserves the handwritten revision rows.
 The list places revision 9 above revision 8; the document number and date
 columns should be read on those same horizontal lines. Revision 5 has a date
 but no legible document number, and the 1994 document row has no revision
