@@ -1780,7 +1780,7 @@ def main() -> int:
             ),
             "spinoffs/minimal-vga/kicad/fab-notes.md": (
                 "package is stale and must not be uploaded or ordered",
-                "superseded",
+                "../docs/rev-a-manufacturing-readiness.md",
                 "fresh guarded",
             ),
         }
@@ -1812,11 +1812,7 @@ def main() -> int:
         failures.append("VJUGA readiness does not expose a frozen package SHA256")
     else:
         vjuga_package_digest = vjuga_package_match.group(1).lower()
-        for path in ("spinoffs/minimal-vga/README.md", "spinoffs/minimal-vga/kicad/fab-notes.md"):
-
-
-
-
+        for path in ("spinoffs/minimal-vga/README.md",):
             if vjuga_package_digest not in read(path).lower():
                 failures.append(
                     f"{path} does not contain frozen VJUGA package SHA256 "

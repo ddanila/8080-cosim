@@ -38,13 +38,10 @@ GND/VCC plane zones are restored and filled after SES import.)
 - manual-install and post-assembly-insertion lists; and
 - mechanical, ERC, DRC, package-integrity, and vendor-preview check reports.
 
-The last guarded export completed on 2026-07-23 before the address-mux enable
-and refresh-counter corrections. Its superseded bare-PCB Gerber/drill ZIP
-SHA-256 was
-`19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
-That package is stale and must not be uploaded or ordered. A fresh guarded
-export and checksum are required; vendor upload preview, stock/capability
-checks, and independent human review remain open afterward.
+The retained package is stale and must not be uploaded or ordered. Its identity
+is recorded in [manufacturing readiness](../docs/rev-a-manufacturing-readiness.md).
+A fresh guarded export and checksum are required; vendor upload preview,
+stock/capability checks, and independent human review remain open afterward.
 
 The exporter requires `kicad-cli` and Python `pcbnew` from the same KiCad major
 version and verifies that Python can load the board before writing package
