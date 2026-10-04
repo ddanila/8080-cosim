@@ -5,9 +5,8 @@ they are not byte-identical output guarantees or recordings of a physical
 display. Each combines framebuffer changes with timestamped host
 output on a single monotonic timeline. `JUKU_REALTIME_HZ=1700000` prevents the
 emulator from exceeding the selected effective execution-rate approximation;
-it does not reproduce all physical READY or host-scheduling delays. The native C `jukuhost` retains
-the scenario's 9,600- or 19,200-baud serial timing and writes a readable log
-plus a raw byte capture beside the generated frames.
+it does not reproduce all physical READY or host-scheduling delays. The native
+C `jukuhost` retains the scenario's 9,600- or 19,200-baud serial timing.
 
 | File | Scenario |
 | --- | --- |
@@ -16,9 +15,11 @@ plus a raw byte capture beside the generated frames.
 | `netboot-rom-cpm31.gif` | Pinned C8 network-ROM scenario, Fastboot V16, CP/M Plus 3.1, and selected tools |
 
 The generator expects sibling `cpmish` and `cpm-plus-juku` checkouts under the
-same parent directory. Build `jukuhost` and the referenced system images first,
-install Pillow, then run one scenario or both from the repository root.
-The generator builds its own C simulator in the output directory:
+same parent directory. It uses POSIX PTYs and file-descriptor passing; this is
+not a native Windows capture command. Build `jukuhost` and the referenced system
+images first, install Pillow, and provide a C compiler (`CC`, default `cc`).
+Run one scenario or both from the repository root. The generator builds its own
+C simulator in the output directory:
 
 ```sh
 python3 tools/netboot_demo_gifs.py --scenario cpm22
@@ -37,15 +38,15 @@ JUKU_DEMO_REALTIME_HZ=20000000 python3 tools/netboot_demo_gifs.py \
 
 Presentation GIFs should use the default pacing.
 
-The generator invokes only `build/jukuhost` for production protocol serving.
-Python remains the simulator/capture renderer and is not a Janet, Fastboot,
-NetDisk, or N4 host in this workflow. Each run leaves
-`SCENARIO.jukuhost.log` and `SCENARIO.jukuhost.cap` in the output directory.
-The old stock-ROM fast CP/M Plus demonstration depended on the retired V15
-host. The production C host retains exact JF15 compatibility, but does not
-regenerate this capture. Its GIF is preserved as historical evidence, while current generation
-covers the stock Janet path and the pinned C8/V16 path. C8 is retained
-compatibility coverage; these commands do not select the latest C12 ROM or
+The generator invokes only `build/jukuhost` for protocol serving. Python
+orchestrates the simulator, console commands and rendering. Successful runs keep
+the selected GIF, `SCENARIO.jukuhost.log`, `SCENARIO.jukuhost.cap` and
+`SCENARIO.simulator.log`. They delete the intermediate `SCENARIO.frames`,
+`trace-netboot-demo` executable and output-directory `vram.bin`; a failed run
+can leave intermediate files. Use a dedicated output directory.
+
+The V15 GIF is retained historical evidence. Current generation covers stock
+Janet and C8/V16 compatibility; it does not select the latest C12 ROM or the
 JF17 stock-recovery scenario.
 
 `gifsicle -O3 input.gif -o output.gif` provides optional lossless size
