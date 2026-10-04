@@ -46,11 +46,9 @@ contact is at approximately `(2652,1545)` component and `(1182,1165)` solder.
 
 ## Decision for the next physical check
 
-The archive has two separate proposed continuations here. Keep them separate
-in both the replica and the measurement notes until the board identifies
-their remote endpoints. With the original board unpowered, use the registered
-IC legs as probe points; the photo coordinates above are only a way to find
-those legs.
+With the original board unpowered, probe the registered IC legs below and
+record each result. Photo coordinates locate the legs; they do not establish
+continuity. Keep the two source continuations separate pending these readings.
 
 | Probe pair | What the result establishes |
 | --- | --- |
@@ -65,12 +63,15 @@ after recording these four pair results.
 
 ## Model guard and routing status
 
+Run from the repository root with Python 3 (standard library only):
+
 ```sh
 python3 kicad/check_d99_source_paths.py
 ```
 
-This guard checks the canonical JSON and structural HDL connections,
-including the separation of D100.9 and D100.11. It does not measure the
-original board or validate routed copper. Current routing and fabrication
+This guard checks canonical JSON endpoints, selected placement metadata, and
+literal structural HDL connection markers, including the separation of
+D100.9 and D100.11. It does not compile or simulate HDL, measure the original
+board, or validate routed copper. Current routing and fabrication
 holds are recorded in [factory-wire fidelity](factory-wire-route-fidelity.md)
 and [the routed audit](routed-refresh-audit.md).
