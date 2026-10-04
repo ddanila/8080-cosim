@@ -199,7 +199,8 @@ descriptor open for:
   and direct INX/DAD probes;
 - independent `4000h`/`5000h` data retention and execution; and
 - a one-vote parser-aging sweep at 6/12/24/36 ms per physical symbol, with a
-  short CONFIG recovery after every point; and
+  short CONFIG recovery after each attempted point, stopping the sweep if
+  recovery fails; and
 - as the deliberately final operation, eight raw high/low samples from every
   D57 channel, with serial restoration.
 
@@ -244,6 +245,14 @@ and parser evidence is preserved first. Run the complete batch regression with:
 sync/jukuravi_t34_batch_check.sh
 ```
 
+A completed batch exits 0 only when no executed core test reports failure and
+the boot status passes PIC, PPI, D54, D55, D57 and both compact RAM windows.
+Otherwise it reports `COMPLETE WITH FINDINGS` and exits 1. Parser-aging results
+and CONFIG recovery are recorded separately in JSON `batch.retention_sweep`;
+they do not contribute to that overall verdict, so inspect them even after
+`PASS`. Transport or execution errors also exit 1 and preserve completed
+results in the session log.
+
 On physical CS00024 the batch measured 1.714065 MHz, then proved that long
 uploads can lose their early RAM bytes before RUN. Use [`retention.py`](retention.py)
 for the narrower destructive-retention test. It writes one 32-byte marker and
@@ -281,7 +290,9 @@ The legacy `D57R` channel-2 result is inconclusive: D57 CLK2 is D55's roughly
 49.92 Hz `/VER RTR`, and that probe did not wait for a guaranteed clock edge.
 The corrected `D57S` probe arms the Ekta raster and waits 64 refresh sweeps
 per write. It passed on CS00015. CS00024 still needs this corrected rerun
-before diagnosing its channel-2 path, socket or package:
+before diagnosing its channel-2 path, socket or package. `--only-d57` still
+runs verified CALL/RET and CPU timing first, then D57; it skips the other
+CPU/RAM probes and parser-aging sweep:
 
 ```sh
 python3 spinoffs/jukuravi/batch.py --port /dev/ttyUSB0 --rom t36 \
