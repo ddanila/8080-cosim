@@ -99,12 +99,12 @@ physical D93/D94 wiring.
   emits at most 255 outward steps, and reports SEEK ERROR if TR00 never asserts;
   the Type-I TRACK 0 status bit is the live inverse of that input. A silent D0 retains every
   already-issued partial seek step. C advances this contract from executed 8080 cycles; focused HDL
-  unit/decoded guards enable it with `FDC_TYPE_I_TIMING`. Recovered sheet 3 now
+  unit/decoded guards enable it with `FDC_TYPE_I_TIMING`. Recovered sheet 3
   closes D95's selected 1/2 MHz source onto D93.24. The extended EKDOS I/O replay
   observes 18,489 D93 accesses and proves PC3 selects 1 MHz for every one; the
   C and HDL timers consume that selector. Oscillator accuracy and edge quality
   remain physical bring-up boundaries, while the source and waveform
-  of the now-modeled HLT input remain a physical D93.23 boundary. The physical
+  of the modeled HLT input remain a physical D93.23 boundary. The physical
   drive-status source for TR00 remains a D93.34 continuity boundary; the C
   harness defaults it asserted and `juku_top` retains its explicit functional
   low tie without claiming that as board copper.
@@ -268,61 +268,9 @@ physical D93/D94 wiring.
   explicitly writable temporary image and reads them back byte-for-byte.
   Repository media stays read-only by default; HDL needs `+disk_writable`,
   and cosim needs `JUKU_DISK_WRITABLE=1`, on a caller-provided copy.
-- The C guard first boots exact `ekta37` far enough to install its monitor RAM
-  services, then drives the public ROMBIOS `RWFLOPPY` vector at `0xFF59`. It
-  starts with a cold partial write, automatically prereads nonzero physical
-  sector 3 with command `0x80`, caches three distinct 128-byte logical-record
-  writes, reads all four cache offsets without another FDC command, and switches
-  host sectors so the wrapper flushes once with `0xA2` before loading sector 4
-  with `0x80`. All calls traverse
-  the boot-installed `0xD7E7` monitor services and return with zero `ERRC`;
-  persisted readback proves all three modified 128-byte records and the one
-  untouched original record byte-for-byte.
-- A second writable phase passes CP/M write type `C=2` for logical record 17,
-  then writes records 18 through 20 sequentially. Exact ROM code seeds
-  `UNACNT=32`, advances it to 28, and builds the complete 512-byte cache without
-  any FDC preread. Crossing to record 21 produces only `0xA2,0x80`; physical
-  sector 5 matches all four independent DMA patterns byte-for-byte.
-- The RAM-drive phase selects EKDOS drive 2 and uses the source-defined stack
-  at `0xD2FC`, outside the banked `0x4000..0xBFFF` aperture. Exact ROM code
-  writes and reads independent sector-0 and sector-127 patterns across tracks
-  0..11, both 16 KiB halves of all six port-`0x04` banks, and the complete
-  192 KiB source-declared capacity. It reaches bank-5 offset `0x7F80`, restores
-  normal bank 6 after every 32-byte slice, and issues zero FDC commands.
-- The public `RAMDISKSEL` vector is executed through exact ROM bytes
-  `0xFF5C -> 0xE9B3`. With bank switching unavailable it complements and
-  restores ordinary RAM before returning `0xFF`; with RAM present it writes
-  the 12-byte `RamDisk` signature plus 63 `0xE5` directory-entry markers,
-  preserves BC, restores bank 6, and reopens a signed drive without formatting.
-- The BIOS fixture starts at the real disk-backed `TDD` boot's EKDOS `A>`
-  prompt, with the installed RAM jump table. It executes public cold BOOT,
-  both WBOOT branches, HOME, and the console, printer, auxiliary, and drive
-  selection vectors through exact ROM/installed monitor services. Guards
-  check the CCP handoff and vectors, cache preservation, system-sector reload,
-  interrupt-fed keyboard input, framebuffer character rendering, printer-port output,
-  and unavailable-device returns. The default WBOOT retry reloads sectors
-  `3,2,4,6,5` and checks the final bytes after the `CCPExit` patch.
-  These are behavioral fixtures in
-  [the ROMBIOS test](../tests/rombios_fdc_write_test.c), not physical-device
-  qualification. Printer status and auxiliary input/output remain unimplemented.
-- All 24 RAM-drive endpoint writes and 24 reads enter through installed
-  EKDOS BIOS vectors `SETTRK=0xCA1E`, `SETSEC=0xCA21`, `SETDMA=0xCA24`,
-  `READ=0xCA27`, and `WRITE=0xCA2A`. Setter effects are checked in the shared
-  work area, WRITE types 0 and 2 are both exercised, and every public I/O call
-  returns zero after traversing `DoFunction` and the ROMBIOS mover.
-- Public `SECTRAN=0xCA30` is executed for every floppy logical-sector index
-  0..39 using the translation pointer returned in drive A's DPH; all results
-  match the source `TRANS` permutation. Calls with the RAM-drive null table
-  preserve endpoint sectors 0 and 127, covering both branches of the BIOS ABI.
 - Read-only-backend Write Track rejection with WRITE PROTECT instead of an
   endless BUSY state, plus writable whole-track persistence and partial-abort
   behavior as described above.
-- The public `RWFLOPPY` guard also reopens the completed image read-only, dirties
-  a cold cache, and crosses host sectors. Exact ROM code consumes `RCOUNT=10`,
-  observes WRITE PROTECT on ten rejected `0xA2` attempts, accepts zero data
-  bytes, and leaves the image unchanged. It then issues the new-sector `0x80`
-  read and returns `ERRC=0`; the successful read masks the failed dirty flush.
-  This is a guarded historical firmware boundary, not claimed error safety.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
   `sync/juku_top_periph_bus_check.sh`.
 - Factory sheet 3 establishes D93's direct system-`DB` path.
@@ -360,12 +308,16 @@ The guarded firmware contracts include:
   including endpoint alias checks and restoration of normal bank selection.
 - Installed BIOS vector calls, drive selection, sector translation, and
   RAM-drive signature initialization and reopening without reformatting.
+- Cold BOOT, both WBOOT branches, HOME, and console/printer/auxiliary
+  vectors: CCP handoff, system-sector reload, cache preservation, keyboard
+  input, framebuffer output, printer-port output, and unavailable-device
+  returns. These behavioral fixtures do not qualify physical devices.
 
 The read-only dirty-flush case is a firmware failure boundary: ten rejected
 write attempts leave media unchanged, but the following successful read
 replaces the flush error and returns `ERRC=0`. A zero firmware return therefore
 does not establish that dirty data was saved. Printer status and auxiliary
-input/output remain unimplemented, as stated in the passing scope above.
+input/output remain unimplemented.
 
 ## Commands
 
