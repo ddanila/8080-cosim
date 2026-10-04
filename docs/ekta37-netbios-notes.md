@@ -175,61 +175,19 @@ through both bootstrap and resident phases.
 
 ## Physical baud qualification
 
-CS00015 completed remote `SMOKE.COM` loading and playback at 9600. Historical
-BAUDTEST runs on CS00014 and CS00015 then exposed direction-specific loss at
-19,200 with D57 mode 3/count 4: long Juku-to-host packets passed while
-host-to-Juku packets stopped after clean prefixes. These were finite diagnostic
-runs, not evidence that every 19,200 configuration fails.
-
-The controls ruled out parity selection, per-byte error reset, initialization
-recovery gaps, and cable replacement as sufficient fixes. Drained host pacing
-also failed. A classic CP2102 quantized the requested intermediate baud rates,
-so that rate ladder was not diagnostic. The x1 experiment changed sampling
-behavior; the x64/19,200 attempt used invalid periodic divisor 1 and was
-removed. Neither establishes a receive-rate threshold.
-
-The subsequent BAUDTEST2 run on CS00014 passed all six 19,200/x16 cases with
-**D57 mode 2/count 4**. A remote-disk soak then completed 108 reads and 67
-writes, verified its 8 KiB test file after close/reopen, deleted it, and emitted
-`M2PASS!`, with zero retries and UART error-counter deltas. This narrows the
-remaining diagnosis to clock edge/duty sensitivity; it does not identify a
-faulty component or qualify the same setup on CS00015.
-
 The [serial investigation](juku-serial-19200-investigation.md) owns the
-physical results, capture identities, electrical analysis and scope decision
-tree. Use that record for the detailed baud controls.
+physical captures, baud controls, electrical analysis, and next-session plan.
+Both CS00014 and CS00015 reproduced direction-specific receive loss at
+19,200 with D57 mode 3/count 4. CS00014 subsequently passed the six-case
+BAUDTEST2 suite and a verified remote-disk soak at 19,200 with **mode 2/count
+4**. That result qualifies the tested CS00014 image and serial profile;
+it does not identify a faulty component or qualify the same setup on CS00015.
 
 Current recoverable stock-ROM sessions use **JF17 at 9600/8O1 throughout**;
 see [the bootstrap guide](janet-fastboot.md). The mode-2 results above describe
 named historical CP/Mish images. Normal video-slot DRAM refresh and the
 CS00024 T35/T36 cooperative diagnostic refresh are separate from these baud
 tests.
-
-## Comparable period implementations
-
-The rate is not beyond the period silicon. Intel specifies the 8251A for
-asynchronous operation through 19.2 kbaud
-([8251A datasheet](https://community.intel.com/cipcp26785/attachments/cipcp26785/programmable-devices/89914/1/P8251A.pdf)). More directly, the Soviet
-Korvet ПК8010/8020 technical source documents a КР580ВВ51А local-network
-adapter clocked at 312 kHz in x16 mode, yielding about 19,500 bit/s. Its mode
-constant is the same x16, 8-bit, parity-enabled, one-stop combination as
-Juku's `5Eh`, and it exposes a receive-byte interrupt
-([Korvet technical documentation](https://emu80.org/docs/korvet_techinfo)).
-This proves the Soviet 8251 clone was used near this rate; it does not prove
-Juku's analog path or polling implementation.
-
-Robotron PC1715 is a useful conservative comparison rather than a 19,200
-precedent. Its undocumented ROM serial bootstrap is documented as 9600/8O1,
-and its bidirectional V.24 expansion made baud, data bits, stop bits, and
-handshaking software-configurable
-([PC1715 serial boot](https://oldcomputer.info/8bit/robo1715/index.htm),
-[PC1715 interfaces](https://www.robotrontechnik.de/html/computer/pc1715.htm)).
-These comparisons provide period context. Juku qualification depends on the
-actual clock mode, resident protocol and physical results above.
-
-The consolidated electrical analysis, expected 9600/19,200 waveforms, ranked
-diagnosis, and scope-first next-session decision tree are in
-`juku-serial-19200-investigation.md`.
 
 ## Physical host use
 
