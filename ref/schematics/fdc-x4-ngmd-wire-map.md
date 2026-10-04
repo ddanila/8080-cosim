@@ -15,7 +15,7 @@ names support a same-number connection for the shared `X4`/`XS5` signals;
 they do not establish a complete straight-through cable. Ground, power, and
 processor-only contacts retain the dispositions listed below.
 
-## Guarded primary frames
+## Primary frames
 
 | Drawing region | Source frame | SHA256 |
 | --- | --- | --- |
@@ -172,10 +172,19 @@ as returns. The drawing does not establish external cable conductors for
 X4.1–.5 or D100.11's sheet-1 source. Current routing holds are recorded in
 [factory-wire fidelity](../../docs/factory-wire-route-fidelity.md).
 
-The source-frame hashes and selected model endpoints are guarded by:
+The processor source-frame hashes and selected model endpoints are guarded by:
 
 ```sh
 python3 scripts/report_dgsh5_109_009_e3_audit.py
 ```
 
-That audit does not establish cable continuity or inspect all connector pins.
+That audit does not check the НГМД source-frame hashes, establish cable
+continuity, or inspect all connector pins. The modeled processor-side contacts
+and all 23 PCB cable landings have a separate check:
+
+```sh
+python3 kicad/check_x4_offboard_landings.py
+```
+
+This checks landing positions, net names, and selected circuit endpoints;
+it does not prove original-board or external-cable continuity.
