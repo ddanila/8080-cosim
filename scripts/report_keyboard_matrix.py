@@ -118,7 +118,8 @@ simulate the HDL, or verify physical keyboard continuity. The transcription is
 an electrical coordinate map; host-key placement and physical fit need separate
 checks.
 
-Regenerate with `python3 scripts/report_keyboard_matrix.py`.
+Run from the repository root with Python 3 (standard library only):
+`python3 scripts/report_keyboard_matrix.py` replaces this report.
 `sync/keyboard_matrix_check.sh` also requires the generated report to match the
 existing copy.
 
@@ -164,7 +165,7 @@ The keyboard drawing contains an eight-position `S21` bank labelled
 returns serially on `CONTRDAT` to the mainboard E8.4 selector terminal. The
 exact `.009` sheet-1 drawing sends D26 PB4/pin22 to E8.3 and PB5/pin23 to
 E8.2; the `.009` assembly and owner photo show the 3–4 bridge fitted. The
-replica netlist now assigns this return to PB4; its routed copper remains open
+replica netlist assigns this return to PB4; its routed copper remains open
 pending A50 hole identification and direct continuity.
 
 Archive-37 `ekta37.bin` (RomBios 3.43m) decodes the S21 bits as follows,
@@ -198,7 +199,7 @@ physical acceptance scope.
 ## Model comparison
 
 - All 26 letters, ten digits, their drawing-visible ASCII shift pairs, Space,
-  Return, Tab, Escape, Backspace/Left, and ASCII punctuation now have exact
+  Return, Tab, Escape, Backspace/Left, and ASCII punctuation have exact
   drawing-derived cosim tuples.  Uppercase letters assert the dedicated SHIFT
   return while reusing the lowercase matrix contact.
 - The HDL accepts the same `(column, key-bit, shift)` tuple at its simulation
