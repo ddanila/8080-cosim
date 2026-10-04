@@ -21,7 +21,7 @@ The Windows product is the GUI described in
 - Production callers use the C executable. The retired Python implementations
   are non-runnable test fixtures; Python remains supported for analysis and tests.
 - Stock/JF17 uses 9,600/8O1 throughout bootstrap and NetDisk. C11/C12 use their
-  authenticated V16 payloads and 19,200-baud recovery profiles.
+  CRC-checked V16 payloads and 19,200-baud recovery profiles.
 - Configuration and payload identities are validated before starting a session.
   See [jukuhost-config.md](jukuhost-config.md).
 

@@ -11,9 +11,9 @@ testable, but changes to 19,200/8N1 and cannot be selected with
 | Path | Transfer | Recovery boundary |
 | --- | --- | --- |
 | Ordinary stock Janet | Stock ROM's checked bootstrap records at 9,600/8O1 | Compatible system and NetDisk settings are required |
-| Stock-assisted JF17 | One 128-byte core through Janet, authenticated extension and compressed system at 9,600/8O1 | Same C host can detect a checked stock request after target reset and boot again |
+| Stock-assisted JF17 | One 128-byte core through Janet, Fletcher-checked extension and CRC-checked compressed system at 9,600/8O1 | Same C host can detect a checked stock request after target reset and boot again |
 | Exact JF15 compatibility | Stock-loaded core, then 19,200/8N1 transfer | Frozen compatibility evidence; stock reset recovery requires JF17 |
-| C8/C11/C12 network ROM | Direct authenticated JF16 bootstrap under the chosen network-ROM profile | Separate network-ROM workflow; see the portable host contract |
+| C8/C11/C12 network ROM | Direct CRC-checked JF16 bootstrap under the chosen network-ROM profile | Separate network-ROM workflow; see the portable host contract |
 
 The implementation is `host/src/jukuhost_runner.c` with the artifact/session
 validation in `host/src/jukuhost_core.c`. The current Windows embedded stock

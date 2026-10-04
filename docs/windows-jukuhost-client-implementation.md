@@ -6,7 +6,7 @@ are in [windows-jukuhost-client.md](windows-jukuhost-client.md).
 
 ## Current implementation
 
-- Stock, C11 and C12 modes use embedded authenticated boot payloads.
+- Stock, C11 and C12 modes use embedded boot payloads with hash validation.
   Configuration defaults and the source INI select C12; the floppy packager
   selects Stock ROM for its bundled development disk.
   The source revision, sizes and hashes are maintained in

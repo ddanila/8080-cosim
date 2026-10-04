@@ -9,7 +9,7 @@ runtime contract and remaining physical qualification.
 ## Implemented behavior
 
 - Janet bootstrap with learned station identities and checked frames.
-- Stock/JF17 reset-safe boot at 9,600/8O1; authenticated C8/C11/C12 Fastboot
+- Stock/JF17 reset-safe boot at 9,600/8O1; CRC-checked C8/C11/C12 Fastboot
   profiles, including bounded recovery when readiness markers are lost.
 - N3 A:/B: disk service and N4 console, clock, report and capability traffic.
 - Duplicate request suppression, snapshot media, transaction journaling,

@@ -22,7 +22,7 @@ While its overlap-safe `JZ` scanner is idle, C11 periodically does this:
 
 Only the idle `J`/`Z` scanner has a timeout. Once `JZ` is accepted, the length,
 compressed body, CRC, decompression, and success handoff retain the existing
-blocking/authenticated behavior. A slow but live payload is therefore never
+blocking receive and CRC validation. A slow but live payload is therefore never
 decoded partially. C6 through C10 retain their exact 361-byte loader; the
 C11-only loader is 456 bytes and occupies unused boot-only ROM at file offset
 `0600h`.
@@ -56,7 +56,7 @@ expires. See [the configuration guide](jukuhost-config.md) for defaults.
 | CP/M already in NetDisk | retries checked `JD` requests | validates and preserves first request | attaches without `--resume-disk` |
 | CP/M running silent music | emits no traffic | sends no discovery or ready bytes | program is left undisturbed until NetDisk resumes |
 | board reset during NetDisk | C11 POST then checked beacon | closes NetDisk service state and restarts V16 | complete automatic reboot |
-| reset during V16 | fresh C11 beacon/`JR16` | abandons partial stream and rediscovers | full authenticated retransmission |
+| reset during V16 | fresh C11 beacon/`JR16` | abandons partial stream and rediscovers | full CRC-checked retransmission |
 | complete V16 body with bad CRC | CRC failure returns loader to discovery loop | sees a later beacon and retries complete V16 | no partial image executed |
 | incomplete length/body/CRC after accepted `JZ` | blocks waiting for the remaining bytes; scanner timeout is inactive | boot deadline returns host to passive discovery | no partial image executed; a checked reset/restart is needed if the sender cannot complete the transfer |
 | host process replaced | CP/M's NetDisk client times out and retries the request | replacement validates `JD` and serves it | no manual resume flag |
