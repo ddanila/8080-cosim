@@ -25,11 +25,11 @@ with CSV_OUT.open("w",newline="") as out:
 status = "CANDIDATE GEOMETRY / REVIEW REQUIRED" if summary else "NO REPRODUCIBLE PLACEMENT RESIDUALS"
 lines=["# Photo placement residual audit","",f"Status: **{status}**","",
 f"The endpoint registry contains `{snapped}` unique-hole snaps, but only rows whose notes retain an explicit `projected (x,y)` baseline can produce a residual. Current calculable rows: `{sum(len(v) for v in groups.values())}`.",
-"No row is electrical evidence and no placement is changed automatically.","",
+"These residuals do not establish electrical connectivity, and no placement is changed automatically.","",
 "Regenerate with `python3 kicad/report_photo_placement_residuals.py`.","",
 "| Ref | Pins | dx px | dy px | Offset px | RMS px | Posture | Pin list |","| --- | ---: | ---: | ---: | ---: | ---: | --- | --- |"]
 for r in summary:lines.append(f"| {r[0]} | {r[1]} | {r[2]:.1f} | {r[3]:.1f} | {r[4]:.1f} | {r[5]:.1f} | {r[6]} | {r[7]} |")
-lines += ["","`review-translation` requires at least three pins, >=20 px median displacement, and <=12 px RMS scatter. Review both-side source crops before editing KiCad."]
+lines += ["","`review-translation` requires at least three endpoint rows, >=20 px median displacement, and <=12 px RMS scatter. The script groups by reference only: it does not deduplicate pins or separate source images. Confirm distinct pins and a common image coordinate frame before interpreting a displacement, then review both-side source crops before editing KiCad."]
 if not summary:
     lines += ["", "Use the [package-local fitting workflow](photo-registration.md#local-package-fitting) for placement review. Missing residual baselines do not establish that the current footprints match the owner board."]
 MD_OUT.write_text("\n".join(lines)+"\n"); print(f"wrote {MD_OUT.relative_to(ROOT)} and {CSV_OUT.relative_to(ROOT)} ({len(summary)} refs)")
