@@ -143,14 +143,9 @@ The owner replaced the four charge-pump capacitors to match the plain
 loop returned every byte exactly: 6,144 bytes at 9,600/8O1, 12,288 at
 19,200/8N1, and 12,288 at 19,200/8O1.
 
-The first C9 Network ROM trial exposed exact local echo: the host transmitted
-11,993 bytes of V16 probes and received the same 11,993-byte stream, while
-three deliberately non-protocol raw payloads were also returned byte-for-byte.
-A temporary host echo filter correctly removed that stream and passed a full
-echo-plus-real-target cosim, but a reset-controlled physical retry contained
-only 11,963 returned host bytes and no C9 response. This proved that filtering
-could not repair the physical routing and was not retained in the host.
-
+The initial C9 trial returned the host's transmitted probes and deliberately
+non-protocol payloads byte-for-byte, with no target response. This was local
+echo in the adapter path; a software filter could not restore communication.
 The owner then found the decisive assembly error: both selector shunts had
 been installed 90 degrees from their orientation in the product photograph.
 Removing them eliminated the echo but disconnected the DB9 path (`tx=6215`,
