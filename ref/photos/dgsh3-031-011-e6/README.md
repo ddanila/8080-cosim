@@ -5,11 +5,10 @@ Owner photographs (2026-07-18) of **ДГШ3.031.011 Э6 «Схема элект�
 subsystems interconnect. This is the top-level block/interconnect drawing (Э6 =
 general schematic), not a component-level one.
 
-## Why this matters
+## Inter-module connections
 
-It enumerates the **inter-module connectors X1–X6** and which unit lands on
-each — the map for cross-checking every card-edge / cable connector against the
-individual module schematics. Useful for the bus-connector reconciliation.
+The drawing identifies connectors X1–X6 and their connected units. Compare
+them with the individual module drawings before assigning cable contacts.
 
 Referenced units (with their own drawing numbers):
 
@@ -19,7 +18,7 @@ Referenced units (with their own drawing numbers):
 | A2.1 | Устройство управления клавиатурой Е4701 | `ДГШ3.049.040` |
 | A2.2 | Сменный расширитель памяти Е6201 | `ДГШ5.106.102` |
 | A3 | Устройство печатающее | СМ6329.02 / К6312М |
-| A4 | Блок НГМД Е6502 | `ДГШ3.065.008` → `ref/photos/dgsh3-065-008-e3/` |
+| A4 | Блок НГМД Е6502 | [ДГШ3.065.008](../dgsh3-065-008-e3/README.md) |
 | A5 | Устройство отображения | МС6105.09 |
 
 `ДГШ3.031.007` identifies the E5101 operator-console assembly A1. The
@@ -36,7 +35,8 @@ Overview first, then detail tiles in camera order:
 ## Reviewed result
 
 The complete block/cable map is transcribed in
-`ref/schematics/system-bus-connector-map.md`: A1/X1 selects the alternative
+[system-bus connector map](../../schematics/system-bus-connector-map.md):
+A1/X1 selects the alternative
 A2.1 or A2.2 module, while X2, X4, and X6 reach the printer, НГМД block, and
 display respectively. X3 contact 12 belongs to the mains/switch harness; the
 drawing shows no X5 signal cable.

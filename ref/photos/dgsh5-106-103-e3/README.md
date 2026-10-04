@@ -30,5 +30,5 @@ Overview first, then detail tiles in camera order:
 The XP signal core matches processor connector X1 at every shown data,
 address, and control contact. Its power map does not: the card grounds A1-A3,
 where the exact `.009` processor drawing supplies +5 V. This is a documented
-variant incompatibility, not a rail correction. See
-`ref/schematics/system-bus-connector-map.md`.
+variant incompatibility. Use the connector cross-check above for exact contacts
+and source evidence.
