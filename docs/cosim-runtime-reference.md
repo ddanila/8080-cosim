@@ -268,9 +268,10 @@ The launcher defaults to NetDisk protocol 2 at 9600 baud; the standalone
 by the served system explicitly when using another profile.
 
 For a CP/Mish dual-network-drive session, `--drive-b` accepts a physical
-800 KiB `.JUK` image. A: remains the 386 KiB host volume and may be made
-writable; B: preserves the original two-sided 160-track, 4 KiB-block Juku
-geometry and is read-only:
+800 KiB `.JUK` image. The C host requires A: to be exactly 409,600 bytes
+(400 KiB); the guest filesystem determines its usable capacity. `--writable`
+enables journaled writes directly to that A: file. B: preserves the original
+two-sided 160-track Juku geometry and is read-only:
 
 ```sh
 tools/juku_run.py --disk ../cpmish/juku-net-mode2-system.bin \
@@ -278,13 +279,20 @@ tools/juku_run.py --disk ../cpmish/juku-net-mode2-system.bin \
     --disk-baud 19200 --disk-protocol 2 --writable --attach
 ```
 
-It also turns cosim's bank-switch logging off and deletes its run directory
-on exit. The Juku switches memory banks constantly -- hundreds of thousands
+The launcher turns cosim's bank-switch logging off and removes its run directory
+during normal shutdown unless `--keep-logs` is set. The Juku switches memory banks constantly -- hundreds of thousands
 of times a minute -- so long sessions can produce large stderr logs. `--keep-logs`
 retains the directory and leaves the inherited `JUKU_TRACE_BANK` setting intact.
 If it is already `0`, bank logging stays disabled. Likewise, `--max-speed`
 skips the launcher’s pacing override but preserves an inherited
 `JUKU_REALTIME_HZ`; unset that variable for an unpaced run.
+
+An early failure to discover the console or serial PTY returns 1 and leaves
+the run directory for diagnosis. After startup, the launcher does not propagate
+child-process exit codes: its normal shutdown returns 0, and a host failure
+does not stop cosim. Use `--keep-logs` and inspect the host log/capture when
+qualifying a network session. In `--attach` mode, Ctrl-] leaves the bridge and
+shuts down the session; it does not leave the emulator running in the background.
 
 Type boot keys **one at a time with a beat between them**: the emulated
 matrix consumes a keystroke every few frames, and anything typed before its
