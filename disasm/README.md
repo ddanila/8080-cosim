@@ -9,9 +9,9 @@ bytes. One guard covers every image: `sync/disasm_check.sh` (a generic-CI
 step).
 
 **Ctl-editing hazard**: SkoolKit decodes Z80, and the 8080-undocumented
-bytes `08/10/18/20/28/30/38/CB/D9/DD/ED/FD` have *different lengths* on
-Z80 (JR family, prefixes). A `c` block whose tail reaches one of these
-makes the Z80 decoder consume bytes past the block boundary, producing
+bytes `08/10/18/20/28/30/38/CB/D9/DD/ED/FD` have different semantics and
+may have different lengths on Z80. In particular, Z80 relative branches and
+prefixes can make a `c` block's tail consume bytes past its boundary, producing
 overlapping entries — the round-trip guard then fails with a shifted,
 longer binary. An 8080 may execute these undocumented bytes with semantics
 that differ from Z80; encountering one is not proof that the region is data.
