@@ -25,16 +25,12 @@ command is specified in
 
 The separately built, from-scratch network-only successor is in
 [`network-rom/`](network-rom/README.md). Its current C12 / ABI 1.5 implementation and release-specific physical scope
-are documented there. CS00015's fitted C6 pair remains a separate physical
-identity; see the CP/M Plus
-[C6 qualification record](https://github.com/ddanila/cpm-plus-juku/blob/master/docs/cs00015-c6-blind-qualification-20260818.md).
+are documented there. CS00015's fitted C8 / ABI 1.3 pair is identified in
+[the machine profile](../../docs/machines/CS00015.json); its physical
+qualification is indexed by [the service record](../../docs/cs00015-service-record.md).
 
-The three-voice speaker proof was first delivered through this environment,
-but the experiment grew into an independent CP/M music engine.  JukuPoly's
-player, importers, songs, renderer, tests, documentation, and physical evidence
-now live in [`../jukupoly/`](../jukupoly/README.md).  Jukuravi retains no music
-runtime; its historical role was loading and hosting the earliest CS00000
-sessions.
+The independent music runtime, tools and physical evidence live in
+[JukuPoly](../jukupoly/README.md).
 
 The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
 ROMs did not establish the physical D55 clocks before latching their Mode-0
@@ -45,17 +41,13 @@ see
 
 ## Current machine configuration
 
-CS00015 was restored on 2026-08-08 with **EK37 / RomBios 3.43m**, received the
-project's frozen Ekta4401 D15/D16 service-ROM pair on 2026-08-11, and was
-upgraded to Ekta4402 on 2026-08-16. Ekta4402 provided direct `N` fastboot plus
-the inherited Jukuravi API-v2 `J` entry and is now a frozen preceding baseline.
-Two physical `J` attaches requalified PROBE, 128-row refresh query and READ
-with zero transport mismatch; evidence is retained under
-`sessions/cs00015-ekta4402-j-physical/`. The
-T31/T32 configurations below and the intervening EK37 restoration remain
-historical evidence. JukuNet C6 / ABI 1.2 is fitted as of 2026-08-18. The donor D6 `.038` remains
-fitted, the original D8 `.039` is restored, and D1 is repaired;
-see [`../../docs/cs00015-service-record.md`](../../docs/cs00015-service-record.md).
+The CS00015 profile, updated 2026-08-21, records fitted JukuNet C8 / ABI 1.3.
+The donor D6 `.038` remains fitted, the original D8 `.039` is restored, and
+D1 is repaired. [The service record](../../docs/cs00015-service-record.md)
+owns the physical changes and firmware qualifications. The preceding Ekta4402
+API-v2 `J` attaches are retained in
+[their evidence record](sessions/cs00015-ekta4402-j-physical/README.md).
+The T31/T32 diagnostic configurations below are historical setups.
 
 On 2026-08-09 a separate AT28C64B diagnostic/service EEPROM was refreshed from
 T32 to the pinned T31 image and verified by a complete programmer verify plus
@@ -88,11 +80,10 @@ asserts. Pass `--port` accordingly; `host.py` requires it explicitly, while
 `probe_waitclass.py` and `probe_a12_increment.py` default to the first adapter
 found by `host.discover_serial_ports()` and print which one they chose.
 
-macOS needs no driver or dependency install: the CP210x driver ships with the
-system, and `host.py` uses stdlib `termios` rather than pyserial. Do not install
-the vendor Silicon Labs kext alongside the built-in driver. The verified macOS
-first-contact sessions against CS00015, including the two instructive failed
-attaches, are recorded in [`MACOS-BENCH.md`](MACOS-BENCH.md).
+The recorded macOS setup used the built-in Apple CP210x driver and stdlib
+`termios`, without pyserial or a vendor driver install. Confirm the actual
+adapter and device node on another setup; the result is qualified in
+[MACOS-BENCH.md](MACOS-BENCH.md).
 
 On a cold boot, run a full session first. `--attach-loader` means "reattach to
 an already-resident loader without resetting"; it deliberately never answers the
