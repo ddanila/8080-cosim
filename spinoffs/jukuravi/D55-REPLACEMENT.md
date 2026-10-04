@@ -4,7 +4,9 @@ Status: **HOLD — RUN T34 BEFORE SUBSTITUTION**
 
 This is the controlled before/substitute/after procedure if the corrected T34
 functional-path test first reproduces a CS00015 D55-path failure. D55 is the
-middle КР580ВИ53/8253 and supplies vertical video and frame timing.
+middle КР580ВИ53/8253 and supplies vertical video and frame timing. The
+[current fitted configuration](../../docs/cs00015-service-record.md) uses C8;
+this procedure requires changing to the exact T34 diagnostic setup below.
 
 T15/T16/T31/T32 are not valid D55-path evidence. They
 latched newly written Mode-0 counts without establishing the D54/D56 clocks
@@ -12,8 +14,8 @@ required by a real 8253. Do not remove or substitute D55 on the strength of
 those historical codes. See
 [`../../docs/jukuravi-d55-diagnostic-audit.md`](../../docs/jukuravi-d55-diagnostic-audit.md).
 
-Do not combine this run with D4/D30 rework, PROM substitution, Nano wiring, or
-main-board P0 continuity changes. Change one variable: D55.
+Keep the board, wiring, firmware and power configuration unchanged during
+the original/substitute comparison; change only D55.
 
 ## Exact diagnostic media
 
@@ -37,9 +39,9 @@ and the read-back SHA-256 below. Label the medium `T34HOST`.
 Use the T34 host report and retain its JSON/raw serial capture. The exact ROM
 identity is `1C/A637`. Diagnostic bit `08` means **D55 functional path failed**;
 it does not mean “D55 package bad.” PIC, PPI, D54 and D57 have bits `01`, `02`,
-`04` and `10`. A clean T34 result clears the tested path and cancels this
-substitution run. A repeated `08` authorizes the controlled discriminator
-below, while retaining D9, socket/power, local bus and D54/D56 clocks as
+`04` and `10`. Three clean cold-power T34 runs cancel the substitution
+plan. A single clean run does not resolve an intermittent result. Repeated
+`08` results support the controlled discriminator below, while retaining D9, socket/power, local bus and D54/D56 clocks as
 alternative causes.
 
 ## Controlled procedure
