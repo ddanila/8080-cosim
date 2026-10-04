@@ -148,10 +148,9 @@ cycles, so only the first byte is nominally a different cycle type.
 The listed decode inputs do not select on that distinction. This does not
 rule out physical differences in edge timing, loading, or CPU behavior.
 
-## Does the factory firmware execute in the CAS-gated pages?
+## Candidate archived-ROM transfers into CAS-gated pages
 
-If the CAS-gated pages were never meant to hold code, our ROM layout would
-be the faulty assumption rather than the board. Scanning `roms/ekta37.bin`
+Scanning the archived `roms/ekta37.bin` image
 for absolute transfer instructions whose target lands in a CAS-gated page:
 
 - distinct CAS-gated targets: 36
