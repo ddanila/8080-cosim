@@ -33,7 +33,7 @@ address rows with the expected `.039` table.
 **Buffered through the GAL, not into the enables directly.** The РТ4 (U3)
 outputs route into U5, which consumes physical D0/pin12 as
 active-low `ROM_N`; the GAL equation uses `/DEC_ROM_N`. The РЕ3 (U4) is enabled by ROM select and its output byte is only
-**observed** (via J95): VJUGA's single 27C256 does not need the pager to gate
+**observed** (via J95): VJUGA's single U2 ROM does not need the pager to gate
 data, and the verified twin (`hdl/vjuga_juku_top.v`) likewise only *asserts* on
 D8 rather than routing it into the data path.
 

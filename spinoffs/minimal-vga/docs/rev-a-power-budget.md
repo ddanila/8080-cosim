@@ -11,7 +11,8 @@ frozen.
 - Supply rail: +5 V only after F1.
 - CPU: real DIP Z80, budgeted as an NMOS Z0840004-class part.
 - DRAM: eight 4164-compatible 64K x 1 DIP parts.
-- ROM: 27C256-class EPROM/EEPROM.
+- ROM: U2 uses the 28C256 pin contract. Any alternate EPROM requires the
+  compatibility review described in the [chip map](rev-a-chip-map.md).
 - PPI: 82C55/8255-compatible DIP.
 - GALs: two GAL22V10-class DIP devices.
 - Decode PROMs (when fitted): the two original Juku **bipolar** PROMs — U3
@@ -31,7 +32,7 @@ frozen.
 | --- | ---: | ---: | ---: |
 | Z80 CPU | 1 | 200 mA | 200 mA |
 | 4164 DRAM | 8 | 75 mA | 600 mA |
-| 27C256 ROM | 1 | 50 mA | 50 mA |
+| U2 ROM (28C256 pin contract; planning allowance) | 1 | 50 mA | 50 mA |
 | 82C55/8255 PPI | 1 | 100 mA | 100 mA |
 | GAL22V10 | 2 | 90 mA | 180 mA |
 | 74HCT/HC glue logic (incl. U6 inverter) | 10 | 10 mA | 100 mA |
