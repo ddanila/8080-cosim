@@ -16,8 +16,8 @@ Primary frames are
 reset source and `PXL_20260718_101637906.jpg` for the sheet-3 destinations.
 The overview independently preserves the same paths.
 
-The measurement resolves the former drawing ambiguity: active-high `RESET`
-from D13.6/D1.12 enters the otherwise unaccounted D13 Schmitt section at pin 9;
+Owner continuity places active-high `RESET` from D13.6/D1.12 at
+D13 Schmitt input pin 9;
 D13.8 drives D93's active-low master reset. D93.19 also reaches the physical
 outer-bus contact at the rightmost position of the middle row when the board is
 viewed from the top. The exact X1 contact code is deliberately not assigned:
@@ -26,12 +26,15 @@ description and must be reconciled separately.
 
 ## Model guard
 
+Run from the repository root with Python 3 (standard library only):
+
 ```sh
 python3 kicad/check_d93_static_paths.py
 ```
 
 The guard checks canonical JSON endpoints and structural HDL markers for
 `RESET -> D13.9 -> D13.8 -> FDC_RESET_N -> D93.19` and the pin-22/pin-33 tie.
-It does not check routed copper, measure reset timing, or establish physical
+It does not compile or simulate HDL, check routed copper, measure reset
+timing, or establish physical
 continuity of the static tie. Current routing holds are recorded in
 [factory-wire fidelity](../../docs/factory-wire-route-fidelity.md).

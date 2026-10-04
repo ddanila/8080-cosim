@@ -26,6 +26,8 @@ revision and circuit scope.
   `es101_nimekiri_komponendid.pdf`, `ref/Juku_official_chip_BOM.pdf`, and the
   owner photographs under `ref/photos/`.
 
+## Retained `.009` assembly scan
+
 `dgsh5_109_009_sb_sheets2-6.pdf` is the owner-supplied «ДУБЛИКАТ» scan of
 sheets 2-6 of the `ДГШ5.109.009 СБ` assembly drawing: the таблица соединений
 (wire/cable connection table, sheets 2-5) and the change-registration sheet 6.
