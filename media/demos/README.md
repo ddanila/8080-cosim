@@ -26,11 +26,16 @@ python3 tools/netboot_demo_gifs.py --scenario cpm31_netrom
 python3 tools/netboot_demo_gifs.py --scenario all
 ```
 
-Normal generation uses a 1.7 MHz effective execution-rate approximation for
-its wall-clock timeline. For a
-faster desk validation of the same protocol and rendering path, set
-`JUKU_DEMO_REALTIME_HZ=20000000`; generated presentation GIFs should continue
-to use the default.
+Normal generation writes into `media/demos/`, replacing the selected GIFs,
+and uses a 1.7 MHz effective execution-rate approximation for its timeline.
+For faster desk validation, write the accelerated captures separately:
+
+```sh
+JUKU_DEMO_REALTIME_HZ=20000000 python3 tools/netboot_demo_gifs.py \
+  --scenario all --output /tmp/juku-demo-validation
+```
+
+Presentation GIFs should use the default pacing.
 
 The generator invokes only `build/jukuhost` for production protocol serving.
 Python remains the simulator/capture renderer and is not a Janet, Fastboot,
