@@ -10,6 +10,9 @@ as 75 Ω and R53-R56 as 5.1 kΩ.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The command replaces this report after its registered-evidence checks pass.
+
 ```sh
 python3 scripts/report_ras_resistor_bank.py
 ```
@@ -23,7 +26,7 @@ python3 scripts/report_ras_resistor_bank.py
 | Registered geometry is the vertical 10.16 mm bank | PASS | x=221.0 mm; eight independently recorded centres |
 | Target case markings are encoded as values | PASS | R49-R52=75 Ω; R53-R56=5.1 kΩ |
 | Board provenance cites the target-board registration | PASS | all eight board-JSON components |
-| PCB generator text contains the registered placements and footprint | PASS | registered footprint name and coordinates; no C69/R52 special-case branches |
+| PCB generator text contains the registered placements and footprint | PASS | registered footprint name and coordinates |
 
 ## Registered top-to-bottom order
 

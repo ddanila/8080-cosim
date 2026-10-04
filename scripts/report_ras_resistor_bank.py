@@ -79,7 +79,7 @@ def main() -> int:
                         for ref in expected_order)
     generator_ok &= 'if ref == "C69"' not in generator and 'if ref == "R52"' not in generator
     checks.append(("PCB generator text contains the registered placements and footprint",
-                   generator_ok, "registered footprint name and coordinates; no C69/R52 special-case branches"))
+                   generator_ok, "registered footprint name and coordinates"))
 
     ok = all(check[1] for check in checks)
     lines = [
@@ -94,6 +94,9 @@ def main() -> int:
         "as 75 Ω and R53-R56 as 5.1 kΩ.",
         "",
         "## Command",
+        "",
+        "Run from the repository root with Python 3 (standard library only).",
+        "The command replaces this report after its registered-evidence checks pass.",
         "",
         "```sh",
         "python3 scripts/report_ras_resistor_bank.py",
