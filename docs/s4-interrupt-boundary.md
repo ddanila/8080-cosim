@@ -8,9 +8,15 @@ and preserves the full three-terminal S4 changeover topology.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The command reads `kicad/juku.board.json` and overwrites this report.
+
 ```sh
 python3 scripts/report_s4_interrupt_boundary.py
 ```
+
+A completed check writes its PASS/FAIL results before exiting; failed
+checks return status 1. Inspect the exit status as well as the report.
 
 ## Guarded Checks
 
