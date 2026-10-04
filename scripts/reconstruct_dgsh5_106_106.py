@@ -105,10 +105,9 @@ def main() -> int:
         "Factory sheet 1 (`sheet1_PXL_20260718_122548761.jpg`), row `0210`,",
         "column A visibly reads `21`. Its complete adopted row is:", "",
         "```text", "0210: " + " ".join(f"{value:02X}" for value in context), "```", "",
-        "This is exactly the plan's diff-first method: matching bytes need no",
-        "second manual transcription; the sole disagreement is hand-verified",
-        "against primary evidence. The source hashes and exact one-byte mismatch",
-        "are executable guards, so a changed archive cannot silently pass.", "",
+        "The generator guards the source hashes, exact one-byte mismatch and",
+        "adopted image hash. It preserves the reviewed photo reading; regeneration",
+        "does not independently reread the photographed bytes.", "",
         "## Guarded sources", "",
     ]
     lines.extend(

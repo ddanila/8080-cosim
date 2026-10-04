@@ -40,10 +40,9 @@ column A visibly reads `21`. Its complete adopted row is:
 0210: E3 CD 7A 18 E1 2B CD 59 01 CA 21 02 FE 2C C2 82
 ```
 
-This is exactly the plan's diff-first method: matching bytes need no
-second manual transcription; the sole disagreement is hand-verified
-against primary evidence. The source hashes and exact one-byte mismatch
-are executable guards, so a changed archive cannot silently pass.
+The generator guards the source hashes, exact one-byte mismatch and
+adopted image hash. It preserves the reviewed photo reading; regeneration
+does not independently reread the photographed bytes.
 
 ## Guarded sources
 
