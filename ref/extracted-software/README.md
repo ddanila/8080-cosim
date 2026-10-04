@@ -8,8 +8,8 @@ raw CP/M images in `media/disks/`.
 - `JUKPROG2_JBASIC_live_candidate.COM` is the 8,320-byte raw slice at
   `JUKPROG2.CPM` offset `0x2DE00`, compared with the live BASIC launch.
 - `JUKU1_JBASIC_raw_candidate.COM` is a raw-offset candidate from
-  `JUKU1.CPM`; its directory entry currently maps to erased bytes
-  under the same extractor.
+  `JUKU1.CPM`; the directory-based extraction starts with a 4 KiB
+  `E5`-filled block followed by other data.
 
 See [extraction evidence](../../docs/basic-disk-extraction.md) for hashes
 and the unresolved directory/raw allocation mapping. The

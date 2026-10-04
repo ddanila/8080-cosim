@@ -46,7 +46,8 @@ python3 scripts/extract_basic_disk_files.py
   JUKPROG2 candidate's entry prefix (at least six bytes), BASIC-related
   RAM strings and the visible `READY` oracle. It does not require an
   exact whole-file comparison against loaded RAM.
-- The JUKU1 directory entry maps to erased bytes under this extractor.
+- The 8,320-byte JUKU1 directory extraction begins with 4,096 `E5` bytes;
+  its remaining 4,224 bytes contain other data. It is not wholly erased.
   Its raw candidate has a jump header and BASIC-related strings; those
   signatures alone do not establish that it is a working executable.
 - Artifact hashes identify the emitted bytes, not a validated CP/M

@@ -72,7 +72,7 @@ are `JBASIC_KEY_HOLD_FRAMES` (default 6) and `JBASIC_KEY_GAP_FRAMES` (default 8)
 ## Disposition
 
 - `JUKPROG2.CPM` is used because `docs/basic-disk-extraction.md` preserves the raw live-load `JBASIC.COM` candidate from that disk.
-- The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extractor maps it to erased bytes; it is not used for this launch probe.
+- The `JUKU1.CPM` `JBASIC.COM` directory entry still matters as catalog evidence, but the current extraction begins with a 4 KiB `E5`-filled block followed by other data; it is not used for this launch probe.
 - The guard requires at least six candidate entry bytes at RAM `0x0100` and the `ERROR`, `READY`, and `BASIC` strings somewhere in RAM. It does not verify the complete loaded binary or the relocation of those strings.
 - The fixed-`0xD800` framebuffer has a positive text oracle: the typed `A>JBASIC` command line and final `READY` prompt are matched by exact 8x7 glyph bitmaps.
 - The [recorded HDL run](juku-top-jbasic-verilator-probe.md) reached `READY`. This report checks the C-model launch path; see [simulator compatibility](../sync/README.md#simulator-compatibility) for current HDL rerun limits.

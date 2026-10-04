@@ -194,9 +194,9 @@ def main():
         raise SystemExit("JUKU1.CPM does not contain JBASIC.COM")
     juku1_directory_jbasic = extract_entry(juku1, juku1_jbasic_entry)
 
-    # The JUKU1 directory entry is present, but the same logical extraction maps
-    # to erased bytes. A nearby raw copy has the expected CP/M COM jump and
-    # BASIC/READY/ERROR strings, so keep it as an explicit candidate rather than
+    # The JUKU1 directory entry is present, but its extracted first 4 KiB block
+    # is E5-filled; later blocks contain other data. A nearby raw copy has the
+    # expected CP/M COM jump and BASIC/READY/ERROR strings, so keep it as an explicit candidate rather than
     # silently treating the directory entry as good.
     juku1_raw_offset = 0x67000
     juku1_raw_len = juku1_jbasic_entry["records"] * CPM_RECORD_SIZE
@@ -232,8 +232,8 @@ def main():
                 "- `JUKPROG2_JBASIC_live_candidate.COM` is the 8,320-byte raw slice at",
                 "  `JUKPROG2.CPM` offset `0x2DE00`, compared with the live BASIC launch.",
                 "- `JUKU1_JBASIC_raw_candidate.COM` is a raw-offset candidate from",
-                "  `JUKU1.CPM`; its directory entry currently maps to erased bytes",
-                "  under the same extractor.",
+                "  `JUKU1.CPM`; the directory-based extraction starts with a 4 KiB",
+                "  `E5`-filled block followed by other data.",
                 "",
                 "See [extraction evidence](../../docs/basic-disk-extraction.md) for hashes",
                 "and the unresolved directory/raw allocation mapping. The",
@@ -343,7 +343,8 @@ def main():
             "  JUKPROG2 candidate's entry prefix (at least six bytes), BASIC-related",
             "  RAM strings and the visible `READY` oracle. It does not require an",
             "  exact whole-file comparison against loaded RAM.",
-            "- The JUKU1 directory entry maps to erased bytes under this extractor.",
+            "- The 8,320-byte JUKU1 directory extraction begins with 4,096 `E5` bytes;",
+            "  its remaining 4,224 bytes contain other data. It is not wholly erased.",
             "  Its raw candidate has a jump header and BASIC-related strings; those",
             "  signatures alone do not establish that it is a working executable.",
             "- Artifact hashes identify the emitted bytes, not a validated CP/M",
