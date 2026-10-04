@@ -9,10 +9,10 @@ font identified by rendering its bytes as glyphs. Labels live in
 [`../disasm/ekta37/ekta37.ctl`](../disasm/ekta37/ekta37.ctl).
 
 Two boundaries organize the image. The **physical split** at `2000h` is the
-D15/D16 chip edge. The **execution split** at `1800h` ends the in-place
-code: everything above executes at `D800h..FFFFh` through memory-mode
-banking, not a copy: modes 1/2 map ROM `1800h-3FFFh` at `D800h-FFFFh`
-for reads. The runnable cosim and HDL protect that high overlay from writes;
+D15/D16 chip edge. ROM offsets below `1800h` supply the low execution region;
+modes 1/2 map ROM offsets `1800h-3FFFh` to `D800h-FFFFh` for reads,
+including code and data. This is memory-mode banking rather than a copy.
+The runnable cosim and HDL protect that high overlay from writes;
 framebuffer updates require a mapping that exposes RAM. Only mode 0's low
 ROM overlay permits writes to underlying RAM. See
 [the hardware map](hardware-map.md#cpu-and-memory) for the guarded contract.
@@ -28,15 +28,9 @@ ROM overlay permits writes to underlying RAM. See
 | `2325-29FF` | 1,755 B | 10.7% | Disk subsystem: Bootstrap v4.1 (banner `23C4h`), VG93/FDC driver (ports `1Ch-1Fh` cluster in `25xx-27xx`), FLOPPY/START/RWFLOPPY vector targets (`2565h/2482h/280Bh`), RamDisk service entry (`29B3h`) |
 | `2A00-35FF` | 3,072 B | 18.8% | NetBios (Janet 1.2): entry `2AA2h`, protocol + prompts (`2C22h`), 8251 driver and handler install (`34xx-35xx`); see [`ekta37-netbios-notes.md`](ekta37-netbios-notes.md) |
 | `3600-38FF` | 768 B | 4.7% | Expansion-bus device driver: off-board ports `F0h+` (sites `29B0h`, `357Ch-359Ch`, `36xx-38xx`); plausibly serves the RamDisk hardware — **hedged attribution** |
-| `3900-3EB8` | 1,465 B | 8.9% | **Free** (`FFh` fill — usable at zero RAM cost: the relocated half already owns its runtime window) |
+| `3900-3EB8` | 1,465 B | 8.9% | **Free** (`FFh` fill in the banked high ROM window) |
 | `3EB9-3F4F` | 151 B | 0.9% | Tail, unattributed |
 | `3F50-3FFF` | 176 B | 1.1% | Monitor vector table (runtime `FF50h`, the `EKDOS30.ASM` contract; boot-prompt `D` jumps here) |
-
-Headlines: the school network is the largest single feature (~3 KiB, 19%),
-half again the size of the whole disk subsystem (~1.8 KiB, 11%). The console
-core dominates overall (~4.6 KiB, 29%) because a bitmap machine supplies its
-own text rendering; the separately counted font adds 1.5 KiB. Free space totals 1,721 B
-(10.5%).
 
 Precision: edges are exact where a landmark pins them (font, free fills,
 vector table, disk/net entries); the console-core interior and the
