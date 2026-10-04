@@ -151,7 +151,7 @@ and video interrupt cadence follow the implemented card contracts.)
 
 Machine-checked by `kicad/revb/check_revb_mating.py` against `kicad/revb/mating.json`
 (the numeric source of truth); both cards and the backplane derive their connector
-geometry from it. Distances in mm, footprint-centre.
+geometry from it. Distances are in mm and refer to connector pad-row centres.
 
 | Constant | Value | Meaning |
 |---|---:|---|
