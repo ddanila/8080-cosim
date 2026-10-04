@@ -30,10 +30,9 @@ C21 lower physical lead to `(2381,1447)`, matching that R4 trace endpoint
 within about 8 pixels. The C21 upper physical lead visibly joins the lower
 lead of the R20-position red body on front copper. This matches the exact
 sheet-1 drawing: C21 and R20 form a series branch from the R4/D13.5 RESIN
-junction. The former model's parallel R20 and grounded C21 assignments were
-wrong; R20's remote return still needs tracing. See
-`docs/reset-c21-r20-source-correction.md` for the model and routed-board
-impact. The R2/VD1 strip descends to
+junction. R20's remote return still needs tracing. See
+[the reset series-branch guide](reset-c21-r20-source-correction.md) for the
+current model and routed-board repair requirements. The R2/VD1 strip descends to
 the broad east-west trunk near `y≈1600`, whose supply polarity remains
 unverified. See `ref/photos/juku-pcb-2/c21-r4-crossview-review.json`.
 

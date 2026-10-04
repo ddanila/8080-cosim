@@ -1,4 +1,4 @@
-# Reset C21/R20 source and owner correction
+# Reset C21/R20 series branch
 
 The exact `.009` sheet-1 reset detail in
 `ref/photos/dgsh5-109-009-e3/PXL_20260718_101801729.jpg`, native crop
