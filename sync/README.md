@@ -16,8 +16,10 @@ partitions. It uses a real KiCad netlist when compatible `kicad-cli` is
 available and the board JSON directly otherwise.
 
 Placement-only footprints, unnetted pins, analog passives, and explicit
-simulation-only ports are outside this result. Run the check for the current
-mapped-instance and net totals.
+simulation-only ports are outside this result. The comparison also drops HDL
+constants and nets with fewer than two retained mapped endpoints. A pass does
+not prove constant ties or no-connect dispositions. Run the check for the
+current mapped-instance and net totals.
 
 Physical supply ports such as the 8080's GND, -5 V, +5 V, and +12 V pins are
 also excluded from logic LVS by an explicit `POWER_ONLY` list. Their package
@@ -33,7 +35,11 @@ Key files:
 - `map.json` — refdes/instance and physical-pin/logical-port mapping.
 - `provenance.py` — source annotation summary for `board.json`.
 
-## Fast behavioral checks
+## Behavioral checks
+
+These entry points include focused regressions, complete platform gates, and
+deep simulation. Their runtimes differ; use the
+[CI coverage guide](../ci/README.md) for the bounded CI profiles.
 
 The complete native-Linux production-host promotion gate is:
 
@@ -68,7 +74,7 @@ sync/jukuhost_dos_check.sh
 
 It verifies the locally vendored Open Watcom toolchain, builds the 16-bit host
 twice byte-identically, runs its self-test under DOSBox-X, and exercises the
-actual EXE through emulated COM1 against stock 9,600-baud Janet and current C8
+actual EXE through emulated COM1 against stock 9,600-baud Janet and retained C8
 19,200-baud Fastboot/NetDisk/N4. See
 `docs/portable-c-host-m2.2-dos-acceptance.md`. Physical Pocket8086 timing and
 CS00015 behavior remain the separate M2.3 gate.
@@ -109,7 +115,9 @@ sync/jukupoly_three_voice_check.sh
 sync/jukupoly_check.sh
 sync/jukupoly_library_check.sh
 sync/jukupoly_baseline_check.sh
+sync/jukupoly_envelope_check.sh
 sync/jukupoly_wav_check.sh
+sync/jukupoly_pcm_check.sh
 sync/beeper_check.sh
 sync/serial_check.sh
 sync/ie7_check.sh
@@ -129,7 +137,7 @@ The checks above cover these boundaries:
 | Disk and FDC | Raw geometry and deterministic C/HDL command/event comparisons, including DRQ/lost-data boundaries, Type-I timing, Force Interrupt, deleted records and track streams. See [FDC readiness](../docs/fdc-readiness.md) for model limits. |
 | Video and device slices | Raster/readout, beeper, USART, IE7/IE10 counters, AG3 trigger/timing and BASIC cartridge behavior. |
 | Jukuravi | D0 fault/session checks, Nano transport/reset/liveness guards, optional AVR compile, and D2 upload/readback/run and heartbeat handling. See [Jukuravi](../spinoffs/jukuravi/README.md) for the hardware boundary. |
-| JukuPoly | Chord, compiled-pattern and library players; cycle/memory/file-size baselines and deterministic WAV checks. See [JukuPoly](../spinoffs/jukupoly/README.md). |
+| JukuPoly | Chord, compiled-pattern and library players; cycle/memory/file-size baselines, envelope compatibility, packed-PCM playback and deterministic WAV checks. See [JukuPoly](../spinoffs/jukupoly/README.md). |
 | READY path | Captured D2 `.037` raw-output polarity and D30 sampling in HDL, with asynchronous controls inactive; hardware timing and the complete WAIT path remain outside this bench. |
 | Network ROM | Artifact freshness and ABI, locale, transport, telemetry, video and boot checks through C12. Structural HDL checks include C4 boot, C9–C12 ABI, the C9/C10 POF boundary and a CRC-checked NetDisk-v3 DMA record; bounded CI profiles run a subset. See [network ROM](../spinoffs/jukuravi/network-rom/README.md). |
 
@@ -147,6 +155,8 @@ hook and should be reserved for a deliberate, documented exception.
 
 See [CI budgets and local-only coverage](../ci/README.md) for workflow
 selectors, bounded profiles, and checks that require a local run.
+
+## Regenerating reports
 
 After changing `kicad/juku.board.json` or report inputs, run
 `scripts/regen_all.sh` for its selected fast report set. Add `--deep` for the

@@ -201,7 +201,7 @@ findings. Every status applies only to the boundary named by the report.
 
 The producing scripts live under `scripts/`, `kicad/`, or `sync/`. Run the
 command named by a report to refresh its evidence. See
-[regeneration scope](../sync/README.md#fast-behavioral-checks) for the selected
+[regeneration scope](../sync/README.md#regenerating-reports) for the selected
 `scripts/regen_all.sh` sets and its index-relative `--check` behavior.
 Path-selected CI jobs regenerate their configured reports; a green job does
 not establish freshness or runtime coverage for every report in this directory.

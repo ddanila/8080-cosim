@@ -56,7 +56,7 @@ workflow trigger.
 Use `scripts/regen_all.sh --check` for its selected fast generated reports and
 `--deep --check` for its additional behavioral checks. These sets do not cover
 every report; run the owning command for changed evidence. See
-[regeneration scope](../sync/README.md#fast-behavioral-checks) for optional sets
+[regeneration scope](../sync/README.md#regenerating-reports) for optional sets
 and index-relative freshness checking. Report writers own their
 Markdown output; edit the writer and regenerate instead of appending a work log.
 Photo hashes must validate the materialized bytes or the authenticated LFS
