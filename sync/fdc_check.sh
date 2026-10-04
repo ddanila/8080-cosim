@@ -423,6 +423,11 @@ physical D93/D94 wiring.
 
 ## Commands
 
+Run from the repository root. The C guards require Bash, Python 3 with Unix
+PTY support, and a C11 compiler (`CC`, default `cc`); the HDL guard also
+requires Icarus Verilog (`iverilog` and `vvp`). `sync/fdc_check.sh` includes
+`sync/juk_disk_check.sh` and rewrites this report only after its checks pass.
+
 ```sh
 sync/juk_disk_check.sh
 sync/fdc_check.sh
@@ -430,9 +435,16 @@ sync/ekdos_fdc_probe.py
 sync/juku_top_fdc_prompt_check.sh
 ```
 
-Checkpoint tools can narrow regressions. The reset-to-prompt reports record
-historical execution; use the deep prompt check to test current HDL, subject
-to the simulator compatibility limits linked above.
+The prompt check above validates report freshness and recorded prompt markers
+by default. To run current HDL through reset to the prompt, use Verilator with
+the simulator compatibility limits linked above:
+
+```sh
+JUKU_TOP_FDC_PROMPT_DEEP=1 sync/juku_top_fdc_prompt_check.sh
+```
+
+Checkpoint tools can narrow regressions. The reset-to-prompt reports retain
+historical execution; the default report check does not rerun that simulation.
 
 ## Remaining boundaries
 
