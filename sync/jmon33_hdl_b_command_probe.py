@@ -45,6 +45,11 @@ def main() -> int:
     if EXPECTED_STATUS not in text or EXPECTED_SHA256 not in text or "| B-enter |" not in text or "| PASS |" not in text:
         print("jmon33_hdl_b_command_probe: expected B-command HDL oracle evidence not found", file=sys.stderr)
         return 1
+    REPORT.write_text(text.replace(
+        "sync/jmon33_hdl_command_probe.py",
+        "sync/jmon33_hdl_b_command_probe.py",
+        1,
+    ))
     return 0
 
 

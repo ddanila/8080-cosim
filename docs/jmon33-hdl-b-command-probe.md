@@ -11,7 +11,7 @@ or `docs/jmon33-idle-command-probe.md`, depending on the checkpoint.
 ## Command
 
 ```sh
-sync/jmon33_hdl_command_probe.py
+sync/jmon33_hdl_b_command_probe.py
 ```
 
 Recorded environment settings:
@@ -48,7 +48,7 @@ Recorded environment settings:
 
 | Case | Key | Checkpoint | Exit | Timed out | Keyboard samples | Active key values | Stimulus | FDC trace | Idle cursor | Command oracle | Resume line | Visible blocks | Pixels | VRAM SHA256 | Result |
 | --- | --- | --- | ---: | --- | ---: | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- |
-| B-enter | `B\n` | `cyc=26050004 pc=0xFC90 iff=1 kbd=2/0` | `0` | `False` | `323` | - | - | - | `yes` | `[RESUME-COMMAND] jmon33 command oracle reached x0=8 y0=20 x1=0 y1=80 mcyc=543223 vram=301 pc=0x01ce` | `none` | `x=8,y=20`, `x=0,y=80` | `160` | `891fb09d78847a92e8417b1fb8ab81f160555725853b1d21bf29e25348bad0b0` | PASS |
+| B-enter | `B\n` | `cyc=26050004 pc=0xFC90 iff=1 kbd=2/0` | `0` | `False` | `323` | - | - | - | `yes` | `[RESUME-COMMAND] jmon33 command oracle reached x0=8 y0=20 x1=0 y1=80 mcyc=537477 vram=301 pc=0x01ce` | `none` | `x=8,y=20`, `x=0,y=80` | `160` | `891fb09d78847a92e8417b1fb8ab81f160555725853b1d21bf29e25348bad0b0` | PASS |
 
 ## Disposition
 
