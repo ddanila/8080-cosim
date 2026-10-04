@@ -12,6 +12,10 @@ I/O decode path. Endpoint checks compare board-JSON assignments.
 
 ## Command
 
+Run from the repository root with Python 3 and Icarus Verilog
+(`iverilog` and `vvp`). The command runs the timing simulation and
+replaces this report; its temporary simulator files are removed.
+
 ```sh
 python3 scripts/report_video_pit_timing.py
 ```
