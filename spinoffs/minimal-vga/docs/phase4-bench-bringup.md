@@ -68,8 +68,10 @@ prove completion of the boot banner or the full RAM test.
 Implemented replay path:
 
 1. `tools/vjuga_fb_readback/reassemble.py` — reads a capture stream (`ADDR DATA`
-   hex per line), replays writes in order into a 64 KiB image, extracts
-   `0xD800 + 40×241`, writes the framebuffer binary.
+   hex per line), replays writes in order into a zero-filled 64 KiB image,
+   extracts `0xD800–0xFDA7` (40×241 bytes), and writes the framebuffer binary.
+   Unwritten bytes remain zero; a physical capture must establish those bytes
+   or include writes to them before comparison with the oracle.
 2. Twin-side capture emitter — `hdl/vjuga_juku_top.v` `+capture=<file>` logs
    every framebuffer write in that exact format.
 3. `sim/vjuga_readback_check.sh` — boots the twin with `+capture`, reassembles,
