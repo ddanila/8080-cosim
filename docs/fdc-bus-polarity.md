@@ -6,8 +6,8 @@ The listed firmware contains two VG93 I/O byte-pattern profiles: CMA beside
 each recognized register-transfer pattern, or NOP at those same boundaries.
 Factory sheet 3 proves D93 DAL0..DAL7 connect directly to system
 DB0..DB7 and D100 instead buffers eight floppy-drive outputs. The adopted
-third-source `ekta37.bin` ROM pair selects the direct-bus/NOP profile; only
-the historical reason for the non-adopted CMA profile remains open.
+third-source `ekta37.bin` ROM pair selects the direct-bus/NOP profile.
+The CMA profile's hardware origin and the physical checks below remain open.
 
 ## Command
 
@@ -58,21 +58,10 @@ all 18 positions contain one-byte `NOP`s. The `ekta32.bin`,
 `ekta43.bin`, and Monitor 2.2 images use a different port-1C/1D bit-stream routine and
 are not falsely classified as this register-mapped VG93 template.
 
-Configuration consequence:
-
-- Factory sheet 3 requires a direct physical D93 data bus; D100 cannot
-  explain or select either firmware profile.
-- `ekta31.bin`, `ekta35.bin`, and `ekta37.bin` match the direct bus. `ekta24.bin`
-  and Monitor 3.3 retain systematic CMA sites whose hardware context is
-  not yet identified.
-- The third-source archival D15/D16 pair is adopted as `ekta37.bin`,
-  selecting the direct-bus/NOP profile for the replica. A future physical
-  read that differs is preserved as another board variant, not used to
-  reopen the adopted content set.
+Preserve differing future physical reads as candidate board variants, with
+their acquisition evidence; see [EPROM identities](eprom-programming-images.md).
 
 ## Direct physical bus constraint
-
-The data path is now source-proved without an intervening D100:
 
 - The official population identifies D5 as `КР580ВК38`. The 1988 Soviet
   КР580 reference, section 3.12, draws every D0..D7 channel directly to its
@@ -89,13 +78,8 @@ The data path is now source-proved without an intervening D100:
   vector. Together with the adopted independent archival pair, this closes
   the replica firmware-profile choice.
 
-The runnable `sysctl_8238` bridge therefore remains non-inverting. Making
-D5 invert merely to explain the CMA profile would contradict the device symbol, the
-straight board topology, and every direct system-bus ROM/peripheral path.
-
 ## Physical evidence
 
-- Factory sheet 3 directly joins D93 pins 7..14 to DB0..DB7.
 - Sheet 3 assigns D100 inputs to D93 DIR/STEP/HLD/TG43/WG, a
   write-data/precompensation path, D99 Q2 motor pulse, and PPI side select.
   D100 outputs land on X4 drive-control contacts 9..20.
@@ -120,10 +104,10 @@ vol. 1 (1988), sections 3.12 and 3.14
 
 ## Runnable-model boundary
 
-`juku_top` now instantiates physical D93 directly on DB and physical D100
-on its recovered drive-output vector. The former opt-in inverted-bus builds
-remain as an explicitly unmapped diagnostic firmware-profile adjunct. They
-continue to guard the systematic CMA behavior without claiming board copper.
+`juku_top` connects physical D93 directly to DB and D100 to the recovered
+drive-output vector. The `sysctl_8238` bridge remains non-inverting.
+An optional unmapped inverted-bus adjunct exercises CMA-profile firmware;
+it does not represent board copper or a physical D100 data-bus bridge.
 
 ## Remaining physical closure
 
