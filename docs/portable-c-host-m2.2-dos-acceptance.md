@@ -47,8 +47,11 @@ sync/jukuhost_dos_build.sh
 ```
 
 It selects the 8086 instruction set, large memory model, C99 parsing,
-optimization, a 24 KiB stack, warning level 4, and warnings as errors. Two
-clean output directories produce byte-identical executables.
+optimization, a 24 KiB stack, warning level 4, and warnings as errors. The
+optional first argument selects the output directory (default `build/dos/`).
+Each build replaces its `.o` files, `JUKUHOST.EXE`, `JUKUHOST.MAP`, and
+`BUILD.LOG`. The complete gate below compares two separate build directories
+for byte-identical executables.
 
 | property | result |
 | --- | --- |
@@ -127,7 +130,10 @@ physical M2.3 gate below to qualify shutdown on the actual machine.
 
 ## Automated acceptance
 
-The complete repeatable gate is:
+The complete repeatable gate additionally requires `dosbox-x`, a native C
+compiler (`CC`, default `cc`) for the simulator, and Python Unix PTY support,
+plus the prebuilt CP/M payloads described above:
+
 
 ```sh
 sync/jukuhost_dos_check.sh
