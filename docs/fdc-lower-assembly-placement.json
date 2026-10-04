@@ -516,7 +516,7 @@
         -0.0,
         -0.005
       ],
-      "observation": "physical \u041a\u04201818\u0412\u041393 socket centre; factory drawing corrects the former D95-overlapping global placement",
+      "observation": "physical \u041a\u04201818\u0412\u041393 socket centre",
       "owner_evidence": [],
       "owner_absence_evidence": [],
       "electrical_evidence": false
@@ -918,7 +918,7 @@
         0.0,
         -0.0
       ],
-      "observation": "vertical C10 immediately right of D93; later July owner photo 202708344 exposes a green two-lead body at this position over neighboring D106; value and individual rail joins remain open; replaces the former lower-row collision with D102",
+      "observation": "vertical C10 immediately right of D93; later July owner photo 202708344 exposes a green two-lead body at this position over neighboring D106; value and individual rail joins remain open",
       "owner_evidence": [],
       "owner_absence_evidence": [],
       "electrical_evidence": false

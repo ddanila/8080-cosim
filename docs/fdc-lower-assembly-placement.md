@@ -26,7 +26,7 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 
 | Ref | Projected x,y mm | Current x,y mm | Delta mm | Drawing observation |
 | --- | ---: | ---: | ---: | --- |
-| D93 | 235.941, 73.335 | 235.941, 73.340 | -0.000, -0.005 | physical КР1818ВГ93 socket centre; factory drawing corrects the former D95-overlapping global placement |
+| D93 | 235.941, 73.335 | 235.941, 73.340 | -0.000, -0.005 | physical КР1818ВГ93 socket centre |
 | R79 | 292.431, 19.166 | 292.431, 19.166 | -0.000, +0.000 | rightmost member of the factory R83..R79 vertical bank above D98; electrical sheet 3 assigns its 470-ohm pull-up to RD.DATA |
 | R80 | 290.248, 19.189 | 290.248, 19.189 | +0.000, +0.000 | second-from-right member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -TR.00 |
 | R81 | 288.066, 19.212 | 288.066, 19.212 | -0.000, +0.000 | centre member of the factory R83..R79 bank; electrical sheet 3 assigns its 470-ohm pull-up to -INDEX |
@@ -39,7 +39,7 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | R95 | 282.852, 54.319 | 282.852, 54.319 | +0.000, +0.000 | right member of the paired vertical R93/R95 bodies above D28; exact sheet 3 assigns its 2-kohm pull-up to the wired D28.10/.12 conditioner output |
 | R78 | 267.999, 68.177 | 267.999, 68.177 | +0.000, +0.000 | left member of the factory-overlapped R78/R98 pair between D106 and D28; exact sheet 3 assigns the D106 preset/UP pull-up and the owner body directly reads 10K |
 | R98 | 270.485, 68.177 | 270.485, 68.177 | +0.000, +0.000 | right member of the factory-overlapped R78/R98 pair between D106 and D28; electrical sheet 3 assigns its 4.7-kohm pull-up to -D.SEL1. Owner joints supersede the folded-drawing affine centre |
-| C10 | 252.361, 73.163 | 252.361, 73.163 | +0.000, -0.000 | vertical C10 immediately right of D93; later July owner photo 202708344 exposes a green two-lead body at this position over neighboring D106; value and individual rail joins remain open; replaces the former lower-row collision with D102 |
+| C10 | 252.361, 73.163 | 252.361, 73.163 | +0.000, -0.000 | vertical C10 immediately right of D93; later July owner photo 202708344 exposes a green two-lead body at this position over neighboring D106; value and individual rail joins remain open |
 | C11 | 268.232, 93.540 | 268.232, 93.540 | +0.000, +0.000 | vertical C11 between D95 and D99; earlier owner view shows landings without a secure body read, while later July image 202708344 exposes a green two-lead body there under the cable edge; value and individual rail joins remain open |
 | C16 | 267.094, 101.055 | 267.094, 101.055 | +0.000, +0.000 | horizontal capacitor between the upper and lower IC rows |
 | C15 | 280.230, 110.120 | 280.230, 110.120 | +0.000, -0.000 | vertical C15 between D97 and D102; later July views 202734776/202744232 show a green component edge at this factory position, but the cable hides most of the body and second lead; two-lead identity, value, and individual rail joins remain open |
@@ -58,8 +58,9 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 | R97 | 298.620, 67.150 | 298.620, 67.150 | +0.000, +0.000 | factory-drawing identity plus local D99/right-edge correction for the vertical 47k timing resistor beside C18 |
 | C83 | 239.150, 140.065 | absent | - | factory label reads C83 in the D41/D40 gap; the owner component photo has no fitted body. D41 package calibration maps two candidate front sites to x=246.172 mm, centered between D41.1 x=242.62 mm and D40.8 x=249.67 mm. The folded-drawing projection x=239.15 mm lies inside D41's span and is not an owner-pad placement. The promoted D41 fit aligns the front sites with solder crowns; same-hole identity remains unproved |
 
-D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected
-factory-drawing positions. C20/C22 have source-PCB footprints, but their table deltas are intentional: the drawing points identify the
+D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at the qualified coordinates in the table.
+These use factory-drawing registration or the stronger owner-photo lead evidence described in each row.
+C20/C22 have source-PCB footprints, but their table deltas are intentional: the drawing points identify the
 overlapping body labels, whereas registered owner component and solder photos prove the actual adjacent 2.54 mm drill columns
 at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans.
 
