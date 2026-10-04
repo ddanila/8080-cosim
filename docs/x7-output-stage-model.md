@@ -2,7 +2,7 @@
 
 Status: **TOPOLOGY + DATA-BACKED LS86 COMPARISON DRIVER GUARDED / EXACT D34 CURVE + HARDWARE CALIBRATION OPEN**.
 
-This report records the static output-stage model for CVBS-plan WP4.
+This report records the static VIDEO_OUT output-stage model.
 It solves the traced VIDEO_OUT emitter-follower topology with the official TI
 SN74LS86A PSpice model's supply-dependent output resistances.
 TI describes that driver as data-sheet-generated typical
@@ -11,6 +11,11 @@ behavior, a physical D34 waveform, monitor timing, edge shape, or the installed
 КТ315Б parameters.
 
 ## Commands
+
+Run from the repository root with Python 3 (standard library only).
+Both commands overwrite this report and `ref/video/x7-output-stage-summary.json`.
+Fixture generation also requires Git and replaces `x7-static-step.f32`
+and `x7-static-step.json` in the selected directory, creating it if needed.
 
 ```sh
 python3 scripts/model_x7_output_stage.py
