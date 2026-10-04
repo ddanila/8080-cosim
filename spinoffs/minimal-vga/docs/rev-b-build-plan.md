@@ -77,11 +77,11 @@ Existing identifiers remain for references in source and qualification reports.
 | D1.13 | Generator owns placement and assembly silk; every physical footprint has reference plus value/role under the pinned GOST rules. |
 | D1.14 | All five release sources need total DRC 0/0, correct package contents and the encoded vendor-profile checks. |
 | D1.15 | Numeric mating and FreeCAD component envelopes verify clearance; physical bench inspection remains required. |
-| D1.16 | Expanded I/O uses ATF22V10 decode, including PIT/POST and active-high 8251 reset. The earlier ATF16V8 implementation is superseded by R5.I4. |
+| D1.16 | Expanded I/O uses ATF22V10 decode, including PIT/POST and active-high 8251 reset. |
 | D1.17 | Any later CPU buffer must enable data drive only on an actual read/write cycle, excluding refresh; current CPU is unbuffered. |
 | D1.18 | Non-bus internal nets need at least two endpoints or an explicit tie/NC/DNP classification; bus continuation is checked across cards. |
 | D1.19 | Validate control terms in the behavioral twin, independent pin checks and applicable firmware oracles before release. |
-| D1.20 | Memory established the reusable generation/LVS/routing pipeline; all current cards use its verification pattern. |
+| D1.20 | All cards use the shared generation, LVS and routing verification pattern. |
 | D1.21 | First-article CPU connects directly to the bus. Buffering requires a later qualified revision. |
 | D1.22 | LVS pinmaps derive from generator chip definitions; mapped-chip checks do not replace connector/passive checks. |
 | D1.23 | Memory outline is 100×60 mm; connector positions and package orientation are machine-checked. |
@@ -90,7 +90,7 @@ Existing identifiers remain for references in source and qualification reports.
 | D1.26 | PPI/PIC and keyboard paths are fully wired on the shared I/O design; the expanded design also includes PIT/POST. |
 | D1.27 | Before routing, reject placement-class errors. After routing, require zero total violations and unconnected items; review assembly renders too. |
 | D1.28 | Use a bounded placement sweep for persistent routing failures; any manual exception must be generator-emitted and independently checked. |
-| D1.29, D1.30, D1.33, D1.34 | Production uses mate-compatible socket pairs and routes from scratch. Locked-column and separated-bank experiments are superseded. |
+| D1.29, D1.30, D1.33, D1.34 | Production uses mate-compatible socket pairs and routes from scratch. |
 | D1.31 | `mating.json` owns paired-row geometry and 16 mm slot pitch; generators and checks consume it. |
 | D1.32 / D1.32b | Reversed insertion remains physically possible. Use orientation marks and staged inspection; do not claim mechanical keying. |
 | D1.35 | Backplane input has bulk/local decoupling, MF-R300 protection and SB560 reverse crowbar; no USB power branch. |
