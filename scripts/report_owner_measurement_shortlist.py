@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections import Counter
 from collections import defaultdict
 from pathlib import Path
@@ -391,7 +392,7 @@ def main() -> int:
         (
             "P0",
             "D41 shift-register supply closure",
-            "The К555ИР16 device contract fixes D41.7=GND and D41.14=+5 V. Promoted D41.7 near solder (2329,1620) joins the upper run and the C83 upper solder crown candidate; D41.14 near solder (1999,1785) has a front trace to an open hole near (2230,2180) in 200418174, with a strong reflected solder-hole match near (1974,1845) in 200522685 and a narrow B.Cu line traced east to a second open annulus near solder (2360,1950). A C89-local three-control reflection places the far front hole near (1842,2298) within about 4 px of that solder annulus; the earlier seven-contact package fit missed by about 14 px. The far same-hole identity is strongly photo-supported but still needs continuity. An enlarged native crop also shows clearance between the near hole’s narrow eastbound trace and the broad solder rail below it. The solder annulus visibly joins west to registered D38.1/CAS, conflicting with the D41.14/VCC device contract if the reflected holes are correctly paired. The adjacent parallel D41.13 line reaches a different lower solder joint; no owner D41.14 +5 V route is established. Board JSON and all three PCB pad net names are corrected; both routed variants now connect D41.7 to GND and D41.14 to +5 V with no new KiCad DRC violations and two fewer unconnected records. The source PCB remains unrouted at these pads. With power off, meter owner D41.7 to known ground; check D41.14 through both open-hole pairs to D38.1 and independently known +5 V, then revisit pin and hole registration if the CAS/VCC conflict is confirmed. A six-contact D41/D40 gap fit puts the C83 lower front candidate about 7 px from its proposed +5 V solder crown, near its 0–6 px package-contact residuals; the wider D41/D38 fit misses by about 12 px. Confirm both C83 front-to-solder same-hole matches before treating either pad as proved",
+            "With power off, check D41.7 to known GND and D41.14 to known +5 V. Follow the two open-hole pairs in the [supply review](../ref/photos/juku-pcb-2/d41-supply-pin-review.json), checking each same-hole match and D41.14-to-D38.1 continuity separately: the candidate solder route reaches CAS, conflicting with the D41.14/VCC device contract. Revisit pin/hole registration if that conflict is confirmed. The replica routes do not prove the owner-board rails. Confirm both C83 front-to-solder lead matches using the [gap review](../ref/photos/juku-pcb-2/c83-d41-d40-gap-pair-review.json) before assigning either pad",
             "`ref/photos/juku-pcb-2/d41-supply-pin-review.json`; `ref/video/ir16-device-contract.json`; `docs/main-board-erc-parity.md`; `ref/photos/juku-pcb-2/c83-d41-d40-gap-pair-review.json`",
             "confirms the owner D41 rails after the replica routes were repaired, and tests the C83 upper ground-side solder anchor",
         ),
@@ -405,14 +406,14 @@ def main() -> int:
         (
             "P0",
             "D58 and X9 landing placement",
-            "Two owner close-ups show D58 КР580ИР82 with a right-facing notch, level with D43. A four-corner component/solder fit and D26-relative projection place D58 near (181.4,260.0) mm, while the source centre remains (183.0,243.1) mm. Its pin10 strip photo-traces to GND, and pin20 strip reaches D26.26/+5 V through the screw-area detour. A regular 15-site solder band under D26 projects near board x213..248.5/y266.4 mm, clear of D58. Full site10 near (2385,2375) reaches an intermediate via near (2385,2240), separated from the D26.28 solder crown on B.Cu. A front pin count favors D26.27/DB7 through the corresponding hole, while the former direct DB6 label is retracted; subtracting site10 leaves fourteen sites only provisionally until the via and cable membership are checked. Full sites9/12 near (2325,2375)/(2505,2375) both join D26.26/+5 V on the same broad rail and are plausible A53/A54 landings, but cable membership and individual A numbers remain open. The opaque sheath hides individual ribbon conductor entries in the archived front photo, and a separate white wire crosses the row; neither the core count nor site membership can be read from that image. Optionally confirm D58 rail contacts by power-off meter; meter site10 to D26.27/DB7 and separately D26.28/DB6, physically identify the fourteen actual X9 conductor holes, and map each to its factory A number before moving footprints or rerouting. Both routed variants still carry the old D58 rotation and center",
+            "Register D58 against its photographed right-facing notch and approximate center (181.4,260.0) mm; the source center remains (183.0,243.1) mm and both routed variants retain the old rotation and center. Its pin10/GND and pin20/+5 V paths are photo-supported; optional power-off continuity provides electrical confirmation. For the fifteen-site band under D26, meter site10 through its via to D26.27/DB7 and separately D26.28/DB6. Physically identify the fourteen X9 conductor holes and map their factory A numbers before moving footprints or rerouting. Sites9/12 share the +5 V rail but their individual A53/A54 identities and cable membership remain open; the sheath hides conductor entries, so do not infer membership by subtracting site10. Use the linked registration records for probe coordinates",
             "`ref/photos/juku-pcb-2/d58-x9-solder-relative-fit.json`; `ref/photos/juku-pcb-2/d26-d58-plus5-strip-review.json`; `ref/photos/juku-pcb-2/x9-fifteen-site-band-review.json`; `ref/photos/juku-pcb-2/x9-site10-via-review.json`; `ref/photos/juku-pcb-2/x9-solder-row-registration.json`; `ref/photos/juku-pcb-2/x9-plus5-rail-site-review.json`; factory X9 ribbon drawing",
             "resolves the D58 physical position and X9 landings without moving one provisional footprint into another",
         ),
         (
             "P0",
             "D59 oscillator package orientation",
-            "Both owner close-ups show the marked D59 КР531ЛН1 with its notch right. The adjacent solder 2x7 field places pin7 near (2915,2260) and pin14 near (2530,2450) in July tile 200534267. D59.14 is visibly separate from the nearby spur of the D26.26/D58.20 +5 V strip; the narrow trace below its crown does not join it on the photographed solder face. D59.7 likewise has no local B.Cu join to the D42/D43 ground strip. The source footprint and pin-1 silk dot are corrected to 270 degrees at the existing center; both routed variants retain the former 90-degree pin sites. A footprint-only routed trial creates 20 shorts and 14 additional unconnected items, so reroute D59 copper with physical pin-net review before fabrication. The second owner angle and enlarged first crop show a front-copper neck from physical D59.14 to the left lead of a pale 1K0 body in the factory R38 position and the right lead of red R32=1K3. This conflicts with the exact-sheet-2 logical R32 endpoints OSC_FB/PST_CLK, neither of which is D59.14/P5V. With power off, verify D59.14 to R32 right and pale 1K0 left, test R32 left against D59.4 and D59.9, and check D59.7 to ground and D59.14 to +5 V before changing the model or routed copper",
+            "The owner package has a right-facing notch; the source uses 270 degrees while both routed variants retain 90-degree pin sites. A footprint-only rotation creates shorts, so reroute with physical pin-net and DRC/connectivity review. With power off, check D59.7 to GND and D59.14 to +5 V. Confirm the photographed D59.14 joins to R32 right and the pale 1K0 body left in the R38 position, then test R32 left to D59.4 and D59.9. The observed R32/P5V join conflicts with the source OSC_FB/PST_CLK endpoints; resolve it before changing the model or routed copper. Use the [orientation audit](../ref/photos/juku-pcb-2/d59-orientation-audit.json) for registered contacts and trace evidence",
             "`ref/photos/juku-pcb-2/d59-orientation-audit.json`; `ref/photos/juku-pcb-2/d26-d58-plus5-strip-review.json`; source and routed KiCad PCBs",
             "prevents oscillator and supply nets from using the reversed physical pin sites",
         ),
@@ -426,7 +427,7 @@ def main() -> int:
         (
             "P0",
             "X8 power capacitors and routed rail correction",
-            "Exact .009 sheet-1 X8 detail draws C31 +5 V/GND, C32 +12 V/GND with positive at +12 V, C33 GND/-12 V with positive at ground, C92 GND/-12 V, and C93 GND/+12 V. Board JSON and source PCB assign C32.1=P12V, C32.2=GND, C33.1=GND, and C33.2=M12V; both routed PCBs now have matching pad nets and copper, with no new KiCad DRC violations or unconnected records. The source PCB remains unrouted at these pads, and the routed variants retain other design holds. The assembly/owner photo order now identifies those three fitted cans as C31/C32/C33 and the red/green axial bodies at C92/C93 positions, but their owner rail joins are unmeasured. With power off, test each body against its source-drawn rails using separately marked X8 power landings. Register all six electrolytic solder joints and the three E4 selector joints to board coordinates: all three PCB variants still use 2 mm radial capacitor footprints, and a 25 mm axial trial overlaps the current E4 placement; replace and reroute them only after the joint fit",
+            "With power off, identify each fitted body and check it against independently marked X8 rails: C31 +5 V/GND; C32 +12 V/GND, positive at +12 V; C33 GND/−12 V, positive at GND; C92 GND/−12 V; C93 GND/+12 V. The corrected replica net assignments and routes do not establish these owner joins. Register all six electrolytic solder joints and the three E4 selector joints before replacing the 2 mm radial footprints still used in all PCB variants. A 25 mm axial trial overlaps E4; use the [footprint audit](x8-electrolytic-footprint-audit.md), then replace and reroute only after the joint fit",
             "`ref/schematics/x8-power-capacitor-rail-correction.json`; `docs/x8-electrolytic-footprint-audit.md`; `docs/main-board-erc-parity.md`; `ref/photos/juku-pcb-2/c93-power-corner-candidate-review.json`; `ref/photos/juku-pcb-2/c92-reset-corner-body-review.json`",
             "confirms the original-board capacitor identities and rails after the replica's modeled-pad/routed-copper mismatches were repaired",
         ),
@@ -447,7 +448,7 @@ def main() -> int:
         (
             "P0",
             "D7.3 source join and owner continuity",
-            "With power removed, first check D7.3↔D29.2: exact sheet-1 detail 101813438 draws that gate-output-to-buffer-input join, crossing the separate D29.7 line without a dot. A second native sheet-1 detail 101805510 labels its lower gate D105, but the original pixels show D105.3 turning north near (1398,3360) while D7.11 runs east separately near y3590. Both former output-tie readings were tracing errors; retain PROM_EN and qualified /WR as distinct source and model nets. An optional power-off D7.11↔D105.3 check at solder (2245,1193) in 200525009 versus D105.3 near component (1108,1680) in 200439607 / solder (2807,1190) in 200537608 could detect a hidden remote or factory-modified path; it is no longer a source-required P0 closure. Check D7.3 to its wire-covered front via near (3356,975) in component tile 200411500, then to its leading opposite-face candidate hole near (2190,700) in solder tile 200525009. A photographed narrow B.Cu run reaches the far open annulus near (3065,730). Independent package fits register that annulus to front ring (2480,1015) in 200411500; the saved component panorama aligns this ring with the D29.2 waypoint (2255,2352) in 200354648. Meter D29.2 near (2265,1438) to the waypoint, then the waypoint to D7.3; white cables hide both package-side segments and the D7.3 first-hole same-face identity is only a fit candidate. The older D29-corner projection near solder (2451,2393) in 200509593 has no drill, so do not use the separate narrow-trace hole near (2450,2433) as a same-hole match. Then verify the D7.3→D29.2 AMW_N source join on owner copper and trace any further loads; owner continuity already separated it from D29.5 qualified peripheral /WR. Separately, component copper photo-closes D104.7 to R30 lower, but exact sheet 1 only assigns one R30 end to ground: with power off confirm D104.7↔R30 lower, R30 lower↔known GND, and R30 upper↔D12.3/OC SOUT, and the installed R30 resistance (source nominal 33 kΩ; body print obscured) before treating owner rail polarity and value as proved",
+            "With power off, verify the source-drawn D7.3↔D29.2 AMW_N join through the registered front ring, candidate opposite-face hole, far annulus, and D29.2 waypoint. The [D7 review](d7-gates-source-review.md) and [D29.2 chase](../ref/photos/juku-pcb-2/d29-pin2-front-chase.json) locate each probe; cable-covered ends and the first same-hole match still require continuity. Trace further loads. Preserve D7.11/PROM_EN and D105.3/qualified /WR as separate nets; their direct continuity check is optional, not a source-required tie. Separately confirm D104.7↔R30 lower, R30 lower↔known GND, and R30 upper↔D12.3/OC SOUT. Measure R30 isolated if needed (source nominal 33 kΩ; marking obscured). The photographed D104.7/R30 join does not prove the owner ground return or resistance",
             "`docs/main-board-unresolved-endpoints.csv`; `docs/d7-gates-source-review.md`; `ref/photos/juku-pcb-2/d105-pin3-photo-review.json`; `ref/photos/juku-pcb-2/d29-pin2-front-chase.json`; `ref/photos/juku-pcb-2/d104-pin7-r30-photo-review.json`; `docs/io-decode-boundary.md`; `docs/serial-handoff.md`",
             "covers the D7 P0 pin boundary and checks whether the source-assigned D104/R30 ground polarity matches the owner board",
         ),
@@ -633,11 +634,22 @@ def main() -> int:
             "",
             "## Highest-value physical asks",
             "",
-            "| Priority | Ask | Exact deliverable | Evidence source | Why it matters |",
-            "| --- | --- | --- | --- | --- |",
+            "P0 tasks block design release; P1 tasks resolve remaining physical details.",
+            "P2 tasks are optional preservation follow-up. Use the linked evidence",
+            "for photo coordinates and source interpretation; record measurements separately.",
         ]
     )
-    lines.extend(f"| {priority} | {ask} | {deliverable} | {source} | {why} |" for priority, ask, deliverable, source, why in priority_rows)
+    for priority, ask, deliverable, source, why in sorted(priority_rows, key=lambda row: row[0]):
+        # Evidence paths are repository-relative; this report lives in docs/.
+        source = re.sub(
+            r"`((?:docs/|ref/)[^`]+|PLAN\.md)`",
+            lambda match: f"[{Path(match[1]).name}](../{match[1]})",
+            source,
+        )
+        lines.extend([
+            "", f"### {priority}: {ask}", "", deliverable + ".",
+            "", f"Purpose: {why}.", "", f"Evidence: {source}.",
+        ])
 
     lines.extend([
         "",
