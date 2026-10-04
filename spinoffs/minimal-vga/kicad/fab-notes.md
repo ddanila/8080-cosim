@@ -46,14 +46,18 @@ export and checksum are required; vendor upload preview, stock/capability
 checks, and independent human review remain open afterward.
 
 The exporter requires `kicad-cli` and Python `pcbnew` from the same KiCad major
-version and verifies that the Python API can load the board before writing any
-package output. On Linux, the repository locators prefer the coherent stable
-KiCad 10.0.5 Flatpak through `scripts/kicad-flatpak-cli.sh` and
-`scripts/kicad-flatpak-python.sh`; the Python wrapper also supplies the
-Flatpak footprint-library root and shares `/tmp` between CAD stages. This
-toolchain loads the routed board, regenerates placement checks, and reports
-zero DRC errors and zero unconnected items. Package freshness is still bound
-only by a completed guarded export and its recorded checksum.
+version and verifies that Python can load the board before writing package
+output. The retained PCB requires KiCad 10 or newer. The repository locators
+prefer working Flatpak wrappers, then probe other installed tools; they do not
+pin the selected version to the recorded 10.0.5 run. Use `KICAD_CLI` and
+`KICAD_PYTHON` to select a coherent installation.
+
+Export writes into the existing output directory; it does not clear old outputs
+or roll back partial results on failure. By default it runs the behavioral, ERC
+and error-level DRC gates before fabrication output. The `MINIMAL_VGA_ALLOW_*`
+overrides permit design-held debug exports and do not qualify a release.
+`MINIMAL_VGA_REUSE_BEHAVIORAL_REPORT=1` checks PASS markers and input modification
+times; it does not bind the reused report to input hashes.
 
 Per-report `READY` states describe the scope named by that report. They are not
 design-release or purchase authorization. The top-level status is tracked in
@@ -68,6 +72,10 @@ selected-part review and package release remain governed by
 
 ## Validation and export commands
 
+Run from the repository root. The broad simulation aggregate includes Rev B
+checks and can overwrite `cosim/vram.bin`; see the
+[simulation guide](../sim/README.md) for dependencies and scope.
+
 ```sh
 spinoffs/minimal-vga/sim/check.sh
 spinoffs/minimal-vga/sync/check.sh
@@ -76,24 +84,26 @@ spinoffs/minimal-vga/kicad/check_rev_a_pcb.sh
 spinoffs/minimal-vga/kicad/export_fab.sh
 ```
 
-Routing changes must be regenerated from the source model and then rechecked;
-do not hand-edit a generated artifact and treat it as source truth.
+The router regenerates and overwrites the tracked `rev-a-physical.kicad_pcb`
+before routing, then imports the session and refills planes. A failed run can
+leave that file replaced or partly processed. Review the diff and require fresh
+DRC and connectivity checks before accepting a new route. `BOARD_JSON`, `PCB`
+and `OUT` select alternative source, PCB and scratch-output paths.
 
 ## Router toolchain (Linux and macOS)
 
 `route_rev_a_pcb.sh` needs the **ddanila/freerouting fork** (branch `custom`,
-vendored as the `external/freerouting` submodule) and **Java 25**. One-time
-setup, identical on both platforms:
+vendored as the `external/freerouting` submodule) and **Java 25**. Build the
+repository-pinned submodule revision with a Java runtime available through
+`JAVA_HOME` or `PATH` to start Gradle:
 
 ```sh
 git submodule update --init external/freerouting
 (cd external/freerouting && ./gradlew --no-daemon executableJar)
 ```
 
-On the compact 200x200 board the router needs three seed nets: the J3 USB-C GND
-shield jumpers (it can't tie the edge connector's shield tabs to the inset GND
-plane on its own), and the two decode debug taps to J95 (RE3_D0, DEC_RAM_N) that
-it otherwise leaves unfinished through the congested bottom. Route with:
+The retained routing recipe seeds the J3 USB-C GND shield jumpers and two
+decode debug taps to J95 (`RE3_D0`, `DEC_RAM_N`):
 
 ```sh
 SEED_ROUTES=1 SEED_NETS=GND,RE3_D0,DEC_RAM_N \
@@ -102,15 +112,14 @@ SEED_ROUTES=1 SEED_NETS=GND,RE3_D0,DEC_RAM_N \
 
 The seeds (`seed_rev_a_routes.py`) add: two short F.Cu jumpers from J3's SMD
 ground contacts to its adjacent shell tabs, and left-margin B.Cu paths from the
-RE3/decode pull-ups (R36/R33) into J95.5/J95.2. Everything else routes normally.
+RE3/decode pull-ups (R36/R33) into J95.5/J95.2. The remaining connections are left to the router.
 
-Gradle's toolchain support auto-provisions a Temurin JDK 25 into
-`~/.gradle/jdks/` on the first build (no system Java install needed), and the
-route script probes that home-folder JDK automatically — both the Linux layout
-(`eclipse_adoptium-25-*/bin/java`) and the macOS bundle layout
-(`eclipse_adoptium-25-*/jdk-25*/Contents/Home/bin/java`). Overrides: `JAVA_BIN`
-for the runtime, `FREEROUTING_JAR` for the jar. The maintained
-`freerouting-router` algorithm is selected explicitly, with the optimizer off
+Gradle's toolchain resolver can provision the required JDK 25 when it is absent.
+The route script probes `.tools/jre25`, matching JDKs under `~/.gradle/jdks/`
+and `~/.jdks/`, then falls back to `java` on `PATH`. Its fallback does not check
+the Java version before regenerating the PCB, so verify runtime compatibility
+first. Overrides: `JAVA_BIN` for the runtime, `FREEROUTING_JAR` for the jar.
+The maintained `freerouting-router` algorithm is selected explicitly, with the optimizer off
 so machine-global defaults cannot change the production route. The fork retains
 bounded trace combining, headless/offline defaults, and KiCad-compatible SES
 identifiers/grammar. Route results must pass the current board's DRC and connectivity checks.
