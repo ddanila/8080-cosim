@@ -142,19 +142,22 @@ def endpoint_coverage(board: dict, pcb_nets: dict[tuple[str, str], str], exclude
 
 
 def category_for(name: str, source: str) -> str:
+    # Classify known supply boundaries before historical or rejected source labels.
+    if name == "P5V" or re.fullmatch(r"C(?:9|10|11|12|15|94)_[12]_BOUNDARY", name):
+        return "power"
     # These source notes mention rejected sound connections.
     if name == "X6_A3_BOUNDARY":
         return "video/analog"
-    if name == "D59_O10_TAG10":
+    if name in {"D59_O10_TAG10", "TAPE_RUN_INT"}:
         return "timing/I/O"
     text = f"{name} {source}".upper()
     if name.startswith(("FDC_", "D93_")):
         return "FDC"
     if "SOUND" in text or "SND" in text or "SPKR" in text:
         return "sound/analog"
-    if "PIT" in text or "FRAME" in text or "BAUD" in text or "CLK" in text:
+    if "PIT" in text or "FRAME" in name.upper() or "BAUD" in text or "CLK" in text:
         return "timing/I/O"
-    if "MEM" in text or "RAM" in text or "CAS" in text or "RAS" in text or "ROE" in text:
+    if re.search(r"(?<![A-Z0-9])(?:MEM|MEMORY|RAM|DRAM|SRAM|CAS|RAS|ROE)(?![A-Z0-9])", text):
         return "memory/decode"
     if (
         "VIDEO" in text
@@ -180,7 +183,11 @@ def action_for(category: str, name: str, source: str) -> str:
     if name == "FDC_DDEN":
         return "Confirm density-control level against drive/emulator behavior."
     if category == "FDC":
-        return "Continuity-check the physical КР1818ВГ93 socket path before drive bring-up."
+        return "With power off, continuity-check the listed endpoints and any intervening jumper before drive bring-up."
+    if category == "power":
+        if name == "P5V":
+            return "With power off, verify the source-risk supply branches against a known +5 V landing."
+        return "With power off, identify the physical capacitor leads and check each to known +5 V/GND; keep provisional pad assignments open until measured."
     if category == "sound/analog":
         return "Bench-check waveform/current path with speaker disconnected first."
     if category == "video/analog":

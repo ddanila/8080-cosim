@@ -668,16 +668,20 @@ def main() -> int:
             "",
             "## Pin-Level Closure",
             "",
-            "These rows mirror the unnetted functional pins exposed by",
-            "`docs/board-fidelity-gap-ledger.md`. They are the exact pin-level",
-            "closures that endpoint coverage cannot prove because the pins are not",
-            "yet modeled as nets.",
+        ]
+    )
+    if pin_closure_rows:
+        lines.extend([
+            "These rows list pins absent from both nets and intentional no-connects",
+            "in the board model, for this generator's `PIN_CLOSURE_REFS` devices.",
+            "Endpoint coverage cannot check pins absent from the net model.",
             "",
             "| Ref | Unnetted functional pins | Needed evidence |",
             "| --- | --- | --- |",
-        ]
-    )
-    lines.extend(f"| `{ref}` | `{pins}` | {evidence} |" for ref, pins, evidence in pin_closure_rows)
+        ])
+        lines.extend(f"| `{ref}` | `{pins}` | {evidence} |" for ref, pins, evidence in pin_closure_rows)
+    else:
+        lines.append("No unnetted pins were found among the generator's `PIN_CLOSURE_REFS` devices after excluding intentional no-connects. Source-risk net boundaries above remain open.")
 
     lines.extend(
         [

@@ -135,22 +135,17 @@ new, missing, or multiply assigned gap instead of silently omitting it.
 
 ## Pin-Level Closure
 
-These rows mirror the unnetted functional pins exposed by
-`docs/board-fidelity-gap-ledger.md`. They are the exact pin-level
-closures that endpoint coverage cannot prove because the pins are not
-yet modeled as nets.
-
-| Ref | Unnetted functional pins | Needed evidence |
-| --- | --- | --- |
+No unnetted pins were found among the generator's `PIN_CLOSURE_REFS` devices after excluding intentional no-connects. Source-risk net boundaries above remain open.
 
 ## Bring-up verification scope
 
 - Generated bring-up verification nets: `55`
 - `FDC`: `3` net(s)
-- `logic`: `28` net(s)
-- `memory/decode`: `2` net(s)
-- `timing/I/O`: `7` net(s)
-- `video/analog`: `15` net(s)
+- `logic`: `29` net(s)
+- `memory/decode`: `1` net(s)
+- `power`: `13` net(s)
+- `timing/I/O`: `2` net(s)
+- `video/analog`: `7` net(s)
 
 ## Practical sequencing
 
