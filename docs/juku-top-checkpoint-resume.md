@@ -13,6 +13,11 @@ actual decoded top-level ports. It is not an EKDOS prompt proof.
 
 ## Command
 
+Run with Python 3, a C compiler (`CC`, default `cc`), and Icarus Verilog
+(`iverilog` and `vvp`). The runner overwrites this report and uses a temporary
+directory for builds and checkpoint files. It restores `cosim/vram.bin`
+after checkpoint capture completes normally.
+
 ```sh
 sync/juku_top_checkpoint_resume_probe.py
 ```
