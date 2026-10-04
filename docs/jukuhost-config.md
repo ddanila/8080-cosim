@@ -187,10 +187,18 @@ always `mode=read-only` with
 serial device. The Windows executable provides the corresponding `--selftest`
 entry point used by the Win32/Wine checks.
 
-When configured, the text log and binary capture are required evidence rather
-than best-effort decoration. Failure to open, write, or flush either stream
-stops the session with exit code 7. The capture contains CRC-protected RX, TX,
-and local-event records; event flags 1, 2, and 3 denote INFO, WARN, and ERROR.
+Configured log and capture files are overwritten at session startup, before
+media and boot-artifact validation. Archive them or choose new names before
+restarting the CLI, including after a failed start. The Windows GUI uses
+[separate session directories](windows-jukuhost-client.md#console-and-evidence).
+
+The runner checks evidence-stream opens, writes and explicit operational
+flushes. Detected evidence failures stop the session with exit code 7;
+cleanup preserves an already selected nonzero failure code. Final cleanup flush/close
+return values are not checked. Validate a retained capture with
+[the capture converter](portable-c-host-implementation.md#capture-conversion)
+before using it as evidence. Captures contain CRC-protected RX, TX and
+local-event records; event flags 1, 2 and 3 denote INFO, WARN and ERROR.
 Startup settings, phase transitions, warnings/errors, media writes, and the
 final summary are explicitly flushed. High-volume INFO request events remain
 buffered so verbose evidence cannot perturb serial timing unnecessarily.
