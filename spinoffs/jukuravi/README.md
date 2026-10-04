@@ -255,8 +255,8 @@ results in the session log.
 
 On physical CS00024 the batch measured 1.714065 MHz, then proved that long
 uploads can lose their early RAM bytes before RUN. Use [`retention.py`](retention.py)
-for the narrower destructive-retention test. It writes one 32-byte marker and
-re-reads it at requested wall-clock ages in the same loader process:
+for the narrower destructive-retention test. It uploads and verifies one
+32-byte marker, then repeatedly reads it in the same loader process:
 
 ```sh
 python3 spinoffs/jukuravi/retention.py --cold --port /dev/ttyUSB0 \
@@ -265,9 +265,15 @@ python3 spinoffs/jukuravi/retention.py --cold --port /dev/ttyUSB0 \
 ```
 
 Start it before RESET. `--cold` pins T34 `1C/A637`; without `--cold` it attaches
-to an already-running API-v2 loader. The physical evidence is not a generic
-DRAM benchmark: loader commands themselves touch RAM and can refresh the tested
-rows. CS00024 passes when touched about every five seconds but loses mutable
+to an already-running API-v2 loader. `--ages` gives ascending target seconds
+from completion of the initial verified upload, rather than delays between
+reads. An overdue target is read immediately. JSON `retention.samples` records
+both the target age and the observed age after each READ completes, including
+its transport time.
+
+Loader commands themselves touch RAM and can refresh the tested rows; earlier
+reads therefore affect later samples. The physical evidence is not a generic
+DRAM benchmark. CS00024 passes when touched about every five seconds but loses mutable
 loader state after an untouched interval between roughly 5 and 17 seconds.
 See [`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md) for exact captures and limits.
 
