@@ -153,8 +153,6 @@ propagation delay or precise DOUT turn-off. The runnable video path retains
 its simulation-only second port. See
 [memory timing](memory-timing-boundary.md) and
 [video-slot timing](video-slot-timing-audit.md) for the remaining evidence.
-Resolved simulator-ordering defects and the retired Verilog oracle are
-recorded in Git history.
 
 ## Real-time pacing (`JUKU_REALTIME_HZ`)
 
@@ -244,8 +242,9 @@ console such as C9 N4.
 Pair it with `JUKU_REALTIME_HZ` for hands-on use — at full simulation speed
 a session runs faster than a human can type into it. `JUKU_KEYS` and the
 console share one key queue: the scripted string plays first and anything
-typed afterwards queues behind it, so `--max-speed --keys TDD` reaches a
-CP/M `A>` in seconds and still accepts commands.
+typed afterwards queues behind it. The [runner](../tools/juku_run.py) accepts
+`--max-speed --keys TDD` to submit the disk-boot command and continue accepting
+interactive input. These are runner options, not arguments to the `trace` binary.
 
 Direct `trace` runs delay queued matrix input until
 `JUKU_KEY_START_VRAM` framebuffer writes (default `42000`, chosen for the
