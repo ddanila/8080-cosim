@@ -51,7 +51,9 @@ and requires `sync/lvs.py` to report a mismatch.
 
 ## SRAM phase and WAIT closure
 
-One video byte occupies 16 dots. `FETCH` is high for phases 12-15; the scan address
+One video byte occupies 16 dots. `FETCH` is high for phases 12-15 in every
+horizontal group, including blanking; it is not gated by H/V active video.
+This includes the prefetch at dots 796-799 before the next line. The scan address
 has a conservatively credited three dot periods (119.166 ns) before the phase-0
 shifter load. The
 guarded path budget is 15 ns ACT157 selection + 55 ns SRAM access + 20 ns shifter

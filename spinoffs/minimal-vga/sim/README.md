@@ -27,6 +27,11 @@ An exit of zero with a skipped release section does not qualify fabrication.
 The Rev B video guard covers chip-level TTL timing and the framebuffer path.
 The serial and I/O guards use hardware-rate clock/framing fixtures and negative
 controls. These are modeled results, not measurements of assembled hardware.
+The video crop check inspects the existing `cosim/vram.bin`; it does not
+regenerate or identify its workload, and skips an absent or wrongly sized file.
+Generate the intended oracle framebuffer first before citing crop coverage.
+Without Icarus Verilog, the video guard also skips its HDL tests and returns
+success marked `partial`.
 [The five-board plan](../docs/rev-b-five-board-order-plan.md) owns current order
 and first-article requirements.
 

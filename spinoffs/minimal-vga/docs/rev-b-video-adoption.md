@@ -38,7 +38,7 @@ ours:
 - **Framebuffer SRAM** (AS6C1008, reused from the mem card — D2.3) holding `0xD800`+9640.
 - **CPU bus interface** — address decode of the `0xD800–0xFFFF` window, data buffer
   (74HCT245), and the **scanout-priority contention** logic that asserts open-drain
-  `WAIT_N` when a CPU access collides with an active-region fetch (D2.5).
+  `WAIT_N` when a CPU access collides with a four-dot fetch phase (D2.5).
 - **Address mux** (CD74ACT157 ×4) switching the SRAM between the CPU address and the
   scanout (row,col) address.
 - **Pixel shifter** (SN74ALS166) serialising a fetched byte into the 8-pixel dot stream.
@@ -47,8 +47,9 @@ ours:
   (`rev-b-gal-equations.md`).
 - **Mono→RGB output**: three independent ACT drivers and on-card 470 Ω series
   resistors feeding the monitor's three 75 Ω terminations, plus the DE-15 output.
-- The **pixel-doubling + crop/letterbox** mapping of the 320×241 mono source onto the
-  640×480 raster (decided by the oracle at TI.2, frozen in `video-timing.json`).
+- **Pixel doubling with bottom-row cropping** maps source rows 0–239 onto the
+  640×480 raster. Source row 240 remains in framebuffer memory but is not shown;
+  `video-timing.json` freezes this mapping.
 
 ## Attribution
 
