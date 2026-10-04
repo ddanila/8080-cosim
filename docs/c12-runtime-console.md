@@ -57,11 +57,9 @@ pair; the corrected pair received the focused 80-column recheck. Original
 failed session records remain unchanged. These results do not qualify Windows
 hardware, a new endurance run, or all three unmodified release profiles.
 
-The sibling CP/M acceptance fixtures now declare their C11 manifest dependency,
-use explicit resumed-session STATUS expectations, and check CONSOLE's two
-override lines independently. Byte-exact original CS00000 transcripts are
-retained under `tests/fixtures/c12-CS00000-20260905/` for offline replay and
-negative tests. Cold-state and hardware-error checks remain strict.
+Byte-exact original CS00000 transcripts are retained in the sibling CP/M
+project under `tests/fixtures/c12-CS00000-20260905/` for offline replay and
+negative tests.
 
 C12 is an additive successor to the immutable C11 ROM. It switches video
 geometry and character bank at runtime without changing S21 or resetting the
@@ -76,6 +74,9 @@ Feature bit `1000h` and vector `FF5Fh` identify `JCGCONCONFIG`:
 | 0 | query | none | A=reset-latched S21, B=active mode, C=active bank, D=override flags |
 | 1 | set | B=mode 0..3, C=bank 0..3 | applies the complete pair, A=0/CY clear |
 | 2 | default | none | reapplies S21 bits 4:1, A=0/CY clear |
+
+Modes 0..3 select 40x24, 53x24, 64x20 and 80x24 respectively. Banks 0..3
+select English, Estonian, CP866 and English/user-remap respectively.
 
 Other selectors or a mode/bank outside 0..3 return A=`FFh` with carry set and
 change neither state nor pixels. Override flag bit 0 means video differs from
@@ -97,20 +98,15 @@ console state ending at `D7D9h`, per-drive NetDisk state at `D7DAh..D7DFh`,
 host state at `D7E0h..D7FCh`, fixed `D600h..D7FFh` reservation, and CP/M TPA
 remain unchanged.
 
-The assembler now fails closed at every fixed resident-ROM envelope instead
-of relying on a negative padding expression when C12 consumes older diagnostic
-slack. The generated metadata records 154 bytes after resident diagnostics,
-839 after the locale console, 896 after the resident host, and 158 after the
-ABI vectors. These are padding measurements, not permission to append another
-ABI vector: the corresponding low-RAM call-gate envelope is exactly full.
-
 ## Boot discovery identity
 
-C12 retains C11's passive, receive-only recovery behavior but emits checked
-frame `4A 42 0C 01 05` (`JB`, C12, flags 1, XOR 5). C11 continues to emit its
-byte-identical `JB/11` frame. The production host accepts both identities and
-logs the received ROM generation; random or malformed data does not select a
-boot path.
+The host remains receive-only during discovery. The C12 ROM periodically
+transmits checked frame `4A 42 0C 01 05` (`JB`, C12, flags 1, checksum 05)
+at 19,200/8O1, then listens for Fastboot at 19,200/8N1, following the
+[C11 recovery wire contract](c11-session-recovery.md#wire-contract).
+C11 retains its byte-identical `JB/11` frame. The production host accepts
+both identities and logs the received ROM generation; random or malformed
+data does not select a boot path.
 
 ## Qualification and immutable boundary
 
@@ -152,7 +148,10 @@ STATUS/DIAG reporting, and C12-specific `VIDTEST`. Its named system, Fastboot,
 release image and manifest-bound physical workloads remain separate from older
 release artifacts. The Windows host embeds matching stock/C11/C12 payloads;
 actual-PE Wine sessions cover boot, NetDisk, snapshot media, B:, captures and
-evidence decoding. See [Windows qualification](windows-jukuhost-client-implementation.md)
+host-event conversion to JSON. This conversion does not independently decode
+the RX/TX protocol frames; see
+[capture conversion](portable-c-host-implementation.md#capture-conversion).
+See [Windows qualification](windows-jukuhost-client-implementation.md)
 for the platform boundary.
 
 The focused CS00000 results above do not complete broader release-profile
