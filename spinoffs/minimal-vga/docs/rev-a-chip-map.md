@@ -80,7 +80,7 @@ refresh-row count while grounding both reset inputs permits counting.
 
 | Ref | Function | Candidate part | Package | Notes |
 |---|---|---|---|---|
-| U40 | VGA timing block | TTL640x480 bring-up timing header | 2x6 2.54 mm header | Rev A proves CPU/DRAM/refresh/video handoff first; exports PIXCLK, sync, blanking, video request/ack, and pixel-load timing. Full onboard TTL VGA expansion is deferred. |
+| U40 | External VGA timing interface | TTL640x480 bring-up timing header | 2x6 2.54 mm header | Carries PIXCLK, sync, blanking, video request/ack, and pixel-load timing. The board model defines the interface; an external timing source and physical handoff still require qualification. |
 | U41 | Pixel latch/serializer | 74HCT166 | DIP-16 | Byte-to-pixel path driven by U40 timing signals for Rev A bring-up. |
 | J40 | VGA output/debug | 1x7 2.54 mm header | TH | RGB after series resistors plus HSYNC/VSYNC/GND and BLANK_N; HD-15 adapter is external for Rev A. |
 
@@ -98,7 +98,8 @@ refresh-row count while grounding both reset inputs permits counting.
 | J90-J93 | Logic analyzer/debug headers | 2.54 mm headers | TH | Address/data/RAS/CAS/WE/sync/power debug; J93 exposes VCC/GND/PWR_OK/VCC_RAW. |
 | D2-D7 | Diagnostic LEDs | 3 mm LEDs | TH | +5V, PWR_OK, CLK, RESET_N, M1_N, and RFSH_N bring-up indicators. |
 | R24-R29 | Diagnostic LED resistors | 2.2k | TH | Conservative current limit to reduce logic loading. |
-| C* | Decoupling | 100 nF ceramic | TH/SMD | One per IC, close to socket power pins. |
+| C1-C28 | Decoupling | 100 nF ceramic | TH | Local VCC-to-GND bypass capacitors; placement near socket power pins requires review. |
+| C50 | Bulk supply capacitance | 47 µF | TH | VCC-to-GND bulk capacitor. |
 
 ## Verification and remaining scope
 
