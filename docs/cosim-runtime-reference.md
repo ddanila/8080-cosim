@@ -69,6 +69,12 @@ The fixed instrumentation addresses are `C027h`/`C02Ah` with state at
 sync/cosim_check.sh
 ```
 
+Run with Bash, Python 3, a C compiler (`CC`, default `cc`), and Icarus
+Verilog (`iverilog` and `vvp`). The guard regenerates `hdl/sim/ekta37.hex`
+and runs the C trace from `cosim`, where its framebuffer dump can replace
+`vram.bin`; copy an existing capture elsewhere if it must be retained. Build
+and bus-trace files are temporary and removed when the script exits.
+
 `WINDOW` (ns) and `TRACE_LIMIT` (events) bound the run. Their defaults are
 30,000,000 ns and 130,000 events; the event verdict may stop the simulation
 earlier. Wall runtime depends on the simulator and host, not a full-banner run. The default boot
