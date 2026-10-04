@@ -5,10 +5,10 @@ Status date: 2026-08-11.
 Status: **COMPLETE 32 KIB RAM PROOF UNDER T36 REFRESH; LEGACY D57 CHANNEL-2
 CAPTURE NEEDS THE CORRECTED `/VER RTR` RERUN; 12 MS LINK MARGIN IS SEPARATE**.
 
-This note consolidates the completed T36 physical capture, the Juku drawings,
-the exact RomBios 3.43m (archive #0037) ROM, deterministic simulation, and contemporary
-manufacturer documentation. It intentionally separates three effects that
-looked related during live work but are not supported as one fault.
+This diagnosis combines the T36 physical capture, Juku drawings, exact
+RomBios 3.43m (archive #0037) ROM and deterministic simulation. RAM refresh,
+D57 channel-2 timing and serial/parser margin have separate evidence and
+acceptance criteria.
 
 ## Conclusions
 
@@ -68,7 +68,7 @@ LOAD chunks and two independent readbacks needed more than one transaction,
 but all finished exact, no chunk needed a store retry, and the maximum was
 three attempts. That pattern, plus the explicit 12 ms outer-CRC rejection,
 supports a recoverable link/parser margin issue rather than failed RAM writes.
-The exact host/PTTY regression now uses the same 6 and 12 ms symbol guards
+The exact host/PTTY regression uses the same 6 and 12 ms symbol guards
 under deterministic DRAM decay; both points pass and the model observes all
 128 rows inside the retention deadline. Thus neither correct T36 refresh nor
 the guard delay by itself reproduces the physical 12 ms failure. The remaining
@@ -153,20 +153,16 @@ FD 3D  FC 3C  FE 3E
 
 The complete API-v2 upload/readback/RUN session had no transport mismatch.
 This is a physical positive control for D57 channel 2 and the D55.13 →
-D57.18 `/VER RTR` path. The simulator and `batch.py` now validate channel 2
+D57.18 `/VER RTR` path. The simulator and `batch.py` validate channel 2
 only for `D57S` v2; they retain but do not score legacy `D57R` v1 channel-2
 bytes. The exact-signature fault injection remains useful for testing the
 software discriminator after valid timing, not as proof that CS00024 has that
 fault. Primary source: [Intel 1979 Peripheral Design Handbook, 8253 section](https://www.bitsavers.org/components/intel/_dataBooks/1979_Intel_Peripheral_Design_Handbook.pdf).
 
-The correction places D57.18 on `VERT_RTR` in the board JSON, HDL and
-project PCBs. The exact routing delta and its zero-open DRC/parity result are
-recorded in [the D57 correction snapshot](../ref/routing/d57-clock-correction.json).
-That result applies to the recorded board hashes, not every later board.
-Subsequent source changes leave current whole-board routing and package
-release held; see [the routed audit](routed-refresh-audit.md) and
+D57.18 is `VERT_RTR` in the board JSON, HDL and project PCBs. Current
+whole-board routing and package release remain held; see
+[the routed audit](routed-refresh-audit.md) and
 [manufacturing readiness](replica-manufacturing-readiness.md).
-Exploratory routing trials remain in Git history rather than the bench diagnosis.
 
 The exact `ekta37.bin` also uses this channel. At ROM offsets `01FCh..020Dh`
 it writes D57 control `B0h`, then sends `FFh,FFh` to port `1Ah`. An executed
