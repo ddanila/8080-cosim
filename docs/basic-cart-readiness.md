@@ -5,7 +5,7 @@ Status: **PHYSICAL D8 CARTRIDGE WINDOW CLOSED / COSIM OPTION BOUNDED**
 This guard compares the modeled physical-PROM decode with cosim for the optional
 `jbasic11.bin` cartridge path:
 
-- cosim loads `JUKU_CART=roms/jbasic11.bin` and exposes it in memory mode 2 at
+- cosim loads the image selected by `JUKU_CART` and exposes it in memory mode 2 at
   `0x4000..0xBFFF`: the 8 KiB image occupies `0x4000..0x5FFF`,
   with the remaining window filled with `0xFF`.
 - The repeated physical D8 `.039` table returns `0xFF` for the `0x4000` row,
@@ -21,6 +21,12 @@ This guard compares the modeled physical-PROM decode with cosim for the optional
 ```sh
 sync/basic_cart_check.sh
 ```
+
+The script requires Bash, Python 3, a C compiler (`CC`, default `cc`),
+and Icarus Verilog (`iverilog` and `vvp`). It rewrites this report,
+`hdl/sim/jbasic11.hex` and `cosim/vram.bin`. For direct trace runs,
+`JUKU_CART` is resolved from the trace process's working directory; use an
+absolute path. The guard runs from `cosim` with `../roms/jbasic11.bin`.
 
 ## Evidence
 
