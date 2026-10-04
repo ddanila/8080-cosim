@@ -20,6 +20,19 @@ runtime contract and remaining physical qualification.
 The runnable Python host is retired. Frozen non-runnable protocol fixtures
 remain available to compare wire bytes and behavior.
 
+## Disk failure handling
+
+Normal and compact NetDisk reads return status `1` when the media read fails;
+the host continues serving. With valid media, protocol and sector selection,
+v3 read-ahead stops at the first failed read and returns status `0` with the
+number of records already read, possibly zero. An invalid read-ahead selection
+instead returns status `1`. A successful host exit is therefore not proof that
+every disk request succeeded; inspect request statuses and returned counts.
+
+Media setup, journal recovery, and persistent A: transaction failures stop the
+runner with its media-error exit. These differ from ordinary read replies and
+do not enter serial rediscovery.
+
 ## Capture conversion
 
 `tools/jukuhost_evidence.py` checks capture framing and record CRCs, then

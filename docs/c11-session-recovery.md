@@ -62,7 +62,8 @@ expires. See [the configuration guide](jukuhost-config.md) for defaults.
 | host process replaced | CP/M's NetDisk client times out and retries the request | replacement validates `JD` and serves it | no manual resume flag |
 | named serial device disappears | target continues bounded request retries or C11 discovery | host retries reopen in bounded configured windows, then rediscovers | recovers when the device path returns |
 | configured console PTY is absent or replaced | target continues bounded N4 retries | host waits for the endpoint before boot, or reopens it and rediscovers after loss | no successful boot is abandoned for a missing relay |
-| capture/log/media/artifact failure | no safe ROM remedy | host stops with its specific fatal exit | unsafe or unaudited state is not hidden |
+| disk read failure during service | client receives a failure reply or shortened read-ahead batch | host keeps serving requests | a read failure alone does not trigger host shutdown or rediscovery |
+| checked capture/log failure, media setup/journal failure, or artifact rejection | no safe ROM remedy | host stops with its specific fatal exit | these failures do not enter automatic rediscovery |
 | permanent power, cable, UART, RAM, or ROM fault | may remain silent or repeat POST failure | waits/retries only where transport remains observable | operator/hardware repair is still required |
 
 The later, separately identified stock `JF17` profile now applies the same
