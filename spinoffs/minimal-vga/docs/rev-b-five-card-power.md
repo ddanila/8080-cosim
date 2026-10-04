@@ -9,8 +9,9 @@ supply ripple and assembled-board behavior still require physical acceptance.
 
 The populated digital set is U1-U23. The generated board contains exactly C1-C23,
 each 100 nF from VCC5 to GND, with the numbering contract `Cn` local to `Un` at layout.
-`C_BULK` is 47 uF from VCC5 to GND near the card power entry. The machine check rejects
-a missing bypass capacitor and requires the bypass count to equal the IC count.
+`C_BULK` is 47 uF from VCC5 to GND near the card power entry. The power guard checks
+these populations and connections in `video.board.json`; physical placement is
+covered by the separate [Video PCB gate](rev-b-video-pcb.md).
 
 R5.V5 places every 100 nF VCC pad within 12.85 mm of its corresponding package
 supply pad and gives it a short solid-ground-plane return. Seven constrained parts
@@ -73,17 +74,14 @@ power-up still uses a current limit and staged card insertion.
 Normal operation uses a center-positive **Mean Well GST25A05-P1J**, rated 5 V/4 A,
 through exact Wurth `694106301002` barrel jack `J_PWR` (5 A). `F_MAIN` is a Bourns
 MF-R300 in series between `PWR_RAW` and `VCC_BUS`; it holds 3.00 A at 23 C, 2.49 A at
-40 C and 1.83 A at 70 C, all above the 1.655 A frozen load. Its 6 A nominal trip
-retains useful fault separation from the 4 A adapter. `D_REV` is a 5 A Vishay SB560 crowbar after that fuse,
-cathode to `VCC_BUS` and anode to `GND_BUS`. A reversed center contact therefore
-becomes a protected fault instead of reverse rail voltage.
+40 C and 1.83 A at 70 C, all above the 1.655 A frozen load. The recorded nominal trip current is 6 A. `D_REV` is a 5 A Vishay SB560
+crowbar after that fuse, cathode to `VCC_BUS` and anode to `GND_BUS`. This topology
+is intended to clamp a reversed input; the desk gate does not qualify its fault
+response with the selected adapter.
 
-R5.J1 deliberately omits the optional GCT USB4085 power input. Its exact
-0.40/0.70-mm holes/lands at 0.85-mm pitch yield a 0.15-mm annular ring, below
-JLCPCB's published 0.18-mm absolute for ordinary 2-layer PTH. The barrel jack is the
-sole power input; the USB-TTL console is data-only. `W_VCC` and `W_GND` are fitted
-insulated 22-AWG links that join the high-current bus rails to the backplane's local
-logic rails.
+The barrel jack is the sole power input; the USB-TTL console is data-only.
+`W_VCC` and `W_GND` are fitted insulated 22-AWG links that join the high-current
+bus rails to the backplane's local logic rails.
 
 The selected adapter publishes a broad +/-5% voltage tolerance, so its nameplate
 alone is insufficient for this conservative TTL corner. Receipt acceptance is an
@@ -113,14 +111,32 @@ receipt test is mandatory.
 
 ## Machine gate
 
+`check_revb_video_power.py` checks JSON capacitor/RGB connectivity and the
+arithmetic in `video-power-audit.json`. It does not derive current allowances
+or driver ratings from datasheets.
+
+`check_revb_system_physical.py` uses the retained routed backplane and
+`five-board-physical.json` for DC drop calculations, with fixed allowances for
+plated connections and contacts. Reported troughs are at card bus connectors;
+the solver does not include each card's internal rail distribution or transient
+loads. It checks the protected-input topology and recorded ratings, not fuse-trip
+or crowbar dynamics. Clearance is calculated from stored STEP envelope bounds;
+it does not regenerate or inspect STEP models. See the
+[mating report](rev-b-mating-report.md) for the assembly scope.
+
+Run from the repository root; the system guard requires KiCad Python and NumPy:
+
 ```sh
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_power.py --self-test
 . spinoffs/minimal-vga/kicad/revb/env.sh
 "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_system_physical.py --self-test
 ```
 
-Negative controls cover the Video capacitor/RGB defects plus a narrow distribution
-rail, narrow raw path, wrong slot pitch, low supply and stale current total.
+The power guard rejects two mutations: a missing C23 and shared RGB outputs.
+The system guard rejects a narrowed routed VCC segment, a raw-path width
+requirement raised above the retained track width, 12 mm slot pitch, low supply
+voltage and a stale current total. These are software checks of the model;
+physical acceptance remains pending.
 
 Primary sources: [Microchip ATF22V10C](https://ww1.microchip.com/downloads/en/DeviceDoc/doc0735.pdf),
 [TI CD74ACT08](https://www.ti.com/lit/ds/symlink/cd74act08.pdf), and
