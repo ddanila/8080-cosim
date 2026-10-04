@@ -14,6 +14,12 @@ closes D6 A7 through D105.1 to D7.8, the I/O-cycle-active-high NAND of raw
 python3 scripts/report_d6_firmware_modes.py
 ```
 
+Requires Python 3, a C compiler (`CC`, default `cc`), and the vendored
+ROM, PROM, board JSON and checkpoint reports. Build and framebuffer
+outputs stay in a temporary directory removed on exit; a successful run
+overwrites this report. The trace inherits other `JUKU_*` settings, so
+run with those overrides unset to reproduce the recorded default case.
+
 The generator builds the C trace harness and runs `ekta37` with a
 50,000,000-cycle limit and 32,000-video-write stop, setting `JUKU_TRACE_IO=1`.
 It replays captured PPI0 port `06/07` writes and checks 24 events and the
@@ -38,8 +44,9 @@ Repeated events are grouped by instruction, value and resulting state.
 | `D7EF` | `0x06=0x00` | `0x01->0x00` | `11` | 8 | 3064555–3070627 |
 | `DCD5` | `0x07=0x0E` | `0x01->0x01` | `10` | 4 | 3064961–3070277 |
 
-ROMBIOS changes PC0 16 times in this trace, toggling physical D6 A5 after the D3
-inverter. Port C alone determines only suffix `11` or `10`; A7 is independent.
+ROMBIOS changes PC0 16 times in this trace. Applying the registered D3
+inversion predicts those changes at D6 A5; this run does not simulate D3.
+Port C alone determines only suffix `11` or `10`; A7 is independent.
 During memory cycles D7.8 is low, so the runnable table rows are `011` and
 `010`. During the OUT event itself A7 is high, but those rows do not select
 a firmware memory map.
@@ -69,4 +76,4 @@ Recorded Verilator results remain subject to the current
 - Every physical A7=`1` row emits only `B` or `F`; both release ROM/RAM
   selects, so the I/O-cycle quadrant cannot express a competing memory map.
 - This trace guards firmware writes, not the unresolved downstream meaning of
-  every D6 output word; see `docs/d6-physical-decode.md`.
+  every D6 output word; see the [physical decode record](d6-physical-decode.md).
