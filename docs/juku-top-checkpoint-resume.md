@@ -3,9 +3,9 @@
 Status: **PASS**
 
 This probe regenerates the 30,000-write EKDOS/TDD cosim checkpoint,
-loads its RAM image into the LVS-checked `juku_top`, injects the
-visible CPU/PPI/PIC/FDC latches, seeds the vm80a core at a clean M1
-fetch boundary, and lets the real top-level bus run forward.
+loads its RAM image into the LVS-checked `juku_top`, seeds CPU/PPI/PIC/FDC
+latches from testbench defaults, and starts the vm80a core at a clean M1
+fetch boundary. The runner does not import the generated `.state` file.
 
 The pass condition is deliberately narrow: reach the first post-checkpoint
 ROMBIOS PIC programming event and the no-key keyboard poll through the
