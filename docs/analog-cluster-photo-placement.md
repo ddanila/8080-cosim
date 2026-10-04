@@ -82,19 +82,15 @@ target-continuity boundaries. R67.2 and X6 A:3 remain such boundaries; the
 factory table still closes A:3/A:4 to X6 independently of the superseded RF nets. The
 yellow `Б / 8901` part is the retained VT2; C94 remains separately bounded.
 
-Two owner views read `4K7` on the factory-identified R67 body, superseding
-the printed 2 kΩ value. The corrected cross-side registration identifies its
+The corrected R67 cross-side registration identifies its
 upper lead's solder joint and an uninterrupted backside trace to an open
 annulus. The annulus's front-side counterpart and the source-drawn VT2-base
 destination remain unproved; direct continuity is required. Coordinates,
 photo hashes and search limits are retained in
 [the R67 registration evidence](../ref/photos/juku-pcb-2/r67-photo-exhaustion.json).
 
-`kicad/check_analog_photo_placement.py` prevents regeneration from restoring
-the former assembly-grid approximations for `VT2`/`R65`/`R67`/`VD3`/`R66`/`C94`, and
-guards VT2's three lap joints, both C94 boundaries, C16/C19, R92/R99, plus the two
-registered capacitor drill spans beside D102. Machine-readable VT2/C94 correction
-evidence is in `ref/photos/juku-pcb-2/c94-endpoint-registration.json`.
+Machine-readable VT2/C94 correction evidence is in
+`ref/photos/juku-pcb-2/c94-endpoint-registration.json`.
 
 ## C16/R92/R99 drill registration
 
@@ -186,11 +182,20 @@ C20 on D102.6/.7 with R108 and C22 on D102.14/.15 with R102.
 
 ## Verification
 
+Run from the repository root using Python with KiCad's `pcbnew` module and
+NumPy. The original photographs must be materialized through
+[Git LFS](git-lfs-policy.md#local-use) for the evidence hash checks.
+
 ```sh
-python3 kicad/check_analog_photo_placement.py
+/usr/bin/python3 kicad/check_analog_photo_placement.py
 ```
 
-The guard checks registered model placement and pad/net invariants. It does
-not establish physical continuity or validate all board copper. See
+The guard checks stored centers and rotations, selected pad positions, VT2's
+lap-pad construction and net assignments, and C94's boundary nets. It also
+checks VT2/C94 evidence and R67's recorded value, photo hashes, and cross-side
+transform. C16/C19, R92/R99, and C20/C22 are checked for placement and pad
+positions here; their net assignments are not checked by this script.
+
+These checks do not establish physical continuity or validate all board copper. See
 [the source-PCB DRC audit](source-pcb-drc.md) for source pad/item collisions;
 LVS is a separate connectivity check and does not validate placement.
