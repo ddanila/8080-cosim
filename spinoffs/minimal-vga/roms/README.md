@@ -7,6 +7,12 @@ python3 spinoffs/minimal-vga/roms/build_revb_rom.py
 python3 spinoffs/minimal-vga/roms/build_revb_rom.py --check
 ```
 
+The builder checks the pinned stock/patched EKTA, C10 and immutable C9 binaries,
+builds DIAG from Python source, and writes the five derived binaries, diagnostic
+instruction map and `revb-rom-set.json`. `--check` computes the same outputs and
+compares them without writing. It does not regenerate the patched EKTA source or
+reassemble C10; their own builders and execution gates remain separate.
+
 Every 27C256 image
 duplicates its verified 16 KiB member into both halves so direct A0–A14 wiring
 also maps the D800–FFFF overlay correctly. `revb-rom-set.json` is the authority
@@ -26,8 +32,9 @@ NETC10 is byte-identical to the reproducibly assembled C10 16 KiB source: its
 canonical `zmac -8` instruction set needs no opcode substitutions, and its real
 D57 mode-2/count-four sequence is retained. DIAG's builder and instruction map
 prove that stack/helpers are absent until ROM, RAM-data and RAM-address pass.
-`check_revb_rom_set.py` executes the diagnostic under cosim and enforces ordered
-POST LEDs, PIT tone, USART text and framebuffer-pattern evidence.
+`check_revb_rom_set.py` executes DIAG under cosim and checks POST order, selected
+PIT writes, late USART text and the framebuffer-write count. See the
+[DIAG guide](revb-diag/README.md) for the exact scope and generated scratch file.
 
 ## `ekta37_z80.bin` — Z80-executable Juku boot ROM (derived)
 
