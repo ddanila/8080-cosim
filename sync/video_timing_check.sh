@@ -87,6 +87,11 @@ periods below are parsed reference values, not simulated blanking intervals.
 sync/video_timing_check.sh
 \`\`\`
 
+The check requires Python 3, Icarus Verilog (\`iverilog\` and \`vvp\`), and
+Bash. It runs from the repository root and rewrites this report after a pass.
+Set \`VIDEO_TIMING_REPORT\` to an alternate output path to preserve the tracked
+report while comparing a rerun; its parent directory must already exist.
+
 ## MAME Reference
 
 Parsed from \`ref/mame_juku.cpp\`:
