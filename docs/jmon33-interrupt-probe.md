@@ -9,6 +9,11 @@ It does not inject serial traffic or verify interactive command completion.
 
 ## Command
 
+Run from the repository root with Python, a C compiler (`CC`, default
+`cc`), and `roms/jmon33.bin`. The probe builds a temporary executable,
+overwrites this report after simulation, and overwrites `cosim/vram.bin`.
+Preserve the VRAM file first if its current contents are needed.
+
 ```sh
 sync/jmon33_interrupt_probe.py
 ```
