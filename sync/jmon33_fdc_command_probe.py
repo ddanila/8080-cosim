@@ -204,7 +204,7 @@ def fmt_commands(commands: tuple[int, ...]) -> str:
 def main() -> int:
     scenarios = (
         Scenario("no-disk", None),
-        Scenario("JUKU1.CPM", Path(os.environ.get("JMON33_FDC_COMMAND_DISK", DISK))),
+        Scenario("JUKU1.CPM", (ROOT / os.environ.get("JMON33_FDC_COMMAND_DISK", str(DISK))).resolve()),
     )
     with tempfile.TemporaryDirectory(prefix="jmon33-fdc-command.") as tmp_name:
         tmp = Path(tmp_name)
@@ -238,14 +238,14 @@ def main() -> int:
         "sync/jmon33_fdc_command_probe.py",
         "```",
         "",
-        "Environment overrides:",
+        "Recorded settings (defaults unless overridden):",
         "",
-        f"- `JMON33_FDC_COMMAND_MAX_CYCLES` default `{os.environ.get('JMON33_FDC_COMMAND_MAX_CYCLES', '60000000')}`",
-        f"- `JMON33_FDC_COMMAND_FRAME_CYCLES` default `{os.environ.get('JMON33_FDC_COMMAND_FRAME_CYCLES', '200000')}`",
-        f"- `JMON33_FDC_COMMAND_START_VRAM` default `{os.environ.get('JMON33_FDC_COMMAND_START_VRAM', '210')}`",
-        f"- `JMON33_FDC_COMMAND_HOLD_FRAMES` default `{os.environ.get('JMON33_FDC_COMMAND_HOLD_FRAMES', '20')}`",
-        f"- `JMON33_FDC_COMMAND_GAP_FRAMES` default `{os.environ.get('JMON33_FDC_COMMAND_GAP_FRAMES', '6')}`",
-        f"- `JMON33_FDC_COMMAND_DISK` default `{Path(os.environ.get('JMON33_FDC_COMMAND_DISK', DISK)).relative_to(ROOT)}`",
+        f"- `JMON33_FDC_COMMAND_MAX_CYCLES` = `{os.environ.get('JMON33_FDC_COMMAND_MAX_CYCLES', '60000000')}`",
+        f"- `JMON33_FDC_COMMAND_FRAME_CYCLES` = `{os.environ.get('JMON33_FDC_COMMAND_FRAME_CYCLES', '200000')}`",
+        f"- `JMON33_FDC_COMMAND_START_VRAM` = `{os.environ.get('JMON33_FDC_COMMAND_START_VRAM', '210')}`",
+        f"- `JMON33_FDC_COMMAND_HOLD_FRAMES` = `{os.environ.get('JMON33_FDC_COMMAND_HOLD_FRAMES', '20')}`",
+        f"- `JMON33_FDC_COMMAND_GAP_FRAMES` = `{os.environ.get('JMON33_FDC_COMMAND_GAP_FRAMES', '6')}`",
+        f"- `JMON33_FDC_COMMAND_DISK` = `{os.path.relpath(scenarios[1].disk, ROOT)}`",
         "",
         "## Evidence",
         "",
@@ -256,7 +256,7 @@ def main() -> int:
         scenario = result["scenario"]
         stop = result["stop"]
         io = result["io"]
-        disk = scenario.disk.relative_to(ROOT).as_posix() if scenario.disk else "none"
+        disk = os.path.relpath(scenario.disk, ROOT) if scenario.disk else "none"
         lines.append(
             f"| {scenario.name} | `{disk}` | `{result['proc'].returncode}` | "
             f"`0x{stop.get('pc', 0):04X}` | `{stop.get('cycles', 0)}` | "
@@ -296,7 +296,7 @@ def main() -> int:
         ]
     )
     REPORT.write_text("\n".join(lines) + "\n")
-    print(f"Wrote {REPORT.relative_to(ROOT)}")
+    print(f"Wrote {os.path.relpath(REPORT, ROOT)}")
     return 0 if status.endswith("PINNED") else 1
 
 

@@ -19,14 +19,14 @@ exit is reported separately and does not determine the overall status.
 sync/jmon33_fdc_command_probe.py
 ```
 
-Environment overrides:
+Recorded settings (defaults unless overridden):
 
-- `JMON33_FDC_COMMAND_MAX_CYCLES` default `60000000`
-- `JMON33_FDC_COMMAND_FRAME_CYCLES` default `200000`
-- `JMON33_FDC_COMMAND_START_VRAM` default `210`
-- `JMON33_FDC_COMMAND_HOLD_FRAMES` default `20`
-- `JMON33_FDC_COMMAND_GAP_FRAMES` default `6`
-- `JMON33_FDC_COMMAND_DISK` default `media/disks/JUKU1.CPM`
+- `JMON33_FDC_COMMAND_MAX_CYCLES` = `60000000`
+- `JMON33_FDC_COMMAND_FRAME_CYCLES` = `200000`
+- `JMON33_FDC_COMMAND_START_VRAM` = `210`
+- `JMON33_FDC_COMMAND_HOLD_FRAMES` = `20`
+- `JMON33_FDC_COMMAND_GAP_FRAMES` = `6`
+- `JMON33_FDC_COMMAND_DISK` = `media/disks/JUKU1.CPM`
 
 ## Evidence
 
