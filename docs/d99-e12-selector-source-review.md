@@ -43,7 +43,7 @@ contains package rows and open holes without a distinctive three-post pattern.
 These crops bound the first bench search but do not select E12 holes by
 proximity to the printed callout.
 
-The source board model now puts D99.2 on `FDC_HLD_TO_D100` with D93.28 and
+The source board model puts D99.2 on `FDC_HLD_TO_D100` with D93.28 and
 D100.3, reflecting the drawn E12 2-3 setting. D99.5 is modeled with D100.7
 on `D99_Q2_BOUNDARY`, while still feeding unselected E12 post 1. Next unpowered
 checks are D99.2 to D93.28/D100.3, D99.5 to D100.7 and the alternate E12 post, and

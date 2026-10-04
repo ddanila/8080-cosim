@@ -21,13 +21,13 @@ missing endpoints belong to [factory-wire fidelity](factory-wire-route-fidelity.
 and [placement parity](board-placement-parity.md). They do not establish
 original-board continuity or release either routed PCB.
 
-The full-resolution .009 assembly identifies the D50/C95-adjacent resistor as **R58** (`PXL_20260711_114556899.jpg`, rotated native crop). A separate lower-centre assembly panel `PXL_20260711_114617677.jpg` explicitly labels **R38** right/below D59. The source and routed boards already place R38 beside D59 at pads `(121.4,252.91)`/`(121.4,245.29)` mm. The owner pale horizontal 1K0 beside D59 matches R38 position and value, and its left front lead joins physical D59.14/P5V and red R32 right; the far lead-to-SHIFT_G route still needs continuity (`ref/photos/juku-pcb-2/d59-orientation-audit.json`). The D51-right pale 5K1 body instead matches assembly R58 position and 5.1 kΩ source value. Its upper joint visibly joins D51.8/GND through solder copper, consistent with R58's grounded rail-E terminal; the lower joint heads west and needs a CAS continuity check. The current R58 PCB footprint at `(200.29,220.5)`/`(207.91,220.5)` mm is far from the D51-local owner estimate `(106.632,155.905)`/`(106.818,166.537)` mm, so R58 placement and copper remain on hold (`ref/photos/juku-pcb-2/c95-d50-r58-placement-review.json`). The owner-board
+The full-resolution .009 assembly identifies the D50/C95-adjacent resistor as **R58** (`PXL_20260711_114556899.jpg`, rotated native crop). A separate lower-centre assembly panel `PXL_20260711_114617677.jpg` explicitly labels **R38** right/below D59. The source and routed boards place R38 beside D59 at pads `(121.4,252.91)`/`(121.4,245.29)` mm. The owner pale horizontal 1K0 beside D59 matches R38 position and value, and its left front lead joins physical D59.14/P5V and red R32 right; the far lead-to-SHIFT_G route still needs continuity (`ref/photos/juku-pcb-2/d59-orientation-audit.json`). The D51-right pale 5K1 body instead matches assembly R58 position and 5.1 kΩ source value. Its upper joint visibly joins D51.8/GND through solder copper, consistent with R58's grounded rail-E terminal; the lower joint heads west and needs a CAS continuity check. The current R58 PCB footprint at `(200.29,220.5)`/`(207.91,220.5)` mm is far from the D51-local owner estimate `(106.632,155.905)`/`(106.818,166.537)` mm, so R58 placement and copper remain on hold (`ref/photos/juku-pcb-2/c95-d50-r58-placement-review.json`). The owner-board
 continuity of these source paths has not been measured, so neither routed
 board is released.
 
 ## Simulation and measurement boundary
 
-The revised source topology puts D35.4 on D42_Q with D42.10/D37.13;
+The source topology puts D35.4 on D42_Q with D42.10/D37.13;
 D37.12 shares numbered rail 3 with D42.9/D43.9, while D37.11 reaches D34.12 on a separate pixel line. The runnable pixel oracle retains its
 separate functional POF clamp and constant shift-enable stimulus; the
 owner-board connectivity and behavior of this source-drawn output junction
@@ -49,7 +49,7 @@ Projecting that lower joint into the overlapping solder-side tile from
 D35.13 only provides a search area: no unique R39 hole or continuous
 copper route can be identified there. Its lead polarity remains a
 two-lead continuity measurement.
-The ИР16 readiness and video-slot timing reports now record D35.6/R38.1
+The ИР16 readiness and video-slot timing reports record D35.6/R38.1
 as the source-drawn `SHIFT_G` driver and pull-up; they retain the
 unmeasured physical-continuity and slot-schedule limits.
 

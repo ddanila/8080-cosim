@@ -10,19 +10,19 @@ output pin, and command label. The transcription is preserved in
 КР580ВА86/Intel 8286 physical pairs: 1↔19, 2↔18, …, 8↔12. Symbol row order
 is permuted and cannot substitute for pad numbers.
 
-| Input pin | Output pin | Exact .009 output label | Corrected replica output at that pad |
+| Input pin | Output pin | Exact .009 output label | Replica output at that pad |
 | ---: | ---: | --- | --- |
-| 3 | 17 | `-INHIB` | `INHIB_N` (aligned) |
+| 3 | 17 | `-INHIB` | `INHIB_N` |
 | 1 | 19 | `CCLCK` | `CCLCK` |
 | 2 | 18 | `-IO/M` | `IOM_N` |
 | 7 | 13 | `-MWC` | `MWC_N` |
-| 6 | 14 | `-MRC` | `MRC_N` (aligned) |
+| 6 | 14 | `-MRC` | `MRC_N` |
 | 8 | 12 | `-AMWC` | `AMWC_N` |
 | 4 | 16 | `-IORC` | `IORC_N` |
 | 5 | 15 | `-IOWC` | `IOWC_N` |
 
 The board JSON, schematic, all three PCB pad maps, HDL bus ordering, and
-8286 pinout audit now use these exact rows. D29.1 is on PHI2TTL; D35.13 is
+8286 pinout audit use these exact rows. D29.1 is on PHI2TTL; D35.13 is
 on the separate post-R35 node. The three passive parts R35, R106, and C29
 exist in the source model but await footprint placement and owner measurements.
 The D29.1/.2/.3/.6 component probe centres are approximately
@@ -46,7 +46,7 @@ D7.3 remote join; verify both by continuity.
 Exact sheet-1 detail `(1000,3040)–(1740,3540)` shows D7.3 directly feeding
 D29.2; the riser crosses D29.7 without a dot. The lower continuation puts
 D29.8 on `-MWR`/MEMW, D29.4 on `-IORD`, and D29.5 on `-IOWR`. These
-connections are now modeled. The source-drawn D7.3→D29.2 join still requires
+connections are modeled. The source-drawn D7.3→D29.2 join still requires
 owner-board continuity before physical fidelity can be claimed. Native
 sheet-1 pixels show D7.11 and D105.3 on
 separate local strokes, correcting the earlier claimed output tie.
