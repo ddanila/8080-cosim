@@ -1,9 +1,9 @@
 # Annotated ROM disassemblies
 
 SkoolKit-based, round-trip-guarded disassemblies of the vendored Juku ROMs —
-all eight CPU ROM images and the BASIC cartridge are covered. The maintained artifact is the **control
-file** (`.ctl`): labels, comments, and code/data boundaries accumulate
-there. The `.skool` file is generated from it and vendored for browsing; it
+all eight CPU ROM images and the BASIC cartridge are covered. The maintained
+artifact is the **control file** (`.ctl`), containing labels, comments, and
+code/data boundaries. The `.skool` file is generated from it and vendored for browsing; it
 must always regenerate identically and reassemble to the exact pinned ROM
 bytes. One guard covers every image: `sync/disasm_check.sh` (a generic-CI
 step).
@@ -15,7 +15,7 @@ prefixes can make a `c` block's tail consume bytes past its boundary, producing
 overlapping entries — the round-trip guard then fails with a shifted,
 longer binary. An 8080 may execute these undocumented bytes with semantics
 that differ from Z80; encountering one is not proof that the region is data.
-The initial seeds conservatively stopped discovery there. Establish instruction
+Establish instruction
 lengths and control flow against the CPU implementation and execution evidence
 before extending code boundaries; the byte round trip cannot prove them.
 
@@ -35,9 +35,8 @@ Only mode 0's low ROM overlay permits writes to underlying RAM; see
 [the hardware map](../docs/hardware-map.md#cpu-and-memory). Read-address
 relocation alone does not establish write behavior.
 
-The initial code map was seeded by recursive descent from the reset entry
-and the monitor vector table, translating control-flow targets in
-`D800h-FFFFh` back by `-C000h`, plus the byte-verified NetBios entries from
+The code map includes the reset entry, monitor vector table, and
+byte-verified NetBios entries from
 [`../docs/ekta37-netbios-notes.md`](../docs/ekta37-netbios-notes.md).
 Regions not yet proven code remain `b` (data) blocks; refine them in the ctl
 as understanding grows, never by editing the skool.
@@ -92,7 +91,7 @@ does not prove that every byte is historically correct. Use it as a comparison
 reference for jmon22's untrusted blocks 6-7, subject to the donor constraints in
 [the reconstruction report](../docs/jmon22-reconstruction.md).
 
-## Covered-line variants (ekta24, ekta31, ekta32, ekta35)
+## Other EktaSoft variants (ekta24, ekta31, ekta32, ekta35)
 
 - [`ekta24/`](ekta24/ekta24.ctl) — Serial #0024, RomBios 3.42, Juss keyboard,
   FDC 1791/2.
@@ -125,7 +124,8 @@ the mapping boundary closes.
 
 ## Workflow
 
-Run from the repository root:
+Run from the repository root with Bash and Python 3. Creating the SkoolKit
+environment requires Python venv support and pip access to the package:
 
 ```sh
 # Install the expected version:
