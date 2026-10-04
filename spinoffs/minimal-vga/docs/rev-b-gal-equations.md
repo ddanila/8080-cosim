@@ -5,9 +5,9 @@ Status: **R5.P1 + R5.V3 + R5.I4 implemented and reproducibly compiled**.
 The authoritative sources and generated programming artifacts are in
 `pld/revb/`. The selected first-article identity is Microchip
 `ATF22V10C-15PU` for Memory U3, expanded I/O U2, and Video U5/U6/U7. Their
-generic GAL22V10 JEDEC maps are
-compiled by pinned Galette 0.3.0 revision
-`af529870729b1da8794b002cd522f5bf2d53f230` with Rust 1.85.0.
+generic GAL22V10 JEDEC maps use the recorded Galette 0.3.0 release, revision
+`af529870729b1da8794b002cd522f5bf2d53f230`, built with Rust 1.85.0. The bootstrap
+and installed-compiler checks are described below.
 
 ## Memory U3 — full four-mode overlay
 
@@ -88,13 +88,26 @@ An unconnected U7 pin 23 supplies internal `CPUACC` feedback only.
 
 The checker evaluates every distinguishable input: all 1024 H/V counter states,
 all eight divider states, reset polarities, all 32 address classes, four modes,
-read/write/idle cycles and both fetch phases. Simulation additionally forces a
-real FETCH collision, proves the write lands, checks exact six-frame spacing,
-and boots EKTA through the TTL card byte-identically to cosim.
+read/write/idle cycles and both FETCH states. Separate video simulations test
+synthetic write collisions and six-frame spacing; the integrated TTL-card boot
+compares EKTA framebuffer output with cosim. These simulations are not run by
+the GAL build command. See the [digital audit](rev-b-video-digital-audit.md) and
+[execution guide](rev-b-execution-guide.md) for their scope and commands.
 
 ## Rebuild and verification
 
-Install the pinned compiler once, then reproduce all tracked outputs:
+Run from the repository root. The bootstrap targets **x86-64 Linux** and requires
+`curl`, `git`, `sha256sum` and the native tools needed by Rust/Cargo to build Galette.
+It downloads the rustup 1.28.2 installer and checks its published SHA-256, installs
+Rust 1.85.0 under `.tools/vjuga-rust`, and builds the pinned Galette revision under
+`.tools/galette`. It leaves the shell's PATH unchanged.
+
+An existing `.tools/galette/bin/galette` reporting `Galette 0.3.0` is reused without
+checking its source revision. The build script likewise checks the version string;
+`GALETTE=/path/to/galette` can select another installation. Byte-identical output
+comparison supplies the artifact reproducibility check.
+
+Install the compiler if needed, then check the GAL artifacts and companion ROMs:
 
 ```sh
 spinoffs/minimal-vga/pld/revb/bootstrap_galette.sh
@@ -117,6 +130,14 @@ The build regenerates `.jed`, `.pin`, `.fus` and `.chp` in a temporary directory
 and byte-compares them with the tracked artifacts. The checker independently
 matches every PLD pin to the generated board models, evaluates the complete
 Memory and I/O oracles, and exhausts the Video equations and registered state.
+It evaluates the PLD source equations and verifies the recorded artifact hashes;
+it does not decode compiled fuse bits into a second logic simulation or read a chip.
+
+For an intentional logic change, `build_revb_gals.sh --update` overwrites the four
+generated artifact types before running the checker. It does **not** regenerate
+`manifest.json`, so changed artifacts fail the existing manifest check until their
+identities are reviewed and updated. Reconcile the release and bench records with
+any accepted change before programming.
 
 ## Programming and readback
 
