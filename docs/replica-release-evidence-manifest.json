@@ -88,7 +88,7 @@
   "reports": {
     "Fidelity": {
       "path": "docs/board-fidelity-gap-ledger.md",
-      "sha256": "bc01295775fdb48601b1ce9d1264c85ebe018e33b9b159caf591d01b51eb8be7",
+      "sha256": "8b8c98e247b69a75be03a2255807327662e8b3cbf30a3536293129200d1027cd",
       "status": "BOARD FIDELITY GAPS CATALOGED"
     },
     "Owner checks": {

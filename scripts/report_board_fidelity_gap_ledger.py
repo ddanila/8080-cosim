@@ -453,12 +453,12 @@ def main() -> int:
                 "`source_risk=false` dispositions prevent prose history from inflating",
                 "the active release-risk count.",
                 "",
-                "| Net | Disposition |",
-                "| --- | --- |",
+                "Detailed reasons remain in each net's `risk_disposition` field in",
+                "[the board model](../kicad/juku.board.json). Excluded nets:",
             ]
         )
-        for row in sorted(closed_risk_overrides, key=lambda item: item["name"]):
-            lines.append(table_row([f"`{row['name']}`", row["disposition"]]))
+        lines.append(", ".join(f"`{row['name']}`" for row in
+                              sorted(closed_risk_overrides, key=lambda item: item["name"])) + ".")
 
     lines.extend(
         [

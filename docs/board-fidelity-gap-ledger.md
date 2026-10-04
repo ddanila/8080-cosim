@@ -257,22 +257,9 @@ but stronger evidence closes the modeled conductor. Their explicit
 `source_risk=false` dispositions prevent prose history from inflating
 the active release-risk count.
 
-| Net | Disposition |
-| --- | --- |
-| `D25_T` | the native sheet closes the D7.6-to-D25.11 turnaround conductor; unread upstream inputs belong to MEMW and INHIB_STATUS_BOUNDARY, not this output net |
-| `D30_Q2N_D29_AIN7` | closed by direct owner continuity; the word boundary refers only to the superseded scan interpretation |
-| `FRAME_INT` | closed across native sheets 2 and 1; D35.8 and D10.23 share the named FRAME INT off-sheet conductor and R60 pull-up |
-| `PHI2TTL` | closed by exact-revision correction and the unique labeled cross-sheet pair; D92.2/.3 are explicitly excluded and every remaining drawn endpoint is modeled |
-| `PIT_BAUD` | closed across the native sheets: sheet 2 proves D57.10 to the BAUD R. handoff, and sheet 1 draws one junctioned BAUD RATE conductor to both D11.9 TxC and D11.25 RxC |
-| `POF` | closed by the sheet-1 tag6 to sheet-2 named-POF conductor; MAME is independent corroboration, not the source |
-| `PROM_EN` | the native sheet closes D7.11/D7.13/R17.2 as one feedback-strobe conductor; the refuted D6.14 branch is tracked separately on D6_V_ENABLE |
-| `REV` | closed by the native sheet-1 code-2 conductor: the upper labeled R13 1k pull-up branch is REV and reaches tied D9.4/D9.5, distinct from the lower R14/code-3 ROE branch |
-| `ROE` | closed by direct D6.9-D13.1 continuity plus the native sheet-1 code-3 conductor: the lower labeled R14 1k pull-up branch is ROE, distinct from the upper R13/code-2 REV branch |
-| `USART_RXRDY_IRQ` | closed by the native sheet-1 D11.14-to-D10.20 trace; the separately drawn off-sheet interface is explicitly excluded |
-| `USART_TXRDY_IRQ` | closed by the native sheet-1 D11.15-to-D10.21 trace; the separately drawn off-sheet interface is explicitly excluded |
-| `V3_RC` | the exact .009 sheet closes R17.1/C99.1/D9.6 as one RC node and places C99.2 on GND; owner-board pad identity and population remain inspection questions |
-| `VERT_RTR` | closed on exact-revision .009 E3 sheet 2 by the matching VER RTR/tag2 conductor joining D55.13, D35.9, and D57.18 |
-| `W_RAIL16` | the native sheet closes both D36 write-NAND inputs and its complete output fanout: MEMW->D36.9, D36.3->D33.11/.10->D36.10, and D36.8->all DRAM W pins; only the simulation timing abstraction remains |
+Detailed reasons remain in each net's `risk_disposition` field in
+[the board model](../kicad/juku.board.json). Excluded nets:
+`D25_T`, `D30_Q2N_D29_AIN7`, `FRAME_INT`, `PHI2TTL`, `PIT_BAUD`, `POF`, `PROM_EN`, `REV`, `ROE`, `USART_RXRDY_IRQ`, `USART_TXRDY_IRQ`, `V3_RC`, `VERT_RTR`, `W_RAIL16`.
 
 ## Updating the ledger
 
