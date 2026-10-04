@@ -218,7 +218,7 @@ def main() -> int:
             marker(
                 "docs/d94-reconstruction-constraints.md",
                 "Status: **D94 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**",
-                "D94 is now classified as an FDC control/decode PROM",
+                "D94 is classified as an FDC control/decode PROM",
             ),
             "`docs/d94-reconstruction-constraints.md`; outputs serve D93 and its FDC support logic",
         ),
