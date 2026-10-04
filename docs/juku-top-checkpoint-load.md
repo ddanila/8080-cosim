@@ -3,7 +3,7 @@
 Status: **PASS**
 
 This diagnostic regenerates the 30,000-write EKDOS/TDD cosim checkpoint,
-loads its 64 KiB RAM image into the LVS-checked `juku_top` D84..D91
+loads its 64 KiB RAM image into the `juku_top` D84..D91
 bit-sliced DRAM planes, and seeds CPU/PPI/PIC/FDC latches from fixed
 testbench values. It dumps RAM and framebuffer bytes back out and
 compares hashes; selected latches are checked against those constants.
@@ -17,6 +17,9 @@ latch-injection check; CPU execution is tested by the separate resume probe.
 ```sh
 sync/juku_top_checkpoint_load_check.py
 ```
+
+Connectivity is checked by the separate [LVS guard](../sync/README.md).
+This runner does not invoke it.
 
 ## Evidence
 
@@ -32,7 +35,7 @@ sync/juku_top_checkpoint_load_check.py
 ## Boundary
 
 - CPU execution from this checkpoint is covered separately by
-  `docs/juku-top-checkpoint-resume.md`, which seeds a clean M1 fetch
+  [resume probe](juku-top-checkpoint-resume.md), which seeds a clean M1 fetch
   boundary and reaches the first post-checkpoint PIC/keyboard events.
 - Peripheral state coverage is limited to the visible latches needed at
   the 30,000-write pre-PIC boundary.
