@@ -3,8 +3,9 @@
 Status: **9600 PROVEN / CS00014 19,200 MODE-2 DISK PROVEN / SCOPE CAPTURE NEXT**
 
 This is the decision record and next-bench plan for the direction-specific
-19,200-bit/s failure reproduced on CS00015 and CS00014. The retained captures are indexed below and in
-[the Janet analysis](ekta37-netbios-notes.md); this document keeps
+19,200-bit/s failure reproduced on CS00015 and CS00014. The retained captures
+are indexed below; [the Janet analysis](ekta37-netbios-notes.md) describes the
+ROM protocol and handoff. This document keeps
 the conclusions, electrical boundaries, and experiments that can still change
 the diagnosis.
 
@@ -210,7 +211,7 @@ edge/duty sensitivity in the D57.10-to-D11.25 path. It is not yet proof that
 D57 itself is faulty: loading, threshold margin, or the D11 clock input can
 produce the same mode-dependent result.
 
-The new `juku-net-mode2-soak-system.bin` therefore keeps the stock ROM
+The historical `juku-net-mode2-soak-system.bin` keeps the stock ROM
 bootstrap at 9600, then runs the resident network BIOS at 19,200/x16 mode 2.
 Its automatic transient writes 8 KiB to remote A:, closes/reopens it, reads
 and verifies every byte, deletes the file, and emits `M2PASS!` before the
@@ -229,22 +230,11 @@ was CP/M directory/open/close/delete traffic. `M2PASS!` proved the close,
 reopen, full byte comparison, and delete all completed. Linux UART counters
 reported zero frame, parity, overrun, buffer-overrun, and break deltas.
 
-The timestamped disk phase took approximately 16–17 seconds, or roughly
-**1.3–1.4 kB/s aggregate useful record payload**. The 19,200/8O1 wire carries
-1,745 characters/s. One 128-byte record transaction consumes 142 wire bytes
-(request plus response) and the host currently adds a 2 ms reply guard, giving
-a theoretical protocol ceiling of about **1.54 kB/s**. The measured disk phase
-is therefore approximately **86–91% of that ceiling**. A standalone 8 KiB
-sequential read or write should take around six seconds before CP/M directory
-overhead; this is suitable for interactive CP/M but far slower than a local
-floppy's burst transfer.
-
-The stock bootstrap is the conspicuously slow part: its 6,784 bytes took about
-81 seconds after the request was accepted, only about **84 B/s of loaded image**,
-because the preserved Janet loader performs many small framed/acknowledged
-turns. The resident disk protocol is roughly sixteen times faster in useful
-payload. Optimizing boot framing is a separate opportunity and does not limit
-the already-running network disk.
+The retained log places the disk phase at approximately 16–17 seconds
+(one-second timestamp resolution), or **1.3–1.4 kB/s aggregate record
+payload**. The stock 6,784-byte bootstrap took approximately 81 seconds.
+These measurements describe this historical soak and loader; current host
+performance and bootstrap behavior require their own matching profile.
 
 ### Other resident-protocol qualification
 
@@ -270,15 +260,6 @@ reads and console output; and `Ctrl-C` warm boot followed by another `DIR`
 worked. All server requests through sequence `90` returned status zero. The
 screen remained clean, unlike the earlier BIOS-owned interrupt-handler attempt
 which had bypassed the RomBios dispatcher and produced vertical-line garbage.
-
-The native character generator displayed a printable Estonian glyph while a
-control-key combination was entered. The desk follow-up traced Ekta37's
-`WRCHR` path: it preserves the byte unchanged through the RomBios service
-vector, so that glyph is the stock font convention, not corrupted input. V15's
-independent RAM console instead handles BS/CR/LF/ESC, suppresses other low
-controls, uses public ASCII glyphs, and maps bytes above 7Dh to `?`. A
-selectable presentation is now a user-interface/physical-console preference,
-not an unimplemented correctness test.
 
 ## Current bootstrap boundary
 
@@ -310,14 +291,9 @@ has SHA-256
 The complete preceding 68-case discriminator is preserved as
 [`cs00014-baudtest2-20260813.json`](evidence/juku-serial/cs00014-baudtest2-20260813.json).
 
-This reflects standard vendor debugging guidance: verify both endpoints'
-framing, use known/reference patterns and error counters, compare each signal
-stage, distinguish hardware overrun from framing/parity errors, and start the
-receiver before the transmitter. BAUDTEST2 additionally records Linux serial
-driver frame/parity/overrun counters through `TIOCGICOUNT` when supported.
-See the [TI UART diagnostic guidance](https://software-dl.ti.com/processor-sdk-linux/esd/AM57X/08_02_01_00/exports/docs/linux/Foundational_Components/Kernel/Kernel_Drivers/UART.html),
-[TI interface-debug checklist](https://software-dl.ti.com/simplelink/esd/simplelink_lowpower_f3_sdk/8.10.01.02/exports/docs/proprietary-rf/proprietary-rf-users-guide/proprietary-rf/debugging-cc23xx/debugging/debugging-index-cc23xx.html),
-and [Silicon Labs AN197](https://www.silabs.com/documents/public/application-notes/an197-serial-communications-guide-cp210x.pdf).
+BAUDTEST2 records Linux serial driver frame/parity/overrun counters through
+`TIOCGICOUNT` when supported. The retained JSON records the observed deltas;
+these counters complement the target's D11 status and byte comparisons.
 
 ## Sources
 
