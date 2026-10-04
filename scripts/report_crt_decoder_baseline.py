@@ -314,7 +314,7 @@ def main() -> int:
     lines.extend(row([name, "PASS" if result else "FAIL", evidence]) for name, result, evidence in checks)
     lines.extend([
         "",
-        "## Recorded environment",
+        "## Pinned revisions",
         "",
         row(["Item", "Value"]),
         row(["---", "---"]),
@@ -327,10 +327,6 @@ def main() -> int:
         row(["Fork WP3 synthetic head", f"`{wp3['fork_head_commit']}`"]),
         row(["WP3 raster source", f"`{wp3['8080_cosim_source_commit']}`"]),
         row(["8080-cosim context", f"`{context_commit}`"]),
-        row(["Host", data["host"]["os"]]),
-        row(["CMake", data["host"]["cmake"]]),
-        row(["Compiler", data["host"]["compiler"]]),
-        row(["Dependency isolation", data["host"]["dependency_setup"]]),
         "",
         "## Recorded CI",
         "",

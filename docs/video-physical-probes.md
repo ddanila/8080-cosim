@@ -10,6 +10,13 @@ D34_SIG waveform, transistor waveform, composite voltage, or X6 A:3 sample strea
 
 ## Commands
 
+Run from the repository root with Python 3 and Icarus Verilog
+(`iverilog` and `vvp`). Simulation files and the default CSV are
+temporary. `--events` preserves the CSV at the selected path, creates
+its parent directory, and replaces any existing file. After simulation
+and CSV parsing, the generator overwrites this report with the check
+results and exits with status 1 if any listed check fails.
+
 ```sh
 python3 scripts/report_video_physical_probes.py
 python3 scripts/report_video_physical_probes.py --events /tmp/video-events.csv

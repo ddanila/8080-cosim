@@ -51,7 +51,7 @@ exists in local Git history; a shallow checkout may skip that check.
 | WP3 ideal fixture carries the exact guarded raster contract | PASS | 64 us x 313; 5.04/223 us sync; 320x241; 5/5 bars |
 | WP3 synthetic receiver CI preserves every route | PASS | run 29888769589 at `b1d62c08`: full build + 6 CTests + synth_ntsc |
 
-## Recorded environment
+## Pinned revisions
 
 | Item | Value |
 | --- | --- |
@@ -64,10 +64,6 @@ exists in local Git history; a shallow checkout may skip that check.
 | Fork WP3 synthetic head | `b1d62c085e416c80cff35d8a77a8fbc397eead51` |
 | WP3 raster source | `eb4d6ab6777db3f97306c9111e9c723c97dcf750` |
 | 8080-cosim context | `ae7918afe81024b462c8337dc23f509874e35e76` |
-| Host | Ubuntu resolute amd64 |
-| CMake | 4.2.3 |
-| Compiler | g++ 15.2.0 |
-| Dependency isolation | No host packages installed. Ubuntu packages libhackrf-dev 2026.01.3-1, libhackrf0 2026.01.3-1, and libsdl2-dev 2.32.10+dfsg-6 were downloaded and extracted under /tmp; the already-installed libsdl2-2.0-0 2.32.10+dfsg-6 runtime was copied into that temporary sysroot. |
 
 ## Recorded CI
 
