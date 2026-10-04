@@ -90,7 +90,7 @@ All six EktaSoft images boot with the **same decoded D54/D55 raster write sequen
 313-line frames, identical porches) that
 [`video-pit-timing.md`](video-pit-timing.md) proves drive the autonomous
 raster and that the CS00024 experiment replays
-([`../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md`](../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md)),
+([`../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md`](../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md)).
 All six also use D57 counter-0 control `1Fh` and count `32h` (BCD 32)
 for nominal 2400 baud. D57 channel-2 programming differs as described below.
 
