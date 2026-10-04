@@ -45,7 +45,7 @@ are active-low.
 
 | Pin | Signal | Notes |
 |---|---|---|
-| E1 | WAIT_N | video asserts during active display; open-drain |
+| E1 | WAIT_N | video asserts when a selected CPU framebuffer access collides with `FETCH`; open-drain |
 | E2 | NMI_N | reserved; open-drain |
 | E3 | BUSRQ_N | future DMA; open-drain |
 | E4 | BUSAK_N | CPU card drives |
@@ -137,7 +137,7 @@ Lower number = higher priority. Frame-service ROM vector 0xFED4.
 | ir2 | serial RxRDY | on-card (I/O) |
 | ir3 | serial TxRDY | on-card (I/O) |
 | ir5 | frame tick | base pin 37 (USER1/FRAME_TICK) |
-| ir6, ir7 | reserved | — |
+| ir4, ir6, ir7 | unused | singleton `IR4_NC`, `IR6_NC`, `IR7_NC` nets on the I/O card |
 
 ## Timing anchors
 
@@ -162,7 +162,7 @@ geometry from it. Distances in mm, footprint-centre.
 | `ext_row_dy` | 5.0 | backplane ext row = base row + this (per slot) |
 | `slot_pitch` | 16.0 | backplane slot-to-slot spacing |
 | `slot0_y` | 10.0 | backplane first (bottom) base row Y |
-| `n_slots` | 5 | backplane slots (CPU/Memory/I/O/Video/FDC; no spare) |
+| `n_slots` | 5 | first article: CPU/Memory/I/O in slots 1/2/3, slot 4 empty, Video in slot 5 |
 | `backplane_board_h` | 100.0 | backplane outline height (cheap-tier decision D1.37) |
 | `tail_strip_y0` | 82.0 | clear top-side service strip starts above the final ext row |
 
