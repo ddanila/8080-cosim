@@ -72,6 +72,9 @@ Recorded environment settings:
   marker. The generic runner can exit successfully with diagnostic rows;
   use the [A wrapper](../sync/jmon33_hdl_a_command_probe.py) or
   [B wrapper](../sync/jmon33_hdl_b_command_probe.py) to require its pinned oracle.
+- Keep `JMON33_HDL_COMMAND_REPORT` unset for the A/B wrappers: they
+  validate and rewrite their fixed report paths. Use the generic runner
+  directly when selecting an alternate report path.
 - `Idle cursor` records whether the checkpoint cursor survived; it is
   informational and is not a separate pass condition.
 - These are bounded checkpoint-resumed command checks. Cartridge BASIC
