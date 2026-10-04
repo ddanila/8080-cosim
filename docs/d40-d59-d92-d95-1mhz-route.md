@@ -26,8 +26,7 @@ D59.5 -> D51.15 /G       D59.6 -> D48.15 /G
 
 The factory drawings already extend those local branches to D50.15 and
 D49.15 through E14 and E13 respectively. On sheet 2, D92.2 and D92.3 are
-visibly tied together; the new continuity closes their previously ambiguous
-long source onto D40.11.
+visibly tied together; owner continuity connects their long source to D40.11.
 
 ## Drawing cross-check
 
@@ -73,7 +72,7 @@ net containing:
 - D59.5, E14.1/.3, and D50.15/D51.15;
 - tied D92.2/.3.
 
-The later exact `.009` R35 correction puts D39.1, D53.4, D30.3, D29.1,
+The exact `.009` R35 branch puts D39.1, D53.4, D30.3, D29.1,
 and R35.1 on `PHI2TTL`; D35.13 is on the separate `PHI2_POST_R35` RC node
 with R35.2, R106.1, and C29.1. The HDL drives the D59 input and both D92
 timing inputs from D40 Q3.
@@ -83,8 +82,7 @@ SIM-ONLY second DRAM port; it does not apply an unproved D41/D53 slot schedule
 to the behavioral RAS/CAS model.
 
 The endpoint and direct-tie invariant is executable in
-`kicad/check_d40_1mhz_route.py`; the one-shot historical migration is retained
-as `kicad/apply_d40_1mhz_route.py`. The checker also guards the later `.009`
+`kicad/check_d40_1mhz_route.py`. The checker also guards the `.009`
 R35 split: D29.1 and R35.1 belong to `PHI2TTL`, while D35.13 belongs to
 `PHI2_POST_R35`.
 
@@ -109,7 +107,7 @@ see [the routed audit](routed-refresh-audit.md) and
 
 ## D96 exclusion
 
-The earlier tentative D96.6 endpoint is **not adopted**. Exact `.009` sheet 3
+D96.6 is separate from this clock net. Exact `.009` sheet 3
 draws D96.6 `/Q1` only as local feedback to D96.2. D96.6 and D40.11 are both
 active outputs, so joining them would be an electrical conflict. Recheck
 D96.6 with actual resistance in both probe polarities, preferably at empty
