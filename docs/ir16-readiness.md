@@ -19,6 +19,11 @@ checks device-contract metadata and selected canonical JSON endpoints.
 It does not hash the PDF, inspect PCB pads or copper, or run a complete
 video pipeline. The PDF hash below is recorded metadata.
 
+Requires Bash, Python 3 and Icarus Verilog (`iverilog` and `vvp`).
+Build files are temporary and removed on exit. The first argument selects
+the report path; its parent must exist. After the standalone test passes,
+the writer replaces that report with the metadata-check results.
+
 ## Checks
 
 | Check | Result | Evidence |
