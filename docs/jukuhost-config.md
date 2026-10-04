@@ -126,8 +126,9 @@ Boot selection is explicit:
 stock-assisted mode requires an exact JF15 or JF17 artifact. A fallback is optional,
 but its system and Fastboot identities form one inseparable slot: if either
 primary artifact is absent or fails its size/SHA-256 identity, both fallback
-artifacts are selected. A JF1–JF14 fallback still fails validation; fallback
-does not weaken the protocol boundary or switch direct/stock mode.
+artifacts are selected. A primary pair that passes those file checks but fails
+protocol validation does not trigger fallback, nor does a later transfer failure.
+A JF1–JF14 fallback still fails validation; fallback does not switch direct/stock mode.
 
 `recover_session=yes` requires a normal disk-serving run and matching rate:
 JF17 stock recovery uses 9,600, while C11/C12 JF16 recovery uses 19,200. It is
@@ -165,16 +166,19 @@ reopen a descriptor and therefore fails cleanly instead.
 
 Drive A supports three explicit policies:
 
-- `mode=read-only` authenticates and serves `file` without writes;
-- `mode=direct` authenticates and writes `file` through the crash journal;
-- `mode=snapshot` authenticates immutable `base`, creates `file` as its working
+- `mode=read-only` checks the size/hash and serves `file` without writes;
+- `mode=direct` checks the size/hash and writes `file` through the crash journal;
+- `mode=snapshot` checks immutable `base` on every launch, creates `file` as its working
   copy when absent, and thereafter resumes that correctly sized working copy.
 
 Snapshot mode is the normal writable deployment policy because the admitted
 base is never modified. `sha256` identifies the base in snapshot mode and the
-served file in the other modes. A resumed snapshot is checked for size,
-not equality with the base hash. Its `.jhj` journal restores the previous
-record for an incomplete transaction or the new record for a completed one;
+served file in the other modes. Direct-mode writes do not update the INI identity;
+a changed image will fail its original hash on the next launch. A resumed
+snapshot is checked for size, not equality with the base hash, but still
+requires the original base to be available and pass its identity check.
+
+The `.jhj` journal restores the previous record for an incomplete transaction or the new record for a completed one;
 an invalid or unreadable journal stops the writable session. Drive B is
 always `mode=read-only` with
 `geometry=juku-native`.
