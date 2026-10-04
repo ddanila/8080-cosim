@@ -53,11 +53,14 @@ python3 scripts/report_memory_timing_boundary.py
 
 ## Pending Boundary Checks
 
+PASS here means the guard preserves the unresolved boundary; it does
+not mean that its missing physical connection has been established.
+
 | Boundary | Result | Current endpoints |
 | --- | --- | --- |
 | D59 remaining timing boundary remains visible | PASS | D59.5/.6 mux-enable inverter is traced; D59.10 tag10 remains distinct from SOUND |
-| D36_CAS_IN native-sheet chase is exhausted without inventing a timing-rail merge | PASS | D36.12, D36.13; tied inputs visible, west source unlabeled in dense bundle |
-| OSC-to-XTAL16M source-side merge remains unproved after native-sheet chase | PASS | OSC and XTAL16M remain distinct source nets pending continuity |
+| D36_CAS_IN local input tie is retained; remote driver remains unresolved | PASS | D36.12, D36.13; tied inputs visible, west source unlabeled in dense bundle |
+| OSC-to-XTAL16M source-side merge remains unproved | PASS | OSC and XTAL16M remain distinct source nets pending continuity |
 
 ## Current Timing Nets
 
@@ -141,8 +144,6 @@ component-side trace and remote driver remain unresolved.
 - [CAS row registration](../ref/photos/juku-pcb-2/cas-timing-row-registration.json)
   records the component-side D36.12/.13 tie. Its upstream driver and the
   adjacent seven-contact field remain unresolved.
-- The factory wire table assigns W10 to D41.13–D50.1. That numbered wire
-  is distinct from D59.10's timing-bundle marker.
 - The sheet-2 STB crossing has no junction with the +12 V phase pull-up
   conductor. Keep STB and that supply separate; the board-model provenance
   retains the original image and crop identity.
