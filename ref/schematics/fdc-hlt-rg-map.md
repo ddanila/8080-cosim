@@ -1,6 +1,7 @@
 # D93 HLT and RG source map
 
-The exact-revision `ДГШ5.109.009 Э3` sheet 3 establishes the HLT connection and RG disposition. The full-sheet source is
+The exact-revision `ДГШ5.109.009 Э3` sheet 3 establishes the HLT connection
+and RG disposition. The full-sheet source is
 `ref/photos/dgsh5-109-009-e3/PXL_20260718_101633062.jpg`; the factory placement
 corroboration is
 `ref/photos/dgsh5-109-009-sb/PXL_20260711_114600417.jpg`.
@@ -32,9 +33,13 @@ is positive unused-pin evidence for this revision.
 
 ## Model guard
 
+Run from the repository root with Python 3 (standard library only):
+
 ```sh
 python3 kicad/check_d93_hlt_rg.py
 ```
 
-The guard checks JSON and structural HDL pin mapping, including the unused RG
-pin. It does not verify physical continuity or routing.
+The guard checks the D99.4–D93.23 HLT net, separation from D93.32 READY,
+the singleton D93.25 RG net, retired boundary names and literal HDL connection
+markers. It does not check source-photo hashes, the complete E11 selector,
+physical continuity or routing.
