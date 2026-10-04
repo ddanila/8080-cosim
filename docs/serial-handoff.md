@@ -42,14 +42,7 @@ after the USART simulation passes.
 | D11 power-pin endpoints are modeled | PASS | D11.4 GND / D11.26 +5V |
 | D11 chip select is decoded | PASS | `CS_D11` |
 | D11 register select BA0 is wired | PASS | `BA0` |
-| D11 data bit DB0 is wired | PASS | `DB0` |
-| D11 data bit DB1 is wired | PASS | `DB1` |
-| D11 data bit DB2 is wired | PASS | `DB2` |
-| D11 data bit DB3 is wired | PASS | `DB3` |
-| D11 data bit DB4 is wired | PASS | `DB4` |
-| D11 data bit DB5 is wired | PASS | `DB5` |
-| D11 data bit DB6 is wired | PASS | `DB6` |
-| D11 data bit DB7 is wired | PASS | `DB7` |
+| D11 complete eight-bit data bus is wired | PASS | `DB0`..`DB7` on D11 pins 27/28/1/2/5/6/7/8 |
 | D11 read strobe is wired | PASS | `IORD` |
 | D11 write strobe is wired | PASS | `IOWR` |
 | USART reset follows the system reset inverter | PASS | sheet-1 uninterrupted D13.6 -> D1.12/D11.21 conductor; `RESET` |

@@ -100,14 +100,17 @@ def check_rows(board: dict) -> list[list[object]]:
     checks.append(
         ("D11 register select BA0 is wired", has_node(board, "BA0", "D11", "12"), "`BA0`")
     )
-    for bit, pin in enumerate(["27", "28", "1", "2", "5", "6", "7", "8"]):
-        checks.append(
-            (
-                f"D11 data bit DB{bit} is wired",
-                has_node(board, f"DB{bit}", "D11", pin),
-                f"`DB{bit}`",
-            )
-        )
+    missing_data = [
+        f"DB{bit}:D11.{pin}"
+        for bit, pin in enumerate(["27", "28", "1", "2", "5", "6", "7", "8"])
+        if not has_node(board, f"DB{bit}", "D11", pin)
+    ]
+    checks.append((
+        "D11 complete eight-bit data bus is wired",
+        not missing_data,
+        "`DB0`..`DB7` on D11 pins 27/28/1/2/5/6/7/8"
+        if not missing_data else "Missing: " + ", ".join(missing_data),
+    ))
     checks.append(("D11 read strobe is wired", has_node(board, "IORD", "D11", "13"), "`IORD`"))
     checks.append(("D11 write strobe is wired", has_node(board, "IOWR", "D11", "10"), "`IOWR`"))
     checks.append((
