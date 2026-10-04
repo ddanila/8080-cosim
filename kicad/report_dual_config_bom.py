@@ -70,7 +70,7 @@ AUTHENTIC_MARK = {
     "AP2": "К170АП2",
     "UP2": "К170УП2",
     "C_KM": "КМ ceramic capacitor",
-    "C_ELEC": "radial electrolytic",
+    "C_ELEC": "axial electrolytic",
     "R_AXIAL": "axial resistor",
     "R_TRIM": "СП3-22б trimmer",
     "C_TRIM": "trimmer capacitor",

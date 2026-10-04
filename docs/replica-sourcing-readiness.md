@@ -74,7 +74,7 @@ against drawings/board photos before ordering final quantities.
 | Action | Type | Authentic part | Populate now | Refs | Note |
 | --- | --- | --- | ---: | --- | --- |
 | circuit-review | AP2 | К170АП2 | 2 | D14, D32 | RS-232/line-driver substitute required; verify +/-12 V interface |
-| circuit-review | C_ELEC | radial electrolytic | 3 | C31, C32, C33 | modern electrolytic matching measured body, lead spacing, value, voltage, and polarity |
+| circuit-review | C_ELEC | axial electrolytic | 3 | C31, C32, C33 | modern electrolytic matching measured body, lead spacing, value, voltage, and polarity |
 | circuit-review | C_KM | КМ ceramic capacitor | 1 | C20 | Sheet 3 specifies 22 pF nominal; owner angles show bare 22 and ±5% on the body, but the unit is unverified. Confirm capacitance before sourcing. |
 | circuit-review | C_KM | КМ ceramic capacitor | 1 | C22 | Sheet 3 specifies 22 pF nominal; later owner angles show bare 22 and ±10% on the body, but the unit is unverified. The May face reads М75, the negative 75 ppm/°C ceramic temperature-stability group. Confirm capacitance before sourcing. |
 | circuit-review | C_KM | КМ ceramic capacitor | 0 | C4 | Fitted gray C4 beside C73; body value, lower lead net, and exact owner holes require measurement. |

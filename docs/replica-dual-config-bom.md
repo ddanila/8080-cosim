@@ -45,7 +45,7 @@ before ordering, including any additional sockets required for bring-up.
 | Action | Type | Authentic part | Functional substitute | Positions | Populate now | Empty | Refs | Notes |
 | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- |
 | circuit-review | AP2 | К170АП2 | RS-232/line-driver substitute required; verify +/-12 V interface | 2 | 2 | 0 | D14, D32 | - |
-| circuit-review | C_ELEC | radial electrolytic | modern electrolytic matching measured body, lead spacing, value, voltage, and polarity | 3 | 3 | 0 | C31, C32, C33 | - |
+| circuit-review | C_ELEC | axial electrolytic | modern electrolytic matching measured body, lead spacing, value, voltage, and polarity | 3 | 3 | 0 | C31, C32, C33 | - |
 | circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 31 | 9 | 22 | C9, C10, C11, C12, C15, C16, C19, C34, C74, C75, C76, C77, C78, C82, C83, C84, C85, C86, ... (+13) | - |
 | circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C20 | Sheet 3 specifies 22 pF nominal; owner angles show bare 22 and ±5% on the body, but the unit is unverified. Confirm capacitance before sourcing. |
 | circuit-review | C_KM | КМ ceramic capacitor | modern ceramic capacitor with matching value/voltage/lead spacing | 1 | 1 | 0 | C22 | Sheet 3 specifies 22 pF nominal; later owner angles show bare 22 and ±10% on the body, but the unit is unverified. The May face reads М75, the negative 75 ppm/°C ceramic temperature-stability group. Confirm capacitance before sourcing. |
