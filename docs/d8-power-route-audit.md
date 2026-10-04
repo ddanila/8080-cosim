@@ -17,8 +17,8 @@ a verified connection to the supply rail.
 
 Nearby signal copper constrains a direct feed: `BA5` passes to the east on
 F.Cu near `(94.000,117.000)`, while `DB7` passes west of the pad on B.Cu
-near `(91.125,116.875)`. The local F.Cu ground line from
-`(88.725,121.625)` to `(102.550,112.875)` is another crossing to account
+near `(91.125,116.875)`. The local F.Cu ground route from
+`(88.725,121.625)` through `(93.800,121.625)` to `(102.550,112.875)` is another crossing to account
 for when routing toward D9. The +5 V feed should therefore be designed with
 the remaining D2 supply routing rather than inferred from pad proximity.
 
