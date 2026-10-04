@@ -106,14 +106,22 @@ def main() -> int:
         "## Early ROM trace", "", f"- Port-C events: `{len(events)}`",
         f"- Physical D6 A6/A5 suffixes observed (`/PC1,/PC0`): `{', '.join(f'{mode:02b}' for mode in sorted(physical_suffixes))}`",
         f"- Legacy emulator modes observed (`PC1..PC0`): `{', '.join(f'{mode:02b}' for mode in sorted(legacy_modes))}`", "",
-        "| Cycle | PC | VRAM writes | Port/value | Port C before -> after | D6 A6/A5 | Legacy view |",
-        "| ---: | ---: | ---: | --- | --- | --- | --- |",
+        "Repeated events are grouped by instruction, value and resulting state.", "",
+        "| PC | Port/value | Port C before -> after | D6 A6/A5 | Count | First–last cycle |",
+        "| --- | --- | --- | --- | ---: | --- |",
     ]
+    grouped = {}
     for cyc, pc, writes, port, value, before, after, physical, legacy in events:
-        lines.append(f"| {cyc} | `{pc}` | {writes} | `0x{port}=0x{value:02X}` | `0x{before:02X}->0x{after:02X}` | `{physical:02b}` | `{legacy:02b}` |")
+        key = (pc, port, value, before, after, physical)
+        grouped.setdefault(key, []).append(cyc)
+    for (pc, port, value, before, after, physical), cycles in grouped.items():
+        lines.append(
+            f"| `{pc}` | `0x{port}=0x{value:02X}` | `0x{before:02X}->0x{after:02X}` | "
+            f"`{physical:02b}` | {len(cycles)} | {cycles[0]}–{cycles[-1]} |"
+        )
+    pc0_changes = sum(bool((event[5] ^ event[6]) & 1) for event in events)
     lines += [
-        "", "ROMBIOS toggles `0x00/0x01` sixteen times around its high-ROM transition.",
-        "Those writes change PC0 and therefore toggle physical D6 A5 after the D3",
+        "", f"ROMBIOS changes PC0 {pc0_changes} times in this trace, toggling physical D6 A5 after the D3",
         "inverter. Port C alone determines only suffix `11` or `10`; A7 is independent.",
         "During memory cycles D7.8 is low, so the runnable table rows are `011` and",
         "`010`. During the OUT event itself A7 is high, but those rows do not select",

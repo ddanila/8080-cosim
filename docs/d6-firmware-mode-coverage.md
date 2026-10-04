@@ -26,35 +26,19 @@ registered physical inversion; this is software execution, not a logic capture.
 - Physical D6 A6/A5 suffixes observed (`/PC1,/PC0`): `10, 11`
 - Legacy emulator modes observed (`PC1..PC0`): `00, 01`
 
-| Cycle | PC | VRAM writes | Port/value | Port C before -> after | D6 A6/A5 | Legacy view |
-| ---: | ---: | ---: | --- | --- | --- | --- |
-| 123 | `01A8` | 0 | `0x07=0x82` | `0x00->0x00` | `11` | `00` |
-| 140 | `01AC` | 0 | `0x07=0x0F` | `0x00->0x80` | `11` | `00` |
-| 1970003 | `026D` | 30160 | `0x07=0x0E` | `0x80->0x00` | `11` | `00` |
-| 3038115 | `0299` | 30200 | `0x07=0x0E` | `0x00->0x00` | `11` | `00` |
-| 3064197 | `D7EF` | 30524 | `0x06=0x01` | `0x00->0x01` | `10` | `01` |
-| 3064555 | `D7EF` | 30524 | `0x06=0x00` | `0x01->0x00` | `11` | `00` |
-| 3064788 | `D7EF` | 30524 | `0x06=0x01` | `0x00->0x01` | `10` | `01` |
-| 3064961 | `DCD5` | 30524 | `0x07=0x0E` | `0x01->0x01` | `10` | `01` |
-| 3065377 | `D7EF` | 30524 | `0x06=0x00` | `0x01->0x00` | `11` | `00` |
-| 3065949 | `D7EF` | 30524 | `0x06=0x01` | `0x00->0x01` | `10` | `01` |
-| 3066209 | `D7EF` | 30524 | `0x06=0x00` | `0x01->0x00` | `11` | `00` |
-| 3066428 | `D7EF` | 30524 | `0x06=0x01` | `0x00->0x01` | `10` | `01` |
-| 3066601 | `DCD5` | 30524 | `0x07=0x0E` | `0x01->0x01` | `10` | `01` |
-| 3066951 | `D7EF` | 30524 | `0x06=0x00` | `0x01->0x00` | `11` | `00` |
-| 3067985 | `D7EF` | 30524 | `0x06=0x01` | `0x00->0x01` | `10` | `01` |
-| 3068245 | `D7EF` | 30524 | `0x06=0x00` | `0x01->0x00` | `11` | `00` |
-| 3068464 | `D7EF` | 30524 | `0x06=0x01` | `0x00->0x01` | `10` | `01` |
-| 3068637 | `DCD5` | 30524 | `0x07=0x0E` | `0x01->0x01` | `10` | `01` |
-| 3069053 | `D7EF` | 30524 | `0x06=0x00` | `0x01->0x00` | `11` | `00` |
-| 3069625 | `D7EF` | 30524 | `0x06=0x01` | `0x00->0x01` | `10` | `01` |
-| 3069885 | `D7EF` | 30524 | `0x06=0x00` | `0x01->0x00` | `11` | `00` |
-| 3070104 | `D7EF` | 30524 | `0x06=0x01` | `0x00->0x01` | `10` | `01` |
-| 3070277 | `DCD5` | 30524 | `0x07=0x0E` | `0x01->0x01` | `10` | `01` |
-| 3070627 | `D7EF` | 30524 | `0x06=0x00` | `0x01->0x00` | `11` | `00` |
+Repeated events are grouped by instruction, value and resulting state.
 
-ROMBIOS toggles `0x00/0x01` sixteen times around its high-ROM transition.
-Those writes change PC0 and therefore toggle physical D6 A5 after the D3
+| PC | Port/value | Port C before -> after | D6 A6/A5 | Count | First–last cycle |
+| --- | --- | --- | --- | ---: | --- |
+| `01A8` | `0x07=0x82` | `0x00->0x00` | `11` | 1 | 123–123 |
+| `01AC` | `0x07=0x0F` | `0x00->0x80` | `11` | 1 | 140–140 |
+| `026D` | `0x07=0x0E` | `0x80->0x00` | `11` | 1 | 1970003–1970003 |
+| `0299` | `0x07=0x0E` | `0x00->0x00` | `11` | 1 | 3038115–3038115 |
+| `D7EF` | `0x06=0x01` | `0x00->0x01` | `10` | 8 | 3064197–3070104 |
+| `D7EF` | `0x06=0x00` | `0x01->0x00` | `11` | 8 | 3064555–3070627 |
+| `DCD5` | `0x07=0x0E` | `0x01->0x01` | `10` | 4 | 3064961–3070277 |
+
+ROMBIOS changes PC0 16 times in this trace, toggling physical D6 A5 after the D3
 inverter. Port C alone determines only suffix `11` or `10`; A7 is independent.
 During memory cycles D7.8 is low, so the runnable table rows are `011` and
 `010`. During the OUT event itself A7 is high, but those rows do not select
