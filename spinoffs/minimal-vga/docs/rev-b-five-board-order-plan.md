@@ -11,11 +11,9 @@ working VGA card. It must also expose the existing 8251 as a practical
 bidirectional TTL serial console, and every fabrication package must be checked
 against JLCPCB's current requirements before upload.
 
-This direction supersedes the old sequence that would have ordered the four B1
-boards before laying out the Video card. The four-board packages and hashes in
-`rev-b-order-readiness.md` remain historical evidence only: **do not upload or
-order them**. No PCB design work or purchase is authorized merely by recording
-this plan.
+Only the exact five-archive candidate identified by the release record may
+proceed through the gates below. **Do not upload or order superseded packages.**
+No PCB design work or purchase is authorized merely by recording this plan.
 
 ## Fixed scope and first-article decisions
 
