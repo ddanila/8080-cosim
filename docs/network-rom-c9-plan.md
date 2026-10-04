@@ -40,11 +40,6 @@ the reset loader's accepted payload receive loop; see
   protocols, write-back caching and cryptographic boot authentication are
   outside C9. Runtime mode/bank selection is implemented separately in C12.
 
-An earlier instrumented C8 session observed console polls and negotiation but
-no N4 output. The exact production C8 no-hook gate did produce ordered `21h`
-output; the observation did not justify an emission workaround. C9's changes
-address independently reproduced unbounded transmitter and prefix waits.
-
 ## Verification
 
 | Evidence | Scope |

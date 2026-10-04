@@ -41,7 +41,7 @@ acceptance remain required after installation.
 The following sequence isolates the fault without inference from the screen
 alone:
 
-1. CS00000 displays correctly with RomBios 3.43m and the latest CP/M Plus 3.1 in
+1. CS00000 displays correctly with RomBios 3.43m and the tested CP/M Plus 3.1 image in
    MODX mode. This controls the monitor, video hardware, framebuffer path,
    CP/M renderer, and MODX timer overrides.
 2. The exact C9 pair boots the same machine, reaches CP/M, and passes its N4
