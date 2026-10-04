@@ -209,14 +209,10 @@ physical acceptance scope.
   Shift-Up, Shift-Down, and F7 contacts. `85` and `8e` inject Ctrl-Up/Home and
   Ctrl-Down/End outside `KMAP`. These bytes are a cosim test protocol, not
   character encodings exposed to Juku software.
-- `JUKU_KEY_AT_PC=PC:BYTE` begins one of those same mapped contacts at an exact
-  guest instruction boundary and then applies the ordinary hold/release frame
-  timing. `JUKU_KEY_AT_PC_HOLD_FRAMES` can lengthen only that one triggered
-  contact across a slow guest operation without changing queued-key timing;
-  `JUKU_KEY_AT_PC_GATE=ADDRESS:BYTE` can additionally require a guest-memory
-  byte before the one-shot trigger is armed. It is the deterministic raw-poll
-  test interface; it does not return a key value directly or bypass the
-  matrix.
+- Instruction-boundary injection uses the same matrix contacts; its gate and
+  hold options are documented in the
+  [runtime reference](cosim-runtime-reference.md#interactive-console-juku_console_pty).
+  It does not bypass the guest keyboard scanner.
 - The C7 ABI fixture feeds raw bytes `86` and `85` directly through this
   matrix model and requires the public raw-key vector to return column/PB
   pairs `0E/8E` and `0A/6A`. This is an executable regression for the exact
