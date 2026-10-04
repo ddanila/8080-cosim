@@ -120,7 +120,7 @@ The left transcript is the N4 CP/M console. Type a command in the input field
 and press **Send**; a carriage return is added automatically. The right pane
 shows host diagnostics and recovery transitions.
 
-Version 0.1.1 creates `JUKUWIN.LOG` beside the EXE as soon as the program
+The program creates `JUKUWIN.LOG` beside the EXE as soon as it
 starts, before loading the INI or creating a worker. If that folder is not
 writable, it uses `JUKUWIN.LOG` in the Windows temporary folder instead. The
 initial diagnostic pane shows the chosen path. The file appends timestamped
@@ -189,7 +189,8 @@ sync/jukuhost_win32_wine_e2e.sh
 
 The default invocation rebuilds `JUKUWIN.EXE` first. It needs 32-bit Wine,
 `wineboot`, Xvfb, `socat`, Python 3, a C compiler, and the sibling
-`cpm-plus-juku` C11/C12 outputs (or `CPM_PLUS_JUKU_ROOT`). It creates an
+`cpm-plus-juku` stock recovery and C11/C12 outputs, including their disk images
+and the application B: image (or set `CPM_PLUS_JUKU_ROOT`). It creates an
 isolated 32-bit Wine prefix and retained evidence under `build/`. This longer
 test is developer-invoked and is deliberately not part of the ordinary CI
 gate.
