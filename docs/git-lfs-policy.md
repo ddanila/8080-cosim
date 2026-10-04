@@ -16,8 +16,7 @@ CI. Each Actions download counts toward the repository owner's LFS bandwidth
 allowance, even when the object is unchanged or a later step fails. Charges
 depend on the included allowance and account budget; see
 [GitHub's LFS billing rules](https://docs.github.com/en/billing/concepts/product-billing/git-lfs).
-The reports
-workflow therefore:
+The reports workflow therefore:
 
 1. checks out LFS pointer files;
 2. restores `.git/lfs/objects` from the Actions cache, keyed by the required
@@ -25,9 +24,10 @@ workflow therefore:
 3. runs `git lfs pull --include=...` for only the photographs read by its
    validators and report generators.
 
-On a cache hit, `git lfs pull` verifies and materializes the cached objects
-without downloading them again. On a cache miss, only absent required objects
-are downloaded. The cache is an optimization, never the authoritative copy.
+An exact cache hit supplies the required objects without another LFS download.
+A fallback cache may contain only some of them; `git lfs pull` downloads missing
+objects and materializes the requested files. The cache is an optimization,
+never the authoritative copy.
 
 ## Maintaining the CI allowlist
 
@@ -55,7 +55,7 @@ checkout:
 ```sh
 GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/ddanila/8080-cosim.git
 cd 8080-cosim
-git lfs pull --include="ref/photos/juku-pcb-2/*.jpg"
+git lfs pull --include="ref/photos/juku-pcb-2/*.jpg" --exclude=""
 ```
 
 To obtain every original photograph later, run:
@@ -67,8 +67,12 @@ git lfs pull --include="ref/photos/**/*.jpg" --exclude=""
 To materialize only the vendored compiler:
 
 ```sh
-git lfs pull --include="third_party/open-watcom-v2/open-watcom-v2-c-linux-x64-20260820"
+git lfs pull --include="third_party/open-watcom-v2/open-watcom-v2-c-linux-x64-20260820" --exclude=""
 ```
+
+The explicit `--exclude=""` prevents a local LFS exclusion setting from omitting
+requested files. These pulls fetch the selected objects for the checked-out
+revision.
 
 Local `git lfs prune` only removes safe local cache copies; it does not reduce
 GitHub's stored objects or billing. Do not rewrite published history merely to
@@ -80,7 +84,8 @@ originals immutable and avoiding accidental duplicate imports.
 - Keep **Include Git LFS objects in archives** disabled unless source ZIP and
   tarball users explicitly require the photographs. Archive downloads count
   toward LFS bandwidth when inclusion is enabled.
-- Review LFS storage and bandwidth in GitHub **Settings → Billing & Licensing**.
+- Review LFS storage and bandwidth using GitHub’s
+  [metered usage view](https://docs.github.com/en/billing/how-tos/products/view-productlicense-use).
 - Treat unusual bandwidth growth as a CI/download-frequency problem first;
   inspect workflows for blanket `lfs: true`, unrestricted `git lfs pull`, or
   repeated clean-runner downloads before considering data removal.
