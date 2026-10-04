@@ -4,7 +4,9 @@ Status: **OFFICIAL .009 IC CENSUS GUARDED**
 
 This report compares a retained transcription of both pages of
 `ДГШ5.109.009 ПЭЗ` with the board model. Factory markings and registered
-owner overrides are displayed separately. D60-D83 are the only modeled
+owner overrides are displayed separately. The effective marking uses the registered
+owner override when present and the factory marking otherwise; it does not
+assert an observed owner marking for every row. D60-D83 are the only modeled
 numeric IC positions absent from the ПЭЗ; they are retained as explicit
 empty DRAM expansion sockets, not claimed as factory-populated parts.
 
@@ -34,7 +36,7 @@ between substitutions. Those require their owning evidence and guards.
 
 ## Factory census
 
-| Ref | PDF page | Factory marking | Effective owner marking | Model type | Result | Disposition |
+| Ref | PDF page | Factory marking | Effective census marking | Model type | Result | Disposition |
 | --- | ---: | --- | --- | --- | --- | --- |
 | D1 | 2 | КР580ИК80А | КР580ИК80А | CPU8080 | PASS | factory |
 | D2 | 2 | КР556РТ4 | КР556РТ4А | WAIT_PROM | PASS | owner-observed substitution |

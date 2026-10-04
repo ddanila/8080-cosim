@@ -130,7 +130,9 @@ def main() -> int:
         "# Official .009 IC census", "", f"Status: **{status}**", "",
         "This report compares a retained transcription of both pages of",
         "`ДГШ5.109.009 ПЭЗ` with the board model. Factory markings and registered",
-        "owner overrides are displayed separately. D60-D83 are the only modeled",
+        "owner overrides are displayed separately. The effective marking uses the registered",
+        "owner override when present and the factory marking otherwise; it does not",
+        "assert an observed owner marking for every row. D60-D83 are the only modeled",
         "numeric IC positions absent from the ПЭЗ; they are retained as explicit",
         "empty DRAM expansion sockets, not claimed as factory-populated parts.", "",
         "## Command", "", "```sh", "python3 scripts/report_official_009_ic_census.py", "```", "",
@@ -144,7 +146,7 @@ def main() -> int:
     lines.extend(row([name, "PASS" if result else "FAIL"]) for name, result in checks)
     lines += [
         "", "## Factory census", "",
-        "| Ref | PDF page | Factory marking | Effective owner marking | Model type | Result | Disposition |",
+        "| Ref | PDF page | Factory marking | Effective census marking | Model type | Result | Disposition |",
         "| --- | ---: | --- | --- | --- | --- | --- |",
         *report_rows,
         "", "## Programmed positions", "",
