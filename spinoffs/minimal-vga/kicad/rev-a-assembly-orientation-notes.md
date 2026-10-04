@@ -45,12 +45,16 @@ to factory assembly and assign/verify an orderable CPN before export.
 ## Post-Assembly IC Insertion
 
 - Insert owner-supplied `Z0840004PSC` at `U1`.
-- Insert the programmed `27C256`-class ROM at `U2`.
+- Insert the programmed ROM at `U2` using its 28C256 pin contract. A `27C256`
+  substitution requires explicit write-enable/programming-pin compatibility
+  review; see [the chip map](../docs/rev-a-chip-map.md).
 - Insert owner-supplied `KM4164B-10` DRAMs at `U10`-`U17`.
 - Insert the programmed GAL/PAL devices at `U5` and `U24`.
-- In Mode B chip tests only, insert the programmed К556РТ4 at `U3`, the
-  programmed К155РЕ3 at `U4`, and the mode inverter at `U6`; leave the PROM
-  sockets empty for the Mode A baseline.
+- Insert the 74HC04 mode inverter at `U6` as part of the baseline logic.
+- Leave `U3`/`U4` empty for the western Mode A baseline. Test К556РТ4 at `U3`
+  in Mode B; observe К155РЕ3 outputs at `U4` in Mode A. Compare each part's
+  content with the adopted physical table before insertion.
+- Leave the spare `U23` socket empty (DNP).
 - Insert `82C55`/compatible PPI at `U30`.
 - Insert the remaining socketed 74HCT logic according to the silkscreen chip
   names and engineering BOM.
