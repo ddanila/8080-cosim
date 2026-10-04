@@ -39,14 +39,21 @@ logical record order; do not substitute them for an A: volume.
 
 ## Checks
 
+Run from the repository root with Bash, Python 3, `sha256sum`, and a C
+compiler (`CC`, default `cc`). The disk gate also exercises serial PTYs.
+
 ```sh
 (cd media/disks && sha256sum -c SHA256SUMS)
 sync/juk_disk_check.sh
-sync/ekdos_fdc_probe.py
+sync/ekdos_fdc_probe.py /tmp/ekdos-fdc-probe.md
 ```
 
 `sync/ekdos_fdc_probe.py` defaults to `media/disks/JUKU1.CPM` and should report
-`EKDOS A> PROMPT REACHED`.
+`EKDOS A> PROMPT REACHED`. It overwrites `cosim/vram.bin`; save any capture
+you need before running it. The explicit report path above keeps the check
+from replacing the committed report. Omitting that argument regenerates
+`docs/ekdos-fdc-probe.md`, including on an oracle failure. See
+[the probe report](../../docs/ekdos-fdc-probe.md) for its limits and overrides.
 
 The C and HDL FDC models keep these preservation inputs read-only by default.
 Their ROMBIOS-derived 512-byte write-sector path is tested against a temporary
