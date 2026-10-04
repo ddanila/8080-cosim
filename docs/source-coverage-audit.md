@@ -3,13 +3,12 @@
 Status: **PASS**
 
 This inventory records adopted sources and remaining recovery inputs.
-`PASS` means the required local paths below exist. This generator does
+`PASS` means all paths in the generator’s `REQUIRED` list exist. It does
 not validate their contents/checksums, repeat image review, or recheck
-remote archives. Source dates and identities describe recorded reviews.
+remote archives. Source dates and identities describe recorded reviews,
+not current availability; follow the linked reports for review details.
 
 Regenerate with `python3 scripts/report_source_coverage_audit.py`.
-Remote-source findings below describe the recorded reviews, not a current
-availability check. Follow the owning evidence reports for review details.
 
 ## Adopted sources
 
@@ -41,47 +40,6 @@ web/archive work should be tied to one of these named deliverables.
 
 ## Required local evidence
 
-| Path | State |
-| --- | --- |
-| `ref/schematics/juku_es101_processor_module.pdf` | present |
-| `ref/schematics/es101_emaplaat.pdf` | present |
-| `ref/Juku_official_chip_BOM.pdf` | present |
-| `ref/juku-official-009-ic-census.json` | present |
-| `ref/photos/dgsh5-109-009-sb/README.md` | present |
-| `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json` | present |
-| `ref/photos/dgsh5-109-009-sb/factory-wire-landing-registration.json` | present |
-| `ref/photos/dgsh5-109-009-sb/dram-decap-placement-registration.json` | present |
-| `docs/assembly-drawing-extraction.md` | present |
-| `docs/factory-modification-disposition.md` | present |
-| `docs/factory-wire-route-fidelity.md` | present |
-| `ref/baltijets-tech-docs/007 ROM and ROM programming.pdf` | present |
-| `ref/baltijets-tech-docs/009 FDDs.pdf` | present |
-| `ref/ekdos-source/EKDOS30.ASM` | present |
-| `ref/mame_juku.cpp` | present |
-| `roms/ekta37.bin` | present |
-| `roms/jmon33.bin` | present |
-| `roms/jbasic11.bin` | present |
-| `media/disks/JUKU1.CPM` | present |
-| `media/disks/JUKPROG2.CPM` | present |
-| `media/disks/J3KUTIL4.JUK` | present |
-| `media/system/EKDOS230.BIN` | present |
-| `ref/physical-proms/validated/d2_037.raw.bin` | present |
-| `ref/physical-proms/validated/d6_038.raw.bin` | present |
-| `ref/physical-proms/validated/d8_039.raw.bin` | present |
-| `ref/physical-proms/validated/d94_092.raw.bin` | present |
-| `ref/wd1772-vg93/fd179x-01-datasheet.pdf` | present |
-| `ref/wd1772-vg93/fd179x-application-notes-jun1980.pdf` | present |
-| `ref/wd1772-vg93/wd1772.pdf` | present |
-| `ref/wd1772-vg93/wd1772pla.normalized.json` | present |
-| `ref/datasheets/k555lp5-eandc.pdf` | present |
-| `ref/datasheets/sn74ls86a-ti.pdf` | present |
-| `ref/datasheets/k555lp5-output-reference.txt` | present |
-| `ref/datasheets/kt315-family-promelec.pdf` | present |
-| `ref/datasheets/kt315b-output-reference.txt` | present |
-| `ref/datasheets/sn54s138-ti.pdf` | present |
-| `ref/datasheets/kr531id7-timing-reference.txt` | present |
-| `docs/d2-reconstruction-constraints.md` | present |
-| `docs/d94-reconstruction-constraints.md` | present |
-| `docs/firmware-gap-ledger.md` | present |
-| `docs/vendored-disk-catalog.md` | present |
-| `docs/community-prom-media-request.md` | present |
+Present: **42/42** required paths.
+The complete checked list is `REQUIRED` in the
+[generator](../scripts/report_source_coverage_audit.py). Any missing paths are listed below.

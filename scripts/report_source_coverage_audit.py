@@ -68,13 +68,12 @@ def main() -> int:
         f"Status: **{status}**",
         "",
         "This inventory records adopted sources and remaining recovery inputs.",
-        "`PASS` means the required local paths below exist. This generator does",
+        "`PASS` means all paths in the generator’s `REQUIRED` list exist. It does",
         "not validate their contents/checksums, repeat image review, or recheck",
-        "remote archives. Source dates and identities describe recorded reviews.",
+        "remote archives. Source dates and identities describe recorded reviews,",
+        "not current availability; follow the linked reports for review details.",
         "",
         "Regenerate with `python3 scripts/report_source_coverage_audit.py`.",
-        "Remote-source findings below describe the recorded reviews, not a current",
-        "availability check. Follow the owning evidence reports for review details.",
         "",
         "## Adopted sources",
         "",
@@ -154,11 +153,10 @@ def main() -> int:
         "",
         "## Required local evidence",
         "",
-        "| Path | State |",
-        "| --- | --- |",
+        f"Present: **{len(REQUIRED) - len(missing)}/{len(REQUIRED)}** required paths.",
+        "The complete checked list is `REQUIRED` in the",
+        "[generator](../scripts/report_source_coverage_audit.py). Any missing paths are listed below.",
     ]
-    for path in REQUIRED:
-        lines.append(row([f"`{path}`", "present" if (ROOT / path).exists() else "MISSING"]))
     if missing:
         lines.extend(["", "## Missing", ""])
         lines.extend(f"- `{path}`" for path in missing)
