@@ -29,7 +29,7 @@ runs; current reruns have the
 [Verilator compatibility limitation](../sync/README.md#simulator-compatibility).
 Use each owning report for its inputs, scope, and reproduction command.
 
-The CPU, memory/ROM paging, populated bit-sliced DRAM bank, PPI/PIT/PIC/USART
+The CPU, memory/ROM paging, populated bit-sliced DRAM bank, PPI/PIT/USART
 behavior, FDC boot subset, serializer, and raster helper are functional models.
 They are not generic cycle-accurate replacements for every original IC mode.
 The 8253 slice implements binary/BCD count loading, LSB/MSB access formats,
@@ -43,6 +43,11 @@ currently stops on an additional D57 failure bit before reaching its T34 cases.
 
 ## Model boundaries
 
+- `pic_8259` is a two-register read/write stub. The simulation-only `intr_ctl`
+  helper snoops ICW1, ICW2 and the interrupt mask, then services external frame
+  ticks as IR5 with a three-byte CALL vector. The mapped USART IR2/IR3 and other
+  interrupt inputs do not receive arbitration or vector service in this HDL
+  model. Frame-interrupt tests therefore do not qualify a complete 8259.
 - D2's traced inputs, captured `.037` table, open-collector D0 output and
   D30 READY sampling are modeled. Complete WAIT duration still depends on
   surrounding clock/control timing; see
