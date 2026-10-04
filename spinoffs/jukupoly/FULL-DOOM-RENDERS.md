@@ -35,11 +35,12 @@ with four enhanced tracks and 40 fallbacks, recorded in
 physical listening qualification. Corrected M7 Imp candidates still require
 CS00000 A/B before promotion.
 
-`render_jukupoly_library.py --minimum-enhanced-tracks N` rejects an all-v1
-control catalog when an enhanced render set is requested. Exact JPS and render
-identities are in the linked JSON reports; directory names alone do not identify
-a qualified payload. WAVs are cycle-model references, not an analogue model of
-the physical speaker or enclosure.
+`render_jukupoly_library.py --minimum-enhanced-tracks N` checks the catalog's
+declared enhanced count. It separately verifies song hashes and compares
+`JUKEBOX.COM` with a fresh player build for the declared capabilities; it does
+not independently recount enhanced payloads. Exact JPS and render identities
+are in the linked JSON reports. WAVs are cycle-model references, not an analogue
+model of the physical speaker or enclosure.
 
 ## Generic conversion and fallback policy
 
@@ -62,18 +63,23 @@ error limit, three lose a significant envelope direction, one has an
 unrepresentable bounded re-articulation, and five exceed the 32,767-byte JPS
 hard limit; reasons can overlap. No final candidate failed timing.
 
-The only new automatic fixed-patch classification rule is source-agnostic.
+The fixed-patch classification rule is source-agnostic.
 When the primary variable-pitch/chord classifier finds nothing, at least eight
 repeated simultaneous attacks on three channels, containing at least two
-pitches within one octave, constitute fixed-harmony evidence. This replaces
-the old DOOM-title signature-ID list while rejecting the usual wide-pitch
-kick/snare/cymbal cluster.
+pitches within one octave, constitute fixed-harmony evidence. The usual
+wide-pitch kick/snare/cymbal cluster does not meet that condition.
 
 ## Reproduction
 
 Run from the repository root with Python 3.10+, a C compiler, cpmtools,
-and FFmpeg with `libmp3lame`. Initialize submodules for Nuked OPL3 and zmac;
+FFmpeg with `libmp3lame`, and `ffprobe`. Initialize submodules for Nuked OPL3 and zmac;
 the player builder builds zmac with `make` if needed, or uses `ZMAC`.
+
+These commands replace named outputs and the two tracked JSON reports. Use
+new output/report paths to compare a rerun with the retained September 2
+record. The renderer does not clear old output files; failures can leave partial
+audio, and its final aggregate checks occur after writing `manifest.json` and
+`--report`. Check the exit status and report gates before accepting the set.
 
 Build the pinned oracle, candidates, library, and renders with:
 
