@@ -424,7 +424,7 @@ def main() -> int:
     video_audit_independent = marker(
         "docs/video-slot-timing-audit.md",
         "Status: **VIDEO SLOT TIMING AUDITED / PHYSICAL SLOT SCHEDULE PENDING**",
-        "D94 is not used as video-timing evidence",
+        "D94 FDC-control role is separated from video timing",
     )
     output_departures = remaining_output_departures()
     # The old pin-4 boundary was superseded by direct D94.4->D93.2 continuity.
