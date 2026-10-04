@@ -10,7 +10,11 @@ representation using [the PROM procedure](prom-dump-procedure.md).
 
 ## Command
 
+Run from the repository root. Check retained files before the exporter
+rewrites the historical image and its checksum manifest.
+
 ```sh
+(cd ref/reconstructed-proms && sha256sum -c SHA256SUMS)
 python3 scripts/export_reconstructed_proms.py
 sync/prom_fallback_check.sh
 ```
