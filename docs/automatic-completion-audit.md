@@ -39,7 +39,7 @@ The shortlist reports an evidence hold; inspect its failed checks before handoff
 
 | Plan | Unchecked task | Class | Cited report markers |
 | --- | --- | --- | --- |
-| `PLAN.md` | P0 physical connectivity is complete and rerouted. | `connectivity` | `docs/owner-measurement-shortlist.md` (owner/bench packet ready); `docs/replica-bringup-verification-points.md` (source-risk net index unresolved); `docs/main-board-erc-parity.md` (release parity gate held) |
+| `PLAN.md` | P0 physical connectivity is complete and rerouted. | `connectivity` | `docs/owner-measurement-shortlist.md` (owner/bench packet on evidence hold); `docs/replica-bringup-verification-points.md` (source-risk net index unresolved); `docs/main-board-erc-parity.md` (release parity gate held) |
 | `PLAN.md` | Main-board design release passes; board is ordered. | `release` | `docs/replica-manufacturing-readiness.md` (current package regeneration held) |
 | `PLAN.md` | Functional parts kit is received and tested. | `parts` | `docs/replica-sourcing-readiness.md` (sourcing gate held) |
 | `PLAN.md` | Replica completes Tier 1 bring-up. | `bringup` | `docs/replica-manufacturing-readiness.md` (no released fabrication package) |
@@ -58,8 +58,10 @@ repository implementation backlog.
 This writer found active unchecked tasks in 3 Markdown file(s).
 Any new unchecked task outside the four operator templates must have an exact
 classification. Classified milestones must remain present as checkboxes, and
-all cited evidence markers must exist, otherwise generation
-fails closed. `scripts/check_documentation_consistency.py` runs this writer in
+cited evidence markers must exist. The owner/bench shortlist accepts either
+`READY` or `EVIDENCE HOLD`; a hold is reported above, not treated as readiness.
+Missing classifications or accepted markers fail generation.
+`scripts/check_documentation_consistency.py` runs this writer in
 `--check` mode, and `scripts/regen_all.sh` regenerates the committed report.
 
 Use the [owner/bench shortlist](owner-measurement-shortlist.md) for the

@@ -258,7 +258,14 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
     ]
     for path, task in tasks:
         group_name = CLASSIFICATIONS[(path, task)]
-        evidence = "; ".join(f"`{item.path}` ({item.label})" for item in GROUPS[group_name].evidence)
+        evidence = "; ".join(
+            f"`{item.path}` ("
+            + ("owner/bench packet on evidence hold"
+               if desk_review_open and item.path == "docs/owner-measurement-shortlist.md"
+               else item.label)
+            + ")"
+            for item in GROUPS[group_name].evidence
+        )
         lines.append(f"| `{path}` | {task} | `{group_name}` | {evidence} |")
 
     lines += [
@@ -273,8 +280,10 @@ def render(tasks: list[tuple[str, str]], grouped: dict[str, list[tuple[str, str]
         f"This writer found active unchecked tasks in {len(task_counts)} Markdown file(s).",
         "Any new unchecked task outside the four operator templates must have an exact",
         "classification. Classified milestones must remain present as checkboxes, and",
-        "all cited evidence markers must exist, otherwise generation",
-        "fails closed. `scripts/check_documentation_consistency.py` runs this writer in",
+        "cited evidence markers must exist. The owner/bench shortlist accepts either",
+        "`READY` or `EVIDENCE HOLD`; a hold is reported above, not treated as readiness.",
+        "Missing classifications or accepted markers fail generation.",
+        "`scripts/check_documentation_consistency.py` runs this writer in",
         "`--check` mode, and `scripts/regen_all.sh` regenerates the committed report.",
         "",
         "Use the [owner/bench shortlist](owner-measurement-shortlist.md) for the",
