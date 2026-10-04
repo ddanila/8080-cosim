@@ -30,12 +30,10 @@ a short startup beep, but normally produced no visible display output. On one
 attempt the display contained garbage, establishing that the monitor and at
 least part of the physical video-output path could produce a signal; it does
 not establish correct video timing, framebuffer contents, CPU execution, or
-successful POST. No further diagnosis is claimed yet, and continued bench
-experiments are pending.
+successful POST. The subsequent ROM-swap control is described below.
 
-This new state supersedes the earlier observation that CS00000 generally
-reached the monitor. It does not by itself prove that the mainboard was damaged
-by the PSU failure. The prior intermittent silence/continuous-tone starts and
+This no-display state followed the earlier successful stock-ROM starts. It
+does not by itself prove that the mainboard was damaged by the PSU failure. The prior intermittent silence/continuous-tone starts and
 the failed primary capacitor may be related, but that remains only a hypothesis
 until the supply and board rails/reset/clock behavior are measured.
 
@@ -168,7 +166,11 @@ route. The capacitor replacement's independent effect was not isolated.
 Earlier receive silence does not establish a Juku USART fault; the unchanged
 machine also passed the [CP2102/MAX3232 control](evidence/juku-serial/cs00000-ek37-cp2102-control-20260822T202538Z.boot.json).
 
-## Remaining work
+## Follow-up from the August investigation
+
+The [deployment profile](machines/CS00000.json) owns the current fitted
+firmware and qualification scope. The August investigation left these repair
+and comparison tasks:
 
 - Do not use the failed CS00000 PSU until both parallel primary capacitors and
   the affected primary-side circuitry have been repaired and verified.
