@@ -13,6 +13,9 @@ Intel datasheet scan: `https://datasheet4u.com/datasheet-pdf/Intel/M8282/pdf.php
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The command overwrites this report after its checks pass.
+
 ```sh
 python3 scripts/report_8282_pinout_audit.py
 ```

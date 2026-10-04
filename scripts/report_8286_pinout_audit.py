@@ -154,7 +154,9 @@ def main() -> None:
         "pin-11 T nets are guarded independently of the data-bus devices.", "",
         "Primary pinout source:",
         "`https://www.silicon-ark.co.uk/datasheets/m8286-m8287-datasheet-intel.pdf`", "",
-        "## Command", "", "```sh",
+        "## Command", "",
+        "Run from the repository root with Python 3 (standard library only).",
+        "The command overwrites this report after its checks pass.", "", "```sh",
         "python3 scripts/report_8286_pinout_audit.py", "```", "",
         "## Checks", "", "| Check | Result |", "| --- | --- |",
     ]

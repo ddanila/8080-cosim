@@ -54,7 +54,9 @@ def main() -> None:
         "strobe source at `D58_STB_TAG5` remains unresolved. Runnable HDL ties",
         "that strobe low through a simulation boundary.", "",
         "Intel datasheet scan: `https://datasheet4u.com/datasheet-pdf/Intel/M8282/pdf.php?id=727746`", "",
-        "## Command", "", "```sh",
+        "## Command", "",
+        "Run from the repository root with Python 3 (standard library only).",
+        "The command overwrites this report after its checks pass.", "", "```sh",
         "python3 scripts/report_8282_pinout_audit.py", "```", "",
         "## Checks", "", "| Check | Result |", "| --- | --- |",
     ]

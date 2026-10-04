@@ -27,6 +27,11 @@ The guard covers:
 
 ## Command
 
+Run from the repository root with Bash and Icarus Verilog (`iverilog` and
+`vvp`). Compilation and simulation logs use a temporary directory, removed
+on exit. After a passing simulation, the script overwrites this report; set
+`IE10_REPORT` to select another path whose parent directory already exists.
+
 ```sh
 sync/ie10_check.sh
 ```
