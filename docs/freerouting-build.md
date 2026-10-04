@@ -6,7 +6,9 @@ does not carry the same compatibility fixes.
 
 ## Build and provenance
 
-Run from the repository root:
+Run from the repository root with Bash, Git, `unzip`, and `shasum` available.
+The Gradle wrapper may download Gradle and build dependencies on the first
+build, so an uncached build needs network access.
 
 ```sh
 git submodule update --init external/freerouting
@@ -47,12 +49,11 @@ The wrapper forces headless Java and defaults to `-mt 1` unless a thread count
 is supplied. Its runtime lookup is narrower than the build-script lookup:
 use `FREEROUTING_JDK` or a compatible `java` on PATH on Linux.
 
-Single-threaded execution and seeded random choices reduce variation. The
-historical same-input runs produced identical SES files; this is not a guarantee
-of identical routes or PCB hashes across source, algorithm, configuration or
-toolchain changes. Record exact inputs and outputs and run DRC/connectivity
-checks before promoting a route. Explicit `-mt N` selects a different execution
-profile and needs its own evidence.
+Single-threaded execution and seeded random choices reduce variation but do
+not guarantee identical routes or PCB hashes across source, algorithm,
+configuration or toolchain changes. Record exact inputs and outputs and run
+DRC/connectivity checks before promoting a route. Explicit `-mt N` selects a
+different execution profile and needs its own evidence.
 
 The main Juku route remains under [the routing hold](routed-refresh-audit.md).
 An SES result alone does not close source-risk nets or authorize fabrication.
