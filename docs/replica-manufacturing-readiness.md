@@ -11,11 +11,10 @@ This packet checks package integrity and reads design-release report markers.
 Only RELEASED FOR UPLOAD authorizes the next upload step. Report markers
 do not substitute for current physical and functional evidence.
 
-The current routed board is
-`f22f7ba849a6088d7b41e8f2ada8153cda9226c8848bec00128044177643e26a`.
 The upload ZIP is absent in this checkout.
-This command reruns order/package checks and refreshes the order template;
-it does not export Gerbers or correct the board. Refresh with
+This command reruns order/package checks and rewrites their reports,
+the upload runbook, and the order template. It does not export Gerbers
+or correct the board. Refresh with
 `python3 kicad/report_replica_manufacturing_readiness.py`.
 
 ## Physical release evidence

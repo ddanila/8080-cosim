@@ -52,7 +52,7 @@ The command reruns DRC and the package checks; it does not export the PCB.
 - CSV: `docs/replica-dual-config-bom.csv`
 - Sourcing readiness status: **NOT READY**
 - Sourcing report: `docs/replica-sourcing-readiness.md`
-- BOM lines: 121
+- BOM lines: 122
 - Board component positions: 377
 - Current .009 populated parts: 273
 - Empty expansion/authentic-completeness sockets: 104
