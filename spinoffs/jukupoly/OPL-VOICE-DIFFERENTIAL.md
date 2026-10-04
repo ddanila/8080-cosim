@@ -30,8 +30,9 @@ statistics hide a local problem.
 
 For a late note, the extractor collapses preceding writes into a sample-zero
 register-state prime with every key off. It does not replay the preceding song
-or restart a selected envelope halfway through. The default window starts up
-to 250 ms before the actual key-on and ends 1.5 seconds after key-off.
+or restart a selected envelope halfway through. The default window includes
+250 ms before key-on (clipped at the source start) and 1.5 seconds after key-off,
+then rounds both boundaries outward to the 20 ms analysis grid.
 
 ## Host/target boundary
 
@@ -42,7 +43,7 @@ small 4-bit envelope state, and mixes at most three fixed-step pulse voices.
 The differential work therefore adds no target opcode or per-sample cost.
 
 When several source members quantize to one identical Juku phase step, their
-direct amplitudes are now summed and fitted as one composite target envelope.
+direct amplitudes are summed and fitted as one composite target envelope.
 This preserves complementary OPL envelopes without wasting a physical target
 voice on an indistinguishable pitch. Genuinely different phase steps can use
 the remaining voices.
@@ -64,11 +65,20 @@ envelopes and bounded re-articulations; the 8080 does not emulate an OPL LFO.
 
 ## Reproduction
 
+Use Python 3.10+, Git and a C compiler available as `cc`. Initialize the
+Nuked OPL3 and zmac submodules; the script verifies the pinned Nuked revision
+and builds both host renderers. The player builder builds zmac with `make`
+if needed, or uses `ZMAC`.
+
+Extract the source from the pinned DOOM archive identified in
+[the full-pack guide](FULL-DOOM-RENDERS.md). The archive is not committed.
 From the repository root:
 
 ```sh
+python3 -m zipfile -e '/path/to/Doom_(PC).zip' out/jukupoly-doom-source
+
 python3 spinoffs/jukupoly/tools/compare_jukupoly_opl_voice.py \
-  "out/jukupoly-m6-representative/sources/03 The Imp's Song.vgz" \
+  "out/jukupoly-doom-source/03 The Imp's Song.vgz" \
   out/jukupoly-imp-isolated-voice --logical-note 0
 ```
 
