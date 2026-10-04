@@ -235,6 +235,14 @@ console share one key queue: the scripted string plays first and anything
 typed afterwards queues behind it, so `--max-speed --keys TDD` reaches a
 CP/M `A>` in seconds and still accepts commands.
 
+Direct `trace` runs delay queued matrix input until
+`JUKU_KEY_START_VRAM` framebuffer writes (default `42000`, chosen for the
+EktaSoft banner). Set it to a suitable threshold, or `0`, for firmware that
+does not draw that banner. `JUKU_KEY_HOLD_FRAMES` and `JUKU_KEY_GAP_FRAMES`
+both default to `3`; they count configured frame intervals rather than
+wall-clock seconds. Guest firmware must still scan the matrix for a contact
+to become a key event.
+
 Timing-sensitive raw-key tests can inject one ordinary matrix contact at an
 exact instruction boundary with `JUKU_KEY_AT_PC=PC:BYTE`. Both fields are
 hexadecimal; for example, `JUKU_KEY_AT_PC=34A2:1B` begins a physical Escape
