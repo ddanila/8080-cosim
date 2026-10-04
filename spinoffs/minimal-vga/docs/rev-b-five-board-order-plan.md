@@ -149,35 +149,35 @@ The immutable C9 artifacts remain unchanged as comparison fixtures.
   revised board and all regenerated archives must pass the existing JLCPCB
   profile, exact-part, mechanical, power, DRC/LVS and independent-Gerber gates.
 
-## Qualification record and remaining steps
+## Desk qualification and remaining steps
 
-The dated entries below retain the gate IDs required by
-`check_revb_release_gate.py`. They record desk qualification of the held candidate;
-they are not physical acceptance or a fresh execution of the linked checks.
+The entries below retain the gate IDs required by `check_revb_release_gate.py`.
+They identify the held candidate's desk qualification and maintained evidence;
+they do not establish physical acceptance or a fresh execution of the checks.
 The [execution guide](rev-b-execution-guide.md) lists verification commands.
 
 | Gate | Scope and maintained evidence |
 |---|---|
-| **R5.S1 — DONE 2026-08-27** | Serial connector direction and continuity; [serial console](rev-b-serial-console.md) |
-| **R5.S2 — DONE 2026-08-27** | Serial clocks and protected electrical boundary; [serial console](rev-b-serial-console.md) |
-| **R5.S3 — DONE 2026-08-27** | 8251 TX/RX, loopback, isolation and loader byte-pattern tests; actual NETC10 execution is covered by R5.I6 |
-| **R5.P1 — DONE 2026-08-28** | Reproducible programmable logic; [current GAL equations](rev-b-gal-equations.md), including the R5.I4 I/O replacement |
-| **R5.V1 — DONE 2026-08-28** | Video pin connectivity and timing; [digital audit](rev-b-video-digital-audit.md) |
-| **R5.V2 — DONE 2026-08-28** | Video decoupling and RGB loads; [power model](rev-b-five-card-power.md), updated for R5.I7 |
-| **R5.V3 — DONE 2026-08-28** | Video GAL equations, fetch/WAIT and divide-six frame tick; [GAL equations](rev-b-gal-equations.md) |
-| **R5.V4 — DONE 2026-08-28** | Exact Video parts and footprints; [parts contract](rev-b-video-parts.md) |
-| **R5.V5 — DONE 2026-08-28** | Four-layer Video routing, planes and DRC; [PCB qualification](rev-b-video-pcb.md) |
-| **R5.V6 — DONE 2026-08-28** | Assembled clearance and protected power; [mating report](rev-b-mating-report.md) and [power model](rev-b-five-card-power.md), updated for R5.I7 |
-| **R5.J1 — DONE 2026-08-28** | Encoded fabrication rules and exceptions; [JLCPCB profile](rev-b-jlcpcb-profile.md) |
-| **R5.I1 — DONE 2026-08-28** | PIT/POST electrical and I/O contract; [I/O expansion](rev-b-io-expansion.md) |
-| **R5.I2 — DONE 2026-08-28** | PIT register/count/latch, sound, POST and clock-selector simulation; `sim/revb_io_expansion_check.sh` |
-| **R5.I3 — DONE 2026-08-28** | Three-ROM builds and early no-stack POST; [ROM guide](../roms/README.md) |
-| **R5.I4 — DONE 2026-08-29** | Expanded I/O netlist, ATF22V10 and pin-level LVS; [I/O expansion](rev-b-io-expansion.md) |
-| **R5.I5 — DONE 2026-08-29** | Routed I/O geometry and assembly markings; `kicad/revb/check_revb_io_pcb.py` |
-| **R5.I6 — DONE 2026-08-29** | Integrated EKTA, NETC10 and DIAG simulation, including PIT-normal and direct recovery; `sim/revb_rom_system_check.sh` |
-| **R5.I7 — DONE 2026-08-29** | Expanded system parts, power, mechanics and release checks; `kicad/revb/revb_i7_release_check.sh` |
-| **R5.J2 — DONE 2026-08-29** | Five source-bound fabrication archives; [package manifest](rev-b-five-board-package-manifest.json) |
-| **R5.J3 — DONE 2026-08-29** | Archive render/BOM review and dated quote; [signed pre-upload review](rev-b-five-board-preupload-review.md) |
+| **R5.S1 — DESK QUALIFIED** | Serial connector direction and continuity; [serial console](rev-b-serial-console.md) |
+| **R5.S2 — DESK QUALIFIED** | Serial clocks and protected electrical boundary; [serial console](rev-b-serial-console.md) |
+| **R5.S3 — DESK QUALIFIED** | 8251 TX/RX, loopback, isolation and loader byte-pattern tests; actual NETC10 execution is covered by R5.I6 |
+| **R5.P1 — DESK QUALIFIED** | Reproducible programmable logic; [current GAL equations](rev-b-gal-equations.md), including the R5.I4 I/O replacement |
+| **R5.V1 — DESK QUALIFIED** | Video pin connectivity and timing; [digital audit](rev-b-video-digital-audit.md) |
+| **R5.V2 — DESK QUALIFIED** | Video decoupling and RGB loads; [power model](rev-b-five-card-power.md) |
+| **R5.V3 — DESK QUALIFIED** | Video GAL equations, fetch/WAIT and divide-six frame tick; [GAL equations](rev-b-gal-equations.md) |
+| **R5.V4 — DESK QUALIFIED** | Exact Video parts and footprints; [parts contract](rev-b-video-parts.md) |
+| **R5.V5 — DESK QUALIFIED** | Four-layer Video routing, planes and DRC; [PCB qualification](rev-b-video-pcb.md) |
+| **R5.V6 — DESK QUALIFIED** | Assembled clearance and protected power; [mating report](rev-b-mating-report.md) and [power model](rev-b-five-card-power.md) |
+| **R5.J1 — DESK QUALIFIED** | Encoded fabrication rules and exceptions; [JLCPCB profile](rev-b-jlcpcb-profile.md) |
+| **R5.I1 — DESK QUALIFIED** | PIT/POST electrical and I/O contract; [I/O expansion](rev-b-io-expansion.md) |
+| **R5.I2 — DESK QUALIFIED** | PIT register/count/latch, sound, POST and clock-selector simulation; `sim/revb_io_expansion_check.sh` |
+| **R5.I3 — DESK QUALIFIED** | Three-ROM builds and early no-stack POST; [ROM guide](../roms/README.md) |
+| **R5.I4 — DESK QUALIFIED** | Expanded I/O netlist, ATF22V10 and pin-level LVS; [I/O expansion](rev-b-io-expansion.md) |
+| **R5.I5 — DESK QUALIFIED** | Routed I/O geometry and assembly markings; `kicad/revb/check_revb_io_pcb.py` |
+| **R5.I6 — DESK QUALIFIED** | Integrated EKTA, NETC10 and DIAG simulation, including PIT-normal and direct recovery; `sim/revb_rom_system_check.sh` |
+| **R5.I7 — DESK QUALIFIED** | Expanded system parts, power, mechanics and release checks; `kicad/revb/revb_i7_release_check.sh` |
+| **R5.J2 — DESK QUALIFIED** | Five source-bound fabrication archives; [package manifest](rev-b-five-board-package-manifest.json) |
+| **R5.J3 — DESK QUALIFIED** | Archive render/BOM review and dated quote; [signed pre-upload review](rev-b-five-board-preupload-review.md) |
 
 Remaining steps, in order:
 

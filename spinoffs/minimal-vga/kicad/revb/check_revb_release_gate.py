@@ -136,8 +136,8 @@ def verify(record: dict, package_root: Path | None = None) -> list[str]:
     review = review_path.read_text()
     for gate in EXPECTED_GATES:
         task = gate.split("_", 1)[0]
-        if not re.search(rf"\*\*{re.escape(task)}[^*]*DONE \d{{4}}-\d{{2}}-\d{{2}}", plan):
-            errors.append(f"controlling plan does not mark {task} DONE")
+        if not re.search(rf"\*\*{re.escape(task)} — DESK QUALIFIED\*\*", plan):
+            errors.append(f"controlling plan does not mark {task} DESK QUALIFIED")
     if "Status: **PASS / ORDER HOLD**" not in review or "Review signature:" not in review:
         errors.append("pre-upload review lacks held PASS status or signature")
     for card, wanted in archives.items():
