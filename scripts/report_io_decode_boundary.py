@@ -33,12 +33,10 @@ def has_nodes(board: dict, name: str, expected: set[tuple[str, str]]) -> bool:
 
 
 def endpoint_text(board: dict, name: str) -> str:
-    rendered = [f"{ref}.{pin}" for ref, pin in sorted(nodes(board, name))]
-    if not rendered:
-        return "-"
-    if len(rendered) <= 10:
-        return ", ".join(rendered)
-    return ", ".join(rendered[:10]) + f", ... (+{len(rendered) - 10})"
+    endpoints = sorted(nodes(board, name))
+    if name in ("BA10", "BA11", "BA12"):
+        endpoints = [(ref, pin) for ref, pin in endpoints if ref == "D9"]
+    return ", ".join(f"{ref}.{pin}" for ref, pin in endpoints) or "-"
 
 
 def row(values: list[object]) -> str:
@@ -191,6 +189,11 @@ def main() -> int:
         "",
         "## Command",
         "",
+        "Run from the repository root with Python 3 (standard library only).",
+        "The generator reads board JSON, HDL source, and the LVS map. It",
+        "overwrites this report with check results and exits with status 1",
+        "if any listed check fails.",
+        "",
         "```sh",
         "python3 scripts/report_io_decode_boundary.py",
         "```",
@@ -216,7 +219,9 @@ def main() -> int:
             "",
             "## Current Decode Nets",
             "",
-            "Per-net provenance is retained in [the board model](../kicad/juku.board.json).",
+            "Address rows show only the D9 decoder endpoint; other rows show all net",
+            "endpoints. Complete address nets and per-net provenance are retained in",
+            "[the board model](../kicad/juku.board.json).",
             "",
             "| Net | Endpoints |",
             "| --- | --- |",

@@ -9,6 +9,11 @@ visible.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The generator reads board JSON, HDL source, and the LVS map. It
+overwrites this report with check results and exits with status 1
+if any listed check fails.
+
 ```sh
 python3 scripts/report_io_decode_boundary.py
 ```
@@ -40,7 +45,9 @@ python3 scripts/report_io_decode_boundary.py
 
 ## Current Decode Nets
 
-Per-net provenance is retained in [the board model](../kicad/juku.board.json).
+Address rows show only the D9 decoder endpoint; other rows show all net
+endpoints. Complete address nets and per-net provenance are retained in
+[the board model](../kicad/juku.board.json).
 
 | Net | Endpoints |
 | --- | --- |
@@ -48,11 +55,11 @@ Per-net provenance is retained in [the board model](../kicad/juku.board.json).
 | `SYNC` | `D1.19, D38.12, D7.12` |
 | `V3_RC` | `C99.1, D9.6, R17.1` |
 | `REV` | `D6.10, D9.4, D9.5, R13.2` |
-| `BA10` | `D15.21, D16.21, D17.21, D18.21, D19.21, D20.21, D21.21, D22.21, D24.3, D4.19, ... (+2)` |
-| `BA11` | `D15.23, D16.23, D17.23, D18.23, D19.23, D20.23, D21.23, D22.23, D24.4, D4.18, ... (+4)` |
-| `BA12` | `D15.2, D16.2, D17.2, D18.2, D19.2, D20.2, D21.2, D22.2, D24.5, D4.15, ... (+4)` |
+| `BA10` | `D9.1` |
+| `BA11` | `D9.2` |
+| `BA12` | `D9.3` |
 | `IOWR` | `D10.2, D105.3, D11.10, D26.36, D27.36, D29.5, D54.23, D55.23, D57.23, D94.13` |
-| `IORD` | `D10.3, D11.13, D26.5, D27.5, D29.4, D5.25, D54.22, D55.22, D57.22, D7.9, ... (+1)` |
+| `IORD` | `D10.3, D11.13, D26.5, D27.5, D29.4, D5.25, D54.22, D55.22, D57.22, D7.9, D94.12` |
 | `D25_T` | `D25.11, D7.6` |
 | `CS_D10` | `D10.1, D9.15` |
 | `CS_D26` | `D26.6, D9.14` |
