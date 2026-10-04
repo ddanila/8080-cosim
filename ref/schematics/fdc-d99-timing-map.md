@@ -88,8 +88,16 @@ connected to D99.12; D100.11 has a separate
 sheet-1 boundary; see [the D100 control review](../../docs/d100-control-source-review.md). Structural HDL
 keeps the two conductors distinct.
 
-Guard:
+## Model guard
+
+Run from the repository root with Python 3 (standard library only):
 
 ```sh
 python3 kicad/check_d99_source_paths.py
 ```
+
+The guard checks selected board-JSON nets, timing-part values, retired boundary
+names, placement-registration target names and literal D99/D100 HDL markers.
+It does not verify source-photo hashes, placement geometry, routed copper,
+physical continuity or one-shot timing. The unresolved remote clear source
+and E12 population still require the evidence described above.
