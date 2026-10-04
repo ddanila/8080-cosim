@@ -29,9 +29,22 @@ spinoffs/minimal-vga/sim/revb_tier_suite.sh
 
 It covers shared facts, card completeness, GAL/ROM rebuilds, serial and PIT/POST,
 three-ROM system behavior, LVS, board geometry, parts, power, mechanics and
-release guards. CAD-dependent sections may report SKIP when tools are absent;
-review that output before claiming the corresponding checks passed.
-The `--ci` option runs the hosted behavioral smoke subset.
+release guards. Some individual checks skip missing tools, but the full suite
+requires Galette, Icarus and KiCad Python: R5.I7 fails if KiCad Python is absent.
+KiCad CLI is needed for DRC and Yosys for LVS; inspect skipped checks before
+claiming those results. The parts checks also require the KiCad footprint library.
+
+The suite rewrites `footprints.<card>.json` while resolving library parts and
+runs C-oracle checks that overwrite `cosim/vram.bin`. Save any framebuffer you
+need, and inspect the working-tree diff afterward. It checks retained routed
+sources; it does not regenerate layouts or fabrication packages.
+
+`--ci` runs the behavioral smoke subset. `REVB_CI_GROUP=cards` selects card,
+bus-assertion and bring-up tests; `system` selects serial, I/O expansion,
+ROM-system and video tests; the default `all` runs both. All groups check shared
+facts, board completeness and ROM freshness. The system subset limits EKTA's
+Mode A/B boot comparison to 1,000 writes and omits the TTL-card boot, which CI
+runs separately. It does not perform CAD, GAL compilation or release checks.
 
 For focused changes:
 
@@ -44,12 +57,18 @@ For focused changes:
 | Integrated ROM behavior | `spinoffs/minimal-vga/sim/revb_rom_system_check.sh` |
 | Serial connector/electrical path | `python3 spinoffs/minimal-vga/kicad/revb/check_revb_serial_contract.py` and `python3 spinoffs/minimal-vga/kicad/revb/check_revb_serial_electrical.py` |
 | Changed I/O source and system release checks | `spinoffs/minimal-vga/kicad/revb/revb_i7_release_check.sh` |
-| Release evidence and owner hold | `python3 spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py --self-test` |
+| Release evidence, archive identity and owner hold | `python3 spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py --self-test --package-root fab/minimal-vga/revb/package` |
 
 Use `kicad/revb/env.sh` for the CAD/tool locators. Board generation, routing,
 physical checks and `kicad/revb/export_fab.sh` live under
 `spinoffs/minimal-vga/`; export regenerates all five fabrication packages.
-Package identities belong in the machine-readable manifest and release record,
+Without `--package-root`, the release checker validates recorded identities and
+routed-source hashes but does not read the ZIPs. R5.I7 runs only that checker's
+negative controls; its success does not validate a candidate package.
+
+Export replaces the local package directory and rewrites its tracked manifest;
+follow the [order plan](rev-b-five-board-order-plan.md) to review and reconcile
+a regenerated candidate. Package identities belong in the machine-readable manifest and release record,
 not in a second task ledger.
 
 ## Upload, order and bench gates
@@ -61,7 +80,8 @@ python3 spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py \
   --require-released --package-root fab/minimal-vga/revb/package
 ```
 
-Exit 3 is the expected **ORDER HOLD** while owner authorization is absent.
+Exit 3 means the record is valid but remains on **ORDER HOLD** without owner
+authorization. Invalid or missing evidence instead exits 1.
 Follow the [order record](rev-b-five-board-order-record.md) for vendor previews,
 DFM changes and the separate payment decision. After delivery, follow the
 [bench template](rev-b-b1-bench-log.md) in stage order, recording actual readbacks,

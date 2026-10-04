@@ -37,10 +37,11 @@ spinoffs/minimal-vga/sim/revb_tier_suite.sh
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py --self-test
 ```
 
-The full suite includes behavioral, GAL, CAD and release checks. Inspect any
-reported tool skips: a successful exit with skipped CAD checks does not prove
-manufacturing readiness. `revb_tier_suite.sh --ci` is a behavioral smoke subset.
-See the [execution guide](rev-b-execution-guide.md) for focused commands.
+The full suite includes behavioral, GAL, CAD and release checks. Its R5.I7 step
+requires KiCad Python; other checks can skip missing tools. Inspect those results
+before claiming manufacturing readiness. `revb_tier_suite.sh --ci` is a behavioral
+smoke subset. See the [execution guide](rev-b-execution-guide.md) for dependencies,
+file-writing side effects, archive verification and focused commands.
 
 ## Remaining boundaries
 
