@@ -38,7 +38,9 @@ Until then, the section-A input topology is source-closed and physically
 unconfirmed. The structural Yosys view instantiates D101 with the joined
 inputs and `IMDRG` enable. Runnable HDL omits the D97/D102/D101 precompensation
 chain and holds D94 A4 (`d94_a4_d101_q0`) high; it does not simulate that
-source-drawn section-A path.
+source-drawn section-A path. The separate section-A enable connection
+D26.38/IMDRG↔D101.1 also awaits physical continuity; its source mapping is
+recorded in [the precomp map](../ref/schematics/fdc-write-precomp-map.md).
 
 D101.7 and D101.9 are separate in the exact drawing and canonical model;
 owner continuity closes D101.7 to D94.14. Physical pin-7-to-pin-9 isolation
@@ -50,6 +52,7 @@ remains a useful check. See [the output review](d101-output-tie-photo-review.md)
 python3 kicad/check_fdc_precomp_network.py
 ```
 
-The guard checks the JSON input/output nets, resistor connections and values,
-and structural HDL/LVS markers. It does not prove physical continuity or
-runnable precompensation timing.
+Run from the repository root with Python's standard library. This is the
+[source guard described in the output review](d101-output-tie-photo-review.md#model-guard);
+it does not run LVS or simulate the section-A path. Physical continuity and
+precompensation timing remain separate checks.
