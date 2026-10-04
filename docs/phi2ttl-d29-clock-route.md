@@ -3,8 +3,8 @@
 Status: **SOURCE MODEL CORRECTED / PHYSICAL RC PLACEMENT AND CONTINUITY PENDING**
 
 The full-sheet `.009` electrical schematic and continuity on the CS00015
-processor board correct the reconstructed D29 clock input.  D29 physical pin 1
-is not `MEMW`; it is the input whose buffered output, D29.19, is `CCLCK`.
+processor board establish D29.1 as the clock input whose buffered output,
+D29.19, is `CCLCK`.
 
 ## Primary evidence
 
@@ -25,6 +25,8 @@ to ground at original-resolution sheet-2 crop `(0,2200)`–`(600,2750)` on
 the D35 side (`PXL_20260718_101911242.jpg`). The capacitor's unit is not
 printed in this view. Therefore D35.13 must
 not be collapsed onto the zero-ohm `PHI2TTL` copper net in the replica model.
+
+## R35/R106/C29 owner placement and value limits
 
 Factory assembly `PXL_20260711_114611058.jpg` identifies C29 as the left
 callout and R106 as the right callout of the close pair below R35, between
@@ -62,6 +64,8 @@ node. Registered probe sites and the cross-face fit limits are in
 Measure that continuation, R106's resistance and both lead connections,
 and inspect C29 on both faces before assigning physical values or DNP status.
 
+### C29 source nominal
+
 Full-resolution `.009` sheet-2 photo `PXL_20260718_101908284.jpg` prints
 only `56` beside C29, with no unit glyph; the neighboring C6 also uses bare
 `56` and is modeled as 56 pF. With the drawing's 910 Ω R106, 56 pF gives
@@ -74,6 +78,8 @@ The native-sheet convention reads bare values below 1000 as pF, making
 **56 pF the source nominal**. The unit is not explicitly printed beside C29.
 A BOM or direct part reading is still needed to establish the owner-board
 component and its actual value.
+
+## R36/R37 phase-output pull-ups
 
 The same exact sheet-2 detail resolves the two 360-ohm output branches:
 R37 joins the printed `B` rail to D35.10 / `Ф1` (factory wire А:7), while
@@ -108,6 +114,11 @@ inspection coordinates (about ±1 mm), not promoted pad or net assignments:
 
 Both +12 V joins and the R36 phase join still require physical verification
 before these estimated positions can become PCB footprint landings.
+
+## Clock-input topology and resistance checks
+
+The diagram uses schematic nominal values; R106's owner marking is `510R`,
+and C29's population remains unconfirmed.
 
 ```text
                          +--> D30.3
