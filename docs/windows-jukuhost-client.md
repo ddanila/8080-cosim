@@ -63,8 +63,10 @@ EXE, then:
 5. leave A: in **Snapshot** mode for normal writable use; and
 6. press **Listen**, then power or reset the Juku if necessary.
 
-Select **C12** for a machine fitted with the C12 ROM and matching CP/M system. **C11**
-retains compatibility with the physically accepted C11 ROM. Both wait without
+Select **C12** for a machine fitted with the C12 ROM and matching CP/M system.
+**C11** selects the embedded C11 system and helper; its
+[physical acceptance remains pending](c11-session-recovery.md#qualification).
+Both wait without
 transmitting until they see their checked ROM beacon or a complete NetDisk
 request. This means either can safely attach while CP/M is already running or
 silently playing music. Select the mode that exactly matches the installed
