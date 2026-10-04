@@ -165,14 +165,9 @@ For a feature to be enabled by default in VGZ library songs:
 - phase-step tables must be regenerated from the measured enhanced sample
   rate, so the accepted sample-rate change cannot detune every note.
 
-At 1.70 MHz, a nominal 50 Hz frame has about 34,000 cycles.  A 10% reduction
-in sample rate corresponds to allowing roughly 11.1% more total cycles per
-fixed-size sample batch, or about 3,800 cycles per nominal frame as a rough
-upper orientation value.  In practice the implementation should reduce the
-sample iterations enough to retain the 50 Hz music clock, just as the accepted
-MOD path uses 139 instead of 143.  The measured rate and duration are
-authoritative, not this estimate.  If three-channel envelope plus LFO
-processing falls below the 90% floor, it is not shipped in that form.
+Choose sample iterations from complete-workload measurements to retain the
+music clock. If combined envelope and LFO processing falls below the shared
+90% sample-rate floor, it is not shipped in that form.
 
 ### G3: no invisible quality trade
 
