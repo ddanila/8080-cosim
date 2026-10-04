@@ -34,7 +34,7 @@ Existing identifiers remain for references in source and qualification reports.
 | --- | --- |
 | S1 | CPU drives CLK from its socketed oscillator; first article is 2.000 MHz. Speed changes require firmware and timing requalification. |
 | S2 | Video divides the VGA frame boundary by six for approximately 10 Hz `FRAME_TICK`, corresponding to the firmware's 200,000-cycle cadence. |
-| S3 | PIC uses the Z80 IM0/8080-compatible interrupt path; firmware vector behavior is checked in the twin. |
+| S3 | The physical PIC is wired for the Z80 IM0/8080-compatible interrupt path. The assembled twin holds interrupts inactive, so it does not verify firmware interrupt-vector behavior. |
 | S4 | Backplane owns pull-ups on shared active-low control lines; cards must not introduce opposing push-pull drivers. |
 | S5 | `JP_S5` isolates the I/O-card 8251 from the backplane's board-relative `J_TTL`; no second UART or Serial card exists. |
 | S6 | Regulated 5 V enters through the protected barrel jack only. USB-TTL is data-only; a future real-drive FDC supplies its own 12 V boundary. |

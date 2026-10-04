@@ -17,8 +17,9 @@ the first article; [status](rev-b-status.md) records its qualification boundary.
 
 A future FDC card is outside this order. Minimal CPU/Memory/I/O population is a
 staged diagnostic configuration; the complete first article includes Video.
-The five-slot backplane has no spare slot once a future FDC is fitted. Current
-mechanical qualification places Video in slot 5 with slot 4 empty.
+Current mechanical qualification places Video in slot 5 with slot 4 empty.
+Fitting a future FDC requires renewed mechanical qualification; the empty slot
+is part of the first-article clearance arrangement.
 
 ## Bus and ownership
 

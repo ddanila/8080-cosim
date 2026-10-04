@@ -23,6 +23,11 @@ complete machine still require staged physical qualification. The first order
 contains no FDC card; original raster generation and D57 channel-2 timing are
 replaced by the autonomous VGA subsystem.
 
+The assembled HDL twin holds CPU `/INT` and `/NMI` inactive. Its PIC accesses
+use a register stub; the Video `FRAME_TICK` output is not connected to a PIC
+model. Separate Video timing checks cover the tick waveform, but assembled
+firmware interrupt acknowledgement and service are not verified by this twin.
+
 ## Verification
 
 From the repository root:
