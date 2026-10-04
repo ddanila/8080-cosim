@@ -12,12 +12,9 @@ The guard checks registration records, selected photo hashes and coordinates,
 component values, and source-PCB placement/local joins. It does not establish
 unobserved copper continuity or measure installed capacitances.
 
-The upper FDC drawing places C12 between D94 and D100. May and early July
-owner photos show that gap bare, while later July photo `PXL_20260710_202708344.jpg`
-shows a fitted green bypass there with visible lap leads to D100.20/+5 V and
-D94.8/GND. Its value and fitting history are unknown; the three matched open
-holes in the earlier photo are not the visible lap-lead landings. See
-`ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json`.
+C12's population and lap-lead evidence belong to the
+[upper assembly report](fdc-upper-assembly-placement.md) and its
+[registration record](../ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json).
 
 The photographed factory assembly drawing is registered to the five package centres
 already fitted in the owner board photograph. D95, D101, and D102 define the affine
@@ -64,12 +61,12 @@ Held-out errors: D99 `0.910` mm; D97 `0.851` mm.
 D93, C10, C11, C15, C16, C19, R79-R85, R92/R93/R94/R95/R98/R99, and the populated R100/R102/R108/R86 right-edge row have source-PCB footprints at their projected
 factory-drawing positions. C20/C22 have source-PCB footprints, but their table deltas are intentional: the drawing points identify the
 overlapping body labels, whereas registered owner component and solder photos prove the actual adjacent 2.54 mm drill columns
-at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans. C83 is absent at its factory callout:
-the factory drawing shows its intended outline, while the owner photo shows no body in the D41/D40 gap. Two candidate front sites align with solder crowns under the promoted D41 fit, pending same-hole continuity. The separately photo-registered inherited DRAM-grid landing at `(176.1,145.6)` mm remains fabricated as bare common artwork.
+at `(303.997,110.024)` and `(306.537,110.024)` mm with 10 mm vertical pad spans.
+
 The owner photos confirm C16/C19, C20/C22, R92/R99, and the R100/R102/R108/R86 row. Their drill registration, pad order, and visible joins are documented in [analog-cluster placement](analog-cluster-photo-placement.md).
 R92/R99 read 1.3 kΩ/4.7 kΩ; R100/R102/R108 read 12 kΩ and R86 reads 4.7 kΩ. C16 reads bare `27`; C19/C20/C22 read bare `22`. The schematic nominal values are 27/22 pF, but installed capacitances remain unverified. See [native capacitor values](native-capacitor-values.md) and the [FDC precomp map](../ref/schematics/fdc-write-precomp-map.md) for value boundaries and source connections.
 
-C83 is absent from the owner board's D41/D40 gap. The factory drawing labels the intended part `C83`; candidate front sites align with solder crowns, but their identity needs continuity. The logical model connects C83 to +5 V/GND; physical placement and the owner-board pad pair remain unresolved. The photos cannot distinguish omission at assembly from later removal. C63 is a separate bare inherited DRAM-grid footprint.
+C83 is absent from the owner board's D41/D40 gap. The factory drawing labels the intended part `C83`; candidate front sites align with solder crowns, but their identity needs continuity. The logical model connects C83 to +5 V/GND; physical placement and the owner-board pad pair remain unresolved. The photos cannot distinguish omission at assembly from later removal. The inherited C83 DRAM-grid landing at `(176.1,145.6)` mm remains bare common artwork; it does not identify the factory-callout pad pair. C63 is a separate bare inherited DRAM-grid footprint.
 
 The later July owner image `PXL_20260710_202708344.jpg` exposes green two-lead
 bodies at the factory C10 and C11 positions. Their values and lead rails remain
