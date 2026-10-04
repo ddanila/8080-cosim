@@ -107,10 +107,13 @@ complete command with the same transaction and independently verifies written
 bytes. LOAD retries are safe because the same bytes target the same addresses.
 
 RUN has a separate random 32-bit execution ID. The ROM caches the latest
-invocation and its returned A. Repeating the exact address, mode, and execution
-ID replays RESULT and RETURN without executing the snippet again. This makes a
-damaged or lost acknowledgement/RETURN recoverable even for non-idempotent
-snippets. A genuinely new invocation must use a new execution ID.
+invocation and, after a cooperative CALL completes, its returned A. Repeating
+that exact address, mode, and execution ID replays RESULT and RETURN without
+executing the snippet again. This recovers a lost acknowledgement or RETURN
+for a completed non-idempotent CALL while its cache remains intact. A new RUN
+replaces the cached invocation; RESET or corrupt workspace can lose it.
+One-way JUMP and non-returning CALL code cannot service retries. A genuinely
+new invocation must use a new execution ID.
 
 If the host disappears while the loader is receiving, eight bounded idle receive
 periods discard the partial parser, restore that ROM's boot-vote default,
