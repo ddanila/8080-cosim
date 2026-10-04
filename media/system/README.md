@@ -47,11 +47,13 @@ build/jukuhost --serial /dev/ttyUSB0 \
 sync/janet_netboot_check.sh
 ```
 
-The proven stock setting is nominal 9600 baud, 8O1. The regression exercises
-the real PTY serial/PIC/NetBios path and requires a byte-exact `B400h` image plus
+The proven stock setting is nominal 9600 baud, 8O1. The five-image regression
+uses the frozen Python-era Janet test fixture to serve the simulator through
+its PTY serial/PIC/NetBios path. It requires a byte-exact `B400h` image plus
 the `CA00h` handoff; it does not inject RAM. It stops before the first
 `CA00h` instruction and therefore does not prove a subsequent CP/M prompt or
-filesystem operation. Those require the separate disk/boot guards.
+filesystem operation. Those require the separate disk/boot guards. Production
+C-host evidence belongs to [the host acceptance report](../../docs/portable-c-host-m2-acceptance.md).
 
 Validated physical dumps for all four small PROMs are maintained separately
 in [the physical PROM reference](../../ref/physical-proms/README.md).
