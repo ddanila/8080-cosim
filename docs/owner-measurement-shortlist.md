@@ -149,9 +149,8 @@ yet modeled as nets.
 - `FDC`: `3` net(s)
 - `logic`: `28` net(s)
 - `memory/decode`: `2` net(s)
-- `sound/analog`: `2` net(s)
-- `timing/I/O`: `6` net(s)
-- `video/analog`: `14` net(s)
+- `timing/I/O`: `7` net(s)
+- `video/analog`: `15` net(s)
 
 ## Practical sequencing
 
