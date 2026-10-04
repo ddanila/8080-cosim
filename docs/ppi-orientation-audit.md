@@ -43,12 +43,11 @@ checks give approximately −0.86 mm vertical and −0.64 mm horizontal
 residuals against the routed placement. They support its coarse placement;
 exact coordinates remain subject to local registration.
 
-D26 has a separate placement hold. The direct bottom-edge check in
-[photo registration](photo-registration.md) puts its photographed lower
-row near y=243 mm, versus routed y=258.62 mm. A local fit must reconcile
-the D26/D54/D55/D57 cluster and surrounding passives before applying a
-placement correction. Broad panorama residuals are insufficient for that
-change. The routed orientation and placement repair remains open.
+D26 placement needs reconciliation against the package-local registration
+and the D26/D54/D55/D57 cluster before moving the routed footprint.
+Broad panorama residuals alone do not establish the correction; see the
+[registration workflow](photo-registration.md). Routed orientation and
+placement qualification remain open.
 
 ## Original-board supply evidence
 
