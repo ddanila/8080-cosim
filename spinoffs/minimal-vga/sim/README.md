@@ -20,9 +20,10 @@ spinoffs/minimal-vga/sim/revb_tier_suite.sh
 `--ci` runs the behavioral smoke subset: commons/completeness checks, named ROM
 freshness, card and bus tests, bring-up, serial console, PIT/POST expansion,
 EKTA decode modes and video. `REVB_CI_GROUP=cards` or `system` selects its
-corresponding subset. The default suite also runs local CAD/release checks;
-read every skipped-tool message before interpreting aggregate success.
-An exit of zero with a skipped release section does not qualify fabrication.
+corresponding subset. The default suite also runs local CAD/release checks.
+See the [execution guide](../docs/rev-b-execution-guide.md) for required tools,
+skip behavior and generated-file/framebuffer side effects. Suite success alone
+does not qualify fabrication.
 
 The Rev B video guard covers chip-level TTL timing and the framebuffer path.
 The serial and I/O guards use hardware-rate clock/framing fixtures and negative

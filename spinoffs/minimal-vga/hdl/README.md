@@ -8,23 +8,10 @@ through the shared К565РУ5, D6 К556РТ4, and D8 К155РЕ3 models. Both fra
 results match the main cosim oracle after 6000 video writes. This is simulation
 evidence, not a release of the stale Rev-A copper.
 
-The first CPU target is the VHDL T80 core from the `external/T80` submodule.
-
-Use `T80se` first:
-
-- `Mode => 0` for Z80 mode.
-- `IOWait => 1` for standard I/O cycle timing.
-- `CLKEN => '1'` for the first simple simulation.
-- Keep `RFSH_n` visible, but do not use it as the primary DRAM refresh source.
-
-The retained VHDL smoke-test structure is:
-
-```text
-T80se
-  -> z80_native_adapter
-  -> mem_io_request
-  -> ROM / DRAM timing / keyboard / VGA bridge
-```
+The VHDL smoke top directly instantiates `T80se` from the `external/T80`
+submodule with `Mode => 0` (Z80), `IOWait => 1` and `CLKEN => '1'`.
+Local logic handles ROM, I/O and the shared DRAM sequencer; an independent
+counter supplies refresh requests instead of Z80 `RFSH_n`.
 
 The Verilog tv80 twin and modular Rev B models are separate maintained paths;
 see [simulation checks](../sim/README.md) for their entry points and scope.
@@ -58,7 +45,7 @@ Run from the repository root:
 )
 ```
 
-## First Smoke Top
+## Synthetic smoke top
 
 `z80_minimal_top.vhd` instantiates `T80se` and runs a built-in synthetic ROM:
 
@@ -74,9 +61,11 @@ HALT
 The testbench checks that the 4164-style bit-sliced RAM bank and IO both observe
 `0x42`, that a keyboard-style IO read occurs, that the independent refresh
 counter ticks without relying on Z80 `RFSH`, and that the VGA timing block
-completes at least one frame.
+completes at least one frame. It also requires nonzero CPU wait and video-read
+counters. The VGA counters run independently; this test does not check a
+scanned-out pixel image.
 
-The RAM path now goes through an explicit DRAM sequencer:
+The RAM path goes through an explicit DRAM sequencer:
 
 - CPU requests latch address and write data.
 - The sequencer presents row address, asserts `RAS`, presents column address,
@@ -85,7 +74,8 @@ The RAM path now goes through an explicit DRAM sequencer:
 - Periodic refresh uses the same RAS-side timing path and is generated
   independently of Z80 `RFSH`.
 - Periodic video fetches arbitrate for the same DRAM sequencer and count
-  successful reads from the framebuffer window.
+  synthetic sequential reads starting at `0x8000`; they are not bounded to
+  the Juku framebuffer window.
 
 This is a functional timing scaffold. It does not establish the original
 Juku shared-DRAM slot schedule or propagation delays. See the root
