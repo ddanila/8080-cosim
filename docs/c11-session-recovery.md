@@ -39,7 +39,7 @@ V16.
 
 The ROM beacon's transmitter-empty waits have no deadline. NetDisk bounds
 individual receive waits and retry counts, but not transmit-ready or
-reply-prefix waits; see the [ABI transport limits](../third_party/juku-common/platform/ROM-ABI.md).
+reply-prefix waits; see the [ABI transport limits](https://github.com/ddanila/juku-common/blob/57ec6d8/platform/ROM-ABI.md).
 Host recovery cannot guarantee target progress through those waits under a UART
 fault or continuous malformed traffic.
 
