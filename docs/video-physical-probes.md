@@ -1,6 +1,6 @@
 # Physical video contributor probes
 
-Status: **PHYSICAL CONTRIBUTORS PROBED / CONTROLLED STIMULUS ONLY / SLOT + D34_SIG OPEN**.
+Status: **SOURCE CONTRIBUTORS SIMULATED / CONTROLLED STIMULUS ONLY / SLOT + D34_SIG OPEN**.
 
 This generated report guards explicit simulation observability for the
 source-proved D42/D43/D37 and D54/D55/D56/D34_SYNC contributors. The
