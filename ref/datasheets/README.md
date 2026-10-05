@@ -34,7 +34,11 @@ Current artifacts:
 
 ## Verify retained artifacts
 
-The [checksum manifest](SHA256SUMS) records the PDF identities. From the
+The [checksum manifest](SHA256SUMS) records retained PDF and model-archive
+identities. The [TI SN74LS86A PSpice archive](sn74ls86a-ti-pspice.zip) is a
+compatible-device comparison; its provenance and limits are in
+[the D34 output reference](k555lp5-output-reference.txt).
+From the
 repository root, run:
 
 ```sh
