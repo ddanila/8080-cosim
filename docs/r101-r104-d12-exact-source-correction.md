@@ -21,7 +21,7 @@ photo `PXL_20260710_200418174.jpg` shows an upright resistor immediately
 left of D12, matching that assembly position. The package legend reads
 К155ЛА18, and a broad tinned front-face branch joins the resistor's
 lower joint to D12.8 (the modeled +5 V supply pin). See
-`ref/photos/juku-pcb-2/d12-r104-owner-photo-review.json`.
+[the D12/R104 photo review](../ref/photos/juku-pcb-2/d12-r104-owner-photo-review.json).
 The corresponding solder-side tile `PXL_20260710_200522685.jpg` shows
 R104's upper joint joined to D12.5 by a short tinned trace and D12.6/.7
 joined by a separate vertical bar. Thus both local R104-to-D12 branches
@@ -29,36 +29,24 @@ and the paired `-INT4` gate inputs are photo-closed. The installed
 resistance, known +5 V return, X1.114C arrival, and X2.214/D10.IR0
 continuation still need owner-board checks.
 
-The D3 local photo fit projects this resistor's two joints near
-**(213.94, 59.31)** and **(213.94, 69.55) mm** on the replica board. These
-are placement targets from hand-read pixels; confirm the hole centers and
-installed value before fabrication.
+The D3-local photo fit places R104 beside D12 and R18 separately beside D3.
+The source and both routed PCBs retain both footprints. These placements come
+from hand-read pixels; confirm the holes and installed values before fabrication.
+Coordinates and source controls are in
+[the R18/R104 placement review](../ref/photos/juku-pcb-2/r18-r104-footprint-collision-review.json).
 
-R18 is the distinct lower body beside D3, with candidate pad centers
-`(211.299,70.945)` and `(211.635,81.049)` mm. Its placement is separate
-from R104; the corrected model and PCBs retain both parts.
 Two native owner crops, `200358952` and `200418174`, show **33К** on the
-lower R18 body, agreeing with exact sheet-1 R18=33 kΩ. The upper R104
-body's print is partly hidden by glare and cable, so its installed 470 Ω
-value still needs an isolated measurement. The independent `200402344`
-overlap repeats the dark R104 print beneath a specular stripe; its last
-digit remains unreadable in all three archived component views.
-The displaced nets still require routing. Placement evidence is in
-`ref/photos/juku-pcb-2/r18-r104-footprint-collision-review.json`.
+lower R18 body, agreeing with exact sheet-1 R18=33 kΩ. R104's print remains unreadable in the archived component views; its installed
+470 Ω value requires an isolated measurement. The displaced nets require routing.
 The owner solder tile `PXL_20260710_200522685.jpg` additionally shows
 an uninterrupted short bar from R18's lower joint to registered D3.11,
 closing that local `SER_TXD` end. The upper R18-to-D12.3 `S_OC` route
 still needs physical confirmation: its solder joint departs westward on a
 separate run, but that run cannot be followed to D12.3 in the available
-registered crop. In the full `200522685` tile, D12.3 near `(2723,200)`
-departs to an open hole near `(2837,185)`, while R18 upper near
-`(3004,363)` departs to a different open hole near `(2803,367)`. No
-continuous B.Cu bridge joins those branches locally; test both holes and
-their mutual continuity before assigning any remote/front continuation.
-The D3-local inverse cross-face fit places their component-side search
-regions near `(1370,547)` under D12 and `(1402,721)` at D3's upper edge in
-`200418174`. Both front continuations are body-obscured, so the archived
-photos cannot establish a hidden F.Cu join or electrical isolation.
+registered crop. D12.3 and R18's upper lead depart to separate open holes with no visible local
+B.Cu bridge. Their front continuations are body-obscured, so the photos establish
+neither a hidden join nor electrical isolation. Test each lead to its hole and
+the two branches to each other; the placement review retains the probe coordinates.
 
 The same electrical crop draws the second D12 К155ЛА18 gate explicitly:
 X1.114C `-INT4` joins both D12 inputs 6 and 7. D12 open-collector
