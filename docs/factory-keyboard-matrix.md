@@ -107,7 +107,9 @@ physical acceptance scope.
   return while reusing the lowercase matrix contact.
 - The HDL accepts the same `(column, key-bit, shift)` tuple at its simulation
   boundary; shifted `T` remains column 4, bit 3 and reads as Port B `0x88`.
-- No-key remains `0xCF`: `K0–K2` and `-FK` released, SHIFT/CTRL released.
+- No-key matrix/modifier bits are `0xCF`: `K0–K2` and `-FK` released,
+  SHIFT/CTRL released. In scan columns 8–15, an open S21 switch adds PB5
+  (`0x20`), producing `0xEF`; a closed switch leaves `0xCF`.
 - Interactive PTY bytes `80`..`91` (except `85` and `8e`) inject the guarded
   Down, Erase, F5, F6, F8, Shift-F8, F1, F2, F3, F4, Up, Right, Left,
   Shift-Up, Shift-Down, and F7 contacts. `85` and `8e` inject Ctrl-Up/Home and
