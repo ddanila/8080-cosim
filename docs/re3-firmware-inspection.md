@@ -9,6 +9,11 @@ they are **not** the processor-module D8 `.039` or D94 `.092` contents.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The reference guard also requires Bash, `sha256sum`, `awk`, `head`,
+`grep` and `file`, plus materialized owner-photo Git LFS objects.
+The writer replaces this report and the firmware checksum manifest.
+
 ```sh
 sync/reference_artifact_check.sh
 python3 scripts/report_re3_firmware_inspection.py
@@ -35,10 +40,10 @@ The separate reference-artifact guard checks the registered source identities.
 
 ## Tables
 
-| Programmed drawing | Primary use | Row summary | SHA256 |
-| --- | --- | --- | --- |
-| `ДГШ5.106.113` | `ДГШ5.106.103` family | `00-13:FF, 14:07, 15:0B, 16:0D, 17:0E, 18-1F:FF` | `05b582e19bed47c70374859de41c7fb4ce648a6f0b895059f9cf963c5496cb13` |
-| `ДГШ5.106.117` | `ДГШ5.106.103` family | `00-07:FF, 08-0B:07, 0C-0F:0B, 10-13:0D, 14-17:0E, 18-1F:FF` | `3c431fdc0005a865aba209a026a3e75cbc1af9bdf1d5d8fc9953954238205f18` |
+| Programmed drawing | Primary use | Row summary |
+| --- | --- | --- |
+| `ДГШ5.106.113` | `ДГШ5.106.103` family | `00-13:FF, 14:07, 15:0B, 16:0D, 17:0E, 18-1F:FF` |
+| `ДГШ5.106.117` | `ДГШ5.106.103` family | `00-07:FF, 08-0B:07, 0C-0F:0B, 10-13:0D, 14-17:0E, 18-1F:FF` |
 
 Artifact checksums are in [the firmware manifest](../ref/firmware/SHA256SUMS).
 
