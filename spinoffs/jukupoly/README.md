@@ -293,52 +293,24 @@ direction, an audible release tail, LFO progression, modulation changing the
 PCM, and isolated two-operator rendering.  The oracle is compiled and run only
 on the host; neither it nor its state structures enter `JUKEBOX.COM`.
 
-`--opl-voice-output VOICES.json` adds a second analysis-only view.  It
-reconstructs exact key spans and every held-note pitch write, then reports
-same-pitch layer and same-patch cross-channel continuation candidates together
-with the register-semantic evidence for each relation.  Candidate edges are
-not yet logical-voice assignments: a complete two-pack run found enough
-ambiguous continuation edges that adopting them locally would be unsafe for
-chords.  This progressive M2 slice therefore changes neither generated scores
-nor the target player.
+`--opl-voice-output VOICES.json` emits host-only logical-voice evidence:
+key spans, held-note pitch writes, strict same-pitch layers, and provisional
+continuation chains formed by global one-to-one boundary matching. It also
+reports a provisional three-voice allocation on the 50 Hz grid, preserving
+source onsets retained by the v1 reducer. These decisions do not change the
+generated score or target player.
 
-The v2 evidence document also collapses the proven layer components and uses
-a global one-to-one boundary match to form provisional logical-voice chains.
-The matching order is explicit and deterministic: patch identity, hardware
-channel continuity, known/small pitch motion, then key gap.  It does not yet
-choose the three Juku voices.  Run `tools/report_opl_voices.py` on one or more
-ZIP packs to get per-track counts, assignment fingerprints, and a complete
-pack fingerprint without copying the copyrighted source streams.
+Tone eligibility uses the v1 melodic classifier plus sustained layers with
+at least two members, a keyed span of at least one second, finite pitch, and
+OPL sustained-envelope evidence. The reasons appear in `melodic_eligibility`;
+short layered percussion and single-channel effects do not qualify through
+this additional rule.
 
-The completed M2 analysis adds a provisional three-voice decision at every
-relevant 50 Hz frame.  Each selected note records whether it is a protected
-v1 onset, a new attack, retained logical-voice ownership, bass/lead role,
-estimated level, and envelope evidence.  Current v1 source onsets are a
-monotonic compatibility set: the provisional allocator may fill otherwise
-lost capacity but may not remove one.  Across the two complete Doom packs it
-retains all 53,286 v1 source onsets and adds 15,776, with no score or player
-change.  `--opl-voice-output` contains the full inspectable decisions;
-`report_opl_voices.py` fails if a protected onset regresses.
-
-The v3 evidence policy closes a blind spot found while preparing the M3 Imp
-fixture.  Four detuned, sustained OPL channels begin at sample zero in “The
-Imp's Song,” but the v1 distinct-pitch signature classifier cannot label an
-evolving patch used for only one keyed pitch.  A logical note may now also be
-tone-eligible when at least two channels have passed the existing strict
-pitch-layer tests, remain keyed for at least 50 analysis frames (one second),
-have a finite pitch, and carry OPL sustained-envelope evidence.  Each reason
-is written to `melodic_eligibility`; short layered percussion, long
-single-channel effects, and non-sustained layers are guarded by regressions
-and remain excluded.  This is a generic register-semantic rule, not an Imp
-track, filename, or patch exception.
-
-The complete two-pack v3 report covers the same 44 tracks and preserves all
-53,286 v1-retained onsets.  It recognizes 156 additional sustained layered
-logical notes, increases eligible source onsets from 75,703 to 75,846, and
-retains 69,140 provisional onsets (15,854 gains and zero regressions).  The
-Imp allocation now starts at frame zero on MIDI F#2, retains all 506 protected
-onsets, and gains 14 instead of six.  The deterministic v3 report fingerprint
-is `26f0e6d09848cbee34755b247057092dd9defea435781a9e5cedbd5acb939b55`.
+Run `tools/report_opl_voices.py` on one or more source ZIP packs for current
+per-track counts and deterministic assignment/pack fingerprints. It fails if
+the provisional allocator loses a protected v1 source onset. Use the
+[voice differential workflow](OPL-VOICE-DIFFERENTIAL.md) to investigate an
+individual source-to-target discrepancy before physical listening.
 
 [nuked-opl3]: https://github.com/nukeykt/Nuked-OPL3
 
