@@ -350,7 +350,7 @@ def main() -> int:
         ),
     ]
     ok = all(result for _, result, _ in guarded_checks + boundary_checks)
-    status = "MEMORY TIMING GUARDED / CAS SOURCE BOUNDARY PENDING" if ok else "MEMORY TIMING BOUNDARY FAILED"
+    status = "MEMORY TIMING CONNECTIONS GUARDED / CAS SOURCE BOUNDARY PENDING" if ok else "MEMORY TIMING BOUNDARY FAILED"
 
     lines = [
         "# Memory timing boundary",

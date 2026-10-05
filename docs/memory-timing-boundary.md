@@ -1,6 +1,6 @@
 # Memory timing boundary
 
-Status: **MEMORY TIMING GUARDED / CAS SOURCE BOUNDARY PENDING**
+Status: **MEMORY TIMING CONNECTIONS GUARDED / CAS SOURCE BOUNDARY PENDING**
 
 This generated report narrows the remaining DRAM/clock timing risks.
 The board model preserves the traced E1 and E13/E14 selector straps, RAS/CAS ladder, write rail,

@@ -32,7 +32,7 @@ python3 scripts/report_owner_measurement_shortlist.py
 | Serial USART behavior guarded | PASS |
 | Decap value boundary guarded | PASS |
 | D41 timing connectivity source-closed | PASS |
-| Memory timing boundary guarded | PASS |
+| Memory timing connections guarded | PASS |
 | I/O decode boundary guarded | PASS |
 | .009 video / .006 RF disposition guarded | PASS |
 | S4 interrupt boundary guarded | PASS |

@@ -277,7 +277,7 @@ def main() -> int:
         ("Serial USART behavior guarded", has_phrase("docs/serial-handoff.md", "Status: **SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING**")),
         ("Decap value boundary guarded", has_phrase("docs/decap-value-fidelity.md", "Status: **DRAM OPTIONAL PAD IDENTITIES / VALUES AND NON-FIELD PLACEMENTS PENDING**")),
         ("D41 timing connectivity source-closed", has_phrase("docs/d41-timing-boundary.md", "Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**")),
-        ("Memory timing boundary guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING GUARDED / CAS SOURCE BOUNDARY PENDING**")),
+        ("Memory timing connections guarded", has_phrase("docs/memory-timing-boundary.md", "Status: **MEMORY TIMING CONNECTIONS GUARDED / CAS SOURCE BOUNDARY PENDING**")),
         ("I/O decode boundary guarded", has_phrase("docs/io-decode-boundary.md", "Status: **IO DECODE GUARDED / SMALL SOURCE BOUNDARIES PENDING**")),
         (".009 video / .006 RF disposition guarded", has_phrase("docs/video-analog-boundary.md", "Status: **.009 COMPOSITE HANDOFF GUARDED / .006 RF OPTION DNP**")),
         ("S4 interrupt boundary guarded", has_phrase("docs/s4-interrupt-boundary.md", "Status: **S4 INTERRUPT SELECTOR GUARDED**")),
