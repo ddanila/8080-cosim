@@ -231,6 +231,7 @@ the embedded payload catalog, and the checkout revision at packaging time.
 The release workflow builds and packages the same checkout. For local packages,
 `tools/package-jukuhost-windows.py` copies an existing EXE without rebuilding
 it or verifying its source revision; build it from the intended checkout first.
+The portable folder's README links to documentation at that packaging revision.
 A Wine or simulator pass proves the desk behavior only. Consult
 [windows-jukuhost-client-implementation.md](windows-jukuhost-client-implementation.md)
 for current physical Windows and Windows 95 qualification status.

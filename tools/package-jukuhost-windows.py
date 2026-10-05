@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 
@@ -40,7 +41,8 @@ def main() -> int:
         "README.md": ROOT / "docs/windows-jukuhost-client.md",
     }
     for name, source in outputs.items():
-        shutil.copyfile(source, args.output / name)
+        if name != "README.md":
+            shutil.copyfile(source, args.output / name)
 
     payload_manifest = json.loads(
         (ROOT / "host/windows/payload-manifest.json").read_text()
@@ -49,6 +51,16 @@ def main() -> int:
         ["git", "rev-parse", "HEAD"], cwd=ROOT, check=True,
         text=True, stdout=subprocess.PIPE,
     ).stdout.strip()
+    # The portable folder does not contain the repository's other docs.
+    readme = outputs["README.md"].read_text(encoding="utf-8")
+    readme = re.sub(
+        r"(\]\()([A-Za-z0-9_-]+\.md(?:#[A-Za-z0-9_-]+)?)(\))",
+        lambda match: (match[1] +
+                       f"https://github.com/ddanila/8080-cosim/blob/{source_revision}/docs/" +
+                       match[2] + match[3]),
+        readme,
+    )
+    (args.output / "README.md").write_text(readme, encoding="utf-8")
     manifest = {
         "schema": "jukuwin-package-v1",
         "source_revision": source_revision,

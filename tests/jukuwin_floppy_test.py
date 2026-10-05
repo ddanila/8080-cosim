@@ -2,6 +2,7 @@
 """Verify full CP/M transfer media, FAT12 readback and capacity/identity failures."""
 import hashlib
 import json
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -27,6 +28,20 @@ class FloppyTest(unittest.TestCase):
         subprocess.run([sys.executable, str(ROOT / 'tools/package-jukuhost-windows.py'),
                         '--build-dir', str(self.build), '--output', str(self.package)],
                        check=True, capture_output=True)
+
+    def test_portable_readme_links(self):
+        self.package_exe()
+        manifest = json.loads((self.package / 'MANIFEST.json').read_text())
+        readme = (self.package / 'README.md').read_text()
+        self.assertNotRegex(readme, r'\]\([A-Za-z0-9_-]+\.md')
+        prefix = ('https://github.com/ddanila/8080-cosim/blob/' +
+                  manifest['source_revision'] + '/docs/')
+        links = re.findall(re.escape(prefix) + r'([^)#]+)', readme)
+        self.assertTrue(links)
+        for link in links:
+            self.assertTrue((ROOT / 'docs' / link).is_file(), link)
+        subprocess.run([sys.executable, str(ROOT / 'tools/check-jukuwin-package.py'),
+                        str(self.package)], check=True, capture_output=True)
 
     def run_floppy(self):
         return subprocess.run([sys.executable, str(ROOT / 'tools/package-jukuwin-floppy.py'),
