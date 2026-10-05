@@ -137,6 +137,16 @@ def main() -> int:
         "come from the sheet-2 ladder; connectivity is checked separately by",
         "the [memory timing report](memory-timing-boundary.md).",
         "",
+        "The separate source-PCB check requires KiCad's `pcbnew` Python module:",
+        "",
+        "```sh",
+        "/usr/bin/python3 kicad/check_ras_resistor_bank.py",
+        "```",
+        "",
+        "Use the Python interpreter that provides `pcbnew` on your installation.",
+        "This checks the eight centres, orientation, lead span, values and pad widths,",
+        "plus C69 pad widths; it does not inspect routed copper or run DRC.",
+        "",
         "Source record: [bank registration](../ref/photos/juku-pcb-2/ras-resistor-bank-registration.json).",
     ])
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
