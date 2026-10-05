@@ -154,6 +154,10 @@ after the USART simulation passes.
   IR2/IR3 as well; see [interrupt behavior](hardware-map.md#interrupt-and-keyboard-behavior).
 - Full-resolution sheet 1 proves D11.16 `SYNDET` on the lower S4 throw.
   D11.18 `TXEMPTY` is absent from the drawn USART symbol and modeled NC.
+- The HDL USART shifts fixed 8N1 frames, one bit per TxC/RxC edge;
+  the stored mode byte does not select clock division or framing.
+  Hardware reset and DSR inputs are unused, SYNDET and error-status
+  bits remain zero, and receive errors are not modeled.
 - This guard does not qualify external X3 loopback, electrical levels,
   or the complete 8251 synchronous and parity-mode behavior. Physical
   session qualifications belong to their machine-specific records.
