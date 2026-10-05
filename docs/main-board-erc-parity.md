@@ -12,7 +12,9 @@ either routed variant. A separate check catches modeled source-PCB pads
 missing from a routed variant; off-board connectors are outside both checks.
 
 Regenerate with `/usr/bin/python3 kicad/report_main_board_erc_parity.py`
-using KiCad Python bindings. The command reruns ERC and source schematic
+from the repository root. This requires KiCad Python bindings and a KiCad
+CLI found by `scripts/find-kicad-cli.sh` or supplied with `KICAD_CLI`.
+The command reruns ERC and source schematic
 parity; it does not repair copper or establish physical continuity.
 A completed report returns exit status 0 even for `DESIGN HOLD`; use its
 status and result rows to determine readiness. It overwrites this report,
@@ -55,7 +57,8 @@ boundaries and `12` have closed or intentional dispositions.
 | P1 | 30 |
 | P2 | 1 |
 
-The complete machine-readable singleton-endpoint backlog is
+The machine-readable backlog of source-risk singleton endpoints and
+functional pins without a net or explicit no-connect is
 `docs/main-board-unresolved-endpoints.csv`.
 
 ## Release interpretation
