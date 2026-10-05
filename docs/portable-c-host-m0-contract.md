@@ -5,37 +5,17 @@ Status: **FROZEN PYTHON-ERA BASELINE**
 This record pins the Python-era baseline used to verify the C replacement.
 The Python production commands have been removed; current behavior and platform
 qualification live in the [portable C host contract](portable-c-host-plan.md).
-The identities below remain necessary for the frozen compatibility oracle.
+The pinned revision and retained fixtures identify the compatibility baseline.
 
 ## Baseline identity
 
 The baseline is commit
 [`81f64f76e56c3dd56cffbb4a6a89a4094dafbda6`](https://github.com/ddanila/8080-cosim/commit/81f64f76e56c3dd56cffbb4a6a89a4094dafbda6).
-The hashes below identify its production modules and direct regression tests;
-they are historical identities, not hashes of the current test files.
-
-| File | SHA-256 |
-| --- | --- |
-| `tools/janet_netboot.py` | `17b362c09f2af548a81a9f86b855c4a3ab9803406f7dcc91810c6151b921f20f` |
-| `tools/janet_fastboot.py` | `8a23c014fc969367f47833e9235354af41b75165a884bffbf558e8ece432f538` |
-| `tools/janet_disk_server.py` | `05e637db7d33dbda9c2177055809a5f190248d7f9b71fce34374aa3be8887236` |
-| `tests/janet_netboot_test.py` | `4e2847ec3e7a05661576bba64fa2720d30451814cd4db82aace62aca9fd3ea07` |
-| `tests/janet_fastboot_protocol_test.py` | `1f7f4a524bb2d069b52895961f13be0a7643523d3ba28f84a7caed69561b10e4` |
-| `tests/janet_disk_server_test.py` | `3b1a7ff1dc1c8b9523bee9d2b9bf39a7d214f15d27bfaae088355527397cc7e2` |
-
-The five archived stock-system inputs remain byte-identical:
-
-| System | SHA-256 |
-| --- | --- |
-| `CPM22.BIN` | `b9665d9af00f66bf51a5deda02fad3149b8fd3820c020e252d49f607362fee79` |
-| `CPM231E.BIN` | `230aa5952cd62596ac8a71bfd5addbb840a51ec51987d882fda958d2f9817939` |
-| `EKDOS229.BIN` | `496473a0461e2c09546d0587fc83292e78e9e57e5ef19e1565ac3a602dc3677e` |
-| `EKDOS230.BIN` | `819d0ab7a30fbb8e87ebe42eddc2da599816f21b131f96bab2bd8f7cdc4f96d8` |
-| `EKDOSVSW.BIN` | `8c70eda07c2cde8e73a0e664d7ff51356b4559649fad6df24f45784f3076e994` |
-
-The module paths and hashes above identify the immutable M0 repository state.
+Historical production modules and tests can be recovered from that revision.
 The retained implementations at `tests/fixtures/legacy_janet_*.py` serve as
-non-runnable PTY regression/diagnostic fixtures.
+non-runnable PTY regression/diagnostic fixtures. The five archived stock-system
+inputs and their identities are maintained in the
+[system binary catalog](../media/system/README.md).
 
 `tests/fixtures/jukuhost/python-era-v1.txt` is the compact, standalone wire
 oracle. `tests/jukuhost_contract_test.py` proves that it still agrees with the
