@@ -440,12 +440,12 @@ def main() -> int:
             or package_evidence.get("package_status") != "DESIGN HOLD / PACKAGE VERIFIED"
         ):
             failures.append("zero-open fabrication-package evidence is malformed or stale")
-        for path in (
-            "docs/replica-order-evidence-template.md",
-            "docs/replica-order-upload-runbook.md",
-        ):
-            if package_sha and package_sha not in read(path):
-                failures.append(f"{path} does not contain fabrication-package ZIP SHA256 {package_sha}")
+        template_path = "docs/replica-order-evidence-template.md"
+        if package_sha and package_sha not in read(template_path):
+            failures.append(f"{template_path} does not contain fabrication-package ZIP SHA256 {package_sha}")
+        runbook = read("docs/replica-order-upload-runbook.md")
+        if "[superseded package record](../ref/routing/zero-open-fabrication-package.json)" not in runbook:
+            failures.append("order-upload runbook does not link the superseded package identity record")
 
     fab_root = ROOT / "fab"
     main_fab_root = fab_root / "gerbers"
