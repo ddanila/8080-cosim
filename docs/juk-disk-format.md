@@ -2,7 +2,7 @@
 
 This repository uses the raw MAME Juku disk image layout as the cosim disk
 backend target. MAME software-list images often use `.juk`; the vendored Arti
-images use `.CPM`. The loader accepts either extension and infers geometry
+images use `.CPM`. The loader ignores filename extensions and infers geometry
 from size; it does not validate filesystem contents, provenance or sector
 ordering from the file name or length.
 
@@ -15,7 +15,7 @@ cross-checked 2026-07-17.
 
 | Field | Value |
 |---|---:|
-| Tracks | 80 |
+| Cylinders (track numbers per side) | 80 |
 | Sectors per track | 10 |
 | Sector size | 512 bytes |
 | Sector IDs | 1-10 |
