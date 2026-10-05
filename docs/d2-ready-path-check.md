@@ -8,6 +8,11 @@ releases the modeled pull-up, and either disabled enable releases all outputs.
 D30 section A samples the low and released levels on `PHI2TTL`; its asynchronous
 controls are held inactive in this bench.
 
+Run from the repository root with a POSIX shell and Icarus Verilog
+(`iverilog` and `vvp`). The model reads
+`ref/physical-proms/validated/d2_037.raw.hex`. Simulation files are temporary;
+the command overwrites this report only after the checks pass.
+
 ```sh
 sync/d2_ready_path_check.sh
 ```
