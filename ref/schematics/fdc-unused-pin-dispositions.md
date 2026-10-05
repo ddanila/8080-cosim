@@ -21,10 +21,22 @@ interrupt conditioner. Both D96 sections are source-used.
 D96.13 is source-connected to D99.10 at a marked junction in the exact-revision
 sheet-3 photo `PXL_20260718_101641055.jpg`; it is not an unused pin. Their
 shared conductor continues to sheet 1 with an unread source. Recheck that
-source, verify the D96.9/D101 and D96.11/D94.2 islands, and capture pins8-13 before hardware
-release; see [D96 readiness](../../docs/d96-read-clock-readiness.md).
+source, verify the D96.9/D101 and D96.11/D94.2 islands, and capture pins 8–13
+before hardware release; see [D96 readiness](../../docs/d96-read-clock-readiness.md).
 
 Primary views: `ref/photos/dgsh5-109-009-e3/PXL_20260718_101633062.jpg`,
-`PXL_20260718_101641055.jpg`, and `PXL_20260718_101648508.jpg`. Machine guards:
-`python3 kicad/check_fdc_unused_pins.py` and
-`python3 kicad/check_d93_irq_conditioner.py`.
+`PXL_20260718_101641055.jpg`, and `PXL_20260718_101648508.jpg`.
+
+## Verification
+
+Run from the repository root with Python 3 (standard library only):
+
+```sh
+python3 kicad/check_fdc_unused_pins.py
+python3 kicad/check_d93_irq_conditioner.py
+```
+
+The guards check selected board-JSON endpoints, no-connects, source-PCB pad
+assignments, photo provenance and literal HDL/LVS-map markers. They do not
+simulate the circuit, run LVS, check routed copper or establish owner-board
+continuity.
