@@ -217,10 +217,5 @@ older C12 production-host stress extension recorded USART overruns and a
 missed warm-boot prompt. Its failure and the distinct passing C12 checks are
 described in [C12 qualification](../../../docs/c12-runtime-console.md#companion-implementation-and-remaining-qualification).
 
-The 2026-08-18 C6 halves were programmed, verified, and fitted in
-CS00015. Repeated automatic boot, local keyboard, sound, A:/B:, sequential
-reads, synchronous writes, diagnostics, warm boot, soak, and live host
-replacement passed. The external display was unavailable, so exact physical
-geometry, glyph, pseudographic, and cursor appearance of that pair remain
-unclaimed. C5 and
-the stock ROM/RAM-BIOS route remain recovery and comparison baselines.
+Current fitted ROMs and board-specific qualification limits are recorded in
+[the deployment summary](../../../docs/machine-deployment-status.md).
