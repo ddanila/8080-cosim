@@ -11,6 +11,12 @@ This script does not run LVS or verify that a frame interrupt was serviced.
 
 ## Command
 
+Run from the repository root with Bash, Python 3, a C compiler (`CC`,
+default `cc`), and Icarus Verilog (`iverilog` and `vvp`). The guard
+overwrites `cosim/vram.bin`, `hdl/sim/vram_top.bin`, and the generated
+`hdl/sim/jmon33.hex`; preserve any captures needed before running it.
+It replaces this report only after all checks pass.
+
 ```sh
 JMON33_HDL_MAXVRAM=1 JMON33_HDL_FRAMEIRQ=200000 JMON33_HDL_TIMECAP=120000000 sync/jmon33_hdl_probe.sh
 ```
