@@ -116,8 +116,6 @@ number in each cell, not the crossed revision history. In particular, A9
 ends at `12`, A10 at `13,5`, A11 at `11,5`, A12 at `20`, A13 at `15`,
 and A14 at `23` cm.
 
-The final ink readings are `13,5` cm for conductor 6/A10, `19` cm for
-conductor 4/A8 (over a crossed-out `20`), and `11,5` cm for conductor 7/A11.
 A10B and A8B require physical landing evidence before qualifying installed
 lead or replacement cut lengths. See the current
 [wire-fidelity dispositions](../../docs/factory-wire-route-fidelity.md).
@@ -152,8 +150,7 @@ assembly wire, not replacement PCB etch.
 authoritative board model. The mapping does not authorize a routed-copper
 substitution: the final assembly output must retain these as insulated links.
 
-Rows 11 and 12 are the previously open factory links at board points 17 and
-18: their far ends terminate on switch `S1` pins 1 and 2. The 3 cm length of
+Rows 11 and 12 connect board points 17 and 18 to switch `S1` pins 1 and 2. The 3 cm length of
 conductor 12 is
 consistent with board point 18 sitting in the D98 quadrant directly beside
 S1 on the sheet-1 placement.
@@ -273,7 +270,7 @@ These rows document factory intent for the off-board harness and the
 numbered wire links. Before board-model promotion, each `А:N` point must be
 mapped to a package pin via the sheet-1 placement plus owner continuity;
 the table gives point numbers, not pin numbers. In particular, do not route a
-single on-board S1 footprint: first model the physically separate `А:17` and
+single on-board S1 footprint: retain the physically separate `А:17` and
 `А:18` wire landings and their proved local copper. For wire 18, the proved
 landing is D98.7 itself; for wire 17, it is the dedicated `A17` pad.
 The X3, X4, X8, and X9 cables are promoted as physical numbered landings plus
