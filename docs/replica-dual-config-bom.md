@@ -32,7 +32,12 @@ before ordering, including any additional sockets required for bring-up.
 
 ## Action Totals
 
-| Action | Count basis |
+Each review/source action counts populated positions in its rows, or all
+positions when a row has none populated. `leave-empty` counts every empty
+position, including those also counted for review. These totals overlap
+and must not be summed as a component count.
+
+| Action | Positions counted |
 | --- | ---: |
 | circuit-review | 51 |
 | leave-empty | 104 |
