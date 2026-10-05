@@ -30,7 +30,7 @@ sync/beeper_check.sh
 
 | Check | Result |
 | --- | --- |
-| D57 `OUT1` / `SOUND` has at least two transitions after programming | PASS |
+| D57 `OUT1` / `SOUND` has at least two transitions over the full simulation | PASS |
 
 ## Board Handoff Evidence
 
