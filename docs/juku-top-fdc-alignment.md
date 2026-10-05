@@ -5,8 +5,6 @@ Status: **HDL RESET RUN REACHES EKDOS A> PROMPT**
 This report summarizes the [recorded Verilator run](juku-top-fdc-verilator-probe.md)
 for `media/disks/JUKU1.CPM`. It checks that report's prompt, PIC and FDC
 markers and counts; it does not build or execute the current HDL.
-The recorded run drained 10,752 FDC data-register reads and reached
-the EKDOS `A>` bitmap at 73,405 framebuffer writes.
 See [simulator compatibility](../sync/README.md#simulator-compatibility)
 before attempting a current Verilator rerun.
 
