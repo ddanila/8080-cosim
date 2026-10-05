@@ -223,8 +223,11 @@ the Wine pass therefore does not qualify a physical serial adapter or parity.
 
 ## Qualification boundary
 
-The package manifest states exactly which compiler, source revision, embedded
-payloads, and EXE hash produced the release. A Wine or simulator pass proves
-the desk behavior only. Consult
+The package manifest records the EXE size and hash, the pinned compiler label,
+the embedded payload catalog, and the checkout revision at packaging time.
+The release workflow builds and packages the same checkout. For local packages,
+`tools/package-jukuhost-windows.py` copies an existing EXE without rebuilding
+it or verifying its source revision; build it from the intended checkout first.
+A Wine or simulator pass proves the desk behavior only. Consult
 [windows-jukuhost-client-implementation.md](windows-jukuhost-client-implementation.md)
 for current physical Windows and Windows 95 qualification status.
