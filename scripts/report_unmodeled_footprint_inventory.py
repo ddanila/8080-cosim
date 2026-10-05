@@ -100,7 +100,7 @@ def markers_ok() -> tuple[bool, list[str]]:
         (PHYSICAL_EVIDENCE, "D2 = РТ4 .037"),
         (PHYSICAL_EVIDENCE, "D105 = К155ЛА3"),
         (SOURCE_DRC_REPORT, "Status: **PASS**"),
-        (SOURCE_DRC_REPORT, "Unique colliding pad/item pairs: `0`"),
+        (SOURCE_DRC_REPORT, "Unique short-collision item groups: `0`"),
         (GEN, "'D95':(256.000,93.000,270)"),
         (GEN, "'D97':(268.604,110.273,90)"),
         (GEN, "'D99':(279.895,93.451,270)"),

@@ -293,7 +293,7 @@ def main() -> int:
         ("Cartridge BASIC boundary documented", has_phrase("docs/cartridge-basic-boundary.md", "Status: **ARTIFACT OR DOCUMENTED PROCEDURE REQUIRED**")),
         (".009 assembly drawing extraction guarded", assembly_extraction_state()),
         ("Factory Вид В modifications guarded", has_phrase("docs/factory-modification-disposition.md", "Status: **FACTORY MODIFICATIONS GUARDED / PAD MAPPING REQUIRED**")),
-        ("Source-PCB placement collision gate passes", has_phrase("docs/source-pcb-drc.md", "Status: **PASS**") and has_phrase("docs/source-pcb-drc.md", "Unique colliding pad/item pairs: `0`")),
+        ("Source-PCB placement collision gate passes", has_phrase("docs/source-pcb-drc.md", "Status: **PASS**") and has_phrase("docs/source-pcb-drc.md", "Unique short-collision item groups: `0`")),
     ]
     failed_checks = [name for name, state in checks if state != "PASS"]
 
