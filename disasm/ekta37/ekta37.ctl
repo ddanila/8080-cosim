@@ -100,7 +100,7 @@ c $1C60
 b $1C66 Monitor A: switches device mode and operates on the 4000h region (plausibly application/cartridge start; unverified)
 c $1C81
 @ $1C89 label=CMD_K
-b $1C89 Monitor K: search memory range for a byte value
+b $1C89 Monitor K: list memory bytes differing from a supplied value
 c $1C95
 b $1CA5
 c $1CD0

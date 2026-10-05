@@ -1462,7 +1462,7 @@ c$1C8D LD HL,$D895   ;
  $1C93 LD E,(HL)     ;
  $1C94 RET           ;
 
-; Monitor K: search memory range for a byte value
+; Monitor K: list memory bytes differing from a supplied value
 @label=CMD_K
 b$1C95 DEFB $CD,$17,$DB,$CD,$AB,$D8,$CD,$4A
  $1C9D DEFB $DA,$DA,$9D,$D8

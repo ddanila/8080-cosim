@@ -27,7 +27,7 @@ handler addresses vary:
 | `M` | move/copy memory block |
 | `C` | compare memory blocks, listing differences |
 | `E` | console echo until Ctrl-C (`03h`) |
-| `K` | search memory range for a byte value |
+| `K` | list memory locations whose byte differs from a supplied value |
 | `T` | **load system** — prints the boot-source prompt (below) |
 | `B` | vector-region stub in the vendored builds (BASIC extension slot; semantics unverified) |
 | `R` | read block: parses an address range, invokes monitor service `12h` |
