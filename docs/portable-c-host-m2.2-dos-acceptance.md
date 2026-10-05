@@ -134,7 +134,6 @@ The complete repeatable gate additionally requires `dosbox-x`, a native C
 compiler (`CC`, default `cc`) for the simulator, and Python Unix PTY support,
 plus the prebuilt CP/M payloads described above:
 
-
 ```sh
 sync/jukuhost_dos_check.sh
 ```
@@ -153,9 +152,8 @@ It performs four materially different checks:
    bidirectional N4, creating the A: snapshot, authenticating and opening
    native B:, and stopping with log/capture evidence and zero host UART errors.
 
-The accepted C8 run recorded 23 reads, 69 returned records, 279 total N3/N4
-requests, 2,527 RX bytes, 14,440 TX bytes, one protocol-level retry, and zero
-UART line errors. The harness paces each 8O1 byte at its physical wire duration
+The recorded C8 run exceeded the read/record gate with one protocol-level retry
+and zero UART line errors. The harness paces each 8O1 byte at its physical wire duration
 because DOSBox-X otherwise batches TCP data into its emulated 16550 faster than
 a real serial line.
 
