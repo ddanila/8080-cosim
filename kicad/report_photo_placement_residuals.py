@@ -26,8 +26,14 @@ status = "CANDIDATE GEOMETRY / REVIEW REQUIRED" if summary else "NO REPRODUCIBLE
 lines=["# Photo placement residual audit","",f"Status: **{status}**","",
 f"The endpoint registry contains `{snapped}` unique-hole snaps, but only rows whose notes retain an explicit `projected (x,y)` baseline can produce a residual. Current calculable rows: `{sum(len(v) for v in groups.values())}`.",
 "These residuals do not establish electrical connectivity, and no placement is changed automatically.","",
-"Regenerate with `python3 kicad/report_photo_placement_residuals.py`.","",
-"| Ref | Pins | dx px | dy px | Offset px | RMS px | Posture | Pin list |","| --- | ---: | ---: | ---: | ---: | ---: | --- | --- |"]
+"Run from the repository root with Python 3 (standard library only):","",
+"```sh","python3 kicad/report_photo_placement_residuals.py","```","",
+"The writer reads `ref/photos/juku-pcb-2/endpoints.csv` and overwrites this",
+"report and [the residual CSV](photo-placement-residuals.csv). It does not",
+"change endpoints or PCB files."]
+if summary:
+    lines += ["", "| Ref | Rows | dx px | dy px | Offset px | RMS px | Posture | Pin list |",
+              "| --- | ---: | ---: | ---: | ---: | ---: | --- | --- |"]
 for r in summary:lines.append(f"| {r[0]} | {r[1]} | {r[2]:.1f} | {r[3]:.1f} | {r[4]:.1f} | {r[5]:.1f} | {r[6]} | {r[7]} |")
 lines += ["","`review-translation` requires at least three endpoint rows, >=20 px median displacement, and <=12 px RMS scatter. The script groups by reference only: it does not deduplicate pins or separate source images. Confirm distinct pins and a common image coordinate frame before interpreting a displacement, then review both-side source crops before editing KiCad."]
 if not summary:
