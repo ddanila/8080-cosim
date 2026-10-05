@@ -11,7 +11,8 @@ as 75 Ω and R53-R56 as 5.1 kΩ.
 ## Command
 
 Run from the repository root with Python 3 (standard library only).
-The command replaces this report after its registered-evidence checks pass.
+The command replaces this report with the registered-evidence check results,
+then exits nonzero if any check fails.
 
 ```sh
 python3 scripts/report_ras_resistor_bank.py
