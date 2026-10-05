@@ -9,6 +9,10 @@ modeled axial resistors for missing values.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The guard reads source PCB text directly; KiCad is not required.
+It overwrites this report after the source and model checks pass.
+
 ```sh
 python3 scripts/report_native_resistor_values.py
 ```
