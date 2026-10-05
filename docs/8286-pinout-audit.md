@@ -19,7 +19,8 @@ Primary pinout source:
 ## Command
 
 Run from the repository root with Python 3 (standard library only).
-The command overwrites this report after its checks pass.
+The command overwrites this report with the check results, including failures,
+then exits nonzero if any check fails.
 
 ```sh
 python3 scripts/report_8286_pinout_audit.py

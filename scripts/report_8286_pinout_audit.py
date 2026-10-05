@@ -156,7 +156,8 @@ def main() -> None:
         "`https://www.silicon-ark.co.uk/datasheets/m8286-m8287-datasheet-intel.pdf`", "",
         "## Command", "",
         "Run from the repository root with Python 3 (standard library only).",
-        "The command overwrites this report after its checks pass.", "", "```sh",
+        "The command overwrites this report with the check results, including failures,",
+        "then exits nonzero if any check fails.", "", "```sh",
         "python3 scripts/report_8286_pinout_audit.py", "```", "",
         "## Checks", "", "| Check | Result |", "| --- | --- |",
     ]
