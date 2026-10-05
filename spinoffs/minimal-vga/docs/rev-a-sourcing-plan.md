@@ -24,6 +24,11 @@ file lists the other socketed ICs for later insertion, subject to the selected
 decode mode in the [orientation notes](../kicad/rev-a-assembly-orientation-notes.md).
 Never upload the engineering BOM as a factory placement BOM.
 
+The exporter's `assembly-readiness.md` status checks nonempty factory CPNs and
+absence of `TBD` in sourcing/notes, after validating BOM/CPL designator equality.
+`READY` does not verify live stock, part fit, electrical compatibility, manual
+placements or functional design release. Apply the release-time checks below.
+
 ## Part classes to freeze
 
 - DIP-40 sockets for Z80 and 8255.
