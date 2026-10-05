@@ -112,8 +112,12 @@ python3 scripts/photo_registration.py project --group solder_grid --x 506 --y 33
 Do not cite a panorama seam or rectified pixel as endpoint provenance; use the
 projected original-image coordinate.
 
-`validate` checks the declared image hashes and endpoint records. `solve`
-rewrites the transforms in `registration.json`; panorama generation also
+`validate` checks image hashes/dimensions, fiducial and endpoint record structure,
+unique endpoint IDs, review-state labels, and required accepted-row fields.
+It does not recompute fits, enforce registration-error limits, compare candidate
+nets with the board model, or prove electrical paths. `solve` recomputes the
+transforms and records held-out errors without enforcing an error limit. It
+rewrites `registration.json`; panorama generation also
 writes derived registration metadata. Review those changes before committing.
 These commands recompute registration aids, not the electrical observations
 recorded in the reviewed JSON files.
