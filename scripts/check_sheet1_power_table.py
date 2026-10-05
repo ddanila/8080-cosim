@@ -54,7 +54,10 @@ def main() -> int:
         "# Exact .009 sheet-1 IC power-table audit", "",
         f"Source: `{SOURCE}`; original pixels `(0,2050)-(2350,3150)`.", "",
         f"Result: **{'PASS' if not missing else 'FAIL'}** for the table's populated cells — {len(rows)} ICs, {count} audited rail endpoints, {len(missing)} missing model endpoints. D104.16 is a separate device-contract conflict outside this pass.", "",
-        "## Command", "", "```sh", "python3 scripts/check_sheet1_power_table.py", "```", "",
+        "## Command", "",
+        "Run from the repository root with Python 3 (standard library only).",
+        "The command overwrites this report.", "",
+        "```sh", "python3 scripts/check_sheet1_power_table.py", "```", "",
         "| Ref | Model type | Table pin:rail entries | Model |", "| --- | --- | --- | --- |",
     ]
     lines += [f"| `{ref}` | `{kind}` | `{entries}` | {result} |" for ref, kind, entries, result in rows]

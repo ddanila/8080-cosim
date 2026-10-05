@@ -6,6 +6,9 @@ Result: **PASS** for the table's populated cells — 30 ICs, 87 audited rail end
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The command overwrites this report.
+
 ```sh
 python3 scripts/check_sheet1_power_table.py
 ```
