@@ -19,8 +19,11 @@ These limits belong to the resident host-service routines in
 the reset loader's accepted payload receive loop; see
 [boot recovery limits](c11-session-recovery.md).
 
-- Transmitter readiness is bounded to 8,192 polls per byte, receiver readiness
-  to 65,535 polls per byte, and reply-prefix scanning to 256 received bytes.
+- Transmitter and receiver readiness are each bounded to 8,192 polls per
+  byte. Reply-prefix acquisition has a 256-iteration scan budget; probing the
+  second prefix byte can consume additional received bytes. The manifest
+  currently labels the receive limit as 65,535 and the scan budget as bytes;
+  those metadata fields do not describe the implementation limits.
 - ABI 1.4 retains ABI 1.3's two-byte host-state prefix and appends negotiation
   flags and the failed operation, for four public state bytes. Failure reasons
   are `00h` none, `01h` TX timeout, `02h` RX timeout, `03h` synchronization
