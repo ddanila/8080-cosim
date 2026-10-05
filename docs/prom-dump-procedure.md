@@ -42,9 +42,10 @@ variant, a split/order issue, or a bad read—not a conclusion by itself.
 ## Bipolar PROMs — verify programmer support or use an MCU sweep
 Do not assume a general EPROM programmer supports these bipolar PROMs; check its
 current device list and any required adapter. A 5 V MCU setup is the fallback.
-Outputs are open-collector →
-**pull-ups needed: 4.7k from each output pin to +5V** (or enable internal pull-ups and read
-open-collector as-is — external 4.7k is more reliable for S-series).
+Outputs are open-collector. The tracked Nano readers use plain input pins
+and require an individual external 3 kΩ pull-up from each data output to
++5 V. Use the device-specific wiring linked below, including the RT4
+enable pull-up; the firmware does not enable internal pull-ups.
 
 ### К155РЕ3 (= 74188/82S23, DIP-16) pinout
 - VCC = 16, GND = 8 *(confirmed by the board's own power table)*
