@@ -9,7 +9,11 @@ This is a future private order-record template. Do not upload the current
 package or start an order until the manufacturing gate says RELEASED FOR UPLOAD.
 Live DFM, price, and order-number evidence only exists after a released
 design is uploaded and quoted.
-Refresh with `python3 kicad/report_replica_order_evidence_template.py`.
+Refresh from the repository root with Python 3 (standard library only):
+`python3 kicad/report_replica_order_evidence_template.py`.
+The generator overwrites this template and returns exit status 3 when
+its artifact or evidence checks fail. Copy it to a private order record
+before filling in vendor details; regeneration does not preserve entries.
 
 ## Pre-Payment Gate
 
