@@ -1,6 +1,6 @@
-# CS00015 CPU increment-fault evidence
+# CS00015 CPU increment-fault probe
 
-Status: **COMPLETED 2026-08-05; no re-burn was required**
+Status: **D1 FAULT CONFIRMED; REPAIR VERIFIED**
 
 The tests used T32 version `1Bh`, CRC16 `D62B`, SHA-256
 `61832807cd7e52c02384844649776efa75bb3ef25795a8124d795230ed5b5ce2`.
@@ -9,15 +9,10 @@ no longer fitted in CS00015; see the
 [current service record](../../docs/cs00015-service-record.md). Reproduction
 requires a compatible diagnostic-loader setup and NASM to build the probe.
 
-## Supporting physical signature
-
-Correct absolute-address initialization has already covered:
-
-- LHLD in all four A15:A14 regions: every high-A12 second byte aliases low;
-- all four A10:A9 address classes in all-RAM mode: every class aliases;
-- POP H: the second stack read aliases;
-- SHLD: the second write aliases;
-- `0FFF -> 1000` and `2FFF -> 3000`: carry can assert A12 correctly.
+The [T32 physical record](T32-PHYSICAL.md) retains the memory/instruction
+controls, ROM WAIT-class comparisons and before/after D1 replacement evidence.
+The unchanged direct-register probe confirmed the repair; no additional ROM
+burn or D4/D30 rework is required for this diagnosed fault.
 
 ## Direct register-increment result
 
@@ -51,38 +46,11 @@ INX on DE, HL, and SP lost an already-high A12; DAD retained A12. The exact
 loader still active. Evidence is under
 `sessions/t32-ram-a12-increment-registers-physical/`.
 
-The source and clean/fault expectations are guarded by
+The cosim integration regression checks the probe outputs against clean/fault
+expectations in
 `tests/jukuravi_cpu_a12_increment_test.py`.
 Start the helper before RESET for a fresh T32 boot; it checks `1B/D62B`.
 `--attach-loader` uses an already-resident API-v2 loader without checking that
 cold-boot identity. The helper exits 0 for either recognized `CLEAN` or
 `D1 FAULT CONFIRMED` output, and 2 for an unrecognized result; exit 0 alone
 does not mean the CPU passed.
-
-## ROM WAIT comparison
-
-The exact ROM-mode pairs close the documentation caveat that all-RAM mode
-changes WREQ. `rom-read-pair-4000.asm` was run at `1000`, `1100`, `1200`, and
-`1400`.
-
-All sixteen samples at each target returned the predicted alias:
-
-| Target | D2 class | Correct pair | Physical pair |
-| --- | --- | --- | --- |
-| `1000h` | CAS-gated | `00 C0` | `00 0B` |
-| `1100h` | CAS-gated | `3E 11` | `3E 17` |
-| `1200h` | no wait | `3E 12` | `3E 02` |
-| `1400h` | always wait | `3E 14` | `3E E6` |
-
-Evidence is under `sessions/t32-rom-read-pair-{1000,1100,1200,1400}-physical/`.
-No reconstructed wait class masks the CPU fault.
-
-## Hardware repair confirmation — completed 2026-08-06
-
-The unchanged probe first reproduced
-`1000,0A01,4A01,8A01,1A01`, then returned the required clean
-`1000,1A01,5A01,9A01,1A01` immediately after a known-good D1 was fitted.
-Both sessions used T32 `1B/D62B`, completed without transport mismatches, and
-are retained under `sessions/t32-ram-a12-increment-registers-{repeat,cpu-replacement}-physical/`.
-This closes the repair discriminator; D1.37/D4.15 capture, D4/D30 rework, and
-a new diagnostic-ROM burn are not active work for this fault.

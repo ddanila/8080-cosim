@@ -571,8 +571,8 @@ def main() -> int:
     hdl_readme = read("hdl/README.md")
     august_markers = (
         (jukuravi_readme, "completed serial-only T33 investigation", "Jukuravi README still presents T33 as future work"),
-        (t33_plan, "Status: **COMPLETED 2026-08-05; no re-burn was required**", "T33 completion marker is missing"),
-        (t33_plan, "Hardware repair confirmation — completed 2026-08-06", "T33 still presents the completed D1 repair as future work"),
+        (t33_plan, "Status: **D1 FAULT CONFIRMED; REPAIR VERIFIED**", "T33 completion marker is missing"),
+        (t33_plan, "The unchanged direct-register probe confirmed the repair", "T33 still presents the completed D1 repair as future work"),
         (t32_physical, "The decisive confirmation is complete", "T32 physical report still lacks the completed D1 substitution disposition"),
         (t32_physical, "returned the fully clean result", "T32 physical report lacks the clean post-replacement result"),
         (d55_runbook, "HOLD — RUN T34 BEFORE SUBSTITUTION", "D55 runbook lost its T34-first hold"),
