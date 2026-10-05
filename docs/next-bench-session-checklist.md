@@ -65,14 +65,15 @@ missing evidence.
    waypoint to D7.3; the cable gaps and first same-hole match remain open.
    Trace any further `AMW_N` loads; keep it separate from D29.5, which the
    2026-07-19 owner continuity assigned to qualified peripheral `/WR`.
-   The fourth D104 receiver
+   See [the D7 path review](d7-gates-source-review.md).
+5. **D104 fourth receiver and R30 ground:** the receiver
    input is photo-traced to R30 lower; the source model assigns that lead to
    GND, but the owner rail polarity is not photo-proved. With power removed,
    confirm D104.7 to R30 lower, lower to known GND, and upper to D12.3/OC SOUT;
    D104.10 is owner-closed NC. Record tested endpoints and resistance in both probe polarities
-   for any resistive path. See `docs/io-decode-boundary.md`,
-   `docs/serial-handoff.md`, and `docs/main-board-unresolved-endpoints.csv`.
-5. **D1.24 WAIT versus measured I/O-cycle net:** the exact .009 sheet draws
+   for any resistive path. See [the serial handoff](serial-handoff.md) and
+   [unresolved endpoints](main-board-unresolved-endpoints.csv).
+6. **D1.24 WAIT versus measured I/O-cycle net:** the exact .009 sheet draws
    D1.24 to D105.1, while owner continuity puts D105.1 with D7.8/D6.15.
    D1.24 and D7.8 are both output pins, so joining both reported paths on
    one fitted board would create an output-contention risk. With power off,
