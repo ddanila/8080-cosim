@@ -173,14 +173,9 @@ or a signal stuck at idle.
   x64 reception rather than the 19,200 boundary and has lower diagnostic
   value. There is no valid periodic count-one mode-2/3 route to x64/19,200
   from the existing D57 clock.
-- A 19,200 mode-2/count-4 clock changes duty cycle without changing the
-  nominal rate. Both this discriminator and the sustained
-  disk soak below have passed on CS00014. Repetition on CS00015 and direct
-  clock capture remain open.
-
 Do not spend another bench session on parity, host byte pacing, per-byte ER,
-cable replacement, x1 mode, or the invalid count-one x64 image: today’s
-controls already resolved those questions.
+cable replacement, x1 mode, or the invalid count-one x64 image: the retained
+controls already cover those questions.
 
 ## Automatically loaded BAUDTEST2
 
