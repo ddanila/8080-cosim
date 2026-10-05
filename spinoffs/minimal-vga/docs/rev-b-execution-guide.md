@@ -61,7 +61,10 @@ For focused changes:
 
 Use `kicad/revb/env.sh` for the CAD/tool locators. Board generation, routing,
 physical checks and `kicad/revb/export_fab.sh` live under
-`spinoffs/minimal-vga/`; export regenerates all five fabrication packages.
+`spinoffs/minimal-vga/`. Export regenerates all five fabrication packages when
+KiCad CLI and KiCad Python are available. If either is missing, it returns 0
+with `SKIP` before touching the package directory; existing files can therefore
+remain from an earlier export. Check the output and candidate identities.
 Without `--package-root`, the release checker validates recorded identities and
 routed-source hashes but does not read the ZIPs. R5.I7 runs only that checker's
 negative controls; its success does not validate a candidate package.
