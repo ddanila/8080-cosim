@@ -7,7 +7,7 @@ A0-A7 to DIP pins 1-8 and the paired B0-B7 channels to pins 19-12.
 Sheet 1 routes D107 and D23-D25 straight, permutes D4's high-address
 channels, and permutes D29's eight command channels. The exact .009
 D29 row transcription is in `ref/schematics/d29-exact-009-pinmap-review.json`;
-the command rows match the exact .009 source map. Other checked
+the guard compares the command rows with that source map. Other checked
 pad endpoints and per-instance LVS maps use ordered logical buses.
 Factory sheets 1 and 3 prove that D100 instead buffers eight
 floppy-drive outputs. Its paired channels and separate pin-9 OE_N and
