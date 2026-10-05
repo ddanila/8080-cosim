@@ -22,7 +22,7 @@ inhibit intervals of 10/5 ns. It checks:
 - B rising with A low, A falling with B high, and valid clear-release triggers;
 - independent dual sections and the configured test pulse durations;
 - retrigger extension after the configured inhibit interval; and
-- immediate clear termination and cancellation of stale delayed completions.
+- immediate clear termination.
 
 ## Installed-board trigger closure
 
