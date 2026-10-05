@@ -41,7 +41,7 @@ test:
 Run the CI guardrails locally after changing the workflow, manifest, or selector:
 
 ```sh
-python3 ci/check_hdl_ci.py
+python3 -m ci.check_hdl_ci
 python3 -m unittest -v ci.test_select_hdl_jobs
 ```
 
