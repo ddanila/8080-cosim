@@ -69,7 +69,11 @@ qualification.
 
 ## Release-time checks
 
-After real-ROM boot, VGA output, and GAL/timing validation release the design:
+After the [manufacturing release requirements](rev-a-manufacturing-readiness.md#remaining-release-requirements)
+are satisfied, including physical DRAM address closure and programmed-GAL
+validation, perform these sourcing checks. Rev A's bench-fixture scope uses
+framebuffer capture with VGA output waived; see the
+[release scope](../README.md#rev-a-release-gate).
 
 1. Verify every IC and connector pinout against the selected manufacturer's
    datasheet and the final PCB footprint.
