@@ -46,9 +46,6 @@ The original board's installed firmware and powered PB4/PB5 behavior remain
 the necessary discriminators; this is a revision boundary, not a reason to
 reinterpret the E8 terminal numbers.
 
-The 1990 `ekta43.bin` banner identifies RomBios 2.43m, while #0032 identifies
-2.43. Banner year alone does not establish code ancestry or feature coverage.
-
 ## Banner-declared configurations
 
 | Serial | RomBios | Screen | Keyboard | Disk | Second BIOS |
