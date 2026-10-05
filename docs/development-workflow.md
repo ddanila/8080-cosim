@@ -13,15 +13,15 @@ The canonical development branch for this repository is `master`.
   `python3 scripts/check_markdown.py` and
   `python3 scripts/check_documentation_consistency.py`.
 
-The repository may retain `main` only as historical remote state. New progress
-belongs on `master`.
-
 ## HDL CI coverage contract
 
-The HDL Actions workflow uses `ci/hdl-ci.json` to map changed paths to the HDL/LVS lanes. The selector is deliberately fail-open: shared machine
-model paths, CI-control paths, an unknown path, or an unavailable diff run every
-lane once the workflow is triggered. The workflow’s own path filters run first;
-a path outside those filters does not invoke the selector on a push. A change confined to a declared subsystem runs only its owning lanes.
+The HDL Actions workflow uses `ci/hdl-ci.json` to map changed paths to HDL/LVS
+lanes. A change confined to a declared subsystem runs only its owning lanes.
+Shared machine-model paths, CI-control paths, unknown paths, or an unavailable
+diff select every lane once the workflow is triggered.
+
+The workflow’s path filters run first. A path outside those filters does not
+invoke the selector on a push.
 
 The selector schedules the bounded hosted lanes described in
 [CI budgets](../ci/README.md); a full hosted run does not execute every local
