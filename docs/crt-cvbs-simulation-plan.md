@@ -102,7 +102,11 @@ python3 scripts/model_x7_output_stage.py
 python3 scripts/report_video_slot_timing_audit.py
 ```
 
-Report writers check their pinned inputs and publish bounded results. A static
+The baseline writer validates the retained qualification record and its
+agreement with this contract. It checks decoder digest syntax without
+recomputing artifact hashes or rerunning decoder tests; see
+[its verification limits](crt-decoder-baseline.md#command). The other writers
+publish their local model and source checks with explicit scope limits. A static
 float32 step fixture is not video. An image match does not prove electrical
 levels, and plausible voltage levels do not prove receiver lock. Completion
 requires source-complete pixels, loaded-waveform validation, end-to-end recovery,
