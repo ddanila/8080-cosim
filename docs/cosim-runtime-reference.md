@@ -263,8 +263,9 @@ Direct `trace` runs delay queued matrix input until
 EktaSoft banner). Set it to a suitable threshold, or `0`, for firmware that
 does not draw that banner. `JUKU_KEY_HOLD_FRAMES` and `JUKU_KEY_GAP_FRAMES`
 both default to `3`; they count configured frame intervals rather than
-wall-clock seconds. Guest firmware must still scan the matrix for a contact
-to become a key event.
+wall-clock seconds. The launcher's `--keys` option overrides these settings to
+6 hold frames and 8 gap frames, including inherited values. Guest firmware must
+still scan the matrix for a contact to become a key event.
 
 Timing-sensitive raw-key tests can inject one ordinary matrix contact at an
 exact instruction boundary with `JUKU_KEY_AT_PC=PC:BYTE`. Both fields are
