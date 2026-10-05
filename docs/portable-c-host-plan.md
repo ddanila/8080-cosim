@@ -9,7 +9,10 @@ The Windows product is the GUI described in
 
 - One shared core implements Janet, Fastboot, NetDisk, N4, checksums, media
   bounds, and recovery. Frontends use `jukuhost_runner.h`.
-- Individual serial operations and bootstrap attempts are bounded. Passive
+- Serial reads, writes and bootstrap reply waits use deadlines. Transmitter
+  draining has a ten-second limit on DOS and Windows; physical POSIX serial
+  ports use `tcdrain()` without a host deadline, and PTYs wait for the calculated
+  transmission time. Drain waits do not poll cooperative cancellation. Passive
   discovery, console-endpoint waiting and zero-timeout disk service may run
   indefinitely until cancellation; they must remain responsive to Stop.
   Passive recovery has no restart-count ceiling. See
