@@ -17,6 +17,9 @@ guards and DRC on both routed variants, then compares source pad
 identities, nets, and centers. A successful exit means the invoked
 evidence guards passed; release additionally requires the report status
 and every parity, DRC, and construction condition below to be ready.
+The report counts DRC unconnected items; it does not summarize or gate
+electrical violations in the DRC violation list. Review the full DRC
+before release, even if the report status becomes ready.
 
 ## Guarded state
 
@@ -74,10 +77,8 @@ they do not authorize the promoted board.
 solder views either occlude the termination or leave its through-hole
 pairing, copper path, or cable identity unproved. A13B now has a
 strong photo-traced D92.1/ROE candidate, still awaiting continuity.
-The former A14B and A7B metric projections from D41 are withdrawn
-after the common lower-cluster solder correction. Their printed
-joints remain visible, but wire termination is hidden by mastic; W14's landing and cut length
-remain under measurement hold.
+A7B/A14B wire terminations are hidden by mastic; their landing coordinates
+and cut lengths remain under measurement hold.
 The routed board and fabrication package remain under design
 hold because A8/A9/A10/A12/A13 physical landings or construction
 remain unproved, and because the broader functional P0 netlist is open.
@@ -106,7 +107,7 @@ Current dispositions are:
 | A7/A14 | CPU-side surface joints are accepted. W7.1/W14.1 still occupy obsolete through-hole positions and need relocation plus copper rework. The remote joints are mastic-covered; their former D41-based coordinates are withdrawn. Cut lengths require measurement. |
 | A8 | D5-side A8A is accepted. A8B lacks a proved copper/island assignment; the 19 cm table value is not an approved cut length. See `a8b-corrected-trace-review.json`. |
 | A9 | Both ends remain unpromoted. The former remote candidate traces to D92.1/ROE, not D38.12/SYNC. Do not merge SYNC with nearby D38.10/13. See `a9b-corrected-trace-review.json`. |
-| A10 | A10A is fitted to D50.1. A10B lacks an identified wire landing; require cable-to-D41.13 continuity. The former 131.355 mm chord is invalid; retain the 13.5 cm source reading separately. |
+| A10 | A10A is fitted to D50.1. A10B lacks an identified wire landing; require cable-to-D41.13 continuity. The 13.5 cm source reading is not a qualified replacement cut length. |
 | A11 | Both distinct surface landings are fitted on MEMR. Their 119.177 mm chord exceeds the 11.5 cm source reading; measure the replacement cut length. |
 | A12 | Both coordinates/island assignments remain held. Candidate joints near the C96 supply-group region do not prove a RAM_OUT_EN wire termination. See `c96-a12-solder-review.json`. |
 | A13 | A13A lacks ROE continuity and a traced cable destination; A13B has a strong D92.1/ROE photo-trace candidate but still requires continuity. See `a13a-c95-d50-candidate-review.json` and the A13 boundary guard. |
