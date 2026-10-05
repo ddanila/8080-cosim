@@ -35,7 +35,7 @@ navigation and status definitions; superseded experiments remain in Git history.
 - [Source coverage audit](source-coverage-audit.md)
 - [2026-07-18 factory-drawing legibility audit](factory-drawing-legibility.md)
 - [`ДГШ5.109.009 Э3` reviewed transcription and divergence audit](../ref/schematics/dgsh5-109-009-e3-notes.md)
-- [D30 section-B sheet-1 scan chase](d30-section-b-scan-chase.md)
+- [D30 section-B clock and output connections](d30-section-b-scan-chase.md)
 - [8286 transceiver pinout audit](8286-pinout-audit.md)
 - [PHI2TTL and D29 command-buffer route](phi2ttl-d29-clock-route.md)
 - [D58 8282 latch pinout audit](8282-pinout-audit.md)
@@ -106,12 +106,9 @@ Each result applies only to the inputs and scope named by its report.
 - [Replica first-article acceptance record](replica-first-article-record.md)
 - [Replica candidate-part readiness](replica-candidate-parts-readiness.md)
 
-### Routed-board refresh
+### Routing
 
 - [Routed PCB refresh audit](routed-refresh-audit.md)
-
-### Factory-wire routing
-
 - [Factory insulated-wire route fidelity](factory-wire-route-fidelity.md)
 
 ### Twin
@@ -151,7 +148,7 @@ establish freshness or runtime coverage for every document.
 Keep detailed measurements, hashes and source locations in the owning evidence.
 Human-written summaries should link there and state the relevant boundary.
 
-## Reference-area guides
+## Reference guides
 
 - [Juku E5101/E5104 ROM set (vendored)](../roms/README.md)
 - [Juku disk images](../media/disks/README.md)
