@@ -63,7 +63,8 @@ It does not require a full boot prompt or compare that screen to cosim:
 - Both reconstructed byte streams must compare exactly against the booted
   juku_top framebuffer.
 
-The sim-only vid_out port models serial pixels. It omits the physical D34/VIDEO_OUT
+The sim-only vid_out port models serial pixels, not composite voltage. It omits
+the physical D34/VIDEO_OUT
 path: sync summing, VT2, termination and edge behavior. CPU/video arbitration
 through the КП14 muxes, D53 decoder and D41 timing chain also remains open.
 The companion raster-geometry guard is
