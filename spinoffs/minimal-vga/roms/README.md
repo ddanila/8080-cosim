@@ -38,9 +38,8 @@ PIT writes, late USART text and the framebuffer-write count. See the
 
 ## `ekta37_z80.bin` — Z80-executable Juku boot ROM (derived)
 
-VJUGA uses a **Z80** CPU so the board runs from a single +5 V rail: the original
-Juku CPU is a КР580ВМ80 (8080) needing +5 / +12 / −5 V, and dropping it removes
-two supplies — the whole point of the minimal board.
+VJUGA uses a **Z80** CPU on a single +5 V rail, replacing the original
+КР580ВМ80 (8080), which requires +5 / +12 / −5 V.
 
 The stock Juku firmware (`../../../roms/ekta37.bin`) is 8080 code, and three of
 its bytes are 8080 "undocumented NOP" opcodes that a Z80 decodes as real
@@ -76,7 +75,10 @@ further opcode patches are needed for the boot path.
 - Source ROM: `roms/ekta37.bin` — SHA256 `fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`
 - Derived ROM: `ekta37_z80.bin` — SHA256 `343ef2e6f0e5358bdc52cab7117f54ec583c0dc754499f5518ff8933bbc7befa`
 - Generator: `../tools/make_z80_rom.c` (trace-driven: patches only bytes the boot
-  fetches as opcodes, over the same memory map cosim uses).
+  fetches as opcodes, using simplified memory/I/O callbacks).
+  It drops writes under every ROM overlay and reads I/O from stored output
+  latches; it does not run the full cosim peripheral model. The separate boot
+  gate below compares the generated image against the full oracle.
 
 Regenerate and verify (from repo root):
 
