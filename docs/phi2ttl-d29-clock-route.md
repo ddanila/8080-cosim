@@ -90,30 +90,16 @@ Thus these are two +12 V pull-ups, not a resistor between the phase outputs.
 The factory placement view `PXL_20260711_114604420.jpg` puts R37 left of
 R36 immediately beside D1; owner component views `PXL_20260710_200411500.jpg`
 and `PXL_20260710_200439607.jpg` show the corresponding populated pair.
-In `200411500`, a visible front-copper spur runs from R37's lower lead joint
-to the white-wire A:7 start below it. That independently supports the
-R37-to-Ф1 side of the schematic at the photographed landing. The R36-to-А:14
-path is not comparably exposed. In `200439607`, a vertical front trace leaves
-R36's lower joint, is briefly hidden by the white-wire crossing, then
-reappears and bends toward the upper lug of a nearby vertical metal can. Its
-assembly position makes C1 a candidate for that can, yet exact sheet 1 puts
-C1 on the separate reset RC node. The short occlusion and unregistered can
-identity leave the apparent route unproved; see
-`ref/photos/juku-pcb-2/r36-r37-body-marking-review.json`.
+Owner photos support a front-copper spur from R37's lower joint to the
+A:7 wire start. The R36 phase-side route is partly hidden by a wire and
+appears to approach a metal can in the C1 assembly position. Since the
+schematic puts C1 on the separate reset node, this apparent route remains
+unproved. The [R36/R37 review](../ref/photos/juku-pcb-2/r36-r37-body-marking-review.json)
+records the photo observations and inspection targets.
 
-The four visible component-side lead joints can be placed approximately with
-the registered D1 pin-1/pin-20/pin-21 affine frame in `200411500`. These are
-inspection coordinates (about ±1 mm), not promoted pad or net assignments:
-
-| Body lead | Approx. `200411500` pixel | Approx. board mm | Connection status |
-| --- | --- | --- | --- |
-| R37 upper | (645,2575) | (16.346,169.862) | +12 V per schematic; physical copper untraced |
-| R37 lower | (645,2855) | (16.346,182.538) | front-copper spur to A:7 visible |
-| R36 upper | (735,2575) | (20.490,169.862) | +12 V per schematic; physical copper untraced |
-| R36 lower | (735,2855) | (20.490,182.538) | phase-side path passes under wire; continuity pending |
-
-Both +12 V joins and the R36 phase join still require physical verification
-before these estimated positions can become PCB footprint landings.
+Both +12 V joins and the R36 phase join require continuity checks.
+Photo search projections are not registered footprint landings; measure
+the fitted resistors and establish their pad connections before promotion.
 
 ## Clock-input topology and resistance checks
 
