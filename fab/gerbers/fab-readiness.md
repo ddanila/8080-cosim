@@ -5,7 +5,16 @@ KiCad CLI: `/usr/bin/kicad-cli`
 KiCad version: `10.0.6`
 Status: **NOT READY**
 
-Regenerate with `python3 kicad/report_fab_readiness.py`.
+Run from the repository root with Python 3 and KiCad CLI available
+through `scripts/find-kicad-cli.sh` or the `KICAD_CLI` override:
+
+```sh
+python3 kicad/report_fab_readiness.py
+```
+
+The writer replaces `juku_routed-drc.json`, `SHA256SUMS` and this report
+in the output directory. It derives checksums from current files; this
+does not verify a previously approved checksum manifest.
 The command reruns KiCad DRC on the named PCB, checks nine fabrication
 files for nonempty content and expected format markers, and records their
 current hashes. It does not export those files or prove they were generated
