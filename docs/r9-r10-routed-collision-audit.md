@@ -28,8 +28,6 @@ source-to-routed differences. R9/R10 are the two missing references;
 D11, D12, D26, D27, D42, D43, D58, D59, D6, and D9 also differ in position or rotation.
 The local D12/R9/R10 repair is therefore only part of the routed refresh.
 
-A recorded read-only DRC of the source PCB with R9/R10 present found no R9/R10 electrical shorts or copper/hole clearance violations and one D3/R9 courtyard overlap. This is a prior local observation, not a fresh check of the current source PCB. Review that mechanical outline and rerun DRC after any layout change; the observation does not release the layout.
-
 Native owner crop `(1000,650)-(1600,1350)` of
 `ref/photos/juku-pcb-2/PXL_20260710_200418174.jpg` shows the fitted inner
 R9 axial body beside D3 with a visible body-to-package gap; its bent leads
@@ -37,14 +35,14 @@ also clear the D3 package in this view. That observation rules out an obvious
 body collision on the photographed board, but does not validate the generic
 replica footprint's courtyard or a substitute resistor's diameter. Review
 the fitted body envelope and lead bends before reducing or waiving the
-source-board D3/R9 courtyard finding. The insertion-trial shorts above
+source-board D3/R9 courtyard overlap. The insertion-trial shorts above
 are copper conflicts; this mechanical view does not resolve them.
 
 The source KiCad geometry makes the warning precise. D3's F.Fab body starts
 at x `217.204` mm and R9's F.Fab body ends at x `215.619` mm, leaving
 `1.585` mm between drawn bodies. Their F.Courtyard envelopes instead meet
 at x `215.544` and `215.844` mm, an overlap of `0.300` mm. Thus the
-reported source violation is an assembly-envelope overlap, not a drawn-body
+source geometry has an assembly-envelope overlap, not a drawn-body
 intersection. The photo supports physical body clearance on the original;
 the replica's selected parts and insertion method still control the
 courtyard disposition.
@@ -53,8 +51,6 @@ Refresh D12 to the source/owner position and redesign the displaced D12, INTA, I
 
 ## Repair scope
 
-Use a targeted local relocation and reroute. Whole-net quarantine can
-remove unrelated GND/P5V copper when power endpoints move; a salvaged
-refresh still requires open-connection repair. Neither an exploratory
-refresh nor an autorouter launch establishes a completed route. Promote
-a replacement only after DRC and source-to-routed placement review.
+Use a targeted local relocation and reroute. Moving power endpoints can
+also affect unrelated GND/P5V copper. Check open connections, DRC, and
+source-to-routed placement before promoting a replacement board.
