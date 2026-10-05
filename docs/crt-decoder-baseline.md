@@ -76,14 +76,6 @@ Exact build/test measurements and environment details remain in the
 [baseline record](../ref/video/decoder-fork-baseline.json). These are
 recorded results; this report generator does not rerun the decoder.
 
-## Recorded compiler warnings
-
-- GCC 15 warns that the channel HUD snprintf into an 8-byte buffer can truncate for an unconstrained integer channel.
-- GCC 15 warns that the recording-time HUD snprintf into a 16-byte buffer can truncate for a sufficiently large or negative integer duration.
-
-These warnings belong to the recorded GCC 15 build. This guard does not
-check whether later decoder revisions resolve them.
-
 ## Boundaries after the synthetic WP3 checkpoint
 
 - the unresolved shared-DRAM video-slot schedule or physical Juku pixels

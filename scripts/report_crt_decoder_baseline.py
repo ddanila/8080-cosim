@@ -339,15 +339,6 @@ def main() -> int:
         "[baseline record](../ref/video/decoder-fork-baseline.json). These are",
         "recorded results; this report generator does not rerun the decoder.",
         "",
-        "## Recorded compiler warnings",
-        "",
-    ])
-    lines.extend(f"- {warning}" for warning in data["build_warnings"])
-    lines.extend([
-        "",
-        "These warnings belong to the recorded GCC 15 build. This guard does not",
-        "check whether later decoder revisions resolve them.",
-        "",
         "## Boundaries after the synthetic WP3 checkpoint",
         "",
     ])
