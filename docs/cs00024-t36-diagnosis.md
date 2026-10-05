@@ -197,16 +197,11 @@ were the same clock: they are `/VER RTR` and 1.23 MHz respectively. The next
 bench action is the corrected D57 software rerun; pin-level work follows only
 if that valid discriminator fails.
 
-A prepared, not yet executed host-driven experiment can test whether arming
-the raster improves retention relative to the unarmed control: it replays the
-exact EktaSoft D54/D55 raster programming from the T36 loader and holds RAM
-unrefreshed past the proven decay boundary. Its protocol, mechanism, and
-pre-registered interpretation are in
-[`../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md`](../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md).
-Once the required T36 or service-loader firmware is fitted, initial retention
-measurements need no additional ROM burn or scope. Compare its staged controls
-before attributing an improvement to raster or channel-2 programming; the
-experiment does not directly measure the physical refresh waveform.
+The prepared [raster-refresh experiment](../spinoffs/jukuravi/RASTER-REFRESH-EXPERIMENT.md)
+owns the retention protocol and pre-registered interpretation for check 2. It
+has not yet run on CS00024. With T36 or the service loader fitted, it needs no
+additional ROM burn or scope; its results compare retention under staged
+controls and do not directly measure the physical refresh waveform.
 
 ## Reproduction
 
