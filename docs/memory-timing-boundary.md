@@ -34,9 +34,9 @@ python3 scripts/report_memory_timing_boundary.py
 | D53 RAS/CAS ladder outputs are guarded | PASS | `D53_Y0_R49`..`D53_Y3_R52` |
 | D53 identity and compatible decoder timing evidence are guarded | PASS | physical D53=КР531ИД7; TI SN54S138 primary compatible reference SHA256 guarded; published comparison max=12 ns |
 | D53 unused Y4-Y7 outputs remain source-proved no-connects | PASS | sheet-2 complete D53 symbol draws only Y0-Y3; pins11/10/9/7 have no stubs |
-| D36 write-gate inputs and rail are guarded to all modeled DRAM W pins | PASS | MEMW->D36.9; D36.3->D33.11/.10->D36.10; D36.8->32 DRAM pin-3 inputs |
+| D36 write-gate inputs and write-rail endpoint count are guarded | PASS | MEMW->D36.9; D36.3->D33.11/.10->D36.10; D36.8->32 DRAM pin-3 inputs |
 | D36 CAS pre-driver reaches R57 | PASS | `CAS_PRE`: D36.11 -> R57.1 |
-| Shared CAS rail is guarded to all modeled DRAM C pins | PASS | `CAS` includes D36.1/R57.2/R58.1 plus DRAM pin-15 fanout |
+| Shared CAS rail endpoints and fanout count are guarded | PASS | `CAS` includes D36.1/R57.2/R58.1 plus DRAM pin-15 fanout |
 | PHI2TTL trunk and post-R35 RC node remain separate | PASS | sheet-2 Ф2TTL trunk -> D30.3/D29.1/R35.1; R35.2 -> D35.13/R106.1/C29.1 |
 | D92 triple-NOR RAM read/write combiner is source-closed | PASS | sheet-2: read NOR 1/2/13->12; write NOR 3/4/5->6; combine 9/10/11->8 |
 | D37 RAM-read output-enable NAND is source-closed on both inputs and output | PASS | sheet-2: MEMR -> D33.3/.4 -> D37.5; D13.2 -> D37.4; D37.6 -> D58.OE9 |
@@ -126,7 +126,9 @@ component-side trace and remote driver remain unresolved.
 - This generator checks source-model endpoints, evidence metadata and absence
   of the obsolete `W11_D7_D92` label in the source PCB text. Reading the
   PCB files does not establish routed connectivity. It does not execute
-  simulations, inspect copper geometry or measure timing.
+  simulations, inspect copper geometry or measure timing. The write/CAS
+  fanout checks count D-reference endpoints; they do not verify each
+  D60-D91 pin identity.
   Fabrication remains on DESIGN HOLD.
 - The TI SN54S138 comparison bounds a compatible decoder at the published
   conditions in the table. It does not qualify the fitted КР531ИД7,

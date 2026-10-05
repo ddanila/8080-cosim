@@ -161,7 +161,7 @@ def main() -> int:
             "sheet-2 complete D53 symbol draws only Y0-Y3; pins11/10/9/7 have no stubs",
         ),
         (
-            "D36 write-gate inputs and rail are guarded to all modeled DRAM W pins",
+            "D36 write-gate inputs and write-rail endpoint count are guarded",
             has_nodes(board, "W_RAIL16", {("D36", "8")})
             and board["nets"]["W_RAIL16"].get("source_risk") is False
             and has_nodes(board, "MEMW", {("D36", "9")})
@@ -176,7 +176,7 @@ def main() -> int:
             "`CAS_PRE`: D36.11 -> R57.1",
         ),
         (
-            "Shared CAS rail is guarded to all modeled DRAM C pins",
+            "Shared CAS rail endpoints and fanout count are guarded",
             has_nodes(board, "CAS", {("D36", "1"), ("R57", "2"), ("R58", "1")})
             and sum(1 for ref, pin in nodes(board, "CAS") if pin == "15" and ref.startswith("D")) >= 32,
             "`CAS` includes D36.1/R57.2/R58.1 plus DRAM pin-15 fanout",
@@ -476,7 +476,9 @@ def main() -> int:
             '- This generator checks source-model endpoints, evidence metadata and absence',
             '  of the obsolete `W11_D7_D92` label in the source PCB text. Reading the',
             '  PCB files does not establish routed connectivity. It does not execute',
-            '  simulations, inspect copper geometry or measure timing.',
+            '  simulations, inspect copper geometry or measure timing. The write/CAS',
+            '  fanout checks count D-reference endpoints; they do not verify each',
+            '  D60-D91 pin identity.',
             '  Fabrication remains on DESIGN HOLD.',
             '- The TI SN54S138 comparison bounds a compatible decoder at the published',
             '  conditions in the table. It does not qualify the fitted КР531ИД7,',
