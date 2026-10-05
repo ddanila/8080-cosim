@@ -102,9 +102,8 @@ as-built identity or acceptance testing.
 - Vendor order number.
 - The final upload ZIP checksum above.
 - Confirmation that `fab/gerbers/order-readiness.md` says `RELEASED FOR ORDER`.
-- Confirmation that the package was regenerated after the final D2/D94
-  changes, FDC-support functional pin dispositions, and source-risk
-  net corrections.
+- Confirmation that the package was exported from the final released PCB
+  and `fab/gerbers/source-board.sha256` matches that board's SHA256.
 
 ## Failures
 
