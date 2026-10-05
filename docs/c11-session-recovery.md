@@ -37,6 +37,12 @@ V16.
 
 ### Waiting and retry limits
 
+The ROM beacon's transmitter-empty waits have no deadline. NetDisk bounds
+individual receive waits and retry counts, but not transmit-ready or
+reply-prefix waits; see the [ABI transport limits](../third_party/juku-common/platform/ROM-ABI.md).
+Host recovery cannot guarantee target progress through those waits under a UART
+fault or continuous malformed traffic.
+
 Passive discovery and waiting for a configured console endpoint continue until
 the host is stopped; `timeout` does not bound those waits. It bounds each
 bootstrap attempt. Failed attempts return to discovery without applying the
@@ -60,7 +66,7 @@ expires. See [the configuration guide](jukuhost-config.md) for defaults.
 | complete V16 body with bad CRC | CRC failure returns loader to discovery loop | sees a later beacon and retries complete V16 | no partial image executed |
 | incomplete length/body/CRC after accepted `JZ` | blocks waiting for the remaining bytes; scanner timeout is inactive | boot deadline returns host to passive discovery | no partial image executed; a checked reset/restart is needed if the sender cannot complete the transfer |
 | host process replaced | CP/M's NetDisk client times out and retries the request | replacement validates `JD` and serves it | no manual resume flag |
-| named serial device disappears | target continues bounded request retries or C11 discovery | host retries reopen in bounded configured windows, then rediscovers | recovers when the device path returns |
+| named serial device disappears | target continues request retries or C11 discovery | host retries reopen in bounded configured windows, then rediscovers | recovers when the device path returns |
 | configured console PTY is absent or replaced | target continues bounded N4 retries | host waits for the endpoint before boot, or reopens it and rediscovers after loss | no successful boot is abandoned for a missing relay |
 | disk read failure during service | client receives a failure reply or shortened read-ahead batch | host keeps serving requests | a read failure alone does not trigger host shutdown or rediscovery |
 | checked capture/log failure, media setup/journal failure, or artifact rejection | no safe ROM remedy | host stops with its specific fatal exit | these failures do not enter automatic rediscovery |
