@@ -151,12 +151,6 @@ failure. Host tooling should reject or explicitly label incompatible live
 volume switches; C10 should not attempt to invalidate CP/M disk state behind
 the operating system.
 
-### PANEL in S21 mode 0
-
-`PANEL` correctly reported that it requires video mode 3 (80x24); CS00000 had
-latched S21 raw `01h`, video mode 0 (40x24). This is expected command policy,
-not a C9 defect.
-
 ## Remaining physical acceptance
 
 The completed implementation and desk gates do not establish physical
