@@ -8,7 +8,21 @@ details, and local solder/copper operations; sheets 2-6 (ДУБЛИКАТ scan)
 document the wire/cable connection table and change registration. Neither
 is promoted as a copper netlist.
 
-Regenerate with `python3 scripts/report_assembly_drawing_extraction.py`.
+Run from the repository root with Python 3, Bash, and the original JPEGs
+materialized through [Git LFS](git-lfs-policy.md#local-use). The child
+guards and report writers require a Python interpreter with KiCad’s
+`pcbnew` module and Pillow; `scripts/find-kicad-python.sh` selects it
+(`KICAD_PYTHON` can specify the interpreter).
+
+```sh
+python3 scripts/report_assembly_drawing_extraction.py
+```
+
+The command overwrites this audit and regenerates the lower/upper FDC
+placement reports, JSON and image aids, plus the D105/H report. It writes
+the audit even when a check fails and returns exit status 1 in that case.
+Review the generated changes and failed rows before using the evidence.
+
 The checks combine source-PCB guards with expected text markers in the
 retained records. The inventory checks JPEG signatures, sizes and indexing;
 its hashes record current file bytes without comparing pinned digests.
