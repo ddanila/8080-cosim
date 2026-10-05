@@ -10,10 +10,8 @@ Host: macOS, CP2102 at `/dev/cu.usbserial-0001`, built-in Apple CP210x driver
 The Python diagnostic host ran on the recorded macOS setup without pyserial,
 a vendor Silicon Labs driver, or a platform patch. `host.py` uses stdlib
 `termios`; the session established correct 2400-baud operation with the
-built-in `AppleUSBSLCOM.dext` driver. The observed device was
-`/dev/cu.usbserial-0001`. Use the adapter's `cu.*` node for outbound contact
-and confirm its actual name on the bench; this capture does not establish
-compatibility with every macOS release or adapter.
+built-in `AppleUSBSLCOM.dext` driver. Use the adapter's actual `cu.*` node for outbound contact. This capture
+does not establish compatibility with every macOS release or adapter.
 
 This record qualifies the named T32 diagnostic session. CS00015 later moved
 to network firmware; see [its service record](../../docs/cs00015-service-record.md)
@@ -49,12 +47,9 @@ The macOS smoke session and Linux control both had zero store retries and
 handshake mismatches. These captures qualify the recorded identity, verified
 upload/readback, and transport behavior; they do not qualify throughput.
 
-## Relevance to CS00024
+## Running another diagnostic
 
-These sessions qualify this macOS/T32 setup. The CS00024 work
-recorded in [`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md) ran from the Linux
-bench. For a macOS rerun, select the actual `cu.*` device with `--port` in
-[`batch.py`](batch.py) or [`host.py`](host.py), and match the firmware identity,
-baud and entry mode required by the chosen diagnostic. The historical device
-name and T32 identity above are evidence from this session, not universal
-bench defaults.
+Select the actual `cu.*` device with `--port` in [`batch.py`](batch.py) or
+[`host.py`](host.py), and match the firmware identity, baud and entry mode
+required by that diagnostic. The [CS00024 captures](CS00024-PHYSICAL.md)
+were made on Linux and do not extend this macOS qualification.
