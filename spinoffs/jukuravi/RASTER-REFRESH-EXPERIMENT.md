@@ -122,11 +122,9 @@ python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
   --log-dir spinoffs/jukuravi/sessions/cs00015-ekta4401-raster-syncb
 ```
 
-On macOS select the adapter's actual `cu.*` node with `--port`; the recorded
-`/dev/cu.usbserial-0001` is a session-specific example
-([`MACOS-BENCH.md`](MACOS-BENCH.md)). Run the same three stages on CS00015
-as the cross-board control when practical. The default 25 s hold sits past
-the proven 5-17 s CS00024 boundary; `--hold-seconds` adjusts it, and the
+On macOS select the adapter's actual `cu.*` node with `--port`; see
+[the macOS acceptance record](MACOS-BENCH.md). The default 25 s hold exceeds
+the recorded 5–17 s CS00024 decay interval; `--hold-seconds` adjusts it, and the
 loop is sized from the measured effective rate (`--effective-mhz`,
 default 1.702). The JSON's `hold_seconds_estimated` describes that modeled
 loop duration. `hold_seconds_measured` also includes host upload, verification
