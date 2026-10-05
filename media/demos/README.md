@@ -49,6 +49,12 @@ the selected GIF, `SCENARIO.jukuhost.log`, `SCENARIO.jukuhost.cap` and
 `trace-netboot-demo` executable and output-directory `vram.bin`; a failed run
 can leave intermediate files. Use a dedicated output directory.
 
+The stock scenario sends `DIR` and `VER` after host-reported bootstrap
+completion, using fixed delays without checking their replies. The C8 scenario
+waits for CP/M prompts and the final `PANEL READY` marker; it does not validate
+every utility result. A generated GIF is presentation evidence, not a complete
+command or filesystem regression.
+
 The V15 GIF is retained historical evidence. Current generation covers stock
 Janet and C8/V16 compatibility; it does not select the latest C12 ROM or the
 JF17 stock-recovery scenario.
