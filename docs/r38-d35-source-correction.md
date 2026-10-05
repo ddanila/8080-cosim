@@ -29,8 +29,9 @@ panel `PXL_20260711_114617677.jpg` explicitly labels **R38** right/below D59. Th
 and routed boards place R38 beside D59 at pads `(121.4,252.91)`/`(121.4,245.29)` mm.
 
 The owner pale horizontal 1K0 beside D59 matches R38 position and value, and its left
-front lead joins physical D59.14/P5V and red R32 right; the far lead-to-SHIFT_G route
-still needs continuity (`ref/photos/juku-pcb-2/d59-orientation-audit.json`).
+front lead joins physical D59.14 and red R32 right. Both the connection to a known
++5 V landing and the far lead-to-SHIFT_G route still need continuity. See
+[the D59 review](../ref/photos/juku-pcb-2/d59-orientation-audit.json).
 
 The D51-right pale 5K1 body instead matches assembly R58 position and 5.1 kΩ source
 value. Its upper joint visibly joins D51.8/GND through solder copper, consistent with
@@ -45,9 +46,7 @@ routed board is released.
 
 ## Simulation and measurement boundary
 
-The source topology puts D35.4 on D42_Q with D42.10/D37.13; D37.12 shares numbered rail
-3 with D42.9/D43.9, while D37.11 reaches D34.12 on a separate pixel line. The runnable
-pixel oracle retains its separate functional POF clamp and constant shift-enable
+The runnable pixel oracle retains its separate functional POF clamp and constant shift-enable
 stimulus; the owner-board connectivity and behavior of this source-drawn output junction
 remain unmeasured. The controlled video probe and POF reports document simulation
 evidence within that boundary. The two-package owner view fixes D37.11 and D35.4 as
@@ -57,15 +56,10 @@ via review](../ref/photos/juku-pcb-2/d34-pin12-video-via-review.json) records
 photo-supported copper toward D37.11; electrical continuity and isolation still require
 measurement.
 
-The same owner tile shows a separate red **12К** body directly left of marked D35,
-matching R39's assembly position and sheet-2 value. Its lower joint is visible, but the
-upper lead is covered by white wires; neither physical lead has a proved POF/+5 V
-assignment. See `ref/photos/juku-pcb-2/r39-d35-body-review.json`. Projecting that lower
-joint into the overlapping solder-side tile from D35.13 only provides a search area: no
-unique R39 hole or continuous copper route can be identified there. Its lead polarity
-remains a two-lead continuity measurement. The ИР16 readiness and video-slot timing
-reports record D35.6/R38.1 as the source-drawn `SHIFT_G` driver and pull-up; they retain
-the unmeasured physical-continuity and slot-schedule limits.
+The owner tile shows a red **12К** body left of D35, matching R39's assembly
+position and source value. White wires cover its upper lead; neither lead has
+a proved POF/+5 V assignment. Its lead polarity requires continuity, as recorded
+in [the R39 body review](../ref/photos/juku-pcb-2/r39-d35-body-review.json).
 
 To identify physical R38, read or measure its 1 kOhm body, then with power off check one
 lead against D35.6 and D42.8/D43.8, and the other against an independently identified +5
