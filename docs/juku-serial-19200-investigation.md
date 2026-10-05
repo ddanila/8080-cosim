@@ -249,17 +249,8 @@ bootstrap failures are separate from this electrical diagnosis. Use the
 [portable host contract](portable-c-host-plan.md) for the supported protocols
 and regression commands, and the recovery guide below for current boot behavior.
 
-### Physical interactive CP/M baseline
-
-A later 2026-08-13 CS00014 run validated the corrected CP/Mish `NETROM1`
-handoff and interactive path. The bootstrap server learned the physical
-station pair `01 -> 09`, loaded 6,784 bytes through the stock 9600/8O1
-protocol, and then served A: at 19200/8O1 in mode 2/count 4. The physical
-keyboard accepted `DIR`; `TYPE README.TXT` completed sustained sequential disk
-reads and console output; and `Ctrl-C` warm boot followed by another `DIR`
-worked. All server requests through sequence `90` returned status zero. The
-screen remained clean, unlike the earlier BIOS-owned interrupt-handler attempt
-which had bypassed the RomBios dispatcher and produced vertical-line garbage.
+The separate interactive CP/M result and ROM interrupt-dispatcher handoff rule
+are documented in [the Janet analysis](ekta37-netbios-notes.md).
 
 ## Current bootstrap boundary
 
