@@ -6,35 +6,19 @@ vertically right of R3 and left of D13/D105, with `+` beside its lower lead.
 The owner component view
 `ref/photos/juku-pcb-2/PXL_20260710_200439607.jpg` shows a fitted metal can
 in the same neighborhood. One lead exits each end; its case has `+` near the
-lower lead. D13-local registration projects the owner's upper and lower joints
-to solder joints near `(3200,822)` and `(3200,1305)` in
-`PXL_20260710_200537608.jpg`. The upper joint has an uninterrupted solder-side
-strip to registered D13.7/GND. A separate `+` is printed beside the lower
-solder joint. Its B.Cu run goes east to about `(3365,1305)`, then south
-through visible joints near `(3365,1398)`, `(3365,1460)`, and `(3365,1520)`
-in the same solder photo. The sharper overlapping component image
-`PXL_20260710_200450127.jpg` puts the three corresponding left contacts at
-about `(802,1480)`, `(802,1540)`, and `(802,1600)`. D13-local reflection
-projects them within about 10–16 pixels of that solder column. Their bodies
-and the exact `.009` assembly identify the rows as R4 `100`, R2 `20K`, and
-VD1, top to bottom. C1 positive, R4 left, R2 left, and VD1 left therefore
-share one physical copper branch, matching their `RES_RC` source grouping.
-This registration does not independently establish the resistor pad numbers or
-VD1 polarity. The opposite right contacts are separately visible in the solder
-photo: R4 near `(3115,1398)` departs southwest on a thin trace, with a
-clear gap before the broad strip joining R2 near `(3115,1460)` and VD1 near
-`(3115,1520)`. This reproduces the drawing's local R4 versus R2/VD1
-separation. The R4 trace runs southwest and west to a solder contact near
-`(2380,1440)`. A local fit around the marked D52 package projects the green
-C21 lower physical lead to `(2381,1447)`, matching that R4 trace endpoint
-within about 8 pixels. The C21 upper physical lead visibly joins the lower
-lead of the R20-position red body on front copper. This matches the exact
-sheet-1 drawing: C21 and R20 form a series branch from the R4/D13.5 RESIN
-junction. R20's remote return still needs tracing. See
-[the reset series-branch guide](reset-c21-r20-source-correction.md) for the
-current model and routed-board repair requirements. The R2/VD1 strip descends to
-the broad east-west trunk near `y≈1600`, whose supply polarity remains
-unverified. See `ref/photos/juku-pcb-2/c21-r4-crossview-review.json`.
+lower lead. The [C1 polarity review](../ref/photos/juku-pcb-2/c1-can-polarity-review.json)
+records the D13-local registration and visible copper:
+
+- The upper joint joins D13.7/GND.
+- The marked lower positive joint shares a branch with the left contacts of
+  R4, R2, and VD1, consistent with the source `RES_RC` grouping.
+- The opposite R4 contact is separate from the shared R2/VD1 strip and
+  photo-traces to C21's lower physical lead. Remote D13.5 continuity,
+  resistor pad numbering, VD1 polarity, and the R2/VD1 strip's supply polarity
+  remain unverified.
+
+The [reset series-branch guide](reset-c21-r20-source-correction.md) covers
+C21/R20 topology and routed repair. The evidence review retains pixel waypoints and cross-face fit residuals.
 
 R3 is the vertical red body partly hidden behind C1 in the
 component photo, at the position labelled R3 by the assembly drawing. The
