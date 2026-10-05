@@ -47,8 +47,7 @@ design release until measured or explicitly dispositioned.
   D105.9, pulled-up edge `H`/D13.13 -> D105.10, tied D105.4/.5, and
   D105.6 -> D5.4. The two NAND stages implement `DBIN AND H`.
 - The same continuity pass proves MEMW on tied D105.12/.13 and
-  D105.11 -> D30.13. This supersedes both the false D2.12-to-D105.9
-  merge and the older `.006` D95 WAIT handoff.
+  D105.11 -> D30.13.
 - Selected D105 routed-pad checks preserve these corrections; they do not
   establish whole-board source-pad parity or zero electrical blockers.
   See [ERC/parity](main-board-erc-parity.md) and the
@@ -57,20 +56,10 @@ design release until measured or explicitly dispositioned.
 
 ## D30 READY Flip-Flop Boundary
 
-- The full-resolution sheet-1 source and direct target-board continuity agree:
-  D30.1 `/CLR1`, D30.4 `/PRE1`, D30.10 `/PRE2`, and D30.12 `D2`
-  share the D38.8 active-low STB conductor, pulled high through R5.
-  Pin 2 `D1` is pulled high through R6, pin 3 `CLK1` is `PHI2TTL`, and
-  pin 5 `Q1` reaches D1 READY/pin 23 through R29 1 kΩ.
-- Owner continuity plus the native cross-sheet chase establish that D2.12
-  and R6 feed D30.2;
-  D30.1/.4/.10/.12 and R5 are closed to the D38.8/W8.2 status-strobe island; D30.5
-  reaches CPU READY through R29;
-  and D105.11 drives D30.13. Section B is also closed: D30.11 joins the
-  D105.2/D13.4/D11.20 clock conductor, and D30.8 drives D29.7. Native
-  sheet 1 plus `.009` placement/photo evidence close `H` at X1.107B
-  with R1 2 kΩ to +5 V. The measured READY/WAIT continuity is closed;
-  a powered waveform remains optional bring-up validation.
+The READY path is source- and owner-continuity closed. Its topology and
+simulation limits are documented in [the D2 READY guide](d2-ready-path-check.md)
+and [the D105 boundary](d105-h-boundary.md). This inventory checks evidence
+markers; it does not repeat continuity measurements or validate waveforms.
 
 ## AG3 Package Placement
 
@@ -102,8 +91,7 @@ design release until measured or explicitly dispositioned.
 
 ## Footprint-Only ICs
 
-| Ref | Mark/value | Footprint | Source PCB | Routed PCB | DSN | Generator note |
-| --- | --- | --- | --- | --- | --- | --- |
+No footprint-only ICs are present in all three PCB/DSN artifacts.
 
 ## Promoted FDC Pin Boundaries
 
