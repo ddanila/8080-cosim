@@ -14,6 +14,9 @@ missing from a routed variant; off-board connectors are outside both checks.
 Regenerate with `/usr/bin/python3 kicad/report_main_board_erc_parity.py`
 using KiCad Python bindings. The command reruns ERC and source schematic
 parity; it does not repair copper or establish physical continuity.
+A completed report returns exit status 0 even for `DESIGN HOLD`; use its
+status and result rows to determine readiness. It overwrites this report,
+the endpoint CSV, and the raw audit reports.
 
 ## Summary
 
