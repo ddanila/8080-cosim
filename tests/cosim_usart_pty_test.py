@@ -97,13 +97,20 @@ IO_RE = re.compile(
 
 def read_exact(fd: int, count: int, timeout: float = 5.0) -> bytes:
     result = bytearray()
+    deadline = time.monotonic() + timeout
     while len(result) < count:
-        ready, _, _ = select.select([fd], [], [], timeout)
-        if not ready:
+        remaining = deadline - time.monotonic()
+        ready, _, _ = select.select([fd], [], [], max(0.0, remaining))
+        if remaining <= 0 or not ready:
             raise RuntimeError(
                 f"PTY timeout: wanted {count} bytes, received {result.hex()}"
             )
-        result.extend(os.read(fd, count - len(result)))
+        chunk = os.read(fd, count - len(result))
+        if not chunk:
+            raise RuntimeError(
+                f"PTY closed: wanted {count} bytes, received {result.hex()}"
+            )
+        result.extend(chunk)
     return bytes(result)
 
 
