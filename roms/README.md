@@ -42,6 +42,12 @@ MAME’s default BIOS is `jmon33.bin`. The standalone C trace uses the relative
 path `ekta43.bin` when its first argument is omitted, so pass a ROM path
 explicitly when following the repository workflows.
 
+`ekta43.bin` has a stale block-1 checksum. The C trace patches that byte in
+memory before booting and logs the change; the vendored image stays unchanged.
+See the [checksum convention](../docs/cosim-runtime-reference.md#ektasoft-block-1-checksum-convention)
+for the patch condition. A trace boot therefore does not prove the unchanged
+image passes its own ROM self-test.
+
 `jbasic11.bin` is a cartridge image, not the main CPU boot ROM. See
 [the runtime reference](../docs/cosim-runtime-reference.md) for the paired
 guard and [the hardware map](../docs/hardware-map.md) for the cartridge
