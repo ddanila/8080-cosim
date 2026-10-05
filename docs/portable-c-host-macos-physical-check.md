@@ -20,7 +20,9 @@ completed all 7,670 compressed Fastboot bytes, and ran `STATUS`, `DIAG ALL`,
 `N4BULK`, and `SOAK` without operator input. It recorded 2,372 protocol
 requests, 33 disk reads carrying 264 records, four writes to a private A:
 snapshot, zero target resets, zero reconnects, and zero UART errors. Every
-target diagnostic passed and the host stopped cleanly.
+target diagnostic passed and the host stopped cleanly. The
+[physical acceptance record](https://github.com/ddanila/cpm-plus-juku/blob/master/docs/cs00015-c8-blind-qualification-20260820.md#apple-silicon-host-follow-up--2026-08-21)
+preserves the workload and independent audit result.
 
 The recorded request metrics use the adjacent `cpm-plus-juku` runner's
 host-start boundary to align capture timestamps: Darwin and Python monotonic
