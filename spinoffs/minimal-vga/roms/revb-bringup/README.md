@@ -19,8 +19,22 @@ ROM OK              (whole-ROM checksum == 0 mod 256)
 READY               (then the serial monitor)
 ```
 
-Serial monitor (single-letter commands, hex args): `A`hhhh set address,
-`D`ump 16 bytes, `W`hh deposit byte + advance, `G`o (jump to address). The
+A RAM mismatch prints `RAM FAIL @hhhh` and stops in a loop. A bad ROM checksum
+prints `ROM BAD` but still enters the monitor and prints `READY`; `READY` alone
+is not a successful self-test result.
+
+Serial monitor commands use uppercase letters and contiguous uppercase hex
+digits, with no prompts or input validation:
+
+| Command | Action |
+| --- | --- |
+| `Ahhhh` | Set the current address (initially `4000h`). |
+| `D` | Print 16 bytes and advance the current address by 16. |
+| `Whh` | Deposit a byte and advance the current address by one. |
+| `G` | Jump to the current address. |
+
+Malformed hex arguments are converted without rejection, so check the command
+before sending it. The
 current guard compares startup TX bytes between the C oracle and the HDL twin.
 It builds a fast variant testing `4000h..40FFh`, then checks the transmitted
 banner and `RAM PASS` result. The twin stops after the expected TX count; it
