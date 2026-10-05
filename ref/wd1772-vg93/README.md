@@ -3,14 +3,14 @@
 This directory preserves FD179X manufacturer references and the WD1772
 transistor/gate schematic and PLA/PLM table supplied to the project.
 
-| File | SHA256 | Notes |
-| --- | --- | --- |
-| `fd179x-01-datasheet.pdf` | `e51aef0933d88e7705f6f774ffb3238e8e8096bd9b9d774a985d95ef5766e3ce` | Western Digital `FD 179X-01 Floppy Disk Formatter/Controller Family`, October 1979, 20 pages; primary source for the 40-pin FD1793 contract and pin 40 `VDD` (+12 V). |
-| `fd179x-application-notes-jun1980.pdf` | `3989df6c7edbb20b9645bdd281347dc63e90b04afcd0150238648ddc90958ec9` | Western Digital `FD179X Application Notes`, June 1980, 16 pages; Figure 11 is the manufacturer counter/separator reference using 74123 + 74193 + 74LS74. |
-| `wd1772.pdf` | `d3601f97751b029d7effa493aa5094cd4726759eed0f4f34aa290cdf3305f0ef` | One-page KiCad-generated searchable schematic titled `WD1772`, created 2019-07-13. |
-| `wd1772pla.txt` | `687a62103ae5a89a3daf4c1decb8968d730802522fa142e458031545b7a34b10` | ASCII PLA/PLM table with 120 product rows, 19 input columns, and 19 output columns. |
-| `wd1772pla.normalized.csv` | `95d3c4796166d1915918c746773e2955cbc91eb77aea2cffb63d5b54c802aa62` | Spreadsheet-friendly normalized export of the same rows. |
-| `wd1772pla.normalized.json` | `bdbbdadd1788f7b6194a6262e16f8b9c28a7cb24e66f9aaec81ba9823fdf864b` | Machine-readable normalized export of `wd1772pla.txt`, including source hash, row metadata, and ambiguous output-column markers. |
+| File | Notes |
+| --- | --- |
+| [fd179x-01-datasheet.pdf](fd179x-01-datasheet.pdf) | Western Digital `FD 179X-01 Floppy Disk Formatter/Controller Family`, October 1979, 20 pages; primary source for the 40-pin FD1793 contract and pin 40 `VDD` (+12 V). |
+| [fd179x-application-notes-jun1980.pdf](fd179x-application-notes-jun1980.pdf) | Western Digital `FD179X Application Notes`, June 1980, 16 pages; Figure 11 is the manufacturer counter/separator reference using 74123 + 74193 + 74LS74. |
+| [wd1772.pdf](wd1772.pdf) | One-page KiCad-generated searchable schematic titled `WD1772`, created 2019-07-13. |
+| [wd1772pla.txt](wd1772pla.txt) | ASCII PLA/PLM table with 120 product rows, 19 input columns, and 19 output columns. |
+| [wd1772pla.normalized.csv](wd1772pla.normalized.csv) | Spreadsheet-friendly normalized export of the same rows. |
+| [wd1772pla.normalized.json](wd1772pla.normalized.json) | Machine-readable normalized export of `wd1772pla.txt`, including source hash, row metadata, and ambiguous output-column markers. |
 
 The FD179X data sheet documents the external controller contract; the WD1772
 schematic and PLA are comparative internal-design references. Neither the PLA
@@ -20,7 +20,8 @@ and its limits.
 
 ## Verification and regeneration
 
-Verify the retained files before regenerating exports:
+The [checksum manifest](SHA256SUMS) records all six retained-file identities.
+Verify them before regenerating exports:
 
 ```sh
 (cd ref/wd1772-vg93 && sha256sum -c SHA256SUMS)
