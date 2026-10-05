@@ -32,7 +32,7 @@ Its checksum and export checks identify that historical package only. A new guar
 Real-ROM T80/tv80 boot comparisons at 6000 writes are guarded by
 `sim/boot_check.sh` and `sim/vjuga_boot_check.sh`. The two decode modes and
 framebuffer capture replay also have executable gates.
-U24's Gray-coded DRAM timing contract passes the modeled CPU, refresh, video
+U24's DRAM timing contract passes the modeled CPU, refresh, video
 and collision checks at 4 MHz (`sim/u24_dram_timing_check.sh`). Nine physical LVS slices
 are recorded in [the coverage guide](rev-a-lvs-coverage.md); whole-board coverage
 is incomplete. Simulation and source/route checks do not establish physical
@@ -46,19 +46,23 @@ thermal/load and surge qualification remain separate.
 
 ## Remaining release requirements
 
-1. Finish remaining physical LVS groups, or record an explicit owner waiver
+1. Complete the physical CPU-column and video-address paths described in
+   [the chip map](rev-a-chip-map.md#dram-and-arbitration). The current U20/U21
+   inputs carry only CPU A0–A7 and refresh-row outputs; zero DRC opens and
+   matching LVS do not establish a working full DRAM address path.
+2. Finish remaining physical LVS groups, or record an explicit owner waiver
    supported by independent schematic, selected-part pinout and copper review.
-2. Compile U5/U24 for the selected GAL devices; retain fuse identities and
+3. Compile U5/U24 for the selected GAL devices; retain fuse identities and
    independent programmed-device readbacks, then validate their timing.
-3. Resolve the physical video acceptance scope. The framebuffer oracle checks
+4. Resolve the physical video acceptance scope. The framebuffer oracle checks
    captured memory writes; it does not qualify an electrical VGA output.
-4. Review socket orientation, connector fit, selected-part compatibility,
+5. Review socket orientation, connector fit, selected-part compatibility,
    power/return paths and protection limits. Recheck stock and assembly support
    at order time.
-5. Regenerate Gerber/drill and assembly outputs from the accepted source; rerun
+6. Regenerate Gerber/drill and assembly outputs from the accepted source; rerun
    package integrity/render checks, record new hashes, and complete independent
    review and vendor DFM/preview.
-6. Perform staged physical acceptance using [the Rev A bench procedure](phase4-bench-bringup.md).
+7. Perform staged physical acceptance using [the Rev A bench procedure](phase4-bench-bringup.md).
 
 Follow [fabrication notes](../kicad/fab-notes.md) for the export workflow and
 [the sourcing policy](rev-a-sourcing-plan.md) for assembly responsibilities.

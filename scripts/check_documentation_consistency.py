@@ -1830,7 +1830,7 @@ def main() -> int:
     ):
         if marker not in vjuga_gal:
             failures.append(f"VJUGA GAL contract omits U24 evidence {marker!r}")
-    if "U24's Gray-coded DRAM timing contract passes" not in vjuga_readiness:
+    if "U24's DRAM timing contract passes" not in vjuga_readiness:
         failures.append("VJUGA readiness does not expose passing U24 timing evidence")
     vjuga_board_path = ROOT / "spinoffs/minimal-vga/kicad/rev-a-physical.board.json"
     if vjuga_board_path.exists():
