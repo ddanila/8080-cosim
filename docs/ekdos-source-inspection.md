@@ -8,6 +8,9 @@ for constants that matter to the ROMBIOS/EKDOS/FDC path. It checks selected
 normalized BIOS vector lines. The displayed vector addresses are calculated
 from the BIOS base and expected indices; line presence does not verify their
 assembled order or addresses. The source is not assembled or executed here.
+The [source limitations](../ref/ekdos-source/README.md#source-limitations)
+describe malformed/interleaved lines in this preserved copy; PASS does not
+establish a buildable BIOS source.
 The source hash is reported, not compared against a fixed expected hash.
 If `JUKU1.CPM` exists, its size is checked; absence does not fail this audit.
 

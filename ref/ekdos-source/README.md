@@ -20,6 +20,15 @@ payloads.
 
 `sync/reference_artifact_check.sh` includes this directory in CI.
 
+## Source limitations
+
+`EKDOS30.ASM` contains interleaved and malformed lines, including
+`SEKTRK equ fbi+1MDISKPAR` and a split BIOS jump-vector instruction.
+Preserve those original bytes; this copy is a reference for selected constants
+and routines, not a verified buildable BIOS source. The
+[inspection report](../../docs/ekdos-source-inspection.md) checks selected
+symbols and line presence without assembling or executing the source.
+
 ## Notes
 
 - `EKDOS30.ASM` describes a 52K EKDOS 2.30 BIOS compatible with Bootstrap
