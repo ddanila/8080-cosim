@@ -2,13 +2,9 @@
 
 Status: **SERIAL CORE GUARDED / PHYSICAL LEVELS PENDING**
 
-This generated report separates the serial-port facts already guarded by
-the board JSON and HDL from the remaining functional serial boundary.
-It covers the D11 8251 host bus path, the D57 baud-clock handoff, and
-the X3 line-driver/receiver wiring. It checks code markers for a minimal
-bus-visible 8251-style async Tx/Rx slice with separate transmit holding
-and shift stages; it does not claim
-external X3 loopback or full protocol-mode coverage.
+This report checks the modeled D11 8251 host bus, D57 baud-clock handoff
+and X3 line-driver/receiver wiring. The checks and runtime guard are
+described below; physical levels and full USART protocol coverage remain open.
 
 ## Command
 
@@ -114,7 +110,7 @@ after the USART simulation passes.
   boundary in the reconstructed PCB without a corresponding board-side chase.
 - `sync/serial_check.sh` tests a scoped USART behavior slice:
   mode/command writes, the `TxRDY=0,TxEMPTY=0` holding-full state,
-  the `TxRDY=1,TxEMPTY=0` holding-to-shift transition, final
+  inactive-CTS blocking, the `TxRDY=1,TxEMPTY=0` holding-to-shift transition, final
   `TxEMPTY=1`, RxRDY, command-driven RTS/DTR, and one 8N1 byte
   through a digital TxD->RxD loopback with active-low CTS asserted.
   PTY attachment likewise represents an attached harness with CTS
