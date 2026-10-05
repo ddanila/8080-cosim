@@ -22,7 +22,7 @@ measurement lands, add a row here.
 | `D13.12 -> D6.14 V2`; `D6.13 V1 <-> D6.14 V2` (bottom-layer copper) | owner-continuity + visual | `docs/d6-input-continuity.md` |
 | `D6.1/A6 <- D3.4 <- /PC1`; `D6.2/A5 <- D3.6 <- /PC0` | owner-continuity | `docs/d6-physical-decode.md` |
 | `D7.8 -> D105.1 -> D6.15/A7` (`IO_CYCLE_H`) | owner-continuity, 2026-07-19 | `docs/d6-input-continuity.md` |
-| D8.15 `/E` has a +5 V pull-up; `D6.12->D8.15` looks direct | photo (grain of salt) | owner note 2026-07-15 (unconfirmed by probe) |
+| D8.15 `/E` has an apparent +5 V pull-up; its rail connection is not probe-confirmed | photo | owner note 2026-07-15 |
 | Reader wiring `D6 pins 9,10,11,12 -> Nano A1,D2,D3,D4`; three revision-3 D6 reads including a power cycle agree, and a D2 control agrees with the prior D2 artifact | owner-continuity + repeated capture | `docs/rt4-dump-acquisition.md` |
 
 ## D30 / WAIT-READY
@@ -69,12 +69,8 @@ measurement lands, add a row here.
 | `D59.5 -> D51.15 /G`; inverted `D59.6 -> D48.15 /G`. The factory drawing extends the paired enable islands to D50.15 and D49.15 through E14/E13. | owner-continuity + exact `.009` sheet 2, 2026-07-22 | `docs/d40-d59-d92-d95-1mhz-route.md` |
 | Tentative `D96.6` membership is not accepted: sheet 3 makes it the active `/Q1` output fed back only to D96.2, so a real join to active D40.11 would be a conflict. | unconfirmed continuity-beeper observation + exact `.009` sheet 3 | `docs/d40-d59-d92-d95-1mhz-route.md`; `ref/schematics/fdc-read-clock-toggle-map.md` |
 
-## NOT yet measured (open asks) — see `docs/next-bench-session-checklist.md`
+## Remaining measurements
 
-- Factory Вид В item-159 material and auxiliary-annulus/adjacent-rail disposition at the registered D56.12/D56.5 level (the package-pad functional nets themselves are closed),
-  D14's photo-registered D14.2/.7 and fifth-landing remote conductors /
-  remaining drawn traces, and D11's registered
-  four-landmark bridge endpoints. Position 150 is tubing at solder locations,
-  not a D56 cut instruction. The older D11
-  pins-4–6 solder scar is now excluded as a different feature. D15's executed
-  A2/A1 cut and D14's local D32.4/GND-to-D14.1 link are photo-closed.
+Use the [bench checklist](next-bench-session-checklist.md) for open asks and
+the [generated shortlist](owner-measurement-shortlist.md) for the full set of
+measurement targets. This index records established facts.
