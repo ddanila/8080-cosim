@@ -55,7 +55,7 @@ vendor form; they must equal the expected values below. Store screenshots or PDF
 outside the repository if they contain account/address details, and record a safe
 local evidence name here.
 
-| Design | Expected size / layers | Exact released ZIP SHA-256 | Uploaded hash | Vendor detection | Preview evidence | Result |
+| Design | Expected size / layers | Candidate ZIP SHA-256 | Uploaded hash | Vendor detection | Preview evidence | Result |
 |---|---|---|---|---|---|---|
 | CPU | 100x70 mm / 2 | `abb9db95173d30fd5aeae7bce8d5a52cbdeba84bc2771722746e5d3e19b7b325` | pending | pending | pending | pending |
 | Memory | 100x60 mm / 2 | `741aebf2a7d87e5473fc2b7efbb0cef343034239f63dcde41153034471c7bf70` | pending | pending | pending | pending |
