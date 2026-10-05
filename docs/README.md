@@ -27,6 +27,7 @@ navigation and status definitions; superseded experiments remain in Git history.
 - [Windows 95 guest acceptance](windows-jukuhost-client-win95-acceptance.md)
 - [CRT decoder fork baseline](crt-decoder-baseline.md)
 - [Architecture and verification boundaries](architecture.md)
+- [Development and verification workflow](development-workflow.md)
 - [Project invariant: one evidence-rooted machine](vision.md)
 - [Juku E5104 behavioral hardware map](hardware-map.md)
 - [July 2026 photo registration](photo-registration.md)
@@ -63,6 +64,8 @@ Each result applies only to the inputs and scope named by its report.
 - [Unmodeled footprint inventory](unmodeled-footprint-inventory.md)
 - [D93 pin-40 power-trace chase](d93-pin40-photo-chase.md)
 - [Owner measurement shortlist](owner-measurement-shortlist.md)
+- [Owner-measured facts](owner-measured-facts.md) — check before requesting measurements
+- [Next bench checklist](next-bench-session-checklist.md)
 - [Machine profiles](machines/README.md)
 
 ### Programmable parts
