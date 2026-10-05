@@ -31,9 +31,10 @@ current mapped-instance and net totals.
 
 Physical supply ports such as the 8080's GND, -5 V, +5 V, and +12 V pins are
 also excluded from logic LVS by an explicit `POWER_ONLY` list. Their package
-roles and board nets remain present in the source schematic and are checked by
-the include-power ERC and dedicated power-readiness reports; tying Verilog
-logic constants cannot validate real voltage rails.
+roles and rail nodes remain in `kicad/juku.board.json`. The default schematic
+generator skips nets tagged as power; use its `--include-power` output for
+the ERC power audit. Dedicated power-readiness reports check rail assignments
+separately; tying Verilog logic constants cannot validate real voltage rails.
 
 Key files:
 
