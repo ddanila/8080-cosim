@@ -40,7 +40,11 @@ def main() -> int:
         "The coordinates are KiCad footprint placement anchors, which can differ",
         "from package or pad-array centers. Footprint geometry and pad nets are not",
         "compared. A nonzero exit status reports placement gaps.", "",
-        "## Command", "", "```sh", "/usr/bin/python3 kicad/report_board_placement_parity.py", "```", "",
+        "## Command", "",
+        "Run from the repository root with KiCad's `pcbnew` Python bindings.",
+        "The command overwrites this report, including when placement gaps cause",
+        "exit status 1. It does not modify the PCB files.", "",
+        "```sh", "/usr/bin/python3 kicad/report_board_placement_parity.py", "```", "",
         "| Routed PCB | Missing source refs | Extra refs | Moved/rotated refs |", "| --- | --- | --- | --- |",
     ]
     details = {}
