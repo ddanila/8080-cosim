@@ -45,7 +45,7 @@ The guarded contract is:
 - modulo-16 wrap in both directions;
 - active-low carry and borrow pulses equal to the low clock phase at terminal
   counts \`F\` and \`0\`;
-- two-package carry and borrow cascade without an early or late digit change.
+- two-package carry and borrow cascade at the checked \`0F\`/\`10\` boundaries.
 
 ## Command
 
