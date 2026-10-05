@@ -18,13 +18,17 @@ pin 7/GND falls at routed pad 27/DB7; physical pin 26/+5 V falls at routed
 pad 6/CS_D26 or CS_D27. Net-name parity alone cannot establish physical
 pin correctness.
 
-Regenerate the mapping with:
+Run from the repository root with Python 3 and KiCad `pcbnew` bindings:
 
 ```sh
 /usr/bin/python3 kicad/report_ppi_physical_pin_mapping.py
 ```
 
-This report reads saved PCB orientation and pad nets and applies the
+The command overwrites `docs/ppi-physical-pin-mapping.json`, not this guide.
+A completed run exits successfully even when the mapping reports a hold;
+inspect the variant orientations and pin mismatches before judging readiness.
+
+The mapping reads saved PCB orientation and pad nets and applies the
 20-position permutation required by the photographed notch direction.
 It does not trace original copper or run DRC. Rotating routed footprints
 alone would invalidate their existing copper connections.
