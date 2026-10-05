@@ -75,8 +75,9 @@ repository. This Linux amd64 artifact image contains the simulator, static
 `jukuhost`, frozen non-runnable Python test fixtures, and the three ROMs listed
 in [its manifest](.github/smoke-kit/smoke-kit.json), installed at
 `/opt/8080-cosim/smoke-kit.json`. Its `scratch` image supplies no shell or
-simulator shared libraries; copy the artifacts into a compatible runtime as
-defined by [the Dockerfile](.github/smoke-kit/Dockerfile). Selected input changes
+simulator shared libraries. Copy the artifacts into a Linux amd64 runtime
+providing the simulator's dynamic loader and shared libraries; the
+[Dockerfile](.github/smoke-kit/Dockerfile) builds it on Ubuntu 24.04. Selected input changes
 on `master` and manual dispatch publish `v2` and a source-SHA tag. Pin a digest
 for a fixed artifact; `v2` is a moving tag.
 
