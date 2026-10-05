@@ -6,6 +6,9 @@ Result: **PASS** — 87 sheet-1, 108 sheet-2, and 25 sheet-3 adopted table entri
 
 ## Command
 
+Run from the repository root with KiCad’s `pcbnew` available to the chosen Python.
+The command below uses the system Python and overwrites this report.
+
 ```sh
 /usr/bin/python3 scripts/check_009_power_table_pad_parity.py
 ```
