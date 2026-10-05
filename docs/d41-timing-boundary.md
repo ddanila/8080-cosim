@@ -8,6 +8,10 @@ uses, its fixed straps, and both numbered timing-bundle inputs.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The generator overwrites this report with its check results, including
+failed results, then returns exit status 1 if any check fails.
+
 ```sh
 python3 scripts/report_d41_timing_boundary.py
 ```
@@ -24,7 +28,7 @@ python3 scripts/report_d41_timing_boundary.py
 | Factory tag 7 and owner continuity close the complete 1 MHz clock net | PASS | sheets 2/3 and owner continuity join D40.11/D37.2/D54.9/.15/.18/D59.5/D92.2/.3/D95.5/.6; adjacent `LATCH_PRE`/`LATCH_SIG` retained |
 | D41 proved straps, outputs, and timing boundaries are netted | PASS | D41.1, D41.12, D41.13, D41.14, D41.2, D41.3, D41.4, D41.5, D41.6, D41.7, D41.8, D41.9 |
 | D41 unused QC/QD outputs remain intentional no-connects | PASS | 10:QD, 11:QC |
-| D41 package landing is locally registered on both sides | PASS | component `similarity` and solder `similarity_reflected` entries in `docs/photo-registration/local-packages/report.json` |
+| D41 photo-fit records cover both sides with the expected models | PASS | component `similarity` and solder `similarity_reflected` entries in `docs/photo-registration/local-packages/report.json` |
 
 ## Netted D41 Pins
 
