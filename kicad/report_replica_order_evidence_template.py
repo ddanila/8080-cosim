@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import hashlib
-import json
 import sys
 from pathlib import Path
 
@@ -170,16 +169,13 @@ def build_report(fab_dir):
         status = "READY FOR RELEASED ORDER RECORD"
     else:
         status = "TEMPLATE READY / DESIGN HOLD"
-    historical_path = ROOT / "ref/routing/zero-open-fabrication-package.json"
-    historical = json.loads(historical_path.read_text()) if historical_path.exists() else {}
-    historical_sha = historical.get("upload_zip", {}).get("sha256", "-")
     lines = [
         "# Replica order evidence template",
         "",
         f"Status: **{status}**",
         "",
-        f"Historical superseded fabrication ZIP SHA256: `{historical_sha}`.",
-        "This is provenance for the older package; current release requires fresh package verification.",
+        "The [superseded package record](../ref/routing/zero-open-fabrication-package.json)",
+        "preserves the historical ZIP identity. Record the newly verified upload hash below.",
         "",
         "This is a future private order-record template. Do not upload the current",
         "package or start an order until the manufacturing gate says RELEASED FOR UPLOAD.",

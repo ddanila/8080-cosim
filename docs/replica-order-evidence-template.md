@@ -2,8 +2,8 @@
 
 Status: **TEMPLATE INVALID**
 
-Historical superseded fabrication ZIP SHA256: `90308b962433648cf52d0de44046367380e79f3e653151da75fc08bd9d949a46`.
-This is provenance for the older package; current release requires fresh package verification.
+The [superseded package record](../ref/routing/zero-open-fabrication-package.json)
+preserves the historical ZIP identity. Record the newly verified upload hash below.
 
 This is a future private order-record template. Do not upload the current
 package or start an order until the manufacturing gate says RELEASED FOR UPLOAD.
