@@ -16,7 +16,12 @@ dispositions and all factory capacitance values remain open.
 
 ## Command
 
-Run from the repository root:
+Run from the repository root with Python 3 (standard library only).
+The writer reads the board JSON, source PCB, schematic, PCB generator
+and [placement evidence](../ref/photos/dgsh5-109-009-sb/dram-decap-placement-registration.json).
+The images listed in that evidence must be materialized for hash checks.
+The command overwrites this report and returns status 1 when a guarded
+model contract fails.
 
 ```sh
 python3 scripts/report_decap_value_fidelity.py
@@ -89,6 +94,8 @@ Per-refdes provenance is retained in [the board model](../kicad/juku.board.json)
 
 ## Evidence and boundary
 
+- Photo checks validate retained hashes, coordinate records and fit calculations;
+  they do not reread component markings or establish physical pad identity.
 - The `.009` power corner puts C35-C53 between E4-selected rail G and
   E/GND, and C54-C72 between rail H/-5 V and E/GND. C34 separately joins
   E/GND to F/+5 V. The model preserves these source branch groups.
