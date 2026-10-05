@@ -154,14 +154,18 @@ macrocells: seven functional outputs and three registered state bits.
 The 4164 DOUT enable is controlled by CAS.
 
 The programming reference is `hdl/u24_dram_timing.v`, guarded by
-`sim/u24_dram_timing_check.sh`. It uses this cyclic Gray sequence, so every
-transition—including `DONE -> IDLE`—changes exactly one feedback macrocell:
+`sim/u24_dram_timing_check.sh`. The full CPU/video cycle uses this cyclic Gray
+sequence, including the one-bit `DONE -> IDLE` transition:
 
 ```text
 IDLE(000) -> ROW(001) -> RAS(011) -> COL(010)
           -> CAS(110) -> HOLD(111) -> PRECHARGE(101) -> DONE(100)
           -> IDLE(000)
 ```
+
+Refresh skips from `RAS(011)` to `PRECHARGE(101)`, changing two feedback bits.
+The behavioral timing pass does not establish hazard-free output decoding in
+the programmed GAL; that shortcut needs device-specific review and measurement.
 
 At the owner-selected 4 MHz CPU clock:
 
