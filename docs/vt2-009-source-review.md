@@ -7,7 +7,7 @@ The archived `.009` electrical drawing itself is the primary source for the popu
 | `ref/photos/dgsh5-109-009-e3/PXL_20260718_101927794.jpg` | `a31896156ad7e1bc35e59ee43223babd3d39f40f2a086152d26f76cf14c71aa9` | D34.8 feeds R62 (2 kΩ); D34.11 feeds R63 (1 kΩ). Their far ends join R64 (5.1 kΩ) and the base of VT2 (КТ315). VT2's collector goes to +5 V; its emitter feeds VIDEO and R65 (430 Ω) to ground. |
 | `ref/photos/dgsh5-109-009-e3/PXL_20260718_101932581.jpg` | `9aba327c149b59049c6fdb5ad6d9f13d43df4810765cf8865726d9bf911bd86d` | The VIDEO line continues to output contact 3, numbered connection 601; ground reaches contact 4, numbered connection 602. The crop does not itself label the physical connector; the assembly and system drawings identify display connector X6. |
 
-The same sheet-2 area draws the R66/VD3/R67 branch. The source marks R67 as 2 kΩ and draws its far end to the VT2 base/R62.2/R63.2/R64.1 node. The target body's observed 4.7 kΩ value takes precedence for the recreated populated board. Its upper far lead has a photo-registered solder joint near (869,953) in 200522685 and a continuous B.Cu run to open annulus (1295,958). The annulus’s remote net and the source-drawn VT2-base connection remain continuity boundaries; see [the X6/R67 continuity review](x6-a3-video-source-conflict-review.md).
+The same sheet-2 area draws the R66/VD3/R67 branch. The source marks R67 as 2 kΩ and draws its far end to the VT2 base/R62.2/R63.2/R64.1 node. The target body's observed 4.7 kΩ value takes precedence for the recreated populated board. Its upper far lead has a photo-registered solder joint near (869,953) in 200522685 and a continuous B.Cu run to open annulus (1295,958). The annulus’s remote net and the source-drawn VT2-base connection remain continuity boundaries; see [the R67 placement and continuity review](analog-cluster-photo-placement.md).
 
 ## VD3 polarity discrepancy
 
@@ -28,7 +28,7 @@ Targeted owner check: the original-resolution July view exposes the upper/red VD
 The model retains `VIDEO_OUT` at VT2.1/R65.1. Assembly and system drawings
 identify bracket connector X6 through A:3/A:4; no physical X7 is modeled.
 A:3's copper path to the stage remains a target-board continuity hold. See
-[the X6/R67 review](x6-a3-video-source-conflict-review.md) for cable identity
+[the X6 cable review](x6-a3-video-source-conflict-review.md) for cable identity
 and the required measurements.
 
 ## Model verification
