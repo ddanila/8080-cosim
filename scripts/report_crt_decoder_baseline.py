@@ -339,15 +339,14 @@ def main() -> int:
         "[baseline record](../ref/video/decoder-fork-baseline.json). These are",
         "recorded results; this report generator does not rerun the decoder.",
         "",
-        "## Compiler warnings",
+        "## Recorded compiler warnings",
         "",
     ])
     lines.extend(f"- {warning}" for warning in data["build_warnings"])
     lines.extend([
         "",
-        "These HUD-format warnings do not affect `synth_ntsc`, but they should be",
-        "resolved in the decoder fork before treating GCC 15 warnings as a clean CI",
-        "baseline.",
+        "These warnings belong to the recorded GCC 15 build. This guard does not",
+        "check whether later decoder revisions resolve them.",
         "",
         "## Boundaries after the synthetic WP3 checkpoint",
         "",
@@ -355,12 +354,8 @@ def main() -> int:
     lines.extend(f"- {item}" for item in wp3["scope"]["not_proved"])
     lines.extend([
         "",
-        "WP0-WP2 are complete at their generic boundaries: the fork owns provenance,",
-        "strict raw-float input, explicit timing profiles, measured lock telemetry,",
-        "positive/negative generated fixtures, and successful recorded build/test CI. The",
-        "bounded WP3 fixture additionally proves receiver lock at the exact guarded",
-        "Juku raster timing without promoting it to a built-in preset. Physical pixel",
-        "slots, D34_SIG/VIDEO_OUT integration, and framebuffer validation remain open.",
+        "The [CVBS contract](crt-cvbs-simulation-plan.md) defines the remaining",
+        "waveform, receiver-integration and physical-acceptance gates.",
         "",
     ])
     REPORT_PATH.write_text("\n".join(lines), encoding="utf-8")
