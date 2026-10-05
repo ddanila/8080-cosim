@@ -56,6 +56,10 @@ joins D96.13 \`/CLR2\` to D99.10 \`B2\`; their sheet-1 source is unread.
 
 ## Command
 
+Run from the repository root with Bash, Icarus Verilog (\`iverilog\` and
+\`vvp\`), \`sha256sum\` and \`grep\`. Simulator files are temporary; the
+command replaces this report, or the file selected by \`D96_REPORT\`.
+
 \`\`\`sh
 sync/d96_check.sh
 \`\`\`
