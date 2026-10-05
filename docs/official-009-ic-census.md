@@ -12,6 +12,12 @@ empty DRAM expansion sockets, not claimed as factory-populated parts.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The writer reads `kicad/juku.board.json`,
+[the census transcription](../ref/juku-official-009-ic-census.json),
+and its retained source PDF. It overwrites this report with check results
+and returns status 1 if a listed guard fails.
+
 ```sh
 python3 scripts/report_official_009_ic_census.py
 ```
