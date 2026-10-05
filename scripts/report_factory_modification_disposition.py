@@ -390,6 +390,10 @@ def main() -> int:
         "",
         "## Command and guard scope",
         "",
+        "Run from the repository root with Python 3 (standard library only).",
+        "The writer requires the board JSON, bodge triage and retained photo-registration",
+        "records. It overwrites this report and returns status 1 if a guard fails.",
+        "",
         "```sh",
         "python3 scripts/report_factory_modification_disposition.py",
         "```",
@@ -648,9 +652,9 @@ def main() -> int:
         "of the D56 three-callout field, the obscured D11 bridge, and the remaining",
         "D14 detail, identify the pad/via pair(s) and conductor topology; then",
         "prove the final source-PCB net partition matches the factory result.",
-        "D15 and the D14.1 ground link are electrically closed; their unmeasured",
-        "auxiliary-hole geometry remains",
-        "held only for an original-artwork replica.",
+        "The D15 cut and D14.1 ground link have photo-supported source topology.",
+        "D14 owner continuity remains unmeasured. Auxiliary-hole geometry is also",
+        "held for an original-artwork replica.",
         "",
     ]
     if d56_ground.get("review_state") == "rejected":
