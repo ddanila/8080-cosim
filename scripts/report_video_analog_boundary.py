@@ -78,7 +78,7 @@ def main() -> int:
 
     checks: list[tuple[str, bool, str]] = []
     checks.append((
-        "All cross-revision evidence files are local",
+        "All listed cross-revision evidence paths exist",
         all((ROOT / name).is_file() for name in source_files),
         f"{len(source_files)} schematic/BOM/factory/owner artifacts",
     ))
@@ -177,7 +177,11 @@ def main() -> int:
         "## Command",
         "",
         "Run from the repository root with Python 3 (standard library only).",
-        "The command replaces this report with its source-model check results",
+        "The writer reads `kicad/juku.board.json`,",
+        "[the revision disposition](../ref/photos/dgsh5-109-009-sb/rf-option-disposition.json)",
+        "and [the C94/VT2 registration](../ref/photos/juku-pcb-2/c94-endpoint-registration.json).",
+        "The disposition lists the schematic, BOM, assembly and owner files",
+        "whose paths must exist. The command replaces this report with its check results",
         "and exits with status 1 if any listed check fails.",
         "",
         "```sh",
@@ -202,7 +206,7 @@ def main() -> int:
         "## Interpretation",
         "",
         '- This guard checks source-model endpoints, revision/population metadata',
-        '  and evidence-file availability. It does not inspect those images anew,',
+        '  and evidence-path existence. It does not hash or inspect those images,',
         '  validate routed copper, simulate loaded output voltage or measure hardware.',
         '- VT2/R62-R67/VD3 form the retained analog handoff. The',
         '  [VT2 source review](vt2-009-source-review.md) records body identification,',

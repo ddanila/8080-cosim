@@ -15,7 +15,11 @@ continuity remains unmeasured. Its image controls are preserved in the
 ## Command
 
 Run from the repository root with Python 3 (standard library only).
-The command replaces this report with its source-model check results
+The writer reads `kicad/juku.board.json`,
+[the revision disposition](../ref/photos/dgsh5-109-009-sb/rf-option-disposition.json)
+and [the C94/VT2 registration](../ref/photos/juku-pcb-2/c94-endpoint-registration.json).
+The disposition lists the schematic, BOM, assembly and owner files
+whose paths must exist. The command replaces this report with its check results
 and exits with status 1 if any listed check fails.
 
 ```sh
@@ -26,7 +30,7 @@ python3 scripts/report_video_analog_boundary.py
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| All cross-revision evidence files are local | PASS | 24 schematic/BOM/factory/owner artifacts |
+| All listed cross-revision evidence paths exist | PASS | 24 schematic/BOM/factory/owner artifacts |
 | Legacy .006 RF-only population is absent from the .009 board model | PASS | C13, C14, L1, R68, R69, R70, R71, R72, R73, R74, R75, R76, R77, VT3, VT4 |
 | Legacy RF net names are retired | PASS | HF_OUT, RF_RAIL, RF_TANK, RF_TAP, SND_MIX, VT3_BASE, VT3_E, VT4_B, VT4_C, VT4_E |
 | Factory-reused C9/C10/C11/C12/C15 remain generic capacitors | PASS | physical .009 identities retained; .006 RF assignments not carried across |
@@ -62,7 +66,7 @@ Per-net provenance is retained in [the board model](../kicad/juku.board.json).
 ## Interpretation
 
 - This guard checks source-model endpoints, revision/population metadata
-  and evidence-file availability. It does not inspect those images anew,
+  and evidence-path existence. It does not hash or inspect those images,
   validate routed copper, simulate loaded output voltage or measure hardware.
 - VT2/R62-R67/VD3 form the retained analog handoff. The
   [VT2 source review](vt2-009-source-review.md) records body identification,
