@@ -290,12 +290,9 @@ def main() -> int:
             "",
             "## Disposition",
             "",
-            "- `JUKU_KEY_START_VRAM`, `JUKU_KEY_HOLD_FRAMES`, and",
-            "  `JUKU_KEY_GAP_FRAMES` make the cosim keyboard stimulus usable for",
-            "  both ekta37's long banner path and jmon33's short cursor path.",
-            "- This proves jmon33 is accepting keyboard input and moving its visible",
-            "  command cursor deterministically. It does not prove cartridge BASIC;",
-            "  see the [cartridge boundary](cartridge-basic-boundary.md).",
+            "The fixed stimuli produce deterministic command-cursor framebuffers.",
+            "Cartridge BASIC remains outside this guard; see the",
+            "[cartridge boundary](cartridge-basic-boundary.md).",
         ]
     )
     lines.append("")
