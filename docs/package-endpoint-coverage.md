@@ -8,6 +8,10 @@ It also rejects explicit no-connects absent from the chip pin contract.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The generator overwrites this report after all checks pass; failure exits
+nonzero before writing a new report.
+
 ```sh
 python3 scripts/report_package_endpoint_coverage.py
 ```
