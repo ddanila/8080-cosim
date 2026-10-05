@@ -41,8 +41,8 @@ D0-D3 to Nano D4,D3,D2,A1, and the two active-low enables to Nano D5,D6.
 
 Revision 3 checks output release three ways before reading: both enables high,
 pin 14 high by itself, and pin 13 high by itself. All three checks must report
-stable raw `F`. The host validator accepts this exact mapping and rejects any
-changed/missing mapping or enable check. Re-read known D2 first and require
+stable raw `F`. For a declared revision-3 capture, the host validator requires
+this exact mapping and all three enable checks. Re-read known D2 first and require
 byte identity with the validated `d2_037.raw.bin`. Then capture D6 three times,
 including a separate power cycle.
 
@@ -75,9 +75,12 @@ superseded original artifact to the corrected baseline. Any other stable
 difference is a new capture/device-identity investigation, not permission to
 transform the table.
 
-The host validator performs this classification directly and also rejects
-revision-2 logs whose revision, pin map, or disabled-output self-test metadata
-is absent or changed:
+The host validator performs this classification directly. When reader metadata
+is detected, it requires a complete, consistent revision-2 or revision-3 record,
+including the exact pin map and applicable disabled-output checks. Legacy logs
+without reader metadata are also accepted; a validation pass alone does not
+establish their reader revision or confirm those checks. Preserve and inspect
+the metadata when qualifying a new read:
 
 ```sh
 python3 scripts/validate_rt4_dump.py d6-read-1.txt d6-read-2.txt d6-read-3.txt \
