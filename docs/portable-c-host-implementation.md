@@ -66,8 +66,11 @@ summary as evidence for a particular boot.
 
 The converter rejects truncated headers, incomplete records and bad record
 CRCs before writing JSON. It does not salvage a complete prefix from an
-interrupted capture. The C record decoder can decode earlier complete records
-and returns `JH_NEED_MORE` for the incomplete tail.
+interrupted capture. Every event payload must also decode as ASCII, including
+events unrelated to requests; a non-ASCII path or message rejects conversion
+before either output is written. RX/TX payloads remain arbitrary bytes.
+The C record decoder can decode earlier complete records and returns
+`JH_NEED_MORE` for the incomplete tail.
 
 When requesting both outputs, request JSONL is written before boot-result
 validation. A failed conversion can therefore leave a new request file and
