@@ -31,7 +31,15 @@ Socket all programmed devices. Fit only the parts required by the active stage.
 
 ## Programmed-device identity and independent readback
 
-Rebuild with `pld/revb/build_revb_gals.sh` and `roms/build_revb_rom.py --check`.
+Verify the committed GAL and ROM programming artifacts from the repository root:
+
+```sh
+spinoffs/minimal-vga/pld/revb/build_revb_gals.sh
+python3 spinoffs/minimal-vga/roms/build_revb_rom.py --check
+```
+
+The GAL command rebuilds in a temporary directory and compares the outputs;
+the ROM command computes and compares its outputs without writing them.
 Program out of circuit with security/fuse lock disabled. After programmer verify,
 power-cycle the programmer, read each part again, and compare its fuse count/checksum
 or full ROM SHA-256 before inserting it. The three ROM rows may be three labelled
