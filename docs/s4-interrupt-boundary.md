@@ -36,7 +36,7 @@ checks return status 1. Inspect the exit status as well as the report.
 | Boundary | Result | Current evidence |
 | --- | --- | --- |
 | S4 retains a complete three-terminal SPDT contract | PASS | sheet-1 S4.1/S4.2 changeover symbol; all three electrical terminals assigned |
-| Do not infer S4 wiring from MAME or behavior | PASS | current model preserves the note but does not replace continuity evidence |
+| PIC provenance retains the D3/S4 path marker | PASS | D10 provenance contains `via D3+S4`; this is a text check |
 
 ## Current Interrupt Nets
 
@@ -56,9 +56,11 @@ Per-net provenance is retained in [the board model](../kicad/juku.board.json).
 - Expansion `INT7` continues through D3 directly to PIC IR7.
 - Expansion `INT6` passes through D3 to one S4 throw; USART SYNDET feeds
   the other throw, and the common drives PIC IR6.
-- This generator checks source endpoints, package roles and provenance
-  markers. It does not run LVS, inspect routed copper or verify a fitted
-  switch position by measurement.
+- Endpoint checks require the listed nodes to be present; they do not
+  reject extra nodes on those nets. S4's pin-role dictionary is exact.
+- Package and provenance checks inspect JSON roles and text markers.
+  The generator does not read HDL, run LVS, inspect routed copper,
+  or verify a fitted switch position by measurement.
 - S4 is an off-board mechanical assembly with three modeled terminals.
   The HDL `spdt_switch` fixes the common to the external INT6 throw;
   runtime throw selection and switching behavior are not modeled.
