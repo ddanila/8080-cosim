@@ -176,8 +176,8 @@ male** headers on the bottom edge; the backplane carries **female sockets**
 ([RC2014 module template](https://rc2014.co.uk/1377/module-template/),
 [RC2014 bus spec](https://smallcomputercentral.com/rc2014-bus/specification-rc2014-bus/)).
 Rev B uses a separate 10-pin extension header. Its grid at
-`ext_row_x = 14.45` sits half a pin-pitch (1.27 mm) off the base grid; the
-checker's `min_column_sep` gate checks that separation. Five 16 mm-pitch slots
+`ext_row_x = 14.45` gives 1.26 mm column-grid separation, approximately half
+the 2.54 mm pin pitch; the checker's `min_column_sep` gate checks that separation. Five 16 mm-pitch slots
 occupy base-row Y=10…74 and extension-row Y=15…79. The service strip starts at
 Y=82 on the 100×100 backplane, outside the seated-card envelope.
 
