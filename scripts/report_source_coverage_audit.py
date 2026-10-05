@@ -92,7 +92,7 @@ def main() -> int:
         row([
             "[infoaed/juku3000](https://github.com/infoaed/juku3000)",
             "ROM/media provenance and MAME/community cross-checks; full tree and Git object history audited at commit `be8bf9e53a6702299b9c0221d7c486fce1f25b0f` (2026-07-09)",
-            "No labeled PROM payload was found in the recorded tree/history review. Recovered deleted `prog1.juk` blob `ed7fc2e3a289f25da5006143c9f45d9ac20ed3c2` duplicates local `JUKPROG1.CPM` (SHA256 `94670f3333b29e205c1586a0f52882aaa0f8cff2d45c3493676ce3ab263ae269`); use the [disk catalog](vendored-disk-catalog.md) for the local content audit.",
+            "No labeled PROM payload was found in the recorded tree/history review. The recovered `prog1.juk` duplicates local `JUKPROG1.CPM`; see the [disk identities](../media/disks/README.md) and [content audit](vendored-disk-catalog.md).",
         ]),
         row([
             "[Juku software catalog](https://j3k.infoaed.ee/tarkvara-kataloog/)",
