@@ -6,10 +6,10 @@ images use `.CPM`. The loader ignores filename extensions and infers geometry
 from size; it does not validate filesystem contents, provenance or sector
 ordering from the file name or length.
 
-Source: MAME `src/lib/formats/juku_dsk.cpp` (`FLOPPY_JUKU_FORMAT`) at commit
-`40d8c5c343efc497524832d59a6d0e2b8e59376b`,
-`https://github.com/mamedev/mame/blob/40d8c5c343efc497524832d59a6d0e2b8e59376b/src/lib/formats/juku_dsk.cpp`,
-cross-checked 2026-07-17.
+Format reference: MAME
+[`juku_dsk.cpp`](https://github.com/mamedev/mame/blob/40d8c5c343efc497524832d59a6d0e2b8e59376b/src/lib/formats/juku_dsk.cpp)
+(`FLOPPY_JUKU_FORMAT`), pinned to commit
+`40d8c5c343efc497524832d59a6d0e2b8e59376b`.
 
 ## Geometry
 
