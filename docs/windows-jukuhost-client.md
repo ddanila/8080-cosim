@@ -152,8 +152,9 @@ startup log `JUKUWIN.LOG` is unaffected.
 
 `JUKUWIN.INI` is strict ASCII text. Relative image and evidence paths are
 resolved beside the INI file. The UI uses a committed temporary file and
-atomic replacement where the OS provides it; the legacy fallback retains a
-recovery backup. It saves when **Listen** is pressed and uses no registry
+atomic replacement where the OS provides it. The legacy fallback temporarily
+renames the old INI to a backup, deletes that backup after successful replacement,
+and attempts to restore it if replacement fails. It saves when **Listen** is pressed and uses no registry
 settings.
 
 The example below selects C12, enables automatic listening, and mounts an
