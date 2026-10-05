@@ -61,8 +61,10 @@ formats, other address permutations, and compression remain untested.
 ### Exact binary-table forensics
 
 Each encoding is searched once in the physical byte stream and once in every
-active file reconstructed in CP/M logical extent order. Offsets would be shown
-for every match; `none` means the full encoding was absent from both views.
+active file reconstructed by sorting its directory entries on the one-byte
+EX field. The scanner does not use S2 or validate missing/duplicate extents.
+Offsets would be shown for every match; `none` means the full encoding
+was absent from both views.
 File reconstruction assumes 4 KiB blocks, four reserved logical tracks, and
 the retained 40-record sector translation. The BASIC raw-offset extraction
 has a separate unresolved allocation-map boundary; see
