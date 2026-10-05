@@ -62,8 +62,8 @@ def main() -> int:
         "The script compares hard-coded table transcriptions with board JSON nodes",
         "for every chip whose model type is listed in its `PIN_RAILS` map. It does",
         "not enforce a fixed reference census: a removed chip or an unmapped type",
-        "can disappear from the report without causing failure. Population labels",
-        "are assigned from reference names, not checked against physical hardware.",
+        "can disappear from the report without causing failure. Physical population",
+        "is not checked.",
         "The source image is cited for the transcription; this script neither",
         "reads its pixels nor checks its hash.", "", "The table's 170АП2 column gives +12 V pin8, −12 V pin5, and ground pin4. The separate УП2 column gives +5 V pin15 and ground pin8 but leaves its +12 V cell blank. The preserved К170УП2 device sheet calls D104.16 a +12 V supply. That physical rail remains open in `ref/schematics/d104-pin16-rail-conflict.json`; this table check does not assign it. These results check logical node names, not copper connectivity, PPI footprint orientation, or the rest of the .009 sheets.", ""]
     if missing:

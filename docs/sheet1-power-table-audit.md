@@ -48,8 +48,8 @@ python3 scripts/check_sheet1_power_table.py
 The script compares hard-coded table transcriptions with board JSON nodes
 for every chip whose model type is listed in its `PIN_RAILS` map. It does
 not enforce a fixed reference census: a removed chip or an unmapped type
-can disappear from the report without causing failure. Population labels
-are assigned from reference names, not checked against physical hardware.
+can disappear from the report without causing failure. Physical population
+is not checked.
 The source image is cited for the transcription; this script neither
 reads its pixels nor checks its hash.
 
