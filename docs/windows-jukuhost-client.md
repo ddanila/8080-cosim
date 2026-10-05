@@ -82,7 +82,9 @@ checked request arrives; it does not send the monitor keys. See
 
 Press **Stop** before changing the mode, adapter, or disk images. Closing the
 window while active requests the same clean stop and waits for the current
-bounded serial/media operation to finish.
+serial or media operation to finish. Serial waits use deadlines, including a
+ten-second transmitter-drain limit. File reads, writes and flushes have no
+application timeout, so a stalled filesystem can delay stopping or closing.
 
 ## Serial adapters and changing COM numbers
 

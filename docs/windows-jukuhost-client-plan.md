@@ -23,8 +23,9 @@ tracked in
 - A: defaults to a private snapshot with journaled writes; B: remains read-only.
 - Payload hashes, configuration and filesystem access are checked before
   serial service. A failed evidence write stops the run.
-- Stop and close request bounded cooperative shutdown. Session settings stay
-  fixed until the worker releases serial and media resources.
+- Stop and close request cooperative shutdown after the current operation.
+  Serial waits use deadlines; filesystem operations have no application timeout.
+  Session settings stay fixed until the worker releases serial and media resources.
 - Startup diagnostics and per-session captures make failures inspectable.
 - Packaging uses the pinned compiler, reproducible PE/resources, reviewed
   legacy imports and a manifest identifying the exact artifacts.
