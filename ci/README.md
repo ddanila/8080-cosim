@@ -1,8 +1,7 @@
 # Hosted CI budgets
 
 Every Actions job has a ten-minute hard deadline; shell steps have a
-five-minute deadline except the measured seven-minute TTL boot, capped at
-eight minutes. Timeouts fail the check: they are never converted into
+five-minute deadline except the Rev B TTL boot, capped at eight minutes. Timeouts fail the check: they are never converted into
 passes. The always-on generic workflow validates these limits and the HDL
 entrypoint manifest, with regression tests for both contracts.
 
@@ -54,8 +53,8 @@ to a semantic review of every document.
   Run the complete firmware/ABI/NetDisk structural matrix locally with
   `bash sync/network_first_rom_hdl_check.sh` (without `--ci`).
 - Rev B TTL boot: CI retains the default 400-write framebuffer comparison
-  against cosim. It took roughly seven minutes, so it has the sole eight-minute
-  step exception (still a ten-minute job ceiling). To reproduce it, run
+  against cosim, with the sole eight-minute step exception and a ten-minute
+  job ceiling. To reproduce it, run
   `REVB_BOOT_PHASE=ttl bash spinoffs/minimal-vga/sim/revb_boot_check.sh` locally
   with the pinned tv80 core initialized.
 - Rev B tier suite: `--ci` runs behavioral card, bus, serial, ROM-system,
