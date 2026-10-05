@@ -65,20 +65,15 @@ moving the group or placing C88.
 
 ## C35 hole-identity hold
 
-The first proposed capacitor-grid midpoint in
-`docs/photo-registration/solder_grid-rectified.jpg` is within about 1.7 pixels
-of the midpoint of independently identified D67.16 and D66.1 solder contacts.
-Those package contacts are modeled GND and RAIL_H, not C35's RAIL_G/GND.
-A regular two-hole feature does not independently prove a capacitor landing.
-The corresponding package joints are roughly 247 pixels below C88's
-separate +5 V candidate in `PXL_20260710_200525009.jpg`.
+The capacitor-grid proposal does not independently identify C35's holes:
+regular two-hole features can be package contacts. D67.16 and D66.1 have
+source roles GND and RAIL_H, distinct from C35's RAIL_G/GND pair.
 
-An independent D67-local projection of current C35 geometry places its
-front pads near `(2872,1699)`/`(2981,1699)` in `200411500` and solder
-positions near `(2678,1415)`/`(2570,1415)` in `200525009`. Neither solder
-position has a drilled annulus. The overlapping component view also places
-the projected pads on bare board. This rejects the current C35 geometry
-at that local position; another C35 hole pair remains possible.
+D67-local projection of the current C35 footprint gives front search points
+near `(2872,1699)`/`(2981,1699)` in `200411500`. The archived review found
+no corresponding drilled pair in the solder or overlapping component views.
+This leaves the current local C35 placement unsupported; another physical
+hole pair remains possible.
 
 Keep the `.006` reference pattern, but identify capacitor holes separately
 from package contacts at each site. Register cross-face identity and test
