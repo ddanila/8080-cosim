@@ -81,10 +81,12 @@ Runnable simulation retains a CPU-only MA-bus scaffold while video uses its
 SIM-ONLY second DRAM port; it does not apply an unproved D41/D53 slot schedule
 to the behavioral RAS/CAS model.
 
-The endpoint and direct-tie invariant is executable in
-`kicad/check_d40_1mhz_route.py`. The checker also guards the `.009`
-R35 split: D29.1 and R35.1 belong to `PHI2TTL`, while D35.13 belongs to
-`PHI2_POST_R35`.
+`kicad/check_d40_1mhz_route.py` checks exact endpoint sets in the JSON
+and the listed pad-net assignments in each selected PCB; it does not reject
+extra PCB pads on those nets. It guards the `.009` R35 split and excludes
+D96.6 from `LATCH_B`. On boards containing tracks, it also requires one
+direct B.Cu D92.2/.3 tie and zero whole-board open connections. These checks
+do not run electrical DRC or verify the HDL.
 
 Check the source model and source PCB from the repository root using Python
 with KiCad's `pcbnew` module:
@@ -97,13 +99,9 @@ With no board argument, the checker also inspects the routed snapshots and
 requires zero open connections on any board containing tracks. That default
 currently fails on held routing; a source-only PASS does not clear that gate.
 
-The zero-open routing result belongs to the earlier snapshot identified in
-[the promoted-topology record](../ref/routing/zero-open-promoted-topology.json).
-Its exact checker is retained in
-`ref/routing/tool-snapshots/check_d40_1mhz_route_zero_open.py`.
-Subsequent source corrections leave current whole-board connectivity held;
-see [the routed audit](routed-refresh-audit.md) and
-[factory-wire fidelity](factory-wire-route-fidelity.md) for the current state.
+See [the routed audit](routed-refresh-audit.md) and
+[factory-wire fidelity](factory-wire-route-fidelity.md) for current
+placement, connectivity, and construction holds.
 
 ## D96 exclusion
 
