@@ -149,9 +149,12 @@ and video interrupt cadence follow the implemented card contracts.)
 
 ## Mechanical mating contract (D1.31)
 
-Machine-checked by `kicad/revb/check_revb_mating.py` against `kicad/revb/mating.json`
-(the numeric source of truth); both cards and the backplane derive their connector
-geometry from it. Distances are in mm and refer to connector pad-row centres.
+The numeric source is `kicad/revb/mating.json`; card and backplane placement
+tables derive their connector geometry from it. `check_revb_mating.py` compares
+those tables’ coordinates and rotations, column-grid separation and slot/strip
+fit. It does not inspect generated PCBs, connector sides or populated STEP
+clearance; use the PCB guards and [mating report](rev-b-mating-report.md) for
+those checks. Distances below are in mm and refer to connector pad-row centres.
 
 | Constant | Value | Meaning |
 |---|---:|---|
