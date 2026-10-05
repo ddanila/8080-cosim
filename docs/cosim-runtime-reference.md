@@ -250,7 +250,7 @@ typed afterwards queues behind it. For example, from the repository root:
 
 ```sh
 python3 tools/juku_run.py --disk-image media/disks/JUKPROG2.CPM \
-  --attach --max-speed --keys TDD
+  --attach --keys TDD
 ```
 
 The [runner](../tools/juku_run.py) attaches the current terminal with `--attach`;
