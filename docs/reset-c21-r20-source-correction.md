@@ -20,16 +20,13 @@ to the right prevent a secure downstream pin assignment. In particular,
 neither the nearby D5 control pins nor the WD 19 continuation should be
 assigned to R20 from their apparent proximity in the overview.
 
-The assembly `PXL_20260711_114604420.jpg` labels vertical C21 below R20 and
-left of **D52**. The July owner component image `PXL_20260710_200450127.jpg`
-shows the matching green C21 body beside the marked К555КП14 D52. The owner
-solder image `PXL_20260710_200537608.jpg` shows D52's two eight-contact rows.
-The D52-local reflected fit maps C21's lower physical lead near front
-`(1740,1530)` to solder `(2381,1447)`, within about 8 pixels of the joint
-`(2380,1440)` on the separate R4-right trace. The upper C21 lead visibly joins
-the lower lead of the R20-position red body on front copper. This matches the
-source series branch. R4-right-to-D13.5 remote continuity and the far R20
-return remain to be checked on the board.
+The factory assembly and owner photos identify vertical C21 below R20,
+left of D52. The D52-local reflected fit supports C21's lower physical lead
+joining the R4-right trace; its upper lead visibly joins the lower lead of
+the R20-position body. This agrees with the source series branch.
+R4-right-to-D13.5 remote continuity and the far R20 return remain unmeasured.
+Photo hashes, coordinates, fit anchors and contact limits are in
+[the C21/R4 cross-view review](../ref/photos/juku-pcb-2/c21-r4-crossview-review.json).
 
 The source model and unrouted source PCB carry `RESIN` at R4.2/C21.1/D13.5,
 `C21_R20_SERIES` at C21.2/R20.1, and a one-pad
@@ -43,9 +40,6 @@ correction and fresh DRC before fabrication. Relabelling those pads alone
 would leave the old copper attached to ground, +5 V, and RESIN. The installed C21
 value and physical hole spacing also remain unmeasured. The drawing numeral
 `24` supplies a nominal value, not an installed-value measurement.
-
-Photo coordinates, hashes, fit anchors, and contact limits are in
-`ref/photos/juku-pcb-2/c21-r4-crossview-review.json`.
 
 See [the routed refresh audit](routed-refresh-audit.md) for the current
 C21/R20 pad-net mismatches and quarantined copper. That audit checks model
