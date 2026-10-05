@@ -30,9 +30,7 @@ the diagnosis.
   slow 1.5 MHz CPU and wire-rate one-byte overrun behavior. Software polling
   throughput and test recovery are therefore covered; analog behavior is not.
 - Physical CS00014 passes all six 19,200/x16 mode-2/count-4 BAUDTEST2 cases and
-  the sustained network-disk soak described below. The latter completed 108
-  reads and 67 writes with zero protocol retries, wrote and byte-verified an
-  8 KiB file after close/reopen, deleted it, and emitted `M2PASS!`.
+  [sustained network-disk soak](#physical-cs00014-disk-result-and-throughput).
 
 The conservative cross-board resident network-disk setting remains
 **9600/8O1**. **19,200/8O1 with PIT mode 2/count 4 is now physically proven for
@@ -200,11 +198,8 @@ restored 9600. Stock 19,200/x16 mode 3/count 4 passed four of 59 cases and
 otherwise stopped after short correct prefixes with no PE/OE/FE. The 9600/x64
 stage failed its three cases. Crucially, 19,200/x16 mode 2/count 4 passed all
 six cases, including unpaced 64-byte alternating/PRBS and 133-byte
-incrementing/PRBS frames. Because the serial line, framing, baud rate, CPU
-loop, and D11 are unchanged, this is strong evidence of receive-clock
-edge/duty sensitivity in the D57.10-to-D11.25 path. It is not yet proof that
-D57 itself is faulty: loading, threshold margin, or the D11 clock input can
-produce the same mode-dependent result.
+incrementing/PRBS frames. The [diagnosis above](#current-diagnosis-after-the-mode-2-disk-pass)
+separates the receive-clock inference from component-fault proof.
 
 The historical `juku-net-mode2-soak-system.bin` keeps the stock ROM
 bootstrap at 9600, then runs the resident network BIOS at 19,200/x16 mode 2.
