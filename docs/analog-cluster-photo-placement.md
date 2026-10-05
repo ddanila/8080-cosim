@@ -49,11 +49,9 @@ between VT2 and the right-hand passive group. Its actual pad pair, population,
 value, and individual physical pin-to-rail assignments remain explicit
 boundaries. C94 is modeled without an installed value or a VIDEO_OUT join.
 
-The routed replica's two C94 through-hole pad centres `(289.87,132.821)` and
-`(289.87,127.821)` mm project through the registered local affine to about
-`(3252,2011)` and `(3250,1901)` in the July owner tile. Original-resolution
-inspection shows bare substrate at both positions. That footprint is a
-provisional placement, not a photo-registered copy of original drilling.
+The replica C94 through-hole pad projections land on bare owner-board
+substrate. Its footprint remains provisional; the coordinates and image
+controls are retained in [the VT2/C94 evidence](../ref/photos/juku-pcb-2/c94-endpoint-registration.json).
 
 The factory 12 cm cable table and two component-photo angles prove that X6 is bracket-mounted.
 An original-resolution reread places printed point A:3 beside VT2/R65, physically
@@ -89,9 +87,6 @@ destination remain unproved; direct continuity is required. Coordinates,
 photo hashes and search limits are retained in
 [the R67 registration evidence](../ref/photos/juku-pcb-2/r67-photo-exhaustion.json).
 
-Machine-readable VT2/C94 correction evidence is in
-`ref/photos/juku-pcb-2/c94-endpoint-registration.json`.
-
 ## C16/R92/R99 drill registration
 
 The `.009` factory drawing identifies C16 as the horizontal capacitor between
@@ -102,10 +97,7 @@ parts populated: a grey axial C16 and two red axial resistors. Their visible
 lead landings agree with the affine-projected factory centres and the solder
 image `PXL_20260710_200522685.jpg` corroborates the paired backside locations.
 
-C16 is placed at `(267.094,101.055)` mm on a 12.50 mm horizontal
-span, with pads at `(260.844,101.055)` and `(273.344,101.055)` mm. R92 is at
-`(253.869,101.194)` mm and R99 at `(241.207,103.467)` mm, each on a 10.16 mm
-horizontal span. An oblique May component view directly resolves bare `27` on
+An oblique May component view directly resolves bare `27` on
 C16's exposed face; the independent July angle repeats `27`, but D97 hides
 the lower body line. GOST 11076-69 Table 1 nevertheless requires a unit/decimal
 letter for a complete coded capacitance, and no such glyph is unambiguously
@@ -124,10 +116,8 @@ immediately right of D99 as C19 and projects its body centre to
 `PXL_20260710_200418174.jpg` independently shows the populated grey axial body,
 both bent leads, and two separate board landings at that site. The registered
 solder image `PXL_20260710_200522685.jpg` exposes the corresponding distinct
-joint pair. Upper component pad 1 is solder coordinate `(875,712)`, while
-lower pad 2 is `(823,893)`. A vertical
-10.00 mm axial footprint therefore preserves the physical
-part at pads `(292.893,88.574)` and `(292.893,98.574)` mm.
+joint pair. The guard retains the registered 10 mm vertical span and pad
+positions.
 
 The body deliberately leans over the adjacent resistor column, so body overlap
 alone does not imply an electrical join. Here, however, two independent
@@ -147,29 +137,19 @@ and R86.2 are closed to `P5V` by the target common rail plus electrical sheet
 C20.2/D102.7. The solder-side D102.8 ground trace is not mistaken for this
 component-side +5 V rail.
 
-The July component view registers the four left joints at R100.1
-`(3294,1064)`, R102.1 `(3317,1142)`, R108.1 `(3325,1217)`, and R86.1
-`(3320,1276)` pixels. The independent May angle separates the same joints.
-Neither photo alone exposes a complete remote continuation for R102.1 or
-R108.1; their promotion comes specifically from recovered electrical sheet 3.
+R102.1 and R108.1's remote connections come from recovered electrical
+sheet 3; the owner photos alone do not establish those continuations.
 
 ## C20/C22 drill registration
 
 The factory `.009` drawing identifies the overlapping vertical bodies at the
-right end of D102 as C20 and C22. Its previously recorded body-label points
-project inside the D102 package outline and therefore are not usable as drill
-centres. The full-resolution owner component view instead shows two grey axial
-capacitors leaning to the right of the package, while the independently
-registered solder view exposes both pairs of joints. Relative to D102's exact
-2.54 mm pad grid, the only coherent paired-hole solution is:
+right end of D102 as C20 and C22. The owner component view shows two grey
+axial capacitors leaning to the right of the package; the registered solder view exposes both joint pairs.
+Their retained geometry has 10 mm vertical spans and columns 2.54 mm apart,
+checked against the D102 pad grid. Exact centres and pad positions are in
+[the placement guard](../kicad/check_analog_photo_placement.py).
 
-- C20 centre `(303.997,110.024)` mm, pads at y `105.024/115.024` mm;
-- C22 centre `(306.537,110.024)` mm, pads at y `105.024/115.024` mm.
-
-Both spans are 10.00 mm and the columns are 2.54 mm apart. This geometry lands
-on the visible component-side lead arcs and the corresponding four backside
-joints within the D102 registrations' roughly 0.1--0.5 mm photographic read
-uncertainty. C20's early July opposite face reads `±5`, while C22's May face carries
+C20's early July opposite face reads `±5`, while C22's May face carries
 the `М75` temperature-stability group marking
 ([standard cross-check](../ref/datasheets/gost-m75-capacitor-marking.md)),
 not a complete capacitance code. Two later July angles expose
