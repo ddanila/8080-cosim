@@ -228,7 +228,7 @@ def main() -> int:
         "Three preserved complete reads agreed",
         "D2.12  <-> D30.2",
         "D105.9  <-> D1.17 DBIN",
-        "earlier installed-PROM report",
+        "With D6 removed",
         "D6.11 and D6.12 are isolated",
     )
     official_bom_lead = marker(
