@@ -170,8 +170,10 @@ The manifest is fixed at `FF00h` and vectors start at `FF20h`. ABI 1.2 offers:
 - S21 configuration, key remapping, built-in sound cue/silence, and safe
   diagnostics.
 
-ABI 1.3 appends `FF5Ch` without moving an earlier vector. C selects bounded
-host-console, capability, time, publication, bulk, or state operations. Its
+ABI 1.3 appends `FF5Ch` without moving an earlier vector. C selects
+host-console, capability, time, publication, bulk, or state operations. ABI 1.3
+has unbounded transmit-ready and reply-prefix waits; bounded recovery requires
+ABI 1.4 or later. Its
 27 mutable bytes occupy `D7E0h..D7FAh`; framing/recovery code stays in ROM.
 The complete-ROM diagnostic selector checks the independently balanced
 resident `D800h..FFFFh` span. POST failure tones use SSL, SLS, SLL, LSS and
