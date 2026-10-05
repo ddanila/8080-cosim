@@ -28,7 +28,7 @@ python3 kicad/report_source_pcb_drc.py
 - Short violations: `0`
 - Copper-clearance violations: `0`
 - Track-crossing violations: `0`
-- Unique colliding pad/item pairs: `0`
+- Unique short-collision item groups: `0`
 
 ## Violation types
 
@@ -42,25 +42,15 @@ python3 kicad/report_source_pcb_drc.py
 
 ## Revision disposition
 
-The `.006` dashed VT3/VT4 RF option is excluded from this `.009` target.
-Complete `.009` assembly-drawing
-coverage and the owner-board component tiles show only VT1/VT2, while the archived group
-BOM assigns the adjustable trimmer and extra RF transistors to `.006`. The legacy-only
-population is therefore DNP on this target; reused C9/C10/C11/C12/C15 retain their `.009`
-factory positions with explicit continuity-boundary nets.
-
-The upper-left decode row is independently component-photo fitted. D8 is the socketed
-К155РЕ3 PROM, D9 the adjacent metal К555ИД7 decoder, and D7 the marked black
-КР1533ЛА3 package; all three are horizontal with right-facing notches. The drawing-labeled
-R13 and lower R14 are fitted to their photographed horizontal landings.
-
-R33 and R66 retain their independently photo-registered centres and orientations. Their
-nearest pads are 1.721 mm centre-to-centre; using 1.50 mm copper around the original-style
-0.80 mm drills preserves a 0.35 mm annulus and provides 0.221 mm copper clearance without
-moving either component.
+The `.006` RF option is excluded from this `.009` target; the evidence
+record below supplies the legacy-DNP reference list. For current
+component identity and placement boundaries, see
+[video analog evidence](video-analog-boundary.md) and
+[photo placement](analog-cluster-photo-placement.md). This DRC command
+does not verify the photo registrations or component markings.
 
 - Recorded legacy-DNP references: `15`
-- Current collision references: `none`
+- Current short-collision references: `none`
 - Evidence: `ref/photos/dgsh5-109-009-sb/rf-option-disposition.json`
 
 The source PCB has no copper short, clearance, or track-crossing violation and passes this gate.
