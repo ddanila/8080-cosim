@@ -265,7 +265,9 @@ to become a key event.
 Timing-sensitive raw-key tests can inject one ordinary matrix contact at an
 exact instruction boundary with `JUKU_KEY_AT_PC=PC:BYTE`. Both fields are
 hexadecimal; for example, `JUKU_KEY_AT_PC=34A2:1B` begins a physical Escape
-contact immediately before the instruction at `34A2h`. The contact then uses
+contact trigger immediately before the instruction at `34A2h`. Matrix reads
+still return idle until `JUKU_KEY_START_VRAM` is reached; set that threshold
+to `0` when the contact must be available at the trigger PC. The contact uses
 the normal `JUKU_KEY_HOLD_FRAMES` and `JUKU_KEY_GAP_FRAMES` timing and the same
 factory matrix mapping as PTY/scripted input. Set
 `JUKU_KEY_AT_PC_HOLD_FRAMES` to override only the triggered contact's hold
