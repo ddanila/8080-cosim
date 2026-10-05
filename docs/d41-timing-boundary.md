@@ -4,12 +4,15 @@ Status: **D41 PACKAGE CONNECTIVITY SOURCE-CLOSED**
 
 This generated report isolates the D41 ИР16 timing-chain boundary.
 The board model has guarded evidence for D41's two output-side
-uses, its fixed straps, and both numbered timing-bundle inputs.
+uses and both numbered timing-bundle inputs. The guard also checks that
+its strap pins are netted.
 
 ## Command
 
 Run from the repository root with Python 3 (standard library only).
-The generator overwrites this report with its check results, including
+The generator requires `kicad/juku.board.json` and
+`docs/photo-registration/local-packages/report.json`. It overwrites
+this report with its check results, including
 failed results, then returns exit status 1 if any check fails.
 
 ```sh
@@ -53,9 +56,11 @@ python3 scripts/report_d41_timing_boundary.py
   It does not inspect routed copper, rerun image registration, or measure
   dynamic timing. See the [video-slot audit](video-slot-timing-audit.md)
   for the remaining arbitration boundary.
-- The source model grounds A-D, ties DS/G high, and leaves QC/QD
+- The source model grounds A-D, ties SER/OC high, and leaves QC/QD
   unconnected. LD joins rail 17 and CK rail 8. The remote origin of
-  rail 17 remains unresolved at D36.2/D41.6.
+  rail 17 remains unresolved at D36.2/D41.6. The guard verifies that
+  strap pins are netted, but checks their net destinations only for
+  supply pins 7/14.
 - The 1 MHz source-net check preserves the factory tag-7 and owner
   continuity attribution. The [clock-route report](d40-d59-d92-d95-1mhz-route.md)
   owns the corresponding source/routed migration evidence.
