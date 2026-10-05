@@ -25,23 +25,11 @@ The board JSON, schematic, all three PCB pad maps, HDL bus ordering, and
 8286 pinout audit use these exact rows. D29.1 is on PHI2TTL; D35.13 is
 on the separate post-R35 node. The three passive parts R35, R106, and C29
 exist in the source model but await footprint placement and owner measurements.
-The D29.1/.2/.3/.6 component probe centres are approximately
-`(2213,1438)/(2265,1438)/(2318,1438)/(2478,1438)`; reflected solder
-centres are `(2489,1588)/(2441,1588)/(2393,1588)/(2249,1588)`. Both
-sets follow the visible ten-contact lower row and left-notch pin count;
-they do not constitute owner continuity measurements.
-In component photo `200354648`, D29.2's lower lead has a front-copper
-segment toward the white cable; a collinear segment below the cable ends
-at an exposed annulus near `(2255,2352)`. The cable hides the intervening
-copper, so the annulus is a probe candidate rather than a closed join.
-Independent tile matching places that waypoint at front `(2480,1015)` in
-`200411500`. D7/D9 local reflections register its opposite-face hole near
-`(3065,730)` in solder view `200525009`; the long D29-only extrapolation into
-`200509593` does not identify the same hole. The current evidence is in
-`ref/photos/juku-pcb-2/d29-pin2-front-chase.json` and summarized with the
-D7-side probe candidates in [the D7 review](d7-gates-source-review.md).
-Photo registration does not close the cable-hidden D29.2 segment or the
-D7.3 remote join; verify both by continuity.
+Registered probe centres and the cable-covered D29.2 waypoint are recorded
+in [the D29 pin-2 review](../ref/photos/juku-pcb-2/d29-pin2-front-chase.json)
+and [the D7 guide](d7-gates-source-review.md). Photo registration supports
+the probe locations but does not close the hidden D29.2 segment or its
+remote D7.3 join; verify both by continuity.
 
 Exact sheet-1 detail `(1000,3040)–(1740,3540)` shows D7.3 directly feeding
 D29.2; the riser crosses D29.7 without a dot. The lower continuation puts
