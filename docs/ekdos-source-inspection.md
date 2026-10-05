@@ -16,6 +16,9 @@ If `JUKU1.CPM` exists, its size is checked; absence does not fail this audit.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The command overwrites this report.
+
 ```sh
 python3 scripts/report_ekdos_source_inspection.py
 ```

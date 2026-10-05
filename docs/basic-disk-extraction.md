@@ -5,9 +5,10 @@ Status: **ARTIFACTS GENERATED; ALLOCATION MAPPING UNRESOLVED**
 This generated report extracts BASIC-relevant CP/M files from the
 vendored Arti Juku disk images. The directory-backed extractor uses the
 visible directory window at `0x5000`, 4 KiB allocation blocks, a
-four-side-track system area, and the `TRANS` sector order from
+four-side-track system area, and a hard-coded transcription of `TRANS` from
 `ref/ekdos-source/EKDOS30.ASM`. Raw candidates are fixed-offset slices;
-their allocation mapping is not resolved by this extractor.
+their allocation mapping is not resolved by this extractor. The script does
+not read or verify the assembly source’s current translation table.
 
 ## Command
 
