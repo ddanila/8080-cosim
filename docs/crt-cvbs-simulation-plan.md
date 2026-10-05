@@ -42,7 +42,7 @@ waveform-source revisions.
 | --- | --- |
 | Receiver input/sync (WP0–WP2) | Recorded RF/IQ regression, float32 headless input, explicit timing profiles, measured lock telemetry and positive/negative synthetic fixtures; no guessed built-in Juku preset |
 | Digital probes (WP3) | [Physical contributor probes](video-physical-probes.md) expose source-proved serializer/sync nodes with unresolved slot schedule marked; not a complete picture waveform |
-| Raster timing (WP3) | [PIT report](video-pit-timing.md) executes the exact EKTA programming: 64 µs lines, 313-line frames and guarded D56 pulses; does not close physical framebuffer slots or D34_SIG |
+| Raster timing (WP3) | [PIT report](video-pit-timing.md) replays the exact EKTA PIT writes through forced bus signals: 64 µs lines, 313-line frames and guarded D56 pulses; CPU execution, I/O decoding, physical framebuffer slots and D34_SIG are outside this test |
 | Synthetic receiver fixture (WP3) | Ideal five-bar timing fixture exercises the decoder; it is separate from HDL pixels and physical voltage |
 | Output stage (WP4) | [Static model](x7-output-stage-model.md) checks topology and loaded/corner solves with an official TI LS86 comparison driver; not exact К555ЛП5 calibration or video |
 
