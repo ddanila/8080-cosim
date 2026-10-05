@@ -92,20 +92,12 @@ for backward compatibility and adds:
 - the complete DIR, STATUS, diagnostics, A:/B:, write/erase, time, and warm-boot
   workload after recovery.
 
-The forced NetDisk-reset run completed with one target reset, one bootstrap
-restart, zero service retries, and clean writable-journal behavior.
-
 ## Exact C11 artifact boundary
 
 The [C11 release manifest](../spinoffs/jukuravi/network-rom/juku-network-rom-abi1.4-c11.json)
-identifies the recovery loader and exact ROM pair below. Use these identities
-when qualifying or programming C11.
-
-The recovery C11 pair is:
-
-- combined: `b93428bb33cd7e31c2d9b2b84aa07ea17edda76c9d53ab73b3cb8687e8d53dfd`;
-- D15: `a94e8fa2911fd3f7e715c6086d237b45fe630e71e8e14786bdcce435d99a8134`;
-- D16: `ac80ca047adeff842a911266ff1c054e30ac4628e925ea9fbb1be54e872b9581`.
+pins the combined image and both D15/D16 halves by SHA-256, together with
+the recovery-loader identity. Verify those manifest identities when qualifying
+or programming C11.
 
 The discovery loader lives in the lower D15 half.
 Physical programming and the raster/listening acceptance remain separate
