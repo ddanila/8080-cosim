@@ -44,16 +44,16 @@
 
   "pic_wiring": {
     "_desc": "8259-class PIC interrupt-request line assignments, as wired in the root structural twin. Lower number = higher priority.",
-    "ir0": "FDC INTRQ",
-    "ir1": "FDC DRQ",
+    "ir0": "X2.214 external interrupt input (R105 pull-down)",
+    "ir1": "X2.218 / D27.PB7 external interrupt input (R107 pull-down)",
     "ir2": "serial RxRDY",
     "ir3": "serial TxRDY",
-    "ir4": "unused",
+    "ir4": "TAPE RUN INT unmatched sheet continuation; not serviced by runnable HDL",
     "ir5": "frame tick (video frame boundary)",
     "ir6": "ir6_sig (reserved)",
     "ir7": "ir7_sig (reserved)",
     "frame_service_vector_hex": "0xFED4",
-    "provenance": "hdl/juku_top.v:709 (ir assignments); frame service vector: docs/fdc-readiness.md:257, spinoffs/minimal-vga/docs/rev-b-build-plan.md interrupts row"
+    "provenance": "hdl/juku_top.v U_PIC (IR0/IR1 X2 inputs); kicad/juku.board.json TAPE_RUN_INT (IR4 source boundary); frame service vector: docs/fdc-readiness.md:257, spinoffs/minimal-vga/docs/rev-b-build-plan.md interrupts row"
   },
 
   "timing": {

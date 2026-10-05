@@ -28,6 +28,10 @@ assumptions and framebuffer conventions require their recorded scope; they
 are not measurements of every firmware mode or physical board. Derived ROMs
 and decode outputs must be regenerated from their inputs rather than edited.
 
+The original model connects PIC IR0/IR1 to X2 external inputs. Rev B assigns
+FDC INTRQ/DRQ to those lines on its own I/O card; that assignment is a spin-off
+design choice. The original sheet's IR4 tape continuation remains unresolved.
+
 ## Guard coverage
 
 Run from the repository root:
