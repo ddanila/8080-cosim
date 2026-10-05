@@ -88,9 +88,12 @@ and reproduction commands. T80 runs in Z80 mode (`Mode => 0`).
 - The current Rev A copper includes the Phase 3 decode sockets and observability
   headers and passes zero-violation/zero-unconnected KiCad DRC. Its two inner
   layers are reserved for filled GND/VCC planes; independent review remains.
-- The U5 decode is simulated in both jumper modes, and U24's Gray-coded DRAM
+- The U5 decode is simulated in both jumper modes, and U24's DRAM
   timing/wait-state reference passes the slower vendored MK4564-12 limits at
   4 MHz. Neither GAL has been compiled/programmed or validated in hardware.
+- The physical U20/U21 mux inputs have CPU A0–A7 and refresh-row outputs,
+  without CPU-column or video-address paths. The runnable DRAM scaffold does
+  not close that hardware gap; see [the chip map](docs/rev-a-chip-map.md#dram-and-arbitration).
 - The VGA test proves timing activity, not a Juku banner or prompt sourced from
   shared DRAM.
 - No independent end-to-end schematic/design review has released the copper.
@@ -204,14 +207,16 @@ apply to the five-board Rev B order target.
 
 Before Rev A can become an order candidate:
 
-1. Compile, program and review the equations on the exact chosen GAL22V10
+1. Complete the physical DRAM addressing and resolve its scanout scope under
+   [the manufacturing requirements](docs/rev-a-manufacturing-readiness.md#remaining-release-requirements).
+2. Compile, program and review the equations on the exact chosen GAL22V10
    devices.
-2. Validate DRAM, reset, clock, power, connector and socket pinouts against
+3. Validate DRAM, reset, clock, power, connector and socket pinouts against
    selected parts.
-3. Obtain an independent schematic, copper, Gerber, drill and power-return
+4. Obtain an independent schematic, copper, Gerber, drill and power-return
    review, plus full-board LVS or an explicit owner waiver naming that
    independent review as compensating evidence.
-4. Regenerate all package artifacts after the design is frozen.
+5. Regenerate all package artifacts after the design is frozen.
 
 Until then, work on VJUGA must not distract from the main replica's P0 closure
 items in the repository-root `PLAN.md`.
