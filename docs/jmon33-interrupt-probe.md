@@ -37,7 +37,7 @@ This run requested `5000000` cycles and a `200000`-cycle frame interval.
 
 ## Remaining Boundary
 
-- This fast probe proves that the interrupt-driven monitor path is alive in
+- A passing result shows activity on the interrupt-driven monitor path in
   cosim; it is not the user-visible completion oracle by itself.
 - [Ready probe](jmon33-ready-probe.md) records the cosim monitor-idle
   framebuffer oracle. The [HDL cursor probe](jmon33-hdl-cursor-probe.md)
