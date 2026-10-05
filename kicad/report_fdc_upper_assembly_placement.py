@@ -90,7 +90,9 @@ lines = ["# FDC upper assembly placement", "",
          "`/usr/bin/python3 kicad/report_fdc_upper_assembly_placement.py`.",
          "That interpreter needs KiCad's `pcbnew` module and Pillow; materialize",
          "the original images through [Git LFS](git-lfs-policy.md#local-use).",
-         "The command overwrites this report, its JSON companion, and its review overlay.", "",
+         "The command reads [the registration record](../ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json)",
+         "and the source PCB, then overwrites this report,",
+         "[its JSON companion](fdc-upper-assembly-placement.json), and its review overlay.", "",
          "The guard checks recorded pull-up mappings and selected value-source hashes,",
          "then calculates placement from recorded anchors and reads source-PCB pad",
          "centres. The D100 held-out error must be at most 1.5 mm, but missing",
@@ -100,8 +102,8 @@ lines = ["# FDC upper assembly placement", "",
          "photo-fitted D100/D98. Each target is interpolated only between its adjacent",
          "package centres. An independent D94-to-D98 interpolation predicts held-out",
          f"D100 within `{check_error:.3f}` mm.", "",
-         "| Ref | Bracket | Fraction | Projected x,y mm | Current x,y mm | Delta mm | Observation |",
-         "| --- | --- | ---: | ---: | ---: | ---: | --- |"]
+         "| Ref | Bracket | Fraction | Projected x,y mm | Current x,y mm | Delta mm |",
+         "| --- | --- | ---: | ---: | ---: | ---: |"]
 for item in targets:
     projected = ", ".join(f"{value:.3f}" for value in item["projected_board_mm"])
     current = "absent" if item["current_footprint_mm"] is None else ", ".join(
@@ -109,7 +111,7 @@ for item in targets:
     delta = "-" if item["projected_delta_mm"] is None else ", ".join(
         f"{value:+.3f}" for value in item["projected_delta_mm"])
     lines.append(f"| {item['refdes']} | {'/'.join(item['between'])} | {item['fraction']:.6f} | "
-                 f"{projected} | {current} | {delta} | {item['observation']} |")
+                 f"{projected} | {current} | {delta} |")
 lines += ["", "The later owner image `PXL_20260710_202708344.jpg` shows green two-lead",
           "bodies in both gaps. C12's visible leads reach D100.20/+5 V and D94.8/GND.",
           "C9 remains partly cable-obscured; its individual rail joins and both values",
@@ -127,13 +129,11 @@ lines += ["", "The later owner image `PXL_20260710_202708344.jpg` shows green tw
           "to `ДГШ5.087.009`. Because that designation differs from the target",
           "`ДГШ5.109.009`, it is corroboration only; the photo-readable pair and identical",
           "third body are the target-board value evidence.", "",
-          "| Ref | Value | Signal side | Proved nodes | Component signal px | Solder signal px |",
-          "| --- | ---: | --- | --- | ---: | ---: |"]
+          "| Ref | Value | Signal side | Proved nodes |",
+          "| --- | ---: | --- | --- |"]
 for item in pullups:
     nodes = ", ".join(f"{ref}.{pin}" for ref, pin in item["signal_nodes"])
-    component = ", ".join(f"{value:.1f}" for value in item["component_signal_px"])
-    solder = ", ".join(f"{value:.1f}" for value in item["solder_signal_px"])
-    lines.append(f"| {item['refdes']} | 6.2 kΩ | `{item['signal']}` | {nodes} | {component} | {solder} |")
+    lines.append(f"| {item['refdes']} | 6.2 kΩ | `{item['signal']}` | {nodes} |")
 lines += ["", "All three opposite resistor pads enter the same visibly tinned +5 V rail.",
           "Owner continuity maps R87/R88/R89 to D94 D3/D2/D1 respectively.",
           "The separate D94 D0 node is pulled up only by R8 2 kΩ in the measured scope."]

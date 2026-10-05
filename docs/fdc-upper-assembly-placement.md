@@ -6,7 +6,9 @@ Regenerate from the repository root with
 `/usr/bin/python3 kicad/report_fdc_upper_assembly_placement.py`.
 That interpreter needs KiCad's `pcbnew` module and Pillow; materialize
 the original images through [Git LFS](git-lfs-policy.md#local-use).
-The command overwrites this report, its JSON companion, and its review overlay.
+The command reads [the registration record](../ref/photos/dgsh5-109-009-sb/fdc-upper-placement-registration.json)
+and the source PCB, then overwrites this report,
+[its JSON companion](fdc-upper-assembly-placement.json), and its review overlay.
 
 The guard checks recorded pull-up mappings and selected value-source hashes,
 then calculates placement from recorded anchors and reads source-PCB pad
@@ -19,10 +21,10 @@ photo-fitted D100/D98. Each target is interpolated only between its adjacent
 package centres. An independent D94-to-D98 interpolation predicts held-out
 D100 within `1.309` mm.
 
-| Ref | Bracket | Fraction | Projected x,y mm | Current x,y mm | Delta mm | Observation |
-| --- | --- | ---: | ---: | ---: | ---: | --- |
-| C12 | D94/D100 | 0.486906 | 253.218, 33.954 | 253.218, 33.954 | -0.000, +0.000 | vertical C12 between D94 and D100; May and early July views show a bare gap, but later July owner image 202708344 shows a fitted green axial body in that exact gap, with one lead to D100.20/+5 V and the other to D94.8/GND; its value and permanent population history remain open |
-| C9 | D100/D98 | 0.561111 | 285.807, 33.590 | 285.807, 33.590 | -0.000, +0.000 | vertical C9 between D100 and D98; earlier overhead owner view is cable-hidden, but later July image 202708344 exposes a green two-lead body in this gap; value and individual rail joins remain open |
+| Ref | Bracket | Fraction | Projected x,y mm | Current x,y mm | Delta mm |
+| --- | --- | ---: | ---: | ---: | ---: |
+| C12 | D94/D100 | 0.486906 | 253.218, 33.954 | 253.218, 33.954 | -0.000, +0.000 |
+| C9 | D100/D98 | 0.561111 | 285.807, 33.590 | 285.807, 33.590 | -0.000, +0.000 |
 
 The later owner image `PXL_20260710_202708344.jpg` shows green two-lead
 bodies in both gaps. C12's visible leads reach D100.20/+5 V and D94.8/GND.
@@ -44,11 +46,11 @@ to `ДГШ5.087.009`. Because that designation differs from the target
 `ДГШ5.109.009`, it is corroboration only; the photo-readable pair and identical
 third body are the target-board value evidence.
 
-| Ref | Value | Signal side | Proved nodes | Component signal px | Solder signal px |
-| --- | ---: | --- | --- | ---: | ---: |
-| R87 | 6.2 kΩ | `FDC_WE_N` | D94.4, D93.2 | 1485.0, 1553.0 | 2190.0, 1323.0 |
-| R88 | 6.2 kΩ | `FDC_RE_N` | D94.3, D93.4 | 1539.0, 1553.0 | 2140.0, 1323.0 |
-| R89 | 6.2 kΩ | `D94_D1_D99_A2N` | D94.2, D99.9 | 1594.0, 1553.0 | 2088.0, 1323.0 |
+| Ref | Value | Signal side | Proved nodes |
+| --- | ---: | --- | --- |
+| R87 | 6.2 kΩ | `FDC_WE_N` | D94.4, D93.2 |
+| R88 | 6.2 kΩ | `FDC_RE_N` | D94.3, D93.4 |
+| R89 | 6.2 kΩ | `D94_D1_D99_A2N` | D94.2, D99.9 |
 
 All three opposite resistor pads enter the same visibly tinned +5 V rail.
 Owner continuity maps R87/R88/R89 to D94 D3/D2/D1 respectively.
