@@ -773,9 +773,10 @@ def main() -> int:
         for name, net in closed_overrides:
             if not str(net.get("risk_disposition", "")).strip():
                 failures.append(f"{name} has source_risk=false without a disposition")
-        for path in ("hdl/README.md",):
-            if not re.search(rf"\b{risk_count}\b[^\n]*source-risk", read(path)):
-                failures.append(f"{path} does not expose the current residual source-risk net count")
+        hdl_readme = read("hdl/README.md")
+        if ("source-risk annotations" not in hdl_readme or
+                "(../docs/main-board-erc-parity.md)" not in hdl_readme):
+            failures.append("hdl/README.md must link source-risk boundaries to the current ERC report")
 
     endpoint_match = re.search(
         r"All board endpoints checked in source PCB: `(\d+)`",

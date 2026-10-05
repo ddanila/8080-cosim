@@ -101,8 +101,10 @@ currently stops on an additional D57 failure bit before reaching its T34 cases.
   substitutions. [Factory-wire fidelity](../docs/factory-wire-route-fidelity.md)
   owns the endpoint, routing, and landing-fit checks; HDL transparency does
   not establish physical construction.
-- 55 modeled nets still carry source-risk annotations requiring
-  physical evidence or an explicit redesign before fabrication release.
+- Modeled nets with source-risk annotations require physical evidence or an
+  explicit redesign before fabrication release. The
+  [main-board ERC and parity report](../docs/main-board-erc-parity.md) owns
+  their current census and dispositions.
 - The runnable video path reads DRAM through a simulation-only second port.
   Physical D41/D42/D43 and mux/decode instances exist. Their ИР16 falling-edge
   LD/SH/OC behavior and D48-D52 inverting КП14/258 behavior are guarded, but
