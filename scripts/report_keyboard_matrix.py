@@ -210,6 +210,9 @@ physical acceptance scope.
   Shift-Up, Shift-Down, and F7 contacts. `85` and `8e` inject Ctrl-Up/Home and
   Ctrl-Down/End outside `KMAP`. These bytes are a cosim test protocol, not
   character encodings exposed to Juku software.
+- Other ASCII control bytes `01h..1Ah` use the corresponding letter contact
+  with CTRL asserted. Dedicated Tab, Return, Backspace and Escape contacts
+  take priority over the equivalent Ctrl-letter spelling.
 - Instruction-boundary injection uses the same matrix contacts; its gate and
   hold options are documented in the
   [runtime reference](cosim-runtime-reference.md#interactive-console-juku_console_pty).
