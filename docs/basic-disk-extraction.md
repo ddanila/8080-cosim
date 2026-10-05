@@ -12,8 +12,9 @@ not read or verify the assembly source’s current translation table.
 
 ## Command
 
-Run from the repository root. Verify retained identities before the writer
-replaces the extracted files, checksum manifest, README and this report.
+Run from the repository root with Python 3 (standard library only) and
+`sha256sum`. Verify retained identities before the writer replaces the
+extracted files, checksum manifest, README and this report.
 
 ```sh
 (cd media/disks && sha256sum -c SHA256SUMS)

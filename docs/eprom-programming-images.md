@@ -10,8 +10,9 @@ filename cross-reference is provenance nuance rather than a content gate.
 
 ## Reproduce
 
-Run from the repository root. Verify the retained source and output identities
-before the exporter replaces the images and manifest.
+Run from the repository root with Python 3 (standard library only) and
+`sha256sum`. Verify the retained source and output identities before the
+exporter replaces the images, checksum manifest and this report.
 
 ```sh
 (cd ref/eprom-images && sha256sum -c SHA256SUMS)
