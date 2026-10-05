@@ -16,14 +16,10 @@ It does not require a full boot prompt or compare that screen to cosim:
 - Both reconstructed byte streams must compare exactly against the booted
   juku_top framebuffer.
 
-The sim-only vid_out port is not composite voltage and is not a simulated D34
-or VIDEO_OUT node. It contains no sync summing, VT2 output stage, termination, or edge
-model.
-
-The shared-DRAM slot timing remains open: arbitration
-through the КП14 muxes, D53 decoder and D41 timing chain. This check does not claim
-that timing is closed; it locks only the byte-to-pixel serializer and runnable
-juku_top abstract oracle. The companion raster-geometry guard is
+The sim-only vid_out port models serial pixels. It omits the physical D34/VIDEO_OUT
+path: sync summing, VT2, termination and edge behavior. CPU/video arbitration
+through the КП14 muxes, D53 decoder and D41 timing chain also remains open.
+The companion raster-geometry guard is
 `sync/video_timing_check.sh` / `docs/video-timing-reference.md`.
 
 ## Command
