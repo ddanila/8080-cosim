@@ -1,12 +1,17 @@
 # Juku host configuration
 
-The production C host accepts an explicit configuration path. The Linux
-command-line options are also available for direct invocation:
+The production C host accepts an explicit configuration path:
 
 ```sh
 build/jukuhost JUKUHOST.INI
 build/jukuhost --config JUKUHOST.INI
 ```
+
+Put session settings in the INI when using either form. Command-line flags
+do not override it: combinations with paths or flags such as `--verbose`
+are rejected, and numeric options such as `--disk-baud` are overwritten by
+the INI settings or defaults. Use the direct command-line options without
+a configuration file for an alternative invocation.
 
 The DOS build uses `JUKUHOST.INI` automatically when invoked without options.
 The generated Pocket8086 folder therefore starts with either `JUKUHOST` or
