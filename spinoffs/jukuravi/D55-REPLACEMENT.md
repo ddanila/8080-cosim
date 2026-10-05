@@ -32,11 +32,10 @@ python3 spinoffs/jukuravi/firmware/build_d0_clocked_pit.py --check
 ```
 
 The separate HDL audit is `sync/jukuravi_d55_clock_audit.sh` (Bash, Python 3,
-`xxd`, and Icarus Verilog). Its current rerun stops at the T31 negative control:
-bitmap `18` differs from the expected `08`, so no T34 case is reached. See
+`xxd`, and Icarus Verilog). Its cases and current result are documented in
 [the structural simulation matrix](../../docs/jukuravi-d55-diagnostic-audit.md#structural-simulation-matrix).
-A successful media identity check does not establish a current HDL matrix pass
-or qualify the physical D55 path.
+Media identity checks alone do not establish an HDL matrix pass or qualify
+the physical D55 path.
 
 Record programmer model, adapter, device type, erase/program/verify result,
 and the read-back SHA-256 below. Label the medium `T34HOST`.
