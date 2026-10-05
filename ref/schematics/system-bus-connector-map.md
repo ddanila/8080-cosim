@@ -10,6 +10,7 @@ listed control contact. They do **not** agree on all power contacts, so the
 `.106.103` card must not be treated as a drop-in `.009` expansion card.
 
 Run from the repository root with Python 3 (standard library only).
+The six source images below must contain JPEG bytes, not Git LFS pointers.
 The command replaces this report:
 
 ```sh
@@ -36,7 +37,7 @@ physical continuity, routed copper, or complete module compatibility.
 The card overview and two overlapping detail reads independently cover
 the XP labels. The system overview plus both details cover the complete
 block/cable drawing. Contact codes below use the processor repository's
-three-character form: card `C32` is processor `132C`, etc.
+contact notation: card `C32` is processor `132C`, etc.
 
 ## Shared bus signal core
 
