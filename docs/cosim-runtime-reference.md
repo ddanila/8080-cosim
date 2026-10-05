@@ -124,6 +124,10 @@ Diagnostic-ROM checksum and build identities are documented in
 
 ## Bus and DRAM model boundary
 
+The comparison bench forces READY high and supplies its own PHI1/PHI2 clocks
+and reset pulse. It checks ordered bus events under those stimuli, not the
+board-derived clock, reset or WAIT/READY paths.
+
 The C reference must contain exactly the requested event count (130,000 by
 default) and all four default event classes. The HDL gate accepts either
 `BTRACE-END` when that trace is exhausted or `BTRACE-OK` when the configured
