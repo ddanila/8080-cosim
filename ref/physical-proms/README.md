@@ -62,21 +62,15 @@ SHA256 c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489
 
 Six named inputs represent three independent read events, including a
 power-cycled capture. The two board-name sets are aliases, as recorded in
-`validated/d8_039.dump.json`; all retained inputs agree byte-for-byte. The
-physical table differs from the old reconstructed fallback at 19 of 32
-addresses and therefore supersedes it.
+`validated/d8_039.dump.json`; all retained inputs agree byte-for-byte.
 
 ```text
 validated/d8_039.raw.bin
 SHA256 345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc
 ```
 
-Active-low asserted table:
-
-```text
-00: 10 10 10 10 20 20 20 20 00 00 00 00 00 00 00 00
-10: 00 00 00 00 00 00 00 00 10 10 10 10 20 20 20 20
-```
+See [the RE3 dump guide](../../docs/re3-physical-dumps.md#d8-039) for
+the asserted table and adopted decode boundary.
 
 ## D94 — ДГШ5.106.092, К155РЕ3
 
@@ -90,12 +84,8 @@ validated/d94_092.raw.bin
 SHA256 bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0
 ```
 
-Active-low asserted table:
-
-```text
-00: 00 00 00 01 0A 0A 0A 03 06 06 06 03 00 00 00 01
-10: 00 00 00 00 0A 0A 0A 0A 06 06 06 06 00 00 00 00
-```
+See [the RE3 dump guide](../../docs/re3-physical-dumps.md#d94-092) for
+the asserted table and unresolved control-path boundary.
 
 ## Validation
 
