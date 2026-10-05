@@ -49,11 +49,9 @@ API-v2 `J` attaches are retained in
 [their evidence record](sessions/cs00015-ekta4402-j-physical/README.md).
 The T31/T32 diagnostic configurations below are historical setups.
 
-On 2026-08-09 a separate AT28C64B diagnostic/service EEPROM was refreshed from
-T32 to the pinned T31 image and verified by a complete programmer verify plus
-one independent full read. It is prepared media, not currently fitted in
-CS00015. The identities and physical programming record are in
-[`T31-PHYSICAL.md`](T31-PHYSICAL.md#service-media-refresh-2026-08-09).
+The verified T31 service EEPROM is prepared media, not currently fitted in
+CS00015. Its identity and programming evidence are in
+[T31 physical acceptance](T31-PHYSICAL.md#service-media-refresh-2026-08-09).
 
 The validated diagnostic setup was:
 
@@ -132,8 +130,10 @@ discriminator after a T32 boot, without another ROM burn:
 python3 spinoffs/jukuravi/probe_a12_increment.py --port /dev/ttyUSB0
 ```
 
-`D15-LOCAL` means all consecutive RAM pairs remained `AA BB`; `SHARED-A12`
-means their second bytes came from the lower alias as `AA 22`.
+`CLEAN` means the five register results match the expected increment behavior.
+`D1 FAULT CONFIRMED` means they match the repaired CPU's historical signature.
+Both recognized results exit 0; `OTHER` exits 2. Read the result label rather
+than treating exit 0 as a CPU pass.
 
 ## Host use
 
