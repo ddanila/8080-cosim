@@ -98,8 +98,9 @@ pin voltages are solved between the TI comparison resistance and R62/R63.
 
 The terminated sweep evaluates **1,296**
 corners per logic state: all independent ±5% resistor corners crossed with
-the +5 V supply, TI comparison-driver resistance interpolation, 75 Ω load,
-beta, and VBE values.
+the supply, external load, beta and VBE values in the
+[model configuration](../ref/video/x7-output-stage-model.json). Driver
+resistance is interpolated from supply voltage, not varied independently.
 The unterminated diagnostic evaluates **432**
 corners per state with only fitted R65 loading the emitter.
 
