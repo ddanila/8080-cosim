@@ -118,8 +118,11 @@ simulate the HDL, or verify physical keyboard continuity. The transcription is
 an electrical coordinate map; host-key placement and physical fit need separate
 checks.
 
-Run from the repository root with Python 3 (standard library only):
-`python3 scripts/report_keyboard_matrix.py` replaces this report.
+Run from the repository root with Python 3 (standard library only).
+The writer requires `cosim/trace.c` and the three source photos under
+`ref/photos/dgsh5-104-015-e3/`, materialized through [Git LFS](git-lfs-policy.md#local-use).
+`python3 scripts/report_keyboard_matrix.py` replaces this report after its
+hash and tuple checks pass; a mismatch exits before writing it.
 `sync/keyboard_matrix_check.sh` also requires the generated report to match the
 existing copy.
 
@@ -186,15 +189,12 @@ falls through to the ROM's `N=` and `S=` keyboard prompts; cosim deliberately
 models that open-switch fallback and therefore injects `TN0201`. The same
 behavior on the `.009` PB4-strapped board remains unverified.
 
-The implemented network-first ROM uses reset-latched S21 configuration shared
-with CP/M. Bits 2:1 select 40x24, 53x24, 64x20 or 80x24; bits 4:3 select
-English, Estonian, CP866 Russian or English/user-remap. C4--C8 use bit 0 for
-automatic boot versus local recovery wait; C9 and successors reserve it and
-always boot from the network. This software policy does not resolve the
-archived EktaSoft PB5 versus photographed PB4 selector boundary above.
-See [the network-ROM contract](../spinoffs/jukuravi/network-rom/README.md)
-and [C12 qualification](c12-runtime-console.md) for runtime overrides and
-physical acceptance scope.
+The network-first ROM uses reset-latched S21 configuration for console geometry
+and locale, shared with CP/M. Its software policy does not resolve the archived
+EktaSoft PB5 versus photographed PB4 selector boundary. See
+[the network-ROM contract](../spinoffs/jukuravi/network-rom/README.md)
+and [C12 qualification](c12-runtime-console.md) for configuration bits,
+runtime overrides and physical acceptance scope.
 
 ## Model comparison
 
