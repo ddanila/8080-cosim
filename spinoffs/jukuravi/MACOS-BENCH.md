@@ -32,14 +32,15 @@ retries.
 | Capture | Result | Supported claim |
 | --- | --- | --- |
 | `sessions/macos-first-contact/20260806T094437.578482Z.*` | error, attach timeout, 0 bytes both directions | attach timed out with no observed traffic; this capture does not identify the board state |
-| `sessions/macos-t32-attach/20260806T111703.706101Z.*` | error, attach timeout, 35 bytes received, 0 sent | negative evidence only: attach against a freshly reset board leaves the ROM banner unanswered until its handshake fails |
+| `sessions/macos-t32-attach/20260806T111703.706101Z.*` | error, attach timeout, 35 bytes received, 0 sent | T32 identity frame `011BD62B` received; host timed out waiting for loader-v2 idle reset without transmitting |
 | `sessions/macos-t32-coldboot/20260806T112016.594609Z.*` | ok | full cold boot, exact `1B/D62B`, bitmap `08`, zero mismatches |
 | `sessions/macos-t32-attach2/20260806T112113.469673Z.*` | ok | control-only reattach to the resident loader after the cold boot |
 | `sessions/macos-smoke/20260806T112418.835712Z.*` | ok | verified 134-byte `smoke-4000.bin` upload, CALL, `A=0Ch`, result `534D4F4B00` + `55` fill at `4100h` |
 
-The failed attaches establish the entry requirement. `--attach-loader`
-requires a resident loader; it does not perform the cold diagnostic banner
-handshake. With a cold T32 diagnostic ROM, complete a full session before
+`--attach-loader` requires a resident loader; its implementation waits for
+loader request tokens and does not perform the cold diagnostic banner
+handshake. The failed capture records a host timeout, not the board’s final
+handshake state. With a cold T32 diagnostic ROM, complete a full session before
 reattaching without RESET. Service ROMs with an explicit `J` loader entry have
 a separate setup described in [the diagnostic guide](README.md).
 
