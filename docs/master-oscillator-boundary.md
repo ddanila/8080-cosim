@@ -2,58 +2,45 @@
 
 Status: **SCHEMATIC OSCILLATOR TOPOLOGY GUARDED; C4 PHYSICAL GAP**
 
-The sheet-2 16 MHz oscillator around D59 matches its drawn endpoints in
-the source board model. The factory assembly drawing independently fixes
-R31 vertically between Z1 and D59 and R32 horizontally above D59; the owner
-photograph confirms both physical bodies. Native exact `.009` sheet-2
-`PXL_20260718_101908284.jpg` prints R31=`1к`, agreeing with board #2's
-visible `1K0` body. The older `.006` scan `ref/schematics/p2_sheet2.png`
-prints 820 ohms; this is a revision difference, not a conflict between the
-target board and the exact `.009` drawing.
-The same exact tile prints R32=`1,3к`; the overlapping owner photo
-`PXL_20260710_200439607.jpg` directly reads `1K3` on the horizontal
-body above the КР531ЛН1 package. The older `.006` scan has `1,2к`.
-An enlarged July owner view appears to join the photographed R32 left
-lead to physical D59.4 and its right lead to D59.14 and a nearby pale R38=1K0
-left lead on continuous front copper. The exact `.009` sheet-2 drawing
-instead places R32 between D59.9 and D59.4; neither endpoint is D59.14.
-The checks below verify the drawn
-logical topology, not the owner-board R32 route. Confirm these physical
-connections and inspect for a cut or repair before adopting either topology
-for final copper (`ref/photos/juku-pcb-2/d59-orientation-audit.json`).
-The original-pixel comparisons are recorded in
-`ref/photos/juku-pcb-2/r31-r32-oscillator-value-review.json`.
-The adjacent D40 control pull-up R34 also changes from older `.006`
-13к to exact `.009` 12к; the fitted body directly reads `12K`
-(`ref/photos/juku-pcb-2/r34-d40-value-review.json`).
-C73's exact `.009` symbol has no printed capacitance range; the older
-`.006` 4/20 annotation is retained only as a measurement candidate.
-The fitted trimmer's visible top has no readable range. A May side view
-(`PXL_20260519_202052986.jpg`) reads `8811` on its cylindrical body,
-but supplies no interpretable range. The replica value field and BOM
-remain open pending physical measurement.
+The source board model retains the drawn sheet-2 16 MHz oscillator
+around D59. Exact `.009` values and fitted body markings agree on
+R31=1 kOhm, R32=1.3 kOhm and R34=12 kOhm. The checks table records
+older `.006` revision differences; image identities and comparisons are in
+[the R31/R32 review](../ref/photos/juku-pcb-2/r31-r32-oscillator-value-review.json)
+and [the R34 review](../ref/photos/juku-pcb-2/r34-d40-value-review.json).
 
-The original-resolution `.009` sheet-2 oscillator frame
-`PXL_20260718_101908284.jpg` draws Z1 and C73 without a C4 branch.
-The `.009` assembly `PXL_20260711_114604420.jpg` and owner photos
-show a fitted C4 beside C73. One C4 lead visibly shares the upper C73
-terminal. Two native owner views show the separate C73 lower terminal
-running on uninterrupted front copper to Z1's lower right lug. Under the
-sheet-2 Z1–C73 series topology, the shared C4-upper/C73-upper strip is
-therefore the likely opposite `OSC` side; Z1 lug numbering and remote
-D40/D59 continuity still need measurement. C4's other net and value remain
-unproved. Thus the checks below guard the drawn oscillator only; they
-do not establish a complete physical oscillator. The JSON provisionally
-assigns C4.1 to OSC from that series-topology inference and isolates C4.2
-on C4_RETURN_HOLD; C4 has no value and its PCB placement is pending.
-These placeholders do not establish its fitted return or physical holes
-(`ref/photos/juku-pcb-2/c4-c73-shared-node-review.json`).
+## Physical boundaries
 
-The separate `XTAL16M` rail remains deliberately unmerged: its suspected
-continuation from `OSC` needs owner continuity. The registered D59.3
-branch reaches an open annulus, not a proved crystal-lug match; use
-[the bench checklist](next-bench-session-checklist.md#d59-timing-and-oscillator-probes-p1)
-for the separate annulus-to-Z1/C73/D40.2/D39.10 measurements.
+- **R32 route:** the exact schematic places R32 between D59.9 and D59.4.
+  The owner photo appears to connect it to D59.4 and D59.14, with a nearby
+  R38 lead on the latter conductor. Confirm continuity and inspect for cuts
+  or repairs before choosing final copper. See
+  [the D59 orientation audit](../ref/photos/juku-pcb-2/d59-orientation-audit.json).
+- **C73 range:** the exact `.009` drawing and fitted body do not establish
+  a capacitance range. The older `.006` 4/20 annotation remains a measurement
+  candidate; the replica value and BOM stay open.
+- **C4:** assembly and owner photos show a fitted capacitor sharing one
+  terminal with C73. The local exact schematic draws no C4 branch.
+  The model provisionally assigns C4.1 to C73.2/`OSC` by inference from
+  the drawn Z1-C73 series topology and the photographed C73-to-Z1 route.
+  Z1 lug numbering and continuity to D40/D59 remain unproved. C4.2 stays
+  on `C4_RETURN_HOLD`; its return, value, physical holes and placement
+  remain open. These placeholders do not prove C4 is parallel to C73.
+  See [the C4/C73 review](../ref/photos/juku-pcb-2/c4-c73-shared-node-review.json).
+- **OSC / XTAL16M:** these rails remain separate pending owner continuity.
+  D59.3's photographed branch reaches an open annulus whose connection to
+  Z1 is unproved. Use [the bench checklist](next-bench-session-checklist.md#d59-timing-and-oscillator-probes-p1)
+  for annulus-to-Z1/C73/D40.2/D39.10 measurements.
+
+## Command
+
+Run from the repository root with Python 3 (standard library only).
+The writer reads `kicad/juku.board.json`, overwrites this report even
+when checks fail, and returns status 1 on a failed check.
+
+```sh
+python3 scripts/report_master_oscillator_boundary.py
+```
 
 ## Verification scope
 
