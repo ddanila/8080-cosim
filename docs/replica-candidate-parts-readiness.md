@@ -18,7 +18,7 @@ python3 scripts/report_replica_candidate_parts.py
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Target bank identity and population match | PASS | D84-D91 are eight populated К565РУ5Г devices |
+| D84-D91 model types and markings match the target bank | PASS | all eight records specify type RU5 and marking К565РУ5Г; population flags are not checked |
 | All populated DRAM sockets retain the JEDEC 4164 pin classes | PASS | pins 2/3/4/14/15/16 = DIN/WE/RAS/DOUT/CAS/GND; pins 5-7,9-13 = MA0-MA7 |
 | DRAM option rails preserve the required conditional +5 V configuration | PASS | E4.1=+12 V, E4.2=DRAM pin-8 rail, E4.3=+5 V; 4164 requires E4 2-3 |
 | MK4564 primary artifact and interpreted eligibility facts are pinned | PASS | Mostek MK4564-12: JEDEC 64Kx1, single +5 V, 120 ns access, 220 ns cycle, refresh on 128 A0-A6 combinations |

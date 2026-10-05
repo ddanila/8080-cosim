@@ -75,12 +75,12 @@ def build() -> tuple[list[dict[str, str | bool]], list[str]]:
     address_pins = {"5", "6", "7", "9", "10", "11", "12", "13"}
     add_check(
         checks,
-        "Target bank identity and population match",
+        "D84-D91 model types and markings match the target bank",
         all(
             item.get("type") == "RU5" and item.get("marking") == "К565РУ5Г"
             for item in populated_dram
         ),
-        "D84-D91 are eight populated К565РУ5Г devices",
+        "all eight records specify type RU5 and marking К565РУ5Г; population flags are not checked",
     )
     add_check(
         checks,
