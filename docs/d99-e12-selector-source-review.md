@@ -45,8 +45,9 @@ proximity to the printed callout.
 
 The source board model puts D99.2 on `FDC_HLD_TO_D100` with D93.28 and
 D100.3, reflecting the drawn E12 2-3 setting. D99.5 is modeled with D100.7
-on `D99_Q2_BOUNDARY`, while still feeding unselected E12 post 1. Next unpowered
-checks are D99.2 to D93.28/D100.3, D99.5 to D100.7 and the alternate E12 post, and
+on `D99_Q2_BOUNDARY`. The drawing also connects Q2 to alternate E12 post 1,
+but the model has no E12 component or post nodes: it encodes the drawn 2-3
+setting directly in the HLD net. Next unpowered checks are D99.2 to D93.28/D100.3, D99.5 to D100.7 and the alternate E12 post, and
 the installed bridge state. The
 grounded D99.3 `/CLR1` still fixes section-1 Q low and Q_N high regardless
 of which B1 source the selector uses.
