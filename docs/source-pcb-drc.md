@@ -10,6 +10,12 @@ or authorize fabrication; see [manufacturing readiness](replica-manufacturing-re
 
 ## Command
 
+Run from the repository root with Python 3 and KiCad CLI available.
+`scripts/find-kicad-cli.sh` selects the CLI; set `KICAD_CLI` to choose
+an executable explicitly. Python uses only the standard library.
+The raw DRC JSON is temporary and removed on exit. The writer replaces
+this report, including when the placement gate returns exit status 1.
+
 ```sh
 python3 kicad/report_source_pcb_drc.py
 ```
@@ -46,8 +52,7 @@ factory positions with explicit continuity-boundary nets.
 The upper-left decode row is independently component-photo fitted. D8 is the socketed
 К155РЕ3 PROM, D9 the adjacent metal К555ИД7 decoder, and D7 the marked black
 КР1533ЛА3 package; all three are horizontal with right-facing notches. The drawing-labeled
-R13 and lower R14 are fitted to their photographed horizontal landings. These corrections
-replace stale vertical/overlapping seeds rather than waiving D7/D8/D9/R13/R14 collisions.
+R13 and lower R14 are fitted to their photographed horizontal landings.
 
 R33 and R66 retain their independently photo-registered centres and orientations. Their
 nearest pads are 1.721 mm centre-to-centre; using 1.50 mm copper around the original-style
