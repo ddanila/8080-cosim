@@ -14,9 +14,10 @@ latch-injection check; CPU execution is tested by the separate resume probe.
 
 ## Command
 
-Run with Python 3, a C compiler (`CC`, default `cc`), and Icarus Verilog
-(`iverilog` and `vvp`). The runner overwrites this report and uses a temporary
-directory for builds and checkpoint files. It restores `cosim/vram.bin`
+Run with Python 3, `sha256sum`, a C compiler (`CC`, default `cc`),
+and Icarus Verilog (`iverilog` and `vvp`). The runner overwrites this
+report and uses a temporary directory for builds and checkpoint files.
+It restores `cosim/vram.bin`
 after checkpoint capture completes normally.
 
 ```sh
