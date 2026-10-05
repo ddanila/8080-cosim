@@ -33,9 +33,7 @@ the validated physical tables differ from both scanned programs.
 Use [the generated inspection](../../docs/re3-firmware-inspection.md) for exact
 byte comparisons, source identities, and interpretation limits. Physical
 captures and raw/asserted polarity are documented in
-[the physical PROM reference](../physical-proms/README.md). The older D8
-reconstruction is retained as comparison evidence and differs from the
-validated table at 19 of 32 addresses.
+[the physical PROM reference](../physical-proms/README.md).
 
 ```sh
 (cd ref/firmware && sha256sum -c SHA256SUMS)
