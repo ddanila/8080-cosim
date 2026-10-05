@@ -132,24 +132,12 @@ forward without redesign:
 The C10 POF change must not alter N3/N4, NetDisk-v3, Fastboot V16, D11 framing,
 host replacement behavior, disk cache layout, or TPA.
 
-## C9 observations that do not justify ROM changes yet
+## Disk continuity during host replacement
 
-### One bootstrap stall after block 8
-
-One physical attempt stopped progressing after block 8 and continued at block
-9 after the host was closed and reopened while the ROM remained waiting. A
-later cold run and all retained resumed workloads passed. Preserve the failed
-capture and compare it with the clean run, but do not add a C10 retry or timing
-workaround until the first divergent target/host event is reproduced.
-
-### Live replacement with a different disk image
-
-Switching recovery images under an already-running CP/M session exposed the
-operating system's cached directory/allocation state. This is a media
-continuity and acceptance-runner boundary, not evidence of a ROM transport
-failure. Host tooling should reject or explicitly label incompatible live
-volume switches; C10 should not attempt to invalidate CP/M disk state behind
-the operating system.
+Keep the same disk contents when replacing the host under a running CP/M
+session. CP/M retains directory/allocation state; replacing its volume with a
+different image can invalidate that state. C10 does not invalidate CP/M caches
+on host reconnection. Use a fresh boot when changing the mounted volume.
 
 ## Remaining physical acceptance
 
