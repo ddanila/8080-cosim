@@ -57,62 +57,26 @@ negative controls are in
 revised substitution record is
 [`../spinoffs/jukuravi/D55-REPLACEMENT.md`](../spinoffs/jukuravi/D55-REPLACEMENT.md).
 
-### D15 upper-ROM execution timing
+### Repaired D1 increment fault
 
-T32 (`1B/D62B`) broadened the earlier T31 upper-ROM experiment across all
-three reconstructed D2 wait classes. RAM-resident isolated reads sample both
-`1A00h=3Eh` and `1A01h=1Ah` correctly sixteen times. Consecutive `LHLD` reads
-localize the actual failure: the first upper-D15 byte is correct and the second
-uses the exact A12-low alias. Repeated examples include `1A00: 3E 43` where
-`43` is `0A01`, `1A02: 32 C3` where `C3` is `0A03`, and `1A04: 41 0E` where
-`0E` is `0A05`; lower control `0A00: C3 43` passes.
+The original D1 lost an already-high A12 during 16-bit increment operations;
+carry into A12 and DAD still worked. T32 ROM and all-RAM controls reproduced
+this across memory regions and reconstructed WAIT classes. A register-only
+probe confirmed the fault without high-address memory accesses, separating it
+from an external D4/D15/BA12-only explanation.
 
-This is not a static A12 fault, corrupt ROM data, general data-bit fault, or
-failure isolated to one D2 wait class. T31 and T32 used two different physical
-AT28C64B packages; both show correct isolated upper data and broken upper
-execution on CS00015. One-at-a-time substitutions of donor D8 `.039` and donor
-D6 `.038` preserve the result, excluding the original D6 and D8 packages as
-unique causes.
+On 2026-08-06 the unchanged probe returned the faulty words
+`1000,0A01,4A01,8A01,1A01` immediately before D1 replacement and the clean
+`1000,1A01,5A01,9A01,1A01` immediately afterward. Both sessions used T32
+`1B/D62B`, completed normally, and had no serial handshake mismatch. This
+confirms the replaced D1 as the cause of the tested fault.
 
-The corrected all-RAM matrix changes the localization materially. Absolute
-STA initialization shows the same second-byte A12-low alias in all four
-A15:A14 regions, all four A10:A9 classes, LHLD, POP, and SHLD writes. Boundary
-reads `0FFF -> 1000` and `2FFF -> 3000` pass, proving that carry can assert A12.
-
-The earlier four-region setup used `INX D` to advance from each even to odd
-address. On the physical CPU that increment changed every high-A12 pointer to
-its low-A12 alias: the even byte reached `1A00/5A00/9A00/DA00`, while the odd
-byte reached `0A01/4A01/8A01/CA01`. The eventual STAX is separated from INX by
-CALL, stack, and instruction cycles. This architecturally visible register-pair
-error cannot be caused solely by D4, D15, or a transient external BA12 load.
-It localizes the common fault to D1's 16-bit increment path: carry into A12
-works, but an already-high A12 is not retained.
-
-A direct register-only probe then confirmed the diagnosis without any
-high-address memory access. It returned `1000,0A01,4A01,8A01,1A01` for INX BC
-from `0FFF`, INX DE/HL/SP from `1A00/5A00/9A00`, and DAD `1A00+1`. Thus carry
-and DAD work while INX loses retained A12. Exact ROM LHLD pairs in CAS-gated,
-no-wait, and always-wait classes all returned their A12-low second bytes 16/16.
-
-Immediately before D1 replacement on 2026-08-06, a repeat of the unchanged
-probe reproduced the same five faulty words. Immediately after replacement it
-returned `1000,1A01,5A01,9A01,1A01`, the complete expected result. Both sessions
-completed cleanly against T32 `1B/D62B` with the same probe hash and no serial
-handshake mismatch. The retained before/after sessions therefore confirm that
-the diagnosed behavior belonged to the replaced D1 rather than D4, D15, BA12,
-READY timing, or the test transport.
-
-Cosim now injects that single CPU behavior with
-`JUKU_CPU_A12_INCREMENT_FAULT=1`. The model covers PC, INX, LHLD/SHLD, POP,
-and boundary behavior and reproduces the meaningful bytes from six physical
-probe classes in both clean and faulted regression runs.
-
-The die-derived vm80a HDL core also reproduces the exact direct result when
-only the shared incrementer's bit-12 retain-high/no-carry Boolean term is
-removed. See `cs00015-d1-increment-analysis.md` for the bounded internal
-diagnosis and the transistor/layout caveat.
-Exact image, controls, raw logs, and completed replacement evidence are in
-[`../spinoffs/jukuravi/T32-PHYSICAL.md`](../spinoffs/jukuravi/T32-PHYSICAL.md).
+The [T32 physical record](../spinoffs/jukuravi/T32-PHYSICAL.md) retains the
+individual ROM/RAM controls, exact images and before/after captures.
+Cosim's `JUKU_CPU_A12_INCREMENT_FAULT=1` reproduces the six clean/fault probe
+classes. The [increment analysis](cs00015-d1-increment-analysis.md) covers the
+independent vm80a Boolean reproduction and its remaining transistor/layout
+boundary.
 
 After this substitution test, CS00015 was deliberately left with the donor D6
 `.038` from the Danila Sukharev machine fitted; the original CS00015 D6 will
