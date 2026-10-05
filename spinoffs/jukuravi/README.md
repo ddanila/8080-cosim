@@ -253,9 +253,8 @@ they do not contribute to that overall verdict, so inspect them even after
 `PASS`. Transport or execution errors also exit 1 and preserve completed
 results in the session log.
 
-On physical CS00024 the batch measured 1.714065 MHz, then proved that long
-uploads can lose their early RAM bytes before RUN. Use [`retention.py`](retention.py)
-for the narrower destructive-retention test. It uploads and verifies one
+For a focused retention test, use [`retention.py`](retention.py). It uploads
+and verifies one
 32-byte marker, then repeatedly reads it in the same loader process:
 
 ```sh
@@ -348,10 +347,8 @@ contract. Its important properties are:
 - host reattachment, partial-upload recovery, and RAM inspection without RESET;
 - CALL/RET execution with A and caller-selected RAM as the result interface.
 
-T28 introduced loader API v2; T29 through T34 retain it, T35 adds the
-compatible refresh command, and T36 corrects its physical row addressing.
-Revision names are
-kept only where an exact ROM image or its regression is being identified.
+Use [the firmware guide](firmware/README.md) to select an exact diagnostic
+image and its supported loader and refresh operations.
 
 ## Verification
 
