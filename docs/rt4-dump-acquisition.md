@@ -93,6 +93,10 @@ pin order, as it did for the 2026-07-19 revision-3 reread.
 When `--out-dir` is used, the dump JSON preserves the comparison path, baseline
 SHA256, and classification alongside the capture hashes.
 
+Comparison is informational: every classification can return exit status 0
+when capture validation succeeds. Require `EXACT_MATCH` explicitly when
+checking a reread against the adopted baseline.
+
 ## Capture requirements
 
 1. Capture at least two complete 256-address reads. Three reads after separate
