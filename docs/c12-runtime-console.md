@@ -3,16 +3,14 @@
 Status: **CORRECTED CP437, WARM/DEFAULT, RESET AND POWER-CYCLE CHECKS
 PASSED ON CS00000; BROADER RELEASE QUALIFICATION SEPARATE**
 
-## 2026-09-05 physical finding and correction
+## Physical qualification
 
-CS00000 booted the original C12 pair and passed cold STATUS/DIAG. The owner
-confirmed stable, correct 40x24 English, 53x24 Estonian, and 64x20 Russian
-VIDTEST pages. The 80x24 user/remap page displayed question marks instead of
-DAh/D9h corner glyphs. That page failed visual acceptance; the attended run
-was stopped without confirming it or proceeding to RESET/power-cycle tests.
-The retained CP/M session is
-`out/physical-CS00000-c12-runtime-attended-20260905`; its host stopped with
-zero disk retries and UART errors. S21 was read as 0F.
+On CS00000, the original C12 pair passed cold STATUS/DIAG and owner-confirmed
+40x24 English, 53x24 Estonian, and 64x20 Russian VIDTEST pages. Its 80x24
+user/remap page failed visual acceptance: DAh/D9h corners appeared as `?`.
+The failed run stopped before RESET/power-cycle checks; its retained evidence
+is `out/physical-CS00000-c12-runtime-attended-20260905` in the sibling CP/M
+project.
 
 The resident CP437 lookup still searched 17 entries after its table expanded
 to 26. Nine trailing entries, including D9h and DAh, therefore fell back to
@@ -32,10 +30,9 @@ lifecycle checks subsequently passed, as recorded below.
 
 ### Corrected D16 physical recheck
 
-The owner explicitly authorized the corrected D16 write. DOSRAVI session
-`at28c64-jukunet-c12-cp437-d16-write-20260905` records two changed bytes,
-8,192 verified bytes, no retries, CRC32 B54EE486, and VCC/VPP off. D15 was
-retained. The owner fitted D16 and confirmed the startup checkerboard.
+D15 was retained and corrected D16 was programmed and verified in DOSRAVI
+session `at28c64-jukunet-c12-cp437-d16-write-20260905`. The owner fitted D16
+and confirmed the startup checkerboard.
 
 These sessions under the sibling `cpm-plus-juku/out/` passed their workloads
 and `physical_acceptance.py audit`:
@@ -136,10 +133,6 @@ the structural VM80A/Juku model, including call-gate dispatch, POF release,
 runtime transition, retained remap, translated keyboard input, and serial
 completion. The exhaustive 4x4 framebuffer oracle remains in the faster
 C-model matrix.
-
-The owner authorized and installed the corrected pair on 2026-09-05. Focused
-physical results and their exact scope are recorded above; broader release
-promotion must distinguish the original and corrected images.
 
 ## Companion implementation and remaining qualification
 
