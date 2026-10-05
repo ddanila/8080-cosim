@@ -19,4 +19,5 @@ fault or repair conclusion between boards without a repeated test.
 
 The authoritative machine-readable forms are in [`machines/`](machines/).
 They preserve unknown values as `null` and bind every operational statement to
-repository evidence.
+cited evidence, including CS00015 qualification records in the sibling
+`cpm-plus-juku` repository.

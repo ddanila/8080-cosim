@@ -8,7 +8,9 @@ values are recorded as `null`; they must not be inferred from a board number.
 `machine-profile.schema.json` defines the intended format. The repository test
 checks the four-board inventory, selected identity and firmware fields, dates,
 evidence-file existence, and the retained CS00015/CS00024 boundaries. It does
-not apply the full JSON Schema or repeat physical qualification. Run:
+not apply the full JSON Schema or repeat physical qualification. Run from
+the repository root with Python 3. The CS00015 evidence paths also require a
+sibling `../cpm-plus-juku` checkout containing the cited qualification records:
 
 ```sh
 python3 tests/machine_profiles_test.py
