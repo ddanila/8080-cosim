@@ -109,15 +109,3 @@ python3 scripts/report_ekdos_source_inspection.py
 | --- | ---: | ---: | ---: | --- |
 | `TRANS` | `40` | `1` | `40` | `True` |
 | `TRANS1` | `40` | `1` | `40` | `True` |
-
-## Parser Boundary
-
-The source contains a few visibly wrapped/collided historical lines; those
-are left as source text rather than repaired in place. Skipped required-like
-lines:
-
-- none
-
-## Failures
-
-- none

@@ -394,29 +394,16 @@ def main() -> int:
         "| --- | ---: | ---: | ---: | --- |",
         f"| `TRANS` | `{len(trans)}` | `{min(trans) if trans else 'n/a'}` | `{max(trans) if trans else 'n/a'}` | `{sorted(trans) == list(range(1, 41))}` |",
         f"| `TRANS1` | `{len(trans1)}` | `{min(trans1) if trans1 else 'n/a'}` | `{max(trans1) if trans1 else 'n/a'}` | `{trans1 == trans}` |",
-        "",
-        "## Parser Boundary",
-        "",
-        "The source contains a few visibly wrapped/collided historical lines; those",
-        "are left as source text rather than repaired in place. Skipped required-like",
-        "lines:",
-        "",
     ]
     if skipped:
+        lines_out.extend([
+            "", "## Skipped Required Symbols", "",
+            "These source lines could not be evaluated by this parser:", "",
+        ])
         lines_out.extend(f"- `{line}`" for line in skipped)
-    else:
-        lines_out.append("- none")
-    lines_out.extend(
-        [
-            "",
-            "## Failures",
-            "",
-        ]
-    )
     if failures:
+        lines_out.extend(["", "## Failures", ""])
         lines_out.extend(f"- {failure}" for failure in failures)
-    else:
-        lines_out.append("- none")
     lines_out.append("")
 
     REPORT.write_text("\n".join(lines_out))
