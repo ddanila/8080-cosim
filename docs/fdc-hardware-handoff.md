@@ -149,12 +149,15 @@ R99=`4К7`, corroborated by the registered July view. These values and
 visible links are modeled; only D101 first-half `/OE0` and D00/D01/D03
 remain open. Its selects and both outputs are source/owner-closed.
 
-| Endpoint | Component coordinate | Modeled net | Disposition |
-| --- | --- | --- | --- |
-| R92.1 | (2341.000, 1317.000) | D101_D02_R92_R99 | ACCEPTED TARGET COPPER |
-| R92.2 | (2564.000, 1314.000) | FDC_DDEN | ACCEPTED TARGET COPPER |
-| R99.1 | (2064.000, 1370.000) | GND | ACCEPTED TARGET COPPER |
-| R99.2 | (2287.000, 1367.000) | D101_D02_R92_R99 | ACCEPTED TARGET COPPER |
+Landing coordinates and copper observations are retained in
+[the photo endpoint ledger](../ref/photos/juku-pcb-2/endpoints.csv).
+
+| Endpoint | Modeled net | Disposition |
+| --- | --- | --- |
+| R92.1 | D101_D02_R92_R99 | ACCEPTED TARGET COPPER |
+| R92.2 | FDC_DDEN | ACCEPTED TARGET COPPER |
+| R99.1 | GND | ACCEPTED TARGET COPPER |
+| R99.2 | D101_D02_R92_R99 | ACCEPTED TARGET COPPER |
 
 ## Bus-Side Handoff Checks
 

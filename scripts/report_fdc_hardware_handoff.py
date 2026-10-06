@@ -655,10 +655,13 @@ def main() -> int:
         "visible links are modeled; only D101 first-half `/OE0` and D00/D01/D03",
         "remain open. Its selects and both outputs are source/owner-closed.",
         "",
-        "| Endpoint | Component coordinate | Modeled net | Disposition |",
-        "| --- | --- | --- | --- |",
+        "Landing coordinates and copper observations are retained in",
+        "[the photo endpoint ledger](../ref/photos/juku-pcb-2/endpoints.csv).",
+        "",
+        "| Endpoint | Modeled net | Disposition |",
+        "| --- | --- | --- |",
     ]
-    lines.extend(table_row(row) for row in kp12_rows)
+    lines.extend(table_row([row[0], row[2], row[3]]) for row in kp12_rows)
     lines.extend([
         "",
         "## Bus-Side Handoff Checks",
