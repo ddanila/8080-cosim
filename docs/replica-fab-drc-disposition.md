@@ -10,7 +10,11 @@ silently. It reads the saved JSON; it does not rerun KiCad DRC or verify
 that the input describes the current PCB. Count equality preserves a
 recorded disposition but does not compare the geometry of individual findings.
 
-Regenerate with `python3 kicad/report_replica_drc_disposition.py`.
+Run `python3 kicad/report_replica_drc_disposition.py` from the repository root
+with standard-library Python 3. It overwrites this report and returns 3
+while findings require review, or 0 when the configured dispositions pass.
+Counts use the JSON `violations` and `unconnected_items` lists;
+`ignored_checks` are not included.
 
 ## Machine Blockers
 
