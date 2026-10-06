@@ -106,11 +106,14 @@ this hold does not classify them as assembly DNP. See
 [decoupling fidelity](../../../docs/decap-value-fidelity.md) for the guarded
 model, population and pad-identity boundaries.
 
-The common `.006` assembly artwork and registered target-board panoramas also
-close the adjacent R49-R56 RAS resistor bank. The target retains the vertical
-top-to-bottom order R56/R52, R55/R51, R54/R50, R53/R49. Red R49-R52 bodies
+The exact `.009` assembly fixes the R49-R56 RAS resistor order, corroborated
+by the older `.006` drawing. Registered target-board photos establish placement,
+population, orientation, lead span and body markings. The vertical
+top-to-bottom order is R56/R52, R55/R51, R54/R50, R53/R49. Red R49-R52 bodies
 read `75Ω`; tan R53-R56 bodies read `5K1`. The durable target-photo fit is
-stored in `../juku-pcb-2/ras-resistor-bank-registration.json`.
+stored in [the RAS-bank registration](../juku-pcb-2/ras-resistor-bank-registration.json).
+Electrical endpoints come from the traced sheet-2 nets; assembly order and
+body markings do not prove owner-board continuity or isolated resistance.
 
 `pic-ir01-placement-registration.json` registers R105/R107 from the assembly
 drawing into the existing D10-local owner-photo frame. It records placement,
