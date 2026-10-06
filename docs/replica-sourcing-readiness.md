@@ -55,7 +55,8 @@ Refresh with `python3 kicad/report_replica_sourcing_readiness.py`.
 
 These rows are required for a complete functional kit, but their contents
 must come from validated physical tables or deterministic functional
-EPROM images, with programming-disk copies retained as corroboration.
+EPROM images. Preserve independent programming-media copies if found;
+they corroborate provenance and are not required to recover these contents.
 
 | Type | Authentic part | Populate now | Refs | Gate |
 | --- | --- | ---: | --- | --- |
