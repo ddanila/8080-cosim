@@ -1,7 +1,5 @@
 # D6 input continuity correction
 
-Status date: 2026-07-20
-
 Status: **D6 A5/A6/A7 SOURCES MEASURED**
 
 Direct continuity measurements on a physical `.009` processor board correct
@@ -12,10 +10,10 @@ were accompanied by a visual copper trace where noted by the owner.
 
 ```text
 D26.15 PC1 --+-- D3.3 -> inverter -> D3.4 -- D6.1  A6
-             +-- resistor pull-up -> +5 V
+             +-- resistor branch (return disputed)
 
 D26.14 PC0 --+-- D3.5 -> inverter -> D3.6 -- D6.2  A5
-             +-- resistor pull-up -> +5 V
+             +-- resistor branch (return disputed)
 
 D6.15 A7 ------------------------------ D105.1
 ```
@@ -48,93 +46,20 @@ against ground and +5 V. The source return bars and earlier owner-reported
 physical bodies are probed. Source/photo registration is recorded in
 `ref/photos/juku-pcb-2/r9-r10-r15-r16-identity-review.json`.
 
-A separate actual-R15/R16 solder review uses the mirrored D3 field in
-`PXL_20260710_200522685.jpg`. The vertical R15 candidate joints are near
-`(2635,315)` and `(2635,525)`; the lower joint has a **direct, uninterrupted
-B.Cu bridge to D3.5 near `(2723,530)`**. This physically corroborates the
-source signal side of R15. The upper R15 lead leaves on front copper, whose
-rail identity remains open. The horizontal R16 candidate pair is near
-`(2855,855)`/`(2635,855)`. Its right lead runs on F.Cu from component
-`(1555,1198)` to a plated annulus near `(1555,965)`; the matching B.Cu
-annulus near `(2635,637)` has a direct bar to **D3.3** near `(2723,638)`.
-The neighboring bright D3.2 front trace is separate and stops short of this
-route. Thus R16’s signal side is photo-closed, while its left return lead
-and both return-rail identities remain open. Inspect and measure the return
-leads; see `ref/photos/juku-pcb-2/r15-r16-actual-pad-review.json`.
+## Resistor photo evidence and remaining probes
 
-The adjacent solder panorama `PXL_20260710_200525009.jpg` overlaps the
-right side of `PXL_20260710_200522685.jpg`. Two independent image patches
-give an approximate translation of `(-2060,-112)` pixels between them.
-The broad lower-lead search locations consequently move to about `(964,761)`
-and `(905,783)` in the second panorama. At full resolution neither point
-lands on an identifiable drilled annulus. Two narrow east-going routes cross
-this region, but their attribution to the fitted resistors is unproven; the
-cross-face package fit is only a search aid and cannot identify exact resistor
-holes or D3 destinations.
+The [actual-pad review](../ref/photos/juku-pcb-2/r15-r16-actual-pad-review.json)
+closes R15's lower lead to D3.5 and R16's right lead to D3.3 by visible copper.
+The opposite leads and their return rails remain open. Measure them to ground
+and +5 V to resolve the source/continuity conflict above.
 
-A direct four-joint comparison for the R10/R9 left pair gives a stronger
-provisional physical match in the first solder photo: outer R10 upper/lower near
-`(2997,637)`/`(2995,863)` and inner R9 upper/lower near
-`(2935,666)`/`(2935,889)`. In the component photo, the right upper lead
-actually enters near `(1253,1005)` under the shared bridge; the earlier
-`(1253,982)` point was on bare board. Both photos thus show the same
-roughly 30-pixel stagger and mirrored column spacing. The lower solder
-pads enter separate east-going tracks. A local affine fit of these four
-joint pairs has a 2.15-pixel RMS residual. This is a provisional hole match,
-not a traced connection to D3.1/D3.13 or proof of the common rail.
-
-In overlapping solder photo `200525009`, the right lower candidate moves
-to about `(875,777)`. Its separate copper line can be followed east to
-an open annulus near `(3205,786)`. The left lower candidate moves to
-about `(935,751)` and follows a separate line to another open annulus
-near `(3260,786)`. The later `200527310` photo independently shows the
-two annuli about 55 pixels apart, beneath a long soldered bar. A narrow
-neck near the left annulus appears to approach that bar; continuity is
-needed to decide whether they are joined. Both annuli are probe targets;
-neither route yet identifies its D3.1/D3.13 signal or any front-side continuation.
-
-Neither broad cross-face projection can place these two remote annuli
-reliably in the component photos. The five-package fit extrapolates beyond
-the left edge of `200418174`; a separate four-package fit into `200411500`
-has about 61-pixel package-centre RMS. After registering adjacent component
-photos, their search positions in `200415237` disagree by more than 120
-horizontal pixels. No resistor-bank pad or front copper is assigned from
-either projection.
-
-The D3 solder field itself can be read more closely in `200522685`: its
-two regular seven-joint rows are near `x=2723` and `x=2887`, from
-`y=418` to `y=748` at roughly 55-pixel pitch. With the registered D3
-component orientation, R10's expected D3.1 endpoint is near `(2723,748)`
-and R9's expected D3.13 endpoint is near `(2887,693)`. Separately, the
-source R15/R16 endpoints D3.5 and D3.3 are near `(2723,530)` and
-`(2723,638)`; their visible solder copper approaches from the west. The
-broad package projection falls roughly 8–30 pixels below this row and
-cannot select the R9/R10 resistor holes by itself. Their front-side
-continuations remain untraced.
-
-In the component panorama `200418174`, a bright trace east of inner R9
-ends near `(1278,1228)`, while its lower joint is
-near `(1243,1215)`. The full-resolution image shows bare board across
-the gap. The trace cannot be assigned to that resistor from proximity;
-the lower lead still needs an identified solder-side hole or continuity.
-
-The next solder panorama, `PXL_20260710_200527310.jpg`, overlaps only the
-farther right region: two upper-image patches place its origin around
-`x=1836` in `200525009`. Both resistor lower-lead search sites are left of
-that frame. A route in the later image cannot be assigned to either
-resistor without following it across the intermediate view first.
-
-A cross-face fit from five already registered upper packages puts the two
-upper resistor joints near `(3005,664)` and `(2935,671)` in solder panorama
-`PXL_20260710_200522685.jpg` (package-centre RMS 15.9 px). The corresponding
-solder region shows a narrow dogleg joining the upper joints and reaching a
-long horizontal conductor near y615. The line reaches an open annulus near
-`(3325,615)` farther east in the same solder view. Reverse registration
-places that annulus near `(865,923)` on the component view, under D10's
-body, so the front continuation is occluded; the lower-lead regions follow separate
-narrow routes. This supports a common physical upper conductor while leaving
-the exact hole matches and its +5 V/GND identity for continuity. See
-`ref/photos/juku-pcb-2/r15-r16-two-face-review.json`.
+For R9/R10, the
+[two-face review](../ref/photos/juku-pcb-2/r15-r16-two-face-review.json)
+retains the provisional hole matches, common upper conductor, separate lower
+routes, remote probe annuli, and registration limits. The file's original
+R15/R16 attribution is retracted. Neither proximity nor cross-face projection
+closes the lower routes to D3.1/D3.13 or establishes the common rail as +5 V.
+Use its recorded coordinates for probe planning, then verify continuity.
 
 The resulting proved D6 address order is:
 
@@ -153,15 +78,9 @@ A0..A7 = BA15, BA14, BA13, BA12, BA11, /PC0, /PC1, D7.8 IO_CYCLE_H
 - The separately reconfirmed write-strobe net remains
   `D105.12 <-> D105.13 <-> D5.26`.
 
-The initial session found no continuation beyond `D6.15 <-> D105.1`.
-With D6 removed, resistance from D6.15 to both GND and +5 V fluctuates at
-approximately 100-200 kohm. This excludes a simple low-value pull-up or
-pull-down; the variation may reflect in-circuit charging or leakage, but does
-not by itself prove a capacitor. That observation is retained as measurement
-history. A later owner session on 2026-07-19 directly closed
-`D7.8 -> D105.1 -> D6.15`; D7.8 is the output of the D7 NAND receiving raw
-`/IORD` and `/IOWR`, so A7 is the I/O-cycle-active-high qualifier. The model
-must not merge it with MEMW or FDC density.
+Owner continuity closes `D7.8 -> D105.1 -> D6.15`. D7.8 is the NAND
+output receiving raw `/IORD` and `/IOWR`, so A7 is the I/O-cycle-active-high
+qualifier. It must remain separate from MEMW and FDC density.
 
 ## Modeling consequence
 
