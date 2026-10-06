@@ -167,8 +167,12 @@ The functional DRAM model holds RAS through the CAS column phase. It latches
 row/column addresses at their strobes and strobes DIN on the later falling
 edge of CAS or WE, covering early and delayed writes. A sub-nanosecond settling
 delta handles the zero-delay address mux; it does not model real DRAM access
-latency. `hdl/sim/dram_unit_tb.v` checks control-edge ordering, read-after-write,
-physical row permutation and non-aliasing addresses through `sync/boot_check.sh`.
+latency. `hdl/sim/dram_unit_tb.v`, run by `sync/boot_check.sh`, checks
+early, delayed and coincident writes followed by readback, selected
+non-aliasing addresses, and the functional decoder's RAS/CAS sequence.
+It applies a row permutation to its stimulus but does not independently
+compare the internal cell index with the requested CPU address or test
+all address pairs.
 The timing reference is the vendored
 [Mostek MK4564 datasheet](../ref/datasheets/mk4564-64kx1-dram.pdf), interpreted
 for the К565РУ5Г bank in `ref/datasheets/k565ru5-pinout.txt`.
