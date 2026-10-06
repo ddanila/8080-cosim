@@ -5,8 +5,9 @@ Status: **REAL-ROM BOOT AND SYNTHETIC SMOKE PASS / HARDWARE DESIGN HOLD**.
 Two independent spin-off tops boot the patched real Juku `ekta37` firmware:
 `juku_boot_top.vhd` runs it on T80, while `vjuga_juku_top.v` runs it on tv80
 through the shared К565РУ5, D6 К556РТ4, and D8 К155РЕ3 models. Both framebuffer
-results match the main cosim oracle after 6000 video writes. This is simulation
-evidence, not a release of the stale Rev-A copper.
+guards compare against the main cosim oracle at the selected write limit
+(default `WRITES=6000`). This bounded comparison does not establish a
+completed banner, all firmware services, or release of the stale Rev A copper.
 
 The VHDL smoke top directly instantiates `T80se` from the `external/T80`
 submodule with `Mode => 0` (Z80), `IOWait => 1` and `CLKEN => '1'`.
