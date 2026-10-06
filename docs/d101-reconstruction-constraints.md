@@ -29,9 +29,9 @@ D101 pins awaiting direct continuity, with D96.9 checked separately.
 | Check | Result |
 | --- | --- |
 | TI SN74LS253 PDF and validated D94 image hashes match | PASS |
-| D101 all-pin board mapping matches the measured/source model | PASS |
-| D101 section-A inputs share the exact sheet-3 marked junctions | PASS |
-| D101 Q0, D02 ladder, and EARLY/LATE selects preserve exact closed endpoints | PASS |
+| D101 all-pin JSON mapping matches the expected source/owner model | PASS |
+| D101 section-A JSON net contains the expected seven endpoints | PASS |
+| IMDRG, Q0, and EARLY/LATE JSON nets match the expected endpoints | PASS |
 | R92/R99 modeled values match 1.3 kΩ / 4.7 kΩ | PASS |
 | Local pinout interpretation separates source and physical D101 evidence | PASS |
 | HDL/test contains selected select-order and disable markers | PASS |
@@ -104,21 +104,13 @@ register address depends on A4.
 
 ## D0-to-IMDRG isolation test
 
-D94.1/D0 is an active-low output boundary; D101.1 `/OE0` is
-source-joined to D26 PA6/IMDRG, while D101.Q0 feeds D94.A4. A
-D94.1-to-D101.1 continuity test remains useful, but the drawing does
-**not** join those pins. The owner measurement found only R8 on
-D94.1, and the source model keeps the nets separate.
-
-If chip-removed continuity does join D94.1 to D101.1, the same net
-would also reach D26 PA6. That would require a new source/board
-reconciliation before any runtime inference, including possible
-interaction between the PPI output and D94's open-collector D0.
-
-If repeated chip-removed checks isolate D94.1 from D101.1 and every
-nearby support pin, record D94 D0 as R8-pull-up-only within the
-measured scope and confirm D26.38-D101.1 IMDRG continuity
-separately. Do not merge D94 D0 and IMDRG from functional resemblance.
+D94.1/D0 and D101.1 `/OE0` (D26 PA6/IMDRG) are separate in the
+source model; the drawing does **not** join those pins. Owner continuity found only R8
+on D94.1; further chip-removed checks must establish the hidden-load
+disposition within their measured scope. Do not merge D0 and IMDRG
+from functional resemblance. Any measured join requires source/board
+reconciliation before runtime inference: it would also connect D94's
+open-collector output to D26 PA6.
 
 ## Minimal closure sequence
 
