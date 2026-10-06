@@ -49,16 +49,28 @@ the reset loader's accepted payload receive loop; see
 | --- | --- |
 | `tests/network_first_rom_c9_test.py` | Finite return, failure reasons, malformed/silent/stuck transport, compatibility and S21 policy |
 | `sync/network_first_rom_abi_check.sh` | C-model ABI, ROM identity, memory, local console and transport fixtures |
-| `sync/network_first_rom_hdl_check.sh` | Focused structural HDL boundary; not a full physical display oracle |
+| `sync/network_first_rom_hdl_check.sh` | Default: structural reset/POST, ABI, POF and NetDisk DMA simulations. `--ci`: ROM-bench elaboration and POF simulation only; no physical display oracle |
 | `sync/jukuhost_c8_cosim_check.sh` | Immutable native C8 production-host baseline without a CONOUT hook |
 | `sync/jukuhost_c9_cosim_check.sh` | C9 production host, N4, CP/M disk/write/time/diagnostic/warm boot and host replacement |
 | Sibling `cpm-plus-juku`: `make c9-check` | Matching CP/M system/TPA and local/remote integration |
 | Sibling `cpm-plus-juku`: `make c9-simulator-candidate` | Reproducible non-physical package |
 
-The fault matrix measured a worst bounded return of 1,562,211 emulated 8080
-cycles. The live `vc8080` C9 runner consumes production N4 output with simulator
-CONOUT interception disabled; its separate legacy C7 keyboard harness has a
-different observation scope.
+The fault test reports the largest cycle count observed across its success,
+TX/RX timeout, truncated reply, prefix-budget, sequence, integrity and status
+fixtures; this is not a bound over every possible transaction. It also checks
+unconditional boot for all 32 S21 bit-4:0 combinations. The native-host C9 gate
+uses production N4 output; the legacy C7 keyboard harness has a different
+observation scope.
+
+Run the C-model matrix from the repository root with Python 3 and a C compiler:
+
+```sh
+sync/network_first_rom_abi_check.sh
+```
+
+This also checks the other named ROM releases. The standalone C9 fault test
+requires a compiled `cosim/trace.c` executable as its positional argument;
+the shell gate builds that executable in temporary storage.
 
 ## Exact evaluated artifacts
 
