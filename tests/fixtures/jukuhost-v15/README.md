@@ -8,6 +8,12 @@ They are copied byte-for-byte from the `prebuilt/` directory of
 `7e0d92bc1299d97deef315fc65d0c035fe8e6a47`. `SHA256SUMS` pins their exact
 identity, and `sync/jukuhost_linux_check.sh` verifies it before running the tests.
 
+To verify the retained files, run from the repository root:
+
+```sh
+sha256sum -c tests/fixtures/jukuhost-v15/SHA256SUMS
+```
+
 `tests/jukuhost_v15_delayed_pty_test.py` and
 `tests/jukuhost_stock_v15_cosim_test.py` use these fixtures by default. Set
 `CPM_PLUS_JUKU_ROOT` to exercise another checkout's `out/` artifacts in those
