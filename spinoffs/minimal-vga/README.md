@@ -1,7 +1,5 @@
 # VJUGA minimal-VGA experiment
 
-Status date: 2026-08-27.
-
 Status: **EXPERIMENTAL, WITH TWO PHYSICAL TRACKS**.
 
 VJUGA explores a smaller +5 V, Z80-based board with socketed ROM, one 64 KiB
@@ -70,8 +68,7 @@ record; superseded packages must not be uploaded.
   address-mux enable correction and the U22 refresh-counter cascade correction,
   and is **stale; do not upload or order it**. Do not confuse it with the separately
   validated Rev B packages under `fab/minimal-vga/revb/package/`. The superseded Rev A
-  Gerber/drill ZIP SHA-256 was
-  `19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`.
+  package identity is retained in [manufacturing readiness](docs/rev-a-manufacturing-readiness.md).
   A fresh guarded stable-KiCad export and checksum are required.
 
 ### CPU and ROM
@@ -129,7 +126,7 @@ historical placement, and the original composite/RF chain.
 - `docs/rev-a-power-budget.md`: conservative planning estimate.
 - `docs/rev-a-sourcing-plan.md`: future sourcing/assembly policy; stock must be
   rechecked at order time.
-- `docs/rev-a-drc-readiness.md`: current stable KiCad 10.0.5 full-DRC result
+- `docs/rev-a-drc-readiness.md`: current stable-KiCad full-DRC result
   bound to the exact source-board SHA; the former fabrication package is
   explicitly stale after the mux-enable and refresh-counter corrections.
 - `docs/rev-a-lvs-coverage.md`: exact staged physical-LVS scope, negative

@@ -1799,8 +1799,8 @@ def main() -> int:
             failures.append(
                 f"spinoffs/minimal-vga/README.md retains stale package claim: {stale_claim!r}"
             )
-    if "stable KiCad 10.0.5" not in vjuga_readme:
-        failures.append("VJUGA README does not expose the current stable KiCad toolchain")
+    if "docs/rev-a-drc-readiness.md" not in vjuga_readme:
+        failures.append("VJUGA README omits canonical current-source DRC report")
     vjuga_package_match = re.search(
         r"SHA256:\s*\n\s*`([0-9a-f]{64})`",
         vjuga_readiness,
@@ -1811,10 +1811,9 @@ def main() -> int:
     else:
         vjuga_package_digest = vjuga_package_match.group(1).lower()
         for path in ("spinoffs/minimal-vga/README.md",):
-            if vjuga_package_digest not in read(path).lower():
+            if "docs/rev-a-manufacturing-readiness.md" not in read(path):
                 failures.append(
-                    f"{path} does not contain frozen VJUGA package SHA256 "
-                    f"{vjuga_package_digest}"
+                    f"{path} omits canonical VJUGA package identity report"
                 )
     for marker in ("sim/boot_check.sh", "sim/vjuga_boot_check.sh", "6000 writes"):
         if marker not in vjuga_readiness:
