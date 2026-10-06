@@ -140,8 +140,9 @@ The sibling CP/M project implements `CONSOLE` query/set/default, active-state
 STATUS/DIAG reporting, and C12-specific `VIDTEST`. Its named system, Fastboot,
 release image and manifest-bound physical workloads remain separate from older
 release artifacts. The Windows host embeds matching stock/C11/C12 payloads;
-actual-PE Wine sessions cover boot, NetDisk, snapshot media, B:, captures and
-host-event conversion to JSON. This conversion does not independently decode
+actual-PE Wine sessions cover boot, NetDisk, A: snapshots, mounting B:, captures
+and host-event conversion to JSON. They do not require a B: read. This conversion
+does not independently decode
 the RX/TX protocol frames; see
 [capture conversion](portable-c-host-implementation.md#capture-conversion).
 See [Windows qualification](windows-jukuhost-client-implementation.md)
@@ -156,10 +157,6 @@ The older production-Linux-host stress extension is not a passing C12 gate:
 it accumulated seven modeled USART overruns and missed the final warm-boot
 prompt. Dedicated C12 CP/M and bounded Wine gates have different timing scopes;
 their passes do not establish that stress workload or physical endurance.
-
-Write-back caching, cryptographic boot authentication, higher serial rates,
-RAM banking and S21-bit-0 reuse remain outside C12's implemented contract.
-They need separate cost, hardware and failure-semantics evidence.
 
 ## Verification commands
 
