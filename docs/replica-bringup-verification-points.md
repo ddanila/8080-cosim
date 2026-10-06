@@ -146,9 +146,10 @@ Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
   missing or mismatched endpoints remain blockers. Matching assignments
   do not establish routed connectivity, historical correctness, or safety
   of omitted functional pins.
-- The 4 official FDC devices with remaining source-risk pins are tracked
-  separately in `docs/unmodeled-footprint-inventory.md`; they are outside
-  every endpoint count above and remain design-release blockers.
+- The 4 official FDC devices with remaining source-risk pins are tracked in
+  [the footprint inventory](unmodeled-footprint-inventory.md). Their
+  modeled net endpoints participate in the counts above; matching PCB
+  net names does not close their remaining physical evidence holds.
 - Any row affecting boot, memory, bus direction, interrupts, or video
   timing must be measured, source-proven, or explicitly redesigned before
   fabrication release. Socketing and possible bodge wires are not a
