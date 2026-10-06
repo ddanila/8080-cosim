@@ -61,6 +61,6 @@ The separate five-image regression in `janet_netboot_check.sh`
 uses the frozen Python-era Janet test fixture to serve the simulator through
 its PTY serial/PIC/NetBios path. It requires a byte-exact `B400h` image plus
 the `CA00h` handoff; it does not inject RAM. Both five-image tests stop before the first
-`CA00h` instruction and therefore does not prove a subsequent CP/M prompt or
+`CA00h` instruction and therefore do not prove a subsequent CP/M prompt or
 filesystem operation. Those require the separate disk/boot guards. Production
 C-host evidence belongs to [the host acceptance report](../../docs/portable-c-host-m2-acceptance.md).
