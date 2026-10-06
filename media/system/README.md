@@ -49,14 +49,18 @@ sync/jukuhost_linux_build.sh
 build/jukuhost --serial /dev/ttyUSB0 \
     --system media/system/EKDOS230.BIN --boot-only
 
-# Simulator proof for all five images.
+# C-host simulator check for all five images (after the native build above).
+python3 tests/jukuhost_stock_cosim_test.py
+
+# Frozen Python-era oracle and protocol/core regressions.
 sync/janet_netboot_check.sh
 ```
 
-The proven stock setting is nominal 9600 baud, 8O1. The five-image regression
+The proven stock setting is nominal 9600 baud, 8O1. The C-host test serves all five images and exercises automatic station discovery.
+The separate five-image regression in `janet_netboot_check.sh`
 uses the frozen Python-era Janet test fixture to serve the simulator through
 its PTY serial/PIC/NetBios path. It requires a byte-exact `B400h` image plus
-the `CA00h` handoff; it does not inject RAM. It stops before the first
+the `CA00h` handoff; it does not inject RAM. Both five-image tests stop before the first
 `CA00h` instruction and therefore does not prove a subsequent CP/M prompt or
 filesystem operation. Those require the separate disk/boot guards. Production
 C-host evidence belongs to [the host acceptance report](../../docs/portable-c-host-m2-acceptance.md).
