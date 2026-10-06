@@ -31,8 +31,8 @@ test:
   manifest, exist in the checkout, and select their owning lane.
 - `ci/test_select_hdl_jobs.py` covers isolated, multi-area, unknown, control,
   documentation, and forced-full decisions.
-- scheduled and tag runs force all hosted lanes; an unchanged nightly SHA is
-  skipped only if a previous scheduled run for that exact SHA succeeded.
+- scheduled and tag runs force all hosted lanes; nightly lanes are skipped
+  only when the latest successful scheduled run checked the current SHA.
 - `workflow_dispatch` defaults to `full`; `changed` evaluates the latest commit
   (`HEAD^..HEAD`) and is available for selector diagnostics.
 - the final `results` job fails if a selected lane did not succeed or an
