@@ -6,6 +6,17 @@ This generated report reduces the preserved D2 КР556РТ4 image to an exact
 piecewise condition over its eight traced inputs. It describes raw electrical
 levels; D0/pin12 is an open-collector input to the pulled-up D30 READY latch.
 
+Regenerate from the repository root with Python 3:
+
+```sh
+python3 scripts/report_d2_physical_truth.py
+```
+
+The generator checks the fixed image hash, every classifier row, and
+READY guard text markers before overwriting this report. It does not
+execute the simulation or verify physical input wiring; run
+`sync/d2_ready_path_check.sh` separately for the sampling checks below.
+
 ## Guarded artifact
 
 - Raw image: `ref/physical-proms/validated/d2_037.raw.bin` (256 bytes)
