@@ -3,7 +3,8 @@
 Status: **ARCHIVE-0037 ROMBIOS 3.43m PAIR ADOPTED**
 
 The replica adopts the preserved `JUKUROM0.HEX`/`JUKUROM1.HEX` pair,
-which concatenates exactly to `ekta37.bin`. The evidence layers below
+which concatenates exactly to `ekta37.bin`. The
+project adopts that pair as replica content truth. The evidence layers below
 distinguish firmware identity from factory labels and fitted packages.
 
 ## Command
