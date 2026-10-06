@@ -95,11 +95,17 @@ Each positive case checks:
 
 - POST clear at reset, retained `A5h` after a write to `20h`, read silence at
   that port, and no POST change during an M1-low acknowledge cycle;
-- PIT channel 0 programmed to count four, with a rising-edge period of 16 baud
+- PIT channel 0 programmed in Mode 3 to count four, with a rising-edge period of 16 baud
   master clocks, and a latched count in `1..4`;
 - selected USART clock periods of 16 or 32 baud-master clocks;
 - channel 1 mode-3 count 5,102, with a rising-edge period of 5,102 CPU clocks;
 - `A6h` TX-to-RX loopback through the root 8251 model and POST clear after activity.
+
+NETC10 uses Mode 2 for channel 0; that exact register sequence is replayed by
+`revb_rom_system_check.sh`, not this Mode-3 clock test. The I/O twin divides
+the selected x16 clock by another 16 before feeding the root 8251 model,
+which advances one serial bit per edge. This adapter models bit timing; it
+does not validate physical 8251 oversampling.
 
 Period checks allow one clock either side of the expected count. The bus driver
 is synthetic, and loopback directly joins the model's TX/RX wires. These cases
