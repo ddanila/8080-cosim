@@ -49,8 +49,6 @@ courtyard disposition.
 
 Refresh D12 to the source/owner position and redesign the displaced D12, INTA, IR7, P12V, FRAME_INT, and WREQ_N copper around the two resistors. Keep R9/R10 at their registered source locations unless stronger owner evidence changes them. Then connect R10.1 to D3.1, R9.1 to D3.13, both upper pads to +5 V, and compare DRC to the routed baseline. Owner continuity of those four physical joints remains pending independently of the replica layout.
 
-## Repair scope
-
-Use a targeted local relocation and reroute. Moving power endpoints can
-also affect unrelated GND/P5V copper. Check open connections, DRC, and
-source-to-routed placement before promoting a replacement board.
+Moving power endpoints can also affect unrelated GND/P5V copper. Check open
+connections, DRC and source-to-routed placement before promoting a replacement
+board.
