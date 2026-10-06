@@ -101,9 +101,9 @@ electrical measurements remain part of board acceptance.
 ## Acceptance commands
 
 Run from the repository root with Python 3. The serial simulation also needs
-Bash and Icarus Verilog (`iverilog` and `vvp`). The board completeness check
-uses KiCad’s `pcbnew` module; see the [execution guide](rev-b-execution-guide.md)
-for tool setup and the other release gates.
+Bash and Icarus Verilog (`iverilog` and `vvp`). The Python checks use only the
+standard library. See the [execution guide](rev-b-execution-guide.md) for the
+other release gates.
 
 ```sh
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_serial_contract.py
