@@ -55,6 +55,10 @@ expires. See [the configuration guide](jukuhost-config.md) for defaults.
 
 ## Recovery matrix
 
+This table describes the ROM/host behavior and its limits. The named
+co-simulation cases under qualification below cover a subset; they do not
+prove every row under every physical or transport fault.
+
 | Starting/failure state | ROM behavior | Host behavior | Result |
 | --- | --- | --- | --- |
 | target off or absent | no bytes | waits passively; logs every 5 s | no corruption; boot begins when C11 appears |
@@ -87,10 +91,25 @@ for backward compatibility and adds:
 - passive C11 cold discovery;
 - a late-host interval proving the beacon repeats;
 - host replacement where the second host is not told CP/M is already alive;
-- a board reset on the first host-to-target byte after the exact 7,784-byte V16
-  exchange, proving NetDisk-to-beacon-to-V16 recovery;
+- a receive-byte-triggered board reset after V16, during early NetDisk
+  traffic, checking NetDisk-to-beacon-to-V16 recovery;
 - the complete DIR, STATUS, diagnostics, A:/B:, write/erase, time, and warm-boot
   workload after recovery.
+
+Run from this repository root with Python 3, a C compiler and POSIX PTY
+support:
+
+```sh
+sync/jukuhost_c11_cosim_check.sh
+```
+
+The gate requires an existing `build/jukuhost`, the tracked C11 ROM, and the
+matching C11 system, Fastboot V16, full disk image and application disk under
+the sibling `cpm-plus-juku/out/`. `CPM_PLUS_JUKU_ROOT` selects another sibling
+checkout. It compiles the C-model trace executable in temporary storage and
+copies the full disk image for write tests. It does not build the host or the
+sibling artifacts. See the [network-ROM build and test guide](../spinoffs/jukuravi/network-rom/README.md#build-and-test)
+for the matching project gates.
 
 ## Exact C11 artifact boundary
 
