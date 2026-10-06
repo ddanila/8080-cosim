@@ -20,8 +20,9 @@ python3 scripts/report_wd1772_pla_inspection.py
 ```
 
 The shape guard requires 120 rows, 19-bit fields, the listed alphabets,
-one row containing `9`, and three ignored footer rows. Section counts
-and duplicate labels/terms are reported, not rejected. The source hash
+one row containing `9`, and three unparsed nonempty lines. Those lines
+are footer guides in the retained source, but their text is not validated.
+Section counts and duplicate labels/terms are reported, not rejected. The source hash
 is calculated for this report rather than compared with a pinned identity.
 The exporter preserves the ambiguous bits in JSON/CSV and derives its
 checksum manifest from current files. Neither command establishes PLA
