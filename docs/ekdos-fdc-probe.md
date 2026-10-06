@@ -66,4 +66,4 @@ its parent directories are created automatically.
 - The keyboard/frame-interrupt path is sufficient to drive ROMBIOS into the documented disk boot path.
 - The no-image run checks a command write, at least 1000 status reads, and exactly 512 data reads; it does not check the prompt.
 - A disk-backed run is selected with `EKDOS_PROBE_DISK=/path/to/image`; invalid paths or unsupported raw image sizes fail this report explicitly.
-- The disk-backed oracle is the `A>` bitmap near the left edge after the cycle budget; it does not exercise subsequent EKDOS commands or physical hardware.
+- The disk-backed oracle checks the final framebuffer for the `A>` bitmap near the left edge. It does not require the cycle budget to be exhausted or exercise subsequent EKDOS commands or physical hardware.
