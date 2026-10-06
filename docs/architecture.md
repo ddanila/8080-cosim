@@ -26,9 +26,11 @@ a behavioral reference for interpreting the machine, rather than a runtime
 participant in these comparisons. PCB copper and placement require separate
 physical audits; the LVS path above does not inspect them.
 
-Historical sources are authoritative; `board.json` is the machine-readable
-working model. The generated KiCad schematic and the structural HDL are not two
-freely editable sources that synchronize bidirectionally.
+Drawings and measurements are authoritative within their recorded board and
+revision scope. Preserve conflicts between them; an earlier drawing does not
+override target-board evidence without reconciliation. `board.json` is the
+machine-readable working model. The generated KiCad schematic and structural
+HDL do not synchronize bidirectionally.
 
 ## LVS
 
