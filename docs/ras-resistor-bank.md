@@ -48,8 +48,8 @@ This guard validates the registered source hashes, recorded order/geometry,
 board values and provenance markers, and selected PCB-generator text.
 It does not rerun image registration, inspect PCB output, execute DRC or
 measure resistor values and loaded RAS timing. The table's circuit roles
-come from the sheet-2 ladder; connectivity is checked separately by
-the [memory timing report](memory-timing-boundary.md).
+come from the sheet-2 ladder. The [memory timing report](memory-timing-boundary.md)
+checks D53-to-R49–R52 endpoint pairs, rather than every bank connection.
 
 The separate source-PCB check requires KiCad's `pcbnew` Python module:
 
