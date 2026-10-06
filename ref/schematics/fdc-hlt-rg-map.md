@@ -31,6 +31,10 @@ RG is not treated as an unread line. The exact sheet explicitly numbers and
 routes the adjacent pins while leaving 25 absent from the drawn package; that
 is positive unused-pin evidence for this revision.
 
+The physical `U_D93` HDL instance is a non-driving package shell. The separate
+runnable `U_FDC` controller ties HLT high and leaves RG open; its behavior does
+not exercise the mapped D99-to-HLT connection.
+
 ## Model guard
 
 Run from the repository root with Python 3 (standard library only):
