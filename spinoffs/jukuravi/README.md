@@ -32,7 +32,7 @@ qualification is indexed by [the service record](../../docs/cs00015-service-reco
 The independent music runtime, tools and physical evidence live in
 [JukuPoly](../jukupoly/README.md).
 
-The 2026-08-09 desk audit invalidated the T15/T16/T31/T32 D55 predicate: those
+The T15/T16/T31/T32 D55 predicate is invalid: those
 ROMs did not establish the physical D55 clocks before latching their Mode-0
 counts. T34 is the first clock-safe D55 functional-path image. Neither
 CS00015 nor CS00024 currently has valid evidence that its D55 package is bad;
@@ -41,7 +41,7 @@ see
 
 ## Current machine configuration
 
-The CS00015 profile, updated 2026-08-21, records fitted JukuNet C8 / ABI 1.3.
+The CS00015 profile records fitted JukuNet C8 / ABI 1.3.
 The donor D6 `.038` remains fitted, the original D8 `.039` is restored, and
 D1 is repaired. [The service record](../../docs/cs00015-service-record.md)
 owns the physical changes and firmware qualifications. The preceding Ekta4402
@@ -127,13 +127,15 @@ D1 replacement subsequently produced clean results. To repeat that focused
 discriminator after a T32 boot, without another ROM burn:
 
 ```sh
-python3 spinoffs/jukuravi/probe_a12_increment.py --port /dev/ttyUSB0
+python3 spinoffs/jukuravi/probe_a12_increment.py --port /dev/ttyUSB0 --attach-loader
 ```
 
 `CLEAN` means the five register results match the expected increment behavior.
-`D1 FAULT CONFIRMED` means they match the repaired CPU's historical signature.
+`D1 FAULT CONFIRMED` means they match the faulty CPU's recorded signature.
 Both recognized results exit 0; `OTHER` exits 2. Read the result label rather
-than treating exit 0 as a CPU pass.
+than treating exit 0 as a CPU pass. Without `--attach-loader`, start the helper
+before RESET; it waits for a fresh T32 boot and checks `1B/D62B`. The probe
+requires NASM.
 
 ## Host use
 
