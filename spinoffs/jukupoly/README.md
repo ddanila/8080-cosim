@@ -2,7 +2,7 @@
 
 This is the editor-independent music engine experiment that follows the
 physical three-tone proof in [`THREE-VOICE.md`](THREE-VOICE.md).  It plays compiled
-tracker-style rows with three tonal channels and one genuinely concurrent
+tracker-style rows with three tonal channels and one concurrent
 percussion channel through the unmodified Juku speaker.
 
 The guarded design for preserving OPL envelopes, tremolo, vibrato, and related
@@ -316,23 +316,14 @@ individual source-to-target discrepancy before physical listening.
 
 The reducer preserves each source note's octave whenever its phase increment
 fits the player's 15-bit tone word; only an unencodable note is moved down by
-whole octaves.  An earlier “audible range” rule folded every note below E2 and
-above B5 independently.  In “Suspense” this changed the source bass
-D2–E2–F2–G2 into D3–E2–F2–G2, an octave error and interval reversal.  The two
-complete DOOM packs span F0 through B7: every low note is directly encodable,
-and only A#7/B7 require a downward octave.  The corrected policy is locked by
-the importer regression.
+whole octaves. The importer regression guards this policy.
 
-The converter originally treated the six-bit OPL total-level field as linear.
 The [Yamaha YM3812 Application Manual][ym3812-manual] specifies logarithmic
-attenuation in 0.75 dB steps, up to 47.25 dB.  The corrected reducer converts
+attenuation in 0.75 dB steps, up to 47.25 dB. The reducer converts
 that attenuation to linear amplitude before quantizing it to Juku's volume
 range; for parallel connection mode it follows the manual's sum of both
-operators and caps the result at Juku full scale.  A regression locks the
-known TL values and chord classification.  The correction changes level only
-for the two DOOM scores: their notes, drum identities, hit counts, and timing
-remain identical.  Corrected renders of both DOOM scores and Supaplex passed
-subjective A/B listening review on 2026-08-31.
+operators and caps the result at Juku full scale. A regression guards the
+known TL values and chord classification.
 
 This source contains three automatically recognized variable-pitch signatures.
 They peak at five simultaneously allocated OPL voices, but duplicate-pitch
