@@ -22,9 +22,9 @@ A>
 The fresh prompt arrived 170.108 seconds after the program command.  This is
 a command-to-prompt interval that includes CP/M directory lookup, loading the
 10.7 KiB transient, and CCP reload; it is not presented as a measured audio
-duration.  The score contains 8,200 nominal 20 ms frames.  Per the operator's
-request, only a representative nine-second window was simulated before this
-complete physical run.
+duration. The score contains 8,200 nominal 20 ms frames. Simulation covered a
+representative nine-second window; complete playback qualification comes from
+this physical run.
 
 The operator reported that the full arrangement “works very good.”  Playback
 remained stable through both reduced layer transitions and the program

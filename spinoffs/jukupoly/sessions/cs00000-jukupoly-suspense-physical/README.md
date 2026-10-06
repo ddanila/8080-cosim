@@ -19,9 +19,9 @@ A>
 The new prompt arrived 64.541 seconds after the program command.  That is a
 host command-to-prompt interval, including CP/M directory lookup, COM loading,
 and CCP reload; it is not presented as an audio-duration measurement.  The
-score contains 3,000 nominal 20 ms frames.  In accordance with the operator's
-request, only a bounded nine-second cycle window—not the full minute—was run
-in the simulator.
+score contains 3,000 nominal 20 ms frames. Simulation covered a bounded
+nine-second cycle window; complete playback qualification comes from this
+physical run.
 
 The operator accepted the sound. This qualifies physical playback and clean return for the
 one-minute arrangement.  No electrical waveform or acoustic recording was
