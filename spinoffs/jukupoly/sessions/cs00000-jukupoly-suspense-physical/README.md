@@ -23,8 +23,7 @@ score contains 3,000 nominal 20 ms frames.  In accordance with the operator's
 request, only a bounded nine-second cycle window—not the full minute—was run
 in the simulator.
 
-The operator reported that it “sounds good” and described the progress as
-“amazing.”  This qualifies physical playback and clean return for the
+The operator accepted the sound. This qualifies physical playback and clean return for the
 one-minute arrangement.  No electrical waveform or acoustic recording was
 taken.
 

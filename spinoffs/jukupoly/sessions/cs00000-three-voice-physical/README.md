@@ -27,9 +27,8 @@ music loops as 9.052 and 9.075 seconds.
 
 Operator observations:
 
-- quiet: three stages were audible and “very interesting and not that bad”,
-  but at very low volume;
-- loud: all stages were audible, with the result assessed as “Fantastic”.
+- quiet: all three stages were audible, but at very low volume;
+- loud: all stages were audible and the operator accepted the result.
 
 Evidence scope is intentionally precise: the console and host files prove
 delivery and clean return, while the listening observations prove physical
@@ -42,7 +41,7 @@ taken.
 427f1fe876ebda844a56aa93de47dd0367f070b3a358e372bc179339b5b1f37f  loud-command.txt
 bdc02b4fae9d83a37990b9a40e41876dc547f846979aaf95cbd28f3e45df91d2  loud-console.bin
 a960adbcb7063d75d62d2a069b4585d95727aad7d85a181178d456a440f6d296  loud-host.cap
-08f7a33f9f2d27b84c3bdfd91dbea3b94b406c77f57c0e57766f9500fc  loud-jukuhost.log
+08f7a33f9f2dcd6f2d27b84c3bdfd91dbea3b94b406c77f57c0e57766f9500fc  loud-jukuhost.log
 273d3f7258975e4e809506c6acf4492a76d36cc9e1c1026c41052b6b04793429  quiet-command.txt
 5376ef9fc5445ab26ebd02cc772f585ec81340f24473d59a85ab986150018918  quiet-console.bin
 4311e480e502ea265a9251db5bad770ef6e330212ef37b6eca2bb3a54e1d37c1  quiet-host.cap
