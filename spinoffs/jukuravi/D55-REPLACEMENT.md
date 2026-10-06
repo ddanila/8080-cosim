@@ -117,71 +117,30 @@ when extraction and reinsertion are mechanically safe. It never authorizes
 unrelated rework. Preserve the removed original in ESD-safe packaging labeled
 `CS00015 D55`, date, orientation, and observed T34 results.
 
-## Evidence record template
+## Required evidence record
 
-### Session identity
+Save one acquisition record beside the immutable captures. Include:
 
-| Field | Recorded value |
-| --- | --- |
-| UTC date/time | |
-| Operator / location | |
-| Board / serial | `CS00015` |
-| PSU model, limits, measured rails | |
-| Ambient temperature | |
-| Diagnostic ROM/programmer/adapter | |
-| T34 programmed/read-back SHA-256 | |
-| T34 version / self-CRC16 | `1C` / `A637` |
+- UTC date/time, operator, location, board serial `CS00015`, ambient temperature,
+  PSU model/limits and measured rails;
+- diagnostic ROM label, programmer, adapter, selected device, erase/program/
+  verify result, read-back SHA-256, and observed T34 `1C/A637` identity;
+- original and substitute markings, manufacturer/type, lot/date code,
+  source/donor ID, prior known-good evidence, pin/package condition, and
+  orientation photographs;
+- empty-socket, solder-joint and bypass observations; and
+- final outcome, package diagnosis and any independent package test, package
+  left fitted, original storage label/location, rollback and reason, unresolved
+  discrepancies, evidence paths, and reviewer/date.
 
-### Component and socket provenance
+Use one row per run; retain anomalies and link each row to its JSON/raw capture:
 
-| Field | Original D55 | Substitute D55 |
-| --- | --- | --- |
-| Full body marking | | |
-| Manufacturer / type | | |
-| Lot/date code | | |
-| Source/donor inventory ID | `CS00015 fitted` | |
-| Prior known-good evidence | historical unverified path result | |
-| Pin/package condition | | |
-| Orientation photo | | |
+| Phase | Required runs | Record for each run |
+| --- | ---: | --- |
+| Original T34 | 3 cold-power runs | ROM identity, D54/D55/D57 results, capture paths and observations |
+| Substitute T34 | 5 cold-power runs | Same fields; all five must clear D55 and retain clean D54 |
+| Substitute EKTA/JMON | 1 normal video/frame check | Fitted firmware/configuration, video evidence and observations |
 
-Empty-socket and local-area observations:
-
-```text
-
-```
-
-### Run matrix
-
-Use `clear` only when the exact `1C/A637` T34 host report has no D55 bit.
-Retain the JSON/raw capture for every row.
-
-| Phase | Image | Cold run | ROM identity | D54/D55/D57 | JSON/raw evidence | Notes |
-| --- | --- | ---: | --- | --- | --- | --- |
-| original | T34 | 1 | | | | |
-| original | T34 | 2 | | | | |
-| original | T34 | 3 | | | | |
-| substitute | T34 | 1 | | | | |
-| substitute | T34 | 2 | | | | |
-| substitute | T34 | 3 | | | | |
-| substitute | T34 | 4 | | | | |
-| substitute | T34 | 5 | | | | |
-| substitute | EKTA/JMON video | 1 | n/a | | | |
-
-### Final disposition
-
-| Field | Recorded value |
-| --- | --- |
-| Outcome classification | |
-| D55 package diagnosis | Suspected / not supported / inconclusive; record any independent package test |
-| Package left fitted | |
-| Original storage label/location | |
-| Rollback performed and why | |
-| New discrepancy opened | |
-| Evidence paths committed | |
-| Reviewer/date | |
-
-Free-form observations:
-
-```text
-
-```
+Use `D55 clear` only when the exact T34 report has no bit `08`. A passing
+substitution supports restoration of the tested path; record package failure
+as suspected, unsupported, or inconclusive unless an independent test establishes it.

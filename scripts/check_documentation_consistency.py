@@ -579,7 +579,7 @@ def main() -> int:
         (d55_runbook, "63f69281e632324083bd5e7040d19a7939936b98a4d5cb245e008ea491d45cb5", "D55 runbook lost the exact T34 hash"),
         (d55_runbook, "five cold-power T34 runs", "D55 runbook lost its post-substitution repetition requirement"),
         (d55_runbook, "Decision and rollback criteria", "D55 runbook lost its rollback gate"),
-        (d55_runbook, "Component and socket provenance", "D55 runbook lost its evidence template"),
+        (d55_runbook, "original and substitute markings", "D55 runbook lost its component provenance requirement"),
         (cosim_runtime, "8,192 isolated cases", "instruction-level C/vm80a differential count drifted"),
         (cosim_runtime, "all 256 opcode bytes", "instruction-level C/vm80a opcode coverage drifted"),
         (fdc_readiness, "50,845 normalized", "generated FDC differential count drifted"),
