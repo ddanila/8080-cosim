@@ -573,7 +573,7 @@ def main() -> int:
         (jukuravi_readme, "completed serial-only T33 investigation", "Jukuravi README still presents T33 as future work"),
         (t33_plan, "Status: **D1 FAULT CONFIRMED; REPAIR VERIFIED**", "T33 completion marker is missing"),
         (t33_plan, "The unchanged direct-register probe confirmed the repair", "T33 still presents the completed D1 repair as future work"),
-        (t32_physical, "The decisive confirmation is complete", "T32 physical report still lacks the completed D1 substitution disposition"),
+        (t32_physical, "This before/after substitution closes the diagnosis at D1", "T32 physical report still lacks the completed D1 substitution disposition"),
         (t32_physical, "returned the fully clean result", "T32 physical report lacks the clean post-replacement result"),
         (d55_runbook, "HOLD — RUN T34 BEFORE SUBSTITUTION", "D55 runbook lost its T34-first hold"),
         (d55_runbook, "63f69281e632324083bd5e7040d19a7939936b98a4d5cb245e008ea491d45cb5", "D55 runbook lost the exact T34 hash"),

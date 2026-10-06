@@ -230,10 +230,9 @@ settled `5A00h -> 1A00h` test:
 | donor D8 `.039` | original D6 | exact `1B/D62B`, zero mismatches | `01h` |
 | donor D6 `.038` | original D8 restored | exact `1B/D62B`, zero mismatches | `01h` |
 
-The result is byte-for-byte unchanged from the original pair. The original D6
-and D8 packages are therefore excluded as unique causes. This does not exclude
-their socket contacts, surrounding conductors, shared pull-ups, or the timing
-of the selection topology itself.
+The result is byte-for-byte unchanged from the original pair. These
+substitutions exclude the original D6 and D8 packages as unique causes,
+while the D1 replacement above supplies the decisive repair confirmation.
 
 The post-diagnostic component configuration retains donor D6 `.038` from the
 Danila Sukharev processor board, while its original D8 `.039` is restored. The
@@ -246,16 +245,6 @@ Evidence:
 
 - `sessions/t32-d8swap-boot/` and `sessions/t32-d8swap-5a00/`
 - `sessions/t32-d6swap-boot/` and `sessions/t32-d6swap-5a00/`
-
-The decisive confirmation is complete: a known-good D1 substitution changed
-the existing probe from the exact fitted fault signature to the exact clean
-signature without a ROM or probe change. A D1.37/D4.15 capture or a donor-board
-run could characterize the removed package further, but neither is required
-for localization and neither is active Jukuravi work. No D4/D30 rework or
-diagnostic-ROM re-burn is justified by this repaired fault.
-
-Earlier no-delay marker runs and the full-half read attempted after an abnormal
-upper jump were superseded and are intentionally not retained as evidence.
 
 ## Current configuration
 
