@@ -163,7 +163,7 @@ def main() -> int:
     re3_validator_ok = marker(
         "docs/prom-dump-procedure.md",
         "scripts/validate_re3_dump.py",
-        "Raw levels are the authoritative dump",
+        "Raw pin-level files\nare authoritative; active-low asserted complements remain separately named.",
         "repeat-mismatched RE3 rows",
     ) and exists("scripts/validate_re3_dump.py") and exists("tools/re3_dumper/re3_dumper.ino")
     d6_top = read("hdl/juku_top.v")
