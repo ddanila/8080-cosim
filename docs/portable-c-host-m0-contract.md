@@ -84,14 +84,10 @@ The current C runner declares these exit codes in
 Inspect the log for the failing operation; a clean stop does not independently
 prove target diagnostics or physical acceptance.
 
-M0 does not bless accidental formatting of Python tracebacks, Python object
-layout, JSON as a runtime dependency, or arbitrary experimental command-line
-flags. The accepted wire bytes, state transitions, recovery outcomes, media
-mutations, and useful evidence are the compatibility contract.
-
 ## Baseline verification
 
-Run:
+Run from the repository root with Python 3, Bash, a C compiler and
+materialized archived-system assets:
 
 ```sh
 python3 tests/jukuhost_contract_test.py

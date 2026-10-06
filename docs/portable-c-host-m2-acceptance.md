@@ -58,16 +58,16 @@ media in the adjacent `cpm-plus-juku/out/`; `CPM_PLUS_JUKU_ROOT` selects another
 checkout. The network-ROM builder uses the pinned zmac source and needs `make`,
 `bison` and a compiler if its executable is absent. Initialize submodules first.
 
-Run the core portability checks and Linux integration gate with:
+Run the complete local gate with:
 
 ```sh
-sync/jukuhost_core_check.sh
 sync/jukuhost_m2_check.sh
 ```
 
-The core gate checks signed/unsigned `char`, available Clang and sanitizers.
-The M2 gate runs the frozen Python-era oracle and five-system suite, native
-build and PTY media/evidence/reconnect tests, stock and C8 end-to-end simulator
+Through `sync/janet_netboot_check.sh`, the M2 gate runs the core portability
+checks (signed/unsigned `char`, available Clang and sanitizers), frozen
+Python-era oracle and five-system suite. It also runs the native build and
+PTY media/evidence/reconnect tests, stock and C8 end-to-end simulator
 workloads, operational-wrapper checks, and the current network-ROM ABI/fault
 matrix. The recorded 2026-08-20 run passed; this historical result does not
 establish a pass for a later source tree or changed sibling artifacts.
