@@ -68,9 +68,21 @@ decodable when the final record is truncated. The C decoder reports
 `JH_NEED_MORE` for that incomplete record; the current
 [JSON converter](portable-c-host-implementation.md#capture-conversion) rejects
 the truncated capture rather than exporting its complete prefix.
-Exit meanings are stable: success/clean stop, command or
-configuration error, missing or invalid artifact, serial failure, protocol or
-timeout failure, and unsafe media state are distinguishable.
+The current C runner declares these exit codes in
+[`jukuhost_runner.h`](../host/include/jukuhost_runner.h):
+
+| Code | Meaning |
+| ---: | --- |
+| `0` | Success or clean stop |
+| `2` | Command/configuration error |
+| `3` | Missing or invalid artifact |
+| `4` | Serial failure |
+| `5` | Protocol or timeout failure |
+| `6` | Unsafe media state or media failure |
+| `7` | Required log/capture evidence failure |
+
+Inspect the log for the failing operation; a clean stop does not independently
+prove target diagnostics or physical acceptance.
 
 M0 does not bless accidental formatting of Python tracebacks, Python object
 layout, JSON as a runtime dependency, or arbitrary experimental command-line
