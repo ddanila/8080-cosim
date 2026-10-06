@@ -6,9 +6,12 @@ decode modes, the Rev B tier suite, framebuffer-readback validation, U24 DRAM
 timing, logical LVS, nine Rev A physical-design JSON/HDL LVS slices, and
 Rev A PCB/package checks.
 
-Initialize the T80/tv80 submodules before running the aggregate. The tv80 boot
-guard exits successfully with `SKIP` when its core is absent; aggregate success
-alone does not prove every listed check ran.
+Initialize the T80/tv80 submodules before running the aggregate. Both the tv80
+boot guard and framebuffer-readback guard exit successfully with `SKIP` when
+their core is absent; aggregate success alone does not prove every listed
+check ran. The aggregate stops at the first failing command, so a failure in
+the full Rev B suite prevents the later readback, U24 and Rev A checks from
+running. Use their individual entry points when reviewing those results.
 
 The aggregate requires Bash, Python 3, a C compiler, Icarus Verilog, GHDL
 with Synopsys IEEE package support, and Yosys. Its physical checks also use
