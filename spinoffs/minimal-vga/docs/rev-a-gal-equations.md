@@ -194,3 +194,20 @@ Remaining notes:
   against the chosen GAL22V10, and preserve the compiler/fuse checksum.
 - The board exposes DRAM/debug headers so programmed-device timing can be
   compared with these waveforms without changing the functional pinout.
+
+## Reproduce the simulations
+
+Run from the repository root with Bash and Icarus Verilog (`iverilog`, `vvp`).
+The boot comparison also requires Python 3, a C compiler (`CC`, default `cc`)
+and the initialized `spinoffs/minimal-vga/external/tv80` submodule. It exits
+with a successful SKIP if tv80 is missing; that is not boot evidence.
+
+```sh
+spinoffs/minimal-vga/sim/u24_dram_timing_check.sh
+spinoffs/minimal-vga/sim/vjuga_boot_check.sh
+```
+
+Both wrappers delete their temporary build files. The boot comparison overwrites
+`cosim/vram.bin`; preserve it first if needed. Its `WRITES` override defaults to
+6000 framebuffer writes. The twin parameter uses `decode_mode=0` for Mode B
+and `decode_mode=1` for Mode A, the inverse of the physical `MODE_B` jumper.
