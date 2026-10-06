@@ -8,6 +8,11 @@ the validated physical table from older reconstruction assumptions.
 
 ## Command
 
+Run from the repository root with Python 3. The command overwrites this report.
+It compares recorded net assignments and checks evidence text markers;
+the physical-image check covers existence and size only. It does not
+revalidate captures, measure continuity, or execute the READY simulation.
+
 ```sh
 python3 scripts/report_d2_reconstruction_constraints.py
 ```
@@ -120,7 +125,7 @@ review against the corrected package fit.
 | Validated physical `.037` raw programming image exists | PASS | `ref/physical-proms/validated/d2_037.raw.bin` |
 | Old D2-as-I/O-decode path is superseded | PASS | `kicad/juku.board.json` D9 identity and provenance |
 | D2 physical-table provenance is preserved | PASS | `ref/physical-proms/README.md` |
-| D2 raw electrical polarity executes through D30 READY | PASS | `sync/d2_ready_path_check.sh`; D0 reader channel Nano D10 |
+| D2 READY polarity guard markers are present | PASS | `sync/d2_ready_path_check.sh`; D0 reader channel Nano D10 |
 | Owner dump and corrected continuity are recorded | PASS | `docs/d2-physical-dump-and-continuity.md` |
 | Official BOM/photo trail identifies `.037/.038` pair | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
 | Evidence summary preserves the traced D2 pin table | PASS | `ref/photos/juku-pcb-2/BODGE-TRIAGE.md` |
