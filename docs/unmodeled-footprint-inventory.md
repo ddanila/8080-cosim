@@ -3,7 +3,7 @@
 Status: **DESIGN HOLD / FDC FUNCTIONAL PINS UNTRACED**
 
 This generated report catches both IC footprints absent from the board
-model and promoted devices whose functional pins remain untraced or on
+model and selected FDC devices whose declared pins remain untraced or on
 explicit continuity-boundary nets. Closing either class requires source-model
 and endpoint-coverage proof, followed by complete route/package regeneration.
 
@@ -97,8 +97,10 @@ No footprint-only ICs are present in all three PCB/DSN artifacts.
 
 These devices have declared pin models. Listed pins, including declared
 supply pins, are either unnetted or carried by a source-risk boundary
-until continuity or an explicit disposition is proved. Source-closed nets and
-documented intentional no-connects are excluded.
+until continuity or an explicit disposition is proved. Net risk is screened
+from uncertainty keywords unless `source_risk` explicitly overrides it;
+this is not an independent continuity check. Documented intentional
+no-connects are excluded.
 
 | Ref | Untraced declared pins |
 | --- | --- |
