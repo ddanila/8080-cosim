@@ -91,7 +91,7 @@ The byte capture establishes the host implementation's boundaries:
   station number. Only a zero configuration invokes the `N=`/`S=` fallback;
   `TN0201` supplies maximum station `02` and own station `01` there, and is
   used by the simulator because its configuration switches are open;
-- physical frames start `E4 E4`, carry destination/source/control, and finish
+- wire-format frames in the PTY capture start `E4 E4`, carry destination/source/control, and finish
   with an XOR byte that makes the complete-frame XOR zero;
 - `0Ch` is the directed poll, `08h` is positive acknowledgement, `09h` is
   reject/retry, and destination-zero/control-zero frames hand the line over;
@@ -224,12 +224,11 @@ RomBios shadow at `D454h`. Console I/O should continue through the public
 RomBios entry points used by EKDOS rather than installing a replacement frame
 handler.
 
-This was confirmed on physical CS00014 on 2026-08-13. The corrected CP/Mish
-image booted through the stock 9600-baud loader, ran its Janet A: disk at
-19200/8O1 using D57 mode 2/count 4, accepted `DIR`, displayed all of
-`README.TXT`, and survived `Ctrl-C` warm boot followed by another `DIR`.
-Requests through sequence `90` completed with status zero and the prior
-vertical-line display corruption did not recur.
+The corrected historical CP/Mish image was qualified on CS00014 with
+stock 9600-baud bootstrap followed by a 19200/8O1 mode-2 resident session,
+including directory access, text output and warm boot. The
+[serial investigation](juku-serial-19200-investigation.md) retains the
+physical qualification and its limits.
 
 A historical simulator negative control omitted interrupt exclusion,
 service-vector detach, and the coherent PIC update. It reached the initial
