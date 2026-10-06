@@ -120,7 +120,7 @@ runtime overrides and physical acceptance scope.
 - Other ASCII control bytes `01h..1Ah` use the corresponding letter contact
   with CTRL asserted. Dedicated Tab, Return, Backspace and Escape contacts
   take priority over the equivalent Ctrl-letter spelling.
-- Instruction-boundary injection uses the same matrix contacts; its gate and
+- PC-triggered injection uses the same matrix contacts; its gate and
   hold options are documented in the
   [runtime reference](cosim-runtime-reference.md#interactive-console-juku_console_pty).
   It does not bypass the guest keyboard scanner.
