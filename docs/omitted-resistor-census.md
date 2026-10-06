@@ -74,25 +74,20 @@ R15/R16, R21–R28, R35–R37, and R106
 are schematic-only with PCB placement pending; the
 photo-registered R9/R10 pair is listed separately as modeled. R104 has a
 footprint in the source, routed, and routed-candidate PCBs; its installed
-value and remote continuity remain open. R109/R110
-appear only as lower right-edge D56 positions on the `.009` assembly view
-`PXL_20260711_114611058.jpg`. The exact electrical D56 detail
-`PXL_20260718_101927794.jpg` instead names only R47=20 kΩ and R59=33 kΩ
-in that timing cluster. With D56 and D103 independently registered, the
-owner close-up `PXL_20260710_200445914.jpg` shows a single upright eastern
-axial body across the nearby R47/R59 callout levels. Its unreadable marking
-and vertical mounting do not select either reference. The lower R109/R110
-callout-height regions are bare. A
-separate `33К` body between D103 and D56 is a value-matched R59 candidate,
-but lies on D56's left, opposite the source R59 callout; it has no accepted
-pad nets (`ref/photos/juku-pcb-2/r59-candidate-registration.json`).
-The assembly draws lead strokes on R47/R59 but only body outlines for R110/R109.
-The owner photo has no visible bodies at those lower positions, while the open
-holes and traces there do not establish a dedicated pad pair for either one.
-R109/R110 therefore remain assembly-only population candidates, not proved
-missing fitted parts or DNP positions; match intended landings before assigning
-any value or population state. The direct comparison is recorded in
-`ref/photos/juku-pcb-2/r109-r110-d56-review.json`.
+value and remote continuity remain open.
+
+R109/R110 are plain body outlines without lead strokes on the `.009`
+assembly view `PXL_20260711_114611058.jpg`. The exact electrical D56 detail
+names R47=20 kΩ and R59=33 kΩ, but supplies no R109/R110 values or endpoints.
+Owner photos show no bodies at the lower R109/R110 positions and do not
+identify dedicated landing pairs. They remain assembly-only candidates;
+landings and population evidence are required before assigning values, nets
+or DNP status. See [the D56 comparison](../ref/photos/juku-pcb-2/r109-r110-d56-review.json).
+The fitted body east of D56 is not identified as R47 or R59; the west-side
+33K body is only a value-matched R59 candidate with conflicting assembly
+position and unproved pad nets. See
+[the R59 registration](../ref/photos/juku-pcb-2/r59-candidate-registration.json).
+
 R96 has **no source-proved component** in the archived `.009` electrical or
 assembly frames. Keep it as a numbering gap, with no justified value, footprint
 or net. DNP status requires an identified target site. Promotion requires an
@@ -105,14 +100,10 @@ The current JSON has 86 numeric C refs. Within C1–C100 the absent refs are:
 Rows above establish C4, C29, C74–C78, C82–C93, C95–C98, and C100 as
 source-proved placement or endpoint gaps. These refs are modeled but still
 lack PCB placement. C13/C14 belong to the retired `.006` RF section
-(`docs/video-analog-boundary.md`). C85 is in the exact C82–C93 collective
-schematic range, but its individual assembly placement has not been
-registered. The native assembly panel `114607591` has an unlabeled two-lead outline
-between D42 and D43; matching bare owner holes are a C85 search candidate,
-but no refdes callout proves that identity. Keep C85 as a source-listed bypass
-with unknown individual rails, value, and population rather than assign the
-candidate owner holes or DNP status as fact
-(`ref/photos/juku-pcb-2/c85-source-placement-boundary.json`).
+(`docs/video-analog-boundary.md`). C85's source-listed bypass and the
+unlabeled D42/D43 landing-pair candidate are described in its row above;
+individual identity, rails, value and population remain unresolved.
+
 C2/C3, C23–C28/C30 and C79–C81 remain numbering gaps. C79–C81 are absent
 from the adjacent exact sheet-1 supply ranges; the electrical/assembly searches
 found no secure individual callouts for the other groups. These search limits
