@@ -23,11 +23,6 @@ boot restarts, target resets, reconnects or UART errors. The retained capture
 supports late-ready recovery, rather than the earlier hypothesis that the
 ready-frame checksum was mistaken for `C6`.
 
-The host now preflights an explicitly requested console PTY before opening the
-serial port or starting bootstrap, reports its path and OS error, and retains
-the same diagnostic on the later runtime open.  A Linux PTY regression pins
-the pre-bootstrap failure.
-
 ## Listening result
 
 | Program | Result |
@@ -45,7 +40,7 @@ the standalone keyboard poll. The queued remote Escape therefore supplies no
 standalone-player evidence. Current comparison builds use `-P8=1` and check
 both emitted poll sites and normal/injected-Escape returns.
 
-## 2026-09-02 cold retest and root cause
+## Cold retest and startup fault
 
 CS00000 cold-booted C10/CP/M Plus with the four-way target-shape disk SHA-256
 `20dd4ec7aea589df1fbf94a5c503705a7724fbdf7b51e2f57670aa9c805ac4ef`.
@@ -57,11 +52,8 @@ or UART errors and saw no request after the final load.  This reproduced the pri
 clean boot and made the comparison result invalid; it was not an envelope-
 quality verdict.
 
-The same old COM then reproduced the failure under the complete C10 ROM,
-CP/M, bank map, N4, and NetDisk cosim.  Its post-failure checkpoint wandered
-at `PC=00AAh`, `SP=FFFEh` with interrupts disabled, after repeatedly crossing
-the transient and PIT code.  This reproduced the failure without physical hardware and
-exposed the lightweight audio harness's false assumption.
+The old COM also reproduced the failure in full-system C10/CP/M cosim,
+which models the high-ROM overlay absent from the lightweight audio harness.
 
 The standalone JPS-v2 startup set `SP=0000h` for tone channel 3 and only then
 executed `CALL envelope_dispatch_init`.  The call therefore tried to push its
@@ -72,8 +64,7 @@ playback was unaffected because its dispatcher is initialized before
 `player_start`.
 
 The dispatcher call now runs while the caller's real stack is still active,
-before `SP` is lent to tone 3.  The hot loop, per-frame work, and score bytes
-are unchanged.  The focused envelope execution regression now models the
+before `SP` is lent to tone 3. The focused envelope execution regression models the
 write-protected high-ROM overlay, so the old ordering fails instead of being
 masked by flat RAM.  The repaired `REAROLD` completed under the same full C10
 system, caused the expected A: warm-boot/CCP reads, and accepted a subsequent
