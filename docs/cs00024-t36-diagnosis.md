@@ -64,7 +64,7 @@ All recorded upload chunks and independent readbacks eventually matched,
 with no store retries. The bounded transaction retries and explicit 12 ms
 outer-CRC rejection support a recoverable link/parser margin issue rather
 than failed RAM writes; exact totals remain in the session JSON.
-The exact host/PTTY regression uses the same 6 and 12 ms symbol guards
+The exact host/PTY regression uses the same 6 and 12 ms symbol guards
 under deterministic DRAM decay; both points pass and the model observes all
 128 rows inside the retention deadline. Thus neither correct T36 refresh nor
 the guard delay by itself reproduces the physical 12 ms failure. The remaining
@@ -196,6 +196,11 @@ additional ROM burn or scope; its results compare retention under staged
 controls and do not directly measure the physical refresh waveform.
 
 ## Reproduction
+
+Run from the repository root on a POSIX host with Python 3 and NASM.
+The simulator guard also requires Bash, a C11 compiler (`CC`, default `cc`),
+and PTY support. The physical follow-up needs access to the serial device and
+the fitted T36 ROM; it records a new session in the specified log directory.
 
 ```sh
 # Exact firmware, drawings, physical-session, decay and D57 signature guards
