@@ -1,6 +1,6 @@
 # ekta37 ROM layout map
 
-Status: hand-written analysis, 2026-08-11, of the pinned `roms/ekta37.bin`
+Hand-written analysis of the pinned `roms/ekta37.bin`
 (EktaSoft '88 Serial #0037, RomBios 3.43m, SHA256
 `fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`).
 Regions were attributed from four independent signals: filtered I/O-port
@@ -39,6 +39,13 @@ expansion-driver attribution is the one hedged call. The command parser
 references its dispatch table through a single `LXI H,D977h` at ROM `1923h`.
 
 ## Reproduction
+
+Run from the repository root with Python 3. This is a byte-pattern heuristic:
+it filters some likely operands but does not decode instruction boundaries,
+follow control flow, or separate all data from code. Use its candidate pages
+with the disassembly and executed traces before attributing a device handler.
+The `FF` regions above identify fill bytes, not independently qualified space
+for a new routine; modifications also need reference and checksum checks.
 
 ```sh
 # port clustering (region evidence)
