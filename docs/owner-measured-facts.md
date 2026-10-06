@@ -1,7 +1,8 @@
 # Owner-measured facts — single index (check this BEFORE asking to re-measure)
 
-Purpose: one place that lists what the owner has already physically measured, so
-nobody re-asks for a measurement that exists. This is an **index into the
+Purpose: index recorded owner measurements, supporting photo observations and
+unresolved conflicts, so existing measurements are not requested again.
+This is an **index into the
 authoritative docs** (each row cites its source); the cited records own the full
 measurement details. Provenance tags: `probe` = multimeter/continuity,
 `photo` = visible photo evidence, `owner-continuity` = a recorded continuity
@@ -73,4 +74,5 @@ measurement lands, add a row here.
 
 Use the [bench checklist](next-bench-session-checklist.md) for open asks and
 the [generated shortlist](owner-measurement-shortlist.md) for the full set of
-measurement targets. This index records established facts.
+measurement targets. Check each row's provenance and limits before treating
+it as an established electrical connection.
