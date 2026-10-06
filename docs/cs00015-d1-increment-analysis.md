@@ -34,14 +34,15 @@ S12 = A12 XOR C12
     = (!A12 & C12) | (A12 & !C12)
 ```
 
-The physical cases distinguish the two terms:
+The observed cases are consistent with losing the retain-high term:
 
 - `0FFF -> 1000`: `A12=0`, `C12=1`; `!A12 & C12` works.
 - `1A00 -> 1A01`: `A12=1`, `C12=0`; `A12 & !C12` is missing.
 - DAD `1A00 + 1`: the separate ALU retains bit 12.
 
-The bounded internal diagnosis is therefore loss of the bit-12
-retain-high/no-carry term in D1's shared 16-bit increment path. It is not an
+The bounded functional diagnosis is loss of bit-12 retention without carry
+in D1's 16-bit increment path. Removing the retain-high/no-carry term models
+that behavior; it does not identify the physical circuit defect. It is not an
 A12 register cell stuck low: direct loads and DAD retain A12. It is not one
 register: BC, DE, HL, SP, PC, and WZ-related operations share the symptom.
 
@@ -72,7 +73,8 @@ after:  1000 1A01 5A01 9A01 1A01
 
 Both retained sessions used T32 `1B/D62B`, the same probe SHA-256, and had no
 transport mismatch. This excludes the external BA12 path and test transport as
-causes of the repaired behavior.
+causes of the repaired behavior. The [T32 physical record](../spinoffs/jukuravi/T32-PHYSICAL.md#direct-d1-register-confirmation)
+links both retained sessions.
 
 ## Remaining physical boundary
 
