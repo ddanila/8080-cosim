@@ -40,7 +40,11 @@ python3 kicad/check_fdc_recovery_counter.py
 
 The guard checks selected JSON nets, no-connects, R78 value and placement
 metadata, source-photo identities, source-PCB pad nets, literal HDL markers,
-and the D106 LVS instance mapping. It does not run LVS, simulate the counter,
+and the D106 LVS instance mapping. R78 placement checks cover its pending flag
+and absence of a procurement hold, not centre coordinates or lead span.
+The photo helper accepts an LFS pointer's declared object hash when JPEG bytes
+are absent; this does not establish available visual evidence.
+The guard does not run LVS, simulate the counter, validate placement geometry,
 or inspect routed copper. See [the counter readiness report](../../docs/ie7-counter-readiness.md)
 for the separate primitive simulation; that check does not qualify the complete
 read separator or physical recovery timing.
