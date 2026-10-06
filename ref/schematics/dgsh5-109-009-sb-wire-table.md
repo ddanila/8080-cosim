@@ -147,7 +147,10 @@ assembly wire, not replacement PCB etch.
 | 14 | А:20 | D3.10 - A23.1 - X3.3 | `S_TTL` |
 
 `kicad/check_factory_wire_links.py` guards these mappings against the
-authoritative board model. The mapping does not authorize a routed-copper
+authoritative board model. It checks the ten exact length rows and required
+endpoint membership, including split wire-link islands; it does not reject
+extra endpoints or verify photos, continuity, or cut lengths.
+The mapping does not authorize a routed-copper
 substitution: the final assembly output must retain these as insulated links.
 
 Rows 11 and 12 connect board points 17 and 18 to switch `S1` pins 1 and 2. The 3 cm length of
@@ -158,8 +161,8 @@ S1 on the sheet-1 placement.
 S1 is bracket-mounted, not soldered into the processor PCB. Sheet 1 draws the
 pushbutton on the top connector bracket, and owner component photograph
 `PXL_20260710_200402344.jpg` shows the same physical button at the upper-right
-bracket edge. Consequently, `А:17` and `А:18` must become separate PCB wire
-landings while S1 remains an off-board schematic/mechanical part. The validated
+bracket edge. Consequently, `А:17` and `А:18` are separate wire termination sites while S1 remains
+an off-board schematic/mechanical part. The validated
 D98 package fit places the visible white wire-18 lead directly on D98.7, so
 `А:18` is that package pad rather than a separate header pad. Two-sided owner
 photos identify `А:17` as the dedicated pad
