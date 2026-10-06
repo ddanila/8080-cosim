@@ -62,12 +62,9 @@ deliberately excluded: channel 0 clocks the diagnostic USART and channel 1
 drives the speaker, so replaying them could kill the live link. The optional
 `raster-syncb` variant adds only EktaSoft's channel-2 write (`B0h` control,
 `FFFFh` count, preserving the bare-OUT reuse): D57 `OUT2` is the traced
-`SYNC_B` boundary with an unresolved consumer, and CS00024's one confirmed
-legacy capture was on that channel. That `99/99` result is no longer a
-confirmed fault: the old probe did not arm the raster or wait for D57 CLK2's
-approximately 49.92 Hz `/VER RTR` source. If corrected testing later finds a
-real `SYNC_B` fault, it and broken normal-mode refresh could still be one
-fault.
+`SYNC_B` boundary with an unresolved consumer, and its legacy channel-2 result does not establish a fault. Use the corrected
+D57S probe described in [the T36 diagnosis](../../docs/cs00024-t36-diagnosis.md)
+to qualify that path before attributing a retention failure to it.
 
 Snippet construction, exact-byte extraction, and the row accounting live in
 [`raster.py`](raster.py) and are guarded by
@@ -81,9 +78,11 @@ simulation deliberately cannot pass the armed long hold; only hardware can.
 
 Run one stage per invocation and RESET the board between stages. For the default cold-diagnostic entry, fit the exact T36 firmware expected
 by the runner (version `1Eh`, CRC16 `C617h`). The alternate entry requires
-an API-v2 service loader, tested with the archived Ekta4401 remix: start
+the archived Ekta4401 remix with its T36 resident engine: start
 from its monitor and use `--attach-loader`; type `J`
-once without Enter when the runner asks. The marker, arm snippet, hold code,
+once without Enter when the runner asks. Attach mode assumes a one-vote
+bootstrap; it does not check a cold-boot ROM identity, so an arbitrary API-v2
+loader is not a qualified substitute. The marker, arm snippet, hold code,
 readback, and verdict are identical after entry. A stage that decays may leave
 the loader unrecoverable until RESET — that outcome *is* the measurement,
 recorded in the JSON capture. Run the commands below from the repository root
@@ -148,7 +147,10 @@ The runner's JSON verdicts have these limits:
 | `no_return` | A host session error occurred during the hold upload/verification/RUN operation; execution of the hold is not established by this label alone |
 | `incomplete` | The stage did not reach a verdict, for example because entry failed, RETURN had the wrong A, or later readback failed |
 
-Read the session error and operation evidence alongside the verdict. A mismatch
+Exit status is `0` only for `pass` without a session error, `1` for other
+outcomes or transport failures, and `130` for an operator interrupt. Invalid
+CLI arguments exit `2`. Read the session error and operation evidence alongside
+the verdict. A mismatch
 or missing RETURN alone does not prove DRAM decay: exclude setup and transport
 failures, verify that the hold ran, and compare against the control stage
 before drawing a raster conclusion. Whole-evidence inversion resembling the
