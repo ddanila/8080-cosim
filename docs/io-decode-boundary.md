@@ -87,6 +87,8 @@ endpoints. Complete address nets and per-net provenance are retained in
   No fitted body is visible. The proposed solder hole has a visible route
   to source-grounded D2.14, but same-hole identity, population and metered
   ground continuity remain unconfirmed.
-- D7.5/D29.3's upstream source remains unresolved. D7.12 joins SYNC,
+- D7.5/D29.3's upstream source remains unresolved. Runnable HDL holds
+  D7.5 low through `U_D7B3LNK` to preserve the current D25 turnaround
+  behavior; this constant is not recovered circuit evidence. D7.12 joins SYNC,
   D7.13 feeds back from D7.11, and D7.4 joins MEMW/D29.8. Crossed rails
   without source or continuity evidence must remain separate.
