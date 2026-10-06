@@ -117,8 +117,10 @@ registration metadata for the two photographed ground observations. It does
 not recheck photo hashes, inspect copper, or simulate D56 in the complete
 board. The shortened device test does not verify the default D56 pulse widths.
 
-The RC-derived widths are datasheet-typical behavioral values, not a substitute
-for measuring the installed К155АГ3 across component tolerance and temperature.
+The RC-derived widths are fixed model estimates. The preserved TI document
+covers both standard and LS families; its LS timing characteristics do not
+qualify the installed К155АГ3. Measure the fitted part across component
+tolerance and temperature before using these widths as hardware limits.
 D56.12's printed tag-16 destination is owner-closed to D55.15/.18. The exact
 position-159 assembly material and installed auxiliary-annulus disposition remain
 physical boundaries.
