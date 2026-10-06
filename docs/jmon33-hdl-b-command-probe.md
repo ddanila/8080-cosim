@@ -12,6 +12,13 @@ in cosim.
 
 ## Command
 
+Run from the repository root with Python 3, a C compiler (`CC`, default
+`cc`), Icarus Verilog (`iverilog` and `vvp`), and `roms/jmon33.bin`.
+Builds and checkpoints use a temporary directory. The runner regenerates
+`hdl/sim/jmon33.hex`, restores prior cosim and HDL VRAM dumps after
+normal sampling, and overwrites the selected report. Relative
+`JMON33_HDL_COMMAND_REPORT` paths resolve from the repository root.
+
 ```sh
 sync/jmon33_hdl_b_command_probe.py
 ```
