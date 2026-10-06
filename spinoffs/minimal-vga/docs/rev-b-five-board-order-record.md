@@ -7,14 +7,16 @@ not a panel or a PCBA order.
 
 ## Three controlled gates
 
-1. **Upload gate.** Immediately before opening the vendor upload form, run:
+1. **Upload gate.** From the repository root with Python 3, immediately before
+   opening the vendor upload form, run:
 
    ```sh
    spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py \
      --require-released --package-root fab/minimal-vga/revb/package
    ```
 
-   Stop unless it passes. Owner release authorizes upload of only the exact five
+   Stop unless it exits 0; exit 3 means technical checks passed but upload remains
+   on hold. Owner release authorizes upload of only the exact five
    hashes below for production-file preview. It does not authorize accepting a
    vendor edit or paying for the order.
 2. **Order/payment gate.** After all five pre-payment Gerber Viewer previews,
@@ -156,7 +158,7 @@ never approve it from an email description alone.
 | R5.O1 result | pending |
 
 R5.O1 passes only when every pending field relevant to the actual order is replaced
-with observed evidence, all five exact hashes were submitted unchanged, and the
+with observed evidence, all five exact hashes were submitted unchanged, the
 order ID exists, and all five post-payment production files are confirmed. Delivery
 then opens R5.B1 in `rev-b-b1-bench-log.md`.
 
