@@ -52,31 +52,11 @@ owner has confirmed that the board/socket sources are independent. The two
 physical sources therefore corroborate the same adopted table; duplicated
 transcript bytes are not counted as extra read events within either board.
 
-All four physical outputs agreed at every address. The observed active-low
-asserted nibbles were:
-
-```text
-00: FFFFFFFFFFFFFFFF
-10: FFFFFFFFFFFFFFFF
-20: FFFFFFFFFFFFFFFF
-30: FFFFFFFFFFFFFFFF
-40: FFFFFFFFFFFFFFFF
-50: FFFFFFFFFFFFFFFF
-60: FFFFFFFFFFFFFFFF
-70: FFFFFFFFFFFFFFFF
-80: 00F000000F000000
-90: 00F000000F000000
-A0: 00F000000F000000
-B0: 00F000000F000000
-C0: 000000F0000000F0
-D0: 0000000000000000
-E0: FFFFFFFFFFFFFFFF
-F0: FFFFFFFFFFFFFFFF
-```
-
-This is a preservation-grade physical recovery of `.037`. The raw electrical
-table is the low-nibble complement of the display above and is the authoritative
-representation; the asserted table is retained only as a convenience.
+All four physical outputs agreed at every address. The raw electrical image
+is authoritative; the preserved
+[asserted image](../ref/physical-proms/validated/d2_037.asserted.bin) is its
+low-nibble complement. See [the generated truth report](d2-physical-truth.md)
+for the exact input conditions and READY polarity.
 
 ## Confirmed continuity
 
@@ -102,7 +82,7 @@ D105.12 <-> D105.13 <-> D5.26 MEMW_N
 ```
 
 D105 is the ЛА3 below D30 with D13 physically between them. The exact edge
-connector contact and pull-up were inaccessible during this session. Subsequent
+connector contact and pull-up were inaccessible during the initial measurement. Subsequent
 source and photo evidence identifies `X1.107B/-BLOCK` and `R1 2 kΩ` to +5 V;
 see [the current D105 boundary](d105-h-boundary.md).
 
