@@ -35,22 +35,7 @@ is loose in the package.
 
 ## Accepted checks
 
-The recorded gate commands were:
-
-```text
-sync/jukuhost_core_check.sh
-sync/jukuhost_runner_check.sh
-sync/jukuhost_linux_check.sh
-python3 tests/jukuhost_serial_reconnect_test.py
-python3 tests/jukuhost_v15_delayed_pty_test.py
-python3 tests/jukuhost_stock_v15_cosim_test.py
-sync/jukuhost_stock_cosim_check.sh
-sync/jukuhost_c11_cosim_check.sh
-sync/jukuhost_dos_check.sh
-sync/jukuhost_win32_check.sh
-```
-
-Together these cover strict GCC/Clang core vectors, runner callbacks and
+The accepted checks covered strict GCC/Clang core vectors, runner callbacks and
 cancellation, Linux PTY protocol/media/evidence behavior, serial loss and
 reopen, delayed stock startup, the JF15 stock path, five stock systems, all C11
 boot/passive/replacement/reset scenarios, and the complete reproducible DOS
