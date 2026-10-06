@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard the exhausted sheet-1 chase for D30 section-B pins 8 and 11."""
+"""Guard adopted D30 section-B connections in board JSON."""
 
 from __future__ import annotations
 
@@ -71,15 +71,16 @@ def main() -> int:
         "- D30.9 is omitted from the factory symbol and remains an",
         "  explicit no-connect. The visible section-B output is D30.8, so it cannot be",
         "  dispositioned as an unused package half.",
-        "- Direct owner continuity remains authoritative for D30.1/.4/.10/.12/R5 and",
-        "  D105.11->D30.13; neither measured net is reopened by this older-sheet chase.", "",
+        "",
         "The exact `.009` sheet and direct target-board continuity agree: D30.1,",
         "D30.4, D30.10, and D30.12 are one conductor with R5.2; R5.1 goes to",
         "+5 V. D38.8 drives that common active-low STB conductor.", "",
         "Direct owner continuity on the physical `.009` board closes both routes:",
         "D30.11 reaches D105.2 on the D13.4/D11.20 clock conductor, and D30.8",
         "reaches D29.7 on a conductor separate from raw IOWR.",
-        "", "## Model guards", "", "| Check | Result |", "| --- | --- |",
+        "", "## Board-JSON guards", "",
+        "These checks verify the modeled adoption of the measured connections.",
+        "", "| Check | Result |", "| --- | --- |",
     ]
     lines.extend(f"| {name} | PASS |" for name, _ in checks)
     lines.extend("""
