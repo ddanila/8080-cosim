@@ -16,15 +16,19 @@ are in [windows-jukuhost-client.md](windows-jukuhost-client.md).
   19,200-baud V16/NetDisk recovery loops.
 - A shared worker runner owns serial I/O, disk service and captures. The GUI
   receives copied callbacks through window messages and requests cooperative
-  cancellation for Stop, close and Windows shutdown.
+  cancellation for Stop and close. An active session refuses the current
+  Windows shutdown request while requesting Stop; shutdown is allowed when
+  idle. Closing waits for the worker before destroying the window.
 - Serial selection supports explicit COM names and stable device-instance IDs.
   Ambiguous unidentified adapters require selection.
 - A: supports snapshot or read-only access; B: is read-only. Writable images
   are opened exclusively; read-only opens permit sharing. Writes use
   the shared transaction journal. Configuration uses flushed temporary files
   and a backup/restore fallback where atomic replacement is unavailable.
-- Each run gets its own evidence directory. Startup and session diagnostics
-  are also recorded in `JUKUWIN.LOG`.
+- Each run gets its own evidence directory, with `JUKUHOST.LOG` and optional
+  `JUKUHOST.CAP`. Startup and session diagnostics are also recorded in
+  `JUKUWIN.LOG`, opened beside the executable or in the temporary directory
+  if that location is unavailable.
 - The runtime import boundary is checked against
   [win95-imports.txt](../host/windows/win95-imports.txt). Builds are normalized
   and compared byte-for-byte; release identity comes from `MANIFEST.json`.
