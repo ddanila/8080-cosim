@@ -87,3 +87,7 @@ junction can be followed. The registration and excluded D5-control readings
 are retained in
 [the inhibit-source review](../ref/schematics/d7-d29-inhibit-upstream-review.json).
 Do not assign a nearby D5, D22, or ROM-select line by proximity.
+
+In `hdl/juku_top.v`, `U_D7B3LNK` supplies a low simulation boundary for
+this unresolved input. That scaffold preserves the modeled D25 turnaround
+behavior; it does not identify the original-board driver or voltage.
