@@ -39,7 +39,7 @@ patterns over the `4000h..BFFFh` union after six-second refresh-on holds. It
 qualifies the RAM array under T36 refresh; it does not prove raw retention or
 the normal-ROM refresh schedule. See the
 [T36 diagnosis](../../../docs/cs00024-t36-diagnosis.md) for exact evidence and
-remaining board faults.
+remaining qualification checks.
 
 D57 channel 2 is clocked by D55 `/VER RTR`, not the channel-0 clock. The current
 `d57-raw-refresh-4000.asm` emits `D57S` v2, arms the raster and waits 64 refresh
@@ -106,7 +106,8 @@ Use the matching `build_*.py` writer, with `--check` to verify the committed
 image. The archived `diag-d0-repetition.bin` currently differs from its builder's
 output; its `--check` fails. Keep its pinned bytes as historical evidence and do
 not present that variant as reproducibly rebuilt by the current script. The
-other README-pinned builders pass their current byte/hash checks.
+remaining hash pins identify committed artifacts; verify a builder with
+`--check` before relying on reproducibility.
 
 For the physical-row monitor:
 
@@ -121,8 +122,12 @@ From the repository root, the broader gates are:
 | --- | --- |
 | `sync/jukuravi_d0_check.sh` | Historical D0/D2 image, cosim and HDL ladder regressions |
 | `sync/jukuravi_t28_check.sh` | Transactional monitor and host API |
-| `sync/jukuravi_t34_check.sh` | Clock-safe D55 diagnostic and loader behavior |
+| `sync/jukuravi_t34_check.sh` | Exact T34 clock-setup metadata, cosim D55 fault bit, TxRDY recovery and CALL/RET; does not execute physical PIT clock timing |
 | `sync/jukuravi_t36_check.sh` | Row-address proof, retention model, host/PTY refresh controls, physical-record identities and local RAM probes |
+
+The separate [D55 structural audit](../../../docs/jukuravi-d55-diagnostic-audit.md#structural-simulation-matrix)
+executes clocked PIT transfers; its recorded matrix is currently not reproduced
+by the script. A T34 cosim pass does not clear that limitation.
 
 A simulator pass does not replace programmer readback, physical clock checks or
 measured board acceptance. Preserve hashes and captures in the applicable
