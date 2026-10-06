@@ -101,7 +101,8 @@ and rejects writes.
 | 2 | 0xD800–0xFFFF | 0x4000–0xBFFF = empty cartridge window (0xFF), not populated ROM |
 | 3 | (none) | all RAM |
 
-Framebuffer window: base **0xD800**, **9640** bytes, geometry **40×241**.
+CPU framebuffer window: **0xD800–0xFFFF** (10,240 bytes). The visible image
+uses **9640** bytes, geometry **40×241**.
 
 ## I/O port map
 
@@ -138,6 +139,13 @@ Lower number = higher priority. Frame-service ROM vector 0xFED4.
 | ir3 | serial TxRDY | on-card (I/O) |
 | ir5 | frame tick | base pin 37 (USER1/FRAME_TICK) |
 | ir4, ir6, ir7 | unused | singleton `IR4_NC`, `IR6_NC`, `IR7_NC` nets on the I/O card |
+
+These are hardware assignments. The current `revb_backplane_top.v` behavioral
+twin holds `INT_N`, `NMI_N` and `BUSRQ_N` inactive and leaves the TTL video's
+frame-tick output unconnected. `revb_io_card.v` models PIC reads as last-written
+port values; it does not implement interrupt arbitration or acknowledge cycles.
+Its PPI model covers the overlay latch, not keyboard scanning. Boot comparisons
+therefore do not qualify PIC interrupt service or the keyboard input path.
 
 ## Timing anchors
 
