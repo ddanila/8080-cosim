@@ -51,8 +51,16 @@ binding at `C000h`, the trace records every BIOS `READ` and `WRITE` entry plus
 drive, track, translated sector, DMA address, and cycle count. Unlike the host
 protocol log, this includes resident-cache hits and therefore exposes the
 actual record-consumption sequence without changing target code or timing.
-The fixed instrumentation addresses are `C027h`/`C02Ah` with state at
-`C93Ah`; do not use it for another adapter layout.
+The fixed instrumentation addresses are `C027h`/`C02Ah` with drive, track,
+and sector state at `C93Ah..C93Dh` and DMA at `C94Eh`. The hook matches
+numeric PCs without checking the bank, instruction bytes, or firmware
+identity; unrelated code at those addresses can generate misleading rows.
+Use it only with the matching C6 adapter layout.
+
+The trace file is truncated at startup and uses buffered writes; retain any
+earlier capture before launching and read the completed file after normal
+shutdown. A row records entry to the BIOS operation, not its completion or
+successful disk access.
 
 ## How it works
 
