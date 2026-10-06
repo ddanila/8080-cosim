@@ -97,7 +97,10 @@ under `ref/physical-proms/validated/`; the adopted EPROM split is under
 `ref/eprom-images/`.
 
 Host validation rejects missing, duplicate, out-of-range, unstable, or
-repeat-mismatched RE3 rows. It proves capture consistency, not socket identity,
+repeat-mismatched RE3 rows. It parses only two-digit address/value CSV rows
+ending in `OK` or `UNSTABLE`; other lines are ignored. Any explicit independent
+read count is caller-supplied provenance, not independently verified.
+It proves capture consistency, not socket identity,
 wiring, polarity, or the unresolved D94 D0 hidden branch. Exact `.009` sheets
 close the `CS7` shared-enable source.
 
