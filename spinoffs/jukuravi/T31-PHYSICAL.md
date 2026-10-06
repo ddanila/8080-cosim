@@ -144,28 +144,19 @@ the expected `066Ch` HLT/250 Hz CPU-failure path. The regression therefore
 proves that the probe distinguishes correct upper instruction fetch from the
 simple A12-low case.
 
-The narrow conclusion is: **CS00015 has correct upper-D15 data reads but fails
-the tested upper-D15 instruction-fetch transition.** The failing component or
-edge has not been localized. D15 contents, an ordinary A12-low data alias, the
-original D2 package, the loader entry, and host reattachment are individually
-excluded by the tests above. The PHI2TTL/READY route remains relevant to the
-open timing investigation; its corrected schematic interpretation is recorded
-in [`../../docs/phi2ttl-d29-clock-route.md`](../../docs/phi2ttl-d29-clock-route.md).
+The T31 observation was correct upper-D15 data reads with a failing tested
+upper-D15 execution transition. It did not establish a fetch-selective hardware
+path or localize the component. The board uses `MEMR` for both instruction
+fetches and data reads.
 
-**Framing correction (desk analysis).** The "data read versus instruction
-fetch" wording above is not a distinction this hardware can draw: `MEMR` is
-asserted for both cycle types, the 8238 decodes only `INP`/`OUT`/`INTA`, and no
-`M1`-derived net exists on the board, so no decode, chip select or wait input
-can be fetch-selective. Deriving the D2 `.037` wait class of every page instead
-shows that all five upper probes land inside `1000-10FF`, the single
-**CAS-gated** class, while the lower probe and the loader entry `0A0Ch` are in
-unwaited pages. The experiment therefore contrasted CAS-gated against unwaited
-access, not upper against lower and not fetch against read. That analysis, the
-per-page table, the refuted slow-EPROM hypothesis, the evidence that the
-factory firmware itself calls into the CAS-gated pages, and two cheap
-follow-up probes (an upper-half trampoline in the unwaited `1200-13FF` or
-`1A00-1BFF`, and one in the always-wait `1400-17FF`) are recorded in
-[`../../docs/d2-ready-cycle-analysis.md`](../../docs/d2-ready-cycle-analysis.md).
+The later [T32 investigation](T32-PHYSICAL.md#direct-d1-register-confirmation)
+localized the failure to D1's 16-bit increment path: incrementing an already-high
+A12 cleared it, while carry into A12 and DAD remained correct. The unchanged
+probe returned the exact clean signature after D1 replacement. The
+[D1 analysis](../../docs/cs00015-d1-increment-analysis.md) owns that resolved
+diagnosis and its remaining die-level limits. The earlier
+[READY-class analysis](../../docs/d2-ready-cycle-analysis.md) records the wait
+classes; it is not an outstanding diagnosis of this repaired fault.
 
 Physical evidence:
 
