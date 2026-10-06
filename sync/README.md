@@ -7,6 +7,9 @@ below from the repository root.
 
 ## Connectivity
 
+Requires Python 3 and Yosys. KiCad CLI enables the schematic round trip;
+KiCad's Python module enables the additional silkscreen-overlap check.
+
 ```sh
 sync/check.sh
 ```
