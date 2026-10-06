@@ -50,7 +50,7 @@ MARKERS = {
     "docs/d41-timing-boundary.md": ("D95.5/.6", "1 MHz"),
     "docs/memory-timing-boundary.md": ("D33.3", "D92.13", "MEMR"),
     "docs/d40-d59-d92-d95-1mhz-route.md": ("D40.11", "D59.5", "D92.2", "D95.5 + D95.6"),
-    "docs/master-oscillator-boundary.md": ("R31=`1к`", "R32=`1,3к`", "R34", "C73 exact-revision range remains open", "older `.006`", "C4"),
+    "docs/master-oscillator-boundary.md": ("R31=1 kOhm", "R32=1.3 kOhm", "R34=12 kOhm", "C73 exact-revision range remains open", "older `.006`", "C4"),
     "docs/phi2ttl-d29-clock-route.md": ("R37 joins the printed `B` rail", "R36 joins `B` separately", "crosses", "without a junction"),
     "ref/photos/juku-pcb-2/r31-r32-oscillator-value-review.json": ("1K0", "1K3", "1,3к", "820"),
     "ref/photos/juku-pcb-2/r34-d40-value-review.json": ("12к", "13к", "12K", "КР531ИЕ17"),
