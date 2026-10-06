@@ -100,7 +100,7 @@ def main() -> int:
             "That review did not recover the missing `0x2100..0x21FF` page. A complete artifact or loading procedure remains required.",
         ]),
         row([
-            "[MAME Juku driver](https://github.com/mamedev/mame/blob/master/src/mame/ussr/juku.cpp)",
+            "[Vendored MAME Juku driver](../ref/mame_juku.cpp)",
             "behavioral oracle, I/O map, floppy geometry, raster constants; the recorded 2026-07-11 snapshot is vendored as `ref/mame_juku.cpp` (SHA256 `3b9dde3d3bc5eefd1271cd7a29266165d86f41882443f210437020d230a6202e`)",
             "emulator behavior cannot supply omitted physical nets or PROM truth",
         ]),
@@ -117,7 +117,7 @@ def main() -> int:
         row([
             "Emu80v4 and public WD1793 HDL/software models",
             "reviewed as implementation checklists; no code adopted",
-            "the local boot-scoped FDC model is sufficient until a concrete fidelity requirement justifies a licensed upstream core",
+            "The local model’s exercised behavior and unresolved hardware boundaries are documented in [FDC readiness](fdc-readiness.md) and [FDC handoff](fdc-hardware-handoff.md).",
         ]),
         row([
             "Guarded component references under `ref/datasheets/`",
