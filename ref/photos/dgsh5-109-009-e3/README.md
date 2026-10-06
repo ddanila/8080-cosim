@@ -37,8 +37,8 @@ reading order (left-to-right, top-to-bottom)**. Filenames are the camera's
 timestamp order, so they already follow that sequence within each group.
 
 ### Sheet 1 — CPU / bus / ROM / interrupt / serial
-КР580ВМ80-family CPU, ВК38 clock/controller, ВА86/ВА87 bus transceivers,
-РЕ3/РТ4 PROMs, КР580ВМ59 (PIC), USART and connector continuations.
+КР580ИК80А CPU, ВК38 clock/controller, ВА86/ВА87 bus transceivers,
+РЕ3/РТ4 PROMs, КР580ВН59 (PIC), USART and connector continuations.
 
 - `PXL_20260718_101754468.jpg` — overview
 - `PXL_20260718_101801729.jpg` … `PXL_20260718_101827714.jpg` — 8 detail tiles
