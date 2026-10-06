@@ -53,7 +53,7 @@ Confirm that the exported stream includes every write in the chosen workload.
 | CH8-15 | D0-D7 | J91.1-8 |
 | CH16-21 | `MREQ_N` `IORQ_N` `RD_N` `WR_N` `M1_N` `RFSH_N` | J98.1-6 |
 | CH22 | `ROM_CE_N` | U2.20 clip |
-| CH23 | `DEC_ROM_N` (D6 РТ4 O1) | J95.1 |
+| CH23 | `DEC_ROM_N` (D6 РТ4 D0/pin12) | J95.1 |
 | trigger | `RESET_N` rising | J91.10 |
 
 ## 4.2 Framebuffer readback without video hardware
@@ -70,6 +70,8 @@ Implemented replay path:
 1. `tools/vjuga_fb_readback/reassemble.py` — reads a capture stream (`ADDR DATA`
    hex per line), replays writes in order into a zero-filled 64 KiB image,
    extracts `0xD800–0xFDA7` (40×241 bytes), and writes the framebuffer binary.
+   The parser masks addresses to 16 bits and data to 8 bits; validate exported
+   ranges before replay because oversized values wrap rather than fail.
    Unwritten bytes remain zero; a physical capture must establish those bytes
    or include writes to them before comparison with the oracle.
 2. Twin-side capture emitter — `hdl/vjuga_juku_top.v` `+capture=<file>` logs
@@ -107,8 +109,8 @@ For static, human-speed inspection (5 V-native, no level shifting):
   The expected early fetches include `F0: addr=0000 data=c3` = the reset JP and
   `F6: addr=0021 data=00` =
   the patched NOP. Compare only fetch lines from the same reset, ROM and decode
-  mode, excluding the sketch's `#` status lines. Divergence points at
-  the exact fetch.
+  mode, excluding the sketch's `#` status lines. A difference identifies the first differing reported fetch; omitted samples
+  or different initial state can also shift the trace.
 
 The readback and reference-trace commands require Python 3, Icarus Verilog
 (`iverilog` and `vvp`), and the initialized
@@ -122,7 +124,10 @@ boot completion.
 ## 4.4 Assembly & bring-up ladder
 
 Each step gates the next; every observation has an expected value *before* the
-step runs. Western parts throughout until step (g).
+step runs. Western parts throughout until step (g). The voltage, current,
+clock and LED expectations below are bench acceptance targets, not recorded
+measurements. U24 simulation uses a timing model; programmed-GAL hardware
+qualification remains required as described in [the Rev A overview](../README.md).
 
 | # | Step | PASS signal |
 |---|---|---|
