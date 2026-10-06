@@ -168,20 +168,17 @@ odd majority with `--loader-votes 3`, `5`, or `7`. CRC-protected whole-command
 retries remain enabled independently. A bridge whose USB side uses another
 rate must set `--baud` explicitly.
 
-Increasing guard time or votes lengthens each command. The warm CS00024
-6 ms CONFIG failure belongs to unrefreshed T34; T36 later passed a 6 ms
-parser-aging test with refresh active. See [the physical record](CS00024-PHYSICAL.md)
-for the distinct test conditions. Reducing guard or votes is a command-duration
-experiment, not proof of improved signal integrity.
+Increasing guard time or votes lengthens each command. Changing either is
+a command-duration experiment, not proof of improved signal integrity.
+The [CS00024 physical record](CS00024-PHYSICAL.md) distinguishes unrefreshed
+T34 failures from T36 parser-aging results with refresh active.
 
-`--loader-config-first` is the explicit T28–T34 CS00024 recovery policy. Those
-loaders start at seven votes either way; the option sends the shorter CONFIG
-frame first, switches both peers to the requested width, and only then sends
-the exact-cookie PROBE. Normal PROBE-first ordering remains the default. This
-policy is appropriate only when short seven-vote commands are proven but a
-longer bootstrap command crosses a parser-retention/timing boundary. CONFIG is
-idempotent, and the subsequent PROBE remains mandatory evidence rather than
-being skipped.
+`--loader-config-first` supports T28–T34 recovery when short bootstrap
+commands pass but a longer PROBE crosses the parser-retention boundary.
+If the requested vote width differs from the resident bootstrap width, the
+host sends CONFIG first, switches both peers, and then verifies the exact
+PROBE cookie. If the widths match, CONFIG is unnecessary. PROBE-first is
+the default; CONFIG-first never skips PROBE verification.
 
 T31 also permits transport benchmarking without a ROM rebuild. This example
 configures the resident monitor once, then repeats a 29-byte idempotent LOAD and
