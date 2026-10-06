@@ -8,10 +8,8 @@ capability-`07h` player.
 
 The machine cold-booted CP/M Plus 3.1 over C10/NetDisk v3 at 19200 baud from
 the private A: image, mounted the library read-only as B:, entered the Jukebox,
-played the requested tracks, quit with `Q`, and returned to `A>`.  The final
-host statistics were 19,171 requests, 116 successful reads (928 records),
-zero writes, zero retries, zero boot restarts, zero target resets, zero
-reconnects, and zero UART errors.
+played the requested tracks, quit with `Q`, and returned to `A>`.  The host recorded no writes, retries, boot restarts, target resets,
+reconnects or UART errors; detailed counters remain in [result.txt](result.txt).
 
 The listening matrix was:
 
@@ -41,8 +39,9 @@ this session qualifies their target execution and records the Imp candidate's
 listening failure; it is not presented as a boot of the corrected disk hash.
 
 The 5.8 MB raw capture and native log remain untracked under
-`out/jukupoly-m6-physical-20260901-01/`.  Their hashes and the exact command are
-recorded here without adding a large wire capture to the source repository.
+`out/jukupoly-m6-physical-20260901-01/`.  Their hashes are recorded below. The retained [command](command.txt) identifies
+the run configuration; its absolute paths describe that setup, rather than a
+portable invocation. These local captures are not included in a fresh clone.
 
 ## SHA-256
 
