@@ -93,42 +93,42 @@
     },
     "Owner checks": {
       "path": "docs/owner-measurement-shortlist.md",
-      "sha256": "8bb06a71f20ce59b24d9bc78b46ecd7e62a9c6c2894d44819d509b3a1d773c6f",
+      "sha256": "96d0c6c57eedfe1090287f8f1aaa00e44582b7af175a7c3667287ec1aaa661fa",
       "status": "EVIDENCE HOLD"
     },
     "BOM": {
       "path": "docs/replica-dual-config-bom.md",
-      "sha256": "009222fdda8084b1ccec673b81bc7045bdce7ba2bea64689d1e2b84034282e55",
+      "sha256": "af982662088e2514818bae9e0c114655d2c6fc31d68931d649a44031ebe167dd",
       "status": "NO STATUS FIELD"
     },
     "Sourcing": {
       "path": "docs/replica-sourcing-readiness.md",
-      "sha256": "253a855977e430ad0c0bb41e0fbed7e5a399d51283ea98ffc43fcfc739ced701",
+      "sha256": "a8216c8ca67f98ea2e2cd3271cb92c5b6efd8f58d02bbc82b35d3c86a102560f",
       "status": "PARTIAL / PROGRAMMING AND REVIEW BLOCKED"
     },
     "Firmware lineage": {
       "path": "docs/firmware-gap-ledger.md",
-      "sha256": "29e11c9a505048730345b97102cb17b3ac4e44ce4bbafe3b29079c7722135761",
+      "sha256": "fba2df29af94cd81cad24324144592445d5ab470d14158ef211d63ff1ac31146",
       "status": "ADOPTED FIRMWARE SET VERIFIED"
     },
     "EPROM programming": {
       "path": "docs/eprom-programming-images.md",
-      "sha256": "468afe997fa48e14d910a8631e0f36b5138210b45d78cdce650c7733b516fec7",
+      "sha256": "481e7b26187679b8b641dfc6a2097ca369450f493d08d38b6daf65693865e4dc",
       "status": "ADOPTED ARCHIVE-0037 ROMBIOS 3.43m IMAGES READY"
     },
     "PROM procedure": {
       "path": "docs/prom-dump-procedure.md",
-      "sha256": "ec113bcac19d8497e2bc6c3eb97e48563da06fe9dfae3e41b46bfe242924e184",
+      "sha256": "6c45b16652d30e7aa2b72e9fca0e00f35576670178d2cf3c7dcdaf72332a4fed",
       "status": "NO STATUS FIELD"
     },
     "ERC and parity": {
       "path": "docs/main-board-erc-parity.md",
-      "sha256": "9921c0a44dcc754b403ab34ceff27edd93d1db11b64d7df40a670d68acfcf3ae",
+      "sha256": "553cde77f3f1f6f91c6a72f92ad284c739ada9c22170ded0839e53cdf19b1967",
       "status": "DESIGN HOLD"
     },
     "PPI orientation": {
       "path": "docs/ppi-orientation-audit.md",
-      "sha256": "07c371e361d86e887b2875d0e6c026c8407863baa117405b25317b0e6b84bd1c",
+      "sha256": "376fb4b6c274230b75f0aff93e79de07e2b7a7ae3d5d2a1e955fbf671dfc50cd",
       "status": "HOLD"
     },
     "X8 electrolytic geometry": {
@@ -138,7 +138,7 @@
     },
     "Factory wire construction": {
       "path": "docs/factory-wire-route-fidelity.md",
-      "sha256": "babde4e36d6c281212b10509dafc429cd76179cd047f1b094d7e65fbba4fc71c",
+      "sha256": "f581e860b6c63cc62384275eed535621f651a6652baf189ebf8bb63092af92f8",
       "status": "FACTORY WIRE LANDING EVIDENCE HOLD"
     },
     "DRC disposition": {
@@ -178,22 +178,22 @@
     },
     "Fabrication inventory": {
       "path": "fab/gerbers/fab-readiness.md",
-      "sha256": "5e31d82f9d2762371c6b8c5c49850e4ca69630516ade66d3275fbf7c260b0096",
+      "sha256": "c5b6fc912795eec8da04c0c9879490dc9c975b398e206112646b50d19fd7c258",
       "status": "NOT READY"
     },
     "Manufacturing": {
       "path": "docs/replica-manufacturing-readiness.md",
-      "sha256": "4fa079e2b4a42616a87fc32613b9ec3b5348d43eaa0a3644d9e81e9f469abf29",
+      "sha256": "d8e8a6a9efb81c426e7511c721d6b65ac1ab73b790b711519a297a4d982d3f8f",
       "status": "DESIGN HOLD / PACKAGE REGENERATION REQUIRED"
     },
     "Upload procedure": {
       "path": "docs/replica-order-upload-runbook.md",
-      "sha256": "3ea708965ca38247bdeadaec91a21f8c4f3005f128abae013426e670562c7170",
+      "sha256": "94a3787856ddf4e7588dfbd335b0d9752975527a808343885730052f64caa1e1",
       "status": "PACKAGE INVALID"
     },
     "Order evidence": {
       "path": "docs/replica-order-evidence-template.md",
-      "sha256": "5fbf7f35540928967e225bea17ee200b6d361e357596608fce3acdaff0b974f3",
+      "sha256": "ff37b2f256d4a95b1adbf6c89bac48414bd0dda1de3c73dfbc9258880149859a",
       "status": "TEMPLATE INVALID"
     },
     "First article": {

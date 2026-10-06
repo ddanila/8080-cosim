@@ -284,18 +284,18 @@ def build() -> tuple[str, str]:
               "preserved. The programming procedure determines which bit polarity to write",
               "for the selected device and programmer. D15/D16 are the adopted functional",
               "archive-37 RomBios 3.43m split; their concatenation matches",
-              f"`roms/ekta37.bin` (`{manifest['eprom_source_rom']['sha256']}`). Record",
+              "`roms/ekta37.bin`. Record",
               "the exact installed images in each first-article record.", "",
-              "| Ref | Evidence | SHA256 | Provenance |", "| --- | --- | --- | --- |"]
+              "Exact programming-image digests are recorded in the manifest.", "",
+              "| Ref | Evidence | Provenance |", "| --- | --- | --- |"]
     for ref, item in programs.items():
         if "raw_path" in item:
-            lines.append(f"| {ref} | `{item['raw_path']}` (raw) | `{item['raw_sha256']}` | "
+            lines.append(f"| {ref} | `{item['raw_path']}` (raw) | "
                          f"{item['independent_capture_count']} independent captures; "
                          f"[dump record](../{item['dump_manifest']}) |")
-            lines.append(f"| {ref} | `{item['asserted_path']}` (asserted) | "
-                         f"`{item['asserted_sha256']}` | same validated capture set |")
+            lines.append(f"| {ref} | `{item['asserted_path']}` (asserted) | same validated capture set |")
         else:
-            lines.append(f"| {ref} | `{item['path']}` | `{item['sha256']}` | "
+            lines.append(f"| {ref} | `{item['path']}` | "
                          f"[EPROM split notes](eprom-programming-images.md) |")
     lines += ["",
               "## Portable review archive", "",

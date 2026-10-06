@@ -80,21 +80,23 @@ The four small-PROM raw tables and asserted interpretations are separately
 preserved. The programming procedure determines which bit polarity to write
 for the selected device and programmer. D15/D16 are the adopted functional
 archive-37 RomBios 3.43m split; their concatenation matches
-`roms/ekta37.bin` (`fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`). Record
+`roms/ekta37.bin`. Record
 the exact installed images in each first-article record.
 
-| Ref | Evidence | SHA256 | Provenance |
-| --- | --- | --- | --- |
-| D2 | `ref/physical-proms/validated/d2_037.raw.bin` (raw) | `953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b` | 6 independent captures; [dump record](../ref/physical-proms/validated/d2_037.dump.json) |
-| D2 | `ref/physical-proms/validated/d2_037.asserted.bin` (asserted) | `7a0cdb0129e75571811dd193fd99a749ac22d3bb198edc7237071b82d9d5d6db` | same validated capture set |
-| D6 | `ref/physical-proms/validated/d6_038.raw.bin` (raw) | `c07ba671c4a75c35e1265e370a4fed4b82d1cd423859b5c56bc6cbc6572a9489` | 3 independent captures; [dump record](../ref/physical-proms/validated/d6_038.dump.json) |
-| D6 | `ref/physical-proms/validated/d6_038.asserted.bin` (asserted) | `15f600669f45b7d4b2786ee0afe392746244e8affb101ea7d29088636a8e1a52` | same validated capture set |
-| D8 | `ref/physical-proms/validated/d8_039.raw.bin` (raw) | `345b67e66562741dd48e70f30e7862d4e3fc19d3a113f21c999d6ec497af59cc` | 3 independent captures; [dump record](../ref/physical-proms/validated/d8_039.dump.json) |
-| D8 | `ref/physical-proms/validated/d8_039.asserted.bin` (asserted) | `e0f5231c7b24764d729d8d9c397d78a5bf68b899911bd8946be57cd905e72617` | same validated capture set |
-| D94 | `ref/physical-proms/validated/d94_092.raw.bin` (raw) | `bcf942a87ee70adb1a16cebb7f018cf8f491ea2a74db0b0a5dd7d5c8db8a29e0` | 3 independent captures; [dump record](../ref/physical-proms/validated/d94_092.dump.json) |
-| D94 | `ref/physical-proms/validated/d94_092.asserted.bin` (asserted) | `6e45374f1eadd171637e4d47aa1540bd549173eb49d30260e985120f7f001095` | same validated capture set |
-| D15 | `ref/eprom-images/d15_ekta37_low.bin` | `d6c4ec7418f05e5761ef450e6ee36fb2579d65d9cbf87dce265eaf1c0d077596` | [EPROM split notes](eprom-programming-images.md) |
-| D16 | `ref/eprom-images/d16_ekta37_high.bin` | `35b348ae7c88dc8cb24d1bc9d62a06212fdc2c2f601eddf8e00b233893d92817` | [EPROM split notes](eprom-programming-images.md) |
+Exact programming-image digests are recorded in the manifest.
+
+| Ref | Evidence | Provenance |
+| --- | --- | --- |
+| D2 | `ref/physical-proms/validated/d2_037.raw.bin` (raw) | 6 independent captures; [dump record](../ref/physical-proms/validated/d2_037.dump.json) |
+| D2 | `ref/physical-proms/validated/d2_037.asserted.bin` (asserted) | same validated capture set |
+| D6 | `ref/physical-proms/validated/d6_038.raw.bin` (raw) | 3 independent captures; [dump record](../ref/physical-proms/validated/d6_038.dump.json) |
+| D6 | `ref/physical-proms/validated/d6_038.asserted.bin` (asserted) | same validated capture set |
+| D8 | `ref/physical-proms/validated/d8_039.raw.bin` (raw) | 3 independent captures; [dump record](../ref/physical-proms/validated/d8_039.dump.json) |
+| D8 | `ref/physical-proms/validated/d8_039.asserted.bin` (asserted) | same validated capture set |
+| D94 | `ref/physical-proms/validated/d94_092.raw.bin` (raw) | 3 independent captures; [dump record](../ref/physical-proms/validated/d94_092.dump.json) |
+| D94 | `ref/physical-proms/validated/d94_092.asserted.bin` (asserted) | same validated capture set |
+| D15 | `ref/eprom-images/d15_ekta37_low.bin` | [EPROM split notes](eprom-programming-images.md) |
+| D16 | `ref/eprom-images/d16_ekta37_high.bin` | [EPROM split notes](eprom-programming-images.md) |
 
 ## Portable review archive
 
