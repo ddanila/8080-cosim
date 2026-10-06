@@ -37,7 +37,7 @@ AUTHENTIC_MARK = {
     "VABUS": "КР580ВА87",
     "IR82": "КР580ИР82",
     "RU5": "К565РУ5Г / 565РУ5Г",
-    "EPROM8K": "2764/M2764-class EPROM in .009 build; К573РФ5 on .006 BOM",
+    "EPROM8K": "2764/M2764-class EPROM on owner board; К573РФ5 on .009 factory BOM",
     "DEC_PROM": "КР556РТ4А",
     "WAIT_PROM": "КР556РТ4А",
     "RE3_PROM": "К155РЕ3",
