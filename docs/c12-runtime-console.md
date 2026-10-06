@@ -39,20 +39,20 @@ and `physical_acceptance.py audit`:
 
 | Session suffix (prefix `physical-CS00000-c12-`) | Evidence |
 | --- | --- |
-| `cp437-recheck-20260905` | owner confirmed corrected 80x24 user/remap corners and sample glyphs, then pressed physical Return; 7/7 commands passed, including warm-boot override preservation, default restoration and DIAG ALL |
-| `reset-prepare-20260905` | 4/4 commands proved 40x24 / Russian with both overrides set before the owner pressed RESET |
-| `after-reset-20260905` | checkerboard confirmed by owner; 2/2 commands proved 80x24 / Estonian, both overrides clear, clean cold state and DIAG ALL |
-| `powercycle-prepare-20260905` | 4/4 commands re-established 40x24 / Russian with both overrides set |
-| `after-powercycle-20260905` | owner confirmed off/on and checkerboard; 2/2 commands proved S21 0F defaults restored, both overrides clear, clean cold state and DIAG ALL |
+| `cp437-recheck-20260905` | owner confirmed corrected 80x24 user/remap corners and sample glyphs, then pressed physical Return; checks passed for warm-boot override preservation, default restoration and DIAG ALL |
+| `reset-prepare-20260905` | checks proved 40x24 / Russian with both overrides set before the owner pressed RESET |
+| `after-reset-20260905` | checkerboard confirmed by owner; checks proved 80x24 / Estonian, both overrides clear, clean cold state and DIAG ALL |
+| `powercycle-prepare-20260905` | checks re-established 40x24 / Russian with both overrides set |
+| `after-powercycle-20260905` | owner confirmed off/on and checkerboard; checks proved S21 0F defaults restored, both overrides clear, clean cold state and DIAG ALL |
 
 All five host summaries report zero retries and UART errors. Cold runs retain
 warnings for missed V16 ready/final markers; the existing recovery path reached
 NetDisk without retransmission. RESET/power-cycle checks started a host after
 the checkerboard appeared; they do not prove reset recovery with a continuously
 running host. The 40/53/64-column visual confirmations belong to the original
-pair; the corrected pair received the focused 80-column recheck. Original
-failed session records remain unchanged. These results do not qualify Windows
-hardware, a new endurance run, or all three unmodified release profiles.
+pair; the corrected pair received the focused 80-column recheck. These results
+do not qualify Windows hardware, a new endurance run, or all three unmodified
+release profiles.
 
 Byte-exact original CS00000 transcripts are retained in the sibling CP/M
 project under `tests/fixtures/c12-CS00000-20260905/` for offline replay and
@@ -120,19 +120,22 @@ data does not select a boot path.
   preserve an installed `T`-to-`X` key remap, and survive ordinary console
   reinitialization.
 
-The aggregate `sync/network_first_rom_abi_check.sh` retains every C4--C11
-regression before running that C12 matrix. The deterministic simulator
-artifacts are:
+The aggregate `sync/network_first_rom_abi_check.sh` runs the earlier ABI,
+locale, extended-service, C9/C10 fault and C10/C11 POF fixtures, then the C12
+matrix and boot tests. Native-host, sibling CP/M and physical gates remain
+separate. The deterministic simulator artifacts are:
 
 - combined: `b1a8152c0b4684d9d5608bd8bb60a06a21393c3bd7e7894cd8b7b61c494350d6`;
 - D15 low: `b95eb5b0842d501ee602d82a7907b1cf4baf3e1b2cd74f73ef553eac60faf9de`;
 - D16 high: `3c6530816ed114f8a6d612c2b023a67a841b4e0c323754a9692d0d197664dd8a`.
 
-`sync/network_first_rom_hdl_check.sh` also runs the C12 ABI self-test through
-the structural VM80A/Juku model, including call-gate dispatch, POF release,
-runtime transition, retained remap, translated keyboard input, and serial
-completion. The exhaustive 4x4 framebuffer oracle remains in the faster
-C-model matrix.
+In its default full mode, `sync/network_first_rom_hdl_check.sh` runs the C12
+ABI self-test through the structural VM80A/Juku model, including call-gate
+dispatch, POF release, runtime transition, retained remap, translated keyboard
+input, and serial
+completion. With `--ci`, it elaborates the ROM benches and runs only the
+focused POF simulation. The exhaustive 4x4 framebuffer oracle remains in
+the C-model matrix.
 
 ## Companion implementation and remaining qualification
 
