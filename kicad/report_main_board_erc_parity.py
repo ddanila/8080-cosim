@@ -274,6 +274,10 @@ def main() -> int:
         "A completed report returns exit status 0 even for `DESIGN HOLD`; use its",
         "status and result rows to determine readiness. It overwrites this report,",
         "the endpoint CSV, and the raw audit reports.", "",
+        "Source-risk counts use uncertainty keywords in JSON `src`/`note` prose unless",
+        "a boolean `source_risk` override is present. A false override requires a",
+        "`risk_disposition`. This screening does not independently verify source",
+        "closure or physical continuity.", "",
         "## Summary", "", "| Check | Count | Result |", "| --- | ---: | --- |",
         f"| Raw ERC error violations | {len(violations)} | {'GUARDED' if singleton_erc_ok else 'BLOCK'} |",
         f"| Unexpected ERC/mapping findings | {unexpected_erc_count} | {'PASS' if singleton_erc_ok else 'BLOCK'} |",
@@ -347,9 +351,9 @@ def main() -> int:
         lines += ["ERC structure, parity, source-risk closure, endpoint ownership, and explicit no-connect accounting all pass."]
     else:
         lines += [
-            f"Singleton-label ERC reporting is in the exact `{singleton_reporting_mode}` mode, and",
-            "source-PCB parity and endpoint ownership pass. Routed pad-net mismatches,",
-            "missing routed endpoints, and source-risk nets remain release blockers.",
+            "Each BLOCK or FAIL row above remains a release blocker. The detailed",
+            "endpoint differences identify discrepancies to reconcile; source-risk",
+            "nets require closure within their recorded evidence scope.",
             "They must be traced, redesigned, or individually given an evidence-backed",
             "disposition. This gate does not suppress the singleton labels or convert them",
             "to no-connects merely to obtain a zero-error ERC count.",
