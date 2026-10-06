@@ -55,8 +55,10 @@ define the transformation: `F5` writes missing-clock `A1`, `F6`
 writes missing-clock `C2`, and `F7` writes two generated CRC bytes. Replacing
 each pair of recorded CRC bytes with one `F7` makes the canonical ten-sector
 input 6,230 CPU writes long while still occupying all 6,250 decoded byte times.
-The flat backend commits each completed normal-data sector as it is parsed, so
-a Force Interrupt leaves earlier sectors changed and later ones untouched.
+The flat backend writes each completed representable sector, with its normal
+or deleted-data mark, as it is parsed. A Force Interrupt leaves completed
+sectors changed and later sectors untouched; a later format error/WRITE FAULT
+also does not roll back sectors already written.
 
 The raw file cannot encode arbitrary ID order/geometry, data-address-mark type,
 damaged headers, or noncanonical gap/flux content. The loader therefore keeps
