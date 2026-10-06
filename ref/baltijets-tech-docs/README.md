@@ -61,7 +61,7 @@ Relevant pages:
 |---|---|
 | 28 | Power-supply schematic `ДГШ2.087.031 Э3`, showing +5 V/+12 V/GND connector mapping and PSU component values. Useful for later PSU recreation, not processor-board LVS. |
 | 29 | Power-supply element list `ДГШ2.087.031 ПЭ3`; confirms PSU capacitors, regulators, diodes, transformer, fuse, and connector types. |
-| 32 | Interface-terminal connection schematic `ДГШ3.031.007 Э4`; confirms X8 power pins 62/61/60/59 and X9 signal labels including `K2`, `K0`, `K1`, `-ГК`, `+5V`, `SHIFT`, `CTRL`, `WAIT`, `STB`, `SC0`..`SC3`. Useful for bring-up cabling. |
+| 32 | Interface-terminal connection schematic `ДГШ3.031.007 Э4`; maps processor-board power points A62/A61/A60/A59 to PSU contacts 1/2/3/8 and X9 signal labels including `K2`, `K0`, `K1`, `-ГК`, `+5V`, `SHIFT`, `CTRL`, `WAIT`, `STB`, `SC0`..`SC3`. Useful for bring-up cabling. |
 | 34-35 | Applicability/specification table for `ДГШ5.109.009` processor module. Confirms the .009 module includes programmed microcircuits `ДГШ5.106.037`, `.038`, `.039`, `.041`, `.042`, `.043`, `.087`, `.088`, `.089`, `.090`, `.091`, `.092`, plus related module/enclosure items. |
 
 Implication:
