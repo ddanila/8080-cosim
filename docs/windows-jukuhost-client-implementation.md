@@ -57,6 +57,8 @@ sync/jukuhost_win32_wine_e2e.sh
 
 The first command is the desk/reproducibility gate. The second executes the
 actual PE against the stock, C11 and C12 simulators with the documented Wine
-prerequisites. The [Windows Actions workflow](../.github/workflows/windows-host.yml) also
+prerequisites. If `wine`, `wineboot`, `xvfb-run` or `socat` is missing, the
+wrapper prints `SKIP` and exits 0; that result provides no Wine acceptance
+evidence. The [Windows Actions workflow](../.github/workflows/windows-host.yml) also
 runs [the native runtime guard](../tools/check-jukuwin-runtime.ps1) before
 publishing the checked build.
