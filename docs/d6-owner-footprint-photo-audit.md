@@ -2,7 +2,12 @@
 
 ## Physical orientation and placement
 
-The `.009` assembly `PXL_20260711_114604420.jpg` places D6 beside D8. Owner component photo `ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg` shows the marked КР556РТ4А in the left blue 2×8 socket, immediately left of the registered К155РЕ3 D8. A native crop `(1430,1240)`–`(1950,1550)` resolves D6's right-facing notch. The upper socket row runs approximately `(1503,1317)`–`(1897,1317)` and the lower row `(1503,1480)`–`(1897,1480)`. Thus physical pin 1 is at the upper **right**, pin 8 at upper left, pin 9 at lower left, and pin 16 at lower right in this photo.
+The `.009` assembly `PXL_20260711_114604420.jpg` places D6 beside D8. Owner component photo `ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg` shows the marked КР556РТ4А in the left blue 2×8 socket, immediately left of the registered К155РЕ3 D8. A native crop `(1430,1240)`–`(1950,1550)` resolves D6's right-facing notch. The upper socket row runs approximately `(1503,1317)`–`(1897,1317)` and the lower row `(1503,1480)`–`(1897,1480)`. The notch establishes these physical pin positions:
+
+- Pin 1: upper **right**.
+- Pin 8: upper left.
+- Pin 9: lower left.
+- Pin 16: lower right.
 
 The adjacent D8 photo registration in `ref/photos/juku-pcb-2/local-package-registration.json` fixes D8.8/.1 at image x=2058/2444 and source PCB x=74.442/92.222 mm. Its local scale is 17.78 mm/386 px horizontally and 7.62 mm/165 px vertically. Combining the registered D8/D9 anchors gives a 0.615 mm RMS fit and a D6-center extrapolation about 1.0 mm left of the D8-local result, exposing source-PCB/package-spacing uncertainty. D8 is the closer package, so the table uses its local scale as an **approximate** owner-board estimate:
 
