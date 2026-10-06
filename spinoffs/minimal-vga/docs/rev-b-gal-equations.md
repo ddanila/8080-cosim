@@ -86,9 +86,10 @@ write owns the path. A collision enables a constant-low tri-state macrocell on
 cannot assert for the CPU until `FETCH` falls, and reset disables both owners.
 An unconnected U7 pin 23 supplies internal `CPUACC` feedback only.
 
-The checker evaluates every distinguishable input: all 1024 H/V counter states,
-all eight divider states, reset polarities, all 32 address classes, four modes,
-read/write/idle cycles and both FETCH states. Separate video simulations test
+The checker covers all 1024 H/V counter states, all eight divider states and
+reset polarities. Video arbitration covers all 32 address classes, four modes
+and both FETCH states for inactive, idle, read and write bus cycles; simultaneous
+active read/write strobes are outside that oracle. Separate video simulations test
 synthetic write collisions and six-frame spacing; the integrated TTL-card boot
 compares EKTA framebuffer output with cosim. These simulations are not run by
 the GAL build command. See the [digital audit](rev-b-video-digital-audit.md) and
