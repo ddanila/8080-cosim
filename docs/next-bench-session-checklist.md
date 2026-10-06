@@ -10,16 +10,10 @@ construction. Continuity establishes electrical connections; photographs alone
 cannot prove hidden joints, rail polarity, or absence of a connection. Resolve
 conflicts explicitly before changing the model.
 
-Closed D6 reader, D94 local-control, and D30 continuity results are indexed in
-[owner-measured facts](owner-measured-facts.md). Do not request them again as
-missing evidence.
-
 ## Remaining P0 connectivity (batch in the same session)
 
-1. **D94 `.092` D0 closure and live steering:** owner continuity on 2026-07-21 closes
-   D94 D5-D7/pins 6, 7, and 9 plus D104.10 as NC, matching the exact-revision
-   drawing. Exact `.009` sheets 1 and 3 close D9.7 `CS7` to D94.15/D93.3. With
-   D94 removed, repeat-check D94.1 against D101.1, physical D2.15, and an
+1. **D94 `.092` D0 closure and live steering:** with D94 removed,
+   repeat-check D94.1 against D101.1, physical D2.15, and an
    independently identified `-WREQ` point. Exact sheet 3 draws D94.1 to
    `WREQ (1)` and sheet 1 draws R8=2 kΩ on that node, while the owner check
    found only its local R8 branch. Identify the remote owner path or confirm
@@ -138,7 +132,3 @@ readback. See `ref/photos/juku-pcb-2/e8-bridge-photo-review.json` and
   These reads are optional preservation work, not replica release gates. See
   [firmware lineage](d15-d16-firmware-lineage.md) and
   [the acquisition request](community-prom-media-request.md).
-
-The D6 output-order and D94 static-output blockers are closed; the highest-value
-remaining D94 bench item is the chip-removed D0 continuity check above. The
-port-`1F` steering capture is secondary corroboration.
