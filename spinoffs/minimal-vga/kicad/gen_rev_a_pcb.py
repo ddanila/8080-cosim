@@ -270,8 +270,8 @@ FP_BY_REF = {
 # Everything snaps to a 0.2" (5.08 mm) grid -- 2x the DIP pin pitch, so chips are
 # grid-aligned AND their pins stay on the native 0.1" grid. Positions below are in
 # GRID CELLS (col, row); PLACE is built from them in millimetres. Decoupling caps
-# are auto-placed at the short (top) side of their IC, near the power pins
-# (adequate at 4 MHz; the high-freq via/proximity rules do not apply here).
+# are auto-placed relative to the rotated footprint bounding box. This is a
+# geometric placement rule; power-pin distance and return paths need review.
 GRID = 5.08
 
 
@@ -279,7 +279,7 @@ def g(col, row, rot=0):
     return (round(col * GRID, 3), round(row * GRID, 3), rot)
 
 
-# Each IC's decoupling cap; auto-placed at the IC short side (direction below).
+# Each IC/socket's capacitor; direction is relative to its rotated body box.
 IC_CAP = {
     "U1": "C1", "U2": "C2", "U3": "C26", "U4": "C27", "U5": "C5", "U6": "C28",
     "U10": "C6", "U11": "C7", "U12": "C8", "U13": "C9", "U14": "C10", "U15": "C11",
@@ -289,12 +289,11 @@ IC_CAP = {
 }
 # U40 is a passive TTL output header; its modelled decoupling cap C22 is placed
 # with the spare decouplers rather than crammed into the VGA connector column.
-# Cap direction relative to its IC: default "up" (place above the body). The top
-# logic band hugs the board's top edge, so its caps drop "down" into the gap
-# below instead; a few tight spots push their cap sideways.
+# Cap direction relative to its IC: default "up" (place above the body). The
+# exceptions place U50's cap left and U51's below to clear the board edge.
 CAP_DIR = {
     "U1": "up", "U2": "up",              # caps above CPU/ROM, clearing the chip labels below
-    "U40": "down",                       # VGA header: cap below, in the connector column
+    "U40": "down",                       # unused: U40 has no IC_CAP entry
     "U50": "left", "U51": "down",        # clock/reset: caps clear of the edge
 }
 SPARE_CAPS = ["C3", "C4", "C19", "C22"]   # extra decouplers, tucked in open spots
@@ -305,7 +304,7 @@ REFDES_RIGHT_RES = {"R24", "R25", "R26", "R27", "R28", "R29"}
 # ---------------------------------------------------------------------------
 # Auto-packer: computes grid-aligned positions from real footprint sizes so no
 # two bodies overlap by construction. Bands pack left-to-right; fields pack as
-# grids; caps land at each IC's short side. Everything snaps to the 5.08 mm grid.
+# grids; capacitor offsets use rotated body sizes and the 5.08 mm grid.
 # ---------------------------------------------------------------------------
 LABEL_MM = 5.0   # extra room reserved around a part for its silk labels
 
@@ -405,8 +404,8 @@ def build_placement(spec):
     #    columns chosen to clear the CPU/ROM titles and the decode caps) --
     put("C3", 12, 8); put("C4", 17, 8); put("C19", 22, 8); put("C22", 27, 8)
 
-    # -- decoupling caps next to each IC (short side; low-freq, so exact side
-    #    doesn't matter electrically -- we just keep them off the neighbours) --
+    # -- capacitor positions based on body clearance; this does not check
+    #    electrical decoupling or the routed power/ground return loop --
     for ic, cap in IC_CAP.items():
         col, r, rot = cell[ic]
         iw, ih = size(ic, rot)
