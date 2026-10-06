@@ -32,7 +32,11 @@ tracked in
 
 ## Release acceptance
 
-The build must pass `sync/jukuhost_win32_check.sh`. The actual executable must
+The build must pass `sync/jukuhost_win32_check.sh` and the
+[Windows runtime guard](../tools/check-jukuwin-runtime.ps1) used by the
+[release workflow](../.github/workflows/windows-host.yml). The runtime guard
+executes the PE self-test and GUI worker/failure cases on Windows Server 2022;
+it does not exercise a physical serial adapter. The actual executable must
 pass the stock/C11/C12 Wine-to-simulator matrix with the recorded parity
 emulation boundary. The current wrapper tests one boot and timed disk service
 per mode; it does not reset the target, replace the host, disconnect serial,
