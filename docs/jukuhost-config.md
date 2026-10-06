@@ -187,9 +187,11 @@ an invalid or unreadable journal stops the writable session. Drive B is
 always `mode=read-only` with
 `geometry=juku-native`.
 
-`build/jukuhost --selftest` checks the portable checksum primitives without a
-serial device. The Windows executable provides the corresponding `--selftest`
-entry point used by the Win32/Wine checks.
+`build/jukuhost --selftest` checks two fixed vectors: SHA-256 of `abc` and
+CRC-16/IBM of `123456789`. It needs no serial device and does not validate
+an INI, deployment artifacts, media or target behavior. `JUKUWIN.EXE --selftest`
+also verifies its embedded payload hashes and a GUI configuration round trip,
+using its worker lifecycle; see [Windows desk acceptance](windows-jukuhost-client-desk-acceptance.md).
 
 Configured log and capture files are overwritten at session startup, before
 media and boot-artifact validation. Archive them or choose new names before
