@@ -30,7 +30,7 @@
     "dnp": []
   },
   "cpu": {
-    "role": "Z80 + clock + bus buffers (sole bus master)",
+    "role": "Z80 + clock + unbuffered bus interface (sole bus master)",
     "drives": [
       "A0",
       "A1",
@@ -88,8 +88,8 @@
     "populated": [
       "Z0840004 Z80",
       "socketed can oscillator",
-      "74HCT245",
-      "74HCT244"
+      "diagnostic header",
+      "two 100 nF bypass capacitors"
     ],
     "dnp": [],
     "hdl": "revb_cpu_card.v"

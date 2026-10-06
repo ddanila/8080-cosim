@@ -9,7 +9,7 @@ the first article; [status](rev-b-status.md) records its qualification boundary.
 
 | Design | Role | First-article PCB |
 | --- | --- | --- |
-| CPU | Z80, socketed 2.000 MHz clock, diagnostic header; unbuffered bus interface | 100×70 mm, two layers |
+| [CPU](../kicad/revb/cpu.board.json) | Z80, socketed 2.000 MHz clock, diagnostic header; unbuffered bus interface | 100×70 mm, two layers |
 | Memory | 27C256 ROM, SRAM and ATF22V10 overlay decode | 100×60 mm, two layers |
 | I/O | Sole 8251 UART, 8255 keyboard/mode control, PIC, D57-compatible PIT and independent POST display | 100×100 mm, two layers |
 | Video | Local framebuffer SRAM, autonomous VGA timing, pixel shift, RGB drivers and CPU-access arbitration | 100×100 mm, four layers |
