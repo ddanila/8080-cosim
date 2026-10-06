@@ -119,7 +119,7 @@ executes the complete ROM through the CPU, and stops at the first post-PIT
 USART write. `unclocked` counts D55 latch commands issued while the newly
 written count is still waiting for a D55 clock.
 
-| Image / injected boundary | Bitmap E | D55 reads | D55 latches | Unclocked | Result |
+| Recorded image / injected boundary | Bitmap E | D55 reads | D55 latches | Unclocked | Earlier result |
 | --- | ---: | ---: | ---: | ---: | --- |
 | exact T31, otherwise clean | `08` | 4 | 4 | 4 | negative control passes |
 | T34, clean | `00` | 6 | 6 | 0 | passes |
@@ -128,8 +128,8 @@ written count is still waiting for a D55 clock.
 | T34, D56 Q2_N held low | `08` | 6 | 6 | 4 | detects channel-1/2 clock-path fault |
 | T34, D9/CS_D55 disabled | `08` | 6 | 6 | 0 | detects select-path fault |
 
-The recorded clean and all five adversarial cases passed. That matrix
-proves the corrected predicate is sensitive to the intended functional path
+The earlier clean case, negative control and four injected-fault cases passed.
+Those recorded results show sensitivity to the intended functional path
 and no longer creates a clean-board D55 failure solely from missing setup
 clocks. It also proves why the result must not be labeled “D55 package bad.”
 
@@ -148,28 +148,17 @@ predicates remain unverified; rerun T34 before component substitution. See
 
 ### CS00024
 
-Two cold T31 boots repeated bitmap `18` (D55 plus D57), while PIC, PPI, D54 and
-the two compact RAM windows passed. Exact T31's D55 bit is explained by the
-diagnostic clocking defect on a clean structural board. Four later exact T34
-`1C/A637` cold boots all cleared corrected D55. CS00024 is therefore classified
-as **D55 functional path clean in four T34 boots and both T36 sessions; no
-D55 package-fault evidence**. The T36 `1E/C617` capture also cleared D57 and
-both compact RAM predicates before every uploaded CPU/address probe passed.
+Four exact T34 `1C/A637` cold boots cleared D55: the first bitmap was
+`00`, the next three `10`. Both later T36 boot bitmaps were `00`. These
+results support a clean D55 functional path under the tested conditions;
+the earlier T31 bitmap `18` does not establish a D55 package fault.
 
-The first T34 bitmap was `00`, and the next three were `10`; both later
-T36 boot bitmaps were `00`. Legacy T36 raw tests returned channel 2 as
-`99/99` after both high and low programming in eight repetitions. Those
-samples did not guarantee a `/VER RTR` edge and cannot establish a D57
-fault. CS00024 still needs the corrected `D57S` v2 rerun; CS00015 supplies
-the positive control.
-
-Separate same-process marker tests found that regular roughly five-second
-accesses kept mutable loader state exact, while an untouched interval between
-roughly 5 and 17 seconds destroyed it. Later T36 software refresh completed
-the full 32 KiB RAM proof, but did not validate normal raster refresh.
-The remaining retention and parser-margin investigations are summarized in
-[the current CS00024 diagnosis](cs00024-t36-diagnosis.md); raw captures remain
-in [the physical record](../spinoffs/jukuravi/CS00024-PHYSICAL.md).
+CS00024 still needs the corrected `D57S` v2 rerun. Its legacy `99/99`
+channel-2 capture did not guarantee a `/VER RTR` edge. T36's completed
+refresh-on RAM sweep also does not qualify normal raster refresh. See
+[the current diagnosis](cs00024-t36-diagnosis.md) for the measured RAM,
+retention and parser-margin results, and
+[the physical record](../spinoffs/jukuravi/CS00024-PHYSICAL.md) for captures.
 
 ## What a future result means
 
