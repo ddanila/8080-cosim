@@ -10,8 +10,8 @@ which converter rule is wrong.
 performs the following host-only work:
 
 1. reconstruct every keyed OPL segment and strict same-pitch logical layer;
-2. select one logical note by stable identifier, time, and optionally MIDI
-   pitch;
+2. select one logical note by stable identifier, or by time with an optional
+   rounded MIDI-pitch filter;
 3. retain all operator, pitch, key, feedback, connection, waveform, and global
    LFO-depth writes affecting its physical members;
 4. force every unrelated key and hardware-rhythm trigger off;
@@ -58,7 +58,10 @@ those equal-step members as a composite and uses the other two target voices
 for the distinct steps.
 
 The isolated score measures its C-cosim execution rate and regenerates phase
-steps on the host. Use the generated `comparison.json` and contour CSV to
+steps on the host for up to three calibration renders. Convergence is not an
+exit condition after the final render; inspect `host_calibration`, the phase
+table rate and the measured sample rate in `comparison.json`.
+Use the generated `comparison.json` and contour CSV to
 inspect pitch error, envelope fit and rendered loudness for the exact inputs.
 For this note, directly audible source AM is folded into host-generated
 envelopes and bounded re-articulations; the 8080 does not emulate an OPL LFO.
