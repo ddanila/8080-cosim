@@ -57,9 +57,9 @@ sync/jukuhost_m2_check.sh
 ```
 
 It compares the frozen Python-era oracle with the sole supported C host, then
-runs stock, stock-assisted JF15, C8/JF16, disk, console, reconnect, media,
-wrapper, and current network-ROM fault regressions. The dedicated stock-JF17
-target-reset test is a separate entry point:
+runs stock, stock-assisted JF15, stock-JF17 recovery, C8/JF16, disk, console,
+reconnect, media, wrapper, and current network-ROM fault regressions. To rerun
+only the stock-JF17 target-reset test:
 
 ```sh
 python3 tests/jukuhost_stock_recovery_cosim_test.py

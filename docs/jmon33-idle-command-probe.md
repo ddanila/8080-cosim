@@ -23,16 +23,8 @@ JMON33_COMMAND_ORACLE=idle JMON33_COMMAND_START_VRAM=210 \
   JMON33_COMMAND_REPORT=docs/jmon33-idle-command-probe.md sync/jmon33_command_probe.py
 ```
 
-Environment overrides (script defaults; the command above records this run):
-
-- `JMON33_COMMAND_MAX_CYCLES` default `60000000`
-- `JMON33_COMMAND_FRAME_CYCLES` default `200000`
-- `JMON33_COMMAND_HOLD_FRAMES` default `20`
-- `JMON33_COMMAND_GAP_FRAMES` default `6`
-- `JMON33_COMMAND_START_VRAM` default `0`
-- `JMON33_COMMAND_ORACLE` default `early`; `idle` selects the alternate hashes.
-- `JMON33_COMMAND_TRACE_IO` default `1`; `0` leaves inherited `JUKU_TRACE_IO` unchanged. Set `JUKU_TRACE_IO=0` as well to suppress detailed I/O samples.
-- `JMON33_COMMAND_REPORT` overrides the report output path.
+See [the command probe](jmon33-command-probe.md#command) for environment
+overrides and defaults. The command above records this idle-oracle run.
 
 Selected oracle: `idle`. Timing overrides can change the final framebuffer
 and fail the fixed hashes.

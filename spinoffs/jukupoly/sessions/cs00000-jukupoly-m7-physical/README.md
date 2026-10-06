@@ -27,10 +27,7 @@ ready-frame checksum was mistaken for `C6`.
 The host now preflights an explicitly requested console PTY before opening the
 serial port or starting bootstrap, reports its path and OS error, and retains
 the same diagnostic on the later runtime open.  A Linux PTY regression pins
-the pre-bootstrap failure.  A future orchestration layer should create and
-prove both PTY endpoints before launching `jukuhost`; host and ROM retry state
-should continue to be tested with delayed ready, reset during stream, host
-replacement, and an absent console as separate faults.
+the pre-bootstrap failure.
 
 ## Listening result
 

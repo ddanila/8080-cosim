@@ -268,6 +268,14 @@ def main() -> int:
         "| Case | Keys | Exit | Stop PC | Cycles | Visible blocks | VRAM SHA256 | Result |",
         "| --- | --- | ---: | --- | ---: | --- | --- | --- |",
     ]
+    if oracle == "idle":
+        start = lines.index("Environment overrides (script defaults; the command above records this run):")
+        end = lines.index(f"Selected oracle: `{oracle}`. Timing overrides can change the final framebuffer")
+        lines[start:end] = [
+            "See [the command probe](jmon33-command-probe.md#command) for environment",
+            "overrides and defaults. The command above records this idle-oracle run.",
+            "",
+        ]
     for result in results:
         case = result["case"]
         stop = result["stop"]

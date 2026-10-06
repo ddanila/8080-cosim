@@ -677,23 +677,7 @@ recorded payloads; later candidates retain their separate acceptance gates.
 
 ## Five-tone feasibility
 
-Five concurrent tone accumulators are credible on this engine, but remain an
-unimplemented cycle-budget result.  `BC`, `DE`, and `SP` can retain the first
-three increments as today.  After those phases have been processed, tones 4
-and 5 can temporarily reuse `BC` and `DE`; two immediate reloads restore the
-first pair before the next sample.  Self-modifying phase and step operands
-avoid consuming the CP/M stack while `SP` belongs to tone 3.
-
-Against the measured 3+percussion loop, the two phase paths and four register
-loads add approximately 132 8080 cycles per sample.  At the measured 1.70 MHz
-effective RAM rate, that predicts about **5.1 kHz for five tones alone** or
-**4.6 kHz for five tones plus the current percussion fetch**.  All five
-original Suspense string parts remain below 700 Hz, so the per-voice pitch
-range is adequate.  Code and state memory are also modest.
-
-The likely limit is mix quality rather than execution: OR mixing five pulse
-trains makes coincident events louder and can mask quiet voices as aggregate
-pitch density rises.  Per-channel level reduction, sparse pulse masks, or a
-small nonlinear mix table may be needed.  A physical five-tone chord sweep
-and measured cycle regression are required before promoting this estimate to
-a JukuPoly capability claim.
+Five-tone synthesis is unimplemented. The current qualified engine supports
+three concurrent tones plus percussion. Five tones require an implemented
+engine, measured cycle regression, and physical listening tests before they
+can be claimed as a JukuPoly capability.

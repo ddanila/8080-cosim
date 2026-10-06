@@ -134,8 +134,13 @@ default) and all four default event classes. The HDL gate accepts either
 simulation window ends after matching the compared prefix. A passing window
 verdict therefore does not require all reference events, or the BIOS RAM test
 at `D300h`, to have been reached. Inspect the verdict and compared-event count
-when using the result as coverage evidence. A malformed or short reference
-trace, absent default event class, mismatch or missing verdict fails the gate. Stack pushes write high byte first, matching the 8080 bus order.
+when using the result as coverage evidence. An incorrect reference
+trace count, unknown event type, absent default event class, mismatch or missing
+verdict fails the gate. The shell checks event names but does not validate
+address/data fields; the bench treats any row it cannot parse into three fields
+as trace exhaustion. Use the generated reference trace rather than treating
+this gate as a validator for arbitrary trace files. Stack pushes write high
+byte first, matching the 8080 bus order.
 
 The HDL `dram_64kx1` model initializes all cells to zero and retains them
 without charge decay. Those are simulator assumptions, not physical power-on
@@ -258,10 +263,12 @@ without it, connect a terminal program to the printed console PTY. `--disk-image
 provides the local media needed by `TDD`. Detach with Ctrl-] when using
 `--attach`. These are runner options, not arguments to the `trace` binary.
 
-Direct `trace` runs delay queued matrix input until
-`JUKU_KEY_START_VRAM` framebuffer writes (default `42000`, chosen for the
-EktaSoft banner). Set it to a suitable threshold, or `0`, for firmware that
-does not draw that banner. `JUKU_KEY_HOLD_FRAMES` and `JUKU_KEY_GAP_FRAMES`
+Queued matrix input normally waits until `JUKU_KEY_START_VRAM` framebuffer
+writes (default `42000`, chosen for the EktaSoft banner). With a console PTY
+and no scripted `JUKU_KEYS`, startup sets this threshold to `0`, including
+an inherited override, so operator input does not wait for the banner. For
+scripted input on firmware that does not draw that banner, set a suitable
+threshold or `0`. `JUKU_KEY_HOLD_FRAMES` and `JUKU_KEY_GAP_FRAMES`
 both default to `3`; they count configured frame intervals rather than
 wall-clock seconds. The launcher's `--keys` option overrides these settings to
 6 hold frames and 8 gap frames, including inherited values. Guest firmware must
