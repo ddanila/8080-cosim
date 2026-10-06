@@ -151,6 +151,12 @@ def main() -> int:
                     [a4, a3, a2, f"`{address:02X}`", f"`{raw:02X}`", "yes" if d0 else "no", "yes" if d2 else "no", "yes" if d3 else "no"]
                 )
 
+    other_registers_ok = all(
+        image[address] == image[address | 0x10]
+        for address in range(16)
+        if address & 0b11 != 0b11
+    )
+
     checks = [
         ("TI SN74LS253 PDF and validated D94 image hashes match", artifact_ok),
         ("D101 all-pin JSON mapping matches the expected source/owner model", pin_map_ok),
@@ -160,6 +166,7 @@ def main() -> int:
         ("Local pinout interpretation separates source and physical D101 evidence", pinout_ok),
         ("HDL/test contains selected select-order and disable markers", hdl_ok),
         ("Physical D94 register-3 rows obey the exact A4 steering contract", d94_logic_ok),
+        ("Other D94 register rows are independent of A4", other_registers_ok),
     ]
     passed = all(ok for _, ok in checks)
     status = "D101 FIRST HALF LOGIC-CONSTRAINED / FIVE SOURCE JOINS MEASUREMENT-GATED" if passed else "D101 CONSTRAINT REPORT FAILED"
@@ -187,8 +194,8 @@ def main() -> int:
         "```",
         "",
         "The generator checks the pinned PDF/image hashes, JSON pin/net/value",
-        "invariants, selected pinout and HDL/test text markers, and eight D94",
-        "register-3 image rows. It does not execute the mux simulation or inspect",
+        "invariants, selected pinout and HDL/test text markers, and all 32 D94",
+        "image rows for the A4 contract. It does not execute the mux simulation or inspect",
         "physical components. Run `sync/kp12_check.sh` separately for simulation.", "",
         "CLOSED below means represented by source or owner evidence; it does not",
         "certify every physical joint. SOURCE-CLOSED / MEASURE flags the listed",

@@ -20,8 +20,8 @@ sync/kp12_check.sh
 ```
 
 The generator checks the pinned PDF/image hashes, JSON pin/net/value
-invariants, selected pinout and HDL/test text markers, and eight D94
-register-3 image rows. It does not execute the mux simulation or inspect
+invariants, selected pinout and HDL/test text markers, and all 32 D94
+image rows for the A4 contract. It does not execute the mux simulation or inspect
 physical components. Run `sync/kp12_check.sh` separately for simulation.
 
 CLOSED below means represented by source or owner evidence; it does not
@@ -40,6 +40,7 @@ D101 pins awaiting direct continuity, with D96.9 checked separately.
 | Local pinout interpretation separates source and physical D101 evidence | PASS |
 | HDL/test contains selected select-order and disable markers | PASS |
 | Physical D94 register-3 rows obey the exact A4 steering contract | PASS |
+| Other D94 register rows are independent of A4 | PASS |
 
 ## Exact pin disposition
 
