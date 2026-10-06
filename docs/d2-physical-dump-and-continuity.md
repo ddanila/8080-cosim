@@ -17,8 +17,8 @@ In the component-side close-up
 `ref/photos/juku-pcb-2/PXL_20260710_200411500.jpg`, the horizontal row is
 `РТ4`, `РЕ3`, `ИД7`, `ЛА3`. D2 is the socketed РТ4 mounted perpendicular
 immediately below that row, not either of the two horizontal socketed PROMs.
-The adopted [local package registration](../ref/photos/juku-pcb-2/local-package-registration.json)
-now identifies that vertical DIP-16 on the component face and in two solder
+The [local package registration](../ref/photos/juku-pcb-2/local-package-registration.json)
+identifies that vertical DIP-16 on the component face and in two solder
 views. Its check anchors establish pad identity, not electrical continuity.
 
 ## Reader and capture
@@ -34,7 +34,7 @@ address order already recorded for D2:
 | V1, V2 | 13, 14 | GND |
 | GND, +5 V | 8, 16 | GND, Nano +5 V |
 
-This table records the acquisition wiring. The tracked sketch is now revision 2,
+This table records the acquisition wiring. The tracked sketch is revision 2,
 which moves D3 off Nano D13 and controls one enable; use
 [RT4 acquisition](rt4-dump-acquisition.md) for the current revision-3 reader.
 
@@ -55,6 +55,10 @@ byte-for-byte file copies (one differs only by a trailing blank line), but the
 owner has confirmed that the board/socket sources are independent. The two
 physical sources therefore corroborate the same adopted table; duplicated
 transcript bytes are not counted as extra read events within either board.
+
+The [current manifest](../ref/physical-proms/validated/d2_037.dump.json) also
+includes three later reader-3 controls and records eight named inputs for six
+independent read events; its alias note identifies duplicated transcript names.
 
 All four physical outputs agreed at every address. The raw electrical image
 is authoritative; the preserved
