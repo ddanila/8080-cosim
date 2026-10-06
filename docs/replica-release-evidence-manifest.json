@@ -83,32 +83,32 @@
     "path": "roms/ekta37.bin",
     "sha256": "fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27"
   },
-  "bom_csv_sha256": "ea0fbe96979dd01cf0a369ee946511b69c9a07bf9f8c9f1619fc057b2c190f34",
+  "bom_csv_sha256": "2749c58eff2d3329adf78ea1fc497abb4416f3bffb318e28e843c722502b0e33",
   "unresolved_singleton_endpoints": 32,
   "reports": {
     "Fidelity": {
       "path": "docs/board-fidelity-gap-ledger.md",
-      "sha256": "8b8c98e247b69a75be03a2255807327662e8b3cbf30a3536293129200d1027cd",
+      "sha256": "f694aa79e54068d75ac5433f117f5510a38c9287d95e9fb1fcf20d5747933183",
       "status": "BOARD FIDELITY GAPS CATALOGED"
     },
     "Owner checks": {
       "path": "docs/owner-measurement-shortlist.md",
-      "sha256": "96d0c6c57eedfe1090287f8f1aaa00e44582b7af175a7c3667287ec1aaa661fa",
+      "sha256": "7834246f1fea6c9a40bf9948ee57bc0a30f362fc4ff219eb8367f6ae0492ac12",
       "status": "EVIDENCE HOLD"
     },
     "BOM": {
       "path": "docs/replica-dual-config-bom.md",
-      "sha256": "af982662088e2514818bae9e0c114655d2c6fc31d68931d649a44031ebe167dd",
+      "sha256": "2718304e9313a39a1c9bb240f23fd8722a75abe265387638dba4856236e22407",
       "status": "NO STATUS FIELD"
     },
     "Sourcing": {
       "path": "docs/replica-sourcing-readiness.md",
-      "sha256": "a8216c8ca67f98ea2e2cd3271cb92c5b6efd8f58d02bbc82b35d3c86a102560f",
+      "sha256": "9794978625ad0ac2c07b906ec350e25dbe577194e983dabd8616d7dbd0b51e00",
       "status": "PARTIAL / PROGRAMMING AND REVIEW BLOCKED"
     },
     "Firmware lineage": {
       "path": "docs/firmware-gap-ledger.md",
-      "sha256": "fba2df29af94cd81cad24324144592445d5ab470d14158ef211d63ff1ac31146",
+      "sha256": "4d30705445ccbfe12aa28fc7d41a0fa69ca308a8ca02c2b29202b530e9386894",
       "status": "ADOPTED FIRMWARE SET VERIFIED"
     },
     "EPROM programming": {
@@ -118,32 +118,32 @@
     },
     "PROM procedure": {
       "path": "docs/prom-dump-procedure.md",
-      "sha256": "6c45b16652d30e7aa2b72e9fca0e00f35576670178d2cf3c7dcdaf72332a4fed",
+      "sha256": "e4778ed55d87b25f42b84af8905c8617a63ef695300861c31fc2f5e3230df76f",
       "status": "NO STATUS FIELD"
     },
     "ERC and parity": {
       "path": "docs/main-board-erc-parity.md",
-      "sha256": "553cde77f3f1f6f91c6a72f92ad284c739ada9c22170ded0839e53cdf19b1967",
+      "sha256": "702973dd3d8e63fe18b156c95901528f9892fcbe22a58b0f95e5ebc5622317d2",
       "status": "DESIGN HOLD"
     },
     "PPI orientation": {
       "path": "docs/ppi-orientation-audit.md",
-      "sha256": "376fb4b6c274230b75f0aff93e79de07e2b7a7ae3d5d2a1e955fbf671dfc50cd",
+      "sha256": "38d11db0dd08a4a98797042e2d12782f66e1eaa248a1d4ae3bb1f5805a8c91b6",
       "status": "HOLD"
     },
     "X8 electrolytic geometry": {
       "path": "docs/x8-electrolytic-footprint-audit.md",
-      "sha256": "f2f4850152ac966bd6486635e03c00ab52d6a499779d95557a53338e45d990f6",
+      "sha256": "f312a6a55dd467cf524866ce526d5dc6cb4bef04ca7ce203180e422a16373fe7",
       "status": "HOLD"
     },
     "Factory wire construction": {
       "path": "docs/factory-wire-route-fidelity.md",
-      "sha256": "f581e860b6c63cc62384275eed535621f651a6652baf189ebf8bb63092af92f8",
+      "sha256": "9dab4cfbdea82e9dbfa0a44ebbb1832f36ca8da4ba5394f7b92b5d6653043609",
       "status": "FACTORY WIRE LANDING EVIDENCE HOLD"
     },
     "DRC disposition": {
       "path": "docs/replica-fab-drc-disposition.md",
-      "sha256": "0400890f98b8d8591becf23b52a0e5919d1b7322db7bb5df601b0ca802f7449b",
+      "sha256": "36a198ac18e5c37efa762c39330b61d6b5df24dfcea542ad0f75e941d636d872",
       "status": "REVIEW REQUIRED"
     },
     "Power trace": {
@@ -158,12 +158,12 @@
     },
     "Bring-up coverage": {
       "path": "docs/replica-bringup-verification-points.md",
-      "sha256": "fd7b7d1a05285747adddeacece8209d0d263d7736a6d371773f3afd820c4337c",
+      "sha256": "0e3c9564b98e01752e5d65b0b699d7881f8b254aa19b5f3eabcbd4c3f4c2c682",
       "status": "ENDPOINT COVERAGE FAILED / RISKS UNRESOLVED"
     },
     "Order readiness": {
       "path": "fab/gerbers/order-readiness.md",
-      "sha256": "89fc29f6dc73f5f445897d1e84ad9692498927252ccbec3f4fc5dad4aaeb3528",
+      "sha256": "8d07fbc6b4d8ebd73c2339efa7cb623fb4b014168e86a61e64c1dd971a13498a",
       "status": "NOT READY"
     },
     "External Gerber review": {
@@ -173,17 +173,17 @@
     },
     "Review waivers": {
       "path": "fab/gerbers/review-waivers.md",
-      "sha256": "4ae498de2e7ea31cc2625cbb84f670d8445ae59de2eef481a43810207f6098dc",
+      "sha256": "5b3a6a82d257b270f3d5cb642797e837e66942dd68fd64b08adfd2d286dae5af",
       "status": "NOT ACCEPTED"
     },
     "Fabrication inventory": {
       "path": "fab/gerbers/fab-readiness.md",
-      "sha256": "c5b6fc912795eec8da04c0c9879490dc9c975b398e206112646b50d19fd7c258",
+      "sha256": "ad2a9c724c0c2556d9e8db17b5f50f727293c84291a6f8079b94e0b9068d9234",
       "status": "NOT READY"
     },
     "Manufacturing": {
       "path": "docs/replica-manufacturing-readiness.md",
-      "sha256": "d8e8a6a9efb81c426e7511c721d6b65ac1ab73b790b711519a297a4d982d3f8f",
+      "sha256": "48f4d0d22399f9b2715b45dea9c98971f6520484d3355446f44b925e7c73107a",
       "status": "DESIGN HOLD / PACKAGE REGENERATION REQUIRED"
     },
     "Upload procedure": {
