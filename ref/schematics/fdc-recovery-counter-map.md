@@ -18,6 +18,10 @@ it as the left member of the overlapping R78/R98 pair between D106 and D28; the
 registered owner view fixes both joints and directly reads `10K`. The replica
 therefore uses the photographed 10.16 mm axial landing span and registered centre.
 
+In the runnable HDL, `U_D106PRESET` holds the preset inputs and unused UP
+clock high, and CLR is tied low. This models their logical levels; it does not
+simulate R78's pull-up resistance or electrical timing.
+
 ## Evidence
 
 - `ref/photos/dgsh5-109-009-e3/PXL_20260718_101633062.jpg` — complete sheet-3
