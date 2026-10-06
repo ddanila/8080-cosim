@@ -64,7 +64,8 @@ replaces the channel depth; legato changes may replace depth without
 restarting the envelope or shared phase.
 
 The score-side field is `opl_tremolo_depth`, adjacent to `opl_envelope`, and
-must be an integer `0..3`.  The compiler infers capability `03h` only when at
+must be an integer `0..3`; booleans and depth fields on key-off packets are
+rejected. The compiler infers capability `03h` only when at
 least one tone packet has nonzero depth.  Omitting the field is exactly depth
 zero and retains capability `01h`.  No track name, number, filename, or
 instrument signature participates in encoding.
@@ -112,9 +113,7 @@ compatibility profiles, the sample loop is frozen, the player must end below
 `1800h`, and full-track measurements must determine calibration and delivery.
 No tone-range, drum or Escape omission may buy cycles.
 
-## Failure and rollback rules
-
-This slice has independent acceptable stopping points:
+## Regression and rollback rules
 
 - If exact target traces disagree, keep the host/oracle analysis and do not
   ship the target capability.
@@ -127,9 +126,6 @@ This slice has independent acceptable stopping points:
 - If later vibrato or pitch work exhausts the combined budget, features are
   prioritized by measured benefit.  Passing M4 does not reserve the entire
   remaining budget for tremolo.
-
-The success condition is therefore the best measured subset the hardware can
-support—not completion of every OPL feature named in the wider plan.
 
 ## Qualification evidence
 
@@ -147,4 +143,4 @@ only direct, quantization-surviving, beneficial fits receive depth. The mixed
 library selection and fallbacks are recorded in the generated plan-status report.
 Use `sync/jukupoly_check.sh` and `sync/jukupoly_library_check.sh` for host/target
 semantics and preflight, and the linked report writers for exact measurement
-freshness. Completed experiment chronology is in Git.
+freshness.
