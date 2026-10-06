@@ -20,7 +20,8 @@ Run `sync/prom_fallback_check.sh` for the open-collector simulation.
 
 ## Exact minimized equations
 
-Define `Q = (BA15 == BA14)`. Exhaustive comparison of all 32 rows and
+With `/E` low, define `Q = (BA15 == BA14)`. With `/E` high, all outputs
+release regardless of address. Exhaustive comparison of all 32 enabled rows and
 all 256 output bits gives:
 
 | Output | Exact asserted equation | Meaning |
@@ -34,6 +35,8 @@ when `Q` is false every output releases. D6's separate `ROM_SEL` enable
 provides the mode/region qualifier around this address-only pager.
 
 ## Physical output destinations
+
+Asserted row numbers below are decimal addresses (0-31).
 
 | Pin | Output | Board destination | Asserted rows | Net guard |
 | ---: | --- | --- | --- | --- |
