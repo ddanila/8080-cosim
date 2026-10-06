@@ -68,8 +68,10 @@ by default, `docs/ekdos-fdc-probe.md`, including when the prompt check fails.
 Preserve the framebuffer first if needed; use an explicit report path for
 exploratory runs.
 
-The HDL command above verifies retained report evidence. A fresh
-HDL run requires the explicit deep flag and a compatible simulator; see
+The HDL command above regenerates `docs/juku-top-fdc-alignment.md` and requires
+it to match the committed version, then checks retained prompt-report markers.
+Its default path runs no HDL simulation. A fresh HDL run requires the explicit
+deep flag and a compatible simulator; see
 [simulator compatibility](../sync/README.md#simulator-compatibility).
 
 For a new raw image, preserve its source, filename, geometry, and SHA256, then
