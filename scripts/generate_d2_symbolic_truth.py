@@ -29,14 +29,14 @@ def main() -> int:
     fields = ["prom_address_hex"] + [f"A{bit}_{SIGNALS[bit]}" for bit in range(7, -1, -1)]
     fields += ["D0", "status"]
     with OUT.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
         writer.writeheader()
         for address in range(256):
             row = {"prom_address_hex": f"0x{address:02X}"}
             for bit in range(7, -1, -1):
                 row[f"A{bit}_{SIGNALS[bit]}"] = (address >> bit) & 1
             row["D0"] = "?"
-            row["status"] = "input vector proved; output truth requires .037 dump or capture"
+            row["status"] = "historical topology placeholder; adopted output truth is in ref/physical-proms/validated/d2_037.raw.bin"
             writer.writerow(row)
     print(f"Wrote {OUT.relative_to(ROOT)}: 256 symbolic rows; no burnable output values")
     return 0

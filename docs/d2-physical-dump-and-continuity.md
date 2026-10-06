@@ -23,7 +23,7 @@ views. Its check anchors establish pad identity, not electrical continuity.
 
 ## Reader and capture
 
-`tools/rt4_dumper/rt4_dumper.ino` was compiled for an Arduino Nano 3
+The original version of `tools/rt4_dumper/rt4_dumper.ino` was compiled for an Arduino Nano 3
 (`ATmega328P`) and loaded through USBasp. The reader used the physical RT4
 address order already recorded for D2:
 
@@ -33,6 +33,10 @@ address order already recorded for D2:
 | D0-D3 | 12, 11, 10, 9 | D10-D13 |
 | V1, V2 | 13, 14 | GND |
 | GND, +5 V | 8, 16 | GND, Nano +5 V |
+
+This table records the acquisition wiring. The tracked sketch is now revision 2,
+which moves D3 off Nano D13 and controls one enable; use
+[RT4 acquisition](rt4-dump-acquisition.md) for the current revision-3 reader.
 
 The breadboard reader used one 3 kOhm pull-up per output and a 100 nF Vishay
 MKT film bypass capacitor. Three preserved complete reads agreed at all 256
