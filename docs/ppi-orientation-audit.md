@@ -47,8 +47,10 @@ and its solder registration must not be used for D27.
 D27's independent [top-edge](../ref/photos/juku-pcb-2/d27-top-edge-placement.json)
 and [left-edge](../ref/photos/juku-pcb-2/d27-left-edge-placement.json)
 checks give approximately −0.86 mm vertical and −0.64 mm horizontal
-residuals against the routed placement. They support its coarse placement;
-exact coordinates remain subject to local registration.
+residuals against the source PCB pad array (`kicad/juku.kicad_pcb`).
+The checkers use retained photo coordinates; they do not independently inspect
+the routed variants. They support coarse placement, with exact coordinates
+subject to local registration.
 
 D26 placement needs reconciliation against the package-local registration
 and the D26/D54/D55/D57 cluster before moving the routed footprint.
