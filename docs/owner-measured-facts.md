@@ -9,7 +9,7 @@ session (chip removal and power state must be checked in the cited record).
 Photo evidence does not establish hidden connectivity or rail polarity.
 
 **Convention:** before adding an "owner-measurement" ask anywhere (PLAN.md,
-shortlists, agent prompts), grep this file and the cited docs first. When a new
+shortlists, agent prompts), search this file and the cited docs first. When a new
 measurement lands, add a row here.
 
 ## D6 (К556РТ4 memory-map decode)
@@ -57,7 +57,7 @@ measurement lands, add a row here.
 
 | Fact | Provenance | Source |
 | --- | --- | --- |
-| X3 = РГ1Н-1-4 12-contact panel socket (two rows of six, molded 1/12 numbering, spring bail, no hood); mating cable plug is РШ2Н-1-23/-24. 12-wire harness to A21-A32 confirmed. Former СНП59-30-23-В label was a BOM mislabel — the 30-contact СНП59 is X2. | photo, 2026-07-22 | [ref/photos/juku-pcb-2/x3-bracket-face-20260722.jpg](../ref/photos/juku-pcb-2/x3-bracket-face-20260722.jpg), `x3-serial-area-rear-20260722.jpg`, SURVEY.md 2026-07-22 section |
+| X3 = РГ1Н-1-4 12-contact panel socket (two rows of six, molded 1/12 numbering, spring bail, no hood); mating cable plug is РШ2Н-1-23/-24. 12-wire harness to A21-A32 confirmed. Former СНП59-30-23-В label was a BOM mislabel — the 30-contact СНП59 is X2. | photo, 2026-07-22 | [ref/photos/juku-pcb-2/x3-bracket-face-20260722.jpg](../ref/photos/juku-pcb-2/x3-bracket-face-20260722.jpg), [rear view](../ref/photos/juku-pcb-2/x3-serial-area-rear-20260722.jpg), [connector survey](../ref/photos/juku-pcb-2/SURVEY.md#2026-07-22-supplemental-photos--x3-connector-identity) |
 | `X3.7` is signal ground on Arvutimuuseum machine `CS00015`. | owner continuity, 2026-08-01 | [docs/serial-handoff.md](serial-handoff.md); [docs/cs00015-service-record.md](cs00015-service-record.md) |
 | Blue bracket-edge connector stamped `СНО51-30-23 8903` — corroborates the X8 power-connector BOM designation | photo, 2026-07-22 | [ref/photos/juku-pcb-2/x3-serial-area-rear-20260722.jpg](../ref/photos/juku-pcb-2/x3-serial-area-rear-20260722.jpg) |
 
