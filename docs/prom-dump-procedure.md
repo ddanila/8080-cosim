@@ -1,8 +1,8 @@
 # PROM and EPROM acquisition
 
 Validated physical D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are
-preserved under `ref/physical-proms/validated/`. Further captures and factory
-programming-disk files provide independent corroboration. Raw pin-level files
+preserved under `ref/physical-proms/validated/`. New board-qualified captures or recovered factory programming-disk files
+could provide independent corroboration. Raw pin-level files
 are authoritative; active-low asserted complements remain separately named.
 The old D8 reconstruction is historical comparison evidence.
 
@@ -100,28 +100,19 @@ repeat-mismatched RE3 rows. It proves capture consistency, not socket identity,
 wiring, polarity, or the unresolved D94 D0 hidden branch. Exact `.009` sheets
 close the `CS7` shared-enable source.
 
-## What each dump unlocks
-1. **РЕ3 dumps**: socket/refdes identification is essential. D8 `.039` and
-   D94 `.092` repeated reads are adopted; new reads corroborate or identify a
-   board variant. D94's D0 hidden load still defines a physical FDC control
-   boundary; its `CS7` enable source is drawing-closed.
-   Do not substitute the `.113/.117` tables from the `.106.103` family.
-2. **РТ4 D6 → memory-decode corroboration**: three revision-3 captures including
-   a power cycle agree. They prove the old artifact was an exact reversal of all
-   four data bits; the corrected `.038` table is adopted directly. Compare an
-   independent reader or programming-disk artifact only as optional provenance.
-3. **РТ4 D2 → bus/wait corroboration**: compare another physical `.037` read
-   with the adopted capture set listed in `d2_037.dump.json`: eight named
-   inputs representing six independent captures. Alias inputs are not extra
-   independent reads. It does **not** replace the I/O
-   decoder; board evidence puts the functional I/O chip-select decoder at D9
-   К555ИД7.
-4. **M2764 ×2**: optionally corroborates (or forks) the adopted archive-37 RomBios 3.43m pair
-   against another physical board.
+## Corroboration boundaries
 
-If a future owner dump differs from `ref/physical-proms/validated/*.bin`, keep
-it as a candidate board variant until repeated reads and socket provenance are
-sound.
+The adopted capture counts, aliases, and hashes belong to the manifests under
+`ref/physical-proms/validated/`; filename aliases are not extra read events.
+D6's corrected channel order and D2's READY polarity are described in
+[RT4 acquisition](rt4-dump-acquisition.md). D2 is the bus/wait PROM;
+D9 К555ИД7 is the I/O chip-select decoder.
+
+A new dump corroborates content or identifies a candidate board variant. It
+does not close D94's hidden D0 load, powered timing, or other circuit holds.
+Do not substitute `.113/.117` tables from the `.106.103` family for the
+adopted `.009` programs. Preserve any differing image with repeated reads and
+socket provenance before deciding whether it represents a board variant.
 
 ## Drawing cross-reference — ДГШ 3.031.006 ВС
 The index lists **eleven programmed-microcircuit drawings, ДГШ 5.106.037 …
