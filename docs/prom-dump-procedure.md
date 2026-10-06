@@ -1,13 +1,13 @@
 # PROM and EPROM acquisition
 
 Validated physical D2 `.037`, D6 `.038`, D8 `.039`, and D94 `.092` tables are
-preserved under `ref/physical-proms/validated/`. New board-qualified captures or recovered factory programming-disk files
-could provide independent corroboration. Raw pin-level files
+preserved under `ref/physical-proms/validated/`. New board-qualified captures
+or recovered factory programming-disk files could provide independent corroboration. Raw pin-level files
 are authoritative; active-low asserted complements remain separately named.
 The old D8 reconstruction is historical comparison evidence.
 
-D15/D16 use the adopted third-source archive-37 RomBios 3.43m split, rather than direct
-reads of the photographed EPROMs. See [programming images](eprom-programming-images.md).
+D15/D16 use the adopted third-source archive-37 RomBios 3.43m split. The
+photographed EPROMs have not supplied its contents. See [programming images](eprom-programming-images.md).
 PROM capture consistency does not close circuit continuity or timing holds;
 see [D94 constraints](d94-reconstruction-constraints.md) for the FDC boundary.
 
@@ -33,6 +33,7 @@ use normal ESD precautions, and remove devices gently with an IC extractor so
 old sockets and pins are not bent.
 
 ## M2764A reads
+
 A programmer whose current device list explicitly supports the exact 2764/M2764
 variant can read these EPROMs; verify the selected device and orientation before
 insertion. Dump both twice, then compare the combined result with the documented
@@ -40,6 +41,7 @@ D15/D16 split of `roms/ekta37.bin`. A difference is evidence for either a BIOS
 variant, a split/order issue, or a bad read—not a conclusion by itself.
 
 ## Bipolar PROMs — verify programmer support or use an MCU sweep
+
 Do not assume a general EPROM programmer supports these bipolar PROMs; check its
 current device list and any required adapter. A 5 V MCU setup is the fallback.
 Outputs are open-collector. The tracked Nano readers use plain input pins
@@ -48,10 +50,12 @@ and require an individual external 3 kΩ pull-up from each data output to
 enable pull-up; the firmware does not enable internal pull-ups.
 
 ### К155РЕ3 (= 74188/82S23, DIP-16) pinout
+
 - VCC = 16, GND = 8 *(confirmed by the board's own power table)*
 - Outputs O1..O8 = pins 1,2,3,4,5,6,7,9 (open-collector)
 - Address A0..A4 = pins 10,11,12,13,14
 - /CE = 15 (tie to GND)
+
 Sweep: for A in 0..31: set address pins, delay ≥1µs, read 8 outputs → 32 bytes. Read the whole
 array **twice**, require identical; also sanity-check the dump isn't all-0x00/all-0xFF.
 
@@ -62,17 +66,13 @@ validator. See [RE3 acquisition](re3-physical-dumps.md) for the complete wiring,
 115200-baud capture setup, and repeat command. Run validation from the repository
 root with Python 3; `--out-dir` writes tables and a manifest:
 
-
 ```sh
 python3 scripts/validate_re3_dump.py read-1.txt read-2.txt read-3.txt \
   --out-dir dump-output --name d94_092
 ```
 
-The validator emits both raw pin levels and a separately named active-low
-asserted complement. Raw levels are the authoritative dump and the format used
-by the validated 32-byte tables; do not replace them silently with asserted bits.
-
 ### КР556РТ4А (74S287/387 class, DIP-16, 256×4)
+
 - VCC = 16, GND = 8 *(power table)*
 - A0..A7 = pins 5,6,7,4,3,2,1,15; D0..D3 = pins 12,11,10,9.
 - Active-low enables are pins 13 and 14. Confirm device identity and wiring
@@ -115,11 +115,13 @@ adopted `.009` programs. Preserve any differing image with repeated reads and
 socket provenance before deciding whether it represents a board variant.
 
 ## Drawing cross-reference — ДГШ 3.031.006 ВС
+
 The index lists **eleven programmed-microcircuit drawings, ДГШ 5.106.037 …
 5.106.047**, each marked as used by processor module `ДГШ5.109.006`. The `.009`
 applicability material separately identifies D94 `.092`; do not infer that its
 bytes are present in the `.037-.047` index. Label every dump by board and socket
 first, then associate a drawing number only when the factory paper trail or
-repeated hardware evidence supports it. The exact `.009` electrical sheet 3 covers the FDC support circuit. Its source connections do not prove owner-board copper or powered
-behavior; the remaining physical boundaries are listed in
+repeated hardware evidence supports it. The exact `.009` electrical sheet 3
+covers the FDC support circuit. Its source connections do not prove owner-board
+copper or powered behavior; the remaining physical boundaries are listed in
 [the FDC handoff](fdc-hardware-handoff.md).
