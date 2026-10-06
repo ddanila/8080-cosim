@@ -8,7 +8,10 @@ not validate their contents/checksums, repeat image review, or recheck
 remote archives. Source dates and identities describe recorded reviews,
 not current availability; follow the linked reports for review details.
 
-Regenerate with `python3 scripts/report_source_coverage_audit.py`.
+Run from the repository root with Python 3 (standard library only):
+`python3 scripts/report_source_coverage_audit.py`.
+The writer replaces this report even when required paths are missing;
+it exits 0 when all paths exist and 1 when any are missing.
 
 ## Adopted sources
 
