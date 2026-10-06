@@ -8,6 +8,12 @@ No simulation ran; this report does not establish the cursor boundary.
 ## Reproduce this run
 
 Run from the repository root with the recorded settings:
+Python 3 and the selected simulator are required (`iverilog`/`vvp` for
+Icarus, or Verilator with its C++ build toolchain). The probe regenerates
+`hdl/sim/jmon33.hex` from `roms/jmon33.bin` and overwrites this report
+after a build failure or simulation. Build files are temporary; the
+previous `hdl/sim/vram_top.bin` is restored on exit, or removed if absent
+before the run.
 
 ```sh
 JMON33_HDL_CURSOR_MAXVRAM=1200 \
