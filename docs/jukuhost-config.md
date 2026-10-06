@@ -26,8 +26,8 @@ uses line-oriented ASCII syntax: section and key names are
 case-insensitive, but duplicate keys, unknown sections or keys, malformed
 numbers and hashes, incomplete artifact identities, and lines of 512 bytes or
 more are rejected. Embedded NUL bytes are rejected; path values are copied as
-bytes without character-set conversion or an ASCII-only validation. Blank lines and whole-line `#` or `;` comments are
-accepted; inline comments are not stripped from values.
+bytes without character-set conversion or an ASCII-only validation. Blank
+lines and whole-line `#` or `;` comments are accepted; inline comments are not stripped from values.
 
 The example below describes a direct JF16 deployment. Its artifact names,
 sizes and hashes are illustrative; use a generated deployment INI or replace
@@ -41,16 +41,6 @@ capture=JUKUHOST.CAP
 console=/dev/pts/7
 network_rom=yes
 recover_session=yes
-timeout=120
-disk_timeout=0
-boot_restarts=3
-reconnect_timeout=30
-
-[network]
-protocol=3
-baud=19200
-read_ahead=3
-reply_guard_ms=2
 
 [system]
 file=SYSTEM.BIN
@@ -60,16 +50,6 @@ sha256=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
 [fastboot]
 file=FAST16.BIN
 size=7806
-sha256=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-
-[fallback_system]
-file=SYSTEM2.BIN
-size=18432
-sha256=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-
-[fallback_fastboot]
-file=FAST162.BIN
-size=7807
 sha256=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
 
 [disk_a]
@@ -92,7 +72,8 @@ Required sections are `[host]` with `port`, `[system]` with `file`, `size`
 and `sha256`, and `[disk_a]` with `file`, `size`, `sha256`, `geometry` and
 `mode`. A: requires `geometry=juku-cpm3`; `base` is required for snapshot mode
 and rejected for read-only or direct mode. Optional artifact sections must
-contain all three identity fields; a fallback requires both fallback sections.
+contain all three identity fields. A fallback requires both `[fallback_system]`
+and `[fallback_fastboot]`, each with `file`, `size` and `sha256`.
 Drive B is optional and requires its complete file identity, geometry and mode.
 
 Defaults and units for the timing and transfer settings are:
@@ -208,8 +189,3 @@ local-event records; event flags 1, 2 and 3 denote INFO, WARN and ERROR.
 Startup settings, phase transitions, warnings/errors, media writes, and the
 final summary are explicitly flushed. High-volume INFO request events remain
 buffered so verbose evidence cannot perturb serial timing unnecessarily.
-
-For the DOSBox-X integration test only, a console path of the form
-`@12000:INPUT.TXT` delays scripted input by 12,000 ms. This is a deterministic
-headless-harness facility, not a recommended deployment setting; Pocket8086
-packages always use `console=CON`.
