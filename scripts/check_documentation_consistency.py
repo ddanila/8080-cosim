@@ -385,8 +385,8 @@ def main() -> int:
             failures.append("PLAN does not expose current package regeneration hold")
         if "**DESIGN HOLD / PACKAGE REGENERATION REQUIRED**" not in architecture:
             failures.append("architecture summary does not expose package regeneration hold")
-        if PRE_D57_ROUTED_SHA not in manufacturing:
-            failures.append("manufacturing report omits historical package board hash")
+        if "../ref/routing/zero-open-fabrication-package.json" not in manufacturing:
+            failures.append("manufacturing report omits canonical historical package record")
         if sha256(ROOT / "kicad/juku_routed.kicad_pcb") not in manufacturing:
             failures.append("manufacturing report omits current routed board hash")
     elif "Status: **PACKAGE INVALID**" in manufacturing:
