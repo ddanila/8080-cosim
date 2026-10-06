@@ -6,6 +6,9 @@ The `ag3_oneshot` primitive implements two К155АГ3/74123 retriggerable
 monostable sections. Its default pulse parameters are 223000 ns and 5040 ns,
 chosen from the traced D56 R59/C8 and R47/C7 timing networks. They are fixed
 model parameters, not values computed from board JSON at runtime.
+This timed behavior is simulation-only. With `YOSYS` defined, the primitive
+drives high-impedance outputs for the LVS library; it is not a synthesized
+one-shot implementation.
 
 ## Primary specification
 
