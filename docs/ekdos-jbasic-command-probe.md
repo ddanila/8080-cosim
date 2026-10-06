@@ -15,6 +15,8 @@ allocation mapping described in [BASIC extraction](basic-disk-extraction.md).
 
 ## Command
 
+Run from the repository root.
+
 ```sh
 JBASIC_COMMAND_MAX_CYCLES=900000000 JBASIC_COMMAND_FRAME_CYCLES=200000 \
   sync/ekdos_jbasic_command_probe.py
@@ -29,6 +31,10 @@ optional first argument selects another report path.
 Its default disk is `media/disks/JUKPROG2.CPM`; to select another image,
 set `JBASIC_COMMAND_DISK` to its absolute path. Keyboard timing overrides
 are `JBASIC_KEY_HOLD_FRAMES` (default 6) and `JBASIC_KEY_GAP_FRAMES` (default 8).
+Other `JUKU_*` trace settings are inherited; unset them for the default
+baseline. A disk or timing override still uses the same live candidate
+and fixed framebuffer oracle, so a mismatch needs investigation before
+it can be classified as a regression in the adopted baseline.
 
 ## Summary
 
