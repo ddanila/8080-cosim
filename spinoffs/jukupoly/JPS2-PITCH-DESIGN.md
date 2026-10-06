@@ -26,7 +26,8 @@ evidence below.
 
 ## Compatibility boundary
 
-Runtime library support uses `-P4=1 -P6=1 -P7=1`; add `-P5=1` for tremolo.
+Runtime library support uses `-P2=1 -P4=1 -P6=1 -P7=1`; `-P2=1` selects
+the library player. Add `-P5=1` for tremolo.
 JPS v2 capability bit 2 means bounded pitch/vibrato.
 The accepted capability combinations are:
 
@@ -127,7 +128,7 @@ All effects, parsing, percussion and Escape share the
 need measured evidence. Held-pitch-only automation adds row parsing but still
 requires its own longest-track size/timing checks.
 
-## Failure and rollback rules
+## Regression and rollback rules
 
 - If held-pitch packets exceed G5, quantize out sub-step changes, coalesce
   identical target steps, use sparse interpolation only if it improves size,
@@ -143,10 +144,6 @@ requires its own longest-track size/timing checks.
 - If representative or physical A/B does not improve the result, keep the
   feature experimental or unsupported.  Capability `03h`, `01h`, and JPS v1
   remain usable fallbacks.
-
-The successful result is the largest measured subset the Juku can afford.
-Nothing in this contract requires runtime vibrato to succeed merely because
-the source analysis did.
 
 ## Build and qualification boundaries
 
