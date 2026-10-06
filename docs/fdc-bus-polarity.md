@@ -75,9 +75,9 @@ their acquisition evidence; see [EPROM identities](eprom-programming-images.md).
 - Board topology is bit-for-bit from D1 CPU `DC0..DC7` through D5 to system
   `DB0..DB7`. Those same rails directly join D15/D16 and D93 pins 7..14;
   factory sheets 1 and 3 show no intervening permutation or inverter.
-- The guarded functional D15+D16 images concatenate exactly to the known
-  `fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`
-  ekta37 image. Its reset bytes are `C3 17 00` (8080
+- The guarded functional D15+D16 images concatenate exactly to `ekta37.bin`;
+  [the programming-image report](eprom-programming-images.md) owns their
+  identities and acquisition boundary. Its reset bytes are `C3 17 00` (8080
   `JMP 0017`); one complement would be `3C E8 FF`, which is not that boot
   vector. Together with the adopted independent archival pair, this closes
   the replica firmware-profile choice.
