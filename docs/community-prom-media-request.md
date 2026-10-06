@@ -8,17 +8,13 @@ Primary public target: `infoaed/juku3000`
 
 ## Why We Are Asking
 
-The digital twin boots the preserved ROM set. Current PCB routing and package
-release remain on design hold; see
+The digital twin runs preserved firmware in bounded boot checks. PCB routing
+and package release remain on design hold; see
 [manufacturing readiness](replica-manufacturing-readiness.md).
-Additional media and silicon reads are requested for preservation and
-board-variant detection, not because the adopted PROM/EPROM set is incomplete.
-
 The adopted D2/D6/D8/D94 tables and archive-0037 RomBios 3.43m pair
-already support the runnable model. Independent reads and factory media can
-corroborate those artifacts or identify board variants. Complete cartridge
-BASIC material, original Monitor 2.2 recovery reads, and evidence for the
-remaining physical FDC paths address separate open boundaries listed below.
+support the runnable model. Independent reads and factory media can corroborate
+those artifacts or identify board variants. The requests below also cover
+cartridge BASIC, damaged Monitor 2.2 reads and remaining physical FDC paths.
 
 Supporting records:
 
@@ -78,21 +74,6 @@ For every dumped part or disk image:
 - SHA-256
 - repeated-read confirmation, or a note that it is a single read
 
-Suggested dump names:
-
-```text
-proms/re3_d8_<board>.bin
-proms/re3_d94_<board>.bin
-proms/rt4_d2_<board>.bin
-proms/rt4_d6_<board>.bin
-proms/m2764_d15_<board>.bin
-proms/m2764_d16_<board>.bin
-media/juku-1_dgsh5.106.105_<source>.juk
-roms/jbasic_cartridge_<source>.bin
-roms/jmon22_chip7_<source>_read<N>.bin
-roms/jmon22_chip8_<source>_read<N>.bin
-```
-
 ## Ready-To-Send Message
 
 Subject:
@@ -109,7 +90,7 @@ Hello,
 I am recreating the Juku .009 processor board and its digital twin:
 https://github.com/ddanila/8080-cosim
 
-The twin boots the preserved ROM set; physical PCB release is still held.
+The twin runs preserved firmware in bounded boot checks; PCB release is held.
 D2/D6/D8/D94 already have validated physical contents. Additional reads are
 useful for provenance and board variants, rather than filling a missing set.
 
