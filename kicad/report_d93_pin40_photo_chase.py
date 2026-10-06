@@ -74,7 +74,7 @@ def main() -> int:
         "The guard checks D93 identity/pin role, JSON/source-PCB net assignment,",
         "the two observation IDs, and geometric distances to P12V pads. It does",
         "not check photo hashes, inspect copper continuity, or repeat the owner",
-        "measurement. The ranked anchors are independent corroboration targets.", "",
+        "measurement. Nearby modeled anchors are optional corroboration targets.", "",
         "## Registered evidence", "",
         f"- Component observation: `{component.get('image', '-')}` at `({component.get('x_px', '-')}, {component.get('y_px', '-')})` px.",
         f"- Solder observation: `{solder.get('image', '-')}` at `({solder.get('x_px', '-')}, {solder.get('y_px', '-')})` px.",
@@ -85,21 +85,12 @@ def main() -> int:
     ]
     lines.extend(f"| {name} | {'PASS' if result else 'FAIL'} |" for name, result in checks)
     lines += [
-        "", "## Ranked continuity anchors", "",
-        "These distances are retained as source-PCB geometry and useful independent",
-        "cross-check points; the electrical closure comes from the owner measurement.", "",
-        "| Rank | P12V contact | Board centre (mm) | Distance from D93.40 |", "| ---: | --- | --- | ---: |",
-    ]
-    for rank, (distance, ref, number, x, y) in enumerate(candidates[:6], 1):
-        lines.append(f"| {rank} | `{ref}.{number}` | `({x:.3f}, {y:.3f})` | `{distance:.3f} mm` |")
-    lines += [
-        "", "The closest modeled +12 V anchors are D14.8 and D32.8, roughly 30.4",
-        "and 36.5 mm from D93.40 in the source geometry. They are preferable first",
-        "meter probes to the much more distant A60/X8 harness anchor. Confirm against",
-        "A60.1 or X8.3 as a second independent reference if practical.", "",
-        "## Closure", "",
-        "D93.40 is promoted to P12V from direct owner continuity. No further",
-        "power-safety probe is required unless an independent board comparison is desired.", "",
+        "", "## Optional corroboration", "",
+        "The nearest modeled +12 V anchors are D14.8 and D32.8. For an independent",
+        "board comparison, meter D93.40 to either anchor and to A60.1 or X8.3.",
+        "Their proximity in source-PCB geometry does not establish owner-board copper.", "",
+        "D93.40 is already closed to P12V by owner continuity; these are optional",
+        "cross-checks rather than outstanding release probes.", "",
     ]
     REPORT.write_text("\n".join(lines), encoding="utf-8")
     print(status)

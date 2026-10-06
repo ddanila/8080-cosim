@@ -19,7 +19,7 @@ so materialized photograph bytes are not required.
 The guard checks D93 identity/pin role, JSON/source-PCB net assignment,
 the two observation IDs, and geometric distances to P12V pads. It does
 not check photo hashes, inspect copper continuity, or repeat the owner
-measurement. The ranked anchors are independent corroboration targets.
+measurement. Nearby modeled anchors are optional corroboration targets.
 
 ## Registered evidence
 
@@ -40,26 +40,11 @@ measurement. The ranked anchors are independent corroboration targets.
 | Component and solder observations are preserved | PASS |
 | Nearest P12V anchors are D14.8 and D32.8 | PASS |
 
-## Ranked continuity anchors
+## Optional corroboration
 
-These distances are retained as source-PCB geometry and useful independent
-cross-check points; the electrical closure comes from the owner measurement.
+The nearest modeled +12 V anchors are D14.8 and D32.8. For an independent
+board comparison, meter D93.40 to either anchor and to A60.1 or X8.3.
+Their proximity in source-PCB geometry does not establish owner-board copper.
 
-| Rank | P12V contact | Board centre (mm) | Distance from D93.40 |
-| ---: | --- | --- | ---: |
-| 1 | `D14.8` | `(215.615, 37.190)` | `30.421 mm` |
-| 2 | `D32.8` | `(215.615, 25.690)` | `36.526 mm` |
-| 3 | `R66.1` | `(302.690, 132.270)` | `101.957 mm` |
-| 4 | `X1.132A` | `(99.750, 6.600)` | `149.991 mm` |
-| 5 | `X1.131A` | `(97.250, 6.600)` | `152.389 mm` |
-| 6 | `D1.28` | `(39.920, 163.355)` | `233.450 mm` |
-
-The closest modeled +12 V anchors are D14.8 and D32.8, roughly 30.4
-and 36.5 mm from D93.40 in the source geometry. They are preferable first
-meter probes to the much more distant A60/X8 harness anchor. Confirm against
-A60.1 or X8.3 as a second independent reference if practical.
-
-## Closure
-
-D93.40 is promoted to P12V from direct owner continuity. No further
-power-safety probe is required unless an independent board comparison is desired.
+D93.40 is already closed to P12V by owner continuity; these are optional
+cross-checks rather than outstanding release probes.
