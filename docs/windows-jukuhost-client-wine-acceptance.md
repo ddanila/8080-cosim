@@ -34,10 +34,11 @@ sync/jukuhost_win32_wine_e2e.sh build/win32-wine-e2e/JUKUWIN.EXE
 
 The first command passed portable payload/configuration/device-selection
 tests, the Win32 API shim, two byte-identical builds, PE/import/resource audit,
-the real PE self-test under Wine, and exact package validation. The second command kept one native host process alive across a complete
-simulated stock target restart and reached `A>` before and after it. The third
-command executed the PE in stock, retained C11 and C12 protocol sessions. The complete Wine
-protocol run is intentionally local-only rather than part of ordinary CI.
+the real PE self-test under Wine, and exact package validation. The second
+command kept one native host process alive across a simulated stock target
+restart and reached `A>` before and after it. The third executed the PE in
+stock, retained C11 and C12 protocol sessions. The complete Wine protocol
+run is local-only.
 
 ## Rerunning the current source
 
@@ -60,16 +61,12 @@ its build, API-shim, PE and package checks still run without Wine.
 
 ## Accepted protocol evidence
 
-| Case | Serial path | First disk request | Final service counters |
-| --- | --- | ---: | --- |
-| stock | passive Janet, JF17, and NetDisk at 9,600 | 27.389 s | 22 requests, 66 records, 0 retries, 0 UART errors |
-| C11 | passive beacon and V16/NetDisk at 19,200 | 8.646 s | 18 requests, 51 records, 0 retries, 0 UART errors |
-| C12 | passive beacon and V16/NetDisk at 19,200 | 8.664 s | 18 requests, 51 records, 0 retries, 0 UART errors |
-
-These timings and counters describe the recorded run. The current harness
-checks clean exit, boot/service evidence, a host-reported disk-read request, A: working
-image size, and unchanged A: base contents; it does not assert these exact
-timings, counters, or working-copy hashes.
+The recorded run covered stock passive Janet/JF17/NetDisk at 9,600 baud,
+and C11/C12 passive beacon/V16/NetDisk at 19,200 baud, with zero retries and
+UART errors in all three cases. The current harness checks clean exit,
+boot/service evidence, a host-reported disk-read request, A: working-image
+size and unchanged A: base contents. It does not assert exact timing,
+request counts or working-copy hashes.
 
 Each case starts one headless host and one simulator. Disk service ends through
 `--disk-timeout` (20 seconds for stock, 8 for C11/C12). The harness does not
@@ -87,7 +84,7 @@ read-only workload:
 - C12 A: `56e0db2f203bd813e609298b5ef1ff01177c97dbb386d894b38251580a1c1fc9`.
 
 The Wine stock run attached from a checked directed Janet poll, transferred
-the complete JF17 body, and then served 22 checked requests. All three runs
+the complete JF17 body, and then served NetDisk requests. All three runs
 missed an optional final reply and used
 valid NetDisk requests as the end-to-end confirmation; no compressed body was
 resent. Capture conversion derives JF17 versus V16 from host events, hashes the

@@ -9,10 +9,8 @@ and not physical Windows serial qualification.
   `8cba431f1178066d306f17d088ebb5ea0be923b7b21ac61b4b45365dab58dfa4`.
 - QEMU 10.2.1, Pentium TCG, 32 MiB RAM, Cirrus VGA, 504 MiB FAT16 IDE disk,
   `-icount shift=5,align=off,sleep=on`. No network adapter. VNC is localhost-only.
-- Installation started from the sibling `msdos` repository's generated DOS
-  6.22-compatible floppy. Setup source was copied to `C:\WIN95` from the ISO.
-  `FILES=60`, `BUFFERS=30`, no HIMEM, and the CD-documented `SETUP /IS` were
-  used. See that repository's `tests/WINDOWS95-SETUP.md` for DOS fixes.
+- Installation used the sibling `msdos` repository's generated DOS-compatible
+  floppy. That repository's `tests/WINDOWS95-SETUP.md` owns setup details.
 - COM1 is QEMU's local PTY, attached directly to the C12 co-simulator; no
   physical serial adapter or CS00000 was used. Simulator pacing is 1.7 MHz,
   using the same UART settings as the Wine end-to-end harness.
@@ -43,10 +41,9 @@ and not physical Windows serial qualification.
 - The corrected executable passes `--selftest` inside Windows 95.
 - GUI loads at 640x480, saves configuration, creates the A: snapshot, and
   verifies COM1 at 19200/8O1 with no flow control.
-- C12 boots to `CP/M Plus 3.1 Juku`, `N3 19200`, and `A>`; the first bounded
-  run reached 1294 protocol requests and 23 disk reads with zero retries or
-  reconnects. A simulator restart is detected as a target reset and boots
-  CP/M again without restarting the Windows host.
+- C12 booted to `CP/M Plus 3.1 Juku`, `N3 19200`, and `A>`. A simulator
+  restart was detected as a target reset and booted CP/M again without
+  restarting the Windows host.
 - Sending `DIR` through the GUI returns a directory listing and a fresh `A>`
   prompt, demonstrating bidirectional interactive console traffic.
 - Final clean stop: 3279 requests, 50 read operations / 150 records, zero
@@ -55,7 +52,7 @@ and not physical Windows serial qualification.
 - V16 ready/final marker warnings occur; recovery through the resident stream
   scanner and subsequent NetDisk traffic succeeds. This is not a claim that
   every boot marker was observed.
-- Full Win32 desk gate passes: shim tests, reproducible PE builds, import
+- Recorded Win32 desk gate passed: shim tests, reproducible PE builds, import
   audit, Wine self-test, and package validation. These complement rather than
   replace the actual Windows 95 result.
 
