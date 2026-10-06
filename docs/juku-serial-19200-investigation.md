@@ -32,10 +32,14 @@ the diagnosis.
 - Physical CS00014 passes all six 19,200/x16 mode-2/count-4 BAUDTEST2 cases and
   [sustained network-disk soak](#physical-cs00014-disk-result-and-throughput).
 
-The conservative cross-board resident network-disk setting remains
-**9600/8O1**. **19,200/8O1 with PIT mode 2/count 4 is now physically proven for
-sustained filesystem traffic on CS00014**, but has not yet been repeated on
-CS00015 or adopted as the general default.
+The stock-ROM control for this investigation is **9600/8O1**. The
+BAUDTEST2 mode-2/count-4 discriminator and soak are qualified on CS00014;
+that exact discriminator matrix has not been repeated on CS00015. Later
+[CS00015 C8 acceptance](portable-c-host-m2.1-physical-acceptance.md) separately
+qualifies 19,200 boot and resident disk traffic under its named profile.
+Neither result clears the mode-3 receive failure. Current production settings
+belong to [the bootstrap guide](janet-fastboot.md), rather than this historical
+experiment's control rate.
 
 ## Drawing and device reconciliation
 
