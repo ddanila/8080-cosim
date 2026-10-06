@@ -64,8 +64,8 @@ open-collector `wait_prom_037` and functional D30 section A. It guards:
 
 - Raw `0` means the open-collector D2 output actively pulls `READY_D` low.
 - Raw `F` releases D0/pin12, allowing R6 to pull `READY_D` high.
-- D30's raw level and sampling polarity are now executable and guarded.
-  The `H` edge contact and R1 pull-up are now source-closed; complete
+- D30's raw level and sampling polarity are executable and guarded.
+  The `H` edge contact and R1 pull-up are source-closed; complete
   cycle-by-cycle WAIT duration still depends on surrounding clock/control timing.
 - Pins 9-11 remain physically programmed and were captured by the reader, but
   the factory symbol draws no external stubs; they are intentional no-connects
