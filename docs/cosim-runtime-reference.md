@@ -188,8 +188,9 @@ and sleeps if execution is more than 0.5 ms ahead. The check interval is about
 1 ms at 2 MHz and changes with the selected rate. A slow host can still lag;
 inspect modeled and wall times before comparing results.
 `tests/cosim_realtime_test.py` guards the
-default, both spellings of the rate, proportionality at 10x, and rejection of
-a malformed value.
+default, both spellings of the rate, a loose upper runtime bound at 10x,
+and rejection of a malformed value. It does not establish exact pacing
+accuracy across rates or hosts.
 
 For machine-time measurement, run unpaced and divide the reported `cyc=` by
 the selected clock rate. For experiments involving host scheduling, serial
@@ -199,7 +200,8 @@ charged against a guest executing faster than the physical machine.
 An interactive tool may instead need maximum CPU speed while retaining a
 native helper process on the emulated USART. Set `JUKU_USART_HOST_SYNC_MS` to
 the PTY poll timeout for the first reply byte (an integer from 1 to 60,000 ms).
-Firmware must lower TxEN to arm the wait; it starts after any queued transmission
+Firmware must change TxEN from enabled to disabled to arm the wait;
+writing an already-disabled command does not arm it. The wait starts after any queued transmission
 drains. This gives the helper time to run before the unpaced guest consumes a
 firmware timeout, but the wait can expire without a reply. It does not alter
 the 8251/PIT byte timing or pace CPU-only execution. Leave it unset for
@@ -208,8 +210,10 @@ part of the experiment.
 
 ## Recent execution history (`JUKU_PC_HISTORY`)
 
-Set `JUKU_PC_HISTORY=1` to retain a bounded ring of the last 256 instruction
-addresses. When the execution loop exits, including at a configured checkpoint
+Set `JUKU_PC_HISTORY=1` to retain a bounded ring of the last 256 PCs observed
+at execution-loop entry. The ring can include repeated halted PCs and PCs
+preceding interrupt acceptance; it is not an opcode-fetch trace. When the
+execution loop exits, including at a configured checkpoint
 cycle or stop PC, cosim prints the ring in execution order as one
 `[EXEC] recent PCs:` line. A live `SIGUSR1` checkpoint does not print it. It is off
 by default and records only addresses, so long runs neither grow a trace file
