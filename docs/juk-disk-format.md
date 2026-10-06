@@ -78,7 +78,10 @@ bytes `00h`/`01h`, not ASCII digits. The loader checks size and values but
 does not bind the sidecar to an image hash; keep each sidecar with its matching
 raw image. This sidecar is a
 simulation representation and is never embedded in or inferred from a raw
-`.juk`/`.CPM` payload. Other unrepresentable complete revolutions set
+`.juk`/`.CPM` payload. In the C backend, sector payload and mark updates are
+separate writes: a sidecar failure can leave the payload changed with the
+previous mark, reported by the FDC as WRITE FAULT. They are not an atomic pair.
+Other unrepresentable complete revolutions set
 behavioral WRITE FAULT instead of being falsely serialized as an unchanged
 valid raw image.
 
@@ -105,5 +108,8 @@ reloads it read-only in another.
 `cosim/juku_fdc.c` consumes this loader for the disk-backed WD1793 model. Use
 `sync/ekdos_fdc_probe.py` for the ROMBIOS boot-path probe; it defaults to the
 vendored `media/disks/JUKU1.CPM`. Use `JUKU_DISK=/path/to/image` when invoking
-`cosim/trace` directly, and set `JUKU_DISK_DELETED_MARKS=/path/to/marks` only
-when cross-run mark persistence is wanted.
+`cosim/trace` directly. It mounts the image read-only by default; set
+`JUKU_DISK_WRITABLE=1` to enable writes directly to that file. Use a working
+copy when the original image must be preserved. Set
+`JUKU_DISK_DELETED_MARKS=/path/to/marks` only when cross-run mark persistence
+is wanted; a read-only mount requires that sidecar to exist already.
