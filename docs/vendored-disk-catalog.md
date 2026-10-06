@@ -47,7 +47,10 @@ file for exact encodings of all four validated physical PROM tables.
 The exact search covers raw and asserted polarity, forward and reversed address
 order, compact/space/line-oriented ASCII hex, checksum-valid Intel HEX,
 and, where the table is nibble-wide, nibble ASCII plus both packed-nibble
-orders.
+orders. Intel HEX searches use zero-based 16- or 32-byte data records,
+upper/lower case and LF/CRLF separators. They search the complete data
+record sequence without requiring an EOF record; other record layouts
+and address bases are not parsed or normalized.
 A negative result excludes the enumerated contiguous encodings in the searched
 views. Fragmented storage not reconstructed by this layout, proprietary
 formats, other address permutations, and compression remain untested.
