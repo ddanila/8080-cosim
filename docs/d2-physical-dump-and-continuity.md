@@ -44,21 +44,19 @@ addresses; each address was sampled eight times and every read reported zero
 unstable addresses. The third capture followed a full USB power cycle. Output
 pins 9-12 were checked unpowered and were not shorted to one another.
 
-`scripts/validate_rt4_dump.py` accepts all three unchanged streams under
-`ref/physical-proms/captures/`. The authoritative raw electrical artifact is
-`ref/physical-proms/validated/d2_037.raw.bin`, SHA256
-`953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b`.
+The [validated manifest](../ref/physical-proms/validated/d2_037.dump.json)
+records the capture paths and hashes: eight named inputs represent six
+independent read events. The unqualified July 13 capture1/capture2 names are
+aliases of the `arvutimuuseum_CS00015` files. The three later
+`sukharev_reference` reader-3 controls include a power cycle. The owner
+confirmed that these two labels identify different physical `.009` boards;
+identical transcript bytes alone do not establish independent acquisitions.
 
-The `arvutimuuseum_CS00015` and `sukharev_reference` labels record reads from
-two different physical `.009` boards. Some retained transcripts are
-byte-for-byte file copies (one differs only by a trailing blank line), but the
-owner has confirmed that the board/socket sources are independent. The two
-physical sources therefore corroborate the same adopted table; duplicated
-transcript bytes are not counted as extra read events within either board.
-
-The [current manifest](../ref/physical-proms/validated/d2_037.dump.json) also
-includes three later reader-3 controls and records eight named inputs for six
-independent read events; its alias note identifies duplicated transcript names.
+The authoritative electrical table is
+[the raw image](../ref/physical-proms/validated/d2_037.raw.bin); its SHA256
+and the asserted-image hash are recorded in the manifest. The validator accepts
+all named inputs, but the independent-event count and board provenance are
+supplied evidence, not facts inferred by that parser.
 
 All four physical outputs agreed at every address. The raw electrical image
 is authoritative; the preserved
