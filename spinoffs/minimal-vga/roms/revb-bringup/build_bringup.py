@@ -7,16 +7,15 @@ only (so cosim is its oracle), 16 KiB, with a trailing checksum byte at 0x3FFF
 chosen so the whole ROM sums to 0 mod 256.
 
 Behavior on the minimum tier (CPU + Memory + I/O-UART, no Video):
-  * init the 8251 USART (ports 0x08 data / 0x09 ctl-status) with TxEN so, by the
-    documented cosim coincidence (execution-guide D1.2), the TxRDY poll (status
-    bit0) reads ready off the command-word latch;
+  * init the 8251 USART (ports 0x08 data / 0x09 ctl-status) and poll modeled
+    TxRDY status bit 0; this fixture does not program the D57 baud timer;
   * print a banner;
-  * walking-pattern + address-in-cell RAM test over 0x4000..0xD6FF (top page
+  * fixed A5/5A-pattern + address-in-cell RAM test over 0x4000..0xD6FF (top page
     0xD700..0xD7FF reserved for stack + vars, so the test never clobbers the
     return stack); print "RAM PASS" or "RAM FAIL @hhhh";
   * verify the ROM checksum; print "ROM OK" / "ROM BAD";
   * a tiny serial monitor: A=set addr, D=dump 16, W=write byte, G=go. (Interactive
-    path is exercised on the bench, T1.11; cosim reaches only the quiet wait loop.)
+    path is not exercised by the startup-byte comparison guard.)
 """
 import sys, pathlib
 
@@ -176,7 +175,7 @@ a.CALL('putc'); a.INX('H'); a.JMP('puts')
 a.label('putc')                  # A = char
 a.PUSH('PSW')
 a.label('pc_wait')
-a.IN(0x09); a.ANI(0x01); a.JZ('pc_wait')     # TxRDY (cosim: TxEN latch bit0)
+a.IN(0x09); a.ANI(0x01); a.JZ('pc_wait')     # TxRDY status bit
 a.POP('PSW'); a.OUT(0x08); a.RET()
 
 a.label('getchar')               # -> A = char
