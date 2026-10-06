@@ -6,4 +6,4 @@ the returned bytes are not probe evidence. The raw transport capture is kept
 to preserve the failed setup.
 
 The corrected run stores at low-A12 `4F00h` and is retained in
-`../t32-ram-a12-ready-classes-low-result-physical/`.
+[the low-result capture](../t32-ram-a12-ready-classes-low-result-physical/).

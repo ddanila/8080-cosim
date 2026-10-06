@@ -7,4 +7,4 @@ A15:A14 region, so the odd value reached the low-A12 alias instead of the
 intended target.
 
 The corrected memory matrix is
-`../t32-ram-a12-lhld-classes-physical/` and uses unrolled absolute STA setup.
+[the absolute-STA capture](../t32-ram-a12-lhld-classes-physical/) and uses unrolled absolute STA setup.

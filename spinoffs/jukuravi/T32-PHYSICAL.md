@@ -181,7 +181,8 @@ fault. Evidence is under
 
 ## Bounded conclusion
 
-CS00015 loses an already-high A12 in D1's 16-bit increment path. A carry from
+Before D1 replacement, CS00015 lost an already-high A12 in the CPU's 16-bit
+increment path. A carry from
 bit 11 can assert A12 (`0FFF -> 1000`), but incrementing while A12 is already
 one clears it. This single rule explains INX register-pair state, PC/instruction
 streams, LHLD, POP, and SHLD reads and writes across every tested address and
@@ -216,7 +217,7 @@ The die-derived `hdl/vendor/vm80a.v` model independently reproduces the exact
 direct-register words when only its shared incrementer's bit-12
 retain-high/no-carry term is removed. The Boolean-level localization and its
 remaining transistor/layout boundary are documented in
-`../../docs/cs00015-d1-increment-analysis.md`.
+[the D1 increment analysis](../../docs/cs00015-d1-increment-analysis.md).
 
 ### One-at-a-time PROM substitutions
 
@@ -234,7 +235,7 @@ and D8 packages are therefore excluded as unique causes. This does not exclude
 their socket contacts, surrounding conductors, shared pull-ups, or the timing
 of the selection topology itself.
 
-Final fitted configuration: CS00015 retains the donor D6 `.038` from the
+The post-diagnostic component configuration retains donor D6 `.038` from the
 Danila Sukharev processor board, while its original D8 `.039` is restored. The
 original CS00015 D6 is intentionally not reinserted because another extraction
 and insertion would add avoidable mechanical risk. Retaining the donor part is
