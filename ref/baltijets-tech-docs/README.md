@@ -3,13 +3,12 @@
 Source:
 `https://elektroonikamuuseum.ee/failid/juku/tech_docs_from_baltijets/`
 
-Fetched: 2026-07-06.
 The retained mirror contains files `000` through `015`.
 
 The directory contains 16 PDFs found in the former Baltijets factory building in
 Narva and scanned in November 2024. `000 Info.pdf` is text-searchable; the other
-PDFs are image scans. The adjacent `.txt` files are `pdftotext` outputs and
-contain no useful body OCR for the scan-only PDFs beyond sparse metadata.
+PDFs are image scans. The adjacent `.txt` files are `pdftotext` outputs;
+those for `001` through `015` contain only whitespace and provide no OCR.
 
 ## Verify retained PDFs
 
