@@ -9,6 +9,9 @@ four-side-track system area, and a hard-coded transcription of `TRANS` from
 `ref/ekdos-source/EKDOS30.ASM`. Raw candidates are fixed-offset slices;
 their allocation mapping is not resolved by this extractor. The script does
 not read or verify the assembly source’s current translation table.
+Entries are grouped by filename without separating CP/M users and sorted
+only by the one-byte EX field. S2, missing/duplicate extents and allocation
+consistency are not validated, so directory-backed output is provisional.
 
 ## Command
 
