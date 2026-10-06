@@ -23,15 +23,10 @@ does not join the separately drawn conductors or identify their remote source.
 
 ## Physical probe locations
 
-In
-`PXL_20260710_200522685.jpg`, crop `(950,490)–(1540,1020)`, the
-registered D99.10/B2 joint is near `(1290,738)`; D99.12/Q2_N is a
-different joint near `(1180,737)`. This crop does not show an identifiable
-continuous B.Cu route from D99.10 to a registered remote endpoint.
-D100.11's independently registered joint near `(1135,1322)` is in the
-separate `PXL_20260710_200506061.jpg` tile. The two photos cannot turn
-the matching-looking continuation typography into D99.10–D100.11
-continuity; test the two physical pins directly with power removed.
+In solder image `PXL_20260710_200522685.jpg`, crop
+`(950,490)–(1540,1020)`, D99.10/B2 is near `(1290,738)` and
+D99.12/Q2_N near `(1180,737)`. No continuous B.Cu route from D99.10 to
+an identified remote endpoint is visible.
 
 The owner photo registration identifies the physical D100.11 contact at
 approximately `(2707,1379)` in component image
@@ -72,6 +67,8 @@ python3 kicad/check_d99_source_paths.py
 This guard checks canonical JSON endpoints, selected placement metadata, and
 literal structural HDL connection markers, including the separation of
 D100.9 and D100.11. It does not compile or simulate HDL, measure the original
-board, or validate routed copper. Current routing and fabrication
+board, or validate routed copper. Runnable HDL holds the unidentified T
+continuation high; that fallback does not establish its physical driver.
+Current routing and fabrication
 holds are recorded in [factory-wire fidelity](factory-wire-route-fidelity.md)
 and [the routed audit](routed-refresh-audit.md).
