@@ -4,12 +4,15 @@ Source: `kicad/juku.board.json`
 CSV: `docs/replica-dual-config-bom.csv`
 Sourcing gate: `docs/replica-sourcing-readiness.md`
 
-This is the current sourcing BOM split: an authentic Soviet
-part column and a functional substitute column. It is generated from the
+This sourcing BOM pairs source or owner-board part identities with
+functional substitute candidates. It is generated from the
 current KiCad board source and keeps the .009 populated-vs-expansion-socket
 distinction explicit.
 
-Regenerate with `python3 kicad/report_dual_config_bom.py`.
+Run from the repository root with Python 3 (standard library only):
+`python3 kicad/report_dual_config_bom.py`.
+The writer replaces both the Markdown report and CSV. Successful generation
+does not qualify substitute compatibility or authorize purchasing.
 Run `python3 kicad/report_replica_sourcing_readiness.py` after regenerating this
 BOM to refresh the source-early, programming-gated, and review-before-buying
 readiness report.
