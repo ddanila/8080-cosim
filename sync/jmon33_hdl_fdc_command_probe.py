@@ -65,6 +65,11 @@ def main() -> int:
     intro_start = text.index("This guard starts from")
     intro_end = text.index("## Command", intro_start)
     text = text[:intro_start] + (
+        "Run from the repository root with Python 3, a C compiler (`CC`, default\n"
+        "`cc`), Icarus Verilog (`iverilog` and `vvp`), `roms/jmon33.bin`, and\n"
+        "`media/disks/JUKU1.CPM`. Builds and checkpoints use a temporary directory;\n"
+        "the runner regenerates `hdl/sim/jmon33.hex` and restores prior cosim and\n"
+        "HDL VRAM dumps after normal sampling. The selected report is overwritten.\n\n"
         "This wrapper generates a disk-backed cosim checkpoint with the T command\n"
         "scheduled, then resumes its RAM and visible state in `juku_top`. The default\n"
         "checkpoint is already inside the FDC polling loop. The HDL run stops after\n"
