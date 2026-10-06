@@ -10,6 +10,11 @@ checkboxes, rerun the cited guards, or establish that all desk work is done.
 
 ## Command
 
+Run from the repository root with Python 3 and Git. The default command
+overwrites this report; add `--check` to verify freshness without writing.
+A successful result validates classifications and markers, not completion
+of the tasks or the underlying evidence checks.
+
 ```sh
 python3 scripts/report_automatic_completion_audit.py
 ```
