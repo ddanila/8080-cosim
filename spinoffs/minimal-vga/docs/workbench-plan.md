@@ -41,7 +41,11 @@ incomplete; the slices cannot substitute for its release requirement.
 
 ## Reproduction
 
-From the repository root:
+Run from the repository root with Bash, Python 3, a C compiler (`CC`, default
+`cc`), Icarus Verilog (`iverilog` and `vvp`), and the initialized tv80
+submodule. Builds and HDL captures use a temporary directory; the cosim
+reference overwrites `cosim/vram.bin`. Missing tv80 sources produce `SKIP`
+with exit zero, so check that both decode comparisons actually ran.
 
 ```sh
 spinoffs/minimal-vga/sim/vjuga_boot_check.sh
