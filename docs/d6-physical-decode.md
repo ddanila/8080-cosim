@@ -38,9 +38,7 @@ does not reach D8.15. D13.12 drives the separate enable conductor.
 
 ## Recovered `.009` sheet-1 polarity read
 
-Two independent read passes over the native-color detail and an enhanced
-high-resolution crop, cross-checked against the sheet overview, close the
-critical schematic question. The guarded source frames are:
+The adopted polarity interpretation uses these checksum-pinned source frames:
 
 - `ref/photos/dgsh5-109-009-e3/PXL_20260718_101754468.jpg` (SHA256 `effc98746807ef28dab97051ceba293f4433c0f3b39b86cbb55ddcaad24aeca4`)
 - `ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg` (SHA256 `40a524d663dc4685a7093782165264524cd70780fb41638a8d1c0cbca0b36216`; upper-center D6/D8/D9 region)

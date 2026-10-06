@@ -34,9 +34,7 @@ connections have been measured.
 
 The two upright red-black-red/gold **2 kΩ bodies left of D3 are R10 (outer)
 and R9 (inner)** in the same original-resolution assembly crop. Their position
-and value agree with exact `.009` sheet 1's 2 kΩ INT6/INT7 pull-ups. The former
-R15/R16 `12k`-versus-`2k` claim came from assigning that left pair to the
-wrong drawing labels and is retracted. The owner views show an apparent common
+and value agree with exact `.009` sheet 1's 2 kΩ INT6/INT7 pull-ups. The left pair must not be used as R15/R16 value evidence. The owner views show an apparent common
 upper solder bridge for R9/R10. Test it to +5 V and test the separate lower
 leads to D3.1/INT6_RAW and D3.13/INT7_RAW before treating their physical nets
 as closed. Separately measure the right-side R15 and lower horizontal R16:
