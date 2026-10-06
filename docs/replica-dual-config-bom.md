@@ -129,7 +129,7 @@ and must not be summed as a component count.
 | source-now | LN2 | К561ЛН2 | CD4049/К561ЛН2-class CMOS inverter; verify role | 1 | 1 | 0 | D3 | - |
 | source-now | LN3_OC_INV | К155ЛН3 | 7406-class hex open-collector inverter; verify pullups and voltage | 1 | 1 | 0 | D28 | - |
 | source-now | LP11_BUF | К155ЛП11 | SN74367 hex three-state buffer | 1 | 1 | 0 | D98 | - |
-| source-now | LP5_XOR | К155ЛП5 | 74LS86 XOR-class gate | 1 | 1 | 0 | D34 | - |
+| source-now | LP5_XOR | К555ЛП5 | 74LS86 XOR-class gate | 1 | 1 | 0 | D34 | - |
 | source-now | PIC8259 | КР580ВН59 | 8259A PIC | 1 | 1 | 0 | D10 | - |
 | source-now | PIT8253 | КР580ВИ53 | 8253 or 8254 PIT | 3 | 3 | 0 | D54, D55, D57 | - |
 | source-now | PPI8255 | КР580ВВ55А | 8255A / 82C55 PPI | 2 | 2 | 0 | D26, D27 | - |
