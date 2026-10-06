@@ -25,18 +25,18 @@ drawing-to-socket identity. It rewrites `ref/firmware/SHA256SUMS` from the
 current artifacts rather than checking them against fixed historical hashes.
 The separate reference-artifact guard checks the registered source identities.
 
-## Shape Checks
+## Byte checks
 
 | Check | Result |
 | --- | --- |
 | `.113` byte count is 32 | PASS |
 | `.117` byte count is 32 | PASS |
-| `.113` matches the scanned sparse 14h-17h one-cold walk | PASS |
-| `.117` matches the scanned 08h-17h four-row one-cold dwell | PASS |
+| `.113` matches the retained sparse 14h-17h one-cold walk | PASS |
+| `.117` matches the retained 08h-17h four-row one-cold dwell | PASS |
 | Both tables use only `FF`, `07`, `0B`, `0D`, `0E` | PASS |
-| The two scanned tables are distinct | PASS |
-| Neither scanned table matches physical D8 or D94 | PASS |
-| Physical D8 supersedes and differs from the historical reconstruction | PASS |
+| The two retained tables are distinct | PASS |
+| Neither retained table matches physical D8 or D94 | PASS |
+| Physical D8 differs from the historical reconstruction | PASS |
 
 ## Tables
 
@@ -47,8 +47,7 @@ The separate reference-artifact guard checks the registered source identities.
 
 Artifact checksums are in [the firmware manifest](../ref/firmware/SHA256SUMS).
 
-
-## Interpretation Boundary
+## Interpretation boundary
 
 - `.113` and `.117` are not exported as D8/D94 burnable fallbacks: the processor-module
   parts list names D8 as `ДГШ5.106.039`, and the `.009` FDC revision adds

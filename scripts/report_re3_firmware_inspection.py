@@ -87,12 +87,12 @@ def main() -> int:
     checks = [
         ("`.113` byte count is 32", len(table_113) == 32),
         ("`.117` byte count is 32", len(table_117) == 32),
-        ("`.113` matches the scanned sparse 14h-17h one-cold walk", table_113 == expected_113()),
-        ("`.117` matches the scanned 08h-17h four-row one-cold dwell", table_117 == expected_117()),
+        ("`.113` matches the retained sparse 14h-17h one-cold walk", table_113 == expected_113()),
+        ("`.117` matches the retained 08h-17h four-row one-cold dwell", table_117 == expected_117()),
         ("Both tables use only `FF`, `07`, `0B`, `0D`, `0E`", one_cold_ok(table_113) and one_cold_ok(table_117)),
-        ("The two scanned tables are distinct", table_113 != table_117),
-        ("Neither scanned table matches physical D8 or D94", all(table not in (d8_physical, d94_physical) for table in (table_113, table_117))),
-        ("Physical D8 supersedes and differs from the historical reconstruction", d8_physical != d8_fallback),
+        ("The two retained tables are distinct", table_113 != table_117),
+        ("Neither retained table matches physical D8 or D94", all(table not in (d8_physical, d94_physical) for table in (table_113, table_117))),
+        ("Physical D8 differs from the historical reconstruction", d8_physical != d8_fallback),
     ]
     status = "PASS" if all(ok for _, ok in checks) else "REGRESSION"
 
@@ -126,7 +126,7 @@ def main() -> int:
         "current artifacts rather than checking them against fixed historical hashes.",
         "The separate reference-artifact guard checks the registered source identities.",
         "",
-        "## Shape Checks",
+        "## Byte checks",
         "",
         "| Check | Result |",
         "| --- | --- |",
@@ -145,14 +145,13 @@ def main() -> int:
             f"| `ДГШ5.106.117` | `ДГШ5.106.103` family | `{row_ranges(table_117)}` |",
             "",
             "Artifact checksums are in [the firmware manifest](../ref/firmware/SHA256SUMS).",
-            "",
         ]
     )
 
     lines.extend(
         [
             "",
-            "## Interpretation Boundary",
+            "## Interpretation boundary",
             "",
             "- `.113` and `.117` are not exported as D8/D94 burnable fallbacks: the processor-module",
             "  parts list names D8 as `ДГШ5.106.039`, and the `.009` FDC revision adds",
