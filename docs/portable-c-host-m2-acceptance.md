@@ -34,15 +34,14 @@ belongs to their separate acceptance records, indexed by
 | Logs, capture and exit behavior | M0 observable-result contract | text/file logging, CRC-protected capture replay, required-evidence failures and clean SIGINT during an active reply | pass |
 | Normal launchers and acceptance tooling | Python-era inventory frozen at M0 | `juku_run.py`, CP/M Plus physical acceptance, demonstration generator and VC launcher invoke only `jukuhost` | pass |
 
-The comparison is against observable bytes, state transitions, media outcomes,
-and recovery behavior. It deliberately does not preserve Python tracebacks,
-object layouts, or JSON as a runtime dependency.
+The comparison covers observable bytes, state transitions, media outcomes
+and recovery behavior.
 
 ## Subsequent stock-ROM compatibility
 
 Version `0.3.0-m6` added the exact JF15 stock-assisted path to the same C
 executable. A retained 2026-08-22 CS00000/EK37 run qualified that native C
-path through `A>` and 22 NetDisk requests with zero retries or UART errors;
+path through `A>` with zero retries or UART errors;
 see [the service record](cs00000-service-record.md) for artifact identities
 and capture evidence. The five-second core-delay regression remains in
 `tests/jukuhost_v15_delayed_pty_test.py`.
@@ -59,14 +58,16 @@ media in the adjacent `cpm-plus-juku/out/`; `CPM_PLUS_JUKU_ROOT` selects another
 checkout. The network-ROM builder uses the pinned zmac source and needs `make`,
 `bison` and a compiler if its executable is absent. Initialize submodules first.
 
-Run the complete local gate with:
+Run the core portability checks and Linux integration gate with:
 
 ```sh
+sync/jukuhost_core_check.sh
 sync/jukuhost_m2_check.sh
 ```
 
-It runs the frozen Python-era oracle and five-system suite, portable/native C
-tests, PTY media/evidence/reconnect tests, stock and C8 end-to-end simulator
+The core gate checks signed/unsigned `char`, available Clang and sanitizers.
+The M2 gate runs the frozen Python-era oracle and five-system suite, native
+build and PTY media/evidence/reconnect tests, stock and C8 end-to-end simulator
 workloads, operational-wrapper checks, and the current network-ROM ABI/fault
 matrix. The recorded 2026-08-20 run passed; this historical result does not
 establish a pass for a later source tree or changed sibling artifacts.

@@ -32,8 +32,7 @@ journaled copy; B: remained read-only.
 | `physical-CS00015-m2.1-linux-reconnect-01` | replace host while CP/M remains live | 15/15 | 77 / 616 | 12 | 0 | pass |
 | `physical-CS00015-m2.1-linux-reset-01` | reset the already-powered target into a new boot | 4/4 | 33 / 264 | 4 | 0 | pass |
 
-Together these runs accepted 34 commands, 180 disk reads carrying 1,440
-records, 21 controlled writes and 14,073 total NetDisk/N4 requests. They cover
+The runs cover
 A: and B: directory/read paths, bidirectional N4 including bulk and remote-key
 traffic, `STATUS`, repeated `DIAG ALL`, disk soak, writable-A: mutation, warm
 boot, clean shutdown, live host replacement, and target reset recovery.
@@ -41,10 +40,8 @@ boot, clean shutdown, live host replacement, and target reset recovery.
 The replacement host resumed the live request sequence at `4C`; it did not
 rebootstrap the target. Both cold paths restarted at sequence `01`. All three
 hosts exited normally after one `SIGINT`, with no forced termination or
-journal residue. From the first physical disk request to `A>` was 3.040 s in
-both measured cold paths. The much larger runner-to-prompt intervals include
-the deliberate wait for the operator to power or reset CS00015 and are not
-boot benchmarks.
+journal residue. Runner-to-prompt intervals include the operator’s power/reset
+wait and are not boot benchmarks.
 
 The cold logs contain aggregate `retries=382` and `retries=186`. These are
 fully explained pre-target counters: `jukuhost` increments that field once per
@@ -67,11 +64,11 @@ and the private post-run A: image. Their raw-capture hashes are:
 - reconnect: `17667cc1f629b8b07fe1106d58a65f2d1bea38c02e355334e7a06d4aaa7315ba`;
 - reset: `126a799cac4c393e612958b868d9ba04917de646df8ac8256bc7cadb2985a51f`.
 
-All three directories pass the independent physical-evidence auditor. The recorded
+All three directories passed the independent physical-evidence auditor. The recorded
 conversion reproduced every `requests.jsonl` byte for byte and boot evidence
 semantically apart from the conversion timestamp. The current converter adds
 `operation_name`; all original request fields still match the retained JSON. The modelable Linux PTY and complete C8 simulator paths
-also pass: N3/N4, native B:, duplicate handling, journal recovery, capture
+also passed in the recorded qualification: N3/N4, native B:, duplicate handling, journal recovery, capture
 events, C8 V16 boot, `DIR`, missed-ready recovery, target reset and host
 replacement. Operator power latency and the physical UART's absent final
 completion byte remain correctly classified as physical observations rather
