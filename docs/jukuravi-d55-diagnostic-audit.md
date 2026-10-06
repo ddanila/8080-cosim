@@ -111,7 +111,7 @@ returns bitmap `18` rather than the guard's expected `08`. Its four D55 reads,
 four latches and four unclocked latches match the negative-control predicate,
 but the additional D57 bit stops the script before any T34 case runs. Resolve
 that bitmap expectation against the D57 clock model before claiming a fresh
-complete matrix pass. The table below records the earlier results.
+complete matrix pass. The table below describes the guard configurations; it is not a current pass report.
 
 `sync/jukuravi_d55_clock_audit.sh` enables clocked Mode-0 count transfers in
 all three structural PITs, drives the physical 16 MHz and 2 MHz timing ratio,
@@ -119,19 +119,18 @@ executes the complete ROM through the CPU, and stops at the first post-PIT
 USART write. `unclocked` counts D55 latch commands issued while the newly
 written count is still waiting for a D55 clock.
 
-| Recorded image / injected boundary | Bitmap E | D55 reads | D55 latches | Unclocked | Earlier result |
-| --- | ---: | ---: | ---: | ---: | --- |
-| exact T31, otherwise clean | `08` | 4 | 4 | 4 | negative control passes |
-| T34, clean | `00` | 6 | 6 | 0 | passes |
-| T34, D55 channel-2 DB7 forced low | `08` | 6 | 6 | 0 | detects data-path fault |
-| T34, D54 OUT0/horizontal chain held low | `08` | 6 | 6 | 6 | detects upstream clock-path fault |
-| T34, D56 Q2_N held low | `08` | 6 | 6 | 4 | detects channel-1/2 clock-path fault |
-| T34, D9/CS_D55 disabled | `08` | 6 | 6 | 0 | detects select-path fault |
+| Image / injected boundary | Expected bitmap E | Expected D55 reads/latches | Required pending-load check |
+| --- | ---: | ---: | --- |
+| exact T31, otherwise clean | `08` | 4 | at least one unclocked latch |
+| T34, clean | `00` | 6 | no unclocked latches |
+| T34, D55 channel-2 DB7 forced low | `08` | 6 | no unclocked latches |
+| T34, D54 OUT0/horizontal chain held low | `08` | 6 | at least one unclocked latch |
+| T34, D56 Q2_N held low | `08` | 6 | at least one unclocked latch |
+| T34, D9/CS_D55 disabled | `08` | 6 | no unclocked latches |
 
-The earlier clean case, negative control and four injected-fault cases passed.
-Those recorded results show sensitivity to the intended functional path
-and no longer creates a clean-board D55 failure solely from missing setup
-clocks. It also proves why the result must not be labeled “D55 package bad.”
+These cases distinguish the intended functional-path boundaries. They do not
+uniquely identify a D55 package fault. The script stops on the first failing
+case, so a T31 failure leaves the T34 cases untested in that invocation.
 
 ## Board conclusions
 
