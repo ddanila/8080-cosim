@@ -63,13 +63,9 @@ The current JSON has 97 numeric R refs. Within R1–R110 the absent refs are:
 `R68–R77, R96, R109, R110`.
 
 R68–R77 are documented `.006` RF-only parts absent from the `.009` target in
-`docs/video-analog-boundary.md`; their omission is intentional. R21–R28
-are source-modeled with individual D8 output joins unresolved; R2/R7,
-R15/R16, R21–R28, R35–R37, and R106
-are schematic-only with PCB placement pending; the
-photo-registered R9/R10 pair is listed separately as modeled. R104 has a
-footprint in the source, routed, and routed-candidate PCBs; its installed
-value and remote continuity remain open.
+`docs/video-analog-boundary.md`; their omission is intentional. The tables
+above distinguish modeled parts awaiting placement or endpoint verification
+from pull-ups already placed on one or more PCBs.
 
 R109/R110 are plain body outlines without lead strokes on the `.009`
 assembly view `PXL_20260711_114611058.jpg`. The exact electrical D56 detail
