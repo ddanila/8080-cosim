@@ -19,7 +19,9 @@ The main host CLI defaults to the current direct 2400-baud adapter. Use
 `--baud 115200` when deliberately running through this Nano bridge, and ensure
 the sketch's Juku-side `SoftwareSerial` rate matches the installed ROM. The
 committed 9600-baud sketch does not match T31/T36's 2400-baud default; using
-those images requires a deliberate sketch-rate change and rebuild.
+those images requires a deliberate sketch-rate change, rebuild, and repeat
+of the compiled-sketch guards. The `0x55` training bytes are a measurement
+pattern, not an auto-baud implementation.
 
 TTL-side wiring:
 
@@ -192,8 +194,4 @@ measured.
 Before physical connection, record the exact MAX3232-family device and
 capacitors, isolated reset part and resistor, connectors/cable, probe
 conditioners, power/grounding arrangement, firmware hashes and expected
-disconnected measurements with the bench harness evidence. The
-implemented Juku-side `SoftwareSerial` rate is fixed at nominal 9600 baud; the
-`0x55` training bytes are a measurement/check pattern, not an auto-baud
-implementation. Any different measured rate requires a deliberate code change,
-rebuild, and repeat of the compiled-sketch guards.
+disconnected measurements with the bench harness evidence.
