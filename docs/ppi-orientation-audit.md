@@ -30,6 +30,9 @@ inspect the variant orientations and pin mismatches before judging readiness.
 
 The mapping reads saved PCB orientation and pad nets and applies the
 20-position permutation required by the photographed notch direction.
+The detailed permutation uses `juku_routed.kicad_pcb`; the other variants
+receive orientation checks only. Intended nets come from that routed board's
+numbered pads, not an independent comparison against board JSON.
 It does not trace original copper or run DRC. Rotating routed footprints
 alone would invalidate their existing copper connections.
 
