@@ -31,8 +31,11 @@ normal command execution.
 | `C000..CFFF` | loader parser, state, scratch, and downward-growing stack |
 | `D000` | loader stack top (first push writes below this address) |
 
-Uploaded code must not write `C000..CFFF`. The entry values of registers are
-unspecified. In CALL mode the loader pushes a ROM continuation before entering
+Uploaded code must not use `C000..CFFF` for data or overwrite loader state.
+Normal balanced stack operations below the entry SP are permitted; keep them
+clear of the parser and state below. For larger stack needs, use a stack within
+the payload RAM window and restore the saved continuation before returning.
+The entry values of registers are unspecified. In CALL mode the loader pushes a ROM continuation before entering
 the snippet. A cooperative snippet may use the stack normally but must make its
 final `RET` reach that continuation. Only returned A is part of the register
 ABI; use an agreed RAM block for every larger result.
@@ -201,7 +204,7 @@ rate. Use `--loader-retries 1` when measuring strictly one command attempt;
 larger values measure the intended host-controlled whole-command recovery
 policy.
 
-## Last-frontier RESET cases
+## RESET recovery
 
 No ROM monitor can regain execution while the 8080 is stuck in arbitrary code.
 A hardware RESET remains necessary when a snippet loops forever, executes HLT
