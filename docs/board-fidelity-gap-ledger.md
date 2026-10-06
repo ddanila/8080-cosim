@@ -17,6 +17,10 @@ Validated PROM contents and unresolved PROM wiring are separate evidence.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The writer replaces this report. Exit code 0 means the ledger was generated;
+it does not mean that fidelity gaps are closed.
+
 ```sh
 python3 scripts/report_board_fidelity_gap_ledger.py
 ```
