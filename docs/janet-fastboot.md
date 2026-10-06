@@ -13,7 +13,7 @@ testable, but changes to 19,200/8N1 and cannot be selected with
 | Ordinary stock Janet | Stock ROM's checked bootstrap records at 9,600/8O1 | Compatible system and NetDisk settings are required |
 | Stock-assisted JF17 | One 128-byte core through Janet, Fletcher-checked extension and CRC-checked compressed system at 9,600/8O1 | Same C host can detect a checked stock request after target reset and boot again |
 | Exact JF15 compatibility | Stock-loaded core, then 19,200/8N1 transfer | Frozen compatibility evidence; stock reset recovery requires JF17 |
-| C8/C11/C12 network ROM | Direct CRC-checked JF16 bootstrap under the chosen network-ROM profile | Separate network-ROM workflow; see the portable host contract |
+| C8–C12 network ROM | Direct CRC-checked JF16 bootstrap under the chosen network-ROM profile | Separate network-ROM workflow; see the portable host contract |
 
 The implementation is `host/src/jukuhost_runner.c` with the artifact/session
 validation in `host/src/jukuhost_core.c`. The current Windows embedded stock
@@ -59,9 +59,8 @@ JF17 transfer completed. Artifact guards check this boundary.
 A: is read-only by default; B: remains read-only. CLI `--writable` enables
 journaled A: writes. The [INI configuration](jukuhost-config.md) supports
 `read-only`, `direct` and `snapshot`: snapshot uses a separate full working copy
-of a hash-checked base image. It is not the retired Python sparse JSON overlay.
-Transaction replay and media identity checks belong to the C host. A target
-reset does not substitute new media or authorize discarding changes.
+of a hash-checked base image. Transaction replay and media identity checks
+belong to the C host. A target reset does not substitute new media or authorize discarding changes.
 
 ## Verification and physical scope
 
@@ -72,8 +71,6 @@ reset does not substitute new media or authorize discarding changes.
 | `tests/jukuhost_stock_v15_cosim_test.py` and `tests/jukuhost_v15_delayed_pty_test.py` | Exact frozen JF15 compatibility and delayed-core handling |
 | [CS00014 JF17 record](evidence/juku-serial/cs00014-stock-jf17-20260905/README.md) | Boot, operator-selected reset recovery and live host replacement at 9,600/8O1 |
 
-The physical record binds the exact tested artifacts and captures. It does not
-qualify reset during an incomplete transfer, power cycling, disk writes or
+The physical record binds the exact tested artifacts and captures; it does
+not qualify later rebuilt system/loader pairs. It also does not qualify reset during an incomplete transfer, power cycling, disk writes or
 broader diagnostics. PTY tests do not prove physical baud compatibility.
-Historical stage experiments and timings are available in Git and the retained
-serial evidence; they are not current operator instructions.

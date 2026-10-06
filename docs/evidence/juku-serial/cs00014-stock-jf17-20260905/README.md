@@ -30,13 +30,15 @@ an existing NetDisk request, resumed the running CP/M session without bootstrap,
 and completed another `DIR`. `reconnect.log` records classification and
 `reconnect-console.bin` records that command.
 
-Validation: native warning-clean build and startup selftest, runner test,
+Recorded validation: native warning-clean build and startup selftest, runner test,
 stock artifact test, an artifact mutation reproducing the count-four regression
 (rejected), and the full two-boot stock recovery simulator test passed. PTY serial links alone do not detect a physical baud mismatch.
 
 `boot.json` binds the exact corrected system and JF17 hashes. `host.cap` is the
 closed CRC-protected capture, `host.log` its summary, and `requests.jsonl` the
-converted request evidence. This run qualifies boot, hardware-reset recovery
+request records converted from the host’s local events in that capture. The
+converter validates capture framing/CRCs; it does not independently decode
+RX/TX request and reply frames. This run qualifies boot, hardware-reset recovery
 with manual stock-ROM network selection, and live host replacement. It does
 not qualify reset during an incomplete transfer, power cycling, disk writes,
-or broader diagnostics.
+or broader diagnostics or a later rebuilt system/loader pair.
