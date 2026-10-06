@@ -8,19 +8,7 @@ and 44 tagged MP3 files. The library delivers 23 guarded JPS v2 envelope
 tracks and 21 explicit generic JPS v1 fallbacks. It contains no song-name,
 track-number, source-hash, OPL-signature, or renderer exception.
 
-The artifacts are intentionally untracked:
-
-- library and native Juku floppy:
-  `out/jukupoly-doom-library-current-best-20260902/`;
-- WAV and MP3 collection:
-  `out/jukupoly-doom-full-renders-current-best-20260902/`;
-- full host-fit scores, accepted payloads, and replacement manifest:
-  `out/jukupoly-doom-enhanced-generic-20260902/`.
-
-The exact native 819,200-byte floppy SHA-256 is
-`388564ead96cbc773ef02dfe5e46ff587284315e78f2e29fff155b558b990fe4`.
-The library catalog SHA-256 is
-`7598e1e791a58c6325acb1c12ec897def3b55ec291a8dd7c866b8d6b98d41eaa`.
+Audio and library outputs are untracked.
 [`DOOM-GENERIC-ENHANCED-PACK.json`](DOOM-GENERIC-ENHANCED-PACK.json) records
 every candidate, timing choice, delivery gate, and fallback reason;
 [`DOOM-FULL-RENDERS.json`](DOOM-FULL-RENDERS.json) records every JPS, WAV,
@@ -73,11 +61,11 @@ Run from the repository root with Python 3.10+, a C11 compiler available as
 FFmpeg with `libmp3lame`, and `ffprobe`. Initialize the Nuked OPL3 submodule
 and follow the [assembler setup](README.md#reproduce) for zmac.
 
-These commands replace named outputs and the two tracked JSON reports. Use
-new output/report paths to compare a rerun with the retained September 2
-record. The renderer does not clear old output files; failures can leave partial
-audio, and its final aggregate checks occur after writing `manifest.json` and
-`--report`. Check the exit status and report gates before accepting the set.
+These commands write rerun artifacts and reports under `out/`, preserving
+both tracked snapshot reports. Use a new output directory for each comparison.
+The renderer does not clear old files; failures can leave partial audio, and
+aggregate checks occur after writing `manifest.json` and `--report`.
+Check the exit status and report gates before accepting a set.
 
 Build the pinned oracle, candidates, library, and renders with:
 
@@ -92,23 +80,23 @@ python3 spinoffs/jukupoly/tools/build_jukupoly_generic_pack.py \
   --doom '/path/to/Doom_(PC).zip' \
   --doom2 '/path/to/Doom_II_-_Hell_on_Earth_(IBM_PC_AT).zip' \
   --opl-oracle /tmp/jukupoly_opl_oracle \
-  --output-dir out/jukupoly-doom-enhanced-generic-20260902 \
-  --report spinoffs/jukupoly/DOOM-GENERIC-ENHANCED-PACK.json
+  --output-dir out/jukupoly-doom-enhanced-generic \
+  --report out/jukupoly-doom-enhanced-generic/report.json
 
 python3 spinoffs/jukupoly/firmware/build_doom_library.py \
   --doom '/path/to/Doom_(PC).zip' \
   --doom2 '/path/to/Doom_II_-_Hell_on_Earth_(IBM_PC_AT).zip' \
   --generic-conversion \
   --replacement-manifest \
-    out/jukupoly-doom-enhanced-generic-20260902/replacement-manifest.json \
-  --replacement-dir out/jukupoly-doom-enhanced-generic-20260902/payloads \
-  --output-dir out/jukupoly-doom-library-current-best-20260902
+    out/jukupoly-doom-enhanced-generic/replacement-manifest.json \
+  --replacement-dir out/jukupoly-doom-enhanced-generic/payloads \
+  --output-dir out/jukupoly-doom-library
 
 python3 spinoffs/jukupoly/tools/render_jukupoly_library.py \
-  --library out/jukupoly-doom-library-current-best-20260902 \
-  --output-dir out/jukupoly-doom-full-renders-current-best-20260902 \
+  --library out/jukupoly-doom-library \
+  --output-dir out/jukupoly-doom-full-renders \
   --minimum-enhanced-tracks 23 \
-  --report spinoffs/jukupoly/DOOM-FULL-RENDERS.json
+  --report out/jukupoly-doom-full-renders/report.json
 ```
 
 The two source archive SHA-256 values remain
