@@ -553,7 +553,11 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
     lines = [
         "# VIDEO_OUT output-stage static model",
         "",
-        "Status: **TOPOLOGY + DATA-BACKED LS86 COMPARISON DRIVER GUARDED / EXACT D34 CURVE + HARDWARE CALIBRATION OPEN**.",
+        (
+            "Status: **VIDEO_OUT STATIC MODEL CHECKS FAILED**."
+            if summary["status"] == "fail" else
+            "Status: **TOPOLOGY + DATA-BACKED LS86 COMPARISON DRIVER GUARDED / EXACT D34 CURVE + HARDWARE CALIBRATION OPEN**."
+        ),
         "",
         "This report records the static VIDEO_OUT output-stage model.",
         "It solves the traced VIDEO_OUT emitter-follower topology with the official TI",
