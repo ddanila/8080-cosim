@@ -21,10 +21,16 @@ connection.
 | 2 | cartridge at `4000-BFFF`, BIOS at `D800-FFFF` | other addresses are RAM |
 | 3 | none | all RAM |
 
-This table describes the software-visible overlay convention. In cosim,
+This table describes cosim's software-visible overlay convention. In cosim,
 `JUKU_CART` supplies the optional cartridge image; an absent cartridge reads
 `FFh` in its window. It does not establish the physical cartridge mapping,
 which remains an [open boundary](cartridge-basic-boundary.md).
+
+HDL `+cart=<readmemh file>` populates an 8 KiB D22 model selected through
+the physical D8 PROM. It does not provide cosim's 32 KiB cartridge window:
+the [cartridge guard](basic-cart-readiness.md) checks that D8 `.039` leaves
+D22 unselected at `0x4000`, so the loaded HDL cartridge cannot drive the bus
+at that tested address.
 
 Mode 0 reads the low BIOS overlay while writes to `0x0000..0x3FFF` reach
 underlying RAM. The `ekta37.bin` (RomBios 3.43m) low-stack dispatcher uses this behavior for
