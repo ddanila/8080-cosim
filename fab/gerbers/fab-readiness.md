@@ -15,6 +15,8 @@ python3 kicad/report_fab_readiness.py
 The writer replaces `juku_routed-drc.json`, `SHA256SUMS` and this report
 in the output directory. It derives checksums from current files; this
 does not verify a previously approved checksum manifest.
+It exits 3 for NOT READY, but 0 for both READY and REVIEW REQUIRED;
+exit status alone does not authorize fabrication.
 The command reruns KiCad DRC on the named PCB, checks nine fabrication
 files for nonempty content and expected format markers, and records their
 current hashes. It does not export those files or prove they were generated
