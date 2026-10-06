@@ -11,6 +11,8 @@ or compare individual finding geometry. A matching count preserves the
 recorded rationale; it is not a new visual assembly review.
 
 Regenerate with `python3 kicad/report_review_waivers.py`.
+The command overwrites this report, returning 0 for accepted counts or 3
+for a hold. Optional arguments are the saved DRC JSON and output path.
 
 ## Waiver baselines
 
