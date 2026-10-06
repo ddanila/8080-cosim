@@ -112,25 +112,14 @@ below.
 
 ### Native C-host physical confirmation
 
-On 2026-08-22, with the known-working EK37 / RomBios 3.43m pair fitted, native
-C host `0.3.0-m6` completed the complete stock-assisted V15 path from one
-command. It learned Janet identity `02 -> 01`, sent the 128-byte core with no
-reject and a zero-millisecond destination-zero guard, switched to
-19,200/8N1, received the core acknowledgement after two probes, and installed
-the 9,267-byte compressed stream with CRC16/IBM `1C42`. Extension and stream
-retry counts were both zero.
-
-CP/M Plus reached `A>` and served 22 NetDisk read requests / 66 records at
-19,200/8O1. The session ended cleanly with exit 0 and counters `rx=370`,
-`tx=14066`, `retries=0`, `target-resets=0`, and `uart-errors=0`. The portable
-evidence converter accepts the 371-record capture and matching 22-request log.
-The retained artifacts begin at
+On 2026-08-22, native C host `0.3.0-m6` completed stock-assisted JF15 from
+one command with EK37 / RomBios 3.43m fitted. CP/M Plus reached `A>` and
+served 22 NetDisk read requests / 66 records at 19,200/8O1, with no retries,
+target resets or UART errors. Exact transfer measurements and artifacts begin at
 [`cs00000-ek37-c-host-v15-20260822T103131Z.boot.json`](evidence/juku-serial/cs00000-ek37-c-host-v15-20260822T103131Z.boot.json).
 
-This physically confirms the adaptive C-host/JF15 implementation on CS00000.
-It does not replace the still-useful controlled `#0031` comparison: EK37 was
-fitted during this run, so the exact removed stock pair has not yet repeated
-the new-host path.
+This qualifies that C-host/JF15 configuration on CS00000. The removed `#0031`
+pair has not repeated the new-host path, so its controlled comparison remains open.
 
 ### Subsequent `Wait` state: host parser defect
 
