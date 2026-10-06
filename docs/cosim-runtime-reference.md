@@ -305,14 +305,19 @@ an inherited override, so operator input does not wait for the banner. For
 scripted input on firmware that does not draw that banner, set a suitable
 threshold or `0`. `JUKU_KEY_HOLD_FRAMES` and `JUKU_KEY_GAP_FRAMES`
 both default to `3`; they count configured frame intervals rather than
-wall-clock seconds. The launcher's `--keys` option overrides these settings to
+wall-clock seconds. Direct `trace` launches need a nonzero frame-cycle
+argument to advance contacts and publish newly queued PTY input; the runner
+supplies it. This progression does not require the guest to accept frame
+interrupts. The launcher's `--keys` option overrides these settings to
 6 hold frames and 8 gap frames, including inherited values. Guest firmware must
 still scan the matrix for a contact to become a key event.
 
-Timing-sensitive raw-key tests can inject one ordinary matrix contact at an
-exact instruction boundary with `JUKU_KEY_AT_PC=PC:BYTE`. Both fields are
+Timing-sensitive raw-key tests can activate one ordinary matrix contact when
+the execution loop reaches `JUKU_KEY_AT_PC=PC:BYTE`. Both fields are
 hexadecimal; for example, `JUKU_KEY_AT_PC=34A2:1B` begins a physical Escape
-contact trigger immediately before the instruction at `34A2h`. Matrix reads
+contact trigger when the loop PC is `34A2h`, before the CPU step. The hook
+does not verify an opcode fetch or exclude a halted or interrupt-accepting
+step. Matrix reads
 still return idle until `JUKU_KEY_START_VRAM` is reached; set that threshold
 to `0` when the contact must be available at the trigger PC. The contact uses
 the normal `JUKU_KEY_HOLD_FRAMES` and `JUKU_KEY_GAP_FRAMES` timing and the same
@@ -321,8 +326,8 @@ factory matrix mapping as PTY/scripted input. Set
 time when it must span a slow guest operation; ordinary PTY/scripted contacts
 retain `JUKU_KEY_HOLD_FRAMES`. If a relocatable or overlaid program can reach
 the same numeric PC during startup, `JUKU_KEY_AT_PC_GATE=ADDRESS:BYTE` delays
-the trigger until the byte visible at that hexadecimal guest address equals
-the hexadecimal value. The trigger fires once and does not bypass the guest
+the trigger until that byte equals the hexadecimal value while the PC also
+matches. The trigger fires once and does not bypass the guest
 keyboard scanner; it exists to make a poll-overlap regression deterministic
 at full simulator speed.
 
