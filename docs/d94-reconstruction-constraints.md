@@ -23,27 +23,33 @@ Board identity: D94 type is `RE3_PROM_092`.
 
 Address summary: all five address inputs are owner-continuity-closed nets.
 
-| Pin | Role | Net | Source |
-| ---: | --- | --- | --- |
-| 10 | A0 | `BA0` | scan; direct owner continuity 2026-07-15 proves D94.10/A0 shares D93.5/A0 |
-| 11 | A1 | `BA1` | scan; direct owner continuity 2026-07-15 proves D94.11/A1 shares D93.6/A1 and D27.8/A1 |
-| 12 | A2 | `IORD` | scan sheet-1 full-resolution plus direct owner continuity 2026-07-15: D5.25 IORD runs into D7.9; D94.12/A2 joins D27.5/RD_N and D29.4. D29.4 conflicts with the older IOM_STATUS scan interpretation and is adopted from the physical board; recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 later. D93.4 belongs only to D94.3 |
-| 13 | A3 | `IOWR` | owner continuity 2026-07-19: D105 NAND output pin3 is the qualified active-low peripheral write rail. Exact .009 detail 101805510 shows D7.11/PROM_EN and D105.3 on distinct local strokes; the former output-output join claim was a tracing error. Its inputs are D7.8 I/O-cycle-active high and D13.4 CPU-write-active high. Directly confirmed endpoints are D94.13, D29.5, D10.2, D11.10, D26.36, and D27.36; existing sheet-derived PIT write endpoints remain on the same rail. D5.27 is the separate raw IOWR_N source into D7.10 |
-| 14 | A4 | `D94_A4_D101_Q0` | owner continuity 2026-07-19 confirms D94.14/A4 reaches D101 К555КП12 Q0/pin7; the earlier R88 branch is retracted |
-| 15 | E_N | `FDC_CS_N` | exact .009 sheet 1 draws D9.7 as CS7 to sheet 3; exact sheet 3 draws CS7 to D94 enable pin15 and D93 chip-select pin3. Direct owner continuity 2026-07-15 confirms D94.15 to D93.3 and isolates D94 output pin2 from this conductor |
+Detailed source and owner provenance is retained in each net’s `src`
+field in [the board JSON](../kicad/juku.board.json). Physical holds are
+summarized under Reconstruction Boundary below.
+
+| Pin | Role | Net |
+| ---: | --- | --- |
+| 10 | A0 | `BA0` |
+| 11 | A1 | `BA1` |
+| 12 | A2 | `IORD` |
+| 13 | A3 | `IOWR` |
+| 14 | A4 | `D94_A4_D101_Q0` |
+| 15 | E_N | `FDC_CS_N` |
 
 ## Output Pins
 
-| Pin | Role | Net | Captured activity | Source |
-| ---: | --- | --- | --- | --- |
-| 1 | D0 | `D94_D0_BOUNDARY` | asserts at rows 03, 07, 11, 15 | exact .009 E3 sheet 1 PXL_20260718_101817644.jpg draws R8=2k from +5 V to -WREQ; sheet 3 PXL_20260718_101633062.jpg traces D94.1 through the top bundle to WREQ (1), establishing their intended source node. Owner continuity 2026-07-19 locally joins D94.1 to R8 and +5 V but found no other load in the measured scope; physical D94.1-to-D2.15/WREQ continuity remains unverified, so this owner boundary is not yet merged into WREQ_N. |
-| 2 | D1 | `D94_D1_D99_A2N` | asserts at rows 04, 05, 06, 07, 08, 09, 10, 11, 20, 21, 22, 23, 24, 25, 26, 27 | owner continuity 2026-07-19 proves D94.2 reaches D99 К155АГ3 second-section active-low A input pin9 and R89.1; D94.2 does not reach D99.8 or GND, and R89.2 reaches +5 V Exact .009 Э3 sheet-3 overview PXL_20260718_101633062.jpg traces the D94.2 line across the top to D96.11 CLK2; detail PXL_20260718_101641055.jpg shows CLK2 crossing D28.10 without a junction. Owner solder crop 200506061 shows a candidate B.Cu route from registered D96.11 near (625,1994) to a joint near registered D28.11 (839,1996), which belongs to separate FDC_DRQ in the exact source; confirm both pin identities and continuity before changing either model net. |
-| 3 | D2 | `FDC_RE_N` | asserts at rows 08, 09, 10, 24, 25, 26, 27 | owner continuity 2026-07-19 proves D94 output pin3 reaches D93 read-enable pin4 and R88.1; R88.2 is +5 V |
-| 4 | D3 | `FDC_WE_N` | asserts at rows 04, 05, 06, 20, 21, 22, 23 | owner continuity 2026-07-19 proves D94 output pin4 reaches D93 write-enable pin2 and R87.1; R87.2 is +5 V |
-| 5 | D4 | `NC` | invariant released | owner/photo-confirmed PCB no-connect |
-| 6 | D5 | `D94_D5` | invariant released | owner continuity and exact-revision .009 E3 drawing review 2026-07-21 close D94.6 as electrically NC; registered component imagery proves only a local floating copper stub to the plated handoff |
-| 7 | D6 | `D94_D6` | invariant released | owner continuity and exact-revision .009 E3 drawing review 2026-07-21 close D94.7 as electrically NC; registered imagery preserves its local floating copper departure without inventing a load |
-| 9 | D7 | `D94_D7` | invariant released | owner continuity and exact-revision .009 E3 drawing review 2026-07-21 close D94.9 as electrically NC; registered imagery preserves its local floating copper departure without inventing a load |
+Captured activity lists decimal reader addresses.
+
+| Pin | Role | Net | Captured activity |
+| ---: | --- | --- | --- |
+| 1 | D0 | `D94_D0_BOUNDARY` | asserts at rows 03, 07, 11, 15 |
+| 2 | D1 | `D94_D1_D99_A2N` | asserts at rows 04, 05, 06, 07, 08, 09, 10, 11, 20, 21, 22, 23, 24, 25, 26, 27 |
+| 3 | D2 | `FDC_RE_N` | asserts at rows 08, 09, 10, 24, 25, 26, 27 |
+| 4 | D3 | `FDC_WE_N` | asserts at rows 04, 05, 06, 20, 21, 22, 23 |
+| 5 | D4 | `NC` | invariant released |
+| 6 | D5 | `D94_D5` | invariant released |
+| 7 | D6 | `D94_D6` | invariant released |
+| 9 | D7 | `D94_D7` | invariant released |
 
 ## KiCad DSN Cross-check
 

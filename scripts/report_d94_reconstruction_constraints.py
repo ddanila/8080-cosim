@@ -241,10 +241,10 @@ def main() -> int:
         if net is None:
             address_accounted = False
             address_traced = False
-            address_rows.append(f"| {pin} | {role} | - | MISSING |")
+            address_rows.append(f"| {pin} | {role} | MISSING |")
         else:
             name, src = net
-            address_rows.append(f"| {pin} | {role} | `{name}` | {src or '-'} |")
+            address_rows.append(f"| {pin} | {role} | `{name}` |")
             if re.search(r"boundary|unresolved|unknown|retired|assumption", f"{name} {src}", re.I):
                 address_traced = False
 
@@ -264,13 +264,13 @@ def main() -> int:
         if net is None:
             if ["D94", pin] in board.get("no_connects", []):
                 output_nets.append("NC")
-                output_rows.append(f"| {pin} | {role} | `NC` | {activity} | owner/photo-confirmed PCB no-connect |")
+                output_rows.append(f"| {pin} | {role} | `NC` | {activity} |")
             else:
-                output_rows.append(f"| {pin} | {role} | - | {activity} | not traced/netted |")
+                output_rows.append(f"| {pin} | {role} | MISSING | {activity} |")
         else:
             name, src = net
             output_nets.append(name)
-            output_rows.append(f"| {pin} | {role} | `{name}` | {activity} | {src or '-'} |")
+            output_rows.append(f"| {pin} | {role} | `{name}` | {activity} |")
 
     enable_rows: list[str] = []
     enable_ok = True
@@ -279,11 +279,11 @@ def main() -> int:
         net = net_for_pin(board, "D94", pin)
         if net is None:
             enable_ok = False
-            enable_rows.append(f"| {pin} | {role} | - | MISSING |")
+            enable_rows.append(f"| {pin} | {role} | MISSING |")
         else:
             name, src = net
             enable_accounted = True
-            enable_rows.append(f"| {pin} | {role} | `{name}` | {src or '-'} |")
+            enable_rows.append(f"| {pin} | {role} | `{name}` |")
             if re.search(r"boundary|unresolved|cannot be uniquely|unknown|pending", src, re.I):
                 enable_ok = False
     enable_output_isolated = net_for_pin(board, "D94", "15")[0] != net_for_pin(board, "D94", "2")[0]
@@ -465,8 +465,12 @@ def main() -> int:
         "",
         "Address summary: all five address inputs are owner-continuity-closed nets.",
         "",
-        "| Pin | Role | Net | Source |",
-        "| ---: | --- | --- | --- |",
+        "Detailed source and owner provenance is retained in each net’s `src`",
+        "field in [the board JSON](../kicad/juku.board.json). Physical holds are",
+        "summarized under Reconstruction Boundary below.",
+        "",
+        "| Pin | Role | Net |",
+        "| ---: | --- | --- |",
     ]
     lines.extend(address_rows)
     lines.extend(enable_rows)
@@ -475,8 +479,10 @@ def main() -> int:
             "",
             "## Output Pins",
             "",
-            "| Pin | Role | Net | Captured activity | Source |",
-            "| ---: | --- | --- | --- | --- |",
+            "Captured activity lists decimal reader addresses.",
+            "",
+            "| Pin | Role | Net | Captured activity |",
+            "| ---: | --- | --- | --- |",
         ]
     )
     lines.extend(output_rows)
