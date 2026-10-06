@@ -38,15 +38,11 @@ rotated upright, reads `510R`: the first glyph has the flat upper stroke
 and lower curve of `5`. This conflicts with schematic `910`, so the physical
 resistance still needs measurement before adopting a value. No separate
 capacitor body is exposed at the C29 position.
-The adjacent July overlap `PXL_20260710_200415237.jpg` ends above this
-resistor pair. The earlier May image `PXL_20260519_201907078.jpg` does
-show the same two bodies: original crop `(2140,250)`–`(2320,720)` rotated
-180° reads `510R` on R106 and `330R` on R35. See
-`ref/photos/juku-pcb-2/r106-cross-date-review.json`. This independently
-confirms the owner-board marking on two dates, while resistance and pad
-connectivity still require measurement. Both owner dates also show no
-separate component body at the visible C29 position; this is owner
-population evidence only, since the candidate annuli remain unpaired.
+The `510R` marking is also visible in the May owner image. The two-date
+comparison and crop details are retained in
+[the R106 review](../ref/photos/juku-pcb-2/r106-cross-date-review.json).
+Neither date shows a separate body at the visible C29 position; this does
+not establish DNP status because the candidate annuli remain unpaired.
 
 The upper and middle front joints beside R106 are the stronger C29 pad-pair
 candidates. Cross-face geometry and visible copper support the upper joint
@@ -134,3 +130,7 @@ registration, population/value checks, and footprint placement. Current routed c
 [factory-wire fidelity](factory-wire-route-fidelity.md) and
 [the routed audit](routed-refresh-audit.md). Source-model alignment does not
 establish owner-board continuity or a completed RC footprint layout.
+
+The HDL represents R35 with `net_boundary U_R35`; it does not simulate the
+330 Ω resistance or the R106/C29 analog response. Its clock propagation
+therefore cannot verify the RC shaping or the resistance checks above.
