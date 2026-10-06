@@ -65,9 +65,3 @@ Full rows are preserved in [the normalized export](../ref/wd1772-vg93/wd1772pla.
 | A labels | 58 |
 | R labels | 8 |
 | Input/output terms | 10 |
-
-## Footer Guide Rows
-
-- `|CCCCCCCCCCCCCCCCCCC|CCCCCCCCCCCCCCCCCCC`
-- `|0123456789012345678|9012345678901234567`
-- `|0         1        | 2         3`

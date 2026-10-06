@@ -108,16 +108,8 @@ def main() -> int:
             table_row(["A labels", duplicate_summary(a_counts)]),
             table_row(["R labels", duplicate_summary(r_counts)]),
             table_row(["Input/output terms", duplicate_summary(term_counts)]),
-            "",
-            "## Footer Guide Rows",
-            "",
         ]
     )
-    if ignored:
-        lines.extend(f"- `{line}`" for line in ignored)
-    else:
-        lines.append("- -")
-
     if failures:
         lines.extend(["", "## Failures", ""])
         lines.extend(f"- {failure}" for failure in failures)
