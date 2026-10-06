@@ -109,11 +109,6 @@ identify the complete upper-ROM matrix without another RESET:
 python3 spinoffs/jukuravi/probe_waitclass.py --port /dev/ttyUSB0
 ```
 
-The completed serial-only T33 investigation is retained in
-[`T33-PLAN.md`](T33-PLAN.md). The decisive direct-INX probe and ROM WAIT
-confirmations ran against the burned T32 image without a re-burn; replacing D1
-then changed the exact faulty register signature to the fully clean result.
-
 If the hardware investigation resumes, the next controlled D55 action is a
 T34 `1C/A637` cold boot, not substitution. A clean T34 result cancels the
 substitution plan; only a repeated T34 `08` opens the controlled discriminator.
@@ -122,9 +117,9 @@ before/after matrix, provenance/socket inspection, rollback criteria, and
 evidence record. Do not combine that discriminator with other rework or
 optional Nano wiring.
 
-The historical CS00015 investigation isolated a D1 16-bit increment fault;
-D1 replacement subsequently produced clean results. To repeat that focused
-discriminator after a T32 boot, without another ROM burn:
+The [completed serial-only T33 investigation](T33-PLAN.md) records the faulty increment
+signature and clean result after replacement. To repeat its focused
+discriminator after a T32 boot:
 
 ```sh
 python3 spinoffs/jukuravi/probe_a12_increment.py --port /dev/ttyUSB0 --attach-loader
