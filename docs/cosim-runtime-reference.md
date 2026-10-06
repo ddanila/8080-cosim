@@ -27,6 +27,14 @@ Set `JUKU_CHECKPOINT_PREFIX` to the output path prefix, then use:
 - `SIGUSR1` after the prompt: write `.ram` and `.state` without stopping.
 - `SIGTERM` or `SIGINT`: stop and write the final checkpoint.
 
+The `.ram` file contains the raw 64 KiB backing RAM array, including RAM
+hidden by ROM overlays. The `.state` file records CPU state and selected
+peripheral latches and counters; it omits data such as pending peripheral
+buffers. These files support diagnostics and controlled checkpoint probes,
+but do not capture everything needed to resume an arbitrary session. The
+[HDL checkpoint loader](juku-top-checkpoint-load.md) uses fixed latch values
+and does not import `.state`.
+
 The stack measurement excludes resident BDOS work reached through `CALL 0005h`
 or `JMP 0005h`. It tracks call depth and the exact stacked return address,
 including page-zero and resident-CCP returns, and freezes at the command's
