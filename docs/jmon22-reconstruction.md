@@ -103,8 +103,8 @@ the checksum, but it would turn Monitor 2.2's first vector initializer from
 second initializer, `LXI H,$FFC4; SHLD $0001`; extending the context from
 two to three bytes on each side correctly rejects the semantic misalignment.
 
-The zero three-byte-context result matters in both directions: no tracked
-related ROM supplies a checksum-closing byte in matching local code, while the
+No donor among the seven searched ROMs supplies a checksum-closing byte
+with matching three-byte flanks, while the
 checksum alone leaves 2,048 possible one-byte edits per block. Block 6 still
 has 898 checksum-closing edits that are literal one-bit changes. Choosing
 among them from opcode plausibility or later-version address relocation would
@@ -113,7 +113,6 @@ The original multi-read captures or a second Monitor 2.2 dump remain required.
 
 ## Preservation rule
 
-- Hypothetical one-byte-patched SHA256: `37c3d2db23dbccb8b7a81a2510f320d50e30f04a260fa6c8efd132241a4675a5`.
-- Patch manifest: `ref/reconstructed-firmware/jmon22-consensus-patch.json`.
-- Do not treat the hypothetical hash as a runnable or complete Monitor 2.2
-  release: its final two ROM blocks still fail their own checksums.
+The [patch manifest](../ref/reconstructed-firmware/jmon22-consensus-patch.json)
+records the hypothetical patched hash. It is not a runnable or complete
+Monitor 2.2 release: the final two blocks still fail their checksums.
