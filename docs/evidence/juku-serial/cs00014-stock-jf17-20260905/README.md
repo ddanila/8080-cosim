@@ -11,7 +11,7 @@ D57 count four (19200), despite the separate NETINIT path and loader selecting
 count eight (9600). The corrected NETWORK9600 CP/M handoff programs count
 eight too. `failed-first.log` records the unsuccessful attempt.
 
-With the corrected image, one unchanged host process (PID 38439):
+With the corrected image, one unchanged host process:
 
 - recognized the already-waiting Janet poll and booted to `A>`;
 - completed remote `DIR` and returned to `A>`;
@@ -25,17 +25,14 @@ restart. Both Janet transfers had zero rejects and both JF17 extensions had
 zero retries. The operator confirmed the first corrected physical CP/M prompt;
 `console.bin` records both banners and both directory listings.
 
-After closing that capture, a replacement host (PID 39110) passively recognized
+After closing that capture, a replacement host passively recognized
 an existing NetDisk request, resumed the running CP/M session without bootstrap,
 and completed another `DIR`. `reconnect.log` records classification and
-`reconnect-console.bin` records that command. The replacement host was left
-running with recovery enabled.
+`reconnect-console.bin` records that command.
 
 Validation: native warning-clean build and startup selftest, runner test,
 stock artifact test, an artifact mutation reproducing the count-four regression
-(rejected), and the full two-boot stock recovery simulator test passed. The
-simulator timeout now allows 90 seconds for Janet, 9600 transfer and CCP reads
-on macOS; PTY serial links alone do not detect a physical baud mismatch.
+(rejected), and the full two-boot stock recovery simulator test passed. PTY serial links alone do not detect a physical baud mismatch.
 
 `boot.json` binds the exact corrected system and JF17 hashes. `host.cap` is the
 closed CRC-protected capture, `host.log` its summary, and `requests.jsonl` the
