@@ -127,11 +127,18 @@ currently stops on an additional D57 failure bit before reaching its T34 cases.
   physical evidence boundaries. The DRAM cells are initialized to zero and
   have no charge-decay model; successful runs do not prove physical power-on
   contents, retention, or refresh sufficiency.
-- Simulation-only CPU sampling, keyboard stimulus, framebuffer access, and
-  interrupt helpers are excluded from LVS by an explicit allowlist in
-  `sync/lvs.py`.
+- LVS compares only instances selected by `sync/map.json`; unmapped simulation
+  adjuncts such as `U_INTR` are outside that comparison. The `SIM_ONLY` pin
+  allowlist in `sync/lvs.py` also excludes CPU sampling, keyboard stimulus,
+  frame ticks, and the second DRAM port from mapped instances.
 
 ## Verification
+
+Run these commands from the repository root. Connectivity checks require
+Python 3 and Yosys; KiCad CLI is optional, with a board-JSON fallback when
+schematic export is unavailable. Simulation checks require Icarus Verilog
+(`iverilog` and `vvp`); boot and cosim checks also require Python 3 and a C
+compiler (`CC`, default `cc`).
 
 ```sh
 sync/check.sh       # modeled KiCad/HDL connectivity
@@ -140,6 +147,12 @@ sync/cosim_check.sh # typed CPU-bus event comparison vs the C emulator (cosim)
 sync/ie7_check.sh   # К555ИЕ7/74LS193 device behavior and cascade
 sync/ie10_check.sh  # К555ИЕ10/74LS161 behavior and traced D103 /13 loop
 ```
+
+`sync/check.sh` regenerates the schematic and HDL JSON netlist, plus the KiCad
+XML netlist when export succeeds. Boot and cosim checks regenerate the ROM hex
+and write framebuffer dumps in the source tree. Counter checks overwrite
+their owning reports after passing; `IE7_REPORT` and `IE10_REPORT` select
+alternate output paths.
 
 See [verification entry points](../sync/README.md) for subsystem and deep checks. A green LVS result proves
 only mapped connectivity; it does not cover omitted pins or validate device
