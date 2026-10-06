@@ -62,7 +62,7 @@ def main() -> int:
     lines = [
         "# Physical D2 `.037` truth", "", "Status: **PHYSICAL READY TRUTH CLASSIFIED AND GUARDED**", "",
         "This generated report reduces the preserved D2 КР556РТ4 image to an exact",
-        "piecewise condition over its eight traced inputs. It describes raw electrical",
+        "piecewise condition over its eight modeled inputs. It describes raw electrical",
         "levels; D0/pin12 is an open-collector input to the pulled-up D30 READY latch.", "",
         "Regenerate from the repository root with Python 3:", "",
         "```sh", "python3 scripts/report_d2_physical_truth.py", "```", "",

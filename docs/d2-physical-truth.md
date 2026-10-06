@@ -3,7 +3,7 @@
 Status: **PHYSICAL READY TRUTH CLASSIFIED AND GUARDED**
 
 This generated report reduces the preserved D2 КР556РТ4 image to an exact
-piecewise condition over its eight traced inputs. It describes raw electrical
+piecewise condition over its eight modeled inputs. It describes raw electrical
 levels; D0/pin12 is an open-collector input to the pulled-up D30 READY latch.
 
 Regenerate from the repository root with Python 3:

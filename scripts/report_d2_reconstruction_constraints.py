@@ -361,7 +361,7 @@ def main() -> int:
             "",
             "## KiCad PCB Cross-check",
             "",
-            "The authoritative PCB source exposes every proved D2 input and adds",
+            "The PCB pad table exposes every modeled D2 input. The source also retains",
             "five legacy D2-to-D4 solder segments whose endpoint pins require",
             "review against the corrected package fit.",
             "",
@@ -388,7 +388,7 @@ def main() -> int:
                 "`kicad/juku.board.json`",
             ]),
             table_row([
-                "Any D2 signal net is traced",
+                "D2 net assignments are present in JSON",
                 "PASS" if signal_nets else "FAIL",
                 ", ".join(f"`{net}`" for net in signal_nets)
                 if signal_nets
@@ -489,9 +489,9 @@ def main() -> int:
             "  into D5 and is not the −5 V supply.",
             "- Known: `ref/physical-proms/validated/d2_037.raw.bin` is the 256-byte",
             f"  authoritative raw low-nibble image, reproduced from {capture_count} independent acquisitions.",
-            "- Remaining closure is complete cycle timing around the continuity-closed `H`",
-            "  edge plus historical corroboration, not D2 content or raw",
-            "  electrical polarity.",
+            "- Remaining closure: the five scan-provenance address routes, legacy",
+            "  D2-to-D4 segment endpoints, and complete WAIT/READY cycle timing.",
+            "  D2 content and raw electrical polarity are validated.",
             "",
         ]
     )

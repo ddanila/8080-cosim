@@ -90,7 +90,7 @@ This checks saved DSN pin assignments, not routed copper connectivity.
 
 ## KiCad PCB Cross-check
 
-The authoritative PCB source exposes every proved D2 input and adds
+The PCB pad table exposes every modeled D2 input. The source also retains
 five legacy D2-to-D4 solder segments whose endpoint pins require
 review against the corrected package fit.
 
@@ -117,7 +117,7 @@ review against the corrected package fit.
 | --- | --- | --- |
 | D2 unused outputs are explicit no-connects | PASS | pins 9, 10, 11; factory symbol draws only D0/pin12 |
 | Board identity names D2 as `.037` RT4 | PASS | `kicad/juku.board.json` |
-| Any D2 signal net is traced | PASS | `A10`, `IORC_N`, `A14`, `CAS`, `A12`, `A15`, `A9`, `WREQ_N`, `GND`, `GND`, `READY_D` |
+| D2 net assignments are present in JSON | PASS | `A10`, `IORC_N`, `A14`, `CAS`, `A12`, `A15`, `A9`, `WREQ_N`, `GND`, `GND`, `READY_D` |
 | Any D2 signal appears in DSN | PASS | `1`=`A10`, `12`=`READY_D`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `2`=`IORC_N`, `3`=`A14`, `4`=`CAS`, `5`=`A12`, `6`=`A15`, `7`=`A9` |
 | Any D2 signal appears in PCB | PASS | `1`=`A10`, `12`=`READY_D`, `13`=`GND`, `14`=`GND`, `15`=`WREQ_N`, `16`=`P5V`, `2`=`IORC_N`, `3`=`A14`, `4`=`CAS`, `5`=`A12`, `6`=`A15`, `7`=`A9`, `8`=`GND` |
 | D2 PCB pad nets match the logical model | PASS | all modeled pins agree; pins 9–11 remain NC |
@@ -160,6 +160,6 @@ review against the corrected package fit.
   into D5 and is not the −5 V supply.
 - Known: `ref/physical-proms/validated/d2_037.raw.bin` is the 256-byte
   authoritative raw low-nibble image, reproduced from 6 independent acquisitions.
-- Remaining closure is complete cycle timing around the continuity-closed `H`
-  edge plus historical corroboration, not D2 content or raw
-  electrical polarity.
+- Remaining closure: the five scan-provenance address routes, legacy
+  D2-to-D4 segment endpoints, and complete WAIT/READY cycle timing.
+  D2 content and raw electrical polarity are validated.
