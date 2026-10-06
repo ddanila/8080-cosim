@@ -141,7 +141,9 @@ polling, without changing the configured baud. JF15 probing continues until
 current boot recipes are in [the bootstrap guide](janet-fastboot.md).
 
 `reconnect_timeout` bounds named serial-device reopen attempts in seconds;
-zero disables reopen. After a disk-session link loss, the host closes the stale
+zero disables reopen. Passive recovery repeats these bounded attempts until
+stopped; this setting does not impose an overall recovery deadline. After a
+disk-session link loss, the host closes the stale
 handle, retries the same configured path every 250 ms, and restores the selected
 disk baud at 8O1. It discards partial requests; recovery mode returns to passive
 discovery, while an ordinary disk session resumes its checked ready handshake.
@@ -190,5 +192,6 @@ return values are not checked. Validate a retained capture with
 before using it as evidence. Captures contain CRC-protected RX, TX and
 local-event records; event flags 1, 2 and 3 denote INFO, WARN and ERROR.
 Startup settings, phase transitions, warnings/errors, media writes, and the
-final summary are explicitly flushed. High-volume INFO request events remain
-buffered so verbose evidence cannot perturb serial timing unnecessarily.
+final summary are explicitly flushed. In captures, high-volume INFO request
+events remain buffered to limit serial timing overhead. Text log entries are
+flushed immediately.
