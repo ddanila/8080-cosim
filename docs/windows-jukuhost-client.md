@@ -86,6 +86,10 @@ serial or media operation to finish. Serial waits use deadlines, including a
 ten-second transmitter-drain limit. File reads, writes and flushes have no
 application timeout, so a stalled filesystem can delay stopping or closing.
 
+Press **Stop** and wait for the session to finish before shutting down Windows.
+If Windows requests shutdown while a session is active, the host requests Stop
+and refuses that shutdown request. Retry shutdown after the host is idle.
+
 ## Serial adapters and changing COM numbers
 
 The port list stores a Windows device-instance identity when the driver
