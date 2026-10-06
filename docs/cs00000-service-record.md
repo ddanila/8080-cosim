@@ -87,28 +87,18 @@ exist in the fitted stock ROM.
 
 ## V15 failure isolation
 
-The retired Python stock-fastboot wrapper successfully loaded and executed the
-exact 128-byte JF15 core at 0100h, but exhausted its fixed extension-probe
-window after roughly four seconds and returned to 9,600-baud stock discovery.
-The display remained at `Janet Load 01`.
+The retired Python wrapper loaded the JF15 core but exhausted its fixed
+extension-probe window. Without RESET, a direct 19,200/8N1 attachment received
+`C5` and completed that same resident core, with no extension or stream retries.
+This isolates the failure to host synchronization and confirms the core and
+CS00000 receive path were functional. Exact artifacts, transfer sizes, CRC and
+timings are retained in the
+[physical evidence](evidence/juku-serial/cs00000-stock-v15-20260821.json).
 
-Without RESET or another stock transfer, a direct 19,200/8N1 attachment then
-received the core's `C5` acknowledgement immediately. It authenticated the
-267-byte extension and 9,267-byte ZX0 stream, installed 16,384 system bytes
-with CRC16/IBM `1C42`, and entered NetDisk v3. The transfer took 6.28 seconds
-for the bulk phase and needed zero extension or stream retries. The first disk
-request arrived 6.945 seconds after attachment. Exact artifact identities and
-measurements are retained in
-[`evidence/juku-serial/cs00000-stock-v15-20260821.json`](evidence/juku-serial/cs00000-stock-v15-20260821.json).
-
-This proves the failed one-command run was a host synchronization policy bug:
-the stock-loaded core and CS00000's 19,200-baud receive path were both alive.
-The portable C host `0.3.0-m6` consequently admits exact JF15, adapts Janet
-line-turn delay only when the client resumes polling or rejects a frame, and
-probes the core until the configured boot deadline. Simulator regressions
-cover a five-second core delay and the complete stock-ROM-to-CP/M path. A
-physical cold run with the new C host was subsequently completed as described
-below.
+C host `0.3.0-m6` corrected the synchronization policy by probing until the
+configured boot deadline and adapting Janet line-turn delay to client responses.
+The physical confirmation below qualifies that historical host/JF15 pair;
+the deployment profile owns the current configuration.
 
 ### Native C-host physical confirmation
 
