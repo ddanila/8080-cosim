@@ -37,13 +37,14 @@ Functional contract
 D96 board-specific constraint
 -----------------------------
 Recovered .009 sheet 3 ties D96.10 2PRE_N and D96.12 2D to the same
-FDC_IRQ_CONDITIONED_N node, while D96.13 2CLR_N is drawn unconnected. This
-wiring cannot drive 2Q low through any documented deterministic control:
+FDC_IRQ_CONDITIONED_N node. The exact sheet-3 detail joins D96.13 2CLR_N
+to D99.10 B2; their upstream sheet-1 source remains unread. With 2CLR_N
+inactive, the shared preset/data node cannot drive 2Q low:
 condition low asynchronously presets Q; condition high makes D=1, so a rising
-clock also sets or preserves Q. Treat an unconnected LS-TTL input as a
-hardware-quality/measurement issue, not as a guaranteed logic-high source.
-Consequently D96 section 2 remains a reconstruction contradiction until the
-pin-13 disposition and pins 9/11 remote endpoints are verified on hardware.
+clock also sets or preserves Q. Only an asserted 2CLR_N supplies the valid
+clear path. Its source and waveform, and the owner-board pin-9/pin-11
+islands, still require verification; the recovered wiring does not establish
+a complete interrupt conditioner.
 
 D96 section 1 ties 1CLR_N/pin1 and 1PRE_N/pin4 together at WREQ_N. WREQ_N low
 therefore invokes the datasheet's simultaneous-assertion row, with both Q1 and

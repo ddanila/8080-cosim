@@ -32,8 +32,8 @@ module d96_irq_constraint_tb;
 
     initial begin
         // Establish Q=0 through the only valid clear path. The recovered board
-        // drawing leaves this pin unconnected; the pulse here is a device-proof
-        // stimulus, not a claim about target-board copper.
+        // drawing joins /CLR2 to D99.10 but leaves their upstream source unread.
+        // The pulse here is a device stimulus, not a recovered board waveform.
         #1 clr_n = 1'b0;
         expect_q(1'b0, "explicit clear establishes Q low");
         #1 clr_n = 1'b1;
