@@ -386,13 +386,13 @@ def main() -> int:
                             for pin, _ in output_pins if net_for_pin(board, "D94", pin))
     official_bom_lead = marker(
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
-        "D94 = К155РЕ3 #2",
-        "progr. .092",
+        "| D94 | К155РЕ3, program `.092` |",
+        "| D8 | К155РЕ3, program `.039` |",
     )
     reused_refdes_guard = marker(
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
         "sheet-3's D94-D108 refdes were re-used for the FDC-era parts",
-        "The drawing's D94-D108 are the К561 CMOS TAPE cluster",
+        "The older `.006` drawing's D94-D108 are the К561 CMOS TAPE cluster",
     )
     scanned_not_d94 = marker(
         "docs/re3-firmware-inspection.md",

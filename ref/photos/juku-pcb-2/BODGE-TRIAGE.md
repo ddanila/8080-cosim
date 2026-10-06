@@ -40,10 +40,7 @@ two assemblies must not be mixed.
 | D106 | К555ИЕ7 | FDC quadrant counter |
 | D107 | КР580ВА86 | low-address bus buffer |
 
-Required compact identity markers: **D2 = РТ4 .037**, **D6 = .038**,
-**D94 = К155РЕ3 #2**, **progr. .092**, and **D105 = К155ЛА3**.
-
-The drawing's D94-D108 are the К561 CMOS TAPE cluster. In the `.009` assembly,
+The older `.006` drawing's D94-D108 are the К561 CMOS TAPE cluster. In the `.009` assembly,
 sheet-3's D94-D108 refdes were re-used for the FDC-era parts. Consequently the
 scanned `.113` and `.117` РЕ3 tables are not substitutes for D94 `.092`.
 

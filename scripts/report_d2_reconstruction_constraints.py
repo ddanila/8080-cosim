@@ -233,8 +233,8 @@ def main() -> int:
     )
     official_bom_lead = marker(
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
-        "D2 = РТ4 .037",
-        "D6 = .038",
+        "| D2 | КР556РТ4, program `.037` |",
+        "| D6 | КР556РТ4, program `.038` |",
     )
     raw_pin_table_lead = marker(
         "ref/photos/juku-pcb-2/BODGE-TRIAGE.md",
