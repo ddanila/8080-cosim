@@ -27,22 +27,28 @@ board evidence). A subsequent control-only attach and a complete smoke
 application session then passed with zero handshake mismatches and zero store
 retries.
 
-## Sessions
+## Qualification evidence
 
-| Capture | Result | Supported claim |
-| --- | --- | --- |
-| `sessions/macos-first-contact/20260806T094437.578482Z.*` | error, attach timeout, 0 bytes both directions | attach timed out with no observed traffic; this capture does not identify the board state |
-| `sessions/macos-t32-attach/20260806T111703.706101Z.*` | error, attach timeout, 35 bytes received, 0 sent | T32 identity frame `011BD62B` received; host timed out waiting for loader-v2 idle reset without transmitting |
-| `sessions/macos-t32-coldboot/20260806T112016.594609Z.*` | ok | full cold boot, exact `1B/D62B`, bitmap `08`, zero mismatches |
-| `sessions/macos-t32-attach2/20260806T112113.469673Z.*` | ok | control-only reattach to the resident loader after the cold boot |
-| `sessions/macos-smoke/20260806T112418.835712Z.*` | ok | verified 134-byte `smoke-4000.bin` upload, CALL, `A=0Ch`, result `534D4F4B00` + `55` fill at `4100h` |
+| Capture | Supported result |
+| --- | --- |
+| [Cold boot](sessions/macos-t32-coldboot/20260806T112016.594609Z.json) | Exact `1B/D62B`, bitmap `08`, zero handshake mismatches |
+| [Reattach](sessions/macos-t32-attach2/20260806T112113.469673Z.json) | Control-only attach to the resident loader after cold boot |
+| [Smoke upload](sessions/macos-smoke/20260806T112418.835712Z.json) | Verified 134-byte `smoke-4000.bin`, CALL/RET with `A=0Ch`, and `534D4F4B00` plus `55` fill at `4100h`; zero store retries |
+
+The earlier [no-traffic attempt](sessions/macos-first-contact/20260806T094437.578482Z.json)
+and [identity-only attempt](sessions/macos-t32-attach/20260806T111703.706101Z.json)
+timed out waiting for loader idle reset without transmitting. The latter
+received the T32 identity frame; neither capture establishes the board’s final
+handshake state.
 
 `--attach-loader` requires a resident loader; its implementation waits for
 loader request tokens and does not perform the cold diagnostic banner
-handshake. The failed capture records a host timeout, not the board’s final
-handshake state. With a cold T32 diagnostic ROM, complete a full session before
+handshake. With a cold T32 diagnostic ROM, complete a full session before
 reattaching without RESET. Service ROMs with an explicit `J` loader entry have
 a separate setup described in [the diagnostic guide](README.md).
+
+The smoke payload is the historical 134-byte image identified by the capture’s
+SHA-256 and readback frames; the current `smoke-4000.bin` has changed.
 
 The macOS smoke session and Linux control both had zero store retries and
 handshake mismatches. These captures qualify the recorded identity, verified
