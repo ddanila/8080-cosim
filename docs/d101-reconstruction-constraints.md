@@ -10,6 +10,10 @@ continuity of IMDRG, D96.9, and three data-input branches remains unmeasured.
 
 ## Command
 
+Run from the repository root. The report requires standard-library Python 3;
+the simulation requires Bash and Icarus Verilog (`iverilog` and `vvp`).
+The generator replaces this report and exits 1 if any listed check fails.
+
 ```sh
 python3 scripts/report_d101_reconstruction_constraints.py
 sync/kp12_check.sh
