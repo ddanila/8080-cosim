@@ -146,12 +146,9 @@ intended image.
 
 ## Physical validation
 
-The frozen Ekta4401 pair was qualified on CS00015 on 2026-08-11.
-The Ekta4402 pair was programmed on
-2026-08-16 through the DOSRAVI/Willem controlled-write path, using only the
-programmer's built-in full read/verify. The programmed devices were labeled
-`Ekta4402low` (D15) and `Ekta4402high` (D16); use the programming-image hashes
-listed above for identity checks.
+Both named pairs have scoped physical qualification on CS00015. The
+Ekta4402 pair was programmed with the Willem's built-in full read/verify;
+use the programming-image hashes above to identify the exact halves.
 
 The Ekta4401 pair first booted physically in CS00015. With no display attached,
 typing `J` alone (no Enter) entered the resident service loader. The retained session
@@ -172,12 +169,9 @@ maintained CP/M Plus image, reaches NetDisk-v3/N4 service, and recovers from a
 fresh stateless host replacement without resetting the machine. Those system
 and timing records belong to `cpm-plus-juku`.
 
-The service design therefore has deterministic desk validation and direct
-physical validation of the recorded byte images. Burning always
-touches both chips: D15 carries the
-banner and table pointer, while D16 carries the copied loader segments and the
-H/J/V code. Program the named D15/D16 files; never load the combined 16 KiB
-image into either 8 KiB device.
+Program both named D15/D16 files: D15 carries the banner and table pointer,
+while D16 carries the copied loader segments and H/J/V code. Never load the
+combined 16 KiB image into either 8 KiB device.
 
 ## Still open
 
