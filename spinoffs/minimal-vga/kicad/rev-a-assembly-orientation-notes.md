@@ -37,9 +37,10 @@ to factory assembly and assign/verify an orderable CPN before export.
 ## Post-Assembly IC Insertion
 
 - Insert owner-supplied `Z0840004PSC` at `U1`.
-- Insert the programmed ROM at `U2` using its 28C256 pin contract. A `27C256`
-  substitution requires explicit write-enable/programming-pin compatibility
-  review; see [the chip map](../docs/rev-a-chip-map.md).
+- Insert the programmed ROM at `U2` using its 28C256 pin contract. The printed
+  `27C256` label does not establish EPROM compatibility: a substitution requires
+  explicit write-enable/programming-pin review; see
+  [the chip map](../docs/rev-a-chip-map.md).
 - Insert owner-supplied `KM4164B-10` DRAMs at `U10`-`U17`.
 - Insert the programmed GAL/PAL devices at `U5` and `U24`.
 - Insert the 74HC04 mode inverter at `U6` as part of the baseline logic.
