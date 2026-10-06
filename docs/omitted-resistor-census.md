@@ -110,12 +110,15 @@ found no secure individual callouts for the other groups. These search limits
 are not proof of physical absence. Require an original-resolution callout or
 registered owner pad pair before assigning a footprint, value or DNP status.
 The supply-range evidence is retained in
-`ref/schematics/x8-power-capacitor-rail-correction.json`.
+[the X8 rail correction](../ref/schematics/x8-power-capacitor-rail-correction.json).
 
 ## Release consequence
 
-The generated board-fidelity gap ledger reads the proved rows above and
-reports zero source-proved passive refs absent from JSON. That closes this
+The [generated board-fidelity gap ledger](board-fidelity-gap-ledger.md) reads
+only the confirmed-components table above, up to the next section heading,
+and compares its expanded reference names with JSON component names. It
+reports zero source-proved passive refs absent from JSON; it does not validate
+the table against drawing pixels or check the parts' placement and endpoints. That closes this
 specific omission count, while many modeled parts still lack physical PCB
 placement, values, individual joins, or owner population checks. Reconcile
 those gaps before treating component coverage, BOM, or a green endpoint check
