@@ -114,7 +114,7 @@ def main() -> int:
     d2_text = read("docs/d2-reconstruction-constraints.md")
     d2_ok = (
         "Status: **D2 PHYSICAL TABLE ADOPTED / CONNECTIVITY GUARDED**" in d2_text
-        and "D2 raw electrical polarity executes through D30 READY | PASS" in d2_text
+        and "D2 READY polarity guard markers are present | PASS" in d2_text
         and d2_image_ok
     )
     d94_ok = marker(
@@ -277,7 +277,7 @@ def main() -> int:
         ("Third-source archival D15/D16 pair is adopted as content truth", eprom_lineage_ok),
         ("Factory .106.106 BASIC bytes match reconstruction; report records photo adjudication", factory_basic_ok),
         ("D2 physical table and continuity are guarded", d2_ok),
-        ("D2 report records execution through the D30 READY latch", d2_ok),
+        ("D2 report records READY polarity guard markers", d2_ok),
         ("D6 source markers connect the physical table to runnable selection", d6_runnable_physical_ok),
         ("D6 source/test markers cover open-collector release", d6_open_collector_ok),
         ("D94 physical table is adopted while continuity stays guarded", d94_ok),

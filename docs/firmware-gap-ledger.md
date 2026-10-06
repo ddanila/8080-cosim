@@ -50,7 +50,7 @@ owning reports and commands for those checks.
 | Third-source archival D15/D16 pair is adopted as content truth | PASS |
 | Factory .106.106 BASIC bytes match reconstruction; report records photo adjudication | PASS |
 | D2 physical table and continuity are guarded | PASS |
-| D2 report records execution through the D30 READY latch | PASS |
+| D2 report records READY polarity guard markers | PASS |
 | D6 source markers connect the physical table to runnable selection | PASS |
 | D6 source/test markers cover open-collector release | PASS |
 | D94 physical table is adopted while continuity stays guarded | PASS |
