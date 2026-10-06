@@ -54,6 +54,11 @@ Each three-bit rate code is also already fitted on the host:
 | 6 | every 32 frames |
 | 7 | every 64 frames |
 
+Nonzero rates use the shared `env_counter`: a step occurs when the counter
+AND the current stage's mask is zero. Key-on and stage changes do not reset
+that counter, so the first step can occur before a full listed interval has
+elapsed. The intervals describe the shared frame cadence.
+
 Thus the packet stores a compact piecewise approximation, not Yamaha rate
 nibbles.  The host fitter must compare its 50 Hz, 4-bit result with an isolated
 Nuked OPL3 reference.  An attack shorter than one frame becomes code 0.
