@@ -51,10 +51,11 @@ currently stops on an additional D57 failure bit before reaching its T34 cases.
   ticks as IR5 with a three-byte CALL vector. The mapped USART IR2/IR3 and other
   interrupt inputs do not receive arbitration or vector service in this HDL
   model. Frame-interrupt tests therefore do not qualify a complete 8259.
-- D2's traced inputs, captured `.037` table, open-collector D0 output and
+- D2's modeled inputs, captured `.037` table, open-collector D0 output and
   D30 READY sampling are modeled. Complete WAIT duration still depends on
-  surrounding clock/control timing; see
-  [the READY bench](../docs/d2-ready-path-check.md).
+  surrounding clock/control timing. Five address routes still await exact
+  source confirmation; see [D2 constraints](../docs/d2-reconstruction-constraints.md)
+  and [the READY bench](../docs/d2-ready-path-check.md).
 - D6's validated `.038` table and chip-removed separate pins 11/12 remain the
   structural/LVS truth. Runnable simulation selects from that physical table
   through `U_DECODE`. All four outputs connect directly
@@ -63,7 +64,7 @@ currently stops on an additional D57 failure bit before reaching its T34 cases.
   [the physical PROM guide](../ref/physical-proms/README.md).
   `decode_prom_functional` is retained only by the B37A diagnostic comparison.
 - D94's validated physical `.092` table is modeled with open-collector outputs,
-  and its first three outputs are wired to the accepted local FDC controls.
+  with D1 feeding D99, D2 feeding D93 `/RE`, and D3 feeding D93 `/WE`.
   D4-D7 are proved no-connects; exact `.009` sheets close D9.7 `CS7` to
   D94.15/D93.3. D0's hidden load beyond its measured pull-up remains open.
 - Some FDC-support devices have package pins and power endpoints in
