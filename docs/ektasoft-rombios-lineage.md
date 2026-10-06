@@ -13,14 +13,16 @@ the vendored EktaSoft images relate to each other.
 Each image's banner carries a per-machine serial and a separate RomBios
 version. The `ektaNN.bin` names come from the serials:
 
-| File | Banner | RomBios | SHA256 |
-| --- | --- | --- | --- |
-| `ekta24.bin` | EktaSoft '88, Serial #0024 | 3.42 | `e1bd9894134ee4085c14bde854780539d3b1e03cfc032c81ec352729e9d69287` |
-| `ekta31.bin` | EktaSoft '88, Serial #0031 | 3.43 | `26f1f4161a547ea60312a250bde9df41c0b07a939c0b880628050eaec18ec4e4` |
-| `ekta32.bin` | EktaSoft '88, Serial #0032 | **2.43** | `1826563e23b5d8bc23c61694ceccb923d6a31778077934ad0338772070671122` |
-| `ekta35.bin` | EktaSoft '88, Serial #0035 | 3.43 | `e8fe5e657037b8f3203f57512cd01cc35f7eaa2a3f0dae8d0ae19378908bd518` |
-| `ekta37.bin` | EktaSoft '88, Serial #0037 | **3.43m** | `fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27` |
-| `ekta43.bin` | EktaSoft **'90**, Serial #0043 | **2.43m** | `39e3ca8978b369632d03c658300654445b898139009f188cb154e2f901238ba7` |
+| File | Banner | RomBios |
+| --- | --- | --- |
+| `ekta24.bin` | EktaSoft '88, Serial #0024 | 3.42 |
+| `ekta31.bin` | EktaSoft '88, Serial #0031 | 3.43 |
+| `ekta32.bin` | EktaSoft '88, Serial #0032 | **2.43** |
+| `ekta35.bin` | EktaSoft '88, Serial #0035 | 3.43 |
+| `ekta37.bin` | EktaSoft '88, Serial #0037 | **3.43m** |
+| `ekta43.bin` | EktaSoft **'90**, Serial #0043 | **2.43m** |
+
+File identities are retained in [the ROM inventory](../roms/README.md).
 
 Serial order does not follow banner version order: #0032 carries 2.43
 between two serials carrying 3.43. The banners identify **2.43/2.43m**
@@ -75,9 +77,8 @@ in [the network BIOS notes](ekta37-netbios-notes.md).
 Comparing #0043 with the other five EktaSoft images gives 12,328–13,814
 unequal byte positions out of 16,384 (reproduced below). This measures
 positional differences; it does not establish source ancestry or distinguish
-changed code from relocated code. The [FDC bus analysis](fdc-bus-polarity.md)
-identifies a shared port-`1Ch/1Dh` bit-stream routine in #0032/#0043 and
-Monitor 2.2.
+changed code from relocated code. Selected register-transfer profiles are
+audited separately in [the FDC bus analysis](fdc-bus-polarity.md).
 
 ## Boot PIT programming across the lines and families
 
@@ -158,8 +159,8 @@ annotated disassemblies of both Monitor images live in
 
 The block-1 convention (additive sum of `000Bh..07FFh` stored at `000Ah`,
 verified by the boot routine at `03E0h`) is documented in
-[`cosim-runtime-reference.md`](cosim-runtime-reference.md). All five
-official images pass. #0043 stores stale `F2h` against computed `57h` —
+[`cosim-runtime-reference.md`](cosim-runtime-reference.md). The five
+images #0024/#0031/#0032/#0035/#0037 pass. #0043 stores stale `F2h` against computed `57h` —
 a checksum inconsistency whose cause is not established by the sum alone. The vendored binary is preserved unmodified; `cosim/trace.c`
 applies an explicitly logged `F2h -> 57h` load-time compatibility patch so
 the image can boot in simulation.
