@@ -58,7 +58,15 @@ sync/jukuhost_m2_check.sh
 
 It compares the frozen Python-era oracle with the sole supported C host, then
 runs stock, stock-assisted JF15, stock-JF17 recovery, C8/JF16, disk, console,
-reconnect, media, wrapper, and current network-ROM fault regressions. To rerun
+reconnect, media, wrapper, and current network-ROM fault regressions.
+
+The JF15 checks use [vendored fixtures](../tests/fixtures/jukuhost-v15/README.md)
+by default. JF17 recovery instead requires the sibling `../cpm-plus-juku`
+checkout, or `CPM_PLUS_JUKU_ROOT`, with these files under `out/`:
+`cpm-plus-juku-stock-recovery-system.bin`,
+`cpm-plus-juku-stock-recovery-fastboot-v17.bin`, and `cpm-plus-juku.img`.
+Missing artifacts fail the test; they are not a skipped qualification.
+After building `build/jukuhost` with `sync/jukuhost_linux_build.sh`, rerun
 only the stock-JF17 target-reset test:
 
 ```sh
