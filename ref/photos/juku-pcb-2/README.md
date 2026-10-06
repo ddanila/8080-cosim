@@ -39,7 +39,7 @@ rejects them.
   inventory and reviewed endpoint table; see `docs/photo-registration.md`.
 
 The July component-side tiles clearly show the КР1818ВГ93 FDC and one populated
-eight-chip КР565РУ5 bank, consistent with D84-D91. Empty D60-D83 expansion
+eight-chip К565РУ5 bank, consistent with D84-D91. Empty D60-D83 expansion
 positions are not evidence of missing production RAM. Some capacitor positions
 are empty and the photographs do not yet establish a complete per-refdes value
 map, so capacitor-value fidelity remains open.

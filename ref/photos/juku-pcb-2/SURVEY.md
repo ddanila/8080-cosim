@@ -13,7 +13,7 @@ session plus two supplemental X3 views (52 retained photographs).
 - `PXL_20260710_200402344.jpg` clearly shows a populated **КР1818ВГ93**.
 
 - The July component-side grid clearly shows a populated eight-chip
-  **КР565РУ5** bank, consistent with D84-D91, while the other DRAM expansion
+  **К565РУ5** bank, consistent with D84-D91, while the other DRAM expansion
   positions are empty.
 - D2, D6, D8, and the D15-D22 ROM positions are socketed according to the
   combined drawing/photo evidence.
@@ -68,8 +68,9 @@ The 30-contact СНП59 designation belongs to X2’s parallel connector.
 
 ## Limitations
 
-Programmer reads, rather than photo sightings, preserve the adopted D2/D94
-byte-level truth. The July grid documents the populated FDC board; it does not
+Repeated programmer reads preserve the adopted D2/D6/D8/D94 tables in
+[the physical PROM archive](../../physical-proms/README.md).
+The July grid documents the populated FDC board; it does not
 close every refdes-to-pad match or hidden conductor. The current
 [functional-pin inventory](../../../docs/unmodeled-footprint-inventory.md)
 identifies remaining holds on D96, D99, D100 and D101. D101's selected
