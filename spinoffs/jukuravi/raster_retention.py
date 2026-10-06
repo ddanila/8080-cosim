@@ -229,8 +229,9 @@ def main() -> int:
                 time.monotonic() - window_started, 6
             )
             print(
-                "JUKURAVI-RASTER: NO RETURN from the hold — decay-consistent "
-                "T34-family signature; hardware RESET required",
+                "JUKURAVI-RASTER: hold upload/verification/RUN failed; "
+                "hold execution and decay are unproven. Inspect the session error; "
+                "RESET may be needed if loader state is unrecoverable.",
                 flush=True,
             )
             raise
