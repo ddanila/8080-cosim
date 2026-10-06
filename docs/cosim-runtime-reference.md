@@ -140,6 +140,15 @@ Diagnostic-ROM checksum and build identities are documented in
 
 ## Bus and DRAM model boundary
 
+`sync/boot_check.sh` compares 9,640 framebuffer bytes with cosim for the
+default 6,000-write boot sample, a self-clocked sample, and a 256-write
+synthetic-ROM sample. It also runs clock-mesh, DRAM and memory-overlay unit
+benches. The wrapper checks dump equality; it does not assert that each
+bench reached its requested write count rather than its time cap. This is
+bounded framebuffer agreement, not a full banner or prompt qualification.
+It overwrites `cosim/vram.bin`, the HDL framebuffer dumps under `hdl/sim/`,
+and `hdl/sim/ekta37.hex`; retain captures needed for comparison before running.
+
 The comparison bench forces READY high and supplies its own PHI1/PHI2 clocks
 and reset pulse. It checks ordered bus events under those stimuli, not the
 board-derived clock, reset or WAIT/READY paths.
