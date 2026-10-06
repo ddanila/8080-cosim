@@ -30,9 +30,8 @@ native-host normal and replacement runs, media/layout checks, manifest-bound
 physical-profile dry runs, and byte-reproducible package test pass. The
 burn-ready package archive SHA-256 is
 `d50a669101a87e7eb82994f94a3780a856c8451175451e93a89da287cfbde25f`.
-Programming and physical promotion are distinct: the pair is ready for the
-writer, while CS00000 cold-video, attended `VIDTEST`, and full workload
-acceptance remain required after installation.
+This package binds programming inputs; the remaining physical acceptance
+requirements are listed below.
 
 ## PC7/POF release after POST
 
@@ -62,8 +61,7 @@ Its acceptance runner and independent audit both pass 2/2 commands. The
 unmodified blank-display control is
 `cpm-plus-juku/out/physical-CS00000-c9-display-resume-20260827-01`.
 
-This proves a C9 ROM-initialization defect. It is not a CS00000 hardware,
-S21-mode, CP/M renderer, MODX, programmer, or host-console defect.
+The live POF change isolates the C9 ROM-initialization defect.
 
 ### Exact implementation contract
 
@@ -76,8 +74,6 @@ S21-mode, CP/M renderer, MODX, programmer, or host-console defect.
   must retain the upper six bits and produce final Port C `01h`.
 - POST failure paths remain in reset view with Port C `80h`, interrupts masked,
   and their existing audible C1--C5 reports.
-- Do not hide the defect in CP/M, `VIDTEST`, or a startup utility. The ROM must
-  establish the correct hardware state before the downloaded system executes.
 - Keep the C9 images and hashes unchanged. The corrected bytes are emitted only
   under a separately named C10 combined image and D15/D16 pair.
 
@@ -103,34 +99,20 @@ remains a separate acceptance requirement:
 - a `DIAG VIDEO` check of POF plus renderer/timing state. Its wording must not
   claim that software has measured the analog VIDEO_OUT waveform or monitor picture;
   and
-- an attended physical `VIDTEST` on a known-working display machine. A remote
-  transcript alone is insufficient; a blank local result fails promotion.
+- attended physical `VIDTEST` as specified under remaining acceptance below.
 
 The five-byte helper remains a bench discriminator only. It must not be
 shipped as a normal recovery dependency or used to turn a failing C10 boot
 into a passing acceptance result.
 
-## C9 behavior to preserve
+## Compatibility
 
-C9 physically established that the following implementation should carry
-forward without redesign:
-
-- unconditional 19,200-baud network boot for either value of reserved S21 bit
-  0;
-- bounded transmitter, receiver, prefix scan, and failure return;
-- local-console authority with best-effort ordered N4 mirroring;
-- recovery after immediate, repeated, and several-minute host outages without
-  RESET;
-- ABI 1.4 failure reason, flags, failed-operation, and reconnect telemetry;
-- A:/B: reads, private-A writes/readback/erase, warm boot, long output, UI,
-  history, status, diagnostics, bulk transfer, and soak;
-- `0100h..9BFFh` TPA and all ABI 1.0--1.4 addresses and calling conventions;
-  and
-- zero clean-path target retries and UART errors in the retained passing
-  physical runs.
-
-The C10 POF change must not alter N3/N4, NetDisk-v3, Fastboot V16, D11 framing,
-host replacement behavior, disk cache layout, or TPA.
+C10 preserves the [C9 transport, ABI and memory contract](network-rom-c9-plan.md),
+including unconditional network boot, bounded resident host-service calls,
+local-console authority and best-effort N4 mirroring. N3/N4, NetDisk-v3,
+Fastboot V16, D11 framing, host replacement, disk cache layout and the TPA
+remain unchanged. C9's physical workload evidence does not qualify C10;
+repeat those workloads during C10 acceptance below.
 
 ## Disk continuity during host replacement
 
@@ -149,8 +131,9 @@ hashes above and record built-in programmer verification.
 
 On CS00000, require cold local video before network load, visible CP/M/MODX
 output, attended `VIDTEST`, exact Port C `01h`, and the retained C9 workloads
-with zero clean-path target retries/UART errors. The five-byte discriminator
-cannot substitute for a correct C10 boot. The known-working RomBios 3.43m/C8 pairs
+with zero clean-path target retries/UART errors. A remote transcript alone
+cannot establish local display acceptance; blank local video fails promotion.
+The five-byte discriminator cannot substitute for a correct C10 boot. The known-working RomBios 3.43m/C8 pairs
 remain rollback paths.
 
 Later C11/C12 features and their physical scope are described in the
