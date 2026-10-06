@@ -24,27 +24,11 @@ reconstructed here.
 ### D55 timer
 
 D55 is the middle of the three КР580ВИ53/8253 PITs and supplies vertical video
-timing. Audible ROM diagnostics produced the following repeatable historical
-behavior:
-
-- T15 (`diag-d0-pit-debug-slow.bin`, SHA-256
-  `34c110f209e7ccfffb3a261bea25b3b2e9d361eaaad57bcde638d744e8eed72a`)
-  always passed all four D54 checkpoints, then stopped variably at D55
-  checkpoints 5, 7, or 8.  These correspond to D55 channel 0 high, channel 2
-  high, and channel 0 low readback respectively.
-- T16 (`diag-d0-d55-stress.bin`, SHA-256
-  `703514bd36ea3fb1c695b91259040571d601880f475f4562698c851ffbdfd0ce`)
-  repeated each D55 predicate 32 times with eight 8080 NOPs of recovery after
-  each control write, count write, and latch command.  Across repeated resets
-  it consistently emitted failure code 3: channel 0 and channel 1 completed,
-  while D55 channel 2 high-value readback failed before the channel 0 low test.
-
-**Superseded diagnosis, 2026-08-09.** The exact `.009` drawing and Intel 8253
-load timing show that T15, T16, T31 and T32 did not establish the D54/D56
-clocks required to transfer their newly written Mode-0 counts into D55 before
-latching them. T16's NOP spacing delayed bus accesses but did not start those
-clock sources. The codes above remain faithful observations, but they no
-longer support “bad or marginal D55” or channel-2 package localization.
+timing. Historical T15/T16/T31/T32 failures used an invalid predicate: they
+latched newly written Mode-0 counts without establishing the D54/D56 clocks
+needed to transfer those counts into D55. T16's extra NOP spacing did not
+start the missing clocks. Those results cannot establish a bad D55 or localize
+a channel-2 package fault.
 
 The corrected raster/D57 channel-2 test described below validates the
 D55.13 output clock path. The broader **D55 counter predicates remain
@@ -99,11 +83,9 @@ history. The repaired-D1 finding, donor-D6/original-D8 provenance, and open D55
 discriminator are unchanged.
 
 On 2026-08-11 the owner temporarily replaced that normal pair with the
-project's Ekta4401 service-ROM pair. Both AT28C64 programming images were
-verified in Willem's built-in post-write read: D15 CRC32 `5E306759`, 8,167
-changed and 25 unchanged bytes; D16 CRC32 `3B734DEC`, 8,173 changed and 19
-unchanged bytes. Both operations verified 8,192/8,192 bytes with zero retries
-and ended with VCC/VPP off. The fitted pair booted and accepted `J` without an
+project's Ekta4401 service-ROM pair. Both AT28C64 programming images passed Willem's post-write verification:
+D15 CRC32 `5E306759`, D16 CRC32 `3B734DEC`.
+The fitted pair booted and accepted `J` without an
 Enter key. The host attached to API v2 with no transport mismatch, passed the
 RAM-preserving PROBE, and observed the 128-row `07A9h` refresh service enabled.
 
