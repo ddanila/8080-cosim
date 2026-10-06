@@ -7,24 +7,16 @@ routed variants share this finding at D8.16 and at the supply pads
 it does not test copper contact elsewhere within a pad or connectivity
 through a zone.
 
-The nearest **existing P5V copper endpoint** in the routed board is R12.1 at
-`(73.500,104.810)` mm, 22.405 mm from D8.16. Another P5V endpoint lies at `(70.000,104.810)` mm, 25.403 mm away.
-D9.16 is a nearby pad-center endpoint at `(118.813,117.118)` mm,
-26.591 mm away. D2.16 lies 19.402 mm away
-at `(77.630,129.905)` mm and is named P5V, but also lacks an exact
-pad-center endpoint. A D8.16-to-D2.16 segment alone would not establish
-a verified connection to the supply rail.
+The nearest existing P5V track/via endpoint is R12.1 at
+`(73.500,104.810)` mm, 22.405 mm away. D2.16 is closer but also lacks an
+exact pad-center endpoint, so a D8-to-D2 segment alone would not establish a
+verified supply connection. Design the feed together with the remaining D2
+supply routing and review nearby signal and ground copper before choosing a
+route.
 
-Nearby signal copper constrains a direct feed: `BA5` passes to the east on
-F.Cu near `(94.000,117.000)`, while `DB7` passes west of the pad on B.Cu
-near `(91.125,116.875)`. The local F.Cu ground route from
-`(88.725,121.625)` through `(93.800,121.625)` to `(102.550,112.875)` is another crossing to account
-for when routing toward D9. The +5 V feed should therefore be designed with
-the remaining D2 supply routing rather than inferred from pad proximity.
-
-These distances and nets come from the current
-`kicad/juku_routed.kicad_pcb` track and pad geometry. They establish the
-local routing review area. Endpoint distance is not the shortest distance
+The position, net and nearest-endpoint distance come from
+[the routed board](../kicad/juku_routed.kicad_pcb). They identify a routing
+review area. Endpoint distance is not the shortest distance
 to a copper segment and does not prove that a branch reaches the supply.
 Use KiCad connectivity and DRC to verify the replica rail after repair.
 These geometric observations do not prove original-board copper. Confirm
