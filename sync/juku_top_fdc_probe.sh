@@ -234,6 +234,12 @@ emit_trace() {
   fi
 }
 
+emit_state() {
+  if [ -n "$2" ]; then
+    printf -- '- %s: `%s`\n' "$1" "$2"
+  fi
+}
+
 cat > "$REPORT" <<EOF
 # $REPORT_TITLE
 
@@ -290,34 +296,36 @@ Recorded settings: \`DISK=$DISK SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$K
 
 ## Stop State
 
-- Disk line: \`${disk_line:-none}\`
-- First VRAM line: \`${first_vram:-none}\`
-- Last VRAM progress line: \`${last_progress:-none}\`
-- VRAM stop line: \`${vram_stop:-none}\`
-- First keyboard line: \`${key_first:-none}\`
-- Last keyboard line: \`${key_last:-none}\`
-- First PIC line: \`${pic_first:-none}\`
-- PIC stop line: \`${pic_stop:-none}\`
-- First PPI key-read line: \`${ppi_key_first:-none}\`
-- First PPI line: \`${ppi_first:-none}\`
-- PPI stop line: \`${ppi_stop:-none}\`
-- First IRQ line: \`${irq_first:-none}\`
-- First raw I/O line: \`${rawio_first:-none}\`
-- Raw I/O stop line: \`${rawio_stop:-none}\`
-- First checksum line: \`${chk_first:-none}\`
-- Last checksum line: \`${chk_last:-none}\`
-- First FDC line: \`${fdc_first:-none}\`
-- FDC stop line: \`${fdc_stop:-none}\`
-- FDC data-stop line: \`${fdc_data_stop:-none}\`
-- EKDOS prompt line: \`${prompt_line:-none}\`
-- EKDOS JBASIC command line: \`${jbasic_cmd_line:-none}\`
-- BASIC READY line: \`${jbasic_ready_line:-none}\`
-- PC stop line: \`${pc_stop:-none}\`
-- Time-cap line: \`${timecap_line:-none}\`
-- CPU state line: \`${cpu_line:-none}\`
-- Visible state line: \`${state_line:-none}\`
-- I/O summary line: \`${io_summary:-none}\`
-- FDC state line: \`${fdc_state:-none}\`
+$(
+emit_state 'Disk line' "$disk_line"
+emit_state 'First VRAM line' "$first_vram"
+emit_state 'Last VRAM progress line' "$last_progress"
+emit_state 'VRAM stop line' "$vram_stop"
+emit_state 'First keyboard line' "$key_first"
+emit_state 'Last keyboard line' "$key_last"
+emit_state 'First PIC line' "$pic_first"
+emit_state 'PIC stop line' "$pic_stop"
+emit_state 'First PPI key-read line' "$ppi_key_first"
+emit_state 'First PPI line' "$ppi_first"
+emit_state 'PPI stop line' "$ppi_stop"
+emit_state 'First IRQ line' "$irq_first"
+emit_state 'First raw I/O line' "$rawio_first"
+emit_state 'Raw I/O stop line' "$rawio_stop"
+emit_state 'First checksum line' "$chk_first"
+emit_state 'Last checksum line' "$chk_last"
+emit_state 'First FDC line' "$fdc_first"
+emit_state 'FDC stop line' "$fdc_stop"
+emit_state 'FDC data-stop line' "$fdc_data_stop"
+emit_state 'EKDOS prompt line' "$prompt_line"
+emit_state 'EKDOS JBASIC command line' "$jbasic_cmd_line"
+emit_state 'BASIC READY line' "$jbasic_ready_line"
+emit_state 'PC stop line' "$pc_stop"
+emit_state 'Time-cap line' "$timecap_line"
+emit_state 'CPU state line' "$cpu_line"
+emit_state 'Visible state line' "$state_line"
+emit_state 'I/O summary line' "$io_summary"
+emit_state 'FDC state line' "$fdc_state"
+)
 
 $(emit_trace 'Checksum Trace' '^\[CHKHDL')
 $(emit_trace 'PPI0 Trace' '^\[PPI0\]')
