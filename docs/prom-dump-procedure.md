@@ -11,8 +11,9 @@ photographed EPROMs have not supplied its contents. See [programming images](epr
 PROM capture consistency does not close circuit continuity or timing holds;
 see [D94 constraints](d94-reconstruction-constraints.md) for the FDC boundary.
 
-Factory programmed-part drawings are indexed in `ref/baltijets-tech-docs/`,
-but their programming tables are marked `на диске`. The optional
+Factory programmed-part drawings are indexed in `ref/baltijets-tech-docs/`.
+The `.037/.038/.039/.092` small-PROM tables are not printed in that packet;
+its relevant table references are marked `на диске`. The optional
 [community request](community-prom-media-request.md) covers independent dumps
 and `JUKU-1` media.
 
