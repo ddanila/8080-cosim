@@ -84,7 +84,7 @@ def build() -> tuple[list[dict[str, str | bool]], list[str]]:
     )
     add_check(
         checks,
-        "All populated DRAM sockets retain the JEDEC 4164 pin classes",
+        "D84-D91 modeled pin classes match JEDEC 4164",
         all(
             item["pins"].get("1") == "NC_VBB_OPTION"
             and item["pins"].get("2") == "DI"

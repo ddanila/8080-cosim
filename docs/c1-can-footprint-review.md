@@ -18,7 +18,7 @@ records the D13-local registration and visible copper:
   remain unverified.
 
 The [reset series-branch guide](reset-c21-r20-source-correction.md) covers
-C21/R20 topology and routed repair. The evidence review retains pixel waypoints and cross-face fit residuals.
+C21/R20 topology and routed repair.
 
 R3 is the vertical red body partly hidden behind C1 in the
 component photo, at the position labelled R3 by the assembly drawing. The
@@ -36,11 +36,5 @@ footprint and part selection until the two owner holes and their board
 coordinates are confirmed. Then choose a matching physical footprint. The nearby R36
 trace disappears under a white wire; the photograph does not close it to C1.
 
-Transferring the two solder joints through the *current* source-PCB D13 package
-frame gives search points near `(18.13,201.37)` mm for C1.2/GND and
-`(18.13,221.37)` mm for the marked C1.1/positive end. These coordinates depend
-on D13's absolute placement and must be checked against a separate board
-registration before changing copper.
-
-Source crops, hashes, and remaining checks are recorded in
+Source crops, hashes, tentative board coordinates, and remaining checks are recorded in
 `ref/photos/juku-pcb-2/c1-can-polarity-review.json`.
