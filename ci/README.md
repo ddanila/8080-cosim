@@ -1,7 +1,7 @@
 # Hosted CI budgets
 
-Every Actions job has a ten-minute hard deadline; shell steps have a
-five-minute deadline except the Rev B TTL boot, capped at eight minutes. Timeouts fail the check: they are never converted into
+Actions jobs have a hard deadline of at most ten minutes; shell steps are
+capped at five minutes except the Rev B TTL boot, capped at eight minutes. Timeouts fail the check: they are never converted into
 passes. The always-on generic workflow validates these limits and the HDL
 entrypoint manifest, with regression tests for both contracts.
 
@@ -48,6 +48,14 @@ to a semantic review of every document.
 
 ## Coverage kept local
 
+- Native host: generic CI runs `sync/jukuhost_linux_check.sh`, covering the
+  build, configuration, PTYs, vendored JF15 boot/delay, reconnect and Python-host
+  retirement checks. The complete `sync/jukuhost_m2_check.sh` remains a local
+  promotion gate; generic CI does not execute its five-system stock sweep,
+  JF17 target-reset recovery or C8 host co-simulation. See
+  [verification entry points](../sync/README.md#behavioral-checks) for the
+  separate commands and JF17 artifact prerequisites. The network-ROM ABI/fault
+  matrix runs in its selected HDL lane.
 - Network ROM: CI retains the complete fast cosim ABI/fault matrix, elaborates
   both structural ROM testbenches, and executes the focused video POF guard.
   Run the complete firmware/ABI/NetDisk structural matrix locally with
