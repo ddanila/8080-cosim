@@ -7,7 +7,9 @@ The tests used T32 version `1Bh`, CRC16 `D62B`, SHA-256
 The recorded setup used its loader API v2 through X3 at 2400 baud. T32 is
 no longer fitted in CS00015; see the
 [current service record](../../docs/cs00015-service-record.md). Reproduction
-requires a compatible diagnostic-loader setup and NASM to build the probe.
+requires a compatible diagnostic-loader setup, Python 3 on a POSIX host
+(the serial helper uses `termios`/`fcntl`), and NASM to build the probe.
+Run the command below from the repository root.
 
 The [T32 physical record](T32-PHYSICAL.md) retains the memory/instruction
 controls, ROM WAIT-class comparisons and before/after D1 replacement evidence.
@@ -52,5 +54,6 @@ expectations in
 Start the helper before RESET for a fresh T32 boot; it checks `1B/D62B`.
 `--attach-loader` uses an already-resident API-v2 loader without checking that
 cold-boot identity. The helper exits 0 for either recognized `CLEAN` or
-`D1 FAULT CONFIRMED` output, and 2 for an unrecognized result; exit 0 alone
-does not mean the CPU passed.
+`D1 FAULT CONFIRMED` output, and 2 for an unrecognized well-formed result.
+Transport and malformed-result failures return other nonzero codes. Exit 0
+alone does not mean the CPU passed.
