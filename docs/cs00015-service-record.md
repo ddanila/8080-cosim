@@ -157,19 +157,11 @@ with its stock ROM, and CS00000 is the other home-lab diagnostic candidate; see
 | D1 16-bit increment path | The original D1 lost an already-high A12 during INX; carry and DAD worked | Confirmed and repaired: the fault repeated immediately before replacement and the unchanged probe passed immediately afterward |
 | Currently fitted firmware | JukuNet C8 / ABI 1.3 D15/D16 pair | Repeated automatic 19,200-baud V16 boot, NetDisk-v3/N4, diagnostics, keyboard, sound, write/warm-boot/soak, and live reconnect passed blind qualification. On 2026-08-21 a native arm64 macOS host additionally passed a cold `STATUS`/`DIAG ALL`/`N4BULK`/`SOAK` run. Subsequent two-monitor testing found stable sync but no pixels in S21 40x24, 53x24, or 80x24. A raw `55h`/`AAh` framebuffer write/read passed on CS00015 but remained invisible; the identical corrected probe produced stable visible stripes on stock-ROM CS00014. This isolates a CS00015 board-local video-data fault after CPU-visible framebuffer storage; see the CP/M Plus physical record. |
 
-The preceding Ekta4402 image is SHA-256
-`20ff871307b65523428b6ce21e8153842b54c070cd897826154735af6cea6378`;
-its low/high halves are respectively
-`ee87c5b199b409c97909f0eb2b7cfd24cbee2537569bbcdec378631ec8fc85d5`
-and `e76587d94189ce8d1cf33ee95cb50f68f5d62280a9dd675ded006eb32232e6e7`.
-The retained Jukuravi evidence is under
-`spinoffs/jukuravi/sessions/cs00015-ekta4402-j-physical/`. The first capture
-received no bytes because its host timeout expired before `J` was entered; it
-is timing chronology, not a board failure. Two immediate no-reset attaches
-then completed with zero mismatch. Both proved API-v2 PROBE and 128-row
-software refresh; the second also read 32 bytes at `4000h` without modifying
-RAM. Ekta4401 and Ekta4402 remain frozen preceding physical baselines, not the
-currently fitted firmware.
+Ekta4401 and Ekta4402 were temporary service-ROM baselines, not the currently
+fitted firmware. The [remix catalog](../spinoffs/jukuravi/remix/README.md)
+identifies their artifacts; the
+[Ekta4402 physical record](../spinoffs/jukuravi/sessions/cs00015-ekta4402-j-physical/README.md)
+retains its API-v2 PROBE, software-refresh and READ evidence.
 
 The superseded C6 pair remains the rollback baseline. Its combined and
 D15/D16 identities are pinned in the
@@ -193,5 +185,5 @@ CS00015 diagnostic cable can therefore use X3.9/SOUT, X3.4/SIN, X3.5/CTS,
 and X3.7/GND through an RS-232 level interface.  X3 must not be connected
 directly to TTL UART pins.
 
-This document records preservation and repair evidence only.  Neither finding
-changes the replica's adopted firmware or generic circuit model.
+This document records preservation and repair evidence only.  These findings do not
+change the replica's adopted firmware or generic circuit model.
