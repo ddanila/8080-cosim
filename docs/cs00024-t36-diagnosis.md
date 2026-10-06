@@ -60,11 +60,10 @@ intentional; the union is exactly `4000h..BFFFh`, and each code home is tested
 by the opposite stage. The six-second delay was **refresh-on**, so this proves
 the refresh solution and RAM path rather than six-second raw cell retention.
 
-Across all recorded uploads, 282 verified chunks carried 8,642 bytes. Sixteen
-LOAD chunks and two independent readbacks needed more than one transaction,
-but all finished exact, no chunk needed a store retry, and the maximum was
-three attempts. That pattern, plus the explicit 12 ms outer-CRC rejection,
-supports a recoverable link/parser margin issue rather than failed RAM writes.
+All recorded upload chunks and independent readbacks eventually matched,
+with no store retries. The bounded transaction retries and explicit 12 ms
+outer-CRC rejection support a recoverable link/parser margin issue rather
+than failed RAM writes; exact totals remain in the session JSON.
 The exact host/PTTY regression uses the same 6 and 12 ms symbol guards
 under deterministic DRAM decay; both points pass and the model observes all
 128 rows inside the retention deadline. Thus neither correct T36 refresh nor
