@@ -132,8 +132,7 @@ separate. The deterministic simulator artifacts are:
 In its default full mode, `sync/network_first_rom_hdl_check.sh` runs the C12
 ABI self-test through the structural VM80A/Juku model, including call-gate
 dispatch, POF release, runtime transition, retained remap, translated keyboard
-input, and serial
-completion. With `--ci`, it elaborates the ROM benches and runs only the
+input, and serial completion. With `--ci`, it elaborates the ROM benches and runs only the
 focused POF simulation. The exhaustive 4x4 framebuffer oracle remains in
 the C-model matrix.
 
@@ -144,17 +143,10 @@ STATUS/DIAG reporting, and C12-specific `VIDTEST`. Its named system, Fastboot,
 release image and manifest-bound physical workloads remain separate from older
 release artifacts. The Windows host embeds matching stock/C11/C12 payloads;
 actual-PE Wine sessions cover boot, NetDisk, A: snapshots, mounting B:, captures
-and host-event conversion to JSON. They do not require a B: read. This conversion
-does not independently decode
-the RX/TX protocol frames; see
+and host-event conversion to JSON. They do not require a B: read. This conversion does not independently decode the RX/TX protocol frames; see
 [capture conversion](portable-c-host-implementation.md#capture-conversion).
 See [Windows qualification](windows-jukuhost-client-implementation.md)
 for the platform boundary.
-
-The focused CS00000 results above do not complete broader release-profile
-qualification on the corrected pair. Real Windows serial hardware also needs
-its own lifecycle and endurance qualification; Wine is not evidence for that
-boundary.
 
 The older production-Linux-host stress extension is not a passing C12 gate:
 it accumulated seven modeled USART overruns and missed the final warm-boot
