@@ -18,10 +18,13 @@ From that model, the project maintains:
 3. runnable device behavior checked against `cosim`, with MAME as a
    reference for selected machine behavior.
 
-The boot path has converged: `juku_top` executes real firmware and matches the
-software oracle. The full machine has not converged while physical endpoints remain untraced
-or represented only by boundary nets, and simulation-only paths stand in for
-the shared DRAM/video timing.
+`juku_top` executes real firmware. The [boot guard](../sync/boot_check.sh)
+compares framebuffer bytes with `cosim` at a bounded video-write stop, and the
+[bus guard](../sync/cosim_check.sh) compares ordered CPU-bus events within its
+configured window. These checks cover their named ROM and model profiles.
+Physical endpoints remain untraced or represented only by boundary nets, and
+simulation-only paths still stand in for shared DRAM/video timing; the full
+machine has not converged.
 
 No green check has a wider meaning than its scope:
 
