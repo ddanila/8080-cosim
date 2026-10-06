@@ -163,14 +163,17 @@ netlist: per the exploitation plan, sheets 1–2 are audited by subsystem and
 only new/divergent evidence is transcribed in full; sheet 3 is the wholesale
 replacement circuit and is covered pin-by-pin by the linked maps.
 
-Regenerate with:
+Run from the repository root with Python 3 (standard library only):
 
 ```sh
 python3 scripts/report_dgsh5_109_009_e3_audit.py
 ```
 
-The generator preserves the existing remaining-boundaries section, which is
-maintained from source and owner-photo reviews.
+The command overwrites this report after its input checks pass. A missing
+input, photo hash mismatch, missing prose marker, or endpoint invariant failure
+stops generation with a nonzero exit status. The generator preserves the existing
+remaining-boundaries section, which is maintained from source and owner-photo
+reviews; those retained paragraphs are not revalidated by regeneration.
 
 ## Drawing identity and coverage
 
@@ -241,9 +244,10 @@ stronger.
   Sheet 3 joins D101 section-A inputs pins3/4/5/6 at marked dots; owner
   imagery independently closes pin4 to R92/R99, while physical continuity
   of D96.9 and pins3/5/6 to that island remains unmeasured.
-- X4.2–.5 retain revision/cable disposition because target sheet 3 omits them;
-  X4.1–.6 are grouped returns on the НГМД side but unseen cable conductors are
-  not invented.
+- Processor X4.1 is explicitly NC, X4.2–.5 are absent from sheet 3, and
+  X4.6 is GND. The НГМД connector groups **XS5.1–.6** as returns; that does
+  not assign processor X4.1–.5 to ground or establish a straight-through
+  cable. See [the connector map](fdc-x4-ngmd-wire-map.md) for contact dispositions.
 - The factory sheet's reset label polarity and physical FDC clock/analog edge
   quality remain bring-up measurements, not missing transcription.
 
