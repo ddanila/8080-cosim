@@ -47,7 +47,7 @@ Three overlapping component photographs identify the same notch-down
 `К155АГ3 8901` package beside the right board edge. Held-out-validated
 component and reflected local-package fits register the marked AG3.
 All four outer AG3 contacts align with the independent solder columns
-x807/990 and rows y89/536; see `d56-fit-correction.json`.
+x807/990 and rows y89/536; see [the D56 fit correction](../ref/photos/juku-pcb-2/d56-fit-correction.json).
 The drawing's three leaders register as the separate left annulus,
 D56.5, and D56.12 at one physical level. Assembly note 11 says
 tubing positions 157 and 150 are fitted at solder locations. Position 150
@@ -138,7 +138,7 @@ A D11-local cross-face fit puts all eight D14 contacts on the visible
 2×4 solder field in `200506061`: D14.2 near `(2426,1376)` and D14.7
 near `(2288,1376)`. It also maps the fifth component hole to the
 distinct solder drill near `(2424,1513)`; see
-`d14-cross-face-contact-fit.json` for the accepted registration.
+[the D14 cross-face fit](../ref/photos/juku-pcb-2/d14-cross-face-contact-fit.json) for the accepted registration.
 On that solder face, a bare-board gap separates the long tinned strip
 holding the fifth drill from D14.4's solder cap. Their observed local
 join is the component-face stem. The strip runs west to an exposed
@@ -211,7 +211,7 @@ hold for direct continuity; no source net or auxiliary drill is changed.
 - `PXL_20260711_114633498.jpg`: enlarged D15 Разрезать operation.
 - `PXL_20260711_114638730.MP.jpg`: full-resolution positions 150/159 context.
 - `PXL_20260711_114649169.jpg`: assembly note 11 identifies position 150 as tubing at solder locations.
-- `factory-modification-registration.json`: D56 field registration, D15/D14 closures, and two-view D11 registration.
+- [Factory modification registration](../ref/photos/dgsh5-109-009-sb/factory-modification-registration.json): D56 field registration, D15/D14 closures, and two-view D11 registration.
 - `ref/photos/juku-pcb-2/BODGE-TRIAGE.md`: factory-versus-owner disposition.
 
 ## Release rule
