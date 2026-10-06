@@ -111,15 +111,11 @@ configuration; see [the service record](../../docs/cs00015-service-record.md).
 python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
   --attach-loader --arm none \
   --log-dir spinoffs/jukuravi/sessions/cs00015-ekta4401-raster-control
-
-python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
-  --attach-loader --arm raster \
-  --log-dir spinoffs/jukuravi/sessions/cs00015-ekta4401-raster-armed
-
-python3 spinoffs/jukuravi/raster_retention.py --port /dev/ttyUSB0 \
-  --attach-loader --arm raster-syncb \
-  --log-dir spinoffs/jukuravi/sessions/cs00015-ekta4401-raster-syncb
 ```
+
+For the remaining CS00015 stages, use the same command with `--arm raster`
+or `--arm raster-syncb` and a distinct `--log-dir` for each stage. RESET and
+enter `J` between invocations.
 
 On macOS select the adapter's actual `cu.*` node with `--port`; see
 [the macOS acceptance record](MACOS-BENCH.md). The default 25 s hold exceeds

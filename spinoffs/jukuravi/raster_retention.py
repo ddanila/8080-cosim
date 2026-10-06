@@ -13,8 +13,9 @@ Both entry paths then perform the same unrefreshed hold:
 4. after RETURN, read back the marker and the hold image and map any
    differences to physical MK4564 rows.
 
-A missing RETURN or a post-hold transport loss is itself the decay verdict:
-it reproduces the historical T34 idle signature and requires hardware RESET.
+A missing RETURN or transport failure does not by itself establish decay or
+prove that the hold ran. Inspect the session error and operation evidence;
+RESET may be needed if loader state is unrecoverable.
 See RASTER-REFRESH-EXPERIMENT.md for the pre-registered interpretation.
 """
 
