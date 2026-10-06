@@ -71,6 +71,12 @@ table is consistent with (though not proof of) the known read damage; see
 
 ## Reproduction
 
+Run from the repository root with Python 3 and the retained ROM binaries.
+This prints ekta37’s two dispatch tables; it does not execute the handlers
+or qualify command semantics on other images. The boot table contains a
+second source key `N` or `T` according to the image above, so do not send a
+`N` to select tape on a TapeBios ROM; its second source key is `T`.
+
 ```sh
 python3 - <<'EOF'
 rom = open("roms/ekta37.bin","rb").read()
