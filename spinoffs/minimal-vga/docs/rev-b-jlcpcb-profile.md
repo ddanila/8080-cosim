@@ -2,7 +2,7 @@
 
 Status: **PASS / PROFILE FROZEN**, recorded 2026-08-28. This profile governs the
 five independent bare-PCB archives produced at R5.J2. It does not authorize upload or
-ordering; `rev-b-five-board-order-plan.md` remains on **ORDER HOLD**.
+ordering; [the order plan](rev-b-five-board-order-plan.md) remains on **ORDER HOLD**.
 
 The machine-readable source is `kicad/revb/jlcpcb-profile.json`; the release gate is
 `kicad/revb/check_revb_jlcpcb.py`. The vendor limits and quote selections below
@@ -40,6 +40,8 @@ quote before release/upload; the checker does not query the vendor.
 - The DS1813's exact inline TO-92 pitch is 1.27 mm. Its pads are enlarged to a
   0.18-mm ring with 0.15-mm local clearance, equal to JLCPCB's 2-layer absolute;
   changing to a wide footprint would require bending the ordered part's leads.
+  The checker applies the same 0.18-mm ring exception and 0.15-mm local
+  clearance to I/O `Q1`; Video `J_VGA` also permits 0.15-mm local clearance.
 - Plated slots are at least 0.50 mm wide and at least twice as long as wide; non-plated
   slots are at least 1.0 mm wide. The profile floor is 1.0-mm silk text with
   0.15-mm strokes; the separate [GOST contract](rev-b-silkscreen-audit.md) requires
@@ -85,8 +87,10 @@ revb_have KICAD_CLI && revb_have KICAD_PYTHON && \
     --self-test --package-root fab/minimal-vga/revb/package
 ```
 
-Omit `--package-root` for board-only checking. The Python checker exits 2 if
-`pcbnew` cannot be imported; callers may skip it when CAD tools are missing.
+Omit `--package-root` for board-only checking. The Python checker exits 0 when the selected checks pass, 1 for profile or
+self-test failures, and 2 if `pcbnew` cannot be imported. A caller skipping
+missing CAD tools has not passed this gate. The command reads sources and
+archives without rewriting them; DRC uses temporary reports.
 
 The exporter runs this gate before and after packaging. Exact archive members
 and hashes are recorded in the [package manifest](rev-b-five-board-package-manifest.json).
