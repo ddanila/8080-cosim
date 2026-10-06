@@ -59,6 +59,9 @@ Use Python 3.10+ and cpmtools (`mkfs.cpm`, `cpmcp`, and `cpmls` on PATH).
 The builder uses the project disk definitions automatically. Follow the
 [assembler setup](README.md#reproduce) for the pinned zmac build or a
 compatible `ZMAC` override.
+The builder creates the output directory and overwrites the six JPS payloads,
+player/source copies, logical and native disk images, and `report.json` there.
+Use a separate output directory for each trial you need to preserve.
 Mount the resulting native `normalization-ab.cpm` image as drive B: with
 the host's read-only media policy; the builder does not write-protect the file.
 See [the hosting guide](../../docs/janet-fastboot.md) for media policies. The exact
@@ -72,6 +75,15 @@ The normalization regression covers exact shared scaling, untouched structure
 and silence, idempotence, full-scale no-op behavior and corrupt/unsupported
 input refusal. All 44 baseline payloads normalize without size changes and
 reach a component peak of 15; a second normalization leaves them unchanged.
+
+Run the synthetic format regression from the repository root:
+
+```sh
+python3 tests/jukupoly_normalization_test.py
+```
+
+This command checks synthetic payloads; it does not rebuild the listening disk
+or repeat the full-song cycle measurements below.
 
 All six A/B payloads completed full 8080 cycle simulation under the exact
 trial player. Each pair has identical frame counts, frame timing, sample-loop
