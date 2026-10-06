@@ -21,16 +21,13 @@ pitch must not be adopted without registering these six installed joints.
 
 ## Supported trial scale
 
-In solder image `PXL_20260710_200537608.jpg`, the can pairs span roughly
-625 pixels and the four labeled power landings have roughly 125-pixel
-intervals. The source model's 5 mm landing interval gives a 25 mm trial
-span. An independent D13 DIP-14 scale in the same image gives about
-25.8 mm for that can span; see the
+Solder image `PXL_20260710_200537608.jpg` supports an approximate 25–26 mm
+can-joint span using the modeled power-landing spacing and an independent
+D13 DIP-14 scale; see the
 [package registration](../ref/photos/juku-pcb-2/local-package-registration.json).
 
-These approximate reads support a 25–26 mm trial range. Perspective,
-solder-blob center uncertainty, and separation from D13 prevent treating
-that range as a certified drill pattern. Register the six can joints and
+Perspective, solder-blob center uncertainty, and separation from D13
+prevent treating that trial range as a certified drill pattern. Register the six can joints and
 four power landings locally on both faces before selecting final pitch
 and coordinates.
 
@@ -38,9 +35,8 @@ and coordinates.
 
 E4 is the three-pad +12 V/+5 V DRAM-rail selector. Its source-model
 provenance identifies the sheet-2 power corner; its physical joints and
-assembly placement are unregistered. A 25 mm axial placement trial
-collided with the current E4 footprint. That collision does not identify
-which placement is wrong.
+assembly placement are unregistered. Register its position together with
+the adjacent capacitors before choosing their final footprints.
 
 Neither the solder view above nor the independent May close-up
 `PXL_20260519_202052986.jpg` identifies a unique E4 three-joint row.
@@ -49,8 +45,16 @@ moving either footprint.
 
 ## Closing the hold
 
-This mechanical fabrication hold is separate from the corrected C32/C33
-logical rail names and routed electrical nets. Register the owner joints
+The source and both routed boards assign the capacitor pads as follows:
+
+| Ref | Pad 1 (positive) | Pad 2 (negative) |
+| --- | --- | --- |
+| C31 | `P5V` | `GND` |
+| C32 | `P12V` | `GND` |
+| C33 | `GND` | `M12V` |
+
+These model assignments do not close the mechanical fabrication hold or
+prove owner-board continuity. Register the owner joints
 to board coordinates, select and place axial footprints, refresh copper
 in both routed variants, then run DRC and pad-net/rail review. Confirm
 original-board rail continuity separately. Installed can markings are in
