@@ -1,10 +1,9 @@
 # JukuPoly: three-voice pin-pulse synthesis
 
-On 2026-08-29, a 163-byte strict-8080 CP/M transient produced three
-simultaneous pitched voices through an unmodified Juku speaker on physical
-board CS00000.  The final program averaged approximately 10.97 kHz in the
-cycle model and was judged clearly audible and musically convincing at the
-bench.
+The 163-byte strict-8080 CP/M transient produces three pitched voices
+through D57 channel 1. Its cycle model averages approximately 10.97 kHz;
+[physical CS00000 runs](sessions/cs00000-three-voice-physical/README.md)
+confirmed audible playback and clean return to CP/M.
 
 This experiment was inspired by shiru8bit's 2024 article
 [“Секреты Тима Фоллина, бипер, Спектрум и QChan”][qchan].  It is an independent
@@ -53,16 +52,11 @@ and CP/M processing pause until the nine-second transient returns.
 
 ## Loudness
 
-The first physical image used pulse widths of 16, 8, and 4 microseconds, with
-28 microseconds for a coincident three-voice event.  It worked, but the bench
-assessment was “very interesting and not that bad” at very low volume.
-
-The retained final version ORs a `C0h` drive bias into every nonzero voice mask.
+The current version ORs a `C0h` drive bias into every nonzero voice mask.
 At the 2 MHz PIT input this produces approximately 100–124 microsecond pulses.
-It makes the three voices more even and materially louder.  Their combined
-average low time remains below roughly 10%, comfortably below the 50% square
-wave used by the existing ROM melody player.  The louder physical run was
-assessed at the bench as a “Fantastic result!”.
+Their combined average low time remains below roughly 10%, compared with
+the 50% square wave used by the ROM melody player. The physical session
+record retains the quieter prototype and the operator's listening comparison.
 
 ## Reproducible result
 
