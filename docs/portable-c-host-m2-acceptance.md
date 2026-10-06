@@ -52,6 +52,13 @@ sessions use JF17; see [stock bootstrap and recovery](janet-fastboot.md).
 
 ## Reproducible gate
 
+Run from the repository root on Linux with Bash, Python 3/Unix PTY support,
+a C compiler (`CC`, default `cc`), and materialized fixture assets. The C8
+session test requires prebuilt system, V16 stage, full A: image and native B:
+media in the adjacent `cpm-plus-juku/out/`; `CPM_PLUS_JUKU_ROOT` selects another
+checkout. The network-ROM builder uses the pinned zmac source and needs `make`,
+`bison` and a compiler if its executable is absent. Initialize submodules first.
+
 Run the complete local gate with:
 
 ```sh
@@ -61,11 +68,8 @@ sync/jukuhost_m2_check.sh
 It runs the frozen Python-era oracle and five-system suite, portable/native C
 tests, PTY media/evidence/reconnect tests, stock and C8 end-to-end simulator
 workloads, operational-wrapper checks, and the current network-ROM ABI/fault
-matrix. On 2026-08-20 it completed with:
-
-```text
-JUKUHOST-M2-CHECK: PASS (Linux parity; C-only production host)
-```
+matrix. The recorded 2026-08-20 run passed; this historical result does not
+establish a pass for a later source tree or changed sibling artifacts.
 
 The structural UART/ROM checks also passed separately:
 
