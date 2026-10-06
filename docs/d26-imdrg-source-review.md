@@ -18,5 +18,5 @@ The source model has `FDC_IMDRG` at both pins. Structural HDL uses
 PPI0 PA6 for D101's section-A active-low enable; the runnable model still
 holds D101's unmeasured first-half input joins outside its active precomp
 behavior. The source and routed PCB pad nets agree, while the routed PCB
-has no copper connecting these pads. Check D26.38↔D101.1 with both chips removed before routing or using
-the original board for runtime interpretation.
+has no copper connecting these pads. Check D26.38↔D101.1 with both chips
+removed before routing or using the original board for runtime interpretation.
