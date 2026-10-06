@@ -42,8 +42,9 @@ JUKU_DEMO_REALTIME_HZ=20000000 python3 tools/netboot_demo_gifs.py \
 ```
 
 Presentation GIFs should use the default pacing. Accelerated captures are
-validation aids: host-log times follow wall time while framebuffer timestamps
-follow simulator capture time, so their merged timeline is not a speed benchmark.
+validation aids. Both host-log and framebuffer timestamps use host monotonic
+wall time; framebuffer times are then rebased and long gaps compressed as
+described above. Their merged GIF timeline is not a speed benchmark.
 
 The generator invokes only `build/jukuhost` for protocol serving. Python
 orchestrates the simulator, console commands and rendering. Successful runs keep
