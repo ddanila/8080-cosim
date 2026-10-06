@@ -211,23 +211,13 @@ physical D93/D94 wiring.
   sector register unchanged. A flat sector image has no rotational position,
   so the deterministic shim returns sector 1, the first ID after index; this is
   an explicit image-format boundary rather than an invented rotation model.
-- Read Track accepts the datasheet-defined `0xE0`/`0xE4` opcodes, asserts BUSY
-  immediately, exposes neither DRQ nor data before the first rising index, then
-  returns exactly one 6,250-byte revolution, raises INTRQ on the last byte, and
-  leaves the sector register unchanged. The byte stream reconstructs
-  all ten MFM ID/data fields from the raw image: 32-byte index gap; per-sector
-  12-byte sync, three decoded `0xA1` missing-clock sync bytes, `0xFE` ID mark,
-  CHRN and CRC; 22-byte gap; another sync/A1 run, the mounted metadata's `0xFB`/`0xF8`
-  data mark, 512 payload bytes and CRC; 35-byte gap; then 128 bytes of end gap.
-  This is the exact
-  2,000 ns-cell/32-22-35 descriptor recorded by MAME's Juku format at commit
-  `40d8c5c343efc497524832d59a6d0e2b8e59376b`; the C guard compares every byte,
-  and the HDL plus decoded top-level guards check structure, CRCs, all ten IDs,
-  vendored sector data, completion, status acknowledgement, and silent D0 abort
-  through logical DB and both diagnostic profile families. MAME explicitly labels
-  those gap counts unverified, and a sector-only image cannot preserve original
-  gap contents, missing-clock waveforms, or rotational phase, so this is a
-  deterministic media reconstruction rather than a claimed flux capture.
+- Read Track accepts `0xE0`/`0xE4`, holds data until the first rising index,
+  returns one 6,250-byte reconstructed revolution, raises INTRQ on completion,
+  and leaves the sector register unchanged. The C guard compares every byte;
+  HDL and decoded-bus guards check structure, CRCs, all ten IDs, vendored
+  sector data, status acknowledgement and silent D0 abort through logical DB
+  and both diagnostic profile families. [The raw-image format guide](juk-disk-format.md)
+  owns the reconstructed MFM layout and its unverified-gap/flux boundaries.
 - On an explicitly writable image, Write Track accepts the corresponding
   index-to-index MFM formatter stream from the vendored FD179X datasheet's
   Type-III/IBM System 34 tables. Its command-time DRQ preloads one byte without
@@ -254,8 +244,9 @@ physical D93/D94 wiring.
   `media/disks/JUKU1.CPM`.
 - The generic КР580ВА87/8287 model complements all 256 byte values in both
   directions. Two control families remain exercised solely as unmapped
-  firmware-profile diagnostics. The same exhaustive guard proves D23-D25's
-  physical bidirectional behavior, including D25's traced turnaround input.
+  firmware-profile diagnostics. The same exhaustive guard checks the D23-D25 device model in both
+  directions, including D25's modeled turnaround input; it does not measure
+  physical transceiver behavior.
   Factory sheet 3 assigns physical D100 to the drive outputs.
 - The decoded top-level harness runs multi-read over vendored sectors 9/10,
   multi-write/readback, and a full 6,230-write MFM track format over an isolated
