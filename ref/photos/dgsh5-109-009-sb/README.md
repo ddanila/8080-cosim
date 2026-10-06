@@ -41,10 +41,10 @@ What the drawing is authoritative for:
   `ен139546`, `ен164807`, `ен157459`, `ен157937` with dates and signatures
   cross-referenced against the sheet-6 registration list.
 
-Sheets 2-6 of this document (the таблица соединений referenced by note 8 and
-the change-registration sheet) were acquired on 2026-07-11 as an owner
-«ДУБЛИКАТ» scan: `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`, transcribed
-in `ref/schematics/dgsh5-109-009-sb-wire-table.md`.
+Sheets 2–6 (the таблица соединений referenced by note 8 and the
+change-registration sheet) are retained as an owner «ДУБЛИКАТ»
+[scan](../../schematics/dgsh5_109_009_sb_sheets2-6.pdf), with a
+[wire-table transcription](../../schematics/dgsh5-109-009-sb-wire-table.md).
 
 Photo index (`PXL_20260711_*`):
 
