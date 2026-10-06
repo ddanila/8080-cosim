@@ -33,22 +33,21 @@ does not establish that anchors are physical package joints.
 
 ## Placement boundary
 
-The panorama maps D104's center in `200402344` to approximately
-`(195.700,38.900)` mm, matching its modeled center. The independent
-`200358952` view gives approximately `(197.333,37.226)` mm. These views
-support coarse placement rather than a move inferred from D11's routed
-coordinates. D11's source center is photo-registered at `(201.012,71.486)`
-mm; its routed center remains `(185.500,65.700)` mm. A package-local
-pixel transform through D11 cannot establish absolute board millimeters.
+The [registration record](../ref/schematics/d104-pin16-rail-conflict.json)
+retains the two independent panorama projections, solder-field fit and rejected
+board-coordinate inference. They support coarse D104 placement near its
+modeled center. D11 is photo-registered in the source board but retains its
+older routed placement; see [placement parity](board-placement-parity.md).
+A D11-local pixel transform does not establish absolute board millimeters
+or justify moving D104 from the rejected estimate.
 
 ## R30 and ground continuity
 
 The [pin-7/R30 photo review](../ref/photos/juku-pcb-2/d104-pin7-r30-photo-review.json)
-records the visible trace from D104.7 near `(1045,1415)` to the lower
-R30 joint near `(1106,1698)` in `200402344`. It remains separate from
-R30's upper joint and adjacent vertical conductor. The upper trace passes
-beneath the X3 wire bundle before a labeled endpoint can be identified;
-the overlapping component view does not resolve it.
+records D104.7’s visible front-copper join to R30 lower. R30 upper remains
+on a separate conductor whose endpoint is hidden beneath the X3 wire bundle;
+the overlapping view does not resolve it. Coordinates and probe sites belong
+to that record.
 
 The exact source prints R30=33 kΩ between GND and D12.3/OC SOUT, but does
 not identify the installed upright body's lower lead. The model assigns
