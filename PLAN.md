@@ -2,7 +2,9 @@
 
 Release status: **DESIGN HOLD / PACKAGE REGENERATION REQUIRED**.
 
-The runnable model boots the real ROM and matches the software oracle. The
+The runnable model executes the adopted ROM and has guarded bus and framebuffer
+agreement with the software oracle for selected workloads; see the
+[runtime reference](docs/cosim-runtime-reference.md) for coverage limits. The
 physical replica still needs source closure, placement/routing repair, parts
 review and a regenerated fabrication package. The tracked `fab/gerbers` files
 are review evidence; the upload ZIP is absent and fabrication is not authorized.
