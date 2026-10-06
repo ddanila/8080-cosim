@@ -170,7 +170,8 @@ NumPy. The original photographs must be materialized through
 /usr/bin/python3 kicad/check_analog_photo_placement.py
 ```
 
-The guard checks stored centers and rotations, selected pad positions, VT2's
+The guard reads `kicad/juku.kicad_pcb`; it does not inspect the routed board.
+It checks stored centers and rotations, selected pad positions, VT2's
 lap-pad construction and net assignments, and C94's boundary nets. It also
 checks VT2/C94 evidence and R67's recorded value, photo hashes, and cross-side
 transform. C16/C19, R92/R99, and C20/C22 are checked for placement and pad
