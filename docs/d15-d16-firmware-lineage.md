@@ -2,12 +2,9 @@
 
 Status: **ARCHIVE-0037 ROMBIOS 3.43m PAIR ADOPTED**
 
-This generated audit keeps four different evidence claims separate. The
-factory parts list names programmed drawings, the preservation archive
-contains two raw 8 KiB programmer files, the replica uses a boot-validated
-functional image, and the owner photographs show the fitted package bodies.
-The independent archival and functional byte streams join exactly; the
-project adopts that pair as replica content truth.
+The replica adopts the preserved `JUKUROM0.HEX`/`JUKUROM1.HEX` pair,
+which concatenates exactly to `ekta37.bin`. The evidence layers below
+distinguish firmware identity from factory labels and fitted packages.
 
 ## Command
 
@@ -37,16 +34,18 @@ byte-for-byte to `roms/ekta37.bin` (SHA256
 `fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`). No byte conversion, interleave, inversion, or
 address permutation is involved.
 
-| Candidate | SHA256 | D15/low mismatches | D16/high mismatches | Exact pair |
-| --- | --- | ---: | ---: | --- |
-| `ekta24.bin` | `e1bd9894134ee4085c14bde854780539d3b1e03cfc032c81ec352729e9d69287` | 7230 | 6173 | no |
-| `ekta31.bin` | `26f1f4161a547ea60312a250bde9df41c0b07a939c0b880628050eaec18ec4e4` | 1722 | 5997 | no |
-| `ekta32.bin` | `1826563e23b5d8bc23c61694ceccb923d6a31778077934ad0338772070671122` | 6871 | 6258 | no |
-| `ekta35.bin` | `e8fe5e657037b8f3203f57512cd01cc35f7eaa2a3f0dae8d0ae19378908bd518` | 3060 | 6232 | no |
-| `ekta37.bin` | `fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27` | 0 | 0 | YES |
-| `ekta43.bin` | `39e3ca8978b369632d03c658300654445b898139009f188cb154e2f901238ba7` | 7052 | 6063 | no |
-| `jmon22.bin` | `1b68f89ae4355391f434b3fae34e95cb4b150bf4bbcb967b5b177d48cd390589` | 8098 | 8045 | no |
-| `jmon33.bin` | `ce9e9c63abbb1780566423a871081bd0bf048a2f3c79e370b465ea9869ff51b8` | 8100 | 8023 | no |
+Candidate identities are pinned in the generator; see [the ROM catalog](../roms/README.md).
+
+| Candidate | D15/low mismatches | D16/high mismatches | Exact pair |
+| --- | ---: | ---: | --- |
+| `ekta24.bin` | 7230 | 6173 | no |
+| `ekta31.bin` | 1722 | 5997 | no |
+| `ekta32.bin` | 6871 | 6258 | no |
+| `ekta35.bin` | 3060 | 6232 | no |
+| `ekta37.bin` | 0 | 0 | YES |
+| `ekta43.bin` | 7052 | 6063 | no |
+| `jmon22.bin` | 8098 | 8045 | no |
+| `jmon33.bin` | 8100 | 8023 | no |
 
 ## Evidence layers
 

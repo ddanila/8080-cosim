@@ -77,12 +77,9 @@ def main() -> int:
     lines = [
         "# D15/D16 firmware lineage", "",
         "Status: **ARCHIVE-0037 ROMBIOS 3.43m PAIR ADOPTED**", "",
-        "This generated audit keeps four different evidence claims separate. The",
-        "factory parts list names programmed drawings, the preservation archive",
-        "contains two raw 8 KiB programmer files, the replica uses a boot-validated",
-        "functional image, and the owner photographs show the fitted package bodies.",
-        "The independent archival and functional byte streams join exactly; the",
-        "project adopts that pair as replica content truth.", "",
+        "The replica adopts the preserved `JUKUROM0.HEX`/`JUKUROM1.HEX` pair,",
+        "which concatenates exactly to `ekta37.bin`. The evidence layers below",
+        "distinguish firmware identity from factory labels and fitted packages.", "",
         "## Command", "",
         "Run from the repository root with Python 3 (standard library only) and",
         "the materialized Git LFS owner photo cited below. The command replaces",
@@ -103,11 +100,12 @@ def main() -> int:
         "byte-for-byte to `roms/ekta37.bin` (SHA256",
         f"`{digest(archival)}`). No byte conversion, interleave, inversion, or",
         "address permutation is involved.", "",
-        "| Candidate | SHA256 | D15/low mismatches | D16/high mismatches | Exact pair |",
-        "| --- | --- | ---: | ---: | --- |",
+        "Candidate identities are pinned in the generator; see [the ROM catalog](../roms/README.md).", "",
+        "| Candidate | D15/low mismatches | D16/high mismatches | Exact pair |",
+        "| --- | ---: | ---: | --- |",
     ]
     for name, sha, low_diff, high_diff, exact in candidates:
-        lines.append(f"| `{name}` | `{sha}` | {low_diff} | {high_diff} | {'YES' if exact else 'no'} |")
+        lines.append(f"| `{name}` | {low_diff} | {high_diff} | {'YES' if exact else 'no'} |")
     lines.extend([
         "", "## Evidence layers", "",
         "| Layer | D15 | D16 | What it proves |", "| --- | --- | --- | --- |",
