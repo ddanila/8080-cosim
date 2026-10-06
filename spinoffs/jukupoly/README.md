@@ -46,8 +46,9 @@ percussion byte is then ORed from memory, the resulting nibble is shifted into
 the upper half of the PIT count, and one write to port `19h` starts an
 8–120 microsecond speaker impulse.
 
-An 8-bit sample countdown enters the frame logic every 144 samples.  At the
-measured 7.186 kHz loop rate that is almost exactly 20 ms.  Frame logic restores
+An 8-bit sample countdown enters the frame logic at the score's configured
+frame interval. The default Canyon score uses 144 samples; at its measured
+7.186 kHz loop rate that is almost exactly 20 ms. Frame logic restores
 the real CP/M stack, advances envelopes and channel-1 slide, optionally parses
 a row, then lends `SP` back to tone channel 3.  Interrupts remain disabled until
 the player silences D57, restores the stack, and returns to CP/M.
@@ -386,26 +387,23 @@ VGM loop.  Five signatures are melodic.  They peak at four simultaneously
 active OPL voices, but duplicate-pitch collapse leaves no frame with more than
 three distinct Juku candidates.
 
-The first automatic reduction exposed two independent classification errors.
 A 408-key-on synth signature appears as synchronous pitched harmony across
-three OPL channels but uses only three distinct pitches, so the original
-four-pitch rule called it percussion.  More importantly, all three real drum
-patches are played at the same OPL pitch; pitch thresholds therefore collapsed
-them into one synthetic drum sound.  The maintained, 1:1
+three OPL channels but uses only three distinct pitches. All three drum
+patches use the same OPL pitch, so pitch alone cannot identify them. The maintained, 1:1
 [OpenSupaplex AdLib tracker resource][opensupaplex-adlib] independently names
 its corresponding instruments “Closed Hi-Hat,” “Snare,” and “Bass Drum.”  Its
 event totals match the VGM exactly: 988, 264, and 488 respectively.  The score
 therefore records one explicit melodic signature and three audited percussion
 signature mappings rather than attempting a timbre guess.
 
-The corrected OPL level conversion is especially audible here.  The hi-hat's
+The hi-hat's
 carrier TL of 6 becomes Juku editor volume 10 and percussion level 2, the
 snare's TL of 3 becomes 13 and level 3, and the unattenuated bass drum remains
 16 and level 4.  The resulting score has 2,142 rows, exactly 988 hi-hats, 264
 snares, and 488 bass drums.  `SUPAPLEX.COM` is 21,332 bytes with three compiled
 percussion descriptors.  Its full cycle-model run takes 305.572 seconds,
-silences D57, and returns cleanly to CP/M.  The corrected render received the
-operator assessment “sounds much better” on 2026-08-31.  Physical CS00000
+silences D57, and returns cleanly to CP/M. The render passed subjective
+listening review; physical CS00000
 listening remains pending.
 
 ## AY/YM VGM/VGZ conversion and Arkanoid “Ending”
