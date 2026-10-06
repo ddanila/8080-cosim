@@ -6,10 +6,15 @@ against the machine-readable board model with LVS.
 
 ## Current state
 
-The C emulator and structural `juku_top` boot the real ROM, produce matching
-framebuffers, accept keyboard input, boot the vendored EKDOS images and reach
-disk BASIC `READY`. CPU, FDC, serial and subsystem guards cover their declared
-inputs; the deep cosim guard compares typed CPU-bus events against the C oracle.
+The C emulator and structural `juku_top` have ROM-boot and framebuffer
+comparison guards, plus keyboard, CPU, FDC, serial and subsystem checks.
+The deep cosim guard compares typed CPU-bus events against the C oracle.
+
+The C emulator boots the vendored EKDOS images and reaches disk BASIC
+`READY`. [Recorded HDL runs](docs/juku-top-jbasic-verilator-probe.md) also
+reached that prompt; current Verilator reruns have a
+[build compatibility limitation](sync/README.md#simulator-compatibility).
+The bounded boot guard does not establish the full EKDOS/BASIC prompt path.
 
 The production network host is portable C. Linux/macOS, DOS and the Windows
 GUI share its core; Janet, Fastboot, NetDisk, N4, snapshots, journals and reset
