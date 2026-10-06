@@ -192,8 +192,9 @@ part of the experiment.
 ## Recent execution history (`JUKU_PC_HISTORY`)
 
 Set `JUKU_PC_HISTORY=1` to retain a bounded ring of the last 256 instruction
-addresses. On every normal, checkpoint, or stop-PC exit, cosim prints the ring
-in execution order as one `[EXEC] recent PCs:` line. It is intentionally off
+addresses. When the execution loop exits, including at a configured checkpoint
+cycle or stop PC, cosim prints the ring in execution order as one
+`[EXEC] recent PCs:` line. A live `SIGUSR1` checkpoint does not print it. It is off
 by default and records only addresses, so long runs neither grow a trace file
 without bound nor pay for full instruction logging. This is useful when a
 protocol-level timeout leaves the CPU alive but does not identify the loop or
@@ -322,12 +323,10 @@ tools/juku_run.py --disk ../cpmish/juku-net-mode2-system.bin \
     --disk-baud 19200 --disk-protocol 2 --writable --attach
 ```
 
-The launcher turns cosim's bank-switch logging off and removes its run directory
-during normal shutdown unless `--keep-logs` is set. The Juku switches memory banks constantly -- hundreds of thousands
-of times a minute -- so long sessions can produce large stderr logs. `--keep-logs`
-retains the directory and leaves the inherited `JUKU_TRACE_BANK` setting intact.
-If it is already `0`, bank logging stays disabled. Likewise, `--max-speed`
-skips the launcher’s pacing override but preserves an inherited
+By default the launcher disables bank-switch logging and removes its run
+directory during normal shutdown. `--keep-logs` retains the directory and
+preserves the inherited `JUKU_TRACE_BANK` setting; frequent bank switches can
+produce large logs when it is enabled. `--max-speed` preserves an inherited
 `JUKU_REALTIME_HZ`; unset that variable for an unpaced run.
 
 An early failure to discover the console or serial PTY returns 1 and leaves
