@@ -14,18 +14,13 @@ The repository vendors the unmodified official Open Watcom V2 `Current-build`
 C/C++ distribution published on 2026-08-20. The archive is stored with Git
 LFS, verified before use, and expanded only into the ignored `.tools/` tree.
 
-| identity | value |
-| --- | --- |
-| upstream source commit | `cf43271464fdd57065d3d72de8ca917c55c6a887` |
-| vendor asset | `open-watcom-v2-c-linux-x64-20260820` |
-| vendor bytes | `129055748` |
-| vendor SHA-256 | `f83c158176f740ec656394a1ec531e2e6d8b78ebdfa4496460f9a0e457475e85` |
-| C compiler | Open Watcom C x86 16-bit 2.0 beta, 2026-08-20 02:17:35 |
-| linker | Open Watcom Linker 2.0 beta, 2026-08-20 02:13:42 |
+The [vendor record](../third_party/open-watcom-v2/README.md) owns the archive
+identity, upstream revision and compiler provenance.
 
-`tools/bootstrap-open-watcom.sh` verifies the archive and extracts it when
-the cached `wcl` is missing or not executable. It otherwise reuses the extraction and
-checks the `wcl` banner, without revalidating every extracted file; see the
+`tools/bootstrap-open-watcom.sh` verifies the archive on every run and
+extracts it when the cached `wcl` is missing or not executable. It otherwise
+reuses the extraction and checks the `wcl` banner, without revalidating every
+extracted file; see the
 [bootstrap contract](../third_party/open-watcom-v2/README.md#bootstrap).
 `tools/open-watcom-env.sh` configures that directory for DOS and Win32 builds.
 Run the commands below from the repository root on a Linux x86-64 build host
@@ -152,10 +147,12 @@ It performs four materially different checks:
    bidirectional N4, creating the A: snapshot, authenticating and opening
    native B:, and stopping with log/capture evidence and zero host UART errors.
 
-The recorded C8 run exceeded the read/record gate with one protocol-level retry
-and zero UART line errors. The harness paces each 8O1 byte at its physical wire duration
-because DOSBox-X otherwise batches TCP data into its emulated 16550 faster than
-a real serial line.
+The C8 harness supplies delayed scripted `DIR` input and checks N4 output
+and input request events; it does not assert the completed directory listing.
+It stops through a disk-session timeout rather than physical F10. Protocol
+retries are allowed; the final host UART error count must be zero. The harness
+paces each 8O1 byte at its wire duration because DOSBox-X otherwise batches
+TCP data into its emulated 16550 faster than a real serial line.
 
 DOSBox-X's mounted-directory backend returns `ENOENT` for DOS commit
 `INT 21h/AH=68h` after successfully writing a file. The DOS platform accepts
