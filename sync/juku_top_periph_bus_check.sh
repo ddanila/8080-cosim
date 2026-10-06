@@ -125,6 +125,10 @@ is selected by \`JUKU_TOP_PERIPH_BUS_REPORT\`; its parent must already exist.
 ## Boundary
 
 - This is a direct-bus harness, not the full ROMBIOS \`TDD\` CPU path.
+- PIC register readback uses the \`U_PIC\` register stub. The simulation-only
+  \`U_INTR\` adjunct supplies the frame interrupt and three-byte CALL vector
+  from an injected \`frame_tick\`; this does not test the physical timer-to-PIC
+  route or a complete 8259 implementation.
 - The behavioral FDC consumes D94's physical-table strobes. A3 is physically
   closed to D105.3 qualified peripheral \`/WR\`; FDC write cycles drive raw
   \`/IOWR\` plus CPU \`/WR\` and check D105 derives that rail. D94 enable is source-closed
