@@ -432,15 +432,8 @@ new, missing, or multiply assigned gap instead of silently omitting it.
 
 No unnetted pins were found among the generator's `PIN_CLOSURE_REFS` devices after excluding intentional no-connects. Source-risk net boundaries above remain open.
 
-## Bring-up verification scope
-
-- Generated bring-up verification nets: `55`
-- `FDC`: `3` net(s)
-- `logic`: `29` net(s)
-- `memory/decode`: `1` net(s)
-- `power`: `13` net(s)
-- `timing/I/O`: `2` net(s)
-- `video/analog`: `7` net(s)
+Bring-up net coverage and categories are maintained in
+[the verification-point report](replica-bringup-verification-points.md).
 
 ## Practical sequencing
 

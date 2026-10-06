@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import re
-from collections import Counter
 from collections import defaultdict
 from pathlib import Path
 
@@ -161,20 +160,6 @@ def table_rows(text: str) -> list[list[str]]:
     return rows
 
 
-def bringup_categories() -> Counter[str]:
-    text = read(ROOT / "docs" / "replica-bringup-verification-points.md")
-    counts: Counter[str] = Counter()
-    in_checklist = False
-    for row in table_rows(text):
-        if row[:2] == ["Net", "Category"]:
-            in_checklist = True
-            continue
-        if not in_checklist or len(row) < 5:
-            continue
-        counts[row[1]] += 1
-    return counts
-
-
 def failed_d94_checks() -> list[str]:
     text = read(ROOT / "docs" / "d94-reconstruction-constraints.md")
     failures: list[str] = []
@@ -261,7 +246,6 @@ def main() -> int:
     if omission_rows and not critical_passives <= {ref for ref, _ in omission_rows}:
         raise SystemExit("unmodeled boot/clock passive omissions changed; update the physical asks")
     d94_failures = failed_d94_checks() if not missing else []
-    categories = bringup_categories() if not missing else Counter()
     pin_closure_rows = unnetted_pin_closure_rows() if not missing else []
 
     checks = [
@@ -695,15 +679,11 @@ def main() -> int:
     else:
         lines.append("No unnetted pins were found among the generator's `PIN_CLOSURE_REFS` devices after excluding intentional no-connects. Source-risk net boundaries above remain open.")
 
-    lines.extend(
-        [
-            "",
-            "## Bring-up verification scope",
-            "",
-            f"- Generated bring-up verification nets: `{sum(categories.values())}`",
-        ]
-    )
-    lines.extend(f"- `{category}`: `{count}` net(s)" for category, count in sorted(categories.items()))
+    lines.extend([
+        "",
+        "Bring-up net coverage and categories are maintained in",
+        "[the verification-point report](replica-bringup-verification-points.md).",
+    ])
     lines.extend(
         [
             "",
