@@ -27,12 +27,18 @@ Run from the repository root. The full suite is the entry point:
 spinoffs/minimal-vga/sim/revb_tier_suite.sh
 ```
 
-It covers shared facts, card completeness, GAL/ROM rebuilds, serial and PIT/POST,
+It covers shared facts, card completeness, GAL compilation, ROM packaging and
+freshness, serial and PIT/POST,
 three-ROM system behavior, LVS, board geometry, parts, power, mechanics and
 release guards. Some individual checks skip missing tools, but the full suite
 requires Galette, Icarus and KiCad Python: R5.I7 fails if KiCad Python is absent.
 KiCad CLI is needed for DRC and Yosys for LVS; inspect skipped checks before
 claiming those results. The parts checks also require the KiCad footprint library.
+The behavioral checks need Python 3, a C compiler available as `cc`, and the
+initialized `spinoffs/minimal-vga/external/tv80` submodule. Bring-up and EKTA
+boot checks return 0 with `SKIP` if tv80 is missing. ROM freshness validates
+the pinned EKTA/C10 input binaries and rebuilds DIAG and the packaged images;
+it does not assemble EKTA or C10 from source.
 
 The suite rewrites `footprints.<card>.json` while resolving library parts and
 runs C-oracle checks that overwrite `cosim/vram.bin`. Save any framebuffer you
