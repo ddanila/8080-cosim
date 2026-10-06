@@ -11,6 +11,10 @@ project adopts that pair as replica content truth.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only) and
+the materialized Git LFS owner photo cited below. The command replaces
+this report after all checks pass; a failed check exits before writing.
+
 ```sh
 python3 scripts/report_d15_d16_firmware_lineage.py
 ```
