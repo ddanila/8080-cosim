@@ -17,8 +17,8 @@ the already-preserved tables imply.
 
 Regenerate with `python3 scripts/report_d2_ready_cycle_analysis.py`.
 The generator verifies the D2 hash and derives page classes. Probe bytes
-are compared with the diagnostic image; factory transfers are byte-pattern
-matches. Board/HDL descriptions below are transcriptions, not fresh net checks.
+are compared with the diagnostic image. Board/HDL descriptions below are
+transcriptions, not fresh net checks.
 
 ## Provenance
 
@@ -147,26 +147,6 @@ A `JMP 106Fh` fetches `C3` as an M1 cycle and `0C 0A` as ordinary read
 cycles, so only the first byte is nominally a different cycle type.
 The listed decode inputs do not select on that distinction. This does not
 rule out physical differences in edge timing, loading, or CPU behavior.
-
-## Candidate archived-ROM transfers into CAS-gated pages
-
-Scanning the archived `roms/ekta37.bin` image
-for absolute transfer instructions whose target lands in a CAS-gated page:
-
-- distinct CAS-gated targets: 36
-- of those, reached from more than one site: 5
-
-| Target | Class | Sites |
-| --- | --- | --- |
-| `1062h` | CAS-gated | `1014`, `101C`, `1072` |
-| `1076h` | CAS-gated | `0A6E`, `0B3B`, `0B9C` |
-| `10AEh` | CAS-gated | `1099`, `10A8` |
-| `1110h` | CAS-gated | `1101`, `110B` |
-| `11E6h` | CAS-gated | `0308`, `0312` |
-
-This byte-pattern scan is not a disassembly or execution trace. Repeated
-matches remain candidate transfers; data bytes can produce the same patterns.
-It does not prove that these sites execute or establish an EPROM timing margin.
 
 ## Current disposition
 

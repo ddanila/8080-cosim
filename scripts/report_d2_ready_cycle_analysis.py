@@ -13,7 +13,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "ref/physical-proms/validated/d2_037.raw.bin"
-FACTORY = ROOT / "roms/ekta37.bin"
 PROBE_IMAGE = ROOT / "spinoffs/jukuravi/firmware/diag-d0-low4k.bin"
 REPORT = ROOT / "docs/d2-ready-cycle-analysis.md"
 EXPECTED_SHA256 = "953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df0255b"
@@ -21,13 +20,6 @@ EXPECTED_SHA256 = "953be4bf899e02f0885ecef53e4f9d26469b8d78ceea87394aa35cd28df02
 # T31-PHYSICAL.md records these RAM-resident probe results on CS00015.
 PROBES = ((0x0017, 0x01), (0x100C, 0xB1), (0x1017, 0xFE),
           (0x106F, 0xC3), (0x1070, 0x0C), (0x1071, 0x0A))
-
-# Absolute transfer opcodes, for the factory-firmware target scan.
-TRANSFERS = {0xC3: "JMP", 0xCD: "CALL", 0xC2: "JNZ", 0xCA: "JZ", 0xD2: "JNC",
-             0xDA: "JC", 0xE2: "JPO", 0xEA: "JPE", 0xF2: "JP", 0xFA: "JM",
-             0xC4: "CNZ", 0xCC: "CZ", 0xD4: "CNC", 0xDC: "CC", 0xE4: "CPO",
-             0xEC: "CPE", 0xF4: "CP", 0xFC: "CM"}
-
 
 def prom_index(addr: int, cas_n: int, iorc_n: int = 1, wreq_n: int = 1) -> int:
     """Physical D2 address byte: {WREQ_N,A10,IORC_N,A14,CAS,A9,A15,A12}."""
@@ -71,18 +63,7 @@ def main() -> int:
         return ", ".join(f"`{lo:04X}-{hi + 0xFF:04X}`" for lo, hi in spans)
 
     gated = [base for base, cls in pages if cls == "CAS-gated"]
-    factory = FACTORY.read_bytes()
     probe_image = PROBE_IMAGE.read_bytes()
-
-    # Byte-pattern scan: data bytes alias as opcodes, so counts are indicative,
-    # but a target reached from several distinct sites is unlikely to be noise.
-    sites: dict[int, list[int]] = {}
-    for i in range(len(factory) - 2):
-        if factory[i] in TRANSFERS:
-            target = factory[i + 1] | (factory[i + 2] << 8)
-            if target < 0x2000 and wait_class(raw, target) == "CAS-gated":
-                sites.setdefault(target, []).append(i)
-    repeated = sorted((t, s) for t, s in sites.items() if len(s) > 1)
 
     out: list[str] = []
     add = out.append
@@ -105,8 +86,8 @@ def main() -> int:
     add("")
     add("Regenerate with `python3 scripts/report_d2_ready_cycle_analysis.py`.")
     add("The generator verifies the D2 hash and derives page classes. Probe bytes")
-    add("are compared with the diagnostic image; factory transfers are byte-pattern")
-    add("matches. Board/HDL descriptions below are transcriptions, not fresh net checks.")
+    add("are compared with the diagnostic image. Board/HDL descriptions below are")
+    add("transcriptions, not fresh net checks.")
     add("")
     add("## Provenance")
     add("")
@@ -208,25 +189,6 @@ def main() -> int:
     add("The listed decode inputs do not select on that distinction. This does not")
     add("rule out physical differences in edge timing, loading, or CPU behavior.")
     add("")
-    add("## Candidate archived-ROM transfers into CAS-gated pages")
-    add("")
-    add("Scanning the archived `roms/ekta37.bin` image")
-    add("for absolute transfer instructions whose target lands in a CAS-gated page:")
-    add("")
-    add(f"- distinct CAS-gated targets: {len(sites)}")
-    add(f"- of those, reached from more than one site: {len(repeated)}")
-    add("")
-    if repeated:
-        add("| Target | Class | Sites |")
-        add("| --- | --- | --- |")
-        for target, site_list in repeated:
-            joined = ", ".join(f"`{s:04X}`" for s in sorted(site_list))
-            add(f"| `{target:04X}h` | {wait_class(raw, target)} | {joined} |")
-        add("")
-    add("This byte-pattern scan is not a disassembly or execution trace. Repeated")
-    add("matches remain candidate transfers; data bytes can produce the same patterns.")
-    add("It does not prove that these sites execute or establish an EPROM timing margin.")
-    add("")
     add("## Current disposition")
     add("")
     add("T32/T33 measured the same A12-low second-byte failure across CAS-gated,")
@@ -242,8 +204,7 @@ def main() -> int:
 
     REPORT.write_text("\n".join(out), encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}: {len(pages)} pages classified, "
-          f"{len(gated)} CAS-gated, {len(sites)} factory targets in gated pages "
-          f"({len(repeated)} multi-site).")
+          f"{len(gated)} CAS-gated.")
     return 0
 
 
