@@ -12,11 +12,15 @@ represented as explicit assembly wires between split copper islands.
 ## Command and scope
 
 Run `/usr/bin/python3 kicad/report_factory_wire_route_fidelity.py`
-with KiCad Python bindings available. It reruns the landing evidence
+from the repository root with KiCad Python bindings and `kicad-cli` available.
+It reruns the landing evidence
 guards and DRC on both routed variants, then compares source pad
-identities, nets, and centers. A successful exit means the invoked
+identities, nets, and centers before overwriting this report. A successful
+exit means the invoked
 evidence guards passed; release additionally requires the report status
 and every parity, DRC, and construction condition below to be ready.
+Failed evidence guards produce exit status 1 after the report is written;
+exit status 0 can still accompany a route/construction hold.
 The report counts DRC unconnected items; it does not summarize or gate
 electrical violations in the DRC violation list. Review the full DRC
 before release, even if the report status becomes ready.
@@ -48,12 +52,17 @@ before release, even if the report status becomes ready.
 
 The current parity and DRC results above remain release blockers. Seven
 links (A7/A8/A10/A11/A14/A19/A20) are explicit W-footprint assembly wires
-between separately named copper islands. A9/A12/A13 lack five evidence-gated
+between separately named copper islands. A9/A12/A13 lack six evidence-gated
 landing coordinates, so their endpoints remain same-net copper routes. A7B
 and A14B are also masked candidates, and W7.1/W14.1 still need relocation. This
 construction hold is additional to the electrical and placement holds.
 The candidate results are regenerated from `kicad/juku_routed_candidate.kicad_pcb`;
 they do not authorize the promoted board.
+
+The split-island count checks that the two routed W pads have different net
+names. It does not by itself prove copper separation, correct endpoint
+routing, or an installed wire. Modeled-terminal counts use the source PCB;
+copper counts include routed tracks and vias on the named primary island.
 
 ## Link audit
 
