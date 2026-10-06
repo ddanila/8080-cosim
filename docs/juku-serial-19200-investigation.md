@@ -25,7 +25,7 @@ the diagnosis.
   valid x16 rate-threshold measurement.
 - The 19,200/x64 attempt was invalid. D57 remained in 8253 mode 3, whose
   periodic minimum count is two; count one cannot create the required clock.
-  That image has been removed and the simulator now rejects the invalid case.
+  The simulator rejects that invalid setting.
 - Cosim passes the full x16 suite at 9600 and 19,200, including a deliberately
   slow 1.5 MHz CPU and wire-rate one-byte overrun behavior. Software polling
   throughput and test recovery are therefore covered; analog behavior is not.
@@ -86,7 +86,7 @@ or D104's local +12 V quality.
 
 ## Current diagnosis after the mode-2 disk pass
 
-The decisive clue is now the controlled mode comparison. At the same nominal
+The controlled mode comparison is the decisive clue. At the same nominal
 19,200 rate, framing, serial data waveform, CPU loop, and D11 setup, mode 3
 usually stops after a correct prefix while mode 2 passes both 133-byte probes
 and sustained filesystem traffic. Only the D57 output duty/edge waveform was
@@ -182,7 +182,7 @@ controls already cover those questions.
 
 ## Automatically loaded BAUDTEST2
 
-CP/Mish now builds a finite, monitorless `BAUDTST2.COM` matrix that is loaded
+CP/Mish builds a finite, monitorless `BAUDTST2.COM` matrix that is loaded
 over the proven 9600 network path. It adds the useful software discriminators
 that do not require a scope: exact lengths 1 through 20, nine data patterns,
 repeated identical PRBS frames, idle and preamble variants, chunking, one byte
