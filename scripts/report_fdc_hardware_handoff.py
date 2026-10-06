@@ -725,12 +725,16 @@ def main() -> int:
             "",
             "## Netted FDC Endpoints",
             "",
-            "| Net | Source | Endpoints |",
-            "| --- | --- | --- |",
+            "These are modeled endpoints, not a physical-continuity certificate.",
+            "Detailed source and owner provenance is retained in each net’s `src`",
+            "field in [the board JSON](../kicad/juku.board.json).",
+            "",
+            "| Net | Endpoints |",
+            "| --- | --- |",
         ]
     )
     for name, item in fdc_nets.items():
-        lines.append(table_row([f"`{name}`", item.get("src", "-"), f"`{endpoint_summary(item.get('nodes', []))}`"]))
+        lines.append(table_row([f"`{name}`", f"`{endpoint_summary(item.get('nodes', []))}`"]))
 
     lines.extend(
         [

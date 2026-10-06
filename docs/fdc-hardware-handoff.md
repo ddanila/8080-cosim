@@ -198,40 +198,44 @@ DRQ/INTRQ feed the local D28/D96 conditioner, not D10 directly.
 
 ## Netted FDC Endpoints
 
-| Net | Source | Endpoints |
-| --- | --- | --- |
-| `FDC_CLK` | recovered .009 Э3 sheet 3 directly joins D95 clock-mux output A/pin7 to D93 CLK/pin24; 5-inch/8-inch select A1=0 chooses the tied 1 MHz inputs and A1=1 chooses the tied 2 MHz inputs | `D95.7, D93.24` |
-| `FDC_CS_N` | exact .009 sheet 1 draws D9.7 as CS7 to sheet 3; exact sheet 3 draws CS7 to D94 enable pin15 and D93 chip-select pin3. Direct owner continuity 2026-07-15 confirms D94.15 to D93.3 and isolates D94 output pin2 from this conductor | `D9.7, D94.15, D93.3` |
-| `FDC_DDEN` | recovered .009 Э3 sheet 1 continuation 3 labels D26 PC4/pin13 FM/MFM; sheet 3 joins it to D93 DDEN/pin37 and D95 select A0/pin14. Registered target copper additionally closes R92.2 on the same pin14 node; D28.9 belongs to the separator and is not a DDEN branch | `D26.13, D93.37, D95.14, R92.2` |
-| `FDC_DIR_TO_D100` | recovered .009 Э3 sheet 3: D93 DIR/pin16 directly drives D100 A2/pin1 | `D93.16, D100.1` |
-| `FDC_DRIVE_SIZE_5_8` | recovered .009 Э3 sheet 1 continuation 2 identifies D26 PC3/pin17 as 5-inch/8-inch selection; sheet 3 directly joins it to D95 clock-mux select A1/pin2 | `D26.17, D95.2` |
-| `FDC_DRQ` | recovered .009 Э3 sheet 3 and owner continuity 2026-07-20 directly join D93 DRQ/pin38, D28 open-collector inverter input pin11, and R94.1; physical R94 is the 10-kohm pull-up immediately above D28 and its other terminal joins +5 V. Owner solder photo 200506061 has a candidate D28.11-to-D96.11 B.Cu line conflicting with the exact-source separate DRQ and CLK2 nets; check the two pins directly before a model merge | `D93.38, D28.11, R94.1` |
-| `FDC_DSEL_IN` | recovered .009 Э3 sheet 1 continuation 4 and sheet 3 directly join D26 PC5/pin12 D_SEL to D28 input pin1 | `D26.12, D28.1` |
-| `FDC_EARLY_SEL` | recovered .009 Э3 sheet 3 directly joins D93 EARLY/pin17 to the common D101 select input A1/pin2 | `D93.17, D101.2` |
-| `FDC_HLD_TO_D100` | recovered .009 Э3 sheet 3 photo PXL_20260718_101641055.jpg: D93 HLD/pin28 drives D100 A6/pin3 and E12 post 3; drawn E12 2-3 bridge connects D99 B1/pin2. Original-board E12 population and continuity are pending direct measurement. | `D93.28, D100.3, D99.2` |
-| `FDC_IMDRG` | Exact .009 Э3 sheet-1 native PXL_20260718_101824181.MP.jpg labels D26 PA6/pin38 IMDRG with sheet-3 continuation (3); sheet-3 PXL_20260718_101648508.jpg labels the arriving conductor IMDRG (1) into D101 К555КП12 VA/OE0_N pin1. Original-board D26.38-D101.1 continuity is pending measurement. | `D26.38, D101.1` |
-| `FDC_INDEX_STATUS` | recovered .009 Э3 sheet 3: D98 output pin5 directly drives D93 INDEX/pin35 | `D98.5, D93.35` |
-| `FDC_INTRQ` | recovered .009 Э3 sheet 3 directly joins D93 INTRQ/pin39, D28 open-collector inverter input pin13, and R93=10k; R93's other terminal is +5 V | `D93.39, D28.13, R93.1` |
-| `FDC_IRQ_CONDITIONED_N` | recovered .009 Э3 sheet 3 wires the open-collector D28 outputs pins10/12 together, pulls the node up through R95=2k, and feeds both D96 section-2 PRE_N/pin10 and D/pin12 | `D28.10, D28.12, D96.10, D96.12, R95.1` |
-| `FDC_LATE_SEL` | recovered .009 Э3 sheet 3 directly joins D93 LATE/pin18 to the common D101 select input A0/pin14 | `D93.18, D101.14` |
-| `FDC_MOTOR_EN` | Exact .009 Э3 sheet 1 MOTOR EN continuation from D26 PC2/pin16 enters D99 CLR2_N/pin11 on sheet 3; D100 A7/pin7 is driven separately by D99 Q2/pin5. Original-board D26.16-D99.11 continuity is pending measurement. | `D26.16, D99.11` |
-| `FDC_PRECOMP_WRDATA` | exact .009 Э3 sheet 3 joins D101 Q1/pin9 to D100 A4/pin6 as the selected precompensated write-data channel; native crop of PXL_20260718_101648508 shows Q1/pin9 crossing Q0/pin7 without a dot near (1550,620), so the outputs are separate in the source; owner continuity closes Q0 to D94.14, while R88 is separately on D94.3/D93.4 | `D101.9, D100.6` |
-| `FDC_RAW_READ` | recovered .009 Э3 sheet 3: D97 Q_N/pin4 directly drives D93 RAW READ/pin27 and D106 parallel-load input pin11 | `D97.4, D93.27, D106.11` |
-| `FDC_RCLK` | recovered .009 Э3 sheet 3: D96 Q/pin5 directly drives D93 RCLK/pin26 | `D96.5, D93.26` |
-| `FDC_READY` | Exact .009 Э3 sheet 3: D28 open-collector READY output pin6 drives D93 READY/pin32 and R84=470 pulls the node to +5 V through drawn E11 2-3 selection. D93 HLT/pin23 is on the separate D99.4 Q1_N rail, crossing E11 post 1 without a dot. | `D28.6, D93.32, R84.1` |
-| `FDC_RESET_N` | chip-removed owner continuity 2026-07-20: D13 Schmitt inverter output pin8 drives D93 MR_N/pin19 and the physical outer-bus rightmost middle-row contact; exact connector code remains deliberately unassigned until X1 orientation is reconciled | `D13.8, D93.19` |
-| `FDC_RE_N` | owner continuity 2026-07-19 proves D94 output pin3 reaches D93 read-enable pin4 and R88.1; R88.2 is +5 V | `D94.3, D93.4, R88.1` |
-| `FDC_SEPARATOR_CLOCK` | recovered .009 Э3 sheet 3 directly joins D95 clock-mux output B/pin9 to D106 IE7 DOWN/pin4; the mux selects 8 MHz only for FM/MFM=0 and 5-inch/8-inch=0, otherwise 4 MHz | `D95.9, D106.4` |
-| `FDC_SIDE_SEL` | recovered .009 Э3 sheet 1 continuation 5 and sheet 3: D26 PC6/pin11 drives D100 A8/pin8 S.SEL | `D26.11, D100.8` |
-| `FDC_STEP_TO_D100` | recovered .009 Э3 sheet 3: D93 STEP/pin15 directly drives D100 A3/pin2 | `D93.15, D100.2` |
-| `FDC_TG43_TO_D100` | recovered .009 Э3 sheet 3: D93 TG43/pin29 directly drives D100 A1/pin4 | `D93.29, D100.4` |
-| `FDC_TR00_STATUS` | recovered .009 Э3 sheet 3: D98 output pin11 directly drives D93 TR00/pin34 | `D98.11, D93.34` |
-| `FDC_WDATA_DELAY_IN` | recovered .009 Э3 sheet 3 directly joins D93 WDATA/pin31 to the first write-precomp delay stage D97 B2/pin10 | `D93.31, D97.10` |
-| `FDC_WE_N` | owner continuity 2026-07-19 proves D94 output pin4 reaches D93 write-enable pin2 and R87.1; R87.2 is +5 V | `D94.4, D93.2, R87.1` |
-| `FDC_WG_TO_D100` | recovered .009 Э3 sheet 3: D93 WG/pin30 directly drives D100 A5/pin5 | `D93.30, D100.5` |
-| `FDC_WPRT_STATUS` | recovered .009 Э3 sheet 3: D98 output pin13 directly drives D93 WPRT/pin36 | `D98.13, D93.36` |
-| `IORD` | scan sheet-1 full-resolution plus direct owner continuity 2026-07-15: D5.25 IORD runs into D7.9; D94.12/A2 joins D27.5/RD_N and D29.4. D29.4 conflicts with the older IOM_STATUS scan interpretation and is adopted from the physical board; recheck D29.4-D7.8, D29.4-D29.8, and D29.8-D27.5 later. D93.4 belongs only to D94.3 | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+3)` |
-| `IOWR` | owner continuity 2026-07-19: D105 NAND output pin3 is the qualified active-low peripheral write rail. Exact .009 detail 101805510 shows D7.11/PROM_EN and D105.3 on distinct local strokes; the former output-output join claim was a tracing error. Its inputs are D7.8 I/O-cycle-active high and D13.4 CPU-write-active high. Directly confirmed endpoints are D94.13, D29.5, D10.2, D11.10, D26.36, and D27.36; existing sheet-derived PIT write endpoints remain on the same rail. D5.27 is the separate raw IOWR_N source into D7.10 | `D105.3, D94.13, D29.5, D10.2, D11.10, D26.36, D27.36, D54.23, ... (+2)` |
+These are modeled endpoints, not a physical-continuity certificate.
+Detailed source and owner provenance is retained in each net’s `src`
+field in [the board JSON](../kicad/juku.board.json).
+
+| Net | Endpoints |
+| --- | --- |
+| `FDC_CLK` | `D95.7, D93.24` |
+| `FDC_CS_N` | `D9.7, D94.15, D93.3` |
+| `FDC_DDEN` | `D26.13, D93.37, D95.14, R92.2` |
+| `FDC_DIR_TO_D100` | `D93.16, D100.1` |
+| `FDC_DRIVE_SIZE_5_8` | `D26.17, D95.2` |
+| `FDC_DRQ` | `D93.38, D28.11, R94.1` |
+| `FDC_DSEL_IN` | `D26.12, D28.1` |
+| `FDC_EARLY_SEL` | `D93.17, D101.2` |
+| `FDC_HLD_TO_D100` | `D93.28, D100.3, D99.2` |
+| `FDC_IMDRG` | `D26.38, D101.1` |
+| `FDC_INDEX_STATUS` | `D98.5, D93.35` |
+| `FDC_INTRQ` | `D93.39, D28.13, R93.1` |
+| `FDC_IRQ_CONDITIONED_N` | `D28.10, D28.12, D96.10, D96.12, R95.1` |
+| `FDC_LATE_SEL` | `D93.18, D101.14` |
+| `FDC_MOTOR_EN` | `D26.16, D99.11` |
+| `FDC_PRECOMP_WRDATA` | `D101.9, D100.6` |
+| `FDC_RAW_READ` | `D97.4, D93.27, D106.11` |
+| `FDC_RCLK` | `D96.5, D93.26` |
+| `FDC_READY` | `D28.6, D93.32, R84.1` |
+| `FDC_RESET_N` | `D13.8, D93.19` |
+| `FDC_RE_N` | `D94.3, D93.4, R88.1` |
+| `FDC_SEPARATOR_CLOCK` | `D95.9, D106.4` |
+| `FDC_SIDE_SEL` | `D26.11, D100.8` |
+| `FDC_STEP_TO_D100` | `D93.15, D100.2` |
+| `FDC_TG43_TO_D100` | `D93.29, D100.4` |
+| `FDC_TR00_STATUS` | `D98.11, D93.34` |
+| `FDC_WDATA_DELAY_IN` | `D93.31, D97.10` |
+| `FDC_WE_N` | `D94.4, D93.2, R87.1` |
+| `FDC_WG_TO_D100` | `D93.30, D100.5` |
+| `FDC_WPRT_STATUS` | `D98.13, D93.36` |
+| `IORD` | `D5.25, D26.5, D27.5, D11.13, D54.22, D55.22, D57.22, D10.3, ... (+3)` |
+| `IOWR` | `D105.3, D94.13, D29.5, D10.2, D11.10, D26.36, D27.36, D54.23, ... (+2)` |
 
 ## Disposition
 
