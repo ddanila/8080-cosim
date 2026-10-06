@@ -29,7 +29,7 @@ handler addresses vary:
 | `E` | console echo until Ctrl-C (`03h`) |
 | `K` | list memory locations whose byte differs from a supplied value |
 | `T` | **load system** — prints the boot-source prompt (below) |
-| `B` | vector-region stub in the vendored builds (BASIC extension slot; semantics unverified) |
+| `B` | vector-region stub in ekta37 (BASIC extension slot; semantics unverified) |
 | `R` | read block: parses an address range, invokes monitor service `12h` |
 | `W` | write block: parses an address range, invokes monitor service `21h` |
 | `P` | select console/output device (mode byte; parallel printer per banner) |
@@ -62,8 +62,10 @@ prompt. Hence the canonical boot choreography `T`, `D`, `D`.
 ## Monitor family
 
 jmon33 carries the same 15-letter table at ROM `3C55h` (runtime `FC55h`);
-its `T` enters the Bootstrap v3.3 block at ROM `2000h`. The other handlers
-are labeled but not independently decoded. **jmon22 shows no intact
+its `T` enters the Bootstrap v3.3 block at ROM `2000h`. Its `B` entry points
+to runtime `EE29h` (ROM `2E29h`), unlike ekta37’s `FF9Bh` stub; shared
+command letters do not prove identical behavior. The other handlers are
+labeled but not independently decoded. **jmon22 shows no intact
 command table anywhere in its dump** — its siblings place the table in the
 address range covered by jmon22's unstable blocks 6-7, so the missing
 table is consistent with (though not proof of) the known read damage; see
