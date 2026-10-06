@@ -36,7 +36,7 @@ extra checkouts cannot conceal failures on hosted runners.
 | HDL | Relevant source/input changes, tag pushes, daily schedule and manual dispatch; `hdl-ci.json` selects lanes after the workflow is triggered |
 | Checkpoint | Relevant inputs, weekly Monday 04:43 UTC schedule and manual dispatch; watched-write checkpoint test on Linux and macOS |
 | Reports | Listed generator/input changes and manual dispatch; generated-report freshness, PROM captures and photo evidence |
-| Windows host | Listed host, packaging and guide changes, or manual dispatch; reproducible PE/package checks and Windows Server 2022 runtime checks; public release publication on `master` |
+| Windows host | Listed host, packaging and guide changes on pushes to `master` or pull requests, plus manual dispatch; reproducible PE/package checks and Windows Server 2022 runtime checks; public release only for non-PR runs on `master` |
 | Smoke kit | Listed simulator/host/container inputs on `master`, or manual dispatch; publishes the downstream simulator container |
 
 Exact path filters and assertions are in [the workflows](../.github/workflows).
