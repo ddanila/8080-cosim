@@ -76,6 +76,19 @@ page checksum; the CPU wrapper covers the ALU/flags,
 register-pair, INX/DAD, stack, and PUSH/POP paths. Both write their structured
 results from `4E00h` and return.
 
+Both wrappers return `A=00h` even when the diagnostic records a failure. Read
+RAM to obtain the verdict:
+
+| Wrapper | Result at `4E00h` |
+| --- | --- |
+| Memory | Four bytes: data-bit mismatch mask, address-alias boolean, retention mismatch mask, restored-page additive checksum |
+| CPU | One byte: `00` pass, `01` ALU/flags, `02` register-pair/increment, `04` stack path failure |
+
+For memory, the first three bytes must be zero; the fourth is a checksum,
+not a failure flag. These wrappers overwrite their result block and exercise
+the writable stack. The memory wrapper temporarily modifies the tested page;
+do not run it over live code, stack or data that another actor may change.
+
 From the repository root, initialize the shared sources and verify the
 committed diagnostic binaries. The build uses the pinned zmac source in Intel
 8080 mode, compiling it if the executable is absent; no separately installed
