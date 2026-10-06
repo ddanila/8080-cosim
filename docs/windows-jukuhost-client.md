@@ -143,7 +143,9 @@ DOS host. Evidence failure stops a run rather than silently discarding the
 record.
 
 After a clean GUI stop, cleanup uses `keep_sessions` (default 20) to retain
-the newest recognized session folders by timestamped name. It attempts to delete
+the newest recognized session folders by timestamped name. Cleanup scans at
+most 10,000 recognized folders; if more exist, it sorts only that subset and
+leaves folders outside the scan untouched. It attempts to delete
 `JUKUHOST.LOG` and `JUKUHOST.CAP` in older folders, including earlier failed
 sessions, then removes empty folders. Extra files do not protect those logs
 or captures. Copy important sessions elsewhere or set `keep_sessions=0` to
