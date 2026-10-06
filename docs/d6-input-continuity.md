@@ -84,17 +84,15 @@ qualifier. It must remain separate from MEMW and FDC density.
 
 The structural model now routes D26 PC1 and PC0 through the measured D3
 inverters before D6 A6 and A5, and routes D7.8 to D105.1/D6 A7.
-Runnable selection now comes from the physical D6 table through `U_DECODE` under
-the direct physical output mapping. The 2026-07-19 revision-3 reread proved that
-the earlier artifact had all four data channels reversed; the separately named
-functional decoder is retained only by the B37A diagnostic comparison. The A7
-source and output-order questions are independently closed.
+Runnable selection uses the reader-3-qualified physical D6 table through
+`U_DECODE`, with direct physical output mapping. The functional decoder remains
+only in the B37A diagnostic comparison. A7 source and output order are closed;
+[RT4 acquisition](rt4-dump-acquisition.md) preserves the channel-order evidence.
 
 ## Chip-removed output correction
 
-A subsequent D6-removed measurement invalidates the earlier installed-PROM
-claim that D6.11, D6.12, and D13.12 form one zero-ohm conductor. The physical
-socket pads are separate:
+Chip-removed continuity separates D6.11, D6.12 and D13.12. Installed-PROM
+resistance readings must not be treated as proof of one copper conductor:
 
 ```text
 D6.12 ROM_N -> D8.15 E_N
