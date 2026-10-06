@@ -355,6 +355,11 @@ Use the [voice differential workflow](OPL-VOICE-DIFFERENTIAL.md) for source vers
 target diagnosis. Preserve exact artifact/cycle/listening evidence in reports;
 completed experiment chronology belongs in Git.
 
+The status writer checks committed report values, evidence hashes and selected
+source/listening markers. It does not rebuild payloads, rerun cycle simulations
+or perform listening tests. `--check` compares the generated JSON with the
+selected report without writing it; the default command overwrites that report.
+
 Regenerate and verify the status after updating its inputs:
 
 ```sh
