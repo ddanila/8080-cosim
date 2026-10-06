@@ -38,8 +38,7 @@ The [checksum manifest](SHA256SUMS) records retained PDF and model-archive
 identities. The [TI SN74LS86A PSpice archive](sn74ls86a-ti-pspice.zip) is a
 compatible-device comparison; its provenance and limits are in
 [the D34 output reference](k555lp5-output-reference.txt).
-From the
-repository root, run:
+From the repository root, run:
 
 ```sh
 (cd ref/datasheets && sha256sum -c SHA256SUMS)
@@ -64,27 +63,7 @@ unless the text interpretation identifies exact-device evidence.
   bank D84-D91): `https://www.minuszerodegrees.net/memory/4164/datasheet_MK4564-12.pdf`
 - Signetics 82S126 (К556РТ4 = 82S126/3601/74S387 equivalent, the D2/D6 OC PROM):
   `https://www.retrotechnology.com/restore/82S126_signetics.pdf`
-- SN74LS86A Texas Instruments PDF, used only as an LS-TTL XOR output-current
-  comparison for exact-revision D34 К555ЛП5:
-  `https://www.ti.com/lit/ds/symlink/sn74ls86a.pdf`
-- Exact-device К555ЛП5 data sheet preserved from Electronics & Communications:
-  `https://static.insales-cdn.com/files/1/1346/27395394/original/%D0%9A555%D0%9B%D0%9F5.pdf`
-- Period КТ315-family reference scan preserved by Promelec:
-  `https://cdn.promelec.ru/upload/items/2020/02/06/kt315_.pdf`
-- SN54S138 Texas Instruments manufacturer PDF, used as a compatible-device
-  timing comparison for D53 КР531ИД7:
-  `https://www.ti.com/lit/ds/symlink/sn54s138.pdf`
-- HRO TYPE-C-31-M-17 official product page and manufacturer drawing, used to
-  guard the VJUGA Rev-A J3 six-contact power-only pin map and land pattern:
-  `https://en.krhro.com/Product-Details/722.html` and
-  `https://datasheet.lcsc.com/datasheet/pdf/26d9c5bff410f020782d77a1fd4062b2.pdf?productCode=C283540`
-- Bourns MF-RG official product page and manufacturer series datasheet, used to
-  guard the VJUGA Rev-A F1 exact suffix, electrical limits, thermal derating,
-  and static fit:
-  `https://www.bourns.com/products/circuit-protection/resettable-fuses-multifuse-pptc-aec-q200-compliant/product/MF-RG` and
-  `https://www.bourns.com/docs/product-datasheets/mfrg.pdf`
-- Littelfuse P4KE official product page and manufacturer series datasheet, used
-  to guard the VJUGA Rev-A D1 exact suffix, pulse limits, polarity, DO-41 body,
-  and lead dimensions:
-  `https://www.littelfuse.com/products/overvoltage-protection/tvs-diodes/leaded/p4ke/p4ke6-8a` and
-  `https://www.littelfuse.com/~/media/electronics/datasheets/tvs_diodes/littelfuse_tvs_diode_p4ke_datasheet.pdf.pdf`
+
+Sources for D34, VT2, D53 and the VJUGA Rev-A components are recorded in
+their linked text interpretations, including exact-device and compatible-device
+limits.
