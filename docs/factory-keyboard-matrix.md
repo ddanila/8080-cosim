@@ -107,6 +107,8 @@ runtime overrides and physical acceptance scope.
   return while reusing the lowercase matrix contact.
 - The HDL accepts the same `(column, key-bit, shift)` tuple at its simulation
   boundary; shifted `T` remains column 4, bit 3 and reads as Port B `0x88`.
+  That HDL stimulus interface has no CTRL input and holds PB7 released;
+  cosim's CTRL combinations are not covered by this interface.
 - No-key matrix/modifier bits are `0xCF`: `K0–K2` and `-FK` released,
   SHIFT/CTRL released. In scan columns 8–15, an open S21 switch adds PB5
   (`0x20`), producing `0xEF`; a closed switch leaves `0xCF`.
