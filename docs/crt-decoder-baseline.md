@@ -4,13 +4,10 @@ Baseline recorded: **2026-07-22**.
 
 Status: **WP0-WP2 + EVIDENCE-LINKED SYNTHETIC JUKU WP3 GUARDED**.
 
-This generated report records the CVBS-plan WP0 clean-checkout baseline and
-the later fork-owned WP1/WP2 receiver follow-ups and the bounded WP3
-synthetic Juku-timing fixture. The recorded unmodified fork point built
-and passed its upstream synthetic NTSC
-regression, then pins the float32/headless and explicit-profile E2E paths.
-The WP3 fixture consumes exact Juku raster evidence, but it makes no
-physical-VIDEO_OUT, framebuffer-agreement, or hardware claim.
+This report summarizes retained decoder qualification: the original RF/IQ
+regression, float32 baseband input, explicit receiver profiles, and a
+synthetic Juku-timing fixture. The fixture does not establish physical
+VIDEO_OUT, framebuffer agreement, or hardware behavior.
 
 ## Command
 
@@ -35,7 +32,6 @@ exists in local Git history; a shallow checkout may skip that check.
 | Full fork build passed | PASS | CMake configured and built fam_dsp, famidec, and synth_ntsc |
 | Upstream CTest passed | PASS | 1/1 synth_ntsc test passed |
 | Direct synthetic NTSC result is internally complete | PASS | 29 frames; 7/7 bars |
-| Temporary dependencies did not mutate host package state | PASS | development packages were extracted only below /tmp |
 | Fork README provenance and deterministic-fixture policy are committed | PASS | fork `175cb65d`; upstream remained `6cce72d4` |
 | Fork Linux CI builds RF/IQ and passes both test entry points | PASS | run 29885055666 at `feec5d7a`: full build + CTest + synth_ntsc |
 | WP1 fork tip and bounded commits are pinned | PASS | five bounded commits ending at `d383beb3` |

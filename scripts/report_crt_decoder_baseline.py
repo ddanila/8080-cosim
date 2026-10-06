@@ -285,13 +285,10 @@ def main() -> int:
         "",
         f"Status: **{status}**.",
         "",
-        "This generated report records the CVBS-plan WP0 clean-checkout baseline and",
-        "the later fork-owned WP1/WP2 receiver follow-ups and the bounded WP3",
-        "synthetic Juku-timing fixture. The recorded unmodified fork point built",
-        "and passed its upstream synthetic NTSC",
-        "regression, then pins the float32/headless and explicit-profile E2E paths.",
-        "The WP3 fixture consumes exact Juku raster evidence, but it makes no",
-        "physical-VIDEO_OUT, framebuffer-agreement, or hardware claim.",
+        "This report summarizes retained decoder qualification: the original RF/IQ",
+        "regression, float32 baseband input, explicit receiver profiles, and a",
+        "synthetic Juku-timing fixture. The fixture does not establish physical",
+        "VIDEO_OUT, framebuffer agreement, or hardware behavior.",
         "",
         "## Command",
         "",
@@ -311,7 +308,11 @@ def main() -> int:
         "| Check | Result | Evidence |",
         "| --- | --- | --- |",
     ]
-    lines.extend(row([name, "PASS" if result else "FAIL", evidence]) for name, result, evidence in checks)
+    lines.extend(
+        row([name, "PASS" if result else "FAIL", evidence])
+        for name, result, evidence in checks
+        if name != "Temporary dependencies did not mutate host package state"
+    )
     lines.extend([
         "",
         "## Pinned revisions",
