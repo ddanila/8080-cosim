@@ -105,7 +105,7 @@ continuity and the actual motor timing remain unmeasured.
 
 ## RC timing predictions
 
-Using the model/datasheet typical `tW ≈ 0.45RC` and the datasheet
+Using this report's model assumption `tW ≈ 0.45RC` and the datasheet
 retrigger exclusion `0.22*Cext(pF) ns`:
 
 | Section | Source-nominal network | Nominal pulse | Early-retrigger inhibit | Functional state |
@@ -113,6 +113,11 @@ retrigger exclusion `0.22*Cext(pF) ns`:
 | 1 | R103 47 kΩ / C18 47 µF | 0.99405 s | 10.34 ms | held clear; pulse suppressed |
 | 2 | R97 47 kΩ / C17 120 µF | 2.538 s | 26.4 ms | conditional access pulse |
 
+The preserved TI datasheet gives `0.33RC` for LS123 capacitors ≥1 µF
+(printed page 8); its 0.45 coefficient at the page-6 test point is not
+a general large-capacitor formula. D99 is a К155/SN74123-class part,
+so neither LS123 coefficient qualifies its installed timing. The table
+retains the report's 0.45 assumption rather than a measured prediction.
 The generator verifies model values, not installed resistance or capacitance.
 These are nominal behavioral predictions. Electrolytic tolerance, leakage,
 device threshold, temperature, and the actual B2/clear waveforms require
@@ -136,7 +141,7 @@ powered measurement before hardware release.
    selected FDC reads and writes. A falling A2_N can trigger only with
    B2 and `/CLR2` high.
 4. Measure the section-2 pulse and retrigger interval. Treat 2.538 s and
-   26.4 ms as nominal targets, not pass/fail production limits.
+   26.4 ms as model estimates, not pass/fail production limits.
 
 ## Runnable-model boundary
 
