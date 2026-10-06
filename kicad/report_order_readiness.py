@@ -266,7 +266,11 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trac
         "This gate separates machine-checkable fabrication blockers from dense",
         "placement and silkscreen findings that require human visual review or",
         "explicit waiver before placing an order.",
-        "Run `python3 kicad/report_order_readiness.py` to refresh this report.",
+        "Run `python3 kicad/report_order_readiness.py` from the repository root.",
+        "It refreshes this report and the package, BOM, sourcing, and upload reports.",
+        "Exit 0 means the package gates pass, including PACKAGE READY / DESIGN HOLD;",
+        "exit 3 means the package is not ready. Require RELEASED FOR ORDER and the",
+        "top-level manufacturing gate before upload or payment.",
         "The command reruns DRC and the package checks; it does not export the PCB.",
         "",
         "## Machine Blockers",
@@ -320,7 +324,7 @@ def build_report(board, out_dir, drc, waiver_accepted, bom, sourcing, power_trac
         f"- BOM lines: {bom['lines']}",
         f"- Board component positions: {bom['positions']}",
         f"- Current .009 populated parts: {bom['populate_now']}",
-        f"- Empty expansion/authentic-completeness sockets: {bom['leave_empty']}",
+        f"- Empty/DNP/placement-pending positions: {bom['leave_empty']}",
         f"- Action classes: {', '.join(bom['actions'])}",
     ])
 

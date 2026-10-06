@@ -7,7 +7,11 @@ Status: **NOT READY**
 This gate separates machine-checkable fabrication blockers from dense
 placement and silkscreen findings that require human visual review or
 explicit waiver before placing an order.
-Run `python3 kicad/report_order_readiness.py` to refresh this report.
+Run `python3 kicad/report_order_readiness.py` from the repository root.
+It refreshes this report and the package, BOM, sourcing, and upload reports.
+Exit 0 means the package gates pass, including PACKAGE READY / DESIGN HOLD;
+exit 3 means the package is not ready. Require RELEASED FOR ORDER and the
+top-level manufacturing gate before upload or payment.
 The command reruns DRC and the package checks; it does not export the PCB.
 
 ## Machine Blockers
@@ -55,7 +59,7 @@ The command reruns DRC and the package checks; it does not export the PCB.
 - BOM lines: 122
 - Board component positions: 377
 - Current .009 populated parts: 273
-- Empty expansion/authentic-completeness sockets: 104
+- Empty/DNP/placement-pending positions: 104
 - Action classes: circuit-review, leave-empty, mechanical-review, program/dump, source-now
 
 ## Design Release Gate
