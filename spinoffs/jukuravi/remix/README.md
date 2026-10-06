@@ -57,7 +57,8 @@ that image remains the replica content truth.
 The floppy subsystem (`2325h-29FFh`) is removed; a Net-only machine. Its
 `FF50h+` vectors now point at a `NO DISK - NET ONLY` stub, so the EKDOS
 vector contract keeps its shape. The reclaimed space stores the **T36
-loader engine verbatim** — never relocated, never re-assembled:
+loader engine verbatim** at its original RAM addresses. The remix builder
+rebuilds T36 and copies these segments without modifying their instructions:
 
 The stored ROM addresses below are for **Ekta4401**. Source ranges include
 the start and exclude the end; both releases use the same RAM destinations
@@ -69,7 +70,7 @@ and copied T36 bytes.
 | halt helpers | `06E8-0748` | ROM `2922h` | `06E8h` | 96 |
 | refresh + frames | `07A9-0810` | ROM `2982h` | `07A9h` | 103 |
 | CRC table | `0900-0A00` | ROM `3B18h` | `0900h` | 256 |
-| refresh handler | `1070-1113` | ROM `3C18h` | `1070h` | 163 |
+| refresh handler | `1070-1113` | ROM `3C18h` | `1070h` | 67 |
 
 Ekta4402 stores the CRC table at `3B27h` and refresh handler at `3C27h`;
 the first three segments remain at the addresses above. Its `J` handler is
@@ -160,14 +161,11 @@ refresh enabled at `07A9h`, with no transport mismatch. Subsequent retained
 sessions uploaded, read back, and executed D57 probes successfully, proving
 the complete LOAD → READ → RUN → result path rather than only the READY frame.
 
-Ekta4402 preserves the copied loader bytes and `J` behavior, with the ROM
-source addresses adjusted for its layout. On 2026-08-16
-the fitted successor was requalified directly: `J` entered service mode, two
-no-reset host attaches completed with zero encoded-symbol mismatch, both
-passed API-v2 PROBE and reported software refresh enabled for all 128 rows at
-`07A9h`, and the second returned a 32-byte READ from `4000h`. Exact RX/TX and JSON evidence, including the unsuccessful initial attach,
-is retained under
-[`../sessions/cs00015-ekta4402-j-physical/`](../sessions/cs00015-ekta4402-j-physical/).
+Ekta4402's fitted pair passed two no-reset API-v2 attaches, PROBE, and
+128-row refresh queries; the second also read 32 bytes from `4000h`.
+The [capture record](../sessions/cs00015-ekta4402-j-physical/README.md)
+owns the exact RX/TX, JSON and unsuccessful initial attach. This qualification
+does not independently rerun Ekta4401's uploaded probe matrix.
 
 Direct `N` on the same fitted pair also physically boots the separately
 maintained CP/M Plus image, reaches NetDisk-v3/N4 service, and recovers from a
