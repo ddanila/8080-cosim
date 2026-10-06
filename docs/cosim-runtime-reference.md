@@ -182,10 +182,11 @@ charged against a guest executing faster than the physical machine.
 
 An interactive tool may instead need maximum CPU speed while retaining a
 native helper process on the emulated USART. Set `JUKU_USART_HOST_SYNC_MS` to
-the maximum wall-clock wait for the first reply byte after target
-transmission (an integer from 1 to 60,000 ms). This opt-in coordination prevents the unpaced guest from
-consuming a firmware timeout before the helper is scheduled; it does not
-alter the 8251/PIT byte timing or pace CPU-only execution. Leave it unset for
+the PTY poll timeout for the first reply byte (an integer from 1 to 60,000 ms).
+Firmware must lower TxEN to arm the wait; it starts after any queued transmission
+drains. This gives the helper time to run before the unpaced guest consumes a
+firmware timeout, but the wait can expire without a reply. It does not alter
+the 8251/PIT byte timing or pace CPU-only execution. Leave it unset for
 timing experiments and use `JUKU_REALTIME_HZ` whenever wall time itself is
 part of the experiment.
 
