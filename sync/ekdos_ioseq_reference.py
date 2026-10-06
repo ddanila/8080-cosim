@@ -204,6 +204,8 @@ def main() -> int:
         "Preserve the framebuffer first if needed. `EKDOS_IOSEQ_MAX_CYCLES` and",
         "`EKDOS_IOSEQ_FRAME_CYCLES` override the default 20,000,000-cycle limit and",
         "200,000-cycle frame interval; changed settings may change the evidence.",
+        "The writer sets `JUKU_KEYS`, `JUKU_DISK` and `JUKU_TRACE_IO`; other",
+        "`JUKU_*` overrides are inherited. Unset them for default reproduction.",
         "",
         "```sh",
         "sync/ekdos_ioseq_reference.py",
