@@ -11,6 +11,12 @@ a live-stock claim or fabrication authorization.
 
 ## Command
 
+Run from the repository root with Python 3. The checker reads the retained
+PDF hash and interpretation text, board JSON, PCB text and ordering files;
+it does not parse the PDF drawing or run KiCad DRC. A completed check
+overwrites this report even when a guarded check fails (exit 1). Supply a
+report path as the first argument to write elsewhere.
+
 ```sh
 python3 spinoffs/minimal-vga/kicad/report_rev_a_usb_c_candidate.py
 ```
