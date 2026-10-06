@@ -175,6 +175,7 @@ or a signal stuck at idle.
   x64 reception rather than the 19,200 boundary and has lower diagnostic
   value. There is no valid periodic count-one mode-2/3 route to x64/19,200
   from the existing D57 clock.
+
 Do not spend another bench session on parity, host byte pacing, per-byte ER,
 cable replacement, x1 mode, or the invalid count-one x64 image: the retained
 controls already cover those questions.
@@ -230,41 +231,18 @@ payload**. The stock 6,784-byte bootstrap took approximately 81 seconds.
 These measurements describe this historical soak and loader; current host
 performance and bootstrap behavior require their own matching profile.
 
-### Other resident-protocol qualification
-
-CS00015 also exercised NetDisk v2 at 19,200 on 2026-08-15: three retry-free
-boots reached disk service, `DIR` passed, and `RDBENCH` completed 75 requests.
-That is evidence for the tested resident image and serial profile; it does not
-clear the mode-3 receive failure or establish current host defaults. The
-qualification records are retained in CP/Mish's `juku` branch.
-
-Compact-record benchmarks, read-ahead development, and earlier CP/M Plus
-bootstrap failures are separate from this electrical diagnosis. Use the
-[portable host contract](portable-c-host-plan.md) for the supported protocols
-and regression commands, and the recovery guide below for current boot behavior.
-
-The separate interactive CP/M result and ROM interrupt-dispatcher handoff rule
-are documented in [the Janet analysis](ekta37-netbios-notes.md).
-
 ## Current bootstrap boundary
 
-The experiments above qualify specific historical images and serial profiles.
-They do not define the current production host defaults. Use
-[the stock bootstrap and recovery guide](janet-fastboot.md) for current
-commands: recoverable stock-ROM sessions use **JF17 at 9600/8O1 throughout**.
-The C host also retains exact JF15 compatibility and a separate network-ROM
-JF16 workflow; their artifact and serial profiles must match the target.
+Use [the bootstrap and recovery guide](janet-fastboot.md) for current commands
+and matching target profiles. Recoverable stock-ROM sessions use **JF17 at
+9600/8O1 throughout**; JF15 compatibility and network-ROM JF16 are separate paths.
 
-The former CP/M Plus stock-`TN` final-ACK failure was an observed historical
-wrapper failure, not an unresolved limitation of the current JF17 path.
 [The CS00014 JF17 record](evidence/juku-serial/cs00014-stock-jf17-20260905/README.md)
 qualifies boot, operator-selected reset recovery and live host replacement.
 It does not qualify 19,200 mode-3 reception or reset during disk writes.
-
-For implementation and regression commands, see the
-[portable C host contract](portable-c-host-plan.md). Older fast-stage timings,
-optimization sequences and proposed boot designs remain in Git history; the
-physical baud evidence below remains relevant to the electrical diagnosis.
+The [portable C host contract](portable-c-host-plan.md) owns implementation and
+regression commands; [the Janet analysis](ekta37-netbios-notes.md) owns the ROM
+protocol and interrupt-dispatcher handoff.
 
 ## Retained baud evidence
 
