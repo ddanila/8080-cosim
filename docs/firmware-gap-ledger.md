@@ -12,6 +12,9 @@ be retained as variants if they differ; they do not keep this set open.
 
 ## Command
 
+Run from the repository root with Python 3 (standard library only).
+The writer replaces this report, including when checks fail (exit code 1).
+
 ```sh
 python3 scripts/report_firmware_gap_ledger.py
 ```
