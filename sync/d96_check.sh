@@ -98,9 +98,10 @@ described as a complete conditioner until they are verified.
 
 ## Evidence boundary
 
-This guard proves the both-asserted WREQ state and phase-independent
-divide-by-two behavior after release; it deliberately does not claim a
-deterministic WREQ reset/restart phase.
+This guard checks the both-asserted WREQ state and modeled divide-by-two
+behavior after release. The test uses the model's retained high/high state;
+it does not sweep physical restart phases or establish a deterministic
+WREQ reset/restart phase.
 It does not replace bench measurement of D28/R85 open-collector rise time,
 duty cycle, D96 setup/hold margin, or separator lock over both 4/8 MHz modes.
 Capture WREQ_N at pins1/4 with Q1/pin5 and /Q1/pin6 to establish the actual
