@@ -32,8 +32,8 @@ All slots share the extension. This is not the vanilla 40-pin connector layout.
 - CPU owns address/control and write data. Only the selected card drives read
   data; bus-conflict assertions check decode overlap and refresh behavior.
 - Video owns RAM accesses at `0xD800–0xFFFF` in modes 0 and 3, with a
-  9640-byte, 40×241 framebuffer. Memory serves the upper ROM overlay in modes
-  1 and 2; Video does not answer CPU accesses then. Scanout stays on Video-local
+  9640-byte visible image (40×241) within the 10,240-byte CPU window.
+  Memory serves the upper ROM overlay in modes 1 and 2; Video does not answer CPU accesses then. Scanout stays on Video-local
   SRAM in every mode.
 - Video asserts open-drain `/WAIT` for CPU accesses that collide with scanout
   fetches. Phase sweeps and integrated CPU checks verify access completion.
@@ -46,11 +46,14 @@ All slots share the extension. This is not the vanilla 40-pin connector layout.
 
 ## Verification and physical boundary
 
-Each card has an HDL interface and bus-functional checks; the assembled twin
-uses firmware byte-stream/framebuffer oracles. Independent pin/LVS checks,
+Each first-article card has an HDL interface and bus-functional checks; the
+assembled twin uses firmware byte-stream/framebuffer oracles. Independent pin/LVS checks,
 programmable-logic rebuilds, DRC, exact-part guards, mechanics and package review
 cover the implementation beyond the behavioral model. Use the
 [execution guide](rev-b-execution-guide.md) for commands.
+
+The assembled twin does not implement PIC interrupt service or keyboard
+scanning; its scope is detailed in the [bus contract](rev-b-bus-contract.md#pic-interrupt-assignments).
 
 Digital simulation does not prove physical bus timing, signal integrity or
 assembled operation. Those require the staged first-article bench procedure.
