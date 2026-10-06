@@ -3,7 +3,7 @@
 The durable source records are:
 
 - `ref/photos/juku-pcb-2/registration.json` — image hashes, acquisition order,
-  side/mirror state, dimensions, and global transforms;
+  side/mirror state, dimensions, and optional per-image transforms;
 - `ref/photos/juku-pcb-2/panorama-board-fiducials.json` — reviewed board
   landmarks;
 - `ref/photos/juku-pcb-2/local-package-registration.json` — direct package
@@ -54,9 +54,14 @@ always cites an original JPEG coordinate and a reviewed path.
 
 ## Current result
 
-All 28 July grid images are registered into a common 310 x 266 mm
-component-side coordinate frame, with the solder side mirrored explicitly. The
-endpoint table contains 641 reviewed rows:
+The manifest inventories 28 July images. Derived panorama registration covers
+the 12 component-grid and 9 solder-grid tiles in a common 310 x 266 mm
+component-side frame, with the solder side mirrored explicitly. The 7
+`vg93_removed` close-ups are excluded from panorama generation; use their
+package-local fits. The manifest’s per-image homographies are currently unset.
+Panorama transforms and board-frame fits are stored separately under
+`docs/photo-registration/`; they are navigation aids, not electrical proof.
+The endpoint table contains 641 reviewed rows:
 
 | State | Rows | Meaning |
 | --- | ---: | --- |
