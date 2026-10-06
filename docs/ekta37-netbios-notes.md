@@ -1,8 +1,8 @@
 # ekta37 NetBios/Janet boot-path notes
 
 Status: hand-written analysis of the pinned `roms/ekta37.bin` (EktaSoft '88
-Serial #0037, RomBios 3.43m, SHA256
-`fc44df76b2601ab81745f2512edb7a56bb24dca6419e7173a5bf11cae4c1fc27`).
+Serial #0037, RomBios 3.43m). The canonical image identity is in
+[the programming-image report](eprom-programming-images.md).
 The commands at the end inspect selected banners and USART code and run
 the archived-system bootstrap regression. Physical and cross-project claims
 use the evidence cited in their sections; interpretations are labeled.
@@ -165,8 +165,10 @@ sends the `NR` synchronization marker until the resident BIOS sends a valid
 request. Requests contain `JD`, operation, sequence, drive, 16-bit track,
 logical sector, an optional 128-byte write payload, and XOR checksum. Replies
 contain `DJ`, echoed sequence, status, optional read payload, and checksum.
-The server recognizes duplicate sequence/request pairs and returns the previous
-reply, making a retried write idempotent.
+Within a disk-service session, the server caches the most recent request and
+reply. An immediate retry with identical sequence, operation, arguments, and
+payload receives that reply without repeating the write. A different request
+replaces the cache; this is not a history of completed transactions.
 
 The cross-repository `make juku-net-cosim-check` proof runs with no local disk
 attached to the simulator. DIR completed with 34 remote reads; SAVE completed
