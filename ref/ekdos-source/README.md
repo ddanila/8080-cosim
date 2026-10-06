@@ -33,8 +33,9 @@ symbols and line presence without assembling or executing the source.
 
 - `EKDOS30.ASM` describes a 52K EKDOS 2.30 BIOS compatible with Bootstrap
   4.x and a DEC Rainbow-derived 80-track, double-sided disk format. Its monitor
-  calls include `FLOPPY`, `START`, and `RWFLOPPY`, matching the ROMBIOS/FDC
-  interface exercised by the current `TDD` probes.
+  entry constants are `FLOPPY=FF53h`, `START=FF56h`, and `RWFLOPPY=FF59h`.
+  These are declarations in this source; check the selected ROM's entry table
+  before applying them to a boot probe or another monitor version.
 - D2/D6/D8/D94 programming evidence is maintained separately in
   [the physical PROM reference](../physical-proms/README.md), with links to
   the decode and circuit constraints.
