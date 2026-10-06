@@ -59,7 +59,7 @@ REVIEW_CHECKS = [
     "Vendor preview agrees with `docs/replica-package-geometry-readiness.md`.",
     "Top/bottom orientation agrees with `fab/gerbers/review/tracespace/`.",
     "Accepted DRC classes in `docs/replica-fab-drc-disposition.md` remain acceptable in the vendor preview.",
-    "Confirmed every P0 item in `PLAN.md` is closed and the design-release report explicitly authorizes fabrication.",
+    "Confirmed the release criteria in `PLAN.md` are satisfied and the design-release report explicitly authorizes fabrication.",
     "Reviewed and dispositioned every relevant source-risk row in `docs/replica-bringup-verification-points.md`.",
     "Vendor did not enable impedance control or change the 2-layer stackup.",
     "Final quoted options match the locked options in `docs/replica-manufacturing-readiness.md`.",
