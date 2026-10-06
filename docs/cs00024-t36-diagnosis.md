@@ -1,7 +1,5 @@
 # CS00024 T36 desk diagnosis
 
-Status date: 2026-08-11.
-
 Status: **COMPLETE 32 KIB RAM PROOF UNDER T36 REFRESH; LEGACY D57 CHANNEL-2
 CAPTURE NEEDS THE CORRECTED `/VER RTR` RERUN; 12 MS LINK MARGIN IS SEPARATE**.
 
@@ -17,7 +15,7 @@ acceptance criteria.
    passed zero, one, checkerboard, and address-XOR patterns after a six-second
    refresh-on hold. Both complementary resident-code locations passed, all
    eight data lanes passed, and no candidate package remained.
-2. The earlier T34/T35 decay is explained by the diagnostic environment:
+2. The earlier T34/T35 decay is consistent with insufficient diagnostic refresh:
    T34 supplied no idle software refresh, and T35 accidentally refreshed only
    physical row zero. T36 corrected the address axis and survives the same
    deterministic decay model. This does not prove the normal EktaSoft/video
@@ -39,9 +37,8 @@ acceptance criteria.
 
 The complete session is
 [`20260810T205728.130960Z.json`](../spinoffs/jukuravi/sessions/cs00024-t36-local-full-physical/20260810T205728.130960Z.json)
-with its matching raw RX/TX streams. It ran from `20:57:28Z` to `21:42:28Z`,
-decoded 746 frames, received 165,161 bytes, and transmitted 139,550 bytes.
-The exact ROM identity was T36 `1E/C617`.
+with its matching raw RX/TX streams. The exact ROM identity was T36 `1E/C617`;
+the session JSON retains timing and transport totals.
 
 | Evidence | Physical result | Supported claim |
 | --- | --- | --- |
@@ -101,15 +98,11 @@ The completed physical result demotes these diagnoses:
 - a broad row/column alias detectable by the address-XOR pattern; and
 - the earlier persistent CPU/A12 hypothesis.
 
-It does not yet validate normal-ROM refresh coverage, operation over
-temperature, or signal integrity at the DRAM pins. Contemporary memory-system
-guidance emphasizes that shared RAS/CAS/address capacitance, trace inductance,
-overshoot/undershoot, switching current, and local decoupling can create
-intermittent common-path errors even when individual data lanes are healthy.
-Those are sensible oscilloscope checks only if failures return; they are not a
-reason to replace all eight RAMs now. Primary background:
-[National Semiconductor AN-305, in the 1986 Memory Support handbook](https://www.bitsavers.org/components/national/_dataBooks/1986_National_APPS_Handbook_Vol_2_Memory_Support.pdf)
-and the [Hitachi 1987 IC Memories data book](https://www.bitsavers.org/components/hitachi/_dataBooks/1987_M11_Hitachi_IC_Memories_Data_Book.pdf).
+This result covers the recorded patterns, refresh-on workload and bench
+conditions. Normal-ROM refresh coverage, operation over temperature, and DRAM
+pin signal integrity remain unqualified. If failures recur, preserve waveform
+and power evidence before replacing packages; the physical checks below identify
+the relevant shared signals.
 
 ## D57 channel-2 timing correction
 
