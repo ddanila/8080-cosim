@@ -23,9 +23,6 @@ Primary retained captures are:
 - `sessions/cs00024-t31-retryfix/20260808T213825.856067Z.*`
 - `sessions/cs00024-t31-attach-resync/20260808T214255.525497Z.*`
 
-The timeout-only retry capture at `20260808T213741.612920Z` is chronology, not
-positive evidence.
-
 ## D55 supersession
 
 The 2026-08-09 desk audit proves that exact T31 produces a D55 bit on a clean
@@ -247,46 +244,14 @@ the present captures do not identify one as the cause. References:
 - <https://habr.com/ru/articles/249613/>;
 - <https://tec.org.ru/board/kr580vm80a/104-1-0-5266>.
 
-## Simulation matches and current localization
+## T35 simulation boundary
 
-Clean cosim passes the same wrapper at both `7F00h` and `6F00h` under the T35
-per-row decay model. A deliberately execution-only corruption of byte
-`7F02h`, changing the first `CALL 07A9h` to `CALL 00A9h` while leaving ordinary
-readback intact, produces the physical protocol signature: valid RUN ACK and
-no RETURN. It then reaches the ROM CPU-failure path and programs D57 channel 1
-with divisor 8000, a continuous nominal 250 Hz tone. This is not a fitted
-component fault; it proves that a RAM instruction-fetch/misexecution event can
-explain both observations without a serial failure.
-
-D57 remains an independent intermittent finding. Its OUT0 is the traced clock
-for both D11 TxC and RxC, while OUT1 drives the speaker. A D57/D11/clock-path
-failure can explain loss or corruption of RETURN, but it does not by itself
-explain why three different targets all stopped only after entering the same
-`7F00h` wrapper. The middle failure also followed a clean cold D57 test. The
-boot predicate is only a momentary sample, so it cannot fully exclude a later
-D57 dropout.
-
-Ranking after the `6F00h` physical run:
-
-1. **The wrapper control-flow pattern**, especially returning from the low-ROM
-   `CALL 07A9h` into code in `6000h..7FFFh`, or the wrapper's nested stack/CALL
-   sequence on this board. Clean simulation and exact readback exclude a
-   software encoding error, but this remains the only operation common to all
-   four stops.
-2. **D57/D11 serial path changing after RUN.** Supported by the independently
-   intermittent D57 result, malformed tail bytes, and low tone, but weakened by
-   two clean-D57 cold results and by the wrapper-specific repetition.
-3. **General DRAM decay.** Initially appeared reduced because T35 survived the
-   old idle boundary. The later row-lane capture supersedes this interpretation:
-   T35 retained only the row it actually refreshed plus actively touched state.
-4. **Exact CS00015 D1 increment fault.** Simulation- and capture-excluded.
-
-Static or dynamic A12 loss in D1, the address buffer, D49 RAM mux, or board
-conductor is now inconsistent with both exact high-A12 wrapper readback and the
-identical A12-low `6F00h` stop. D2 READY cannot distinguish opcode fetch from
-data read, and `6F00h` and `7F00h` both have A10=1 and therefore occupy D2's
-same always-wait class. A broader `6000h..7FFFh` RAM-execution effect remains
-possible; A12 itself is no longer the discriminator.
+An execution-only corruption injection reproduced RUN ACK without RETURN
+and a CPU-failure tone. This established a possible misexecution mechanism,
+not a component diagnosis. The later physical row-lane test found inadequate
+T35 refresh, and the complete T36 test passed the CPU/address probes and RAM
+patterns. Use the [current diagnosis](../../docs/cs00024-t36-diagnosis.md)
+for remaining D57, normal-raster refresh and serial-margin work.
 
 ## Direct `4000h` register result, 2026-08-10
 
@@ -334,24 +299,9 @@ intermittent lanes. Errors spanning many bits or whole bytes instead implicate
 shared RAS/CAS/write/refresh/address timing and must not be blamed on eight
 packages at once.
 
-The next CPU discriminator should use separate one-chunk programs that return
-each INX result byte directly in A. That removes the result-buffer stores,
-avoids multi-chunk target aging, and retains the loader's protocol-level RETURN
-evidence.
-
-The host-driven lane test is now available. It writes four 32-byte patterns at
-`4D00h`, verifies each write, leaves T35 refreshing for six seconds, then READs
-the exact bytes and reports per-direction mismatch counts with the D84-D91
-mapping. It executes no test code from RAM:
-
-```sh
-python3 spinoffs/jukuravi/batch.py --port /dev/ttyUSB0 --rom t35 \
-  --only-ram-lanes --ram-lane-address 4D00 --ram-lane-hold-ms 6000 \
-  --log-dir spinoffs/jukuravi/sessions/cs00024-t35-ram-lanes-physical
-```
-
-The test is destructive only to its 32-byte scratch range. The original T35
-cosim pass used the now-corrected high-byte row model and is not valid evidence.
+The subsequent direct-register and host-driven lane tests are recorded below.
+The original T35 cosim pass used the now-corrected high-byte row model and
+is not valid evidence of physical refresh coverage.
 
 Evidence:
 `sessions/cs00024-t35-increment-direct-physical/20260810T155952.521638Z.*`.
