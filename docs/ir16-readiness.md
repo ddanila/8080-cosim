@@ -37,7 +37,9 @@ the writer replaces that report with the metadata-check results.
 
 ## Physical consequence
 
-- `SHIFT_G` controls the D42/D43 outputs.
+- `SHIFT_G` controls the D42/D43 outputs. Runnable HDL holds this rail
+  high through `U_SHIFTGLNK`, keeping their outputs enabled; it does not
+  reproduce the physical D35.6 control waveform.
 - D41 uses that same rail as its clock while its own OC pin is tied high.
 - D42/D43 receive their separate clock on `XTAL16M` and their mode
   input on `LOAD_VID`.
