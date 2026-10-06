@@ -56,7 +56,9 @@ python3 tests/jukuhost_stock_cosim_test.py
 sync/janet_netboot_check.sh
 ```
 
-The proven stock setting is nominal 9600 baud, 8O1. The C-host test serves all five images and exercises automatic station discovery.
+The proven stock setting is nominal 9600 baud, 8O1. The C-host test serves
+all five images with station numbers `02/01`; an additional CPM22 case checks
+automatic discovery of different station numbers.
 The separate five-image regression in `janet_netboot_check.sh`
 uses the frozen Python-era Janet test fixture to serve the simulator through
 its PTY serial/PIC/NetBios path. It requires a byte-exact `B400h` image plus
