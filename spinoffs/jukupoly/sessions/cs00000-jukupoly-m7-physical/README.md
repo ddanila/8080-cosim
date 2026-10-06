@@ -18,10 +18,9 @@ failure was instead the host's later attempt to open a nonexistent
 the otherwise valid CP/M boot and leaving CP/M to report an A: I/O error.
 
 After a `socat` PTY pair was created, `--resume-disk` attached to CP/M's next
-retry without RESET.  The recovered session served 7,666 requests and 34
-reads (272 records) with zero writes, retries, boot restarts, target resets,
-reconnects, or UART errors.  This proves the ROM/host late-ready recovery path
-worked in this run; it does not support the earlier hypothesis that the
+retry without RESET. The recovered session served disk reads without retries,
+boot restarts, target resets, reconnects or UART errors. The retained capture
+supports late-ready recovery, rather than the earlier hypothesis that the
 ready-frame checksum was mistaken for `C6`.
 
 The host now preflights an explicitly requested console PTY before opening the
@@ -34,7 +33,7 @@ the pre-bootstrap failure.
 | Program | Result |
 |---|---|
 | `IMPV1.COM` | Ran twice and returned to `A>`.  The attended run confirmed that the opening low lead is missing and first appears later; the early ticking/percussive voice sounds correct. |
-| `IMPREAR.COM` | Loaded and began on the physical target, then failed to return.  The screen showed garbage and neither the expected end nor a remotely queued Escape restored CP/M.  The host was stopped more than three minutes into the recovered session. |
+| `IMPREAR.COM` | Loaded and began on the physical target, then failed to return.  The screen showed garbage and neither the expected end nor a remotely queued Escape restored CP/M.  The run was stopped after this failure. |
 | `IMPDET.COM` | Not run after the `IMPREAR` failure. |
 
 The failed `IMPREAR.COM` passed the lightweight flat-RAM audio harness, but
@@ -54,8 +53,7 @@ CS00000 cold-booted C10/CP/M Plus with the four-way target-shape disk SHA-256
 `4a843f92b7cc490f04b601a1ada36e3cd76f8b6f2bdf2d1ecb0548ad4d9b3a50`
 again failed to return: the screen became striped and the machine stopped
 servicing CP/M.  The host had loaded the complete COM with zero disk retries
-or UART errors and saw no request after the final load at 66.443 seconds.
-It was stopped 116 seconds later.  This reproduced the prior failure from a
+or UART errors and saw no request after the final load.  This reproduced the prior failure from a
 clean boot and made the comparison result invalid; it was not an envelope-
 quality verdict.
 
@@ -79,8 +77,7 @@ are unchanged.  The focused envelope execution regression now models the
 write-protected high-ROM overlay, so the old ordering fails instead of being
 masked by flat RAM.  The repaired `REAROLD` completed under the same full C10
 system, caused the expected A: warm-boot/CCP reads, and accepted a subsequent
-B: `DIR`; the host recorded 22 reads, zero retries, zero boot restarts, and
-zero UART errors.
+B: `DIR`; the host recorded zero retries, boot restarts or UART errors.
 
 The later host-side equal-phase member grouping correction changes the music
 payloads without changing this startup fix. Its current three-way disk is
