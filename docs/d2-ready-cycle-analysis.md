@@ -8,12 +8,9 @@ The completed [T32](../spinoffs/jukuravi/T32-PHYSICAL.md) and
 three wait classes and identifies the fitted D1 increment-path fault.
 The derivation below remains a model analysis, not a new measurement.
 
-This generated report re-derives, from the validated D2 `.037` READY PROM,
-what wait treatment each page of the D15 window receives, and then asks
-whether the CS00015 "A12 problem" as framed in
-[`../spinoffs/jukuravi/T31-PHYSICAL.md`](../spinoffs/jukuravi/T31-PHYSICAL.md)
-is represented by the modeled input classes. It only draws out what
-the already-preserved tables imply.
+This report derives D15 page wait classes from the validated D2 `.037`
+table and maps the recorded [T31 probes](../spinoffs/jukuravi/T31-PHYSICAL.md)
+onto those classes.
 
 Regenerate with `python3 scripts/report_d2_ready_cycle_analysis.py`.
 The generator verifies the D2 hash and derives page classes. Probe bytes
@@ -110,43 +107,25 @@ column is cross-checked here against the burned
 | `1070h` | `0C` | `0C` | CAS-gated |
 | `1071h` | `0A` | `0A` | CAS-gated |
 
-All five upper probes sit in `1000-10FF`, i.e. entirely inside the single
-CAS-gated class, and the one lower probe sits in a no-wait page. The
-experiment therefore never compared the upper half against the lower half;
-it compared **the CAS-gated class against an unwaited class**.
-
-T31's own loader entry `0A0Ch` is in a no-wait page, and the lower half
-also contains always-wait pages (`0400-07FF`, `0C00-0FFF`) that T31
-demonstrably executes on CS00015. At the end of T31, the CAS-gated class
-was therefore the only upper-half class tested. T32 subsequently tested
-all three upper-half wait classes and found the same failure in each,
-refuting wait-class confinement as stated in the supersession note.
+T31 tested upper addresses only in the CAS-gated `1000-10FF` page,
+with one lower no-wait control. T32 subsequently found the same failure
+in all three upper-half wait classes, excluding confinement to CAS-gated
+pages. The linked physical records retain the diagnostic sequence.
 
 ## Modeled fetch/read inputs
 
-The premise under test is "correct upper-D15 data reads but a failing
-upper-D15 instruction fetch". The modeled decode paths have no explicit
-opcode-fetch qualifier:
+The modeled decode paths have no explicit opcode-fetch qualifier:
 
-- In the 8080 status word, `MEMR` is asserted for both an M1 opcode fetch
-  and a memory data read. `hdl/devices.v`'s 8238 decodes only `INP`, `OUT`
-  and `INTA`, deriving `memr_n = ~(dbin & ~INP & ~INTA)` - identical for
-  both cycle types.
-- The recorded board model supplies no `M1` qualifier to the ROM-select
-  or D2 wait inputs.
-- D2 itself takes no cycle-type input. For every `A10=0` address - which
-  includes all six probes - `IORC_N` and `A14` are don't-cares, `WREQ_N` is
-  a region select rather than a cycle qualifier, and the only remaining
-  variable under the stated memory-cycle assumptions is `CAS`. The runnable
-  CAS scaffold is gated by memory access; its physical timing remains open.
-- D8 is an address-only pager enabled by D6 ROM select. D6 also receives
+- The 8238 model in `hdl/devices.v` derives
+  `memr_n = ~(dbin & ~INP & ~INTA)` for both opcode fetches and data reads.
+- D2 has no cycle-type input. For the six probes (`A10=0`), `IORC_N`
+  and `A14` are don't-cares. With `WREQ_N=1`, only `CAS` varies at each
+  address; the runnable CAS scaffold is gated by memory access.
+- D8 is an address-only pager enabled by D6 ROM select. D6 receives
   mode and control inputs; neither PROM has an explicit M1 input.
-  See `docs/d8-physical-decode.md` for the pager/enable distinction.
 
-A `JMP 106Fh` fetches `C3` as an M1 cycle and `0C 0A` as ordinary read
-cycles, so only the first byte is nominally a different cycle type.
-The listed decode inputs do not select on that distinction. This does not
-rule out physical differences in edge timing, loading, or CPU behavior.
+These inputs do not distinguish opcode fetches from data reads. Physical
+edge timing, loading, and CPU behavior remain outside this table analysis.
 
 ## Current disposition
 
