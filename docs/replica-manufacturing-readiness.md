@@ -15,7 +15,10 @@ The upload ZIP is absent in this checkout.
 This command reruns order/package checks and rewrites their reports,
 the upload runbook, and the order template. It does not export Gerbers
 or correct the board. Refresh with
-`python3 kicad/report_replica_manufacturing_readiness.py`.
+`python3 kicad/report_replica_manufacturing_readiness.py` from the repository root.
+The generator exits 3 for package failures and 0 for a valid package,
+including a valid package still on DESIGN HOLD. Use the release command
+below to enforce design release.
 
 ## Physical release evidence
 
@@ -27,10 +30,7 @@ or correct the board. Refresh with
 
 ## Historical package provenance
 
-The superseded package used routed-board SHA256
-`3a1f83c8277624f2c04633761de5703550420443839fb3d5e49eea2c8a99e266`.
-Historical upload ZIP SHA256: `90308b962433648cf52d0de44046367380e79f3e653151da75fc08bd9d949a46`.
-Its identity, toolchain, and audit counts are preserved in
+The superseded package’s identity, toolchain, and audit counts are retained in
 [the historical package record](../ref/routing/zero-open-fabrication-package.json).
 Those results do not authorize the current board or package.
 
@@ -89,6 +89,10 @@ this generator reran every underlying design check.
 ```sh
 kicad/check_replica_manufacturing_ready.sh
 ```
+
+This command exits 3 immediately when the upload ZIP or current-board stamp
+is absent. With those inputs present it refreshes selected checks and reports,
+verifies package checksums, and returns 0 only for RELEASED FOR UPLOAD.
 
 ## External evidence to save after design release
 
