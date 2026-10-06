@@ -1,6 +1,6 @@
 # VJUGA rev B — five-board silkscreen audit
 
-Status: **PASS / CURRENT CANDIDATE REVIEWED / ORDER HOLD**, 2026-08-29.
+Status: **PASS / RECORDED CANDIDATE REVIEW / ORDER HOLD**, 2026-08-29.
 
 This audit covers the printable front and bottom silkscreen of CPU, Memory, I/O,
 Backplane, and Video. The reviewed package is identified by
@@ -54,6 +54,16 @@ denser values with a little extra visual weight and margin.
 
 ## Verification
 
+Run the content checks from the repository root with KiCad Python:
+
+```sh
+. spinoffs/minimal-vga/kicad/revb/env.sh
+for card in cpu mem io backplane video; do
+  "$KICAD_PYTHON" spinoffs/minimal-vga/kicad/revb/check_revb_pcb.py "$card"
+done
+```
+
+
 The DRC, visual inspection, archive rendering, and regression results below are
 the recorded 2026-08-29 review; rerun the applicable checks after changing a board.
 
@@ -63,8 +73,10 @@ the recorded 2026-08-29 review; rerun the applicable checks after changing a boa
   `SKIP` message if `pcbnew` cannot be imported; that is not a validated board.
 - `apply_revb_silkscreen.py` imports only reviewed text from a fresh generator output
   into each routed release board. It refuses footprint-placement differences and
-  proves a non-silkscreen fingerprint covering footprints/pads, tracks/vias, zones,
-  nets, drills, copper layers, and non-silk drawings is unchanged.
+  compares an in-memory fingerprint of footprint placement, pad geometry/nets/drills,
+  tracks/vias, copper-layer count, zone count and non-silk drawing bounding boxes
+  before saving. It does not compare zone geometry, drawing shapes or the saved
+  board after reload; rerun the physical and DRC checks on the saved output.
 - All five routed boards pass KiCad total DRC with zero violations and zero
   unconnected items after the transplant.
 - The normal top SVGs and mirrored `*-bottom.svg` files under `docs/revb-previews/`,
@@ -74,11 +86,8 @@ the recorded 2026-08-29 review; rerun the applicable checks after changing a boa
 - `kicad/revb/export_fab.sh` and `sim/revb_tier_suite.sh` run the five-card silk
   contract when a KiCad Python interpreter is available; otherwise these checks
   are skipped.
-- The refreshed five archives produced 42 separately rendered production layers/
-  drills and 10 top/bottom composites. Every silk is nonblank; the montage review
-  found no clipping, pad collision, crowding, translation, or wrong-side cue.
-- The complete rev-B regression passed after the refresh, including both modular
-  decode boots and the real-chip TTL Video `/WAIT` boot against the cosim oracle.
+- Production-layer and top/bottom composite inspection found every silk nonblank,
+  with no clipping, pad collision, crowding, translation or wrong-side cue.
 
 The existing **ORDER HOLD** remains in force until the owner explicitly authorizes
 the exact hashes in the package manifest for upload.
