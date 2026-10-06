@@ -83,10 +83,13 @@ vector generator checks the C10 ABI 1.4 metadata, but the test does not execute
 C10 ROM code or exercise its resident service ABI. A deliberate isolation-bypass run must
 fail, so the test cannot pass merely by sampling the internal USART nodes.
 
-The electrical checker verifies the recorded parts, connections and voltage
-arithmetic. The HDL test does not simulate analog thresholds, loading, rise
-times or fault currents. Physical adapter interoperability and electrical
-measurements remain part of board acceptance.
+The electrical checker compares selected JSON pin mappings and computes voltage
+limits from `serial-electrical.json`. It does not independently verify part
+identities, resistor values or datasheet limits. The HDL test uses a scaled
+master clock to check divider ratios and a bit-clock adapter for the minimal
+USART model; it does not qualify physical baud timing, analog thresholds,
+loading, rise times or fault currents. Physical adapter interoperability and
+electrical measurements remain part of board acceptance.
 
 ## Primary sources
 
@@ -96,6 +99,11 @@ measurements remain part of board acceptance.
 - [Vishay 1N4148 datasheet](https://www.vishay.com/docs/81857/1n4148.pdf)
 
 ## Acceptance commands
+
+Run from the repository root with Python 3. The serial simulation also needs
+Bash and Icarus Verilog (`iverilog` and `vvp`). The board completeness check
+uses KiCad’s `pcbnew` module; see the [execution guide](rev-b-execution-guide.md)
+for tool setup and the other release gates.
 
 ```sh
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_serial_contract.py
