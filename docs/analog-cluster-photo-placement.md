@@ -19,10 +19,7 @@ photo-registered placements; the older `.006` RF group is excluded.
   `R66=(302.69,128.46)` mm.
 
 The photo read is suitable for package placement but does not yet identify the
-lower obscured/passive positions. `R65`, the visibly marked red `4К7` R67, glass
-`VD3`, and rightmost `R66` are placed at their observed centres. The
-factory drawing fixes the left-to-right identity of the right-hand group, so
-the photo centres do not depend on colour or circuit-role inference.
+lower obscured/passive positions.
 Rotated native crops of the independent May 19 and July 10 owner views read
 `К43` on the fitted R65 body (0.43 kΩ, or 430 Ω) and `1K0` on R66. Both match
 the exact `.009` sheet-2 video detail in
@@ -77,8 +74,7 @@ Those fifteen legacy-only references are therefore DNP on the `.009` target.
 The `.009` drawing reuses C9/C10/C11/C12/C15 around D93-D102, so those physical
 capacitors remain at their factory positions with both leads left as explicit
 target-continuity boundaries. R67.2 and X6 A:3 remain such boundaries; the
-factory table still closes A:3/A:4 to X6 independently of the superseded RF nets. The
-yellow `Б / 8901` part is the retained VT2; C94 remains separately bounded.
+factory table still closes A:3/A:4 to X6 independently of the superseded RF nets.
 
 The corrected R67 cross-side registration identifies its
 upper lead's solder joint and an uninterrupted backside trace to an open
@@ -134,11 +130,9 @@ The four adjacent horizontal resistors' right-hand pin-2 leads all terminate
 on one uninterrupted component-side perimeter rail. R100.2, R102.2, R108.2,
 and R86.2 are closed to `P5V` by the target common rail plus electrical sheet
 3. The sheet also closes R102.1 to C22.2/D102.15 and R108.1 to
-C20.2/D102.7. The solder-side D102.8 ground trace is not mistaken for this
+C20.2/D102.7; the owner photos alone do not establish those continuations.
+The solder-side D102.8 ground trace is not mistaken for this
 component-side +5 V rail.
-
-R102.1 and R108.1's remote connections come from recovered electrical
-sheet 3; the owner photos alone do not establish those continuations.
 
 ## C20/C22 drill registration
 
