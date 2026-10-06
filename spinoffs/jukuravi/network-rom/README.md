@@ -46,6 +46,11 @@ corrected scanner under C6 filenames would invalidate its physical identity.
 
 From `8080-cosim`:
 
+Use Bash, Python 3 and the initialized `juku-common`/zmac sources (or a
+compatible `ZMAC` override). The ABI gate requires a POSIX environment with
+Unix pseudo-terminals and a C11 compiler (`CC`, default `cc`); the HDL gate
+requires Icarus Verilog (`iverilog` and `vvp`).
+
 ```sh
 python3 spinoffs/jukuravi/network-rom/build_network_rom.py --check
 sync/network_first_rom_abi_check.sh
