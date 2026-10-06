@@ -165,7 +165,9 @@ Human-written summaries should link there and state the relevant boundary.
 
 - **PASS/READY** means the specifically named check passed for its recorded
   inputs and scope. Recheck changed inputs before treating that result as current.
-- **PACKAGE VERIFIED** means files, geometry, and checksums are coherent.
+- **PACKAGE VERIFIED** means the named report's package checks passed. The
+  upload runbook checks files, ZIP metadata, checksums and evidence markers;
+  it does not rerun geometry checks or authorize design release.
 - **DESIGN HOLD** means fabrication is not authorized even if the package is
   coherent.
 - **PENDING/BLOCKED** means evidence or an external action is still required.
