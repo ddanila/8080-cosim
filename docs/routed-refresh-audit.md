@@ -9,6 +9,8 @@ is in [factory-wire-route-fidelity.md](factory-wire-route-fidelity.md).
 
 ## Reproducible audit
 
+Run from the repository root with Python 3 and KiCad `pcbnew` bindings.
+
 ```sh
 /usr/bin/python3 kicad/refresh_routed_from_source.py
 /usr/bin/python3 kicad/refresh_routed_from_source.py --check-report docs/routed-refresh-audit.md
@@ -16,7 +18,8 @@ is in [factory-wire-route-fidelity.md](factory-wire-route-fidelity.md).
 
 By default, the script compares each named net's complete reference/pad-number
 set and exact pad-center coordinates. It classifies matching nets for track/via
-reuse and removes exact duplicates. Pad shape, drill, layer changes, and copper
+reuse and skips track/via items already present in the source or copied earlier.
+It does not deduplicate the source PCB itself. Pad shape, drill, layer changes, and copper
 clearance to other nets are not part of this compatibility test. Zones are not
 copied from the routed snapshot.
 
@@ -33,7 +36,9 @@ Generate a candidate explicitly and inspect it before adopting copper:
 /usr/bin/python3 kicad/refresh_routed_from_source.py --output /tmp/juku-routed-refresh.kicad_pcb
 ```
 
-The output starts from the source PCB and adds eligible routed tracks/vias.
+The output starts from the source PCB and adds eligible routed tracks/vias,
+locking the copied items. It also adopts the routed snapshot's copper-edge clearance
+setting; inspect that setting before running the candidate DRC.
 `--allow-additive-renames` relaxes endpoint equality for unchanged existing
 pads on one current net. `--allow-drc-salvage` also admits same-name copper
 whose endpoints moved or split; that experimental output requires salvage
