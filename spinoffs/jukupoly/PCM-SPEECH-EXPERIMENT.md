@@ -12,6 +12,10 @@ The checked-in synthetic regression verifies playback mechanics. Speech
 intelligibility and physical speaker quality remain unverified by retained
 evidence.
 
+The standalone player has no Escape or keyboard polling. It disables interrupts
+for the complete sample stream, restores the PIT's static-high silence state,
+enables interrupts and returns after the final packed pair.
+
 ## Build a new experiment
 
 Run from the repository root with Python 3.10+, FFmpeg and a C compiler
