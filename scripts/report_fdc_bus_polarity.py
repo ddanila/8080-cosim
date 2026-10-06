@@ -421,13 +421,11 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "This is a whole-interface convention, not a patched command constant.",
             "Each listed ROM has exactly 12 OUT byte patterns for ports `0x1C..0x1F` and six",
             "IN patterns. In the CMA profiles every matched OUT is preceded by `CMA`",
             "and every matched IN followed by `CMA`; in the non-inverting profiles",
-            "all 18 positions contain one-byte `NOP`s. The `ekta32.bin`,",
-            "`ekta43.bin`, and Monitor 2.2 images use a different port-1C/1D bit-stream routine and",
-            "are not falsely classified as this register-mapped VG93 template.",
+            "all 18 positions contain one-byte `NOP`s. This scan covers only the five",
+            "images listed above; it does not classify other preserved firmware.",
             "",
             "Preserve differing future physical reads as candidate board variants, with",
             "their acquisition evidence; see [EPROM identities](eprom-programming-images.md).",
