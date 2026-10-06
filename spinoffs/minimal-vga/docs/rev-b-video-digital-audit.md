@@ -106,7 +106,8 @@ lengths are recorded in the [Video PCB guide](rev-b-video-pcb.md).
 
 ## Verification
 
-Run from the repository root:
+Run from the repository root with Bash and Python 3. The HDL simulations
+require Icarus Verilog (`iverilog`, `vvp`), and structural LVS requires Yosys.
 
 ```sh
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_video_digital.py --self-test
