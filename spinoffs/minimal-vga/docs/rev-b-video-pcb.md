@@ -5,16 +5,16 @@ This qualifies the individual Video-card layout, not fabrication authorization.
 The [five-board release plan](rev-b-five-board-order-plan.md) controls current
 package, factory and order gates.
 
-## Physical result
+## Retained layout
 
 - 100 x 100 mm, four copper layers in the fixed order `F.Cu / In1.Cu / In2.Cu /
   B.Cu`; In1 is one filled GND island and In2 is one filled VCC5 island.
-- 54 physical footprints and 185 modeled nets. The exact NorComp VGA connector is
+- The exact NorComp VGA connector is
   centred on the top edge; its two 2.10 mm board locks and staggered 7+8 solder-tail
   rows follow the manufacturer drawing. The 39-pin base bus header is front-side,
   the 10-pin extension is back-side, and both right-angle post sets point out of the
   bottom edge.
-- 2,432 routed signal segments and 137 through vias. Ordinary tracks are 0.20 mm;
+- Ordinary tracks are 0.20 mm;
   exactly seven locked B.Cu segments use 0.15 mm in the `VID_G` and `HSYNC_N` VGA
   necks. Vias are 0.60/0.30 mm diameter/drill. No signal track uses either inner
   plane.
@@ -47,6 +47,9 @@ clock/pixel/RGB route lengths. Its seven negative controls mutate the extracted
 inspection data: two-layer stack, project-rule limit, split-plane count, inner-layer
 signal, bypass side, thin-track net and pixel-route length. All must be rejected.
 Without `pcbnew`, this checker exits successfully with a `SKIP` message.
+Route lengths are sums of segments on each named net; bypass distances are
+straight-line pad distances. These geometry checks do not measure electrical
+timing, return-path impedance or bypass performance on an assembled board.
 
 ## Check the retained layout
 
