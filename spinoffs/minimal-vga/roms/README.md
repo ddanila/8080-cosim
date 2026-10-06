@@ -54,11 +54,11 @@ opcode bytes to canonical `NOP` (`0x00`), plus one checksum byte (below):
 | `0x0026` | `0x20` | `0x00` | NOP | `JR NZ,e` |
 | `0x000A` | `0x1A` | `0xE2` | block-1 checksum (data) | block-1 checksum (data) |
 
-The opcode swaps are **length-preserving** (all absolute addresses unchanged)
-and **8080-behavior-identical** (both bytes are NOP on the 8080). On a Z80 the
-patched ROM now follows the same control flow.
+The replacements keep every byte offset and absolute address unchanged.
+Each replaces an 8080 NOP with canonical NOP so the Z80 can follow the
+intended boot control flow.
 
-**Checksum:** the ROM self-tests by summing block-1 (`0x000B..0x07FF`) and
+**Checksum:** the patched first block is checked by summing `0x000B..0x07FF` and
 comparing it to the stored byte at `0x000A`; a mismatch stalls the boot. The three opcode patches lower
 the block-1 sum by `0x38`, so the stored checksum is recomputed from `0x1A` to
 `0xE2`. `0x000A` sits outside the summed range, so the fix does not cascade, and
@@ -86,6 +86,9 @@ Regenerate and verify (from repo root):
 cc -O2 -I cosim -o /tmp/mkz80 spinoffs/minimal-vga/tools/make_z80_rom.c cosim/i8080.c
 /tmp/mkz80 roms/ekta37.bin spinoffs/minimal-vga/roms/ekta37_z80.bin
 ```
+
+The converter warns if its video-write target is not reached but still writes
+the image and exits zero. Converter success alone does not prove boot success.
 
 `spinoffs/minimal-vga/sim/boot_check.sh` regenerates this file in a temporary
 directory and checks it against the committed copy. It compares the original
