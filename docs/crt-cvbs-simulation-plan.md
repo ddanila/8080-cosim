@@ -92,7 +92,10 @@ Physical discrepancies must remain explicit.
 
 ## Verification
 
-From this repository root:
+Run from this repository root with Python 3 and Git. The physical-probe and
+PIT writers also require Icarus Verilog (`iverilog` and `vvp`). These commands
+overwrite their generated reports; the static model also writes its summary
+JSON. Review the resulting diff before committing.
 
 ```sh
 python3 scripts/report_crt_decoder_baseline.py
