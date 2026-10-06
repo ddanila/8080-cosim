@@ -145,8 +145,11 @@ zero disables reopen. After a disk-session link loss, the host closes the stale
 handle, retries the same configured path every 250 ms, and restores the selected
 disk baud at 8O1. It discards partial requests; recovery mode returns to passive
 discovery, while an ordinary disk session resumes its checked ready handshake.
-The service and its duplicate-reply cache remain live, so a retried write is
-not applied twice. The integration-only inherited-descriptor mode cannot
+An ordinary session retains its service and most-recent-request cache, so an
+identical immediate retry receives the cached reply without repeating the write.
+Passive recovery starts a new service after rediscovery and discards that cache;
+it does not preserve duplicate detection across service restarts.
+The integration-only inherited-descriptor mode cannot
 reopen a descriptor and therefore fails cleanly instead.
 
 Drive A supports three explicit policies:
