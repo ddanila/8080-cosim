@@ -1,10 +1,10 @@
 # `М75` capacitor marking at C22
 
-The May owner photograph `ref/photos/juku-pcb-2/PXL_20260519_201927098.jpg`
+The [May owner photograph](../photos/juku-pcb-2/PXL_20260519_201927098.jpg)
 clearly shows `М75` on the outer C22 body (native pixel box
 `[3540, 380, 3700, 700]`). The body marking is confirmed; its exact part type
 and electrical performance have not been measured. The photo registration and hash are in
-`ref/photos/dgsh5-109-009-sb/fdc-lower-placement-registration.json`.
+[the placement registration](../photos/dgsh5-109-009-sb/fdc-lower-placement-registration.json).
 
 ГОСТ 28883-90, appendix 1, table 13 lists `М75` among the older letter codes
 for ceramic capacitor *capacitance temperature-stability groups*. ГОСТ

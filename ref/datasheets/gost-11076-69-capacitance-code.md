@@ -25,8 +25,7 @@ position, and a tolerance letter; Table 1 supplies the capacitor examples.
 Thus this standard does **not** justify treating a bare numeric face marking
 as a complete coded capacitance. Every printed coded example includes the
 letter that identifies the unit and decimal position (`П`, `Н`, or `М`).
-Consequently,
-the photographed bare `27` on C16 and bare `22` on C19 are registered as literal
+The photographed bare `27` on C16 and bare `22` on C19 are registered as literal
 visible glyphs only. Exact `.009` sheet 3 supplies 27 pF and 22 pF design
 nominals, but installed values require confirmation. The visible `±5` on C20
 and `±10` on C22 specify tolerances, not a capacitance unit.
