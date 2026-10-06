@@ -18,8 +18,8 @@ reset mapping or a runnable cartridge entry address.
 
 ## Sheets
 
-- `sheet1_PXL_20260718_122548761.jpg` — Лист 1: `0000`–`0320`
-- `sheet2_PXL_20260718_122557171.jpg` — Лист 2: `0330`–`05F0`
+- `sheet1_PXL_20260718_122548761.jpg` — Лист 1: `0000`–`032F`
+- `sheet2_PXL_20260718_122557171.jpg` — Лист 2: `0330`–`05FF`
 - `sheet3_PXL_20260718_122601894.jpg` — Лист 3: `0600`–`07FF`
 
 ## Reviewed reconstruction
