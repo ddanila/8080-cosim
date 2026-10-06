@@ -35,6 +35,11 @@ rewrites the named captures and generated hex inputs under `hdl/sim`.
 The first argument selects the report path (default
 `docs/video-readout-readiness.md`); its parent directory must exist. An
 alternate report path does not isolate the capture files.
+The serializer benches finish without a nonzero exit on timeout, and the
+script does not remove previous captures. For a fresh verification, remove
+`hdl/sim/vram_top.bin`, `hdl/sim/vram_readout.bin` and
+`hdl/sim/vram_vidout.bin` before running; otherwise an old matching capture
+can mask a timeout. Byte equality alone does not establish fresh generation.
 
 ## Evidence
 
