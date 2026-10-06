@@ -81,7 +81,7 @@ Existing identifiers remain for references in source and qualification reports.
 | D1.17 | Any later CPU buffer must enable data drive only on an actual read/write cycle, excluding refresh; current CPU is unbuffered. |
 | D1.18 | Non-bus internal nets need at least two endpoints or an explicit tie/NC/DNP classification; bus continuation is checked across cards. |
 | D1.19 | Validate control terms in the behavioral twin, independent pin checks and applicable firmware oracles before release. |
-| D1.20 | All cards use the shared generation, LVS and routing verification pattern. |
+| D1.20 | All cards use shared generation and routing verification. Structural LVS covers Memory, I/O and Video; CPU and Backplane use direct connectivity checks. |
 | D1.21 | First-article CPU connects directly to the bus. Buffering requires a later qualified revision. |
 | D1.22 | LVS pinmaps derive from generator chip definitions; mapped-chip checks do not replace connector/passive checks. |
 | D1.23 | Memory outline is 100×60 mm; connector positions and package orientation are machine-checked. |
@@ -109,7 +109,7 @@ Existing identifiers remain for references in source and qualification reports.
 | D2.4 | `video-timing.json` freezes `crop_bottom`. Source row 240 is omitted from VGA; banner qualification proves that row blank only for that workload. |
 | D2.5 / D2.9 | Cycle-steal arbitration: `/WAIT` covers CPU accesses colliding with scanout fetches, not the whole active raster. Phase and integrated-CPU checks must show no lost writes. |
 | D2.6 | Discrete counters plus ATF22V10 horizontal/vertical decode and arbitration; exact chip/pin connectivity is checked independently. |
-| D2.7 | Stride-40 row-base address generator uses four loadable counters and two registers. Capture the completed row count and reload on doubled lines; no multiplier or adder is required. |
+| D2.7 | Stride-40 row-base generation uses four loadable counters and two registers. Capture the completed row count and reload on doubled lines. U16's 74×283 adder adds the framebuffer's `0x1800` SRAM offset; row-stride generation needs no multiplier. |
 | D2.8 | Autonomous timing needs no firmware CRTC initialization. A programmable CRTC redesign is outside the current contract. |
 
 Numeric timings, parts, power corners and package identities belong to their
