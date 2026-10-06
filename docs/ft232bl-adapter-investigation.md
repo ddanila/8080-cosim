@@ -188,17 +188,18 @@ references; they do not establish a MAX232 incompatibility.
 The Juku driver is not nominally too weak for the fitted receiver. The local
 K170AP2 source is the Soviet counterpart of SN75150. TI's
 [SN75150 datasheet](https://www.ti.com/lit/gpn/SN75150) guarantees at least +5 V
-and at most -5 V into 3-7 kΩ, with transition times below 2 µs at the full
+and at most -5 V into 3-7 kΩ, with transition times at most 2 µs at the full
 2,500 pF load. The local K170AP2 reference gives the same +/-5 V limits. Both
 MAX232 and the successful
 [MAX3232](https://www.ti.com/lit/ds/symlink/max3232.pdf) specify 3-7 kΩ
 receiver inputs and maximum positive thresholds of 2.4 V. Their typical
 thresholds differ by only tenths of a volt, with no polarity difference.
 
-Therefore a healthy, correctly grounded MAX232 must accept a healthy Juku
-K170AP2 waveform. If a scope later shows that it does not, the result diagnoses
-this board, this socketed component, its selector/contact path, or its ground;
-it does not establish a generic MAX232-versus-Juku incompatibility.
+These published limits support nominal level compatibility. They do not
+qualify the installed К170АП2, loaded cable waveform, selector contacts or
+ground reference. If reception fails again, measure that complete path before
+assigning a cause; the retained tests do not establish a generic
+MAX232-versus-Juku incompatibility.
 
 ## If the symptom returns
 
