@@ -250,7 +250,11 @@ The resident record format already carries a drive byte. CP/Mish `NETROM2`
 uses drive 0 for its writable 386 KiB A: volume and drive 1 for a read-only
 native Juku B: volume. The latter keeps the period 160-track, 40-record/track,
 4 KiB-block DPB; the host converts an unchanged physical 800 KiB `.JUK` image
-from cylinder/head interleaving to logical side-then-track order in memory.
+from cylinder/head interleaving to logical side-then-track order. The historical
+Python server converted the whole image in memory; the current C runner maps
+logical offsets onto the unchanged file on each read, without allocating an
+800 KiB volume. See [the media format](juk-disk-format.md) and
+[the host implementation](portable-c-host-implementation.md).
 The dual-drive guard reads B:'s final track, rejects B: writes, and preserves A:
 writes. A complete cosim run with the published `J3KGAME2.JUK` selects B:,
 lists it, and loads `TETRIS.COM` through 71 B: reads.
@@ -258,14 +262,14 @@ lists it, and loads `TETRIS.COM` through 71 B: reads.
 Physical CS00014 then passed the same `NETROM2` dual-drive configuration on
 2026-08-13: the existing network A: remained available and the machine selected
 and used the native `J3KGAME2.JUK` B:. This validates the drive-1 record path,
-160-track CP/M DPB, and in-memory physical-image conversion on real hardware;
+160-track CP/M DPB, and the historical server’s image conversion on real hardware;
 B: remains read-only by design.
 
 Physical CS00015 independently passed the complete interactive path on
 2026-08-13: it reached the CP/Mish prompt, completed `DIR` on A:, selected B:,
-completed `DIR` on the native game disk, and started `TETRIS.COM`. The same
-dual-drive implementation is therefore physically validated on both CS00014
-and CS00015.
+completed `DIR` on the native game disk, and started `TETRIS.COM`. That historical dual-drive path is therefore physically validated on both
+CS00014 and CS00015. Current C-host qualification is recorded separately in
+[the M2.1 acceptance report](portable-c-host-m2.1-physical-acceptance.md).
 
 ## Diagnostic relevance
 
