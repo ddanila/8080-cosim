@@ -24,13 +24,18 @@ ROM overlay permits writes to underlying RAM. See
 | `0490-16FF` | 4,720 B | 28.8% | Console, keyboard & interrupt core: bitmap screen renderer, key-matrix decode, console device switching |
 | `1700-17FF` | 256 B | 1.6% | `FFh` fill, top of the in-place half |
 | `1800-1CFF` | 1,280 B | 7.8% | ROM monitor: service dispatcher (`1854h`), 15 commands `F D S X G M C E K T B R W P A`, prompt + dispatch tables (see [`juku-rom-monitor-commands.md`](juku-rom-monitor-commands.md)) |
-| `1D02-2321` | 1,568 B | 9.6% | Character font: 196 glyphs x 8 bytes, crossing the chip boundary |
+| `1D02-22A1` | 1,440 B | 8.8% | Character font: 160 glyph slots x 9 bytes, crossing the chip boundary |
+| `22A2-2324` | 131 B | 0.8% | Serial output and character-glyph selection/copy routines |
 | `2325-29FF` | 1,755 B | 10.7% | Disk subsystem: Bootstrap v4.1 (banner `23C4h`), VG93/FDC driver (ports `1Ch-1Fh` cluster in `25xx-27xx`), FLOPPY/START/RWFLOPPY vector targets (`2565h/2482h/280Bh`), RamDisk service entry (`29B3h`) |
 | `2A00-35FF` | 3,072 B | 18.8% | NetBios (Janet 1.2): entry `2AA2h`, protocol + prompts (`2C22h`), 8251 driver and handler install (`34xx-35xx`); see [`ekta37-netbios-notes.md`](ekta37-netbios-notes.md) |
 | `3600-38FF` | 768 B | 4.7% | Expansion-bus device driver: off-board ports `F0h+` (sites `29B0h`, `357Ch-359Ch`, `36xx-38xx`); plausibly serves the RamDisk hardware — **hedged attribution** |
 | `3900-3EB8` | 1,465 B | 8.9% | `FFh` fill in the banked high ROM window |
 | `3EB9-3F4F` | 151 B | 0.9% | Tail, unattributed |
 | `3F50-3FFF` | 176 B | 1.1% | Monitor vector table (runtime `FF50h`, the `EKDOS30.ASM` contract; boot-prompt `D` jumps here) |
+
+The character-copy routine at `22D1h` computes `index * 9` and copies nine
+bytes (`MVI B,09h` at `22E1h`). The glyph data ends before the serial-output
+routine at `22A2h`; the following selector ends at `2324h`.
 
 Precision: edges are exact where a landmark pins them (font, fill ranges,
 vector table, disk/net entries); the console-core interior and the
