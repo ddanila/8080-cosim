@@ -61,56 +61,19 @@ are defined by [loader API v2](LOADER-API-V2.md).
 
 ## Upper D15 data reads versus instruction fetch
 
-This investigation is a CS00015 physical result, not a general diagnosis of
-all `.009` boards.  It began as an A12-alias test, but the evidence does not
-show a simple stuck-low A12 address line:
-
-| RAM-resident probe | Physical result |
-| --- | --- |
-| read `0017h` 16 times | `01h` on all 16 reads |
-| read `1017h` 16 times | `FEh` on all 16 reads |
-| read `100Ch` 16 times | `B1h` on all 16 reads |
-| read `106Fh` 16 times | `C3h` on all 16 reads |
-| read `1070h` 16 times | `0Ch` on all 16 reads |
-| read `1071h` 16 times | `0Ah` on all 16 reads |
-
-The lower and upper values differ where expected, and the four bytes around
-the upper loader trampoline exactly match the burned T31 image.  Thus RAM code
-can read the upper `1000h..1FFFh` half of D15 correctly and repeatably.
-
-Execution distinguishes the failure:
-
-- `rom-reenter-4000.bin` is `JMP 0A0Ch` entirely from RAM. It restarted the
-  T31 loader, and a fresh host attached successfully. This proves the loader
-  entry and host reattachment path independently of upper-ROM execution.
-- `rom-exec-106f.bin` is `JMP 106Fh`. The bytes at `106Fh` are `C3 0C 0A`, so
-  one correct upper-ROM instruction fetch should execute `JMP 0A0Ch` and
-  restart the same loader. On CS00015 it did not return to the loader; repeated
-  runs produced the failure tone or a non-responsive monitor.
-- Replacing D2 with the donor D2 from the Danila Sukharev board did not make
-  the `106Fh` execution probe succeed. This rules out the original D2 IC as
-  the sole cause, but not the surrounding READY/decode/timing circuitry.
-
-Cosim boots the exact T31 image, passes the lower and upper data probes, passes
-RAM re-entry, and returns through the real `106Fh` trampoline. An intentionally
-A12-low image instead aliases the upper 4 KiB to the lower 4 KiB and reaches
-the expected `066Ch` HLT/250 Hz CPU-failure path. The regression therefore
-proves that the probe distinguishes correct upper instruction fetch from the
-simple A12-low case.
-
-The T31 observation was correct upper-D15 data reads with a failing tested
-upper-D15 execution transition. It did not establish a fetch-selective hardware
-path or localize the component. The board uses `MEMR` for both instruction
-fetches and data reads.
+RAM-resident probes read the upper D15 bytes correctly and repeatedly,
+including the `C3 0C 0A` trampoline at `106Fh`. A RAM jump directly to loader
+entry `0A0Ch` succeeded, but jumping through that upper-ROM trampoline lost
+the loader. Donor D2 substitution did not restore it. These observations did
+not distinguish instruction fetch from data reads: both use `MEMR`.
 
 The later [T32 investigation](T32-PHYSICAL.md#direct-d1-register-confirmation)
-localized the failure to D1's 16-bit increment path: incrementing an already-high
-A12 cleared it, while carry into A12 and DAD remained correct. The unchanged
-probe returned the exact clean signature after D1 replacement. The
-[D1 analysis](../../docs/cs00015-d1-increment-analysis.md) owns that resolved
-diagnosis and its remaining die-level limits. The earlier
-[READY-class analysis](../../docs/d2-ready-cycle-analysis.md) records the wait
-classes; it is not an outstanding diagnosis of this repaired fault.
+localized the failure to D1's 16-bit increment path. Incrementing an
+already-high A12 cleared it, while carry into A12 and DAD remained correct.
+The unchanged register probe passed after D1 replacement. The
+[D1 analysis](../../docs/cs00015-d1-increment-analysis.md) owns the resolved
+diagnosis and die-level limits; READY timing is not an outstanding diagnosis
+of this repaired fault.
 
 Physical evidence:
 
@@ -170,27 +133,14 @@ whole-command retries remain enabled, while `--loader-guard-ms` and
 
 ## Uploaded speaker demo
 
-The recorded 134-byte speaker demo follows the published four-bar intro at 112 BPM.
-It expresses the phrase as exactly 32 eighth-note units (267.857 ms ideal),
-including the notated rests, direct D-flat-to-C transition, and sustained final
-G. Cosim measured the first twelve note onsets at nominal milliseconds:
+The recorded 134-byte image uploaded in five chunks at one vote / 6 ms guard.
+Every LOAD and independent RAM CRC passed on its first attempt, with zero
+parser-store retries or handshake mismatches. The operations took 32.758
+seconds; execution returned `A=0Ch`, wrote `SMOK\0` to result RAM, and left
+the T31 monitor active.
 
-```text
-0.0  535.8  1071.6  1875.3  2411.1  2946.9
-3214.9  4286.4  4822.2  5358.1  6161.7  6697.6
-```
-
-On CS00015, the corrected image uploaded as four 32-byte chunks plus six bytes.
-Every LOAD and independent RAM CRC succeeded on its first attempt at one vote /
-6 ms guard, with zero parser-store retries and zero handshake mismatches. The
-five LOAD+CRC operations took 32.758 seconds. Execution returned `A=0Ch`, RAM
-contained `53 4D 4F 4B 00` (`SMOK\0`), and the T31 monitor remained active. Evidence:
-`sessions/smoke-rhythm-real/20260803T172545.786878Z.*`.
-
-The accepted image's SHA-256 is
-`db117afa1a150396094f624f2f00dc2ff938c13135ae098bc37f355d2bf8186e`,
-as recorded in that session. The current payload has changed; this physical
-result qualifies the recorded image. Current source and payload:
-
-- `spinoffs/jukuravi/firmware/smoke-4000.asm`
-- `spinoffs/jukuravi/firmware/smoke-4000.bin`
+Capture: `sessions/smoke-rhythm-real/20260803T172545.786878Z.*`.
+Accepted image SHA-256:
+`db117afa1a150396094f624f2f00dc2ff938c13135ae098bc37f355d2bf8186e`.
+The current `firmware/smoke-4000.asm` and `.bin` have changed; this physical
+result qualifies only the recorded image.
