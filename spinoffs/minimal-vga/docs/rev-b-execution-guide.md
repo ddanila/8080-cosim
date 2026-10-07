@@ -65,10 +65,11 @@ For focused changes:
 | Changed I/O source and system release checks | `spinoffs/minimal-vga/kicad/revb/revb_i7_release_check.sh` |
 | Release evidence, archive identity and owner hold | `python3 spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py --self-test --package-root fab/minimal-vga/revb/package` |
 
-Use `kicad/revb/env.sh` for the CAD/tool locators. Board generation, routing,
-physical checks and `kicad/revb/export_fab.sh` live under
-`spinoffs/minimal-vga/`. Export regenerates all five fabrication packages when
-KiCad CLI and KiCad Python are available. If either is missing, it returns 0
+Use `spinoffs/minimal-vga/kicad/revb/env.sh` for the CAD/tool locators.
+Board generation, routing and physical checks live in the same directory.
+`spinoffs/minimal-vga/kicad/revb/export_fab.sh` regenerates all five
+fabrication packages and requires Bash, Python 3, KiCad CLI, KiCad Python,
+the KiCad footprint library and `zip`. If either is missing, it returns 0
 with `SKIP` before touching the package directory; existing files can therefore
 remain from an earlier export. Check the output and candidate identities.
 Without `--package-root`, the release checker validates recorded identities and
