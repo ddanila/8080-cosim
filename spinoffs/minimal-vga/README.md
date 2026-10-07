@@ -67,8 +67,8 @@ record; superseded packages must not be uploaded.
 - Any Rev A fabrication package predates both the U20/U21
   address-mux enable correction and the U22 refresh-counter cascade correction,
   and is **stale; do not upload or order it**. Do not confuse it with the separately
-  validated Rev B packages under `fab/minimal-vga/revb/package/`. The superseded Rev A
-  package identity is retained in [manufacturing readiness](docs/rev-a-manufacturing-readiness.md).
+  validated Rev B packages under `fab/minimal-vga/revb/package/`. The Rev A upload ZIP is absent from the current workspace;
+  [manufacturing readiness](docs/rev-a-manufacturing-readiness.md) owns its release gates.
   A fresh guarded stable-KiCad export and checksum are required.
 
 ### CPU and ROM

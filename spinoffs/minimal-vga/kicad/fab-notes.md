@@ -38,10 +38,10 @@ GND/VCC plane zones are restored and filled after SES import.)
 - manual-install and post-assembly-insertion lists; and
 - mechanical, ERC, DRC, package-integrity, and vendor-preview check reports.
 
-The retained package is stale and must not be uploaded or ordered. Its identity
-is recorded in [manufacturing readiness](../docs/rev-a-manufacturing-readiness.md).
-A fresh guarded export and checksum are required; vendor upload preview,
-stock/capability checks, and independent human review remain open afterward.
+The historical package predates source corrections, and its upload ZIP is
+absent from the current workspace. Regenerate it from the accepted source;
+vendor upload preview, stock/capability checks and independent human review
+remain open afterward. See [manufacturing readiness](../docs/rev-a-manufacturing-readiness.md).
 
 The exporter requires `kicad-cli` and Python `pcbnew` from the same KiCad major
 version and verifies that Python can load the board before writing package

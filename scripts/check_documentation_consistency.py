@@ -1768,18 +1768,18 @@ def main() -> int:
         stale_package_markers = {
             "spinoffs/minimal-vga/README.md": (
                 "stale; do not upload or order it",
-                "superseded",
+                "upload zip is absent",
                 "fresh guarded",
             ),
             "spinoffs/minimal-vga/docs/rev-a-manufacturing-readiness.md": (
-                "stale; do not upload or",
-                "superseded sha256",
-                "new guarded export",
+                "historical fabrication export predates corrections",
+                "upload zip is absent",
+                "regenerate the package",
             ),
             "spinoffs/minimal-vga/kicad/fab-notes.md": (
-                "package is stale and must not be uploaded or ordered",
+                "historical package predates source corrections",
                 "../docs/rev-a-manufacturing-readiness.md",
-                "fresh guarded",
+                "regenerate it from the accepted source",
             ),
         }
         for path, markers in stale_package_markers.items():
@@ -1801,20 +1801,14 @@ def main() -> int:
             )
     if "docs/rev-a-drc-readiness.md" not in vjuga_readme:
         failures.append("VJUGA README omits canonical current-source DRC report")
-    vjuga_package_match = re.search(
+    if vjuga_package_verified and not re.search(
         r"SHA256:\s*\n\s*`([0-9a-f]{64})`",
         vjuga_readiness,
         re.IGNORECASE,
-    )
-    if not vjuga_package_match:
-        failures.append("VJUGA readiness does not expose a frozen package SHA256")
-    else:
-        vjuga_package_digest = vjuga_package_match.group(1).lower()
-        for path in ("spinoffs/minimal-vga/README.md",):
-            if "docs/rev-a-manufacturing-readiness.md" not in read(path):
-                failures.append(
-                    f"{path} omits canonical VJUGA package identity report"
-                )
+    ):
+        failures.append("VJUGA verified package does not expose its SHA256")
+    if "docs/rev-a-manufacturing-readiness.md" not in vjuga_readme:
+        failures.append("VJUGA README omits canonical package release report")
     for marker in ("sim/boot_check.sh", "sim/vjuga_boot_check.sh", "6000 writes"):
         if marker not in vjuga_readiness:
             failures.append(f"VJUGA readiness omits real-ROM boot evidence {marker!r}")

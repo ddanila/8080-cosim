@@ -17,15 +17,10 @@ filled In1.Cu GND and In2.Cu VCC planes:
 - [Recorded source DRC](rev-a-drc-readiness.md): KiCad 10.0.6, zero error-level
   violations and zero unconnected items after saved inner-plane fills.
 
-The retained fabrication export is stale; do not upload or order it. It predates
-source corrections to the U20/U21 mux enables and U22 refresh counter.
-
-- Superseded archive: `fab/minimal-vga/upload/vjuga-rev-a-gerbers-drill.zip`
-Superseded SHA256:
-
-`19d7e1fe1b8b80720f16dc4b8d096fa43af59f956f687e7a3e7f60799422d478`
-
-Its checksum and export checks identify that historical package only. A new guarded export and independent review are required before vendor preview.
+The historical fabrication export predates corrections to the U20/U21 mux
+enables and U22 refresh counter. Its upload ZIP is absent from the current
+workspace and is not tracked. Regenerate the package from the accepted source
+and complete independent review before vendor preview.
 
 ## Implemented checks
 
