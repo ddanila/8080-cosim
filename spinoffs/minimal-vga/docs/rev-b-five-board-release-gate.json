@@ -17,7 +17,7 @@
   "evidence": {
     "controlling_plan": "spinoffs/minimal-vga/docs/rev-b-five-board-order-plan.md",
     "preupload_review": "spinoffs/minimal-vga/docs/rev-b-five-board-preupload-review.md",
-    "preupload_review_sha256": "df130f076f71a09c0c2c5a362ecd75f5a58b3d1be32c4edf20d32a05cacc2aa6",
+    "preupload_review_sha256": "11a7716af10ce3c543bdfa2565e94a63b613d9137627a25d4b7e36af34b8a43a",
     "bom_contract": "spinoffs/minimal-vga/kicad/revb/five-board-bom.json",
     "jlcpcb_profile": "spinoffs/minimal-vga/kicad/revb/jlcpcb-profile.json"
   },
