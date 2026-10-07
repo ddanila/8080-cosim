@@ -116,7 +116,8 @@ does not claim an analogue model of R90/VT1/VD4/R91/R48, the speaker unit, or
 its enclosure; its pulse edges also inherit up to one 2 MHz PIT tick of
 CPU-to-PIT phase uncertainty from the effective-rate cycle model.
 
-The deterministic three-voice rendering guard is:
+The three-voice WAV guard checks 48 kHz, 16-bit mono output, duration,
+a silent lead-in, peak level, and increasing RMS energy at the voice entrances:
 
 ```sh
 sync/jukupoly_wav_check.sh
