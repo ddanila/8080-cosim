@@ -6,9 +6,9 @@ This guard starts from a generated Monitor 3.3 cosim checkpoint,
 loads RAM and visible state into `juku_top`, and checks the resumed
 command state against the [early-command](jmon33-command-probe.md) or
 [idle-command](jmon33-idle-command-probe.md) framebuffer oracles.
-Whether command entry occurs in HDL depends on the checkpoint: the
-recorded phase checkpoints below already completed the keyboard schedule
-in cosim.
+Whether command entry occurs in HDL depends on the checkpoint. Inspect
+the recorded keyboard position below: `kbd=2/0` means the two-key
+schedule already finished in cosim.
 
 ## Command
 
