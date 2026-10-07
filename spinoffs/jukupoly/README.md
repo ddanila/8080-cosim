@@ -154,7 +154,8 @@ quit results are linked under [physical qualification](#physical-qualification).
 
 `build_doom_library.py` converts all 23 DOOM and 21 DOOM II VGZ files from the
 two vgmrips archives into fixed-address ABI-v1 `.JPS` files.  The resulting
-800 KiB native Juku image contains 44 tracks totaling 2:13:28, `JUKEBOX.COM`,
+800 KiB native Juku image contains 44 tracks totaling about 2 hours 13 minutes
+of source VGM time, `JUKEBOX.COM`,
 and an on-disk credits/catalog text.  Music is by Robert Prince; DOOM and DOOM
 II are id Software games; the OPL3 packs were prepared by NewRisingSun and
 distributed by vgmrips.net.  These are three-tone-plus-percussion reductions,
