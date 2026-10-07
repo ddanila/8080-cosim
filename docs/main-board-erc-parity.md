@@ -25,6 +25,10 @@ a boolean `source_risk` override is present. A false override requires a
 `risk_disposition`. This screening does not independently verify source
 closure or physical continuity.
 
+Pin accounting uses the union of declared pin numbers for each JSON chip
+type, applied to every instance of that type. It does not discover pins
+omitted from every instance or independently validate package pin functions.
+
 ## Summary
 
 | Check | Count | Result |
