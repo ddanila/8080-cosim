@@ -508,22 +508,34 @@ oracle, cycle renderer, reducers and report writers. Generated qualification
 reports retain exact inputs, measurements and hashes. External copyrighted
 source packs are required for rebuilding their reductions and are not committed.
 
-Run from the repository root with Python 3.10+ and a C compiler available as
-`cc` for the host regressions. Initialize the pinned assembler source with
+Run from the repository root with Bash, Python 3.10+ and a C compiler available
+as `cc` for the host regressions. Initialize the pinned assembler and OPL oracle
+sources with
 `git submodule update --init --recursive`. When zmac is absent, the builder
 runs `make` using Bison and `gcc` with `-std=gnu17`; these tools must be
-installed. `ZMAC` can select an existing compatible assembler instead.
-
-Build the default player and run the music, library, baseline and envelope
-gates with:
+installed. `ZMAC` selects an existing compatible assembler for Python builders;
+`jukupoly_library_check.sh` invokes the vendored binary directly. Build that
+binary before running the shell gates:
 
 ```sh
-python3 spinoffs/jukupoly/firmware/build_jukupoly.py
+make -C third_party/zmac/src zmac CFLAGS=-std=gnu17
+```
+
+Verify the retained default player and run the music, library, baseline and
+envelope gates with:
+
+```sh
+python3 spinoffs/jukupoly/firmware/build_jukupoly.py --check
 bash sync/jukupoly_check.sh
 bash sync/jukupoly_library_check.sh
 bash sync/jukupoly_baseline_check.sh
 bash sync/jukupoly_envelope_check.sh
 ```
+
+To regenerate the default Canyon include and COM, run the builder without
+`--check`. A different score needs explicit `--generated` and `--output` paths;
+those defaults still name the Canyon artifacts even when `--song` changes.
+The conversion examples below intentionally regenerate their named artifacts.
 
 Standalone PCM has a separate synthetic playback regression:
 
