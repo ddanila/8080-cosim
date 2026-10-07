@@ -75,8 +75,8 @@ Three classes exist, and only one depends on `CAS`:
 
 - **no wait** - D2 releases `READY_D` regardless of `CAS`.
 - **always wait** - every `A10=1` memory access; D2 sinks `READY_D`.
-- **CAS-gated** - D2 sinks `READY_D` only while `cas_n=1`, so the access is
-  held until the shared CAS rail goes active. In the D15 window this is
+- **CAS-gated** - D2 sinks `READY_D` while `cas_n=1` and releases it
+  when the shared CAS rail goes active. In the D15 window this is
   exactly `1000-11FF`, `1800-19FF`.
 
 The governing term is `A9=0 and cas_n=A12 and A15!=A12`, so the effect is
@@ -86,9 +86,12 @@ where `A15=1` inverts which 4 KiB is CAS-gated, subject to D6's `ROM_SEL`
 enable. Describing the effect as an upper-half property is an artifact of
 looking only at the `0000-1FFF` image.
 
-`READY_D` is the D input of D30 section A (`tm2_dff`, clocked by `phi2ttl`,
-force-initialised from the D38 status strobe), so this table gives D2's
-per-address contribution, not a cycle count. Per
+`READY_D` is the D input of D30 section A. The functional `tm2_dff`
+model samples it on `phi2ttl` rising edges when both asynchronous controls
+are high. D38's status strobe drives both controls; while it is low the
+model forces Q and /Q high, with Q feeding CPU READY through R29.
+Thus a D2 sink/release is not an immediate CPU READY transition or a
+cycle count. Per
 `docs/d2-physical-truth.md` the exact per-cycle WAIT duration remains an
 open clock/control boundary.
 
