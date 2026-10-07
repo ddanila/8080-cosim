@@ -7,8 +7,8 @@ general schematic), not a component-level one.
 
 ## Inter-module connections
 
-The drawing identifies connectors X1–X6 and their connected units. Compare
-them with the individual module drawings before assigning cable contacts.
+The drawing identifies X1, X2, X3, X4, and X6. Compare their connections
+with the individual module drawings before assigning cable contacts.
 
 Referenced units (with their own drawing numbers):
 
