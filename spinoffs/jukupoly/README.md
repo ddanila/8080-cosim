@@ -141,8 +141,10 @@ track numbers, loads the selected `.JPS` song at `1800h`, validates its header,
 and calls the ordinary player entry point.  Playback still uses the exact
 interrupt-disabled hot loop above; only the menu and disk loader are new.
 After the finite VGM pass ends, the engine silences D57 and returns to the
-menu.  A bare Return selects track 01, `L` advances through 11-track catalog
-pages, and `Q` returns to CP/M.  During playback, physical Escape is sampled
+menu. Enter a track number followed by Return; a bare Return selects track 01.
+`L` advances through 11-track catalog pages and `Q` returns to CP/M; both act
+without Return. Songs are always loaded from drive B. During playback, physical
+Escape is sampled
 once per approximately 20 ms frame. It silences playback, waits for Escape to
 be released, then returns to the menu. This
 single-column matrix read costs 48 idle-path 8080 cycles at the existing frame
