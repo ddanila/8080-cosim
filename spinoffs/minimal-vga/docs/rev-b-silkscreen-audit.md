@@ -73,10 +73,12 @@ the recorded 2026-08-29 review; rerun the applicable checks after changing a boa
   `SKIP` message if `pcbnew` cannot be imported; that is not a validated board.
 - `apply_revb_silkscreen.py` imports only reviewed text from a fresh generator output
   into each routed release board. It refuses footprint-placement differences and
-  compares an in-memory fingerprint of footprint placement, pad geometry/nets/drills,
-  tracks/vias, copper-layer count, zone count and non-silk drawing bounding boxes
-  before saving. It does not compare zone geometry, drawing shapes or the saved
-  board after reload; rerun the physical and DRC checks on the saved output.
+  compares an in-memory fingerprint of footprint placement, pad positions/sizes,
+  layers, nets, drills and attributes, track endpoints/widths, via geometry,
+  copper-layer count, zone count and non-silk drawing bounding boxes before saving.
+  It does not compare pad shapes/orientations, track-arc curvature, zone geometry,
+  drawing shapes or the saved board after reload; rerun the physical and DRC
+  checks on the saved output.
 - All five routed boards pass KiCad total DRC with zero violations and zero
   unconnected items after the transplant.
 - The normal top SVGs and mirrored `*-bottom.svg` files under `docs/revb-previews/`,
