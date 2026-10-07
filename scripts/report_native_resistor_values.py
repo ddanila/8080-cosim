@@ -151,13 +151,11 @@ for refdes in sorted(expected, key=lambda item: int(item[1:])):
         f"{group_name[refdes]} |"
     )
 
-lines.extend(["", "## Deliberate holds", ""])
 if evidence["held"]:
+    lines.extend(["", "## Unvalued resistors", ""])
     lines.extend(["| Ref | Why it remains unvalued |", "| --- | --- |"])
     for item in evidence["held"]:
         lines.append(f"| `{item['ref']}` | {item['reason']} |")
-else:
-    lines.append("None. Every modeled axial resistor has a value; this report validates the 26 registered literals above.")
 
 lines.extend(
     [
@@ -181,7 +179,9 @@ lines.extend(
         "  owner views read `К62` on its fitted body. Isolated resistance and",
         "  the hidden R33 right-hand rail still need measurement.",
         "- R48's `8,2 Ом` label is independently corroborated by the traced beeper",
-        "  boundary. No modeled axial resistor remains unvalued.",
+        "  boundary.",
+        "",
+        "Source record: [value registration](../ref/schematics/native-resistor-value-registration.json).",
         "",
     ]
 )

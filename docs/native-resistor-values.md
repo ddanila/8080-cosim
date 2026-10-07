@@ -48,10 +48,6 @@ python3 scripts/report_native_resistor_values.py
 | `R90` | `2к` | 2 | sheet-2 beeper clamp |
 | `R91` | `1к` | 2 | sheet-2 beeper clamp |
 
-## Deliberate holds
-
-None. Every modeled axial resistor has a value; this report validates the 26 registered literals above.
-
 ## Evidence boundary
 
 The guard checks source hashes and registered value fields. It does not
@@ -71,4 +67,6 @@ measure installed resistance, verify physical continuity, or run PCB DRC.
   owner views read `К62` on its fitted body. Isolated resistance and
   the hidden R33 right-hand rail still need measurement.
 - R48's `8,2 Ом` label is independently corroborated by the traced beeper
-  boundary. No modeled axial resistor remains unvalued.
+  boundary.
+
+Source record: [value registration](../ref/schematics/native-resistor-value-registration.json).
