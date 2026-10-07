@@ -3,14 +3,11 @@
 ## D7.11 and D105.3 remain separate
 
 Source: exact `.009 Э3` sheet-1 detail
-`ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg`, native crop
-`(950,3220)–(1600,3760)`. The lower pin-3 output is visibly labeled
-**D105.3**, not D7.3. Its horizontal stroke at y≈3360 turns north near
-`(1398,3360)`. The separate D7.11 output runs east around y≈3590,
-roughly 230 px below that turn; no line or junction joins the two in this
-native crop. No source-drawn D7.11/D105.3 output tie is established here.
-The exact pixel coordinates and model disposition are recorded in
-`ref/schematics/d7-d105-output-crossing-correction.json`.
+`ref/photos/dgsh5-109-009-e3/PXL_20260718_101805510.jpg`. The lower
+pin-3 output is labeled **D105.3**, and its northbound turn is separate from
+D7.11's eastbound output. No local line or junction joins them. The native crop,
+pixel coordinates and model disposition are retained in
+[the crossing record](../ref/schematics/d7-d105-output-crossing-correction.json).
 
 The model keeps D7.11 on `PROM_EN` and D105.3 on
 qualified peripheral `/WR` (`IOWR`), matching the separate local source
