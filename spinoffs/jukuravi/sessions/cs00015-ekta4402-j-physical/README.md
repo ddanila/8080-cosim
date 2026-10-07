@@ -2,7 +2,7 @@
 
 Date: 2026-08-16
 
-Board: CS00015, fitted Ekta4402 D15/D16 pair. Serial link: Juku X3 through
+Board: CS00015, owner-reported fitted Ekta4402 D15/D16 pair. Serial link: Juku X3 through
 the established RS-232 interface to `/dev/ttyUSB0`, 2400 baud, 8N1.
 
 After entering the loader with `J` without Enter, two host processes attached
@@ -26,6 +26,10 @@ python3 spinoffs/jukuravi/host.py \
 The second command additionally used `--read-address 4000 --read-length 32`.
 Neither capture uploads or runs a RAM snippet. PROBE and READ use the
 reserved loader workspace; they do not overwrite the requested data range.
-The result directly qualifies Ekta4402's inherited `J` handler,
-loader segment copy, serial/PIT restore, API-v2 negotiation, refresh service,
-and bidirectional READ path on physical CS00015.
+The captures establish resident API-v2 attachment, exact-cookie PROBE,
+refresh-query replies and a bidirectional READ transaction on CS00015 after
+the reported `J` entry. They contain no cold-banner image identity or fitted
+ROM hashes. Refresh geometry and enabled state are ROM telemetry, not measured
+row coverage. The READ had no known-pattern comparison, so it does not qualify
+RAM contents or retention. Neither capture independently verifies the loader
+copy or serial/PIT restore implementation.
