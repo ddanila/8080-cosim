@@ -63,14 +63,15 @@ signals can coalesce, so send and observe requests one at a time.
 
 For CP/M Plus NetDisk analysis, set
 `JUKU_CPM_DISK_TRACE=/path/to/disk-trace.txt`. With the documented C6 native
-binding at `C000h`, the trace records every BIOS `READ` and `WRITE` entry plus
-drive, track, translated sector, DMA address, and cycle count. Unlike the host
-protocol log, this includes resident-cache hits and therefore exposes the
+binding at `C000h`, the trace records visits to the BIOS `READ` and `WRITE`
+addresses plus drive, track, translated sector, DMA address, and cycle count.
+Unlike the host protocol log, this includes resident-cache hits and therefore exposes the
 actual record-consumption sequence without changing target code or timing.
 The fixed instrumentation addresses are `C027h`/`C02Ah` with drive, track,
 and sector state at `C93Ah..C93Dh` and DMA at `C94Eh`. The hook matches
-numeric PCs without checking the bank, instruction bytes, or firmware
-identity; unrelated code at those addresses can generate misleading rows.
+numeric PCs before the CPU step, without checking the bank, instruction
+fetch, or firmware identity. Halted or interrupt-accepting steps and unrelated
+code at those addresses can generate misleading rows.
 Use it only with the matching C6 adapter layout.
 
 The trace file is truncated at startup and uses buffered writes; retain any
