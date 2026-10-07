@@ -1,15 +1,15 @@
 # Jukuravi diagnostic ROM and host
 
 Jukuravi is a diagnostic and recovery environment for the original Juku
-`.009` processor board. T31 is the stable CS00015 service image; T36 is the
-physically booted physical-row refresh image for CS00024. Both expose loader API v2
-over the onboard 8251 and remain resident while the host uploads and calls
-8080 snippets.
+`.009` processor board. T31 is the retained CS00015 diagnostic reference;
+T36 is the physically booted physical-row refresh image for CS00024. Both
+expose loader API v2 over the onboard 8251 and remain resident while the host
+uploads and calls 8080 snippets. CS00015 currently has JukuNet C8 fitted; see
+[current machine configuration](#current-machine-configuration).
 
-The physical reference system is Arvutimuuseum board `CS00015`. Its validated
-T31 transport run, historical D55 bitmap, transport benchmark, upper-D15
-diagnostic, and uploaded speaker demo are recorded in
-[`T31-PHYSICAL.md`](T31-PHYSICAL.md).
+[T31 physical evidence](T31-PHYSICAL.md) records the CS00015 diagnostic setup,
+transport and uploaded-payload qualification, including the invalidated D55
+bitmap. Qualification applies to that recorded setup.
 The separate CS00024 T31 session and its corrected D55 interpretation are in
 [`CS00024-PHYSICAL.md`](CS00024-PHYSICAL.md). The current T36 diagnosis
 and remaining D57 channel-2 discriminator are in
@@ -89,14 +89,11 @@ T31 and every committed diagnostic image are generated artifacts with pinned
 checksums. Build and ROM-version details live in
 [`firmware/README.md`](firmware/README.md).
 
-The current upper-ROM diagnostic is T32 (`firmware/diag-d0-waitclass.bin`, DOS
-name `T32HOST.BIN`). It retains the complete T31 low-4K monitor and adds eight
-deliberate upper-D15 entry points covering the full `{A11,A10,A9}` wait-class
-matrix. Each entry stores a unique marker at `4100h` before returning to the
-loader, so the host can distinguish an exact successful fetch from a reset or
-an unrelated recovery. Its CS00015 cold boot and upper-ROM physical results are
-recorded in [`T32-PHYSICAL.md`](T32-PHYSICAL.md); T31 remains the stable loader
-and application reference.
+For upper-D15 wait-class testing, use T32 (`firmware/diag-d0-waitclass.bin`,
+DOS name `T32HOST.BIN`). It extends the T31 monitor with eight marked entry
+points covering `{A11,A10,A9}`. [T32 physical evidence](T32-PHYSICAL.md) owns
+the exact image, entry markers, cold-boot and upper-ROM results. T31 remains
+the stable loader/application reference.
 
 After a successful T32 boot leaves loader API v2 resident, exercise and
 identify the complete upper-ROM matrix without another RESET:
