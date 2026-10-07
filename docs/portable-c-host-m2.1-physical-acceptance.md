@@ -37,8 +37,9 @@ A: and B: directory/read paths, bidirectional N4 including bulk and remote-key
 traffic, `STATUS`, repeated `DIAG ALL`, disk soak, writable-A: mutation, warm
 boot, clean shutdown, live host replacement, and target reset recovery.
 
-The replacement host resumed the live request sequence at `4C`; it did not
-rebootstrap the target. Both cold paths restarted at sequence `01`. All three
+The replacement host first handled an N4 input poll at sequence `3D`; its
+first disk read was sequence `4C`. It did not rebootstrap the target. Both
+cold paths restarted at sequence `01`. All three
 hosts exited normally after one `SIGINT`, with no forced termination or
 journal residue. Runner-to-prompt intervals include the operator’s power/reset
 wait and are not boot benchmarks.
