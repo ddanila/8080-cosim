@@ -464,8 +464,9 @@ The importer maps MOD channels 1, 2, and 4 to Juku tone channels 1–3.  Channel
 practical in the frame-rate part of the 8080 player: `1xx`/`2xx` pitch slide,
 `3xx` target portamento, `9xx` sample offset, `Axy` volume slide, `Cxx`
 absolute volume, and `Fxx` speed.  It contains no arpeggio, vibrato, tremolo,
-pattern jump, or pattern break.  Speed changes are compiled into row lengths;
-the other effects use the ABI-v2 state described above.
+pattern jump, or pattern break. Speed changes are compiled into row lengths;
+the `95B` sample offset selects a pre-trimmed PCM descriptor. Pitch slide,
+portamento, volume slide and absolute volume use the ABI-v2 state described above.
 
 The common synthesized kick, snare, and hat stand in for source samples 1, 2,
 and 13.  Two pieces of real module PCM also fit:
