@@ -90,6 +90,10 @@ do not pause or reset any tone phase.  A new hit replaces an unfinished tail.
 
 ## Compiled row format
 
+The base `jukupoly-song-v1` format uses the packets below.
+JPS v2 changes nonzero tone packets; see its [envelope](JPS2-ENVELOPE-DESIGN.md),
+[tremolo](JPS2-TREMOLO-DESIGN.md) and [pitch](JPS2-PITCH-DESIGN.md) contracts.
+
 Each variable-size row begins with a duration byte and flags byte:
 
 | Flag | Payload |
@@ -109,8 +113,9 @@ descriptors hold a PCM pointer and duration in frames.
 The optional MOD-effect packet starts with channel masks for absolute volume,
 signed volume slide, signed phase-step slide, and target portamento.  Its
 payload updates only the selected channels, and the slide state persists until
-a later row replaces it.  This ABI-v2 path is assembled only for scores that
-request it, so the original Canyon and Suspense player images remain unchanged.
+a later row replaces it. This standalone MOD extension is assembled only for
+scores that request it; the original Canyon and Suspense images remain unchanged.
+Disk-song `.JPS` export rejects MOD effects and pattern orders.
 
 The JSON-to-score compiler exposes the QChan24-style fields as follows:
 
