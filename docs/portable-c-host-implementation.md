@@ -17,9 +17,6 @@ runtime contract and remaining physical qualification.
 - Strict configuration, payload hashes, text logs and CRC-protected captures.
 - File-backed media for the DOS conventional-memory boundary.
 
-The runnable Python host is retired. Frozen non-runnable protocol fixtures
-remain available to compare wire bytes and behavior.
-
 ## Disk failure handling
 
 Normal and compact NetDisk reads return status `1` when the media read fails;
