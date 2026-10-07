@@ -20,8 +20,9 @@ requalified. A passing identity/authorization check alone does not resolve it.
    ```
 
    Stop unless it exits 0; exit 3 means technical checks passed but upload remains
-   on hold. Owner release authorizes upload of only the exact five
-   hashes below for production-file preview. It does not authorize accepting a
+   on hold. After correction and requalification, update this record and the
+   release evidence with the new candidate hashes. Owner release authorizes
+   upload of only those exact five hashes for production-file preview. It does not authorize accepting a
    vendor edit or paying for the order.
 2. **Order/payment gate.** After all five pre-payment Gerber Viewer previews,
    warnings, options, quantities, combined shipping/tax, and final payable total are
@@ -39,6 +40,9 @@ Any vendor-requested copper, drill, outline, layer, or archive change invalidate
 the recorded hash. Reject the changed preview, return to R5.J2/J3/R1, generate and
 review a new candidate, and obtain a new exact-hash release. Never silently accept
 or edit production data in the vendor UI.
+
+The candidate identities below preserve the held package. They must be updated
+to the corrected, requalified candidate before filling in upload results.
 
 ## Held release candidate and session identity
 

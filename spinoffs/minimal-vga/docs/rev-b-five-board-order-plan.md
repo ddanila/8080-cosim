@@ -277,7 +277,9 @@ spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py \
   --require-released --package-root fab/minimal-vga/revb/package
 ```
 
-The correct next action is the held R5.R1 owner review, not an upload or order.
+The next action is to correct the keyboard encoder pinout and repeat the
+affected I/O and package qualification. Update the candidate identities and
+review evidence before the R5.R1 owner review. Keep ORDER HOLD throughout.
 The post-release procedure is already frozen in
 `rev-b-five-board-order-record.md`; the after-delivery procedure is already frozen
 in `rev-b-b1-bench-log.md`, including the R5.I7 PIT/POST measurement stages.
