@@ -20,30 +20,16 @@ The source's separate `R99` label remains problematic: the native D97 detail til
 R99 between D101.4/R92.1 and D101.8/GND. That source-to-board discrepancy
 does not change the separate output paths.
 
-In the exact sheet-3 overview `PXL_20260718_101633062.jpg`, crop
-`(2040,1450)-(2310,2350)` preserves both verticals: D101.9 turns north on
-the left and crosses the D101.7 line without a dot; the filled D101.7 junction
-is on the right vertical. In the same native frame, crop
-`(1800,1050)-(2480,2250)`, that vertical crosses the horizontal D100
-output runs without junction dots; proximity to those runs does not assign
-another D100 output to Q0. The overlapping native frame
-`PXL_20260718_101641055.jpg`, crop `(1150,900)-(2250,4050)`, follows
-the Q0 vertical north to its westward turn near original pixel
-`(1570,2020)`, above D100. The westward Q0 run turns north again near `x≈1290`. A separate, nearly
-collinear run ends near `x≈1235` and descends to the joined D101 A0–A3
-input branch; tracing it upward reaches D96 Q2/pin 9. The gap between
-those two turns is visible in `PXL_20260718_101641055.jpg` crop
-`(450,1800)-(1700,4080)`. Their matching height does not join Q0 to the
-D96.9/input island. The single-frame sheet-3
-overview `PXL_20260718_101633062.jpg`, crop `(700,520)-(2420,2400)`,
-shows the complete connection: D94 A4/pin 14 rises onto the lowest of the long upper rails;
-the same uninterrupted rail runs east, descends beside D99/D100, and
-continues to the marked D101 Q0/pin 7 junction. The narrower overview crop
-`(1650,600)-(2420,2350)` preserves the eastern descent and Q0 junction.
-Thus exact `.009` source and owner continuity independently agree on
-D94.14↔D101.7. The same overview shows D99.4/Q1_N on the neighboring
-rail above this one and traces it onward to D93.23/HLT; their physical
-continuity remains a separate probe.
+The full sheet-3 overview `PXL_20260718_101633062.jpg` traces
+D94.14 to the marked D101.7 junction. The overlapping frame
+`PXL_20260718_101641055.jpg`, crop `(450,1800)-(1700,4080)`,
+separates that Q0 conductor from the nearby D96.9/A0–A3 input branch;
+their aligned turns do not join. Source and owner continuity therefore
+agree on D94.14↔D101.7.
+
+The overview places D99.4/Q1_N on the neighboring rail and traces it to
+D93.23/HLT. That path's physical continuity remains unmeasured; see
+[the D99 route review](d99-q1n-a4-conflict-photo-review.md).
 
 ## Model guard
 
