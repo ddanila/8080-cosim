@@ -161,7 +161,7 @@ the complete LOAD → READ → RUN → result path rather than only the READY fr
 Ekta4402's fitted pair passed two no-reset API-v2 attaches, PROBE, and
 128-row refresh queries; the second also read 32 bytes from `4000h`.
 The [capture record](../sessions/cs00015-ekta4402-j-physical/README.md)
-owns the exact RX/TX, JSON and unsuccessful initial attach. This qualification
+owns the accepted RX/TX and JSON evidence. This qualification
 does not independently rerun Ekta4401's uploaded probe matrix.
 
 Direct `N` on the same fitted pair also physically boots the separately

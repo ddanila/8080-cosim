@@ -6,8 +6,7 @@ Board: CS00015, fitted Ekta4402 D15/D16 pair. Serial link: Juku X3 through
 the established RS-232 interface to `/dev/ttyUSB0`, 2400 baud, 8N1.
 
 After entering the loader with `J` without Enter, two host processes attached
-without RESET. The empty capture `20260816T195110.018407Z` provides no board or
-ROM evidence.
+without RESET.
 
 | Capture | Result |
 | --- | --- |
