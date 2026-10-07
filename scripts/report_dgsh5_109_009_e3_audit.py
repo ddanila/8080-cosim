@@ -39,12 +39,12 @@ PHOTOS = {
 
 MARKERS = {
     "docs/x6-a3-video-source-conflict-review.md": ("A:3", "SOUND_CLAMP", "R67", "VIDEO"),
-    "docs/omitted-resistor-census.md": ("R9, R10", "PXL_20260718_101754468.jpg", "four-anchor photo fit"),
+    "docs/omitted-resistor-census.md": ("R9, R10", "r9-r10-r15-r16-identity-review.json", "D3-local photo fit"),
     "docs/vt2-009-source-review.md": ("PXL_20260718_101927794.jpg", "PXL_20260718_101932581.jpg", "VD3 polarity discrepancy"),
     "docs/d6-physical-decode.md": ("D6.12", "D8.15", "D13.1"),
     "docs/io-decode-boundary.md": ("D6.10", "D9", "REV"),
     "docs/serial-handoff.md": ("TAPE RUN INT", "D11.16", "SYNDET"),
-    "docs/d7-gates-source-review.md": ("D7.11/D105.3 output tie", "D7.3→D29.2", "separate annuli", "continuity"),
+    "docs/d7-gates-source-review.md": ("D7.11 and D105.3 remain separate", "D7.3→D29.2", "separate annuli", "continuity"),
     "docs/d14-exact-source-boundary.md": ("D14.2", "D14.7", "package model", "does not identify"),
     "ref/schematics/d104-pin16-rail-conflict.json": ("pin16 +12 V", "pin15", "pin8", "blank", "owner physical rail unresolved"),
     "docs/d41-timing-boundary.md": ("D95.5/.6", "1 MHz"),
@@ -75,7 +75,7 @@ MARKERS = {
     "ref/schematics/fdc-irq-conditioner-map.md": ("D96.9", "D96.11", "D28.10"),
     "docs/d101-section-a-input-source-review.md": ("PXL_20260718_101633062.jpg", "D96.9", "D101.4"),
     "docs/d96-clock2-source-review.md": ("PXL_20260718_101633062.jpg", "D96.11", "D94.2", "without a filled dot"),
-    "docs/d101-output-tie-photo-review.md": ("D101.7", "D101.9", "without a junction dot", "The filled dot farther right", "no visible local B.Cu bridge", "single-frame sheet-3", "D94.14↔D101.7"),
+    "docs/d101-output-tie-photo-review.md": ("D101.7", "Pin 9 continues on its separate path to D100.6", "without a junction dot", "The filled dot farther right", "no visible local B.Cu bridge", "full sheet-3 overview", "D94.14↔D101.7"),
     "docs/d99-q1n-a4-conflict-photo-review.md": ("D99.4", "D94.14", "rail immediately **above**", "source therefore joins D99.4 to D93.23", "D93 HLT/pin 23", "D99.4↔D93.23", "no visible local B.Cu departure"),
     "docs/d96-d99-junction-source-review.md": ("D96.13", "D99.10", "D99.10↔D100.11"),
     "docs/d100-control-source-review.md": ("D100.9", "D100.11", "D99.10↔D100.11"),
