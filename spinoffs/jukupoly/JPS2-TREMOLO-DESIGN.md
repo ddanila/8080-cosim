@@ -115,17 +115,11 @@ No tone-range, drum or Escape omission may buy cycles.
 
 ## Regression and rollback rules
 
-- If exact target traces disagree, keep the host/oracle analysis and do not
-  ship the target capability.
-- If runtime cycles fail G2, try a smaller table or sparse host-baked level
-  changes; do not lower the sample rate beyond the shared 10% limit.
-- If code or state fails G4, remove target tremolo and retain envelopes.
-- If representative error or physical listening is not better, retain the
-  capability as an experimental result or remove it from production builds;
-  depth zero/JPS v1 remains the fallback.
-- If later vibrato or pitch work exhausts the combined budget, features are
-  prioritized by measured benefit.  Passing M4 does not reserve the entire
-  remaining budget for tremolo.
+Delivery requires exact host/target agreement and the shared state, timing
+and listening gates in [the reduction contract](OPL-REDUCTION-PLAN.md).
+If tremolo fails qualification, retain the envelope-only or JPS v1 conversion.
+Depth zero remains the per-tone fallback; passing tremolo qualification does
+not reserve a separate cycle budget for later effects.
 
 ## Qualification evidence
 

@@ -132,20 +132,12 @@ requires its own longest-track size/timing checks.
 
 ## Regression and rollback rules
 
-- If held-pitch packets exceed G5, quantize out sub-step changes, coalesce
-  identical target steps, use sparse interpolation only if it improves size,
-  or omit the least audible motion.  Do not add unbounded per-frame data.
-- If a source pitch path is mixed, indirect, or changes semantics mid-note
-  without a truthful mapping, preserve the previous conversion and report it.
-- If parser/preflight or exact target traces disagree, retain the host report
-  and existing legato capability; do not ship capability bit 2.
-- If code/state fails G4, stop at host-baked held pitch or remove runtime
-  vibrato while retaining M3/M4.
-- If combined cycles fail G2, simplify the eight-step update or compare sparse
-  host-baked vibrato.  Do not exceed the shared 10% sample-rate reduction.
-- If representative or physical A/B does not improve the result, keep the
-  feature experimental or unsupported.  Capability `03h`, `01h`, and JPS v1
-  remain usable fallbacks.
+Delivery requires exact parser/target agreement and the shared size, state,
+timing and listening gates in [the reduction contract](OPL-REDUCTION-PLAN.md).
+Held-pitch automation must also fit the longest track. Mixed or indirect
+source pitch paths retain the previous conversion and are reported as unsupported.
+If runtime vibrato fails qualification, retain host-baked held pitch where
+qualified; capability `03h`, `01h`, and JPS v1 remain available fallbacks.
 
 ## Build and qualification boundaries
 
