@@ -90,8 +90,9 @@ the feature definitions described in [tremolo](JPS2-TREMOLO-DESIGN.md) and
 packet and stage meanings above. The strict host compiler, library preflight
 and C-cosim tests check malformed data before any PIT output.
 
-[OPL-ENVELOPE-M3.json](OPL-ENVELOPE-M3.json) records synthetic exact-state,
-map, hot-loop, compatibility and timing evidence.
+[OPL-ENVELOPE-M3.json](OPL-ENVELOPE-M3.json) records map, hot-loop,
+compatibility and synthetic timing evidence. The library guard below separately
+runs the exact envelope-state regression.
 [OPL-IMP-M3.json](OPL-IMP-M3.json) and
 [OPL-IMP-FULL-M3.json](OPL-IMP-FULL-M3.json) record bounded/full-song source fits,
 size, cycle measurements and explicit delivery fallback. A single compact ADSR
