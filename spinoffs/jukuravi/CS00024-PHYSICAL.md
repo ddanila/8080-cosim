@@ -359,9 +359,8 @@ Under T36 refresh, CS00024 executed the same discriminator correctly. It also
 strengthens the conclusion that neither a static A12 fault nor a D55 failure
 explains this board.
 
-The requested wire-forensic 32 KiB sweep proved more expensive than its old
-documentation implied. At 2400 baud each 32-byte LOAD and its independent
-READ verification are bit-symbol encoded. The zero write nevertheless
+At 2400 baud each 32-byte LOAD and its independent READ verification in the
+wire-forensic sweep are bit-symbol encoded. The zero write
 completed all 1,024 chunks over `4000h..BFFFh`: 32,768 bytes loaded, 32,768
 bytes immediately read back exactly, zero store retries, and no duplicate
 result frames. T36 then kept refresh enabled for the six-second hold.
@@ -380,13 +379,9 @@ python3 scripts/analyze_jukuravi_partial_full_ram.py \
 20260810T174121.361256Z.json --json
 ```
 
-The replacement routine path is `--local-full-ram-sweep`. It uploads a
-792-byte cooperative test at `4000h` to cover `5000h..BFFFh`, relocates it to
-`B000h` to cover `4000h..AFFFh`, refreshes every 128 tested bytes, and returns
-compact mismatch/XOR/first-address evidence. The two ranges overlap, but their
-union is exactly the full 32 KiB and both code homes are tested by the opposite
-stage. Four-pattern decay-enabled simulation passes. This changes only the
-host tooling; the physically programmed T36 image remains exact.
+The complete local-sweep capture below uses the same programmed T36 image.
+Current commands and the cooperative probe contract are in the
+[diagnostic guide](README.md).
 
 ## T36 complete local RAM and D57 result, 2026-08-10/11
 
