@@ -69,12 +69,16 @@ JUKUPOLY-THREE-VOICE: PASS sample=10968.2Hz A3=219.77Hz
 C#4=276.44Hz E4=328.71Hz entrances=2.001/4.013/9.075s outputs=5485
 ```
 
-Build or verify the committed 163-byte CP/M image with:
+From the repository root, follow the [build prerequisites](README.md#reproduce)
+for Python, Bash, the host C compiler and pinned zmac. Verify the committed
+163-byte image and its cycle behavior with:
 
 ```sh
-python3 spinoffs/jukupoly/firmware/build_three_voice.py
 bash sync/jukupoly_three_voice_check.sh
 ```
+
+To regenerate `firmware/three-voice.com`, run
+`python3 spinoffs/jukupoly/firmware/build_three_voice.py` without `--check`.
 
 The implementation is
 [`firmware/three-voice-0100.asm`](firmware/three-voice-0100.asm), the CP/M image
