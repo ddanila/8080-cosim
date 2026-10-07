@@ -7,21 +7,14 @@ The operator powered the machine off after the second candidate exposed a
 target-only failure, so this is deliberately a partial result, not physical
 qualification of M7.
 
-## Boot and host finding
+## Delivery context
 
-A reset which arrived after the initial three-second V16-ready window was
-recovered correctly.  The byte capture contains the valid five-byte checked
-ready frame `4A 52 10 01 09`, followed by the distinct raw stream-header ACK
-`C6`; the host sent the system and CP/M Plus booted.  The apparent bootstrap
-failure was instead the host's later attempt to open a nonexistent
-`--console-pty` path.  It exited with only `phase=failed`/`exit=4`, orphaning
-the otherwise valid CP/M boot and leaving CP/M to report an A: I/O error.
-
-After a `socat` PTY pair was created, `--resume-disk` attached to CP/M's next
-retry without RESET. The recovered session served disk reads without retries,
-boot restarts, target resets, reconnects or UART errors. The retained capture
-supports late-ready recovery, rather than the earlier hypothesis that the
-ready-frame checksum was mistaken for `C6`.
+The initial host exited when its configured console PTY did not exist, after
+successfully recovering a late ready frame and booting CP/M. Creating the PTY
+and attaching with `--resume-disk` recovered disk service without RESET.
+The recovered session recorded no disk retries, boot restarts, target resets,
+reconnects or UART errors. The captures below distinguish this setup failure
+from the later player startup failure.
 
 ## Listening result
 
@@ -70,17 +63,15 @@ masked by flat RAM.  The repaired `REAROLD` completed under the same full C10
 system, caused the expected A: warm-boot/CCP reads, and accepted a subsequent
 B: `DIR`; the host recorded zero retries, boot restarts or UART errors.
 
-The later host-side equal-phase member grouping correction changes the music
-payloads without changing this startup fix. Its current three-way disk is
-SHA-256
-`00c7c66b20a1d567271f93e66b16f239d4d9f58ccb2bad3972c6e6e702c87870`;
-its current OLD/NEW disk is SHA-256
-`f092375387b9047ab0739e3a6fa8d62b82bc495e8f24a595af29704e8253affd`.
-These images have not yet been run on CS00000. Their identities and build
-settings are recorded in [the three-way comparison report](../../OPL-IMP-M7-PHYSICAL-AB.json)
-and [the OLD/NEW report](../../OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json).
-Physical A/B remains pending; keep Imp v1 as the delivered library selection
-until the corrected candidates have listening evidence.
+## Current retest boundary
+
+Later equal-phase member grouping changed the music payloads without changing
+the startup fix. Current disk identities, build settings and cycle/Escape
+checks are in the [three-way comparison report](../../OPL-IMP-M7-PHYSICAL-AB.json)
+and [OLD/NEW report](../../OPL-IMP-TARGET-SHAPE-PHYSICAL-AB.json).
+Neither corrected disk has been run on CS00000. Physical A/B remains pending;
+keep Imp v1 as the delivered library selection until corrected candidates
+have listening evidence.
 
 ## Retained local evidence
 
