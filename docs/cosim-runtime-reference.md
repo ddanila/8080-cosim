@@ -46,8 +46,10 @@ avoid attributing subsequent CCP/BDOS stack use to the transient.
 This is an instruction-based measurement heuristic, not a general stack-use
 proof. It treats `PCHL` as a return; only the first explicit SP write and later
 `LXI SP` instructions establish segment anchors. Later `SPHL` writes are
-counted without creating an anchor. Interpret unusual computed jumps or SP
-arithmetic alongside the instruction trace.
+counted without creating an anchor. Any `RST` terminates the measurement,
+including restart vectors other than CP/M's `RST 0`; depths of `8000h` or
+more below the current anchor are ignored. Interpret computed jumps, restart
+calls or unusual SP arithmetic alongside the instruction trace.
 
 Each checkpoint overwrites the same prefix's files: RAM first, then state,
 without an atomic pair replacement. A live reader can see an incomplete or
