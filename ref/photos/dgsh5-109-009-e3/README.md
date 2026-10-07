@@ -37,7 +37,7 @@ reading order (left-to-right, top-to-bottom)**. Filenames are the camera's
 timestamp order, so they already follow that sequence within each group.
 
 ### Sheet 1 — CPU / bus / ROM / interrupt / serial
-КР580ИК80А CPU, ВК38 clock/controller, ВА86/ВА87 bus transceivers,
+КР580ИК80А CPU, ВК38 system controller, ВА86/ВА87 bus transceivers,
 РЕ3/РТ4 PROMs, КР580ВН59 (PIC), USART and connector continuations.
 
 - `PXL_20260718_101754468.jpg` — overview
@@ -57,7 +57,7 @@ beeper output stage (VT1 КТ972).
 ### Sheet 3 — floppy-disk controller (the FDC-era circuit)
 КР1818ВГ93 (VG93) FDC D93, КР580ВА87 drive-output buffer D100, ROM D94,
 clock MUX D95 (КП12),
-data separator (ИЕ7 D106, ТМ2 D96, ЛА3), drive-select/step/direction latches,
+data separator (ИЕ7 D106, ТМ2 D96, ЛА3), drive-select/step/direction signals,
 X4 drive connector. Power table: К155ЛА3/К555ТМ2 etc. per «Питание микросхем
 согласно таблице».
 The original-pixel table at overview `(1200,2890)-(2700,3470)` is audited
