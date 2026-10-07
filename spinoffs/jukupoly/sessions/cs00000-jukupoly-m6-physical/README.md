@@ -22,14 +22,12 @@ The listening matrix was:
 | 41 Opening to Hell | Completed cleanly while the operator was away; no subjective assessment. |
 | 05 Kitchen Ace | Unchanged-v1 compatibility control completed cleanly while the operator was away; no subjective assessment. |
 
-The Imp failure was traced offline to a general representation problem, not a
-track-specific patch.  Its first logical note merges four same-pitch OPL
-layers with staggered renewed volume rises.  A single compact Juku ADSR cannot
-represent those multiple keyed articulations.  A new generic delivery guard
-rejects a note when it has a renewed keyed rise/fall of at least four mixer
-levels and the best compact fit still exceeds two levels mean absolute error.
-The full Imp candidate has 12 such notes and now receives the unchanged-v1
-fit fallback.
+The offline diagnosis found renewed volume rises in overlapping OPL layers
+that a single compact Juku ADSR could not represent. The recorded full Imp
+candidate had 12 unrepresentable notes and received the unchanged-v1 fallback.
+Current fit and re-articulation guards live in
+[the host reducer](../../firmware/opl_enhanced.py); corrected M7 candidates
+have a separate [physical retest requirement](../cs00000-jukupoly-m7-physical/README.md).
 
 That fallback changes the corrected disk SHA-256 to
 `af0f44865952ca02cfae3b310b35a356d679a507566f41f8028e0f1680015bf9`
