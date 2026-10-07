@@ -144,8 +144,10 @@ The runner's JSON verdicts have these limits:
 | `incomplete` | The stage did not reach a verdict, for example because entry failed, RETURN had the wrong A, or later readback failed |
 
 Exit status is `0` only for `pass` without a session error, `1` for other
-outcomes or transport failures, and `130` for an operator interrupt. Invalid
-CLI arguments exit `2`. Read the session error and operation evidence alongside
+outcomes or transport failures, and `130` for an operator interrupt. Argument
+parsing errors exit `2`. Hold duration and effective CPU rate must be positive;
+zero values fail before opening the transport, with exit `1` and no session log.
+Read the session error and operation evidence alongside
 the verdict. A mismatch
 or missing RETURN alone does not prove DRAM decay: exclude setup and transport
 failures, verify that the hold ran, and compare against the control stage
