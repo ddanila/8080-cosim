@@ -50,6 +50,9 @@ and must not be summed as a component count.
 
 ## BOM Lines
 
+Reference lists in this report and the CSV show at most 18 entries per row;
+`... (+N)` counts the omitted refs. Use the board JSON for complete lists.
+
 | Action | Type | Authentic part | Functional substitute | Positions | Populate now | Empty | Refs | Notes |
 | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- |
 | circuit-review | AP2 | К170АП2 | RS-232/line-driver substitute required; verify +/-12 V interface | 2 | 2 | 0 | D14, D32 | - |

@@ -423,6 +423,9 @@ def write_markdown(path, rows, board_json, csv_path):
         "",
         "## BOM Lines",
         "",
+        "Reference lists in this report and the CSV show at most 18 entries per row;",
+        "`... (+N)` counts the omitted refs. Use the board JSON for complete lists.",
+        "",
         "| Action | Type | Authentic part | Functional substitute | Positions | Populate now | Empty | Refs | Notes |",
         "| --- | --- | --- | --- | ---: | ---: | ---: | --- | --- |",
     ])
