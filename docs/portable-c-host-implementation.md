@@ -67,6 +67,9 @@ CRCs before writing JSON. It does not salvage a complete prefix from an
 interrupted capture. Every event payload must also decode as ASCII, including
 events unrelated to requests; a non-ASCII path or message rejects conversion
 before either output is written. RX/TX payloads remain arbitrary bytes.
+An interruption exactly between records remains valid: conversion does not
+require a final `stop` event or reconcile its counters with the retained bytes.
+A successful conversion therefore does not establish session completeness.
 The C record decoder can decode earlier complete records and returns
 `JH_NEED_MORE` for the incomplete tail.
 
