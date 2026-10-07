@@ -2,12 +2,9 @@
 
 Status: **9600 PROVEN / CS00014 19,200 MODE-2 DISK PROVEN / SCOPE CAPTURE NEXT**
 
-This is the decision record and next-bench plan for the direction-specific
-19,200-bit/s failure reproduced on CS00015 and CS00014. The retained captures
-are indexed below; [the Janet analysis](ekta37-netbios-notes.md) describes the
-ROM protocol and handoff. This document keeps
-the conclusions, electrical boundaries, and experiments that can still change
-the diagnosis.
+The direction-specific 19,200-bit/s failure is reproduced on CS00015 and
+CS00014. Retained captures are indexed below;
+[the Janet analysis](ekta37-netbios-notes.md) owns the ROM protocol and handoff.
 
 ## Established facts
 
@@ -197,6 +194,11 @@ is saved incrementally. Even with the host removed, the target advances through
 bounded timeouts and restores stock mode-3/count-8/x16 9600 before returning.
 Cosim proves all 68 ideal cases and separately truncates one case to prove the
 rest of the matrix and final restoration survive.
+
+The host tool returns zero after a completed diagnostic session even when
+receive cases fail. Check the result JSON's `pass`, individual `cases`, and
+`restored_9600`; `status: complete` alone does not mean the baud matrix passed.
+Host exceptions return nonzero and record `status: host-error`.
 
 The corrected 2026-08-13 physical CS00014 run completed the entire matrix and
 restored 9600. Stock 19,200/x16 mode 3/count 4 passed four of 59 cases and
