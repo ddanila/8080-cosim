@@ -9,6 +9,9 @@
 
 Used by the current structural model to execute Juku firmware through an
 8080-compatible, die-derived CPU implementation.
+The wrapper exposes the CPU bus pins and also requires `pin_clk`, a simulation
+sampling clock absent from the physical package. `pin_f1` and `pin_f2` act as
+clock enables; this interface description does not qualify physical timing.
 Attribution per CC-BY 3.0: core © 2014–2018 1801BM1@gmail.com.
 
 The vendored code includes a local diagnostic extension; it is not an
