@@ -227,9 +227,11 @@ geometry is start `40h`, count `80h` on historical T35 and start `00h`, count
 `80h` on T36; the public call is `07A9h`. Row start describes the CPU address
 sweep; it does not mean T35's high byte reached physical DRAM row inputs.
 
-The T36 enabled call reads all 128 MK4564/К565РУ5 physical refresh rows in
-2,115 nominal T-states (1.2339 ms at CS00024's measured 1.714065 MHz effective
-RAM-loop rate). T35 has the same timing but increments CPU H and therefore
+With the normal enabled signature, the T36 call reads all 128
+MK4564/К565РУ5 physical refresh rows in 2,115 nominal T-states (1.2339 ms at
+CS00024's measured 1.714065 MHz effective RAM-loop rate). Other fail-safe
+signature patterns can require extra comparisons before the sweep. T35 has
+the same normal timing but increments CPU H and therefore
 repeats physical row zero. T35/T36 invoke it in
 blocking RX/Tx waits and its Tx-drain delay. A long uploaded CALL-mode snippet
 must start consecutive `CALL 07A9h` sweeps no more than 2 ms apart. At the
