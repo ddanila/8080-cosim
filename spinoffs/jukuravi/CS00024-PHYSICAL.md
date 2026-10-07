@@ -34,9 +34,7 @@ new Mode-0 counts receive their required D54/D56 clocks. Therefore bitmap
 `18` is valid evidence for a T31 D57-path failure but **not** evidence that
 CS00024 D55, or even its complete functional path, is bad.
 
-At the end of the T31 session CS00024 had no valid D55 failure result, and the
-next D55-specific action was a cold boot with clock-safe T34 `1C/A637`. That
-action is completed below. Any future T34 `08` must still be interpreted as a
+Any future clock-safe T34 `1C/A637` result of `08` must be interpreted as a
 path result covering D55, D9 select, local bus/strobes, socket/power and
 D54/D56 clock sources. See
 [`../../docs/jukuravi-d55-diagnostic-audit.md`](../../docs/jukuravi-d55-diagnostic-audit.md).
