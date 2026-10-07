@@ -202,7 +202,7 @@ predicate result and makes no D55 hardware claim.
 
 ### Exact cosim reproduction
 
-`JUKU_CPU_A12_INCREMENT_FAULT=1` now models the fault at the 8080/D1 increment
+`JUKU_CPU_A12_INCREMENT_FAULT=1` models the fault at the 8080/D1 increment
 operation rather than as a page-selective external read trick. It affects PC,
 INX, paired reads/writes, and POP while allowing carry into A12. The integration
 regression replays clean and faulted versions of the write-map, four-region
@@ -234,12 +234,8 @@ The result is byte-for-byte unchanged from the original pair. These
 substitutions exclude the original D6 and D8 packages as unique causes,
 while the D1 replacement above supplies the decisive repair confirmation.
 
-The post-diagnostic component configuration retains donor D6 `.038` from the
-Danila Sukharev processor board, while its original D8 `.039` is restored. The
-original CS00015 D6 is intentionally not reinserted because another extraction
-and insertion would add avoidable mechanical risk. Retaining the donor part is
-a preservation choice, not evidence that the original D6 was faulty: both
-packages produced the same exact boot and `01h` result.
+The [CS00015 service record](../../docs/cs00015-service-record.md#repaired-d1-increment-fault)
+owns the retained donor-D6/original-D8 configuration and preservation decision.
 
 Evidence:
 
