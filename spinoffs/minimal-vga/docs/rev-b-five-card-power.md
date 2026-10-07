@@ -30,10 +30,16 @@ At a 5.0 V ideal source, each monitor pin receives:
 
 `5.0 × 75 / (470 + 75) = 0.688 V`
 
-and its driver sources `5.0 / 545 = 9.174 mA`. At a guarded 4.4 V driver-high, the
-monitor sees 0.606 V. Thus the frozen expected range is 0.606-0.688 V, close to the
-nominal 0.7 V VGA level and comfortably below the ACT output's 24 mA/channel rating.
-There are no on-card 75-ohm “terminations.”
+and its driver sources `5.0 / 545 = 9.174 mA`, below the ACT output's recommended
+24 mA/channel limit. There are no on-card 75-ohm “terminations.”
+
+The frozen JSON model assumes a 4.4 V driver-high and calculates 0.606 V at the
+monitor, giving a modeled range of 0.606-0.688 V. This is not a datasheet-guaranteed
+loaded range: [TI's electrical characteristics](https://www.ti.com/lit/ds/symlink/cd74act08.pdf)
+specify 4.4 V minimum at only 50 µA, and 3.8 V minimum at 24 mA with a 4.5 V
+supply over −40 to 85 °C. The arithmetic guard does not establish the output voltage
+at the actual roughly 9 mA load. Measure all three RGB highs into 75-ohm loads,
+including the lowest accepted card rail, before accepting the VGA level.
 
 ## Conservative +5 V current budget
 
