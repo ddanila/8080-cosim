@@ -31,7 +31,9 @@ are in [windows-jukuhost-client.md](windows-jukuhost-client.md).
   if that location is unavailable.
 - The runtime import boundary is checked against
   [win95-imports.txt](../host/windows/win95-imports.txt). Builds are normalized
-  and compared byte-for-byte; release identity comes from `MANIFEST.json`.
+  and compared byte-for-byte. The portable package records build identity in
+  `MANIFEST.json`; the released floppy bundle carries it as `files/MANIFEST.JSN`
+  with the CP/M image provenance added.
 
 ## Verified scope
 
