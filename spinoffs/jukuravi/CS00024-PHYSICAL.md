@@ -1,10 +1,13 @@
 # T31/T34/T35/T36 physical sessions on CS00024
 
-Date: 2026-08-08
-Board: Arvutimuuseum Juku `CS00024`
-ROM: exact T31 `1A/72EF`
+Board: Arvutimuuseum Juku `CS00024`.
 
-## Retained result
+Current diagnosis and bench actions are in the
+[T36 diagnosis](../../docs/cs00024-t36-diagnosis.md). The captures below
+record how the refresh and timing interpretations were established; historical
+diagnostic bits are not current component diagnoses.
+
+## Initial T31 result (2026-08-08; `1A/72EF`)
 
 Two cold boots decoded the exact T31 identity and repeated diagnostic bitmap
 `18`: historical D55 and D57 bits. PIC, PPI and D54 passed. Compact RAM bitmap
@@ -232,18 +235,6 @@ It remains logically possible that CS00024 has a different, RAM-cycle- or
 address-combination-dependent CPU/timing fault. It is not correct to call the
 present result a second instance of CS00015's rare internal D1 defect.
 
-The public material found in the desk search gives no matching VM80A erratum.
-The die-derived `1801BM1/vm80a` project describes a close 580ВМ80А/8080A
-topology, reports successful thorough i8080 exercisers, and publishes no
-A12-increment exception. Its electrical description does emphasize the real
-NMOS requirements: separate +12 V and negative substrate supply plus 12 V
-clock phases. Those rails and clocks are worthwhile general health checks, but
-the present captures do not identify one as the cause. References:
-
-- <https://github.com/1801BM1/vm80a>;
-- <https://habr.com/ru/articles/249613/>;
-- <https://tec.org.ru/board/kr580vm80a/104-1-0-5266>.
-
 ## T35 simulation boundary
 
 An execution-only corruption injection reproduced RUN ACK without RETURN
@@ -353,19 +344,11 @@ programming.
 The exact T36 artifact was
 `firmware/dos/T36HOST.BIN`, ROM `1E/C617`, SHA256
 `32264641836ce914a0fc706c916e2847d542d83b05d6737f1d6272b76d78dedb`.
-The first AT28C64B attempt stopped safely at the first differing byte,
-address `000Ah`: three SDP attempts continued to read T35 byte `0E` instead
-of T36 byte `CB`. The writer reported zero changed bytes, ten unchanged bytes,
-skipped post-write verification, and shut VCC/VPP down. That chip was not
-treated as T36.
-
-A replacement 28C64 accepted T36. Willem programmed 3,177 bytes, skipped
-5,015 already matching bytes, reported no retry or late byte, verified all
-8,192 bytes internally, and shut VCC/VPP down safely. The one fresh full read
-matched the exact source SHA256 above. The controlled programmer evidence is
-in the sibling `dosravi` session
-`at28c64-t36-chip2-write-20260810`; the failed first attempt is retained as
-`at28c64-t36-write-20260810`.
+A replacement 28C64 was programmed and internally verified across all
+8,192 bytes. One fresh full read matched the source SHA256 above. The
+programmer record is in the sibling `dosravi` session
+`at28c64-t36-chip2-write-20260810`; the unsuccessful first-chip attempt is
+retained as `at28c64-t36-write-20260810` and did not establish a T36 image.
 
 The physical host capture is
 `sessions/cs00024-t36-full-physical/20260810T174121.361256Z.json` plus its raw
