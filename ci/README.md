@@ -81,7 +81,9 @@ The tracked [pre-push hook](../.githooks/pre-push) runs the deep cosim guard
 for pushes touching `hdl/`, `cosim/`, or `roms/` when `cc` and Icarus Verilog
 are available. Git must be configured to use that hook (for example,
 `git config core.hooksPath .githooks`); committing the file does not enable it.
-Missing tools skip the deep guard with a warning. Run
+The hook requires `git-lfs` and runs `git lfs pre-push` first on every push.
+Missing Git LFS or a failed LFS upload check blocks the push before either guard.
+Missing `cc` or Icarus Verilog skips the deep guard with a warning. Run
 `sync/cosim_check.sh` manually when the hook did not run it.
 
 The hook also runs `scripts/ci_gate.sh` before the deep guard. See the
