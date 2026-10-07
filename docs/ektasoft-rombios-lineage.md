@@ -95,12 +95,15 @@ for nominal 2400 baud. D57 channel-2 programming differs as described below.
 The Monitor family programs the same timing chain with equivalent values
 and different encodings (jmon22 offset `0051h` inline; jmon33 offsets
 `0026h`/`004Fh` split, with the blank/porch counts `24h/08h/72h/25h`
-deferred to a later routine at `2E89h..2E98h`):
+deferred to a later routine at `2E87h..2E98h`):
 
 - D54 horizontal: same controls `15h/53h/93h`, same 64 us line;
 - D55 vertical: control `35h` (BCD) count `0312` = **312 lines**, where
   EktaSoft uses control `34h` (binary) count `0139h` = **313** — a one-line
   frame-height/encoding difference between the families;
+- D55 channel 1: Monitor 2.2 uses `53h` with one BCD byte `72h`;
+  Monitor 3.3 uses `73h` with two BCD bytes `72h/00h`, giving the same
+  count through a different write format;
 - D57 counter 0: control `1Fh`, count `32h` (BCD 32), giving 2400 baud
   in all eight images.
 
