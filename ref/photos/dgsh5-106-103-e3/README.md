@@ -2,7 +2,7 @@
 
 Owner photographs (2026-07-18) of **ДГШ5.106.103 Э3 «Модуль ЗУ-32к / Схема
 электрическая принципиальная»** — a 32K memory (ЗУ) expander card, «Введён с
-15.08.88 г.».
+15.09.88 г.».
 
 Contents: memory array, address decoding/buffering, a РЕ3 PROM, and the
 **card-edge bus connector XP** exposing
