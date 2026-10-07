@@ -13,7 +13,7 @@ not replace the unresolved Juku enables, slot schedule, or CAS source.
 ## Command
 
 Run from the repository root with Python 3 (standard library only).
-The writer requires the board JSON, source and routed PCB files, and
+The writer requires the board JSON, source PCB, and
 the retained D53 datasheet and timing-reference text. It overwrites
 this report, including failed check results, and returns status 1
 when a check fails.
@@ -125,7 +125,7 @@ component-side trace and remote driver remain unresolved.
 
 - This generator checks source-model endpoints, evidence metadata and absence
   of the obsolete `W11_D7_D92` label in the source PCB text. Reading the
-  PCB files does not establish routed connectivity. It does not execute
+  source PCB does not establish routed connectivity. It does not execute
   simulations, inspect copper geometry or measure timing. The write/CAS
   fanout checks count D-reference endpoints; they do not verify each
   D60-D91 pin identity.

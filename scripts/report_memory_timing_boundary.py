@@ -11,7 +11,6 @@ ROOT = Path(__file__).resolve().parents[1]
 BOARD = ROOT / "kicad" / "juku.board.json"
 REPORT = ROOT / "docs" / "memory-timing-boundary.md"
 SOURCE_PCB = ROOT / "kicad" / "juku.kicad_pcb"
-ROUTED_PCB = ROOT / "kicad" / "juku_routed.kicad_pcb"
 D53_DATASHEET = ROOT / "ref" / "datasheets" / "sn54s138-ti.pdf"
 D53_TIMING_REFERENCE = ROOT / "ref" / "datasheets" / "kr531id7-timing-reference.txt"
 D53_DATASHEET_SHA256 = "9c33e08a3bfb7ab3b685848eee0d80457774918ce0bd3224e17cd0c1970a20a9"
@@ -49,7 +48,6 @@ def row(values: list[object]) -> str:
 def main() -> int:
     board = load_board()
     source_pcb = SOURCE_PCB.read_text(encoding="utf-8")
-    routed_pcb = ROUTED_PCB.read_text(encoding="utf-8")
     chips = {chip.get("ref"): chip for chip in board["chips"]}
     d35 = chips["D35"]
     d36 = chips["D36"]
@@ -368,7 +366,7 @@ def main() -> int:
         "## Command",
         "",
         "Run from the repository root with Python 3 (standard library only).",
-        "The writer requires the board JSON, source and routed PCB files, and",
+        "The writer requires the board JSON, source PCB, and",
         "the retained D53 datasheet and timing-reference text. It overwrites",
         "this report, including failed check results, and returns status 1",
         "when a check fails.",
@@ -475,7 +473,7 @@ def main() -> int:
             '',
             '- This generator checks source-model endpoints, evidence metadata and absence',
             '  of the obsolete `W11_D7_D92` label in the source PCB text. Reading the',
-            '  PCB files does not establish routed connectivity. It does not execute',
+            '  source PCB does not establish routed connectivity. It does not execute',
             '  simulations, inspect copper geometry or measure timing. The write/CAS',
             '  fanout checks count D-reference endpoints; they do not verify each',
             '  D60-D91 pin identity.',
