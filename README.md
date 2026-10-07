@@ -76,7 +76,7 @@ The capture inputs, dependencies, and regeneration commands are documented in
 
 ## Downstream smoke kit
 
-Use `ghcr.io/ddanila/8080-cosim-smoke-kit` to obtain simulator artifacts
+Use `ghcr.io/ddanila/8080-cosim-smoke-kit:v2` to obtain simulator artifacts
 without cloning the repository. The Linux amd64 kit contains the simulator,
 static `jukuhost`, frozen Python test fixtures and three ROMs, listed in
 [its manifest](.github/smoke-kit/smoke-kit.json) at
