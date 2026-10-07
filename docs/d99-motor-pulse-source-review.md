@@ -16,6 +16,10 @@ D26.16↔D99.11 and D99.5↔D100.7 continuity still require direct checks;
 the R97/C17 values provide only a model estimate of the pulse duration.
 See [D99 timing constraints](d99-reconstruction-constraints.md#rc-timing-predictions)
 for the coefficient assumption and installed-device measurement limit.
+The runnable HDL uses the shared one-shot defaults rather than the R97/C17
+estimate, and holds the unresolved B2 conductor high. See the
+[runnable-model boundary](d99-reconstruction-constraints.md#runnable-model-boundary)
+before interpreting a simulated motor pulse as hardware timing.
 
 The source topology does not establish routed copper continuity.
 Source/routed drift and open connections remain in
