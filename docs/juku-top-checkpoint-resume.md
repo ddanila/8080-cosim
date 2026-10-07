@@ -9,7 +9,10 @@ fetch boundary. The runner does not import the generated `.state` file.
 
 The pass condition is deliberately narrow: reach the first post-checkpoint
 ROMBIOS PIC programming event and the no-key keyboard poll through the
-actual decoded top-level ports. It is not an EKDOS prompt proof.
+actual decoded top-level ports: a PIC command-register write of `0xd6`
+and a PPI0 port-B read of `0xcf`. The bench checks chip selects, register
+address bits, and data; it does not require particular PC values or event
+cycle counts. It is not an EKDOS prompt proof.
 
 ## Command
 
