@@ -55,15 +55,16 @@ enable pull-up; the firmware does not enable internal pull-ups.
 - VCC = 16, GND = 8 *(confirmed by the board's own power table)*
 - Outputs O1..O8 = pins 1,2,3,4,5,6,7,9 (open-collector)
 - Address A0..A4 = pins 10,11,12,13,14
-- /CE = 15 (tie to GND)
+- /CE = 15; low enables outputs. The tracked reader drives it high while
+  changing addresses and low while sampling.
 
 Sweep: for A in 0..31: set address pins, delay ≥1µs, read 8 outputs → 32 bytes. Read the whole
 array **twice**, require identical; also sanity-check the dump isn't all-0x00/all-0xFF.
 
 Capture each row as `AA,RR,OK`, where `AA` is the two-digit address and `RR`
-is the raw two-digit output-pin byte (`D0..D7` = bits 0..7). Validate repeated
-logs with the tracked Nano reader at `tools/re3_dumper/re3_dumper.ino` and host
-validator. See [RE3 acquisition](re3-physical-dumps.md) for the complete wiring,
+is the raw two-digit output-pin byte (`D0..D7` = bits 0..7). Capture with the
+tracked Nano reader at `tools/re3_dumper/re3_dumper.ino`, then validate the
+repeated logs with the host validator. See [RE3 acquisition](re3-physical-dumps.md) for the complete wiring,
 115200-baud capture setup, and repeat command. Run validation from the repository
 root with Python 3; `--out-dir` writes tables and a manifest:
 
