@@ -271,21 +271,16 @@ range; for parallel connection mode it follows the manual's sum of both
 operators and caps the result at Juku full scale. A regression guards the
 known TL values and chord classification.
 
-This source contains three automatically recognized variable-pitch signatures.
-They peak at five simultaneously allocated OPL voices, but duplicate-pitch
-collapse normally leaves three or fewer useful notes.  Only 66 of 4,826 Juku
-frames contain more than three distinct candidates and require a ranked
-three-note choice. These committed v1 scores preserve notes, gates, approximate
-register volume and percussion timing. They omit OPL waveforms, FM modulation,
-feedback, stereo and chip-envelope evolution. Enhanced envelope approximations
-have separate [qualification status](#opl-enhancement-status).
+The committed v1 reductions preserve notes, gates, approximate register volume
+and percussion timing. They omit OPL waveforms, FM modulation, feedback, stereo
+and chip-envelope evolution. Enhanced envelopes have separate
+[qualification status](#opl-enhancement-status).
 
-The generated score has 1,375 rows and seven compiled percussion descriptors.
-`DOOMGATE.COM` is 12,886 bytes.  A 143-sample frame and phase steps calibrated
-for 7.12 kHz make its complete cycle-model run 96.872 seconds—0.37% longer
-than the 96.513-second VGM pass—after which it silences D57 and returns cleanly
-to CP/M.  Its corrected render passed subjective listening review on
-2026-08-31.  Physical CS00000 listening remains pending.
+`DOOMGATE.COM` has a complete cycle-model playback and reviewed render;
+physical CS00000 listening of this standalone v1 image remains pending.
+The score's `conversion` object records source timing, voice-allocation counts
+and percussion statistics. The [music gate](../../sync/jukupoly_check.sh) owns
+the retained program's frame count and accepted duration range.
 
 ### “The Demons from Adrian's Pen”
 
@@ -295,20 +290,10 @@ are retained in the
 [committed score](firmware/jukupoly-demons-vgz.json). The source capture is
 not committed.
 
-The command stream contains 6,858,540 samples, or 155.522 seconds
-(2:35.522), and declares its loop at sample zero with exactly the same loop
-length.  The finite stream is therefore one complete pass; following the loop
-would only repeat it.
-
-This busier source has four recognized melodic signatures and peaks at eight
-simultaneously allocated OPL voices.  After duplicate-pitch collapse, 354 of
-7,776 Juku frames still have more than three candidates and need the ranked
-three-note reduction.  The generated score has 2,041 rows and eight compiled
-percussion descriptors.  `DEMONS.COM` is 17,255 bytes.  Its complete calibrated
-cycle-model run takes 157.028 seconds, 0.97% longer than the VGM pass, then
-silences D57 and returns cleanly to CP/M.  Its corrected render passed
-subjective listening review on 2026-08-31.  Physical CS00000 listening remains
-pending.
+Its finite source stream is one complete pass; the converter does not follow
+the loop back. The score records source timing and voice-allocation statistics.
+Complete cycle-model playback and render review passed; physical CS00000
+listening remains pending.
 
 ### Supaplex main theme
 
@@ -317,11 +302,6 @@ Whittaker**, from a YM3812/OPL2 VGZ capture. Source identity, GD3 credits and
 hashes are retained in the
 [committed score](firmware/jukupoly-supaplex-main-vgz.json). The source capture
 is not committed.
-
-The command stream contains 13,441,856 samples, or 304.804 seconds, and has no
-VGM loop.  Five signatures are melodic.  They peak at four simultaneously
-active OPL voices, but duplicate-pitch collapse leaves no frame with more than
-three distinct Juku candidates.
 
 A 408-key-on synth signature appears as synchronous pitched harmony across
 three OPL channels but uses only three distinct pitches. All three drum
@@ -332,15 +312,10 @@ event totals match the VGM exactly: 988, 264, and 488 respectively.  The score
 therefore records one explicit melodic signature and three audited percussion
 signature mappings rather than attempting a timbre guess.
 
-The hi-hat's
-carrier TL of 6 becomes Juku editor volume 10 and percussion level 2, the
-snare's TL of 3 becomes 13 and level 3, and the unattenuated bass drum remains
-16 and level 4.  The resulting score has 2,142 rows, exactly 988 hi-hats, 264
-snares, and 488 bass drums.  `SUPAPLEX.COM` is 21,332 bytes with three compiled
-percussion descriptors.  Its full cycle-model run takes 305.572 seconds,
-silences D57, and returns cleanly to CP/M. The render passed subjective
-listening review; physical CS00000
-listening remains pending.
+The score retains the signature overrides, percussion counts and source timing;
+use the reproduction command below to preserve those mappings. Complete
+cycle-model playback and render review passed; physical CS00000 listening
+remains pending.
 
 ## AY/YM VGM/VGZ conversion and Arkanoid “Ending”
 
@@ -365,12 +340,9 @@ Hardware-envelope retriggers become Juku decay retriggers.  The generic path
 can reduce AY noise gates to percussion, although this capture keeps noise
 disabled and needs none.
 
-The generated score has 170 rows and 920 frames, including 557 frames with all
-three tones active and 156 envelope retriggers.  `ARKANOID.COM` is only 2,513
-bytes and contains no PCM bank.  Its complete calibrated cycle-model run takes
-18.416 seconds, then silences D57 and returns cleanly to CP/M.  The rendered
-reduction passed subjective listening review on 2026-08-30.  Physical CS00000
-listening remains pending.
+This score uses all three tones without a PCM bank. Its conversion metadata
+records frame counts and envelope retriggers. Complete cycle-model playback
+and render review passed; physical CS00000 listening remains pending.
 
 ## TDK “The Robots” MOD adaptation
 
