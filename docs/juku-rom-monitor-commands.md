@@ -20,7 +20,7 @@ handler addresses vary:
 | Command | Decoded behavior (from ekta37 handler code) |
 | --- | --- |
 | `F` | fill memory range with a byte |
-| `D` | hex-dump memory range, 8 bytes per line |
+| `D` | hex-dump memory range in eight-byte address rows; first and last rows may be partial |
 | `S` | substitute/examine memory interactively |
 | `X` | examine/modify saved registers |
 | `G` | go/execute, restoring saved registers (optional address) |
