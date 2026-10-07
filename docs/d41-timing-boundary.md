@@ -61,6 +61,13 @@ python3 scripts/report_d41_timing_boundary.py
   rail 17 remains unresolved at D36.2/D41.6. The guard verifies that
   strap pins are netted, but checks their net destinations only for
   supply pins 7/14.
+- In [the HDL](../hdl/devices.v), ИР16 loads A-D when LD/SH is high
+  and shifts SER toward QD when it is low, on each falling clock edge.
+  OC controls output visibility without stopping the register. D41's
+  straps and QA/QB connections are instantiated in
+  [juku_top.v](../hdl/juku_top.v); the runnable video path still uses
+  a simulation-only DRAM port. See [HDL boundaries](../hdl/README.md)
+  for the unresolved shared-DRAM slot schedule.
 - The 1 MHz source-net check preserves the factory tag-7 and owner
   continuity attribution. The [clock-route report](d40-d59-d92-d95-1mhz-route.md)
   owns the corresponding source/routed migration evidence.
