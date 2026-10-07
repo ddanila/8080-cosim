@@ -28,7 +28,7 @@ python3 scripts/report_decap_value_fidelity.py
 ```
 
 A zero exit status confirms the guarded model, population and placement
-contracts. Physical HOLD rows and the unresolved historical value census
+contracts. Physical HOLD rows and unresolved factory capacitance values
 remain release limits even when those contracts pass.
 
 ## Checks
@@ -45,7 +45,7 @@ remain release limits even when those contracts pass.
 | Other 28 inherited DRAM-grid refs are assembly DNP | PASS | .009 drawing omits them; modeled PCB footprints remain provisional pending hole identity |
 | Six non-field positions are held from fabrication | PASS | retired fit-to-space coordinates are absent from generator/source PCB; schematic intent and circuit-review gate remain |
 | C63 target-board population is DNP | PASS | .009 omits C63; independent inherited pad pair remains unverified; D41/D40 callout is C83 |
-| Historical value census is reconciled per position | FAIL | raw notes report mixed values but no per-position mapping |
+| Factory capacitance is established per position | HOLD | registration leaves factory values unresolved; 0,047 is a model assignment |
 
 ## Current Board Model
 
