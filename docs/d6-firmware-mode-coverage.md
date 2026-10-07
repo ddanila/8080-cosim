@@ -32,7 +32,8 @@ registered physical inversion; this is software execution, not a logic capture.
 - Physical D6 A6/A5 suffixes observed (`/PC1,/PC0`): `10, 11`
 - Legacy emulator modes observed (`PC1..PC0`): `00, 01`
 
-Repeated events are grouped by instruction, value and resulting state.
+Repeated events are grouped by trace PC, value and resulting state.
+`PC` is the CPU value after reading the OUT operand, not the opcode address.
 
 | PC | Port/value | Port C before -> after | D6 A6/A5 | Count | First–last cycle |
 | --- | --- | --- | --- | ---: | --- |

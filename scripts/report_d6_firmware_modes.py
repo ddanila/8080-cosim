@@ -111,7 +111,8 @@ def main() -> int:
         "## Early ROM trace", "", f"- Port-C events: `{len(events)}`",
         f"- Physical D6 A6/A5 suffixes observed (`/PC1,/PC0`): `{', '.join(f'{mode:02b}' for mode in sorted(physical_suffixes))}`",
         f"- Legacy emulator modes observed (`PC1..PC0`): `{', '.join(f'{mode:02b}' for mode in sorted(legacy_modes))}`", "",
-        "Repeated events are grouped by instruction, value and resulting state.", "",
+        "Repeated events are grouped by trace PC, value and resulting state.",
+        "`PC` is the CPU value after reading the OUT operand, not the opcode address.", "",
         "| PC | Port/value | Port C before -> after | D6 A6/A5 | Count | First–last cycle |",
         "| --- | --- | --- | --- | ---: | --- |",
     ]
