@@ -91,14 +91,16 @@ ROM/RAM overlay is selected by 8255 Port C bits[1:0] via MODE0/1.
 In modes 0 and 3, Video owns RAM accesses in `0xD800–0xFFFF`; Memory must not
 respond there. In modes 1 and 2, Memory serves the upper ROM overlay and Video
 does not drive CPU reads or accept CPU writes in that window. Scanout continues
-from Video-local SRAM independently. The empty cartridge region reads as `0xFF`
-and rejects writes.
+from Video-local SRAM independently. The empty cartridge region selects neither
+ROM nor SRAM and rejects writes. The behavioral twin returns `0xFF` there;
+the generated hardware has no data-bus pull-ups, so an undriven physical read
+has no guaranteed byte value.
 
 | Mode (MODE1:MODE0) | ROM regions | Notes |
 |---|---|---|
 | 0 | 0x0000–0x3FFF | boot/default overlay |
 | 1 | 0xD800–0xFFFF | |
-| 2 | 0xD800–0xFFFF | 0x4000–0xBFFF = empty cartridge window (0xFF), not populated ROM |
+| 2 | 0xD800–0xFFFF | 0x4000–0xBFFF = empty cartridge window; no hardware memory selected |
 | 3 | (none) | all RAM |
 
 CPU framebuffer window: **0xD800–0xFFFF** (10,240 bytes). The visible image
