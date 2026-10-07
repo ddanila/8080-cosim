@@ -362,7 +362,7 @@ def main() -> int:
         (
             "P0",
             "D104 pin16 supply conflict",
-            "The exact .009 sheet-1 power table assigns К170УП2 pin15 to +5 V and pin8 to ground but leaves its +12 V cell blank; the preserved device pinout calls pin16 a +12 V supply. All three PCB variants leave D104.16 netless, and a white cable covers its owner front contact. A D11-local four-corner cross-face fit photo-registers D104's solder field; pin16 is near (912,1620) in 200509593 / (2710,1480) in 200506061. With power off, test that joint against independently marked X8 +12 V, D104.15/+5 V, and ground before assigning a replica rail or receiver substitute. The earlier D11-based (181.88,31.90) mm D104 placement estimate is retracted: independent panorama registration places D104 near its current PCB centre and instead flags D11 placement for separate review",
+            "The exact .009 sheet-1 power table assigns К170УП2 pin15 to +5 V and pin8 to ground but leaves its +12 V cell blank; the preserved device pinout calls pin16 a +12 V supply. All three PCB variants leave D104.16 netless, and a white cable covers its owner front contact. A D11-local four-corner cross-face fit photo-registers D104's solder field; pin16 is near (912,1620) in 200509593 / (2710,1480) in 200506061. With power off, test that joint against independently marked X8 +12 V, D104.15/+5 V, and ground before assigning a replica rail or receiver substitute",
             "`ref/schematics/d104-pin16-rail-conflict.json`; `ref/datasheets/k170up2-pinout.txt`; exact .009 sheet-1 power table; `docs/juku-serial-19200-investigation.md`",
             "resolves the exact-source versus device-contract discrepancy at the serial receiver supply",
         ),
