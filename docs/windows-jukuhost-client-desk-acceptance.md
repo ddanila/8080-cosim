@@ -29,9 +29,10 @@ Two independent builds produced the same artifact:
 
 The package checker accepted exactly five files: `JUKUWIN.EXE`,
 `JUKUWIN.INI`, `README.md`, `MANIFEST.json`, and `SHA256SUMS`. It recomputed
-all package hashes, matched the EXE identity in the manifest, and verified the
-four embedded stock/C11 boot payload records. No boot payload or runtime DLL
-is loose in the package.
+all package hashes, matched the EXE identity in the manifest, and checked that
+the payload catalog contained four records with the stock/C11 mode set. That
+check did not inspect embedded payload bytes inside the EXE. No boot payload
+or runtime DLL is loose in the package.
 
 ## Accepted checks
 
