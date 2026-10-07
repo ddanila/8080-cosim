@@ -121,15 +121,9 @@ def main() -> int:
         "The [D6 decode record](d6-physical-decode.md) and",
         "[input-continuity record](d6-input-continuity.md) own the physical",
         "table and address-input evidence; this fixture tests their modeled use.", "",
-        "- Reader-3 socket continuity fixes D0..D3 as pins 12,11,10,9; three",
-        "  identical D6 captures include a separate power cycle.",
-        "- Chip-removed owner continuity keeps ROM/RAM outputs separate:",
-        "  D6.12 reaches D8.15; D6.11 reaches D2.15/-WREQ and D92.5/R12.2.",
-        "- Powered-off owner continuity now confirms the entire endpoint chain:",
-        "  D6.9-D13.1, D13.2-D37.4, and D37.6-D58.9.",
-        "  The second D37 NAND input is independently source-closed by the native",
-        "  sheet-2 MEMR-D33.3/D33.4-D37.5 route; it is not a remaining probe ask.",
-        "  These source/continuity facts do not qualify powered edge behavior.",
+        "Those records retain capture provenance, output-pin mapping and measured",
+        "continuity. The fixture assumes the documented inputs; it does not",
+        "revalidate physical continuity or qualify powered edge behavior.",
     ]
     REPORT.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Wrote {REPORT.relative_to(ROOT)}")
