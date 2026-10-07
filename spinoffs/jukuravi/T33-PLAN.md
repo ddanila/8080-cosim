@@ -16,7 +16,7 @@ controls, ROM WAIT-class comparisons and before/after D1 replacement evidence.
 The unchanged direct-register probe confirmed the repair; no additional ROM
 burn or D4/D30 rework is required for this diagnosed fault.
 
-## Direct register-increment result
+## Reproducing the register-increment probe
 
 This probe copies register results to low-A12 RAM without making any
 high-address memory access. Its predicted low aliases cannot be explained by
@@ -35,18 +35,6 @@ Expected clean/fault words are stored little-endian:
 | `INX H`, `5A00h` | `5A01h` | `4A01h` |
 | `INX SP`, `9A00h` | `9A01h` | `8A01h` |
 | `DAD D`, `1A00h + 1` | `1A01h` | `1A01h` in the fitted model |
-
-CS00015 returned exactly:
-
-```text
-1000 0A01 4A01 8A01 1A01
-```
-
-The result confirms the fitted D1 fault. BC carry from `0FFFh` asserted A12;
-INX on DE, HL, and SP lost an already-high A12; DAD retained A12. The exact
-`1B/D62B` boot had zero transport mismatches and returned normally with the
-loader still active. Evidence is under
-`sessions/t32-ram-a12-increment-registers-physical/`.
 
 The cosim integration regression checks the probe outputs against clean/fault
 expectations in
