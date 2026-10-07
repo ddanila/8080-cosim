@@ -8,8 +8,8 @@ installed in September.
 
 CS00000 is a home-lab Juku received from Arvutimuuseum. Its then-fitted stock ROM
 identifies itself on screen as ROM `#0031`, RomBios `3.43`, and Janet `1.2`.
-Those strings are owner-observed; the two ROM devices have not been dumped in
-this session, so no content hash is claimed.
+Those strings are owner-observed; this record contains no dump or content
+hash for that pair.
 
 ## Reported startup behavior
 
@@ -85,55 +85,20 @@ All other invoked diagnostic groups passed. The three mask-`01` results must
 not be promoted into component faults because the tested service ABI does not
 exist in the fitted stock ROM.
 
-## V15 failure isolation
+## Stock-ROM transport qualification
 
-The retired Python wrapper loaded the JF15 core but exhausted its fixed
-extension-probe window. Without RESET, a direct 19,200/8N1 attachment received
-`C5` and completed that same resident core, with no extension or stream retries.
-This isolates the failure to host synchronization and confirms the core and
-CS00000 receive path were functional. Exact artifacts, transfer sizes, CRC and
-timings are retained in the
-[physical evidence](evidence/juku-serial/cs00000-stock-v15-20260821.json).
+These retained captures qualify historical host/JF15 configurations. The
+[deployment profile](machines/CS00000.json) owns the current configuration.
 
-C host `0.3.0-m6` corrected the synchronization policy by probing until the
-configured boot deadline and adapting Janet line-turn delay to client responses.
-The physical confirmation below qualifies that historical host/JF15 pair;
-the deployment profile owns the current configuration.
+| Configuration and evidence | Result and scope |
+| --- | --- |
+| Stock `#0031`, retired Python host: [V15 isolation record](evidence/juku-serial/cs00000-stock-v15-20260821.json) | The host exhausted its probe window after loading the core. Direct 19,200/8N1 attachment completed the same core without RESET or extension/stream retries, isolating a host synchronization defect. |
+| EK37, C host `0.3.0-m6`: [boot capture](evidence/juku-serial/cs00000-ek37-c-host-v15-20260822T103131Z.boot.json) | One-command Janet/JF15 boot reached CP/M Plus `A>` and served 22 NetDisk requests / 66 records at 19,200/8O1, with no retries, target resets or UART errors. |
+| EK37, truncated Janet header: [failed capture](evidence/juku-serial/cs00000-ek37-diag06-20260822T162818Z.log) | The `Wait` state was a host parser defect. Recovery after a truncated header followed by directed polls is covered by `host/tests/core_test.c`; it supplies no additional target-hardware diagnosis. |
+| EK37, fixed C host `0.3.1-m6`: [DIAG 0.6 capture](evidence/juku-serial/cs00000-ek37-diag06-fixed-20260822T183458Z.boot.json) | Janet/JF15 reached NetDisk v3 without bootstrap rejects or extension/stream retries. Bare `DIAG` detected EK37 and displayed help; `DIAG ALL` passed on screen without the JukuNet diagnostic ABI. The session served 59 reads / 177 records and exited 0, with no retries, bootstrap restarts, target resets, reconnects or UART errors. |
 
-### Native C-host physical confirmation
-
-On 2026-08-22, native C host `0.3.0-m6` completed stock-assisted JF15 from
-one command with EK37 / RomBios 3.43m fitted. CP/M Plus reached `A>` and
-served 22 NetDisk read requests / 66 records at 19,200/8O1, with no retries,
-target resets or UART errors. Exact transfer measurements and artifacts begin at
-[`cs00000-ek37-c-host-v15-20260822T103131Z.boot.json`](evidence/juku-serial/cs00000-ek37-c-host-v15-20260822T103131Z.boot.json).
-
-This qualifies that C-host/JF15 configuration on CS00000. The removed `#0031`
-pair has not repeated the new-host path, so its controlled comparison remains open.
-
-### Subsequent `Wait` state: host parser defect
-
-A subsequent EK37 `Wait` state was traced to a C-host parser defect, with
-no additional target USART or mainboard conclusion. Host `0.3.1-m6` fixed
-recovery after a truncated Janet data header followed by directed polls;
-`host/tests/core_test.c` retains that physical-capture regression. The
-[failed-session capture](evidence/juku-serial/cs00000-ek37-diag06-20260822T162818Z.log)
-records the original evidence.
-
-### Post-fix physical confirmation and DIAG 0.6
-
-The subsequent physical run used fixed host `0.3.1-m6` and the recorded CP/M
-Plus native recovery image with EK37 fitted. Janet/JF15 completed and entered
-NetDisk v3 without bootstrap rejects or extension/stream retries.
-
-At the physical `A>` prompt, bare `DIAG` detected the fitted EK37 ROM and
-showed the new no-argument help behavior. `DIAG ALL` then reported every test
-as `PASS` on screen. This physically confirms the self-contained DIAG 0.6 path
-on a known stock/remix ROM without depending on the JukuNet ROM diagnostic
-ABI. The clean session served 59 read requests / 177 records and stopped with
-exit 0, zero retries, bootstrap restarts, target resets, reconnects, or UART
-errors. Its retained evidence begins at
-[`cs00000-ek37-diag06-fixed-20260822T183458Z.boot.json`](evidence/juku-serial/cs00000-ek37-diag06-fixed-20260822T183458Z.boot.json).
+The removed `#0031` pair has not repeated the native C-host path. Its controlled
+comparison with EK37 remains open.
 
 ### USB/RS-232 adapter comparison
 
