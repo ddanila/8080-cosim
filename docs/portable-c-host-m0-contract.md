@@ -22,14 +22,6 @@ oracle. `tests/jukuhost_contract_test.py` checks selected wire and checksum vect
 against the non-runnable archived Python implementation. C tests consume the same fixture
 directly; it remains the wire baseline after Python host retirement.
 
-## Production contract
-
-Current protocol support, artifact admission, recovery policy and platform
-acceptance are maintained in the [portable C host contract](portable-c-host-plan.md)
-and [stock recovery guide](janet-fastboot.md). The frozen vectors below
-preserve the selected Python compatibility baseline; they do not define the
-complete current feature or acceptance matrix.
-
 ## Observable result contract
 
 All protocol parsing is incremental and must survive fragmentation, joined
