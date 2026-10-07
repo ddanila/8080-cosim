@@ -70,8 +70,8 @@ Snippet construction, exact-byte extraction, and the row accounting live in
 [`raster.py`](raster.py) and are guarded by
 [`../../tests/jukuravi_raster_retention_test.py`](../../tests/jukuravi_raster_retention_test.py).
 Deterministic cosim proves the staged flow end to end and proves the
-negative control (a hold crossing the decay deadline yields the no-return
-classification). The flat model implements no video-slot refresh, so
+negative control (a hold crossing the modeled decay deadline must fail with
+`no_return` or `decayed`). The flat model implements no video-slot refresh, so
 simulation deliberately cannot pass the armed long hold; only hardware can.
 
 ## Stages
