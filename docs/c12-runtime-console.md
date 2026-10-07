@@ -12,13 +12,11 @@ The failed run stopped before RESET/power-cycle checks; its retained evidence
 is `out/physical-CS00000-c12-runtime-attended-20260905` in the sibling CP/M
 project.
 
-The resident CP437 lookup still searched 17 entries after its table expanded
-to 26. Nine trailing entries, including D9h and DAh, therefore fell back to
-`?`. C12 now derives its search count from the code-table extent. C4--C11
-artifacts remain unchanged. The expanded C12 regression renders every byte
-B0h..DFh through the public console ABI in all four runtime-selected character
+C12 derives the CP437 search count from the code-table extent. Its regression
+renders every byte B0h..DFh through the public console ABI in all four character
 banks at 80 columns, comparing the framebuffer with the independent oracle.
-It reproduces the old failure and passes after the correction.
+The regression detects the original corner-glyph failure. C4--C11 artifacts
+remain unchanged.
 
 Only D16 changes, including its checksum balance; D15 remains byte-identical.
 The original installed combined hash was
