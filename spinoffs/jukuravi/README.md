@@ -134,6 +134,10 @@ requires NASM.
 
 ## Host use
 
+Run these commands from the repository root with Python 3 on Linux or macOS.
+The host uses the POSIX `termios`/`fcntl` backend and needs access to the
+selected serial device. `task.bin` is your own cooperative 8080 payload.
+
 The CLI defaults match the direct CS00015 setup: 2400 baud, one physical symbol
 per logical bit, and a 6 ms response guard. CRC-protected command retries and
 independent RAM verification remain enabled.
@@ -183,7 +187,8 @@ must echo all eight bytes exactly.
 
 ### One-session T34/T35/T36 batch
 
-[`batch.py`](batch.py) is the CS00024 full host-driven workflow. `--rom t34`
+[`batch.py`](batch.py) is the CS00024 full host-driven workflow. It requires
+NASM to assemble its probe snippets. `--rom t34`
 pins exact T34 `1C/A637` and performs the short CONFIG-first transition to one
 vote. `--rom t35` pins historical T35 `1D/45C4`; `--rom t36` pins corrected
 T36 `1E/C617`. Both use a native one-vote bootstrap and refresh-aware targets.
