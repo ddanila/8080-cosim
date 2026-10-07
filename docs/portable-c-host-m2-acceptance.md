@@ -35,8 +35,11 @@ entry points are maintained in
 Run from the repository root on Linux with Bash, Python 3/Unix PTY support,
 a C compiler (`CC`, default `cc`), and materialized fixture assets. The C8
 session test requires prebuilt system, V16 stage, full A: image and native B:
-media in the adjacent `cpm-plus-juku/out/`; `CPM_PLUS_JUKU_ROOT` selects another
-checkout. The network-ROM builder uses the pinned zmac source and needs `make`,
+media in the adjacent `cpm-plus-juku/out/`. The stock-reset test also requires
+`cpm-plus-juku-stock-recovery-system.bin`,
+`cpm-plus-juku-stock-recovery-fastboot-v17.bin`, and `cpm-plus-juku.img` there.
+`CPM_PLUS_JUKU_ROOT` selects another checkout. These tests do not build the
+sibling payloads. The network-ROM builder uses the pinned zmac source and needs `make`,
 `bison` and a compiler if its executable is absent. Initialize submodules first.
 
 Run the complete local gate with:
