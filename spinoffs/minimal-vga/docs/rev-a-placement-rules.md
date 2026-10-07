@@ -61,7 +61,8 @@ boundaries, with an exception for edge connector J3.
 
 The check excludes intended connector pin labels, permits standalone labels
 contained within a component body, and skips a component's own reference/value
-pair. Standalone text is checked only on front silkscreen. This is a placement
+pair and its labels against its own body. Standalone text is checked only on
+front silkscreen. Text crossing block frames is not checked. This is a placement
 screen; it does not check routed clearance, 3-D fit or capacitor return paths.
 Routed DRC, mechanical fit and electrical return-path review remain separate.
 
