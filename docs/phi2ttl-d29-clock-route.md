@@ -28,21 +28,13 @@ not be collapsed onto the zero-ohm `PHI2TTL` copper net in the replica model.
 
 ## R35/R106/C29 owner placement and value limits
 
-Factory assembly `PXL_20260711_114611058.jpg` identifies C29 as the left
-callout and R106 as the right callout of the close pair below R35, between
-D38 and D92. A wider comparison to owner component `PXL_20260710_200418174.jpg`
-shows the upper body marked `330R` as
-R35, matching the source 330 Ω value. The lower axial body is in the R106
-position. A crop of original owner pixels `(2270,2480)`–`(2390,2740)`,
-rotated upright, reads `510R`: the first glyph has the flat upper stroke
-and lower curve of `5`. This conflicts with schematic `910`, so the physical
-resistance still needs measurement before adopting a value. No separate
-capacitor body is exposed at the C29 position.
-The `510R` marking is also visible in the May owner image. The two-date
-comparison and crop details are retained in
-[the R106 review](../ref/photos/juku-pcb-2/r106-cross-date-review.json).
-Neither date shows a separate body at the visible C29 position; this does
-not establish DNP status because the candidate annuli remain unpaired.
+Factory assembly places C29 and R106 below R35, between D38 and D92.
+Owner photographs from May and July show R35 marked `330R` and the body in
+R106's position marked `510R`, conflicting with the schematic's `910`.
+Measure the installed resistance before adopting a value. Neither date
+shows a separate C29 body, but the unpaired candidate annuli do not establish
+DNP status. Source images, marking crops, and the two-date comparison are
+retained in [the R106 review](../ref/photos/juku-pcb-2/r106-cross-date-review.json).
 
 The upper and middle front joints beside R106 are the stronger C29 pad-pair
 candidates. Cross-face geometry and visible copper support the upper joint
