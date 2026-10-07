@@ -69,8 +69,8 @@ Use `spinoffs/minimal-vga/kicad/revb/env.sh` for the CAD/tool locators.
 Board generation, routing and physical checks live in the same directory.
 `spinoffs/minimal-vga/kicad/revb/export_fab.sh` regenerates all five
 fabrication packages and requires Bash, Python 3, KiCad CLI, KiCad Python,
-the KiCad footprint library and `zip`. If either is missing, it returns 0
-with `SKIP` before touching the package directory; existing files can therefore
+the KiCad footprint library and `zip`. If KiCad CLI or KiCad Python is missing,
+it returns 0 with `SKIP` before touching the package directory; existing files can therefore
 remain from an earlier export. Check the output and candidate identities.
 Without `--package-root`, the release checker validates recorded identities and
 routed-source hashes but does not read the ZIPs. R5.I7 runs only that checker's
