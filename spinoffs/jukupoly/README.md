@@ -248,14 +248,9 @@ their respective rights holders.
 
 `DOOMGATE.COM` is an automatic reduction of **“At Doom's Gate”**, DOOM E1M1
 music composed by **Robert (Bobby) Prince**, from a YMF262/OPL3 VGZ capture.
-The source's GD3 record identifies the game as DOOM, system as IBM PC/AT,
-original file as `D_E1M1`, and VGM creator as NewRisingSun.  The exact source
-is not committed:
-
-- 31,414-byte VGZ SHA-256:
-  `87c6620af71c04a73dd51bec06f7e849fb54a827373de9a1bf33173d7344109a`;
-- 94,252-byte decompressed VGM SHA-256:
-  `915176f25be1fb1f78c2caa613fe509e7fd52976439c5412ae5ccc0d1b971f6e`.
+Source identity, GD3 credits and hashes are retained in the
+[committed score](firmware/jukupoly-doomgate-vgz.json). The source capture is
+not committed.
 
 The VGM header and command stream agree on 4,256,232 samples at 44.1 kHz, or
 96.513 seconds.  Its loop command points to byte `0581h`, after the time-zero
@@ -353,15 +348,10 @@ to CP/M.  Its corrected render passed subjective listening review on
 ### “The Demons from Adrian's Pen”
 
 `DEMONS.COM` applies the same automatic reducer to **“The Demons from Adrian's
-Pen”**, Robert Prince's DOOM E2M2 music.  Its GD3 record identifies the game as
-DOOM, system as IBM PC/AT, original file as `D_E2M2`, level as E2M2
-“Containment Area,” year as 1993, and VGM creator as NewRisingSun.  The exact
-source is not committed:
-
-- 44,276-byte VGZ SHA-256:
-  `5883ddd0b0ea3f22eb98a5dd83339a5b96fe20b0e82ed811db49e922fc818376`;
-- 138,313-byte decompressed VGM SHA-256:
-  `fdbdf8e4a6285b1bc48b602d462c302011623a33a31c4bf2728def85de29f45c`.
+Pen”**, Robert Prince's DOOM E2M2 music. Source identity, GD3 credits and hashes
+are retained in the
+[committed score](firmware/jukupoly-demons-vgz.json). The source capture is
+not committed.
 
 The command stream contains 6,858,540 samples, or 155.522 seconds
 (2:35.522), and declares its loop at sample zero with exactly the same loop
@@ -381,14 +371,10 @@ pending.
 ### Supaplex main theme
 
 `SUPAPLEX.COM` reduces the **Supaplex main theme**, composed by **David
-Whittaker**, from a YM3812/OPL2 VGZ capture.  The source's GD3 record identifies
-the game as Supaplex, the system as IBM PC/AT, and whitequark as VGM creator.
-The exact source is not committed:
-
-- 8,088-byte VGZ SHA-256:
-  `6ebffd8be6674f1567b51b4b9fd7438abfe29009636c77dd29167086857d6f2b`;
-- 74,417-byte decompressed VGM SHA-256:
-  `b5f01e7eb9dfe89665333d9a6ce0c548e5a1bf6eb73895ac96b01863d2f3b974`.
+Whittaker**, from a YM3812/OPL2 VGZ capture. Source identity, GD3 credits and
+hashes are retained in the
+[committed score](firmware/jukupoly-supaplex-main-vgz.json). The source capture
+is not committed.
 
 The command stream contains 13,441,856 samples, or 304.804 seconds, and has no
 VGM loop.  Five signatures are melodic.  They peak at four simultaneously
@@ -418,14 +404,10 @@ listening remains pending.
 
 `ARKANOID.COM` is an automatic reduction of **“Ending”** from the 1986
 Arkanoid arcade soundtrack, composed by **Hisayoshi Ogura** (小倉 久佳).  The
-recognizable score contains Arkanoid's main-theme material.  Its GD3 record
-identifies a YM2149 register capture for an arcade machine and credits the VGM
-conversion to Sonic of 8!.  The exact source is not committed:
-
-- 818-byte VGZ SHA-256:
-  `909b71ae07cf968bde9f6e63091be1d280e98b8d1de21825e88fe7e92de04c19`;
-- 4,162-byte decompressed VGM SHA-256:
-  `13ab3b7b43c08309fc43711584177fdac1359b94a8b1c38011c248e9e55357a5`.
+recognizable score contains Arkanoid's main-theme material. Source identity,
+GD3 credits and hashes for the YM2149 capture are retained
+in the [committed score](firmware/jukupoly-arkanoid-ending-vgz.json). The source
+capture is not committed.
 
 The VGM stream contains 811,011 samples, or 18.390 seconds.  Its loop begins
 at sample 89,889 after a 2.038-second intro and spans the remaining 721,122
