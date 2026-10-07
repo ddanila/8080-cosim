@@ -117,8 +117,9 @@ self-contained package. It runs the fast compiled self-test when `wine`,
 skipped. The longer,
 developer-invoked `sync/jukuhost_win32_wine_e2e.sh` maps Wine `COM1` through a
 PTY bridge and runs the actual PE against stock/JF17, C11, and C12 co-simulation; it
-is deliberately outside the ordinary CI gate. It also needs `socat` and exits
-zero with `SKIP` if any prerequisite is absent. See the
+is deliberately outside the ordinary CI gate. The wrapper exits zero with
+`SKIP` if `wine`, `wineboot`, `xvfb-run`, or `socat` is absent. Missing
+generated CP/M payloads or disk images fail the harness instead. See the
 [Wine rerun instructions](../docs/windows-jukuhost-client-wine-acceptance.md#rerunning-the-current-source)
 and [desk acceptance](../docs/windows-jukuhost-client-desk-acceptance.md).
 [Windows 95 guest execution](../docs/windows-jukuhost-client-win95-acceptance.md)
