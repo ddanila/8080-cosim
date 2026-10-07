@@ -54,10 +54,10 @@ one transaction, obtained exact readback, called it, and received:
 
 Evidence: `sessions/t31-call/20260803T151046.564402Z.json`.
 
-This proves the required operating model on real hardware: a host can attach
-without reset, upload arbitrary 8080 bytes, execute a cooperative snippet by
-CALL, receive A and a RAM result block after ordinary RET, and keep the ROM
-monitor resident for subsequent work.
+This session demonstrates host replacement without RESET, verified upload
+and CALL/RET of the 29-byte fixture, and returned A and RAM results while the
+ROM monitor remains resident. The general payload and execution requirements
+are defined by [loader API v2](LOADER-API-V2.md).
 
 ## Upper D15 data reads versus instruction fetch
 
@@ -151,8 +151,8 @@ mismatches. In particular, all 20 single-vote passes succeeded on their first
 LOAD and first CRC command. Single-vote/6-ms was 6.62 times faster than the
 first 5-vote/12-ms setting in this experiment.
 
-This is evidence that majority voting is unnecessary on the presently assembled
-CS00015 link under the tested conditions, not proof that it can never fail.
+These runs support single-vote operation on the recorded CS00015 link under
+the tested conditions; they do not establish reliability on another setup.
 CRC-8 framing, the command CRC-16 over the parser buffer, the LOAD result's data
 CRC, and an independent CRC over target RAM retain detection. LOAD is idempotent,
 so the simpler operational policy is to let the host resend the complete command
