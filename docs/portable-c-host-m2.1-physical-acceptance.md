@@ -55,6 +55,10 @@ NetDisk request confirmed completion.
 
 ## Evidence and regression
 
+The retained run directories are local qualification artifacts under
+`../cpm-plus-juku/out/`, using the names in the matrix above. They are
+not bundled with this repository.
+
 Each retained directory contains the snapshotted executable, manifest,
 artifacts, workload and runner plus `host.log`, native log, raw `host.cap`,
 `console.bin`, `events.jsonl`, `requests.jsonl`, boot evidence where applicable,
