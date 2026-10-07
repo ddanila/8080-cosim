@@ -452,18 +452,8 @@ uses D103.11's 1.23 MHz source. The legacy probe waited only microseconds and
 T36 did not arm the raster, so its `99/99` reads occurred before a guaranteed
 CLK2 edge. They are retained raw evidence, not proof of a D57 fault.
 
-The corrected `D57S` probe arms the exact Ekta raster and waits 64 refresh
-sweeps (about 79 ms) after each channel-2 write. Its CS00015 positive control
-passed all eight repetitions with `FD/3D FC/3C FE/3E`, validating both D57
-channel 2 and the D55.13 → D57.18 `/VER RTR` path there. CS00024 must run this
-corrected probe before any socket, board-path, or package localization.
-
-The exact RomBios 3.43m (archive #0037) ROM does use the channel: offsets `01FCh..020Dh` write
-control `B0h`, followed by `FFh,FFh` to port `1Ah`. The immediate bench action
-is `batch.py --only-d57` with the corrected source. Only a corrected failure
-justifies tracing D55.13 to D57.18, verifying pin 16 high, observing pin 17
-while reprogramming, and then considering a controlled PIT substitution.
-
-The consolidated evidence, primary-source research, simulator boundaries, and
-ranked diagnosis are in
-[`../../docs/cs00024-t36-diagnosis.md`](../../docs/cs00024-t36-diagnosis.md).
+The [current diagnosis](../../docs/cs00024-t36-diagnosis.md#d57-channel-2-timing-correction)
+owns the corrected `D57S` probe, CS00015 positive control and source evidence.
+Its [next physical checks](../../docs/cs00024-t36-diagnosis.md#ranked-diagnosis-and-next-physical-checks)
+require the corrected CS00024 rerun before electrical localization or component
+replacement.
