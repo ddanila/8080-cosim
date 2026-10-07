@@ -170,7 +170,7 @@ whole-command retries remain enabled, while `--loader-guard-ms` and
 
 ## Uploaded speaker demo
 
-The 134-byte speaker demo follows the published four-bar intro at 112 BPM.
+The recorded 134-byte speaker demo follows the published four-bar intro at 112 BPM.
 It expresses the phrase as exactly 32 eighth-note units (267.857 ms ideal),
 including the notated rests, direct D-flat-to-C transition, and sustained final
 G. Cosim measured the first twelve note onsets at nominal milliseconds:
@@ -184,11 +184,13 @@ On CS00015, the corrected image uploaded as four 32-byte chunks plus six bytes.
 Every LOAD and independent RAM CRC succeeded on its first attempt at one vote /
 6 ms guard, with zero parser-store retries and zero handshake mismatches. The
 five LOAD+CRC operations took 32.758 seconds. Execution returned `A=0Ch`, RAM
-contained `53 4D 4F 4B 00` (`SMOK\0`), and the T31 monitor remained active. The
-operator confirmed the revised timing sounded better. Evidence:
+contained `53 4D 4F 4B 00` (`SMOK\0`), and the T31 monitor remained active. Evidence:
 `sessions/smoke-rhythm-real/20260803T172545.786878Z.*`.
 
-Source and committed payload:
+The accepted image's SHA-256 is
+`db117afa1a150396094f624f2f00dc2ff938c13135ae098bc37f355d2bf8186e`,
+as recorded in that session. The current payload has changed; this physical
+result qualifies the recorded image. Current source and payload:
 
 - `spinoffs/jukuravi/firmware/smoke-4000.asm`
 - `spinoffs/jukuravi/firmware/smoke-4000.bin`
