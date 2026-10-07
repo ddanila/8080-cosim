@@ -106,12 +106,12 @@ with the corrected test.
 
 ## Structural simulation matrix
 
-**Current rerun is not passing.** With the current HDL, the first T31 case
-returns bitmap `18` rather than the guard's expected `08`. Its four D55 reads,
-four latches and four unclocked latches match the negative-control predicate,
-but the additional D57 bit stops the script before any T34 case runs. Resolve
-that bitmap expectation against the D57 clock model before claiming a fresh
-complete matrix pass. The table below describes the guard configurations; it is not a current pass report.
+**The complete matrix is not passing.** The T31 negative control returns
+bitmap `18`, while the guard expects `08`. Its four D55 reads and four
+unclocked latches satisfy the negative-control predicate; the additional D57
+bit stops the script before T34 runs. The table lists required guard results,
+not completed qualification. The bitmap expectation needs review against the
+D57 clock model.
 
 `sync/jukuravi_d55_clock_audit.sh` enables clocked Mode-0 count transfers in
 all three structural PITs, drives the physical 16 MHz and 2 MHz timing ratio,
