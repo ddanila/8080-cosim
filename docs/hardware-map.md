@@ -51,8 +51,12 @@ a power-cycled capture. The older behavioral reconstruction remains under
 ## Video
 
 - Monochrome framebuffer base: `0xD800` in shared DRAM.
-- Guarded runnable geometry: 320 x 241 pixels, 40 bytes per line, most
-  significant bit first.
+- Default runnable geometry: 320 x 241 pixels, 40 bytes per line, most
+  significant bit first. Cosim recognizes specific PIT-write sequences for
+  384 x 201 (48 bytes per line) and MODX 400 x 192 (50 bytes per line),
+  and a stock sequence restores the default. This is sequence recognition,
+  not a general derivation of video geometry from PIT timing. The abstract
+  HDL raster remains fixed at 320 x 241.
 - The current runnable HDL uses an abstract second DRAM read port. The physical
   D42/D43 serializers and part of the arbitration mesh are structural, but the
   exact shared-memory slot schedule remains unresolved. D41 package
