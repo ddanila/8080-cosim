@@ -264,6 +264,12 @@ The bare command uses the default early-FDC stop; it does not reproduce
 this recorded prompt run. Use the recorded settings below for that case,
 subject to the simulator compatibility limit above.
 
+Requires Bash, \`iverilog\` and \`vvp\` for either simulator, plus \`verilator\` when
+selected. Apply settings through \`JUKU_TOP_FDC_*\` environment variables, for
+example \`JUKU_TOP_FDC_STOPPROMPT=1\`; the settings list below omits that prefix.
+The output defaults to \`\${TMPDIR:-/tmp}/juku-top-fdc-probe.md\` and is overwritten;
+set \`JUKU_TOP_FDC_REPORT\` to choose another path.
+
 Recorded settings: \`DISK=$DISK SIM=$SIMULATOR KEYAT=$KEYAT KHOLD=$KHOLD KGAP=$KGAP FRAMEIRQ=$FRAMEIRQ FRAMEPHASE=$FRAMEPHASE FRAMEMCYC=$FRAMEMCYC TRACEPROGRESS=$TRACEPROGRESS VRAMSTOP_SYNC=$VRAMSTOP_SYNC TRACEIO=$TRACEIO TRACECHK=$TRACECHK TRACEPPI=$TRACEPPI TRACEIRQ=$TRACEIRQ TRACEFDC=$TRACEFDC STOPIO=$STOPIO MAXVRAM=$MAXVRAM TIMECAP=$TIMECAP STOPFDC=$STOPFDC STOPFDCDATA=$STOPFDCDATA STOPPIC=$STOPPIC STOPPPI=$STOPPPI STOPPROMPT=$STOPPROMPT JBASICKEYS=$JBASICKEYS STOPJBASICCMD=$STOPJBASICCMD STOPJBASICREADY=$STOPJBASICREADY COMMAND_KEY_MCYC=$COMMAND_KEY_MCYC STOPPC=${STOPPC:-none} STOPPC_SKIP=$STOPPC_SKIP TIMEOUT=$TIMEOUT_S\`.
 
 ## Evidence

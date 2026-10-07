@@ -21,6 +21,12 @@ The bare command uses the default early-FDC stop; it does not reproduce
 this recorded prompt run. Use the recorded settings below for that case,
 subject to the simulator compatibility limit above.
 
+Requires Bash, `iverilog` and `vvp` for either simulator, plus `verilator` when
+selected. Apply settings through `JUKU_TOP_FDC_*` environment variables, for
+example `JUKU_TOP_FDC_STOPPROMPT=1`; the settings list below omits that prefix.
+The output defaults to `${TMPDIR:-/tmp}/juku-top-fdc-probe.md` and is overwritten;
+set `JUKU_TOP_FDC_REPORT` to choose another path.
+
 Recorded settings: `DISK=media/disks/JUKU1.CPM SIM=verilator KEYAT=42000 KHOLD=900000 KGAP=900000 FRAMEIRQ=0 FRAMEPHASE=49891 FRAMEMCYC=50761 TRACEPROGRESS=10000 VRAMSTOP_SYNC=0 TRACEIO=0 TRACECHK=0 TRACEPPI=0 TRACEIRQ=0 TRACEFDC=0 STOPIO=0 MAXVRAM=100000 TIMECAP=12000000000 STOPFDC=0 STOPFDCDATA=0 STOPPIC=0 STOPPPI=0 STOPPROMPT=1 STOPPC=none STOPPC_SKIP=0 TIMEOUT=420`.
 
 ## Evidence
