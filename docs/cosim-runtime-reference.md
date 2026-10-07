@@ -271,6 +271,10 @@ Output characters are mirrored verbatim. The firmware emits its own `CR`/`LF`
 pairs, so the terminal must not add newlines. Input converts `LF` to `CR`
 (Return) and `DEL` to Backspace before queueing matrix keystrokes.
 
+Console delivery is best effort. Input beyond the bounded queue is discarded
+when no consumed bytes can be reclaimed. Mirrored output writes are not
+checked or retried, so a PTY transcript is not guaranteed complete.
+
 This is a **simulator affordance, not a machine feature**: a real Juku's console
 is its bitmap screen and key matrix, and nothing here changes the ROM or the
 firmware. The default hook is `D9E3h`, the console character-output routine
