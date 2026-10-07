@@ -233,6 +233,13 @@ stronger.
 
 ## Remaining boundaries after transcription
 
+- **D93 static rail model mismatch:** sheet-3 detail joins D93.22/TEST and
+  D93.33/WF-VFOE to rail A (+5 V), shared with R87–R89. The JSON and HDL
+  retain an isolated `D93_TEST_WF_VFOE` net, omitting that rail connection.
+  Reconcile the model before claiming source alignment, then measure the
+  installed board for physical closure. See the
+  [static-pin map](fdc-controller-static-map.md).
+
 - D96.9 Q2 runs to the joined D101 A0-A3 inputs in the full sheet-3
   overview; D96.11 reaches the D94.2/D99.9/R89.1 island there. Both physical
   branches need continuity checks. D100.9 joins D99.12 Q2_N, while D100.11
@@ -251,8 +258,8 @@ stronger.
 - The factory sheet's reset label polarity and physical FDC clock/analog edge
   quality remain bring-up measurements, not missing transcription.
 
-These are external-evidence boundaries. All source-visible `.009` corrections
-are represented or explicitly dispositioned; this audit supplies no authority
+These include a known model mismatch and external-evidence boundaries.
+The linked maps record source dispositions; this audit supplies no authority
 to fabricate while the separate P0 connectivity and routing gates remain open.
 """
     # The boundary ledger receives source and owner-photo findings after the

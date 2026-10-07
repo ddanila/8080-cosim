@@ -81,6 +81,13 @@ stronger.
 
 ## Remaining boundaries after transcription
 
+- **D93 static rail model mismatch:** sheet-3 detail joins D93.22/TEST and
+  D93.33/WF-VFOE to rail A (+5 V), shared with R87–R89. The JSON and HDL
+  retain an isolated `D93_TEST_WF_VFOE` net, omitting that rail connection.
+  Reconcile the model before claiming source alignment, then measure the
+  installed board for physical closure. See the
+  [static-pin map](fdc-controller-static-map.md).
+
 - **E8 keyboard configuration:** exact `.009` sheet 1 assigns D26 PB4/pin22
   to E8.3, PB5/pin23 to E8.2, and E8.4 to `CONTRDAT` continuation 909.
   The assembly drawing specifies a 3–4 bridge; May and July owner photos show
@@ -121,6 +128,6 @@ stronger.
   bring-up measurements; the outer-bus reset contact code still requires
   X1 orientation reconciliation.
 
-These are external-evidence boundaries. All source-visible `.009` corrections
-are represented or explicitly dispositioned; this audit supplies no authority
+These include a known model mismatch and external-evidence boundaries.
+The linked maps record source dispositions; this audit supplies no authority
 to fabricate while the separate P0 connectivity and routing gates remain open.
