@@ -15,14 +15,14 @@ reassemble C10; their own builders and execution gates remain separate.
 
 Every 27C256 image
 duplicates its verified 16 KiB member into both halves so direct A0–A14 wiring
-also maps the D800–FFFF overlay correctly. `revb-rom-set.json` is the authority
+also maps the D800–FFFF overlay correctly. [revb-rom-set.json](revb-rom-set.json) is the authority
 for provenance, hashes and the program/readback procedure:
 
-| Label | File | SHA-256 |
-|---|---|---|
-| EKTA3.7/VJUGA | `ekta37_z80-27c256.bin` | `e06dc0ee989d33049ad60c5a182df4d3da8814f206fd19c4f500603c772d9b2f` |
-| NETC10/VJUGA | `netc10_vjuga-27c256.bin` | `6e84664b4513c1c3f8f2f717bbee5ed15495225636f1b2f2fe8de8924a889f3f` |
-| DIAG/VJUGA | `diag_vjuga-27c256.bin` | `c220bf654711d8dda13e1e980763c11e00821b38bbdd55bd65c85a2b27f138a7` |
+| Label | File |
+|---|---|
+| EKTA3.7/VJUGA | `ekta37_z80-27c256.bin` |
+| NETC10/VJUGA | `netc10_vjuga-27c256.bin` |
+| DIAG/VJUGA | `diag_vjuga-27c256.bin` |
 
 `EKTA3.7/VJUGA` is the retained programming/manifest label for the Z80-adapted
 archive-0037 image, whose source banner is `RomBios 3.43m`. The label does not
