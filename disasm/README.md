@@ -78,7 +78,7 @@ a small code block at `17F9h..1810h` is also seeded.
 It differs from jmon33 at the proven repair byte `1EFCh`; the vendored
 disassembly preserves that mismatch.
 
-## jmon33 (Juku Monitor v3.3, MAME default BIOS — repair reference)
+## jmon33 (Juku Monitor v3.3, MAME BIOS slot 0 — repair reference)
 
 - [`jmon33/jmon33.ctl`](jmon33/jmon33.ctl) — hand-maintained knowledge.
 - [`jmon33/jmon33.skool`](jmon33/jmon33.skool) — generated disassembly.
