@@ -187,12 +187,16 @@ for refdes, item in target_held_nominals.items():
 
 lines += [
     "",
-    "## Deliberate holds",
+    "## Other installed-value holds",
+    "",
+    "Together with the four sheet-3 cases above, these form the eleven registered holds.",
     "",
     "| Ref | Why it remains unvalued |",
     "| --- | --- |",
 ]
 for item in evidence["held"]:
+    if item["ref"] in target_held_nominals:
+        continue
     lines.append(f"| `{item['ref']}` | {item['reason']} |")
 
 lines += [
