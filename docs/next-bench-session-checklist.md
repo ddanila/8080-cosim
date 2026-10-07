@@ -25,22 +25,27 @@ conflicts explicitly before changing the model.
    physical table but does not replace the D0 continuity check
    (`docs/d94-reconstruction-constraints.md`).
 2. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
-   confirm D93.22/.33 continuity to +5 V. Sheet 3 joins both to rail A,
-   but the current JSON/HDL omit that rail connection; reconcile the model
-   before bring-up. See [the D93 static-pin map](../ref/schematics/fdc-controller-static-map.md).
-   first isolate the tentative D96.6 observation from the source-closed 1 MHz
-   slot route. Measure resistance from D96.6 to D40.11 in both probe
-   polarities, preferably with D96 removed; sheet 3 requires D96.6 to remain
-   local to D96.2 and not join the D40.11/D59.5/D92.2/.3/D95.5/.6 net.
-   D96.1/.4 WREQ_N with Q1/.5 and Q1_N/.6 for post-release phase; D96.9 Q2↔D101.4/R92.1,
-   D96.11 CLK2↔D94.2/D99.9/R89.1 and D96.11↔D96.10 isolation at their
-   unmarked drawing crossing; then D96.13↔D99.10 and D99.10↔D100.11 T
-   separately before tracing their quoted sheet-1 continuations;
-   D99.4/.5/.11/.12; and
-   D101.1 `/OE0` against D26.38 IMDRG, then D101.3/.5/.6 each against D101.4/R92.1/R99.2. D101's shared EARLY/LATE
-   select pins 2/14 and its complete Q1 write-precomp half are already
-   source-closed and must not be re-probed as missing paths
-   (`docs/fdc-hardware-handoff.md`).
+   use [the hardware handoff](fdc-hardware-handoff.md) for the owning evidence.
+
+   - **Static rail:** confirm D93.22/.33 continuity to +5 V. Sheet 3 joins
+     both to rail A, but the current JSON/HDL omit that connection. Reconcile
+     the model before bring-up; see [the D93 static-pin map](../ref/schematics/fdc-controller-static-map.md).
+   - **D96 toggle isolation:** measure resistance from D96.6 to D40.11 in
+     both probe polarities, preferably with D96 removed. Sheet 3 keeps D96.6
+     local to D96.2, separate from D40.11/D59.5/D92.2/.3/D95.5/.6.
+     Capture WREQ_N at D96.1/.4 with Q1/.5 and Q1_N/.6 to establish the
+     post-release phase.
+   - **D96 section 2:** check D96.9 Q2 to D101.4/R92.1, D96.11 CLK2 to
+     D94.2/D99.9/R89.1, and D96.11-to-D96.10 isolation at the unmarked
+     drawing crossing.
+   - **D99 continuations:** check D96.13 to D99.10 and D99.10 to D100.11 T
+     separately before tracing their sheet-1 continuations. Check D99.4/.5/.11/.12
+     against the endpoints named in the handoff.
+   - **D101 support inputs:** check D101.1 `/OE0` to D26.38 IMDRG, then
+     D101.3/.5/.6 each to D101.4/R92.1/R99.2. Its shared EARLY/LATE select
+     pins 2/14 and complete Q1 write-precomp half are already source-closed;
+     do not re-probe them as missing paths.
+
 3. **Factory Вид В details:** D56.5->D34.9 and D56.12->D55.15/.18 are now
    owner-closed. D56's three physical callout locations are fixed as the
    separate left annulus plus D56.5/D56.12; identify the installed item-159
