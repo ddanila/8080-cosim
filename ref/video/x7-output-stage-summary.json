@@ -111,7 +111,7 @@
       "vol_max_v": 0.5
     },
     "independent_current_corroboration_device": "Texas Instruments SN74LS86A",
-    "interpretation": "The supply-dependent TI SN74LS86A comparison driver self-consistently droops under the traced load, but still sources more current than the exact \u041a555\u041b\u041f5 sheet's fanout-derived high-state envelope in at least one nominal state. TI labels the model typical 25 C behavior, not \u041a555\u041b\u041f5 equivalence evidence; physical VIDEO_OUT voltages still require an exact-device curve or measurement.",
+    "interpretation": "At least one nominal state exceeds the \u041a555\u041b\u041f5 sheet's fanout-derived high-state load envelope despite the modeled comparison-driver droop.",
     "loaded_driver": {
       "comparison_only_not_equivalence_evidence": true,
       "device": "Texas Instruments SN74LS86A",

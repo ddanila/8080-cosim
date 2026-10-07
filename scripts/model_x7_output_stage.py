@@ -528,12 +528,9 @@ def build_summary(
             "nominal_75_ohm": nominal_envelope,
             "nominal_fanout_envelope_exceeded": envelope_exceeded,
             "interpretation": (
-                "The supply-dependent TI SN74LS86A comparison driver self-consistently "
-                "droops under the traced load, but still sources more current than the "
-                "exact К555ЛП5 sheet's fanout-derived high-state envelope in at least "
-                "one nominal state. TI labels the model typical 25 C behavior, not "
-                "К555ЛП5 equivalence evidence; physical VIDEO_OUT voltages still require an "
-                "exact-device curve or measurement."
+                "At least one nominal state exceeds the К555ЛП5 sheet's "
+                "fanout-derived high-state load envelope despite the modeled "
+                "comparison-driver droop."
                 if envelope_exceeded else
                 "The supply-dependent TI SN74LS86A comparison driver stays within the "
                 "exact-device fanout-derived envelope, but remains typical comparison "

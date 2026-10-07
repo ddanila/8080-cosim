@@ -75,7 +75,7 @@ explicit comparison driver, not К555ЛП5 equivalence evidence.
 | sync=1,signal=1 | sync | source | 0.358 | 0.400 | WITHIN |
 | sync=1,signal=1 | signal | source | 0.418 | 0.400 | EXCEEDS |
 
-The supply-dependent TI SN74LS86A comparison driver self-consistently droops under the traced load, but still sources more current than the exact К555ЛП5 sheet's fanout-derived high-state envelope in at least one nominal state. TI labels the model typical 25 C behavior, not К555ЛП5 equivalence evidence; physical VIDEO_OUT voltages still require an exact-device curve or measurement.
+At least one nominal state exceeds the К555ЛП5 sheet's fanout-derived high-state load envelope despite the modeled comparison-driver droop.
 
 ## Nominal DC transfer
 
