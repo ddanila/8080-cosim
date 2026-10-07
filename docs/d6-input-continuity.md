@@ -20,29 +20,22 @@ D6.15 A7 ------------------------------ D105.1
 
 `D6.1 <-> D3.4` was reported as zero ohms and its copper was followed
 visually. Direct continuity also proves `D6.2 <-> D3.6`, `D3.3 <-> D26.15`,
-`D3.5 <-> D26.14`, and `D6.15 <-> D105.1`. An original-resolution
-reread of the exact `.009` sheet-1 detail `PXL_20260718_101809608.jpg`
-(crop `(1100,2750)`–`(2150,3850)`) confirms `R15=12k` on D26.14/D3.5
-and `R16=12k` on D26.15/D3.3. Both terminate in the drawing's perpendicular
-ground bar: vertical at R15, horizontal at R16. The rotated form agrees with
-the ground symbol at D2.V1/V2 on sheet-1 detail `PXL_20260718_101817644.jpg`. The `.009`
-assembly detail `PXL_20260711_114556899.jpg` places **R15 vertically to the
-right of D3** and **R16 horizontally below D3**. The owner component photo
-`PXL_20260710_200418174.jpg` shows distinct fitted bodies at those positions;
-their dark markings are compatible with `12K`, but neither value nor both lead
-connections have been measured.
+`D3.5 <-> D26.14`, and `D6.15 <-> D105.1`. The exact `.009` sheet-1 detail draws R15 and R16 as 12 kΩ
+branches from D26.14/D3.5 and D26.15/D3.3 to ground. The factory assembly
+places R15 upright to the right of D3 and R16 horizontally below it. Their
+owner-photo markings are compatible with `12K`; isolated values and return
+rails remain unmeasured. Source images, crops and registration are retained in
+[the resistor identity review](../ref/photos/juku-pcb-2/r9-r10-r15-r16-identity-review.json).
 
-The two upright red-black-red/gold **2 kΩ bodies left of D3 are R10 (outer)
-and R9 (inner)** in the same original-resolution assembly crop. Their position
-and value agree with exact `.009` sheet 1's 2 kΩ INT6/INT7 pull-ups. The left pair must not be used as R15/R16 value evidence. The owner views show an apparent common
-upper solder bridge for R9/R10. Test it to +5 V and test the separate lower
-leads to D3.1/INT6_RAW and D3.13/INT7_RAW before treating their physical nets
-as closed. Separately measure the right-side R15 and lower horizontal R16:
-each signal lead against D3.5/D26.14 or D3.3/D26.15, and each return lead
-against ground and +5 V. The source return bars and earlier owner-reported
-+5 V paths remain a real electrical conflict for R15/R16 until the correct
-physical bodies are probed. Source/photo registration is recorded in
-`ref/photos/juku-pcb-2/r9-r10-r15-r16-identity-review.json`.
+The two upright 2 kΩ bodies left of D3 are **R10 (outer) and R9 (inner)**,
+the source-drawn INT6/INT7 pull-ups. They must not be used as R15/R16 value
+evidence. Check their apparent common upper bridge to +5 V and their separate
+lower leads to D3.1/INT6_RAW and D3.13/INT7_RAW before accepting those physical
+nets as closed.
+
+For the actual R15/R16 bodies, measure isolated resistance and each return
+lead to known ground and +5 V. The source ground bars conflict with earlier
+owner-reported +5 V paths until the correctly identified bodies are probed.
 
 ## Resistor photo evidence and remaining probes
 
