@@ -89,8 +89,9 @@ python3 scripts/validate_rt4_dump.py d6-read-1.txt d6-read-2.txt d6-read-3.txt \
 ```
 
 The comparison result is exactly one of `EXACT_MATCH`,
-`EXACT_D0_D3_COMPLEMENT`, `EXACT_BIT_REVERSE`, or `OTHER_DIFFERENCE` with
-changed-row, first-byte, and per-output flip counts. The bit-reverse result is
+`EXACT_D0_D3_COMPLEMENT`, `EXACT_BIT_REVERSE`, or `OTHER_DIFFERENCE`. Only
+`OTHER_DIFFERENCE` includes changed-row, first-byte, and per-output flip counts.
+The bit-reverse result is
 actionable only when independent socket-to-reader continuity fixes the physical
 pin order, as it did for the 2026-07-19 revision-3 reread.
 When `--out-dir` is used, the dump JSON preserves the comparison path, baseline
