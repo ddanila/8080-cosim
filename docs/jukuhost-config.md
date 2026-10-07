@@ -19,6 +19,8 @@ The generated Pocket8086 folder therefore starts with either `JUKUHOST` or
 are COM1, 19,200-baud NetDisk v3, `CON` for the local N4 console, a writable
 A: snapshot, read-only native B:, and DOS-safe log/capture names.
 
+## File format and paths
+
 Relative artifact, disk, log and capture file names are resolved beside the
 configuration file. `port` and `console` are passed unchanged to the platform
 backend; relative device paths are not rebased to the INI directory. The format
@@ -76,6 +78,8 @@ contain all three identity fields. A fallback requires both `[fallback_system]`
 and `[fallback_fastboot]`, each with `file`, `size` and `sha256`.
 Drive B is optional and requires its complete file identity, geometry and mode.
 
+## Timing and transfer settings
+
 Defaults and units for the timing and transfer settings are:
 
 | Setting | Default | Accepted range |
@@ -92,6 +96,8 @@ Defaults and units for the timing and transfer settings are:
 `network_rom` and `recover_session` default to `no`. Omitting the network
 section does not automatically choose the resident baud to match a stock
 bootstrap; set `baud=9600` explicitly for JF17.
+
+## Boot selection and recovery
 
 Boot selection is explicit:
 
@@ -154,6 +160,8 @@ it does not preserve duplicate detection across service restarts.
 The integration-only inherited-descriptor mode cannot
 reopen a descriptor and therefore fails cleanly instead.
 
+## Disk policies
+
 Drive A supports three explicit policies:
 
 - `mode=read-only` checks the size/hash and serves `file` without writes;
@@ -172,6 +180,8 @@ The `.jhj` journal restores the previous record for an incomplete transaction or
 an invalid or unreadable journal stops the writable session. Drive B is
 always `mode=read-only` with
 `geometry=juku-native`.
+
+## Self-test and session evidence
 
 `build/jukuhost --selftest` checks two fixed vectors: SHA-256 of `abc` and
 CRC-16/IBM of `123456789`. It needs no serial device and does not validate
