@@ -82,7 +82,12 @@ not in a second task ledger.
 
 ## Upload, order and bench gates
 
-Before uploading, the exact candidate must satisfy:
+The [keyboard encoder pinout mismatch](rev-b-io-parts.md#keyboard-pinout-mismatch--release-blocker)
+must be corrected and the I/O package requalified before upload. The release
+checker verifies recorded identities and authorization; it does not detect this
+manufacturer-pinout error.
+
+Before uploading, the exact corrected candidate must satisfy:
 
 ```sh
 python3 spinoffs/minimal-vga/kicad/revb/check_revb_release_gate.py \

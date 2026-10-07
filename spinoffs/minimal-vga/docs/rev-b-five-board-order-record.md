@@ -5,6 +5,10 @@ Status: **TEMPLATE READY / ORDER HOLD**. Do not upload while
 independent bare-PCB designs only: CPU, Memory, I/O, Backplane, and Video. It is
 not a panel or a PCBA order.
 
+The [keyboard encoder pinout mismatch](rev-b-io-parts.md#keyboard-pinout-mismatch--release-blocker)
+also blocks upload until the corrected I/O design and package have been
+requalified. A passing identity/authorization check alone does not resolve it.
+
 ## Three controlled gates
 
 1. **Upload gate.** From the repository root with Python 3, immediately before

@@ -14,7 +14,9 @@ executed.
 
 [Rev B status](docs/rev-b-status.md) summarizes the five-card system and its
 completed desk gates. The [five-board order plan](docs/rev-b-five-board-order-plan.md)
-controls release; physical first-article acceptance remains pending. Use the
+controls release. The [keyboard encoder pinout mismatch](docs/rev-b-io-parts.md#keyboard-pinout-mismatch--release-blocker)
+requires correction and I/O package requalification before upload; physical
+first-article acceptance remains pending. Use the
 [current bench template](docs/rev-b-b1-bench-log.md) after the authorized order
 arrives. Use only the exact five-archive candidate identified by the release
 record; superseded packages must not be uploaded.

@@ -7,6 +7,11 @@ This review covers the five independent bare-PCB release archives only. It does
 not authorize upload, add an item to a vendor cart, or place an order. The owner
 must still perform R5.R1 and explicitly change `ORDER HOLD` before any upload.
 
+This dated package review did not detect the [keyboard encoder pinout mismatch](rev-b-io-parts.md#keyboard-pinout-mismatch--release-blocker).
+The retained I/O candidate now requires correction and package requalification
+before release; the recorded visual/BOM results below do not establish keyboard
+functionality.
+
 ## Independently rendered package review
 
 `kicad/revb/review_revb_release.py --self-test` reads the ZIP contents rather
@@ -78,18 +83,13 @@ as recorded in the bench log and three-ROM manifest.
 
 ## Dated JLCPCB pre-upload quote
 
-Captured at `2026-08-29T01:43:45+03:00` with Google Chrome 151 in a fresh
-headless profile from the
-[official JLCPCB instant quote](https://cart.jlcpcb.com/quote/), without a file
-upload, cart mutation or login. Each row is five copies of one independent
+Captured at `2026-08-29T01:43:45+03:00` from the
+[official JLCPCB instant quote](https://cart.jlcpcb.com/quote/), without uploading
+files or placing an order. Each row is five copies of one independent
 single-PCB design: FR-4 TG135, 1.6 mm, green mask, white silk, lead-free HASL,
 1 oz outer copper, flying-probe test, regular ±0.2 mm outline tolerance, no
 vendor mark, and production-file confirmation **Yes**. The four-layer quote
 uses its 0.5 oz inner copper and no controlled impedance.
-
-The session changed dimensions and fabrication options only. It performed no file
-upload, login, `SAVE TO CART`, or cart mutation. The fresh quote reproduced the
-prior day's values and displayed no configuration warning for these selections.
 
 | Design | Size | Layers | Via covering | Qty | Web fabrication | Standard build |
 |---|---:|---:|---|---:|---:|---:|
