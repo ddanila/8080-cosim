@@ -90,11 +90,14 @@ for backward compatibility and adds:
 
 - passive C11 cold discovery;
 - a late-host interval proving the beacon repeats;
-- host replacement where the second host is not told CP/M is already alive;
+- host replacement where the second host is not told CP/M is already alive,
+  followed by `VER` and `STATUS` checks of resumed console service and
+  receive-timeout/reconnect telemetry;
 - a receive-byte-triggered board reset after V16, during early NetDisk
   traffic, checking NetDisk-to-beacon-to-V16 recovery;
-- the complete DIR, STATUS, diagnostics, A:/B:, write/erase, time, and warm-boot
-  workload after recovery.
+- DIR, STATUS, diagnostics, A:/B:, write/erase, time, and warm-boot checks
+  after the initial boot or automatic target-reset recovery. In the
+  host-replacement case, this workload precedes host replacement.
 
 Run from this repository root with Python 3, a C compiler and POSIX PTY
 support:
