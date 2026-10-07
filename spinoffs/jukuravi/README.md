@@ -266,7 +266,9 @@ python3 spinoffs/jukuravi/retention.py --cold --port /dev/ttyUSB0 \
 ```
 
 Start it before RESET. `--cold` pins T34 `1C/A637`; without `--cold` it attaches
-to an already-running API-v2 loader. `--ages` gives ascending target seconds
+using the seven-vote bootstrap of T28–T34. This runner has no bootstrap-width
+override and is not configured for the native one-vote T35/T36 loader.
+`--ages` gives ascending target seconds
 from completion of the initial verified upload, rather than delays between
 reads. An overdue target is read immediately. JSON `retention.samples` records
 both the target age and the observed age after each READ completes, including
