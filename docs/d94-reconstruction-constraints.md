@@ -139,7 +139,7 @@ gives:
 
 | Output | Exact asserted equation | Physical destination |
 | --- | --- | --- |
-| `S(D0)` | `!A4 & A1 & A0` | R8 2 kΩ pull-up-only boundary |
+| `S(D0)` | `!A4 & A1 & A0` | R8 2 kΩ measured; source-drawn WREQ continuation physically unverified |
 | `S(D1)` | `A3 xor A2` | D99.9 / R89 pull-up |
 | `S(D2)` | `A3 & !A2 & Q` | D93 `/RE` |
 | `S(D3)` | `!A3 & A2 & Q` | D93 `/WE` |
@@ -197,7 +197,10 @@ and A4=D101.7.
   [upper assembly placement](fdc-upper-assembly-placement.md#d94-pull-up-row).
 - Closed CS/enable upstream source: D9.7 `CS7` reaches D94.15 and D93.3
   on exact .009 sheets 1 and 3; owner continuity confirms the local branch.
-- Unknown: D0 hidden-branch status.
+- D0's intended source connection is WREQ: exact .009 sheet 3
+  `101633062` traces D94.1 to WREQ (1), and sheet 1 `101817644`
+  places R8 on -WREQ. Physical D94.1-to-D2.15 continuity remains
+  unverified; the model retains `D94_D0_BOUNDARY` separately from `WREQ_N`.
 - Closed A3 source: D94.13 belongs to D105.3 qualified peripheral `/WR`.
   D5.27 is the distinct raw `IOWR_N` input to D7.10; a simultaneous
   operating-level capture is useful corroboration, not a missing join.
