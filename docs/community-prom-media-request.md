@@ -32,7 +32,9 @@ Supporting records:
    - `ДГШ5.106.037` / `ДГШ5.106.038` (`КР556РТ4`, D2 bus/wait + D6 memory-decode PROMs)
    - `ДГШ5.106.039` (`К155РЕ3`, D8)
    - `ДГШ5.106.092` (FDC-era PROM, D94 on the .009 board)
-   - `ДГШ5.106.040` etc. EPROM programming files for the 2764/К573РФ5 ROM row
+   - `ДГШ5.106.040` EPROM programming files named in doc 007, plus
+     `.009` D15 `ДГШ5.106.087` and D16 `ДГШ5.106.041` files. These drawing
+     designations are not yet bound to the adopted archival EPROM bytes.
 2. Does anyone have an independently dumped factory boot disk
    `JUKU-1` / `ДГШ5.106.105`, or checksum/provenance that can verify the
    vendored public `media/disks/JUKU1.CPM` image?
@@ -97,7 +99,8 @@ useful for provenance and board variants, rather than filling a missing set.
 Do you have any of the following?
 
 - Baltijets doc 007 programming-disk files for .037/.038/.039/.092 PROMs
-  or the .040-family EPROMs; independent physical reads are also useful.
+  or the .040 EPROM; .009 D15 .087 and D16 .041 programming files are
+  also useful. Independent physical reads can corroborate the archival pair.
 - An independently acquired JUKU-1 / ДГШ5.106.105 disk image, with provenance
   and checksum, to compare with the preserved public JUKU1.CPM image.
 - A different/larger BASIC cartridge image or a hardware-confirmed Monitor
