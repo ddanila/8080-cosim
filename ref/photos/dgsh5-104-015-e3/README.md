@@ -4,7 +4,7 @@ Owner photographs (2026-07-18) of **ДГШ5.104.015 Э3 «Модуль клав�
 Схема электрическая принципиальная»**, «Введён с 15.08.88 г.».
 
 The drawing contains the switch matrix, separate SHIFT/CTRL contacts,
-D1/D2 row-encoding logic, scan decoders and the eight-position S21
+D1/D2 scan decoders, the D3 row encoder and the eight-position S21
 configuration bank. X1 carries `K0–K2`, `SC0–SC3`, active-low `-FK`,
 SHIFT/CTRL, serialized `CONTRDAT`, +5 V and ground.
 
