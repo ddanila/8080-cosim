@@ -1,8 +1,13 @@
-# VJUGA rev B — five-card first-article bench log (R5.B1)
+# VJUGA rev B — first-article bench procedure and measurement record (R5.B1)
 
 Status: **TEMPLATE READY / HARDWARE PENDING**. Start only after the five-board
 R5.O1 order has arrived. Populate and power one first-article system in stages;
 surplus bare boards do not authorize duplicate builds.
+
+The [keyboard encoder pinout mismatch](rev-b-io-parts.md#keyboard-pinout-mismatch--release-blocker)
+must be corrected and the I/O design and fabrication package requalified before
+ordering or starting this procedure. Passing the current LVS and behavioral twin
+does not qualify the keyboard path.
 
 Record measured observations, not expected values. A failed row stops the ladder
 until its cause and disposition are recorded. Power down before inserting or
