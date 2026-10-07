@@ -25,6 +25,9 @@ conflicts explicitly before changing the model.
    physical table but does not replace the D0 continuity check
    (`docs/d94-reconstruction-constraints.md`).
 2. **FDC support pins** (only if pursuing FDC later; not on the VJUGA path):
+   confirm D93.22/.33 continuity to +5 V. Sheet 3 joins both to rail A,
+   but the current JSON/HDL omit that rail connection; reconcile the model
+   before bring-up. See [the D93 static-pin map](../ref/schematics/fdc-controller-static-map.md).
    first isolate the tentative D96.6 observation from the source-closed 1 MHz
    slot route. Measure resistance from D96.6 to D40.11 in both probe
    polarities, preferably with D96 removed; sheet 3 requires D96.6 to remain
