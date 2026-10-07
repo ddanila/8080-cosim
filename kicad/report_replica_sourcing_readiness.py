@@ -132,7 +132,7 @@ def build_report(rows):
         "## Summary",
         "",
         f"- BOM lines: {len(rows)}",
-        f"- Populate-now component positions: {sum(int_field(row, 'populate_now') for row in rows)}",
+        f"- Populate-now board positions (including wire landings): {sum(int_field(row, 'populate_now') for row in rows)}",
         f"- Long-lead/source-early lines: {len(long_lead)}",
         f"- Programming/dump-gated lines: {len(programming)}",
         f"- Mechanical/circuit-review lines: {len(review_blocked)}",

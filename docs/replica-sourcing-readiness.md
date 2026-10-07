@@ -17,7 +17,7 @@ Refresh with `python3 kicad/report_replica_sourcing_readiness.py`.
 ## Summary
 
 - BOM lines: 122
-- Populate-now component positions: 273
+- Populate-now board positions (including wire landings): 273
 - Long-lead/source-early lines: 22
 - Programming/dump-gated lines: 5
 - Mechanical/circuit-review lines: 37
