@@ -143,7 +143,7 @@ package localization. No D55 substitution result was recorded. Later corrected
 raster setup and D57 channel-2 sampling passed 8/8 on CS00015, physically
 validating D55.13 `/VER RTR` and its D57 clock path. Other D55 counter
 predicates remain unverified; rerun T34 before component substitution. See
-[the service record](cs00015-service-record.md#post-diagnostic-restoration-and-ekta4401-service-rom).
+[the service record](cs00015-service-record.md#ekta4401-service-rom-qualification).
 
 ### CS00024
 

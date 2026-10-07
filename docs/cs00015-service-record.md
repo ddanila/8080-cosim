@@ -68,26 +68,17 @@ not be reinserted because repeated extraction would add mechanical damage
 risk. Original CS00015 D8 `.039` was restored. This records component
 provenance only and must not be read as a diagnosis of the original D6.
 
-## Post-diagnostic restoration and Ekta4401 service ROM
+## Ekta4401 service-ROM qualification
 
-On 2026-08-08, after the diagnostic work was completed, the owner restored
-CS00015 to its normal firmware configuration with **EK37 / RomBios 3.43m**
-(repository firmware profile `ekta37`) in the D15/D16 positions. The T31/T32
-diagnostic firmware is no longer the fitted machine configuration; its images,
-hashes, and physical results remain retained as diagnostic evidence.
+Earlier fitted firmware included T31/T32 and EK37; neither is currently
+fitted. The owner-reported EK37 restoration did not include socket
+readback, so it does not resolve the original D15 byte discrepancy.
 
-This update records the fitted firmware identity reported by the owner. It
-does not assert a new socket readback or byte-for-byte comparison, so the
-earlier machine-specific D15 read discrepancy remains part of the service
-history. The repaired-D1 finding, donor-D6/original-D8 provenance, and open D55
-discriminator are unchanged.
-
-On 2026-08-11 the owner temporarily replaced that normal pair with the
-project's Ekta4401 service-ROM pair. Both AT28C64 programming images passed Willem's post-write verification:
-D15 CRC32 `5E306759`, D16 CRC32 `3B734DEC`.
-The fitted pair booted and accepted `J` without an
-Enter key. The host attached to API v2 with no transport mismatch, passed the
-RAM-preserving PROBE, and observed the 128-row `07A9h` refresh service enabled.
+The temporary Ekta4401 pair passed Willem post-write verification on
+2026-08-11: D15 CRC32 `5E306759`, D16 CRC32 `3B734DEC`. It booted, accepted
+`J` without Enter, attached to API v2 without a transport mismatch, passed
+the RAM-preserving PROBE, and reported the 128-row `07A9h` refresh service
+enabled.
 
 A first legacy D57 probe retained useful raw data but waited only microseconds
 after channel-2 programming. The exact E3 drawing establishes that D57.18
@@ -122,13 +113,10 @@ reset boundaries.
 
 ## Current deployment
 
-Following the Arvutimuuseum demonstration, CS00015 is in the home lab. The
-JukuNet C6 / ROM ABI 1.2 pair fitted on 2026-08-18 was replaced on 2026-08-20
-by the exact JukuNet C8 / ROM ABI 1.3 D15/D16 pair. This is the current
-network-first CP/M Plus and Jukuravi development reference machine. CS00014 is
-in the museum's main exhibition
-with its stock ROM, and CS00000 is the other home-lab diagnostic candidate; see
-`machine-deployment-status.md` for the cross-machine ledger.
+CS00015 is the home-lab network-first CP/M Plus and Jukuravi development
+reference, fitted with JukuNet C8 / ROM ABI 1.3. Its exact identity and
+qualification scope are in [the machine profile](machines/CS00015.json).
+See [the deployment ledger](machine-deployment-status.md) for other machines.
 
 ## Current CS00015 fault summary
 
