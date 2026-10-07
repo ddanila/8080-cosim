@@ -334,7 +334,7 @@ def main() -> int:
         (
             "P0",
             "D8/D92 supply closure",
-            "The .009 D8 К155РЕ3 pinout gives pin8=GND and pin16=+5 V; D92 К555ЛЕ4 is a 74LS27-class triple 3-input NOR with pin7=GND and pin14=+5 V. The logical model and all three PCB pad net names are corrected. Both routed variants now connect D92.14 to +5 V through a DRC-checked via and D8.8 to ground with a short F.Cu track; D8.16 and D92.7 remain without power tracks, and the source PCB remains unrouted at all four pads. With power off, confirm owner D8.8/D92.7 to known ground and D8.16/D92.14 to known +5 V. Route the two remaining replica pads around nearby signal traces, then rerun connectivity and DRC",
+            "The .009 D8 К155РЕ3 pinout gives pin8=GND and pin16=+5 V; D92 К555ЛЕ4 is a 74LS27-class triple 3-input NOR with pin7=GND and pin14=+5 V. The logical model and all three PCB pad net names are corrected. Both routed variants have power tracks at D92.14/+5 V, D92.7/GND and D8.8/GND; D8.16 still lacks a +5 V track. The source PCB remains unrouted at all four pads. With power off, confirm owner D8.8/D92.7 to known ground and D8.16/D92.14 to known +5 V. Route the remaining D8.16 supply pad around nearby signal traces, then rerun connectivity and DRC",
             "`ref/schematics/d8-d92-supply-pin-correction.json`; `docs/prom-dump-procedure.md`; TI SN74LS27 datasheet; `docs/main-board-erc-parity.md`",
             "closes four omitted package-supply conductors and prevents a 74LS02 substitute for the D92 triple 3-input NOR",
         ),
