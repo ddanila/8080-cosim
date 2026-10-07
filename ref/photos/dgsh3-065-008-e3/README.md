@@ -13,7 +13,7 @@ processor connector with both drive tables and their shared external connector.
 Contact-number agreement establishes drawing intent; no separate cable
 assembly drawing or physical cable continuity is proved by these photos.
 
-Contents: two НГМД drive mechanisms (**ЕС5323.01 / ЕС5323.02**), their
+Contents: two НГМД drive mechanisms (both labeled **ЕС5323.01**), their
 hierarchical **X1/X2** power/signal connectors, intermediate **XS3/XS4**, and
 common external **XS5** carrying the standard Shugart-style FDC signal set
 (S.SEL, RD DATA, WR DATA, STEP, DIR, INDEX, W.PROT, TR.0, SEL0/SEL1, M.ON,
