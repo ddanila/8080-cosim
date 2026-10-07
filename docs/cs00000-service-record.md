@@ -25,32 +25,23 @@ electrolytic capacitors in the CS00000 power supply failed. The computer
 continued operating at the time, but that supply is now out of service pending
 repair and verification.
 
-CS00000 was subsequently tried with the power supply from CS00024. It produced
-a short startup beep, but normally produced no visible display output. On one
-attempt the display contained garbage, establishing that the monitor and at
-least part of the physical video-output path could produce a signal; it does
-not establish correct video timing, framebuffer contents, CPU execution, or
-successful POST. The subsequent ROM-swap control is described below.
+### PSU and ROM-swap controls
 
-This no-display state followed the earlier successful stock-ROM starts. It
-does not by itself prove that the mainboard was damaged by the PSU failure. The prior intermittent silence/continuous-tone starts and
-the failed primary capacitor may be related, but that remains only a hypothesis
-until the supply and board rails/reset/clock behavior are measured.
+| Configuration | Owner-observed result | Evidence limit |
+| --- | --- | --- |
+| CS00024 PSU with stock `#0031` ROMs | Short startup beep, usually no display; one attempt showed garbage | Some video output was possible, but correct timing, framebuffer contents, CPU execution and POST were not established. |
+| CS00024 PSU with known EK37 / RomBios 3.43m / Serial `#0037` pair, 2026-08-22 | Normal startup and correct display; repeated cold starts were all successful at reporting | Run count was not recorded. The swap also reseated sockets and changed the cold-start event. |
 
-### EK37 ROM-swap discriminator
+The no-display state followed earlier successful stock-ROM starts. It does
+not prove mainboard damage from the PSU failure. A relationship between the
+failed capacitor and the earlier silent/continuous-tone starts remains a
+hypothesis pending supply, board-rail, reset and clock measurements.
 
-Later on 2026-08-22, the owner replaced the stock `#0031` pair with the known
-RomBios 3.43m / Serial `#0037` ROM pair. CS00000 then started normally and
-produced a correct display. Subsequent repeated cold starts remained 100%
-successful at the time of reporting; the exact run count was not recorded.
-
-This is strong evidence against a broad post-PSU mainboard or video-output
-failure. It narrows the immediate no-display behavior to the removed `#0031`
-ROM pair, its socket/contact state, or a firmware-specific startup dependency.
-It does not yet prove that either `#0031` device is electrically bad: changing
-the ROMs also reseated the sockets and changed the exact cold-start event. The
-`#0031` pair should be preserved, identified by socket, read repeatedly, and
-compared before any repair conclusion.
+The EK37 control argues against a broad mainboard or video-output failure and
+narrows the immediate symptom to the removed `#0031` pair, socket/contact state
+or a firmware-specific startup dependency. It does not prove either EPROM bad.
+Preserve the pair by socket, read it repeatedly and compare it before assigning
+a repair conclusion.
 
 ## Stock Janet and S21
 
