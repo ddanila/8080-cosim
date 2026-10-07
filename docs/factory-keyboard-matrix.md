@@ -20,8 +20,8 @@ existing copy.
 The drawing numbers its fifteen decoder outputs 1–15; software therefore writes
 factory line minus one to PPI D26 Port A bits PA0–PA3 (`SC0–SC3`).  The six
 horizontal buses are deliberately not binary ordered: factory rows 1–6 reach
-the model's 74148 input bits 4, 3, 5, 1, 0, and 2 respectively.  D1/D2 encode
-those inputs onto `K0–K2`; their diode OR produces active-low `-FK`.  `SHIFT`
+the model's 74148 input bits 4, 3, 5, 1, 0, and 2 respectively. D1/D2 decode the scan lines; D3 encodes the row buses
+onto `K0–K2` and supplies active-low `-FK`. `SHIFT`
 and `CTRL` bypass the matrix encoder and appear separately on X1.
 
 | factory line | model column | row 5 / bit 0 | row 4 / bit 1 | row 6 / bit 2 | row 2 / bit 3 | row 1 / bit 4 | row 3 / bit 5 |
