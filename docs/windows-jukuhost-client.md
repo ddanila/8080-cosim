@@ -48,7 +48,7 @@ This does not replace physical serial or Windows 95 testing.
 
 The [original Windows 95 VM acceptance report](windows-jukuhost-client-win95-acceptance.md)
 records a successful self-test, configuration save, and interactive C12 CP/M
-session after fixing legacy API and serial-write compatibility. Physical
+session. Physical
 Windows serial hardware qualification remains outstanding.
 
 ## First start
