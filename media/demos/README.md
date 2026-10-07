@@ -2,7 +2,8 @@
 
 These GIFs show simulator runs. Their timestamps include host scheduling;
 they are not byte-identical output guarantees or recordings of a physical
-display. Each combines framebuffer changes with timestamped host output.
+display. Each combines framebuffer changes with timestamped host output, using host
+monotonic wall time. The merged timeline is not a speed benchmark.
 The renderer rebases framebuffer timestamps to the first frame and compresses
 framebuffer gaps over 60 seconds to one nominal frame period; host log timestamps
 retain their elapsed times. GIF delays have a 10 ms minimum and are quantized by
@@ -42,9 +43,7 @@ JUKU_DEMO_REALTIME_HZ=20000000 python3 tools/netboot_demo_gifs.py \
 ```
 
 Presentation GIFs should use the default pacing. Accelerated captures are
-validation aids. Both host-log and framebuffer timestamps use host monotonic
-wall time; framebuffer times are then rebased and long gaps compressed as
-described above. Their merged GIF timeline is not a speed benchmark.
+validation aids.
 
 The generator invokes only `build/jukuhost` for protocol serving. Python
 orchestrates the simulator, console commands and rendering. Successful runs keep
