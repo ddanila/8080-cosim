@@ -81,9 +81,10 @@ links both retained sessions.
 `vm80a.v` is die-derived but expresses this block as the arithmetic operation
 `a + 1`; it does not retain transistor-level node names for the bit-12 sum.
 The fitted КР580ВМ80А is instruction-compatible but its physical die layout
-also need not match the source die exactly. The evidence therefore identifies
-the shared incrementer function and missing Boolean term, not a transistor or
-bond wire.
+also need not match the source die exactly. The evidence identifies the shared
+incrementer function. Loss of the retain-high Boolean term reproduces the
+observed cases, but is a functional fault model rather than a proven physical
+mechanism.
 
 D1 replacement restored the clean five-word result from
 `spinoffs/jukuravi/probe_a12_increment.py`. D4, D30, and ROM rework are not
