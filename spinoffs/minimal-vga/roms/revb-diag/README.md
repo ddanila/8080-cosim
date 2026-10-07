@@ -6,6 +6,10 @@ helper until ROM integrity, RAM data and RAM address tests pass. It then tests
 D57, emits a tone, initializes the real 8251, configures PPI/PIC, writes a
 visible framebuffer stripe, and finishes at retained code `FFh` with TTL detail.
 
+The RAM tests write and verify fixed `A5h`/`5Ah` patterns, then each location's
+low address byte, over `4000h–D6FFh`. The address pattern does not distinguish
+aliases with the same low byte; a PASS does not prove every address line.
+
 Rebuild the complete programming set from the repository root:
 
 ```sh
