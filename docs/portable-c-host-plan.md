@@ -28,6 +28,24 @@ The Windows product is the GUI described in
 - Configuration and payload identities are validated before starting a session.
   See [jukuhost-config.md](jukuhost-config.md).
 
+## Runner exit codes
+
+The current C runner declares these exit codes in
+[`jukuhost_runner.h`](../host/include/jukuhost_runner.h):
+
+| Code | Meaning |
+| ---: | --- |
+| `0` | Success or clean stop |
+| `2` | Command/configuration error |
+| `3` | Missing or invalid artifact |
+| `4` | Serial failure |
+| `5` | Protocol or timeout failure |
+| `6` | Unsafe media state or media failure |
+| `7` | Required log/capture evidence failure |
+
+Inspect the log for the failing operation; a clean stop does not independently
+prove target diagnostics or physical acceptance.
+
 ## Platform qualification
 
 | Platform | Current evidence | Remaining acceptance |

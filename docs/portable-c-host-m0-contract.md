@@ -46,12 +46,8 @@ The C host must reproduce all behavior used by the accepted operational path:
   safety, host replacement and reconnect, clean shutdown, human-readable logs,
   counters, and optional raw byte capture.
 
-The production C runtime admits JF15 for stock-assisted compatibility,
-JF16 for direct network-ROM boot, and JF17 for stock reset recovery.
-Fastboot V1–V14 remain historical builders and regression inputs. Stock reset
-recovery uses JF17 at 9,600/8O1.
-Artifact validation requires exact magic, layout, length, metadata and CRCs.
-See the [stock recovery guide](janet-fastboot.md) for current operation.
+Current admitted Fastboot versions and artifact validation are documented in
+the [stock recovery guide](janet-fastboot.md).
 
 ## Observable result contract
 
@@ -68,21 +64,8 @@ decodable when the final record is truncated. The C decoder reports
 `JH_NEED_MORE` for that incomplete record; the current
 [JSON converter](portable-c-host-implementation.md#capture-conversion) rejects
 the truncated capture rather than exporting its complete prefix.
-The current C runner declares these exit codes in
-[`jukuhost_runner.h`](../host/include/jukuhost_runner.h):
-
-| Code | Meaning |
-| ---: | --- |
-| `0` | Success or clean stop |
-| `2` | Command/configuration error |
-| `3` | Missing or invalid artifact |
-| `4` | Serial failure |
-| `5` | Protocol or timeout failure |
-| `6` | Unsafe media state or media failure |
-| `7` | Required log/capture evidence failure |
-
-Inspect the log for the failing operation; a clean stop does not independently
-prove target diagnostics or physical acceptance.
+Current runner exit codes are maintained in the
+[production contract](portable-c-host-plan.md#runner-exit-codes).
 
 ## Baseline verification
 
