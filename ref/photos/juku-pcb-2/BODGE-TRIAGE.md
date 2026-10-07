@@ -32,7 +32,7 @@ two assemblies must not be mixed.
 | D84-D91 | К565РУ5 | populated RAM bank on the `.158/.009` target |
 | D92 | К555ЛЕ4 | memory/timing support logic |
 | D93 | КР1818ВГ93 | FDC |
-| D94 | К155РЕ3, program `.092` | validated physical table adopted from three independent matching reads; owner continuity maps R87/R88/R89 as the +5 V pull-ups on D94.4/D94.3/D94.2, while R8 2 kΩ is the pull-up-only D94.1 branch. Full-resolution visual inspection closes D94.5 as NC; D93.1 alone owns the visible open stub. Owner continuity and exact `.009` source review close D4-D7 as NC; those outputs are invariant released in the adopted table. |
+| D94 | К155РЕ3, program `.092` | validated physical table adopted from three independent matching reads; R87/R88/R89 pull up D94.4/D94.3/D94.2. The measured D94.1 branch includes R8 2 kΩ; its source-drawn WREQ continuation remains physically unverified. D4-D7 are NC and invariant released; D93.1 owns the visible open stub. |
 | D95, D101 | К555КП12 | FDC quadrant multiplexers |
 | D97, D99, D102 | К155АГ3 | FDC quadrant one-shots; owner photo shows the 8901 packages |
 | D100 | КР580ВА87 | FDC drive-output buffer; D93 connects directly to DB0–DB7 |
@@ -62,9 +62,13 @@ The factory symbol draws only D0/pin 12 on the RT4 output side; package outputs
 pins 9-11 have no destination and are explicit no-connects in the board model.
 
 The full-resolution sheet also proves three D2 address leads: `VIDEO CYCLE` to
-A3/pin 4, `-XACK` to A5/pin 2, and `-WREQ` to A7/pin 15. It shows D105's other
-two sections as `(1,2)->3` (D13.4 and MWR inputs) and `(12,13)->11` (tied-input
-MEMW inverter). The paired board photographs register A0/A1/A2/A4/A6 pad
+A3/pin 4, `-XACK` to A5/pin 2, and `-WREQ` to A7/pin 15. D105's other
+sections are `(1,2)->3` and `(12,13)->11` (tied-input MEMW inverter).
+Owner continuity and the adopted model place D105.1 on D7.8/D6.15
+`IO_CYCLE_H`, D105.2 on D13.4, and D105.3 on qualified peripheral `/WR`.
+The source-drawn D1.24 WAIT-to-D105.1 path remains a separate continuity
+question; see [the measurement shortlist](../../../docs/owner-measurement-shortlist.md).
+The paired board photographs register A0/A1/A2/A4/A6 pad
 locations but do not close their remote nets.
 
 The three photographed К155АГ3 positions require 16-pin DIP footprints. This is consistent
