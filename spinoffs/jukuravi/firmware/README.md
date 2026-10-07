@@ -88,6 +88,8 @@ For memory, the first three bytes must be zero; the fourth is a checksum,
 not a failure flag. These wrappers overwrite their result block and exercise
 the writable stack. The memory wrapper temporarily modifies the tested page;
 do not run it over live code, stack or data that another actor may change.
+Run the CPU wrapper with interrupts disabled throughout: its INX SP check
+temporarily selects `9A00h` as SP. The wrapper does not change interrupt state.
 
 From the repository root, initialize the shared sources and verify the
 committed diagnostic binaries. The build uses the pinned zmac source in Intel
