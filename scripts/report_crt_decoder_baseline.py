@@ -118,7 +118,7 @@ def main() -> int:
             f"run {ci_run['id']} at `{ci_run['head_sha'][:8]}`: full build + CTest + synth_ntsc",
         ),
         (
-            "WP1 fork tip and bounded commits are pinned",
+            "WP1 recorded revisions and artifact digest syntax match",
             re.fullmatch(r"[0-9a-f]{40}", wp1["fork_head_commit"]) is not None
             and wp1["fork_head_commit"] == wp1["commits"]["documented_contract"]
             and wp1["fork_head_commit"] in plan
@@ -130,7 +130,7 @@ def main() -> int:
                 re.fullmatch(r"[0-9a-f]{64}", digest) is not None
                 for digest in wp1["artifact_sha256"].values()
             ),
-            f"five bounded commits ending at `{wp1['fork_head_commit'][:8]}`",
+            f"recorded head `{wp1['fork_head_commit'][:8]}` matches plan; commit and digest formats checked",
         ),
         (
             "WP1 float32 source contract is explicit",
@@ -168,7 +168,7 @@ def main() -> int:
             f"run {wp1_ci['id']} at `{wp1_ci['head_sha'][:8]}`: full build + 3 CTests + synth_ntsc",
         ),
         (
-            "WP2 profile receiver tip and artifacts are pinned",
+            "WP2 recorded revisions and artifact digest syntax match",
             wp2["fork_head_commit"] == wp2["commits"]["documented_contract"]
             and wp2["fork_head_commit"] in plan
             and all(
@@ -179,7 +179,7 @@ def main() -> int:
                 re.fullmatch(r"[0-9a-f]{64}", digest) is not None
                 for digest in wp2["artifact_sha256"].values()
             ),
-            f"five bounded commits ending at `{wp2['fork_head_commit'][:8]}`",
+            f"recorded head `{wp2['fork_head_commit'][:8]}` matches plan; commit and digest formats checked",
         ),
         (
             "WP2 independent non-NTSC fixture passes exactly",

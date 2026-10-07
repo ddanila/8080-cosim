@@ -34,11 +34,11 @@ exists in local Git history; a shallow checkout may skip that check.
 | Direct synthetic NTSC result is internally complete | PASS | 29 frames; 7/7 bars |
 | Fork README provenance and deterministic-fixture policy are committed | PASS | fork `175cb65d`; upstream remained `6cce72d4` |
 | Fork Linux CI builds RF/IQ and passes both test entry points | PASS | run 29885055666 at `feec5d7a`: full build + CTest + synth_ntsc |
-| WP1 fork tip and bounded commits are pinned | PASS | five bounded commits ending at `d383beb3` |
+| WP1 recorded revisions and artifact digest syntax match | PASS | recorded head `d383beb3` matches plan; commit and digest formats checked |
 | WP1 float32 source contract is explicit | PASS | LE f32; explicit rate; polarity/gain/offset; structural and finite checks |
 | WP1 source and generated end-to-end tests pass | PASS | 999093 samples; 5/5 bars; 5 CLI failures |
 | WP1 CI keeps the full RF/IQ route and all CTests green | PASS | run 29886015187 at `d383beb3`: full build + 3 CTests + synth_ntsc |
-| WP2 profile receiver tip and artifacts are pinned | PASS | five bounded commits ending at `10bfa4b9` |
+| WP2 recorded revisions and artifact digest syntax match | PASS | recorded head `10bfa4b9` matches plan; commit and digest formats checked |
 | WP2 independent non-NTSC fixture passes exactly | PASS | 768000 samples; 12500 Hz; 5/5 bars |
 | WP2 recorded telemetry has lock and timing bounds | PASS | recorded line/frame lock; bounds contain 12.5 kHz, 62.5 Hz and 6 us; level fields are not checked here |
 | WP2 negative fixtures distinguish horizontal and frame loss | PASS | five generated failures; malformed vsync uniquely retains horizontal lock |
