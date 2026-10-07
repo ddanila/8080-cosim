@@ -53,11 +53,8 @@ D105 two visible ЛА3 sections are `(9,10)->8` and `(4,5)->6`. Direct owner
 continuity supersedes the false D2.12-to-D105.9 interpretation: D2.12 feeds
 D30.2/R6 `READY_D`, while CPU D1.17 `DBIN` and pulled-up edge `H` feed
 D105.9/.10; the second NAND drives D105.6 to D5.4. D2 V1/V2 are tied low.
-D2 pad identities remain registered on both faces. The earlier claim that
-paired D2/D4 solder fits close D2 pins 1/3/5/6/7 to D4 pins 1/3/5/6/7 was
-withdrawn after correcting the D4 contact columns and row count. The five
-address routes remain modeled but lack a complete photo or exact `.009` source
-chase; see `d2-d4-column-row-audit.json`. Repeated accepted captures preserve the physical `.037` table;
+D2 pad identities remain registered on both faces. The five address routes
+remain modeled but lack a complete photo or exact `.009` source chase; see `d2-d4-column-row-audit.json`. Repeated accepted captures preserve the physical `.037` table;
 [the capture manifest](../../physical-proms/validated/d2_037.dump.json)
 identifies the six independent reads and their aliases.
 The factory symbol draws only D0/pin 12 on the RT4 output side; package outputs
