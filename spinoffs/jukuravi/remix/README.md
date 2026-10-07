@@ -70,7 +70,7 @@ and copied T36 bytes.
 | halt helpers | `06E8-0748` | ROM `2922h` | `06E8h` | 96 |
 | refresh + frames | `07A9-0810` | ROM `2982h` | `07A9h` | 103 |
 | CRC table | `0900-0A00` | ROM `3B18h` | `0900h` | 256 |
-| refresh handler | `1070-1113` | ROM `3C18h` | `1070h` | 67 |
+| refresh handler | `1070-1113` | ROM `3C18h` | `1070h` | 163 |
 
 Ekta4402 stores the CRC table at `3B27h` and refresh handler at `3C27h`;
 the first three segments remain at the addresses above. Its `J` handler is
