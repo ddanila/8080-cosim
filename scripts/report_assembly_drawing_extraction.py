@@ -231,11 +231,9 @@ def main() -> int:
             "sheet 1 circuit; sheets 4-5 cable table; owner photos; `kicad/check_x3_offboard_landings.py`",
         ),
         (
-            "X4 first five legacy circuit exits are explicitly dispositioned",
+            "X4 legacy assignments are excluded from the current FDC map",
             marker(
                 read(WIRE_TABLE_MD),
-                "1 / 401", "D28.8", "2 / 402", "D28.10", "3 / 403", "D28.12",
-                "4 / 404", "D28.4", "5 / 405", "D28.2",
                 "promotes all 23 board-edge landings", "X4.6-X4.23", "explicit boundaries",
                 "historical", "not the current FDC connector assignments", "X4.1",
             ),

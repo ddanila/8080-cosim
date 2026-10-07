@@ -53,7 +53,7 @@ manufacturing holds.
 | X8 is schematic-only and its six-conductor cable uses PCB landings A59-A62 | PASS | sheet 2 X8 power-cable table; `kicad/check_x8_offboard_landings.py` |
 | X6 is bracket-mounted and its 12 cm cable uses surface landings A:3/A:4 | PASS | sheet 3 cable table; two owner-photo angles; `kicad/check_x6_offboard_landings.py` |
 | X3 is schematic-only and its cable uses photo-fitted PCB landings A21-A32 | PASS | sheet 1 circuit; sheets 4-5 cable table; owner photos; `kicad/check_x3_offboard_landings.py` |
-| X4 first five legacy circuit exits are explicitly dispositioned | PASS | `.006` tape exits are historical; exact `.009` FDC assignments are separate and physical continuity remains open |
+| X4 legacy assignments are excluded from the current FDC map | PASS | `.006` tape exits are historical; exact `.009` FDC assignments are separate and physical continuity remains open |
 | X4 bracket harness has all 23 physical board landings | PASS | `.009` sheets4-5 wires27-49; `kicad/check_x4_offboard_landings.py` |
 | D26 PC2-PC6 retain the five recovered target-revision FDC control paths | PASS | recovered `.009` sheets 1/3 plus pinned PPI Port-C roles |
 | Connection-table sheets 2-6 are adopted and transcribed | PASS | `ref/schematics/dgsh5_109_009_sb_sheets2-6.pdf`; `ref/schematics/dgsh5-109-009-sb-wire-table.md` |

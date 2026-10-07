@@ -193,21 +193,10 @@ So X3 (12 lines) and X4 (23 lines) are bracket-mounted connectors wired to
 numbered board pads rather than board-edge-soldered; this is direct evidence
 for the connector-harness geometry items in `PLAN.md`.
 
-The older `.006` electrical sheet provides a partial circuit cross-reference
-for five X4 contacts through its explicit exit codes. The open-collector
-К155ЛН3 D28 outputs are drawn as follows:
-
-| X4 contact / exit code | Signal | `.006` source pin |
-| ---: | --- | --- |
-| 1 / 401 | `-FF` | D28.8 |
-| 2 / 402 | `-REC` | D28.10 |
-| 3 / 403 | `-PLAY` | D28.12 |
-| 4 / 404 | `-RN` | D28.4 |
-| 5 / 405 | `-STOP` | D28.2 |
-
 The `.009` cable table promotes all 23 board-edge landings and their direct
-wires to the bracket connector. The `.006` tape exits above are historical
-revision evidence, not the current FDC connector assignments. Exact `.009`
+wires to the bracket connector. The older `.006` tape assignments are
+historical revision evidence, not the current FDC connector assignments.
+Use the exact `.009` electrical revision for this target. Its
 sheet 3 assigns X4.6-X4.23 to returns, supplies and FDC drive signals as recorded
 in [the FDC wire map](fdc-x4-ngmd-wire-map.md). X4.1 is retained as an NC harness
 contact; X4.2–.5 remain explicit boundaries. Source assignments do not prove
