@@ -35,12 +35,6 @@ retries.
 | [Reattach](sessions/macos-t32-attach2/20260806T112113.469673Z.json) | Control-only attach to the resident loader after cold boot |
 | [Smoke upload](sessions/macos-smoke/20260806T112418.835712Z.json) | Verified 134-byte `smoke-4000.bin`, CALL/RET with `A=0Ch`, and `534D4F4B00` plus `55` fill at `4100h`; zero store retries |
 
-The earlier [no-traffic attempt](sessions/macos-first-contact/20260806T094437.578482Z.json)
-and [identity-only attempt](sessions/macos-t32-attach/20260806T111703.706101Z.json)
-timed out waiting for loader idle reset without transmitting. The latter
-received the T32 identity frame; neither capture establishes the board’s final
-handshake state.
-
 `--attach-loader` requires a resident loader; its implementation waits for
 loader request tokens and does not perform the cold diagnostic banner
 handshake. With a cold T32 diagnostic ROM, complete a full session before
