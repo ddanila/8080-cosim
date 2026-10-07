@@ -69,15 +69,13 @@ and the private post-run A: image. Their raw-capture hashes are:
 - reconnect: `17667cc1f629b8b07fe1106d58a65f2d1bea38c02e355334e7a06d4aaa7315ba`;
 - reset: `126a799cac4c393e612958b868d9ba04917de646df8ac8256bc7cadb2985a51f`.
 
-All three directories passed the independent physical-evidence auditor. The recorded
-conversion reproduced every `requests.jsonl` byte for byte and boot evidence
-semantically apart from the conversion timestamp. The current converter adds
-`operation_name`; all original request fields still match the retained JSON. The modelable Linux PTY and complete C8 simulator paths
-also passed in the recorded qualification: N3/N4, native B:, duplicate handling, journal recovery, capture
-events, C8 V16 boot, `DIR`, missed-ready recovery, target reset and host
-replacement. Operator power latency and the physical UART's absent final
-completion byte remain correctly classified as physical observations rather
-than simulator facts.
+All three directories passed the independent physical-evidence auditor. The
+recorded conversion reproduced every `requests.jsonl` byte for byte and boot
+evidence semantically apart from the conversion timestamp. The current converter
+adds `operation_name`; all original request fields still match the retained JSON.
+The Linux PTY and simulator qualification is described in
+[the M2 record](portable-c-host-m2-acceptance.md). Operator power latency and the
+absent final completion byte are physical observations.
 
 ## Decision
 

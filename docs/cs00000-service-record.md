@@ -110,14 +110,10 @@ and comparison tasks:
 
 - Do not use the failed CS00000 PSU until both parallel primary capacitors and
   the affected primary-side circuitry have been repaired and verified.
-- With the known-working CS00024 PSU, record the exact beep sequence and check
-  the CS00000 supply rails at the board. The successful EK37 start lowers the
-  priority of broad reset/clock/video diagnosis unless the symptom returns with
-  EK37.
+- With the known-working CS00024 PSU, record the beep sequence and board rails
+  if the startup symptom returns.
 - Preserve and repeatedly dump the removed `#0031` D15/D16 pair, then
   inspect/clean its socket contacts before a controlled comparison run. The
-  repeated EK37 cold-start control is complete and remained fully stable.
+  reported EK37 cold starts were successful, but their count was not recorded.
 - Characterize the intermittent silent/continuous-tone cold-start symptom as
   a separate power/reset/clock investigation.
-- Do not replace D11 based on the superseded suspicion: local D11 diagnostics,
-  stock Janet, 19,200 Fastboot reception, and sustained NetDisk all passed.
