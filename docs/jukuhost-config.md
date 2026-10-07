@@ -172,8 +172,9 @@ Drive A supports three explicit policies:
 Snapshot mode is the normal writable deployment policy because the admitted
 base is never modified. `sha256` identifies the base in snapshot mode and the
 served file in the other modes. Direct-mode writes do not update the INI identity;
-a changed image will fail its original hash on the next launch. A resumed
-snapshot is checked for size, not equality with the base hash, but still
+a changed image will fail its original hash on the next launch. Identity checks
+precede journal recovery, so an outstanding journal does not bypass that failure.
+A resumed snapshot is checked for size, not equality with the base hash, but still
 requires the original base to be available and pass its identity check.
 
 The `.jhj` journal restores the previous record for an incomplete transaction or the new record for a completed one;
