@@ -35,9 +35,10 @@ are in [windows-jukuhost-client.md](windows-jukuhost-client.md).
 
 ## Verified scope
 
-At startup, a missing INI triggers recovery from a parseable `.tmp` file,
-then a parseable `.bak` file, beside that INI. If neither can be restored,
-the GUI starts with defaults. An existing invalid INI reports an error;
+At startup, a missing INI selects a parseable `.tmp` file, otherwise a
+parseable `.bak` file, beside that INI. If no candidate is found or moving
+the selected candidate fails, the GUI starts with defaults; a failed move
+does not retry the other candidate. An existing invalid INI reports an error;
 it does not trigger backup recovery. Saving rewrites the configuration,
 so comments and original formatting are not retained.
 
