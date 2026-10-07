@@ -72,7 +72,7 @@ Existing identifiers remain for references in source and qualification reports.
 | D1.8 | Normal UART clock comes from PIT channel 0: 4.9152 MHz divided by four, then programmed count four. Direct `/16` and `/32` are recovery paths, selected separately. |
 | D1.9 | Use the first-article bench template for measured acceptance, not a session work log. |
 | D1.10 | Tool locators live in `kicad/revb/env.sh`; inspect skips and the actual artifact's tool-version record. |
-| D1.11 | Independent structural LVS scopes Memory, I/O and Video. CPU/backplane connectivity also needs direct connector and completeness checks. |
+| D1.11 / D1.20 | All cards use shared generation and routing verification. Independent structural LVS covers Memory, I/O and Video; CPU and Backplane use direct connector and completeness checks. |
 | D1.12 | Board connector nets must agree with `cards.json` roles and `bus-pinout.json`. |
 | D1.13 | Generator owns placement and assembly silk; every physical footprint has reference plus value/role under the pinned GOST rules. |
 | D1.14 | All five release sources need total DRC 0/0, correct package contents and the encoded vendor-profile checks. |
@@ -81,7 +81,6 @@ Existing identifiers remain for references in source and qualification reports.
 | D1.17 | Any later CPU buffer must enable data drive only on an actual read/write cycle, excluding refresh; current CPU is unbuffered. |
 | D1.18 | Non-bus internal nets need at least two endpoints or an explicit tie/NC/DNP classification; bus continuation is checked across cards. |
 | D1.19 | Validate control terms in the behavioral twin, independent pin checks and applicable firmware oracles before release. |
-| D1.20 | All cards use shared generation and routing verification. Structural LVS covers Memory, I/O and Video; CPU and Backplane use direct connectivity checks. |
 | D1.21 | First-article CPU connects directly to the bus. Buffering requires a later qualified revision. |
 | D1.22 | LVS pinmaps derive from generator chip definitions; mapped-chip checks do not replace connector/passive checks. |
 | D1.23 | Memory outline is 100×60 mm; connector positions and package orientation are machine-checked. |
