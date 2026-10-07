@@ -471,7 +471,8 @@ practical in the frame-rate part of the 8080 player: `1xx`/`2xx` pitch slide,
 absolute volume, and `Fxx` speed.  It contains no arpeggio, vibrato, tremolo,
 pattern jump, or pattern break. Speed changes are compiled into row lengths;
 the `95B` sample offset selects a pre-trimmed PCM descriptor. Pitch slide,
-portamento, volume slide and absolute volume use the ABI-v2 state described above.
+portamento, volume slide and absolute volume use the standalone MOD-effect
+state described in [the row format](#compiled-row-format).
 
 The common synthesized kick, snare, and hat stand in for source samples 1, 2,
 and 13.  Two pieces of real module PCM also fit:
@@ -489,7 +490,7 @@ through `97BEh`, leaving 1,087 bytes before the renderer/test stack at `9BFEh`.
 
 The one-minute image contains 436 compiled rows and 3,000 nominal 50 Hz
 frames.  The full image contains 2,880 stored rows, expands through its order
-list to 25,728 frames (8:34.56 nominal).  ABI-v2 frame work is heavier than the
+list to 25,728 frames (8:34.56 nominal). MOD-effect frame work is heavier than the
 original player, so this score uses 139 samples per frame and phase increments
 calibrated for a 6.94 kHz effective rate.  The one-minute image completes in
 60.266 seconds and the full image in 8:36.10 under the 1.70 MHz cycle model,
