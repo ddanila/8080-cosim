@@ -24,39 +24,25 @@ four-operator synthesis are outside the physical capabilities of this player.
 
 ## Governing feasibility rule
 
-This is a capability ladder, not an all-or-nothing specification.  The goal is
-to implement the largest useful, truthful subset that fits the measured Juku
-hardware budget.  Failure of an advanced feature must not discard improvements
-from an earlier, affordable stage.
+Implement independently useful stages that fit the measured hardware budget.
+Each feature may become:
 
-Every proposed feature has four legitimate outcomes:
+1. **Target implementation:** compact 8080 code passing the cycle, sample-rate,
+   RAM, file-size and physical-listening gates.
+2. **Host-side reduction:** accurate host analysis emitted as a cheaper
+   approximation, such as fitted envelopes or sparse pitch changes.
+3. **Perceptual omission:** explicitly report behavior lost to three pulse
+   voices, 4-bit levels or the available sample rate.
+4. **Unsupported:** reject the feature or retain the previous conversion when
+   no correct, useful approximation fits.
 
-1. **Target implementation:** run a compact form on the 8080 after it passes
-   all cycle, sample-rate, RAM, file-size, and physical-listening gates.
-2. **Host-side reduction:** analyze the exact OPL behavior on the host and emit
-   a cheaper approximation, such as fitted envelope segments or sparse pitch
-   changes.
-3. **Perceptual omission:** omit behavior which cannot survive three pulse
-   voices, 4-bit level quantization, or the available sample rate in a useful
-   way.  The omission must be reported, not silently misrepresented.
-4. **Unsupported:** reject or retain the old conversion when neither a correct
-   nor a musically useful approximation fits the hardware budget.
+Proceed from host register timing, key transitions, pitch and voice grouping
+through envelopes/key-off tails, tremolo, then vibrato and held-note pitch
+changes. Target effects share one 10% sample-rate budget. Optional timbral,
+four-operator and rhythm reductions require evidence that they add value.
 
-Implementation therefore proceeds in independently useful layers:
-
-- first, correct register timing, key transitions, pitch, and logical voice
-  grouping on the host;
-- next, affordable attack/decay/sustain/release and key-off tails;
-- then tremolo, if audible after 4-bit quantization and inside the shared 10%
-  sample-rate budget;
-- then vibrato and held-note pitch changes under the same combined budget;
-- finally, optional timbral, four-operator, and rhythm approximations only
-  where measurements show that they add value.
-
-There is no requirement that all layers succeed.  At every exit gate the
-current passing subset must remain buildable, testable, and usable.  A failed
-experiment is recorded as a limit of the platform and the plan continues with
-other independent features where possible.
+At each gate, keep the passing subset buildable, testable and usable. Record a
+failed experiment's platform limit and continue with independent features.
 
 The immediate motivation is the failure observed in DOOM's “The Imp's Song.”
 Several layered, evolving OPL voices became a long constant square tone when
