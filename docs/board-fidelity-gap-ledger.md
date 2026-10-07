@@ -41,13 +41,14 @@ python3 scripts/report_board_fidelity_gap_ledger.py
 
 | Category | Chip gaps | Net gaps |
 | --- | ---: | ---: |
-| FDC owner-continuity | 2 | 7 |
+| FDC owner-continuity | 2 | 6 |
 | PROM/decode | 0 | 1 |
-| logic/source | 29 | 37 |
+| clock/I/O | 0 | 1 |
+| logic/source | 29 | 27 |
 | memory/timing | 0 | 2 |
 | placement/value | 40 | 0 |
-| sound/analog | 0 | 2 |
-| video/analog | 0 | 6 |
+| power | 0 | 13 |
+| video/analog | 0 | 5 |
 
 ## Chip-Level Gaps
 
@@ -193,18 +194,18 @@ same fidelity ledger as the chip provenance gaps.
 
 | Net | Category | Endpoints | Source risk |
 | --- | --- | --- | --- |
-| `C10_1_BOUNDARY` | logic/source | `C10.1` | .009 C10 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 RF_RAIL assignment revision-superseded |
-| `C10_2_BOUNDARY` | logic/source | `C10.2` | .009 C10 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 VT4-base assignment revision-superseded |
-| `C11_1_BOUNDARY` | logic/source | `C11.1` | .009 C11 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 RF_RAIL assignment revision-superseded |
-| `C11_2_BOUNDARY` | logic/source | `C11.2` | .009 C11 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 RF tank assignment revision-superseded |
-| `C12_1_BOUNDARY` | logic/source | `C12.1` | .009 C12 bypass and later July owner photo prove a +5 V/GND lap-lead pair at the factory site (D100.20/D94.8). This provisional replica through-hole pad1 has... |
-| `C12_2_BOUNDARY` | logic/source | `C12.2` | .009 C12 bypass and later July owner photo prove a +5 V/GND lap-lead pair at the factory site (D100.20/D94.8). This provisional replica through-hole pad2 has... |
-| `C15_1_BOUNDARY` | logic/source | `C15.1` | .009 C15 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 VT4-collector assignment revision-superseded |
-| `C15_2_BOUNDARY` | logic/source | `C15.2` | .009 C15 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 VT4-emitter assignment revision-superseded |
-| `C94_1_BOUNDARY` | video/analog | `C94.1` | .009 sheet-1 supply detail proves C94 is a +5 V/GND bypass pair; May and July owner views show bare board at its locally projected centre, but actual C94 hol... |
-| `C94_2_BOUNDARY` | video/analog | `C94.2` | .009 sheet-1 supply detail proves C94 is a +5 V/GND bypass pair; May and July owner views show bare board at its locally projected centre, but actual C94 hol... |
-| `C9_1_BOUNDARY` | logic/source | `C9.1` | .009 C9 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 RF ground assignment revision-superseded |
-| `C9_2_BOUNDARY` | logic/source | `C9.2` | .009 C9 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 RF_RAIL assignment revision-superseded |
+| `C10_1_BOUNDARY` | power | `C10.1` | .009 C10 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 RF_RAIL assignment revision-superseded |
+| `C10_2_BOUNDARY` | power | `C10.2` | .009 C10 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 VT4-base assignment revision-superseded |
+| `C11_1_BOUNDARY` | power | `C11.1` | .009 C11 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 RF_RAIL assignment revision-superseded |
+| `C11_2_BOUNDARY` | power | `C11.2` | .009 C11 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 RF tank assignment revision-superseded |
+| `C12_1_BOUNDARY` | power | `C12.1` | .009 C12 bypass and later July owner photo prove a +5 V/GND lap-lead pair at the factory site (D100.20/D94.8). This provisional replica through-hole pad1 has... |
+| `C12_2_BOUNDARY` | power | `C12.2` | .009 C12 bypass and later July owner photo prove a +5 V/GND lap-lead pair at the factory site (D100.20/D94.8). This provisional replica through-hole pad2 has... |
+| `C15_1_BOUNDARY` | power | `C15.1` | .009 C15 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 VT4-collector assignment revision-superseded |
+| `C15_2_BOUNDARY` | power | `C15.2` | .009 C15 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 VT4-emitter assignment revision-superseded |
+| `C94_1_BOUNDARY` | power | `C94.1` | .009 sheet-1 supply detail proves C94 is a +5 V/GND bypass pair; May and July owner views show bare board at its locally projected centre, but actual C94 hol... |
+| `C94_2_BOUNDARY` | power | `C94.2` | .009 sheet-1 supply detail proves C94 is a +5 V/GND bypass pair; May and July owner views show bare board at its locally projected centre, but actual C94 hol... |
+| `C9_1_BOUNDARY` | power | `C9.1` | .009 C9 bypass has source-proved +5 V/GND pair; pin1 rail and physical copper pending; .006 RF ground assignment revision-superseded |
+| `C9_2_BOUNDARY` | power | `C9.2` | .009 C9 bypass has source-proved +5 V/GND pair; pin2 rail and physical copper pending; .006 RF_RAIL assignment revision-superseded |
 | `CPU_WAIT_STATUS` | logic/source | `D1.24` | exact .009 full-sheet photo 101754468 traces D1.24 WAIT through lower filled junction and fold to D105.1; older .006 scan corroborates. Owner continuity 2026... |
 | `D100_CONTROL_SHEET1_BOUNDARY` | logic/source | `D100.11` | Exact .009 Э3 sheet-3 detail PXL_20260718_101641055.jpg: D100 T/pin11 runs left to its own quoted sheet-1 continuation; it crosses nearby descending conducto... |
 | `D101_D02_R92_R99` | FDC owner-continuity | `D101.3, D101.4, D101.5, D101.6, R92.1, R99.2, ... (+1)` | July-2026 calibrated component photo PXL_20260710_200418174.jpg shows uninterrupted target-board copper joining D101 К555КП12 pin4 D02 to R99.2 and R92.1. Ex... |
@@ -217,7 +218,7 @@ same fidelity ledger as the chip provenance gaps.
 | `D34_SYNC` | video/analog | `D34.8, R62.1` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible: D34 sect(9,10->8) = SYNC XOR out |
 | `D36_CAS_IN` | memory/timing | `D36.12, D36.13` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13 (D92/D39/D52/D53 RAM-strobe cluster): D36 high-drive NAND inputs pins12/13 are visibly tied and o... |
 | `D58_STB_TAG5` | logic/source | `D58.11` | scan sheet-2: D58 ИР82 strobe pin 11 runs continuously left to timing-bundle conductor tag 5; unique remote source not established |
-| `D59_O10_TAG10` | sound/analog | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10... |
+| `D59_O10_TAG10` | clock/I/O | `D59.10` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: D59 inverter output pin10 descends continuously to its local open-circle timing-bundle marker 10... |
 | `D94_D0_BOUNDARY` | PROM/decode | `D94.1, R8.1` | exact .009 E3 sheet 1 PXL_20260718_101817644.jpg draws R8=2k from +5 V to -WREQ; sheet 3 PXL_20260718_101633062.jpg traces D94.1 through the top bundle to WR... |
 | `D99_B2_SHEET1_BOUNDARY` | FDC owner-continuity | `D99.10, D96.13` | exact .009 Э3 sheet-3 photo PXL_20260718_101641055.jpg joins D99 B2/pin10 to D96 section-2 active-low clear/pin13 at a marked junction; their shared conducto... |
 | `D99_Q2N_BOUNDARY` | FDC owner-continuity | `D99.12, D100.9` | Exact .009 Э3 sheet-3 detail PXL_20260718_101641055.jpg: D99 section-2 Q_N/pin12 descends and turns left to D100 OE_N/pin9. This line crosses D100 T/pin11 wi... |
@@ -227,7 +228,7 @@ same fidelity ledger as the chip provenance gaps.
 | `INHIB_STATUS_BOUNDARY` | memory/timing | `D7.5, D29.3` | Exact .009 sheet-1 crop PXL_20260718_101813438.jpg (850,2900)-(1850,3650): D7 NAND input pin5 joins D29 physical input pin3 at a filled T junction. The share... |
 | `INT4_RAW` | logic/source | `X1.114C, D12.6, D12.7` | Exact .009 sheet-1 PXL_20260718_101817644.jpg: -INT4 at X1.114C branches to both D12 LA18 gate inputs pins6 and7; D12.5 open-collector output reaches X2.214/... |
 | `KBD_CONTRDAT` | logic/source | `D26.22, X9.9, A50.1` | Exact .009 sheet-1 detail PXL_20260718_101824181.MP.jpg sends D26.22/PB4 to E8.3 and E8.4 to CONTRDAT continuation 909; .009 assembly and owner front photo s... |
-| `P5V` | FDC owner-continuity | `R78.2, D10.16, D1.20, D4.11, D107.11, D44.4, ... (+223)` | scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail... |
+| `P5V` | power | `R78.2, D10.16, D1.20, D4.11, D107.11, D44.4, ... (+223)` | scan; sheet-1 arrow-A rail ties address-buffer direction pins D4.11/D107.11 and PIC master strap D10.16 high; native sheet-2 power corner continues +5 V rail... |
 | `PHI1_D35` | logic/source | `D35.10, W7.2, R37.2` | factory wire А:7 D35 clock-source-side copper island D35.10 reaches the candidate A7B plated through-joint under mastic; the W7 insulated-wire termination re... |
 | `PHI2_D35` | logic/source | `D35.12, W14.2, R36.2` | factory wire А:14 D35 clock-source-side copper island D35.12 reaches the candidate A14B plated through-joint under mastic; the W14 insulated-wire termination... |
 | `R20_RETURN_SOURCE_HOLD` | logic/source | `R20.2` | exact .009 sheet-1 detail PXL_20260718_101801729.jpg plus full-sheet 101754468: R20 far symbol lead descends, crosses D50.5/R29 without a junction, and conti... |
@@ -246,7 +247,7 @@ same fidelity ledger as the chip provenance gaps.
 | `TIMING_TAG17` | logic/source | `D36.2, D41.6` | scan sheet-2 full-resolution (D41 control-bundle crop): numbered timing rail 17 has direct junctions to D41 load pin6 and D36 second NAND input pin2; the uni... |
 | `TIMING_TAG2` | logic/source | `D38.4, D34.4` | Exact .009 sheet-2 PXL_20260718_101911242.jpg draws D34.4 upward to top conductor 2; overlapping exact .009 PXL_20260718_101908284.jpg crop (950,3200)-(2350,... |
 | `VT2_BASE` | video/analog | `R62.2, R63.2, R64.1, VT2.3` | exact .009 E3 sheet-2 frame PXL_20260718_101927794.jpg; analog boundary, sim-invisible |
-| `X6_A3_BOUNDARY` | sound/analog | `AX603.1, X6.1` | Factory .009 assembly wire table item 151 proves A:3 to bracket X6.1; independent system drawing ДГШ3.031.011 Э6 identifies X6 as the display cable; exact .0... |
+| `X6_A3_BOUNDARY` | video/analog | `AX603.1, X6.1` | Factory .009 assembly wire table item 151 proves A:3 to bracket X6.1; independent system drawing ДГШ3.031.011 Э6 identifies X6 as the display cable; exact .0... |
 | `XTAL16M` | logic/source | `D39.10, D103.2, D42.9, D43.9, D37.12` | scan sheet-2 native 5140x3563 full-sheet recheck 2026-07-13: labeled 16MHz bundle tag14 feeds local control rail3 and clocks D103, D42/D43 ИР16, and D39 pin1... |
 
 ## Explicitly Closed Regex Matches

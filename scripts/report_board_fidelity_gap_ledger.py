@@ -97,6 +97,13 @@ VIDEO_ANALOG_NETS = {
 def category_for_net(name: str, text: str, nodes: list[list[str]]) -> str:
     upper = f"{name} {text}".upper()
     refs = {str(node[0]) for node in nodes}
+    # Known roles take precedence over rejected or incidental provenance text.
+    if name == "P5V" or re.fullmatch(r"C(?:9|10|11|12|15|94)_[12]_BOUNDARY", name):
+        return "power"
+    if name == "X6_A3_BOUNDARY":
+        return "video/analog"
+    if name == "D59_O10_TAG10":
+        return "clock/I/O"
     # FRAME contains the substring RAM; keep this exact PIC boundary out of the
     # memory bucket when its provenance mentions the enabled frame interrupt.
     if name == "TAPE_RUN_INT":
@@ -269,8 +276,11 @@ def main() -> int:
 
     category_by_net = {str(row["name"]): str(row["category"]) for row in net_gap_rows}
     expected_categories = {
-        "C12_1_BOUNDARY": "logic/source",
-        "C12_2_BOUNDARY": "logic/source",
+        "P5V": "power",
+        "X6_A3_BOUNDARY": "video/analog",
+        "D59_O10_TAG10": "clock/I/O",
+        "C12_1_BOUNDARY": "power",
+        "C12_2_BOUNDARY": "power",
         "TAPE_RUN_INT": "logic/source",
         "USART_RXRDY_IRQ": "logic/source",
         "USART_TXRDY_IRQ": "logic/source",
