@@ -1,4 +1,4 @@
-# Portable C host M0 contract
+# Frozen Python-era host baseline (M0)
 
 Status: **FROZEN PYTHON-ERA BASELINE**
 

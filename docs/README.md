@@ -14,7 +14,7 @@ navigation and status definitions; superseded experiments remain in Git history.
 - [C11 boot and NetDisk session recovery](c11-session-recovery.md)
 - [C12 runtime console contract and physical qualification](c12-runtime-console.md)
 - [Portable Juku host contract](portable-c-host-plan.md)
-- [Portable C host M0 contract](portable-c-host-m0-contract.md)
+- [Frozen Python-era host baseline (M0)](portable-c-host-m0-contract.md)
 - [Portable Juku host implementation](portable-c-host-implementation.md)
 - [Portable C host M2 acceptance](portable-c-host-m2-acceptance.md)
 - [Portable C host M2.1 physical acceptance](portable-c-host-m2.1-physical-acceptance.md)
