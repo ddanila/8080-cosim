@@ -69,9 +69,9 @@ image is preserved exactly as dumped, including its proven-wrong byte
 (`1EFCh` reads `9Ah`, evidence-proven `DAh`) — the round-trip guard pins the
 *dumped* bytes. Blocks 6-7 (`3000h-3FFFh`) came from unstable physical
 reads; the ctl marks them untrusted data and excludes them from code
-discovery. The Monitor family boots differently from EktaSoft: only ~200
-bytes of boot code run in place (checksum verifier over the stored table at
-`0003h-000Ah`, PIT init, PPI init), then `3F40h-3FFFh` is copied to
+discovery. Monitor 2.2 runs its checksum verifier over the stored table at
+`0003h-000Ah`, followed by stack setup, a warm/cold check, PIT and PPI init.
+The Monitor family then copies `3F40h-3FFFh` to
 `FF40h-FFFFh` for the relocated vector table. Static seeding is deliberately
 minimal here. Most of the shared BASIC body (`03C8h..`) remains data;
 a small code block at `17F9h..1810h` is also seeded.
@@ -86,7 +86,9 @@ disassembly preserves that mismatch.
 All eight block checksums pass under the same convention as jmon22
 (byte-verified: stored table at `0003h-000Ah`, block 0 covering
 `0004h-07FFh`). Same Monitor memory model: short in-place boot, then the
-`3F40h-3FFFh` vector region is copied to `FF40h-FFFFh`. Unlike jmon22, no blocks
+`3F40h-3FFFh` vector region is copied to `FF40h-FFFFh`. Its boot starts with
+stack setup and a warm/cold check, without jmon22's checksum-verifier loop.
+Unlike jmon22, no blocks
 are excluded for known read damage, so descent includes the vector slots. Passing additive checksums
 does not prove that every byte is historically correct. Use it as a comparison
 reference for jmon22's untrusted blocks 6-7, subject to the donor constraints in
