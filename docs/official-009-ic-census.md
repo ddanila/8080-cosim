@@ -42,7 +42,9 @@ between substitutions. Those require their owning evidence and guards.
 
 ## Factory census
 
-| Ref | PDF page | Factory marking | Effective census marking | Model type | Result | Disposition |
+PDF pages 1 and 2 contain drawing sheets 2 and 3 respectively.
+
+| Ref | Drawing sheet | Factory marking | Effective census marking | Model type | Result | Disposition |
 | --- | ---: | --- | --- | --- | --- | --- |
 | D1 | 2 | КР580ИК80А | КР580ИК80А | CPU8080 | PASS | factory |
 | D2 | 2 | КР556РТ4 | КР556РТ4А | WAIT_PROM | PASS | owner-observed substitution |

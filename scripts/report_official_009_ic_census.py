@@ -152,7 +152,8 @@ def main() -> int:
     lines.extend(row([name, "PASS" if result else "FAIL"]) for name, result in checks)
     lines += [
         "", "## Factory census", "",
-        "| Ref | PDF page | Factory marking | Effective census marking | Model type | Result | Disposition |",
+        "PDF pages 1 and 2 contain drawing sheets 2 and 3 respectively.", "",
+        "| Ref | Drawing sheet | Factory marking | Effective census marking | Model type | Result | Disposition |",
         "| --- | ---: | --- | --- | --- | --- | --- |",
         *report_rows,
         "", "## Programmed positions", "",
