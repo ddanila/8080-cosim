@@ -5,10 +5,11 @@ is recorded for this protocol. The commands require the firmware setup below.
 
 ## Question
 
-In a normal Juku, DRAM refresh is a hardware side effect of the display:
-the D44-D47 video counters read the shared DRAM through the D48-D52 mux
-during the 1 MHz video slots, and every video read is an ordinary memory
-cycle that refreshes its MK4564 row. EktaSoft contains **no CPU
+The expected hardware refresh mechanism uses display reads: D44-D47 video
+counters address shared DRAM through the D48-D52 mux, and a DRAM read
+refreshes its selected row. The physical slot schedule and full row coverage
+remain unqualified; this experiment tests whether raster programming improves
+retention. EktaSoft contains **no CPU
 software-refresh loop**; its only contribution is programming the D54/D55
 raster PITs once at boot (`ekta37` offsets `01D4h..0221h`, decoded in
 [`../../docs/video-pit-timing.md`](../../docs/video-pit-timing.md)).
