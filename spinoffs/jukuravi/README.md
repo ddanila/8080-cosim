@@ -49,10 +49,6 @@ API-v2 `J` attaches are retained in
 [their evidence record](sessions/cs00015-ekta4402-j-physical/README.md).
 The T31/T32 diagnostic configurations below are historical setups.
 
-The verified T31 service EEPROM is prepared media, not currently fitted in
-CS00015. Its identity and programming evidence are in
-[T31 physical acceptance](T31-PHYSICAL.md#service-media-refresh-2026-08-09).
-
 The validated diagnostic setup was:
 
 - D15: `firmware/diag-d0-low4k.bin` / DOS name `T31HOST.BIN`
