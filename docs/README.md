@@ -22,6 +22,7 @@ navigation and status definitions; superseded experiments remain in Git history.
 - [Portable C host macOS physical check](portable-c-host-macos-physical-check.md)
 - [Juku host configuration](jukuhost-config.md)
 - [Windows Juku host user guide](windows-jukuhost-client.md)
+- [Windows host product and release contract](windows-jukuhost-client-plan.md)
 - [Windows host implementation and qualification](windows-jukuhost-client-implementation.md)
 - [Windows host Wine protocol acceptance](windows-jukuhost-client-wine-acceptance.md)
 - [Windows 95 guest acceptance](windows-jukuhost-client-win95-acceptance.md)
@@ -110,6 +111,7 @@ Each result applies only to the inputs and scope named by its report.
 
 ### Routing
 
+- [Custom router build and provenance](freerouting-build.md)
 - [Routed PCB refresh audit](routed-refresh-audit.md)
 - [Factory insulated-wire route fidelity](factory-wire-route-fidelity.md)
 
