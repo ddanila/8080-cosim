@@ -50,15 +50,12 @@ The replica C94 through-hole pad projections land on bare owner-board
 substrate. Its footprint remains provisional; the coordinates and image
 controls are retained in [the VT2/C94 evidence](../ref/photos/juku-pcb-2/c94-endpoint-registration.json).
 
-The factory 12 cm cable table and two component-photo angles prove that X6 is bracket-mounted.
-An original-resolution reread places printed point A:3 beside VT2/R65, physically
-separate from VD3. A:3/X6.1 is
-an electrical boundary, while the separately insulated A:4/X6.2 return reaches
-the wide ground strip. The generated PCB therefore carries
-surface lap-joint footprints `AX603`/`AX604`, not an invented X6 body. The
-generated vertical axial/diode coordinates
-compensate for the KiCad footprint-anchor offset; the guarded body centres are
-`VD3=(299.38,128.40)` and `R66=(302.69,128.46)` mm.
+X6 is off-board. The source PCB represents its component-side cable landings
+with surface lap-joint footprints `AX603`/`AX604`; A:3 remains an electrical
+boundary and A:4 is assigned to ground. The [X6 source review](x6-a3-video-source-conflict-review.md)
+owns the cable identity, photo registration and remaining continuity checks.
+Vertical axial/diode placement compensates for KiCad's footprint-anchor offset
+to preserve the body centres listed above.
 
 ## RF-option revision disposition
 
