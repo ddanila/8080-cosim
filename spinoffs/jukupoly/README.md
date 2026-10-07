@@ -338,10 +338,10 @@ This source contains three automatically recognized variable-pitch signatures.
 They peak at five simultaneously allocated OPL voices, but duplicate-pitch
 collapse normally leaves three or fewer useful notes.  Only 66 of 4,826 Juku
 frames contain more than three distinct candidates and require a ranked
-three-note choice.  OPL waveforms, FM modulation, feedback, stereo, and chip
-envelopes cannot survive a three-pulse beeper reduction; the result preserves
-notes, gates, approximate register volume, and percussion timing rather than
-YMF262 timbre.
+three-note choice. These committed v1 scores preserve notes, gates, approximate
+register volume and percussion timing. They omit OPL waveforms, FM modulation,
+feedback, stereo and chip-envelope evolution. Enhanced envelope approximations
+have separate [qualification status](#opl-enhancement-status).
 
 The generated score has 1,375 rows and seven compiled percussion descriptors.
 `DOOMGATE.COM` is 12,886 bytes.  A 143-sample frame and phase steps calibrated
