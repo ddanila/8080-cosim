@@ -116,6 +116,8 @@ Each result applies only to the inputs and scope named by its report.
 ### Twin
 
 - [Cosim runtime and CPU-bus reference](cosim-runtime-reference.md)
+- [juku_top checkpoint RAM and latch load](juku-top-checkpoint-load.md)
+- [juku_top checkpoint resume milestones](juku-top-checkpoint-resume.md)
 - [juku_top uninterrupted JBASIC READY probe](juku-top-jbasic-verilator-probe.md)
 - [FDC readiness](fdc-readiness.md)
 - [D96 FDC read-clock readiness](d96-read-clock-readiness.md)
