@@ -53,10 +53,6 @@ physical D93/D94 wiring.
   drive-status source for TR00 remains a D93.34 continuity boundary; the C
   harness defaults it asserted and `juku_top` retains its explicit functional
   low tie without claiming that as board copper.
-  The same models cover single/multiple-record read-sector and write-sector, Read
-  Address, Read Track, and writable Write Track formatting,
-  track/sector/data registers, BUSY/DRQ/INTRQ, side select, and
-  motor-not-ready behavior.
 - For every accepted Type-II/III opcode, `E=1` holds BUSY with DRQ low for
   30,000 ticks / 15 ms at 2 MHz or 60,000 CPU-equivalent ticks / 30 ms at
   1 MHz before ID search or
@@ -204,9 +200,6 @@ physical D93/D94 wiring.
   explicitly writable temporary image and reads them back byte-for-byte.
   Repository media stays read-only by default; HDL needs `+disk_writable`,
   and cosim needs `JUKU_DISK_WRITABLE=1`, on a caller-provided copy.
-- Read-only-backend Write Track rejection with WRITE PROTECT instead of an
-  endless BUSY state, plus writable whole-track persistence and partial-abort
-  behavior as described above.
 - Direct decoded `juku_top` keyboard/PIC/PPI/FDC bus access through
   `sync/juku_top_periph_bus_check.sh`.
 - Factory sheet 3 establishes D93's direct system-`DB` path.
