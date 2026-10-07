@@ -40,8 +40,9 @@ C and HDL shims deterministically rebuild the decoded bytes described by MAME:
 2,000 ns cells give 100,000 cells or 6,250 decoded bytes per 200 ms revolution;
 the descriptor uses gaps 1/2/3 of 32/22/35 bytes. Each of the ten sectors has
 12 zero sync bytes, three decoded `0xA1` missing-clock sync bytes, an `0xFE`
-ID field and CRC, gap 2, another sync run, an `0xFB` data field and CRC, and
-gap 3. The remaining 128 bytes are the end gap.
+ID field and CRC, gap 2, another sync run, a data field and CRC, and gap 3.
+The data mark is `0xFB` for normal sectors or `0xF8` for sectors marked deleted
+in the backend. The remaining 128 bytes are the end gap.
 
 MAME marks the Juku gap values as unverified. Consequently the rebuilt stream
 is a reproducible logical representation of the raw image and its recorded
