@@ -44,13 +44,6 @@ four-operator and rhythm reductions require evidence that they add value.
 At each gate, keep the passing subset buildable, testable and usable. Record a
 failed experiment's platform limit and continue with independent features.
 
-The immediate motivation is the failure observed in DOOM's “The Imp's Song.”
-Several layered, evolving OPL voices became a long constant square tone when
-the baseline converter retained pitch and approximate carrier level but emitted
-every melodic note with a `hold` envelope.  The solution must be general; it
-must not contain track numbers, filename checks, or instrument-signature
-overrides for that song.
-
 ## Source semantics
 
 The Yamaha YMF262 provides two- and four-operator synthesis, operator envelope
