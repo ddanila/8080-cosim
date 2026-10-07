@@ -10,9 +10,10 @@ The Windows product is the GUI described in
 - One shared core implements Janet, Fastboot, NetDisk, N4, checksums, media
   bounds, and recovery. Frontends use `jukuhost_runner.h`.
 - Serial reads and bootstrap reply waits use deadlines. POSIX and DOS serial
-  writes use one deadline for the requested buffer; Windows applies the write
-  timeout to each `WriteFile` call, with chunks of at most 4,096 bytes, rather
-  than bounding the whole buffer by one elapsed-time deadline. Transmitter
+  writes check a shared deadline when transmission stalls; continued progress
+  can run beyond it. Windows applies the write timeout to each `WriteFile`
+  call, with chunks of at most 4,096 bytes. These write timeouts do not impose
+  one elapsed-time limit on the whole buffer. Transmitter
   draining has a ten-second limit on DOS and Windows; physical POSIX serial
   ports use `tcdrain()` without a host deadline, and PTYs wait for the calculated
   transmission time. Drain waits do not poll cooperative cancellation. Passive

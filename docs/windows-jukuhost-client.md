@@ -82,9 +82,11 @@ checked request arrives; it does not send the monitor keys. See
 
 Press **Stop** before changing the mode, adapter, or disk images. Closing the
 window while active requests the same clean stop and waits for the current
-serial or media operation to finish. Serial waits use deadlines, including a
-ten-second transmitter-drain limit. File reads, writes and flushes have no
-application timeout, so a stalled filesystem can delay stopping or closing.
+serial or media operation to finish. Serial read and write calls have timeouts,
+and transmitter draining has a ten-second limit. A write spanning several
+calls can take longer than one call's timeout. File reads, writes and flushes
+have no application timeout, so a stalled filesystem can delay stopping or
+closing.
 
 Press **Stop** and wait for the session to finish before shutting down Windows.
 If Windows requests shutdown while a session is active, the host requests Stop
