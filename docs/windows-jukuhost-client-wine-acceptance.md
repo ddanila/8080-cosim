@@ -6,8 +6,7 @@ Qualified source state: M8 reset-safe stock recovery milestone
 
 Result: **PASS at the local Wine protocol boundary**
 
-This extends the 2026-09-03 non-Windows desk acceptance by executing the
-actual 32-bit Open Watcom PE. It does not claim GUI automation, native Windows
+This record qualifies execution of the actual 32-bit Open Watcom PE. It does not claim GUI automation, native Windows
 driver behavior, physical parity or timing, the USB adapter, CS00000, or
 Windows 95 qualification.
 

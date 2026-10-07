@@ -177,7 +177,7 @@ always `mode=read-only` with
 CRC-16/IBM of `123456789`. It needs no serial device and does not validate
 an INI, deployment artifacts, media or target behavior. `JUKUWIN.EXE --selftest`
 also verifies its embedded payload hashes and a GUI configuration round trip,
-using its worker lifecycle; see [Windows desk acceptance](windows-jukuhost-client-desk-acceptance.md).
+using its worker lifecycle; see [Windows implementation and qualification](windows-jukuhost-client-implementation.md).
 
 Configured log and capture files are overwritten at session startup, before
 media and boot-artifact validation. Archive them or choose new names before

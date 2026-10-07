@@ -121,7 +121,7 @@ is deliberately outside the ordinary CI gate. The wrapper exits zero with
 `SKIP` if `wine`, `wineboot`, `xvfb-run`, or `socat` is absent. Missing
 generated CP/M payloads or disk images fail the harness instead. See the
 [Wine rerun instructions](../docs/windows-jukuhost-client-wine-acceptance.md#rerunning-the-current-source)
-and [desk acceptance](../docs/windows-jukuhost-client-desk-acceptance.md).
+and [current build and qualification scope](../docs/windows-jukuhost-client-implementation.md).
 [Windows 95 guest execution](../docs/windows-jukuhost-client-win95-acceptance.md)
 has also passed against the simulator. Physical serial qualification on
 Windows still requires the real adapter and board.
