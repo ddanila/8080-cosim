@@ -76,6 +76,11 @@ page checksum; the CPU wrapper covers the ALU/flags,
 register-pair, INX/DAD, stack, and PUSH/POP paths. Both write their structured
 results from `4E00h` and return.
 
+Load and call either wrapper at `4000h` in all-RAM mode. Both destroy BC,
+DE, HL and flags. Beyond the wrapper's own CALL return address, reserve five
+stack words for the memory wrapper or four for the CPU wrapper; these include
+the nested diagnostic CALL return address.
+
 Both wrappers return `A=00h` even when the diagnostic records a failure. Read
 RAM to obtain the verdict:
 
