@@ -22,6 +22,7 @@ navigation and status definitions; superseded experiments remain in Git history.
 - [Portable C host macOS physical check](portable-c-host-macos-physical-check.md)
 - [Juku host configuration](jukuhost-config.md)
 - [Windows Juku host user guide](windows-jukuhost-client.md)
+- [Windows host implementation and qualification](windows-jukuhost-client-implementation.md)
 - [Windows host build/API/package acceptance](windows-jukuhost-client-desk-acceptance.md)
 - [Windows host Wine protocol acceptance](windows-jukuhost-client-wine-acceptance.md)
 - [Windows 95 guest acceptance](windows-jukuhost-client-win95-acceptance.md)
