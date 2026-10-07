@@ -10,19 +10,10 @@ those are the next M2.3 gate.
 
 ## Locally owned toolchain
 
-The repository vendors the unmodified official Open Watcom V2 `Current-build`
-C/C++ distribution published on 2026-08-20. The archive is stored with Git
-LFS, verified before use, and expanded only into the ignored `.tools/` tree.
+DOS builds use the pinned Open Watcom V2 distribution. The
+[vendor guide](../third_party/open-watcom-v2/README.md) owns its identity,
+provenance, bootstrap verification and extraction-cache limits.
 
-The [vendor record](../third_party/open-watcom-v2/README.md) owns the archive
-identity, upstream revision and compiler provenance.
-
-`tools/bootstrap-open-watcom.sh` verifies the archive on every run and
-extracts it when the cached `wcl` is missing or not executable. It otherwise
-reuses the extraction and checks the `wcl` banner, without revalidating every
-extracted file; see the
-[bootstrap contract](../third_party/open-watcom-v2/README.md#bootstrap).
-`tools/open-watcom-env.sh` configures that directory for DOS and Win32 builds.
 Run the commands below from the repository root on a Linux x86-64 build host
 with Bash, Python 3, `unzip`, `sha256sum`, and GNU `stat`. Materialize the
 vendored archive with Git LFS before building; the bootstrap rejects an LFS
