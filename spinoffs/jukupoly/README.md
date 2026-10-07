@@ -262,9 +262,12 @@ pass.  The converter deliberately stops at the VGM end command.
 `import_jukupoly_vgz.py` accepts an uncompressed VGM or gzip-compressed VGZ,
 parses sample-accurate waits and either YM3812/OPL2 or YMF262/OPL3 register
 writes, and reconstructs all 9 or 18 two-operator channels.  It groups key-ons
-by their OPL operator/register signature.  Instruments used at four or more
-pitches and exact simultaneous three-pitch chords become melodic; fixed-pitch
-and rare signatures become kick, snare/tom, or hat/cymbal reductions.  Exact
+by their OPL operator/register signature. Instruments with at least eight
+key-ons across four or more pitches, and signatures forming simultaneous
+three-pitch chords, become melodic. If that finds no melodic signatures, a
+fallback recognizes at least eight simultaneous three-voice attacks spanning
+at most one octave. Other fixed-pitch and rare signatures become kick,
+snare/tom, or hat/cymbal reductions. Exact
 signature overrides are available when the register stream alone cannot
 distinguish a deliberately narrow-pitch instrument from percussion.  Identical
 stereo/unison pitches are collapsed, persistent notes retain their Juku channel
