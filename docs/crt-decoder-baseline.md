@@ -40,7 +40,7 @@ exists in local Git history; a shallow checkout may skip that check.
 | WP1 CI keeps the full RF/IQ route and all CTests green | PASS | run 29886015187 at `d383beb3`: full build + 3 CTests + synth_ntsc |
 | WP2 profile receiver tip and artifacts are pinned | PASS | five bounded commits ending at `10bfa4b9` |
 | WP2 independent non-NTSC fixture passes exactly | PASS | 768000 samples; 12500 Hz; 5/5 bars |
-| WP2 telemetry guards measured lock, timing, and levels | PASS | line/frame lock; 12.5 kHz, 62.5 Hz, 6 us, blank and 0..100 IRE bounds |
+| WP2 recorded telemetry has lock and timing bounds | PASS | recorded line/frame lock; bounds contain 12.5 kHz, 62.5 Hz and 6 us; level fields are not checked here |
 | WP2 negative fixtures distinguish horizontal and frame loss | PASS | five generated failures; malformed vsync uniquely retains horizontal lock |
 | WP2 CI keeps all receiver paths green | PASS | run 29886839537 at `10bfa4b9`: full build + 5 CTests + synth_ntsc |
 | WP3 synthetic Juku fixture is source-pinned | PASS | decoder `b1d62c08` consumes raster evidence `eb4d6ab6` |

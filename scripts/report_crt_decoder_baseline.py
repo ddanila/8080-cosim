@@ -192,7 +192,7 @@ def main() -> int:
             f"{wp2_fixture['samples']} samples; {wp2_fixture['line_rate_hz']} Hz; 5/5 bars",
         ),
         (
-            "WP2 telemetry guards measured lock, timing, and levels",
+            "WP2 recorded telemetry has lock and timing bounds",
             wp2_stats["format"] == "JSON schema_version 1"
             and wp2_stats["line_locked"] is True
             and wp2_stats["frame_locked"] is True
@@ -202,7 +202,7 @@ def main() -> int:
             < wp2_stats["frame_rate_hz_max"]
             and wp2_stats["sync_width_us_min"] < wp2_fixture["hsync_us"]
             < wp2_stats["sync_width_us_max"],
-            "line/frame lock; 12.5 kHz, 62.5 Hz, 6 us, blank and 0..100 IRE bounds",
+            "recorded line/frame lock; bounds contain 12.5 kHz, 62.5 Hz and 6 us; level fields are not checked here",
         ),
         (
             "WP2 negative fixtures distinguish horizontal and frame loss",
