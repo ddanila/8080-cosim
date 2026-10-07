@@ -57,8 +57,10 @@ scanning; its scope is detailed in the [bus contract](rev-b-bus-contract.md#pic-
 
 Digital simulation does not prove physical bus timing, signal integrity or
 assembled operation. Those require the staged first-article bench procedure.
-The desk-qualified five-board candidate remains **ORDER HOLD** until explicit
-owner upload authorization; ordering and payment have separate gates.
+The five-board candidate remains **ORDER HOLD**. The
+[keyboard encoder pinout mismatch](rev-b-io-parts.md#keyboard-pinout-mismatch--release-blocker)
+must be corrected and the I/O package requalified before upload. Explicit owner
+upload authorization is also required; ordering and payment have separate gates.
 
 The [build contract](rev-b-build-plan.md) records durable decisions, and the
 [Video adoption note](rev-b-video-adoption.md) records external timing concepts,
