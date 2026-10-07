@@ -686,9 +686,14 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
     lines.extend(f"- {item}" for item in model["scope"]["excluded"])
     lines.extend([
         "",
+        "VT2 uses a piecewise-linear emitter-follower approximation: no emitter",
+        "current below the fixed VBE threshold; above it, IE=(beta+1)*IB and",
+        "VIDEO_OUT=base-VBE. Saturation is flagged, not solved; none of the declared",
+        "corners reaches it.",
+        "",
         "The TI SN74LS86A driver is a comparison model. Beta and VBE are sensitivity",
-        "bounds; only beta endpoints are exact-grade",
-        "data, not installed-part measurements.",
+        "bounds; beta endpoints come from the grade limits at VCE=10 V, IC=1 mA,",
+        "not from installed-part measurements across this circuit's operating range.",
         "C94 remains absent. Consequently the",
         "stepped fixture has ideal discontinuities and must not be used as evidence of",
         "rise/fall time, bandwidth, actual composite polarity, or receiver lock.",
