@@ -158,69 +158,31 @@ listening disk. Production-library levels remain unchanged.
 
 ## Period demo score and credits
 
-The first score is a hand reduction of the opening phrase of **“Trip Through
-the Grand Canyon”** (`CANYON.MID`, internal marker “Canyon Music”), composed by
-**George Stone**.  The MIDI was distributed with early Windows multimedia
-installations; its embedded text credits **Copyright 1991 Passport Designs,
-Inc.** and **Produced By The Music Data Company**.
-
-Source consulted:
-
-- [BitMidi archive page for the inspected file][canyon-midi]
-- SHA-256 of the inspected 33,876-byte MIDI:
-  `39ad41b8310bd7ce7e00accc017bb9cdb23e3d3d581478f295f215495931005c`
-- [Passport Designs MIDI history and George Stone attribution][passport-midi]
-
-[canyon-midi]: https://bitmidi.com/canyon-mid-1
-[passport-midi]: https://en.wikipedia.org/wiki/Passport_Designs#MIDI
-
-No vendor MIDI file is committed or required by the build.  The compact score
-in `jukupoly-canyon-demo.json` is a manually entered three-voice reduction.  It
-raises the lead one octave for the Juku speaker, follows the source kick/hat
-outline, and documents two snare substitutions that exercise the demo sample
-bank.  The original composition and recording credits remain with their
-respective rights holders; this repository does not assert a new license for
-them.
+The default Canyon demo is a manually entered three-voice reduction of the
+opening of **“Trip Through the Grand Canyon”** (`CANYON.MID`), composed by
+**George Stone**. The source credits **Copyright 1991 Passport Designs, Inc.**
+and **Produced By The Music Data Company**. The [committed score](firmware/jukupoly-canyon-demo.json)
+retains the source URL, hash and arrangement notes. No vendor MIDI is required
+by the build.
 
 ## DOOM “Suspense” arrangements and credits
 
-`SUSPENSE.COM` is a 60-second arrangement of **“Suspense”**, the E1M5 music
-from id Software's 1993 DOOM, composed by **Robert (Bobby) Prince**.  The
-reference is the original `M_E1M5.mid` preserved from the OS/2 port in the
-[VGMPF DOOM game-rip archive][doom-rip], rather than a later remaster:
+**“Suspense”**, DOOM E1M5 music, was composed by **Robert (Bobby) Prince** for
+id Software's 1993 game. Both arrangements use the original `M_E1M5.mid` from
+the OS/2-port game-rip archive:
 
-- archive ZIP SHA-256:
-  `e0a5f88e1d5c3fa1a145fd4f3196312ffafa77dee5f0c60d79e4a46860cf6e5d`;
-- extracted 13,605-byte `M_E1M5.mid` SHA-256:
-  `ae1d9201e623310ba16a317ff93f1fecd5d42b4efd24212bc2476080d23ea7ec`;
-- the [VGMRips PC/AT pack][doom-vgmrips] independently identifies Robert
-  Prince as composer and the original PC sound target as YMF262.
+| Program | Arrangement and qualification |
+| --- | --- |
+| `SUSPENSE.COM` | [First-minute score](firmware/jukupoly-suspense.json); three pitched parts, octave-raised bass and synthesized percussion. Bounded simulator smoke checks and CS00000 listening evidence. |
+| `SUSPFULL.COM` | [Full 2:44 score](firmware/jukupoly-suspense-full.json); retains lead and bass while tone 3 follows the newest string layer. Bounded simulator smoke checks and complete CS00000 playback evidence. |
 
-[doom-rip]: https://www.vgmpf.com/Wiki/index.php/Doom_(DOS)#Game_Rip
-[doom-vgmrips]: https://vgmrips.net/packs/pack/doom-pc
+The scores retain source credits and the MIDI identity checked by the importer.
+See [physical qualification](#physical-qualification) for exact tested payloads
+and observations. Source MIDI is not committed; no new license is asserted for
+the original composition or game assets.
+
 [ym3812-manual]: https://c64.xentax.com/media/Yamaha_YM3812_Application_Manual.pdf
 [opensupaplex-adlib]: https://github.com/sergiou87/open-supaplex/blob/master/resources/audio/music-adlib.xm
-
-The first minute is unusually well matched to JukuPoly.  The original MIDI
-starts `String Bounce` at 0:00, adds `Bass Strings` at 0:08, and adds `String
-Bounce 2` at 0:48.25, never exceeding three pitched parts in that interval.
-The arrangement retains their event timing at 120 BPM, raises the very low
-bass one octave for the Juku speaker, and maps the two `Fret Noise` accents to
-a filtered noise sample.  It compiles to 480 rows and 4,047 bytes.
-
-The full source is 2:44 and eventually exceeds three pitched voices: `String
-Bounce 3` enters at 1:28.25 and `String Bounce 4` at 2:08.25 without retiring
-the older layers.  The prepared 3+1 reduction keeps lead and bass, while tone
-3 follows the newest entering string layer at each transition.  Fret noise,
-reverse cymbal, and floor tom are approximated by the three synthesized drum
-samples.  `SUSPFULL.COM` contains 1,316 rows, 8,200 frames, and is 10,701
-bytes.  It is build-, bounded-smoke-, and CS00000 physical-listening
-qualified.
-
-No DOOM MIDI or VGM data is committed.  The repository retains only the
-credited compiled arrangements and an importer locked to the exact source
-MIDI hash; the original composition and game assets remain the property of
-their respective rights holders.
 
 ## Two-operator OPL VGM/VGZ conversion
 
@@ -420,11 +382,10 @@ Karl Bartos**.  The Juku work retains both levels of credit; it does not claim
 ownership or a new license for the composition, arrangement, or sampled
 material.
 
-The exact inspected 356,298-byte module is deliberately not committed.  Its
-hashes are:
-
-- SHA-256 `c9d89b05ed00ba80a93ec5f3c6448a40d925d0b65ad1eba3beb27234c7878c3e`;
-- MD5 `d1b288d964ac4f7acb3216d0d9dfab77`.
+The source module is not committed. Its required hashes and both levels of
+credit are retained in the [full score](firmware/jukupoly-tdk-robots.json) and
+[one-minute score](firmware/jukupoly-tdk-robots-60s.json); the importer checks
+that source identity before conversion.
 
 The importer maps MOD channels 1, 2, and 4 to Juku tone channels 1–3.  Channel
 3 of the MOD supplies most percussion.  The source uses only effects that are
