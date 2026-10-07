@@ -50,11 +50,14 @@ file-writing side effects, archive verification and focused commands.
 
 ## Remaining boundaries
 
-1. R5.R1: owner review of the exact five-archive candidate and explicit upload
+1. Correct the SN74LS148 keyboard encoder pinout; regenerate and requalify
+   the I/O source, routed board and package, then update candidate identities
+   and review evidence.
+2. R5.R1: owner review of the exact five-archive candidate and explicit upload
    authorization. Technical PASS leaves **ORDER HOLD** in force.
-2. R5.O1: vendor preview/DFM review and a separate owner order instruction,
+3. R5.O1: vendor preview/DFM review and a separate owner order instruction,
    recorded in the [order record](rev-b-five-board-order-record.md).
-3. R5.B1: receipt, programmed-device readbacks and staged assembly/power-up,
+4. R5.B1: receipt, programmed-device readbacks and staged assembly/power-up,
    recorded in the [bench template](rev-b-b1-bench-log.md).
 
 The order and bench documents are prepared procedures, not completed physical
