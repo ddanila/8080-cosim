@@ -137,15 +137,6 @@ Primary new captures are:
 - `sessions/cs00024-t34-retention-midpoint-g0-cold-physical/20260809T202332.467525Z.*`
   — zero-guard exact 3.423 s sample then 20 s target CONFIG timeout.
 
-That initial desk action was implemented as T35 `1D/45C4`, exact image SHA256
-`ceb55556f11318dea5ef8c36b81f931813a139ce6ba6e07b607318571c6e1274`.
-Its fail-safe loader was intended to sweep all 128 4164 refresh rows in 1.2339
-ms at the measured CS00024 effective CPU rate, refreshes inside blocking serial waits, starts at one
-vote, exposes cooperative `CALL 07A9h`, and is host-queryable/configurable.
-Cycle-based DRAM-decay simulation proves long verified upload, idle survival,
-reattach, all refresh commands, and torn-disable fallback; exact T34 fails the
-same idle-decay discriminator and remains byte-identical.
-
 ## T35 burn and initial apparent refresh proof, 2026-08-10
 
 The exact T35 image was programmed into the AT28C64 with Willem verification
