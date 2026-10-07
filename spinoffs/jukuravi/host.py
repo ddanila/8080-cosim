@@ -147,8 +147,8 @@ def parse_nonnegative_float(value: str) -> float:
 
 
 # Ordered by preference, most specific first. macOS exposes both a `cu.*` and a
-# `tty.*` node per adapter; only `cu.*` is usable here, because opening `tty.*`
-# blocks until carrier detect, which the Juku link never asserts.
+# `tty.*` node per adapter; prefer the outbound `cu.*` node used by the
+# qualified setup. open_transport uses O_NONBLOCK and configures CLOCAL.
 SERIAL_PORT_GLOBS = (
     "/dev/ttyUSB*",  # Linux, CP210x/FTDI/PL2303
     "/dev/cu.usbserial-*",  # macOS, Apple's built-in CP210x/FTDI driver

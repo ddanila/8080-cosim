@@ -69,8 +69,8 @@ Nano bridge wiring is in [`nano/README.md`](nano/README.md).
 The examples below use the Linux `/dev/ttyUSB0`. On macOS the same adapter
 appears as `/dev/cu.usbserial-*`, or `/dev/cu.SLAB_USBtoUART` if the vendor
 Silicon Labs driver is installed instead of the built-in one. Always use the
-`cu.*` node: opening `tty.*` blocks until carrier detect, which this link never
-asserts. Pass `--port` accordingly; `host.py` requires it explicitly, while
+`cu.*` node for outbound contact, matching the qualified setup. This host
+opens with `O_NONBLOCK` and configures `CLOCAL`. Pass `--port` accordingly; `host.py` requires it explicitly, while
 `probe_waitclass.py` and `probe_a12_increment.py` default to the first adapter
 found by `host.discover_serial_ports()` and print which one they chose.
 
@@ -106,8 +106,9 @@ python3 spinoffs/jukuravi/probe_waitclass.py --port /dev/ttyUSB0
 ```
 
 If the hardware investigation resumes, the next controlled D55 action is a
-T34 `1C/A637` cold boot, not substitution. A clean T34 result cancels the
-substitution plan; only a repeated T34 `08` opens the controlled discriminator.
+T34 `1C/A637` cold boot. Three clean cold-power runs cancel the substitution
+plan; a single clean result does not resolve an intermittent failure. Repeated
+T34 `08` results permit the controlled substitution discriminator.
 Use [`D55-REPLACEMENT.md`](D55-REPLACEMENT.md) for the exact T34 hash,
 before/after matrix, provenance/socket inspection, rollback criteria, and
 evidence record. Do not combine that discriminator with other rework or
