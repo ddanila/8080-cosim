@@ -5,31 +5,20 @@ JukuPoly arrangement of Robert Prince's “Suspense” from DOOM E1M5.  The exac
 4,047-byte `SUSPENSE.COM` image played through the unmodified internal speaker
 of Juku CS00000 and returned cleanly to CP/M Plus 3.1.
 
-`jukuhost` reattached to the powered, resident C10 JukuNet/NetDisk session; no
-hardware reset or cold boot was used.  Sending a carriage return caused CP/M
-to emit a fresh prompt, after which `WBOOT` relogged the substituted private
-drive A: and `SUSPENSE` ran.  The console transcript normalizes to:
+## Qualification
 
-```text
-A>WBOOT
-A>SUSPENSE
-A>
-```
+| Evidence | Result |
+|---|---|
+| Delivery | Reattached to the resident C10 JukuNet/NetDisk session; `WBOOT` relogged private drive A: before `SUSPENSE` |
+| Console | Returned to a fresh `A>` prompt 64.541 seconds after the command |
+| Listening | Operator accepted playback through the unmodified internal speaker |
+| Host log | 19 successful reads; zero writes, retries, boot restarts or target resets |
+| Score | 3,000 nominal 20 ms frames; cycle simulation covered a nine-second window |
 
-The new prompt arrived 64.541 seconds after the program command.  That is a
-host command-to-prompt interval, including CP/M directory lookup, COM loading,
-and CCP reload; it is not presented as an audio-duration measurement.  The
-score contains 3,000 nominal 20 ms frames. Simulation covered a bounded
-nine-second cycle window; complete playback qualification comes from this
-physical run.
-
-The operator accepted the sound. This qualifies physical playback and clean return for the
-one-minute arrangement.  No electrical waveform or acoustic recording was
-taken.
-
-The host log records 19 successful reads, zero writes, zero retries, zero boot
-restarts, and zero target resets.  The served disk was a private volume, so no
-source CP/M image was modified.
+The prompt interval includes file lookup, loading and CCP reload; it is not
+an audio-duration measurement. Complete playback evidence comes from the
+physical run. No electrical waveform or acoustic recording was taken.
+The served volume was private; the source CP/M image was not modified.
 
 | File | Contents |
 |---|---|

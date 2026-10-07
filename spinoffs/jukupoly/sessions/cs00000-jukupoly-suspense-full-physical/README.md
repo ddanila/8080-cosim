@@ -5,35 +5,23 @@ These files retain the successful 2026-08-30 physical run of the complete
 exact 10,701-byte `SUSPFULL.COM` image played through the unmodified internal
 speaker of Juku CS00000 and returned cleanly to CP/M Plus 3.1.
 
-This was a cold C10 JukuNet boot from the prepared private drive A:, using
-Fastboot V16 and NetDisk v3 at 19200 baud.  The Fastboot ready/final markers
-were not observed by the host, but its documented resident-stream fallback
-reached NetDisk normally; the console captured the CP/M banner and prompt.
-There were no target resets or boot restarts.  The transcript normalizes to:
+## Qualification
 
-```text
-CP/M Plus 3.1 Juku
-N3 19200
+| Evidence | Result |
+|---|---|
+| Delivery | Cold C10 JukuNet boot from private drive A:, Fastboot V16 and NetDisk v3 at 19,200 baud |
+| Boot limitation | Host did not observe Fastboot ready/final markers; resident-stream fallback reached NetDisk and the captured CP/M banner/prompt |
+| Console | `SUSPFULL` returned to a fresh `A>` prompt 170.108 seconds after the command |
+| Listening | Operator accepted the complete arrangement; playback remained stable through the reduced layer transitions |
+| Host log | 24 successful reads; zero writes, retries, boot restarts or target resets |
+| Score | 8,200 nominal 20 ms frames; cycle simulation covered a nine-second window |
 
-A>SUSPFULL
-A>
-```
-
-The fresh prompt arrived 170.108 seconds after the program command.  This is
-a command-to-prompt interval that includes CP/M directory lookup, loading the
-10.7 KiB transient, and CCP reload; it is not presented as a measured audio
-duration. The score contains 8,200 nominal 20 ms frames. Simulation covered a
-representative nine-second window; complete playback qualification comes from
-this physical run.
-
-The operator reported that the full arrangement “works very good.”  Playback
-remained stable through both reduced layer transitions and the program
-silenced the PIT, restored its borrowed stack state, and returned to CP/M.
-No electrical waveform or acoustic recording was taken.
-
-The host log records 24 successful reads, zero writes, zero retries, zero boot
-restarts, and zero target resets.  The served disk was a private volume, so no
-source CP/M image was modified.
+The prompt interval includes file lookup, loading and CCP reload; it is not
+an audio-duration measurement. Complete playback evidence comes from the
+physical run. PIT silence writes and stack restoration are implementation
+properties; the console capture establishes return to CP/M. No electrical
+waveform or acoustic recording was taken. The served volume was private;
+the source CP/M image was not modified.
 
 | File | Contents |
 |---|---|
