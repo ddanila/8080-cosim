@@ -39,8 +39,10 @@ Successful generation does not require endpoint coverage or risk closure.
 
 ## KiCad PCB Endpoint Coverage
 
-Every source-risk endpoint listed below is checked against the final
-`kicad/juku.kicad_pcb` footprint pad net assignment. Matching rows show
+PCB-scoped source-risk endpoints are checked against the
+`kicad/juku.kicad_pcb` footprint pad net assignments, using the same
+exclusions as the full-board check below. The checklist also lists
+excluded endpoints for physical follow-up. Matching rows show
 that the source PCB preserves the same modeled pad-net assignments as
 `kicad/juku.board.json`; it does not prove the historical assumption
 behind a risk note.
@@ -71,12 +73,14 @@ fabrication-source coverage gate, not a historical-source proof.
 | `kicad/juku_routed.kicad_pcb` | 2316/2320 | 2313/2320 | FAIL |
 
 Missing endpoints in `kicad/juku_routed.kicad_pcb`:
+
 - `INT6_RAW: R10.1`
 - `INT7_RAW: R9.1`
 - `P5V: R9.2`
 - `P5V: R10.2`
 
 Mismatched endpoints in `kicad/juku_routed.kicad_pcb`:
+
 - C21.2: `GND` != `C21_R20_SERIES`
 - R20.1: `RESIN` != `C21_R20_SERIES`
 - R20.2: `P5V` != `R20_RETURN_SOURCE_HOLD`

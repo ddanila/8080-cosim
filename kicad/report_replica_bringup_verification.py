@@ -301,8 +301,10 @@ def main() -> int:
             "",
             "## KiCad PCB Endpoint Coverage",
             "",
-            "Every source-risk endpoint listed below is checked against the final",
-            "`kicad/juku.kicad_pcb` footprint pad net assignment. Matching rows show",
+            "PCB-scoped source-risk endpoints are checked against the",
+            "`kicad/juku.kicad_pcb` footprint pad net assignments, using the same",
+            "exclusions as the full-board check below. The checklist also lists",
+            "excluded endpoints for physical follow-up. Matching rows show",
             "that the source PCB preserves the same modeled pad-net assignments as",
             "`kicad/juku.board.json`; it does not prove the historical assumption",
             "behind a risk note.",
@@ -314,10 +316,10 @@ def main() -> int:
         ]
     )
     if pcb_missing:
-        lines.extend(["", "Missing PCB pad-net endpoints:"])
+        lines.extend(["", "Missing PCB pad-net endpoints:", ""])
         lines.extend(f"- `{item}`" for item in pcb_missing)
     if pcb_mismatched:
-        lines.extend(["", "Mismatched PCB pad-net endpoints:"])
+        lines.extend(["", "Mismatched PCB pad-net endpoints:", ""])
         lines.extend(f"- {item}" for item in pcb_mismatched)
 
     lines.extend(
@@ -356,10 +358,10 @@ def main() -> int:
     )
     for label, coverage in ((PCB.relative_to(ROOT), source_coverage), (ROUTED_PCB.relative_to(ROOT), routed_coverage)):
         if coverage["missing"]:
-            lines.extend(["", f"Missing endpoints in `{label}`:"])
+            lines.extend(["", f"Missing endpoints in `{label}`:", ""])
             lines.extend(f"- `{item}`" for item in coverage["missing"])
         if coverage["mismatched"]:
-            lines.extend(["", f"Mismatched endpoints in `{label}`:"])
+            lines.extend(["", f"Mismatched endpoints in `{label}`:", ""])
             lines.extend(f"- {item}" for item in coverage["mismatched"])
 
     lines.extend(
