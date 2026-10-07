@@ -14,7 +14,7 @@ sync/network_first_rom_hdl_check.sh
 | Committed C4 / ABI 1.0 ROM | Reset, bounded POST, memory mode 1, masked interrupts, D57 mode-2/count-4 clock, D11 `4Eh`/`35h`, and first `C4h` target-ready byte |
 | Test-only C4 ABI dispatch | Copied mode-3 video helper, matrix-key input, public vectors and serial exchange through the modeled D57/D11/D104 path |
 | Test-only C9/C10/C11/C12 ABI dispatch | Each release's resident ABI behavior, with the POF release option for C10 and successors |
-| Video POF fixture | The C9 blank versus C10 visible boundary |
+| Video POF fixture | Seeded framebuffer and direct Port C writes check the C9 blank versus C10 visible digital boundary; no firmware runs in this fixture |
 | Test-only C4 NetDisk caller | Exact v3 request, CRC-checked reply and all 128 returned `5Ah` bytes copied to DMA memory |
 
 The committed C4 artifact is
@@ -35,6 +35,13 @@ executes the video POF guard. It skips the firmware simulations listed above.
 Its PASS therefore does not establish the full local profile's runtime result.
 
 ## Limits and related evidence
+
+The ROM benches force CPU phases, READY high, reset and CTS, and use an
+accelerated USART clock. They exercise firmware and modeled bus/device paths
+under those fixtures; they do not verify the normal clock generator, READY
+wait-state timing or reset circuit. The POF fixture writes framebuffer memory
+and Port C directly and checks digital pixel blanking, without sync or analog
+video qualification.
 
 The C model remains the practical full-system oracle for bootstrap reception,
 decompression, CP/M commands, cursor pixels, recovery, host replacement and
