@@ -3,7 +3,7 @@
 Status date: 2026-08-28
 
 The corrected selector orientation and replacement charge-pump capacitors
-enabled the recorded CS00000 C9/V16 boot and NetDisk session. This note
+enabled the owner-reported CS00000 C9/V16 boot and NetDisk session. This note
 retains the device configuration, measurements and limits of that result.
 
 ## Device identity and selector topology
@@ -81,7 +81,10 @@ module’s transmit and receive paths together. Undersized capacitors can reduce
 transmitter margin under an external load. The August 28
 replacement corrected it, but its effect on reception was not isolated.
 
-### 2026-08-28 capacitor-replacement retest
+### Owner-reported August 28 retest
+
+The following retest results are owner-reported; this note does not bind them
+to a retained capture or artifact hashes.
 
 The owner replaced the four charge-pump capacitors to match the plain
 `MAX232CPE` application circuit, then repeated the bench work with the same
@@ -104,13 +107,13 @@ and zero UART errors. The host's final exit status 4 occurred only after the
 USB serial device itself disappeared during shutdown; that exit status does
 not invalidate the preceding CS00000 traffic or establish a target-side failure.
 
-This qualifies the corrected selector orientation, FT232BL/MAX232 data path,
+This report supports the corrected selector orientation, FT232BL/MAX232 data path,
 external ground reference, CS00000 C9 boot, framing handoff, and sustained
 read traffic together. The capacitor replacement corrects the documented
 plain-MAX232 mismatch, but its independent effect is not isolated because the
 selector orientation was corrected in the same revisit. The historical
 failure was therefore hardware configuration, not a host-parser defect.
-This recorded session does not establish endurance or compatibility with every
+This reported session does not establish endurance or compatibility with every
 machine.
 
 The known CP2102/MAX3232 control also booted the unchanged Juku, ROM,

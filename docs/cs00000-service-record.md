@@ -94,8 +94,9 @@ comparison with EK37 remains open.
 ### USB/RS-232 adapter comparison
 
 The [adapter investigation](ft232bl-adapter-investigation.md) owns the
-Diymore FT232BL wiring, comparison captures, and August 28 qualification.
-Corrected selector orientation and replacement charge-pump capacitors enabled
+Diymore FT232BL wiring, retained comparison captures, and owner-reported
+August 28 retest. The reported corrected selector orientation and replacement
+charge-pump capacitors enabled
 CS00000 C9/V16 boot and retry-free NetDisk reads through the onboard MAX232/DB9
 route. The capacitor replacement's independent effect was not isolated.
 Earlier receive silence does not establish a Juku USART fault; the unchanged
