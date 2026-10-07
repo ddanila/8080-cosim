@@ -64,9 +64,8 @@ owner-observed values without rewriting this historical constraint file.
 The named schematic leads above are pin-level source evidence where
 cited; the captured programming table is separate evidence. The five address
 labels with scan provenance still need an exact .009 route chase.
-D2 pads are registered, while five former D2-to-D4
-photo-route claims are withdrawn after correcting the D4 row and
-column assignment. 6 independent accepted acquisitions, including a
+D2 pad registration does not close those remote address nets.
+6 independent accepted acquisitions, including a
 separate power cycle, establish the physical raw table.
 
 ## KiCad DSN Cross-check
