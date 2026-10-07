@@ -88,17 +88,17 @@
   "reports": {
     "Fidelity": {
       "path": "docs/board-fidelity-gap-ledger.md",
-      "sha256": "f694aa79e54068d75ac5433f117f5510a38c9287d95e9fb1fcf20d5747933183",
+      "sha256": "f3e77f262936e5c53a26d9a56787cbc9ab9176734a8cae27305a94f7793404cd",
       "status": "BOARD FIDELITY GAPS CATALOGED"
     },
     "Owner checks": {
       "path": "docs/owner-measurement-shortlist.md",
-      "sha256": "7834246f1fea6c9a40bf9948ee57bc0a30f362fc4ff219eb8367f6ae0492ac12",
+      "sha256": "3df9bf096bf106dedadd49368f00621f47f189ae797e44b09e400f3788d7d820",
       "status": "EVIDENCE HOLD"
     },
     "BOM": {
       "path": "docs/replica-dual-config-bom.md",
-      "sha256": "2718304e9313a39a1c9bb240f23fd8722a75abe265387638dba4856236e22407",
+      "sha256": "19eaeda7fe4034e1625e0099cd7542640aa7f19cb2169f87243bb7933a99c27f",
       "status": "NO STATUS FIELD"
     },
     "Sourcing": {
