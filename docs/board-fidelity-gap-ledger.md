@@ -144,14 +144,7 @@ parts placement and Tier-3 reproduction.
 
 ## Source-Proved Passive Refs Absent From Model
 
-These exact `.009` drawing or owner-photo refs are listed in
-`docs/omitted-resistor-census.md` but have no component in the board JSON.
-They are separate from chip-level and net-level gaps, which can only
-inspect components and endpoints already modeled.
-
-| Ref | Source evidence |
-| --- | --- |
-| *None* | - |
+No refs from [the omission census](omitted-resistor-census.md) are absent from the board model.
 
 ## Documented Intentional No-Connects
 

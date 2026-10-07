@@ -356,19 +356,22 @@ def main() -> int:
             "",
             "## Source-Proved Passive Refs Absent From Model",
             "",
+        ]
+    )
+    if omission_rows:
+        lines.extend([
             "These exact `.009` drawing or owner-photo refs are listed in",
-            "`docs/omitted-resistor-census.md` but have no component in the board JSON.",
+            "[the omission census](omitted-resistor-census.md) but have no component in the board JSON.",
             "They are separate from chip-level and net-level gaps, which can only",
             "inspect components and endpoints already modeled.",
             "",
             "| Ref | Source evidence |",
             "| --- | --- |",
-        ]
-    )
+        ])
     for ref, evidence in sorted(omission_rows, key=lambda item: (item[0][0], int(item[0][1:]))):
         lines.append(table_row([f"`{ref}`", short(evidence)]))
     if not omission_rows:
-        lines.append("| *None* | - |")
+        lines.append("No refs from [the omission census](omitted-resistor-census.md) are absent from the board model.")
 
     pin_gap_rows = [
         row
