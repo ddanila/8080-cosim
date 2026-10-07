@@ -266,7 +266,7 @@ def build_report(proc, max_cycles, frame_cycles, disk_path):
             "- The keyboard/frame-interrupt path is sufficient to drive ROMBIOS into the documented disk boot path.",
             "- The no-image run checks a command write, at least 1000 status reads, and exactly 512 data reads; it does not check the prompt.",
             "- A disk-backed run is selected with `EKDOS_PROBE_DISK=/path/to/image`; invalid paths or unsupported raw image sizes fail this report explicitly.",
-            "- The disk-backed oracle checks the final framebuffer for the `A>` bitmap near the left edge. It does not require the cycle budget to be exhausted or exercise subsequent EKDOS commands or physical hardware.",
+            "- The disk-backed oracle requires trace exit code 0, a loaded disk, a command write, a status read, at least 512 data reads, and the exact 16×10 `A>` bitmap at x=0, 1 or 2 in the final framebuffer. It does not require the cycle budget to be exhausted or exercise subsequent EKDOS commands or physical hardware.",
         ]
     )
     if failures:
