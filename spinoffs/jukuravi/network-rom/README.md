@@ -156,11 +156,6 @@ Bits 2:1 select 40x24, 53x24, 64x20, or MODX-compatible 80x24.
 Bits 4:3 select English, Estonian, CP866 Russian, or English/user-remap.  ROM
 samples the byte once at reset and CP/M consumes the same latched value.
 
-The implemented C9 scope, including the physical/model console-output
-investigation and bounded transport hardening, is collected in
-[`docs/network-rom-c9-plan.md`](../../../docs/network-rom-c9-plan.md).
-The proved physical-video defect and focused successor scope are collected in
-[`docs/network-rom-c10-plan.md`](../../../docs/network-rom-c10-plan.md).
 The C11 programming and focused visual acceptance procedure is in
 `cpm-plus-juku/docs/c11-physical-acceptance-worksheet.md`.
 
