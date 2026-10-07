@@ -109,8 +109,8 @@ delta together.  It does not reset the shared LFO, sample phase accumulator,
 or envelope.  Key-off retains vibrato through the release tail, matching the
 OPL phase generator. Release completion clears the base step, volume and
 envelope stage; the vibrato preparation routine returns a zero step for that
-inactive channel. Mode and delta remain stored until the next tone packet
-replaces them.
+inactive channel. The pitch wrapper clears the stored feature flags and delta
+when the base step reaches zero, including an immediate key-off.
 
 Global depth or operator VIB changes made while a key is held must become a
 legato update at the next representable 50 Hz frame, or be reported as
