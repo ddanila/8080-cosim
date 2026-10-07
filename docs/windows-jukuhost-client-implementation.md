@@ -35,6 +35,12 @@ are in [windows-jukuhost-client.md](windows-jukuhost-client.md).
 
 ## Verified scope
 
+At startup, a missing INI triggers recovery from a parseable `.tmp` file,
+then a parseable `.bak` file, beside that INI. If neither can be restored,
+the GUI starts with defaults. An existing invalid INI reports an error;
+it does not trigger backup recovery. Saving rewrites the configuration,
+so comments and original formatting are not retained.
+
 | Environment | Evidence | Limit |
 | --- | --- | --- |
 | Native build/API shims | Payload, configuration, device selection, partial I/O, cancellation, timer, file replacement and PE/package checks | Does not execute native Windows drivers |
