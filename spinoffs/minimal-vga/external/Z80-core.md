@@ -35,3 +35,10 @@ git submodule update --init spinoffs/minimal-vga/external/T80 \
 
 See [HDL integration](../hdl/README.md) for the T80 compile order and smoke scope,
 and [simulation checks](../sim/README.md) for boot and Rev B entry points.
+
+The pinned tv80 README's legacy `(cd tests; make)` command refers to a directory
+absent from that revision. Its directed test programs live in `verif/tests`;
+`make -C spinoffs/minimal-vga/external/tv80/verif/tests` builds them with SDCC,
+`sdasz80` and `sdldz80`. That target compiles payloads only. The upstream
+verification plan's coverage goals are not results of the VJUGA regression
+checks linked above.
