@@ -25,7 +25,7 @@ import protocol  # noqa: E402
 
 
 OUTPUT = HERE / "diag-d2-loader.bin"
-README = HERE / "README.md"
+IDENTITIES = HERE / "SHA256SUMS"
 IDENTITY = b"JUKURAVI-D2-LOADER-1\0"
 ROM_VERSION = 9
 ENTRY_OFFSET = ROM_CHECKSUM_START
@@ -506,8 +506,8 @@ def main() -> int:
             raise SystemExit(f"missing generated image: {OUTPUT.name}")
         if OUTPUT.read_bytes() != image:
             raise SystemExit("diag-d2-loader.bin is stale; run build_d2_loader.py")
-        if not README.exists() or digest not in README.read_text():
-            raise SystemExit("firmware README does not pin the loader image SHA256")
+        if not IDENTITIES.exists() or digest not in IDENTITIES.read_text():
+            raise SystemExit("firmware SHA256SUMS does not pin the loader image SHA256")
         action = "checked"
     else:
         OUTPUT.write_bytes(image)

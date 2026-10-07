@@ -22,7 +22,7 @@ from build_d6_loader_v6 import (
 
 OUTPUT = base.HERE / "diag-d0-refresh.bin"
 DOS_OUTPUT = base.HERE / "dos" / "T35HOST.BIN"
-README = base.HERE / "README.md"
+IDENTITIES = base.HERE / "SHA256SUMS"
 DOS_MANIFEST = base.HERE / "dos" / "SHA256.TXT"
 DOS_INFO = base.HERE / "dos" / "T35INFO.TXT"
 ROM_VERSION = 0x1D
@@ -277,8 +277,8 @@ def main() -> int:
         for output in (OUTPUT, DOS_OUTPUT):
             if not output.exists() or output.read_bytes() != image:
                 raise SystemExit(f"{output.name} is missing or stale")
-        if not README.exists() or digest not in README.read_text():
-            raise SystemExit("firmware README does not pin the T35 image SHA256")
+        if not IDENTITIES.exists() or digest not in IDENTITIES.read_text():
+            raise SystemExit("firmware SHA256SUMS does not pin the T35 image SHA256")
         manifest_line = f"{digest}  {DOS_OUTPUT.name}"
         if not DOS_MANIFEST.exists() or manifest_line not in DOS_MANIFEST.read_text():
             raise SystemExit("DOS SHA256 manifest does not pin T35HOST.BIN")

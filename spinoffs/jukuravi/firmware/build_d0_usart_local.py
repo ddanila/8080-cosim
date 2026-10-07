@@ -18,7 +18,7 @@ from build_d0_cpu import (
 
 HERE = Path(__file__).resolve().parent
 OUTPUT = HERE / "diag-d0-usart-local.bin"
-README = HERE / "README.md"
+IDENTITIES = HERE / "SHA256SUMS"
 IDENTITY_OFFSET = 0x1F00
 IDENTITY = b"JUKURAVI-D0-USART-LOCAL-1\0"
 
@@ -163,8 +163,8 @@ def main() -> int:
             raise SystemExit(f"missing generated image: {OUTPUT.name}")
         if OUTPUT.read_bytes() != image:
             raise SystemExit("diag-d0-usart-local.bin is stale; run build_d0_usart_local.py")
-        if not README.exists() or digest not in README.read_text():
-            raise SystemExit("firmware README does not pin the local-USART image SHA256")
+        if not IDENTITIES.exists() or digest not in IDENTITIES.read_text():
+            raise SystemExit("firmware SHA256SUMS does not pin the local-USART image SHA256")
         action = "checked"
     else:
         OUTPUT.write_bytes(image)

@@ -53,7 +53,7 @@ import protocol  # noqa: E402
 
 
 OUTPUT = HERE / "diag-d0-ram-fallback.bin"
-README = HERE / "README.md"
+IDENTITIES = HERE / "SHA256SUMS"
 IDENTITY_OFFSET = 0x1F00
 IDENTITY = b"JUKURAVI-D0-RAM-FALLBACK-1\0"
 ROM_VERSION = 3
@@ -1275,8 +1275,8 @@ def main() -> int:
             raise SystemExit(
                 "diag-d0-ram-fallback.bin is stale; run build_d0_ram_fallback.py"
             )
-        if not README.exists() or digest not in README.read_text():
-            raise SystemExit("firmware README does not pin the RAM-fallback SHA256")
+        if not IDENTITIES.exists() or digest not in IDENTITIES.read_text():
+            raise SystemExit("firmware SHA256SUMS does not pin the RAM-fallback SHA256")
         action = "checked"
     else:
         OUTPUT.write_bytes(image)

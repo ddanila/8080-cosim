@@ -18,7 +18,7 @@ from build_d0_ram_fallback import (
 
 HERE = Path(__file__).resolve().parent
 OUTPUT = HERE / "diag-d0-romcheck.bin"
-README = HERE / "README.md"
+IDENTITIES = HERE / "SHA256SUMS"
 IDENTITY = b"JUKURAVI-D0-ROMCHECK-1\0"
 ROM_VERSION = 4
 
@@ -49,8 +49,8 @@ def main() -> int:
             raise SystemExit(f"missing generated image: {OUTPUT.name}")
         if OUTPUT.read_bytes() != image:
             raise SystemExit("diag-d0-romcheck.bin is stale; run build_d0_romcheck.py")
-        if not README.exists() or digest not in README.read_text():
-            raise SystemExit("firmware README does not pin the ROM-check SHA256")
+        if not IDENTITIES.exists() or digest not in IDENTITIES.read_text():
+            raise SystemExit("firmware SHA256SUMS does not pin the ROM-check SHA256")
         action = "checked"
     else:
         OUTPUT.write_bytes(image)

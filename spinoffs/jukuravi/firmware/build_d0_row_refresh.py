@@ -11,7 +11,7 @@ import protocol
 
 OUTPUT = t35.base.HERE / "diag-d0-row-refresh.bin"
 DOS_OUTPUT = t35.base.HERE / "dos" / "T36HOST.BIN"
-README = t35.base.HERE / "README.md"
+IDENTITIES = t35.base.HERE / "SHA256SUMS"
 DOS_MANIFEST = t35.base.HERE / "dos" / "SHA256.TXT"
 DOS_INFO = t35.base.HERE / "dos" / "T36INFO.TXT"
 ROM_VERSION = 0x1E
@@ -79,8 +79,8 @@ def main() -> int:
         for output in (OUTPUT, DOS_OUTPUT):
             if not output.exists() or output.read_bytes() != image:
                 raise SystemExit(f"{output.name} is missing or stale")
-        if not README.exists() or digest not in README.read_text():
-            raise SystemExit("firmware README does not pin the T36 image SHA256")
+        if not IDENTITIES.exists() or digest not in IDENTITIES.read_text():
+            raise SystemExit("firmware SHA256SUMS does not pin the T36 image SHA256")
         manifest_line = f"{digest}  {DOS_OUTPUT.name}"
         if not DOS_MANIFEST.exists() or manifest_line not in DOS_MANIFEST.read_text():
             raise SystemExit("DOS SHA256 manifest does not pin T36HOST.BIN")

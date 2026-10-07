@@ -12,7 +12,7 @@ from build_d4_loader_v4 import emit_loader as emit_loader_v4
 
 OUTPUT = base.HERE / "diag-d0-txready.bin"
 DOS_OUTPUT = base.HERE / "dos" / "T30HOST.BIN"
-README = base.HERE / "README.md"
+IDENTITIES = base.HERE / "SHA256SUMS"
 ROM_VERSION = 0x19
 IDENTITY = b"JUKURAVI-D0-TXREADY-ONLY-2400-1\0"
 PROGRESS_MARKERS = (0xE0, 0xE1, 0xE2)
@@ -77,8 +77,8 @@ def main() -> int:
         for output in (OUTPUT, DOS_OUTPUT):
             if not output.exists() or output.read_bytes() != image:
                 raise SystemExit(f"{output.name} is missing or stale")
-        if not README.exists() or digest not in README.read_text():
-            raise SystemExit("firmware README does not pin the T30 image SHA256")
+        if not IDENTITIES.exists() or digest not in IDENTITIES.read_text():
+            raise SystemExit("firmware SHA256SUMS does not pin the T30 image SHA256")
         action = "checked"
     else:
         OUTPUT.write_bytes(image)

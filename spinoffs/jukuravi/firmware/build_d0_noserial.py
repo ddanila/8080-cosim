@@ -19,7 +19,7 @@ from build_d0_ram_fallback import (
 
 HERE = Path(__file__).resolve().parent
 OUTPUT = HERE / "diag-d0-noserial.bin"
-README = HERE / "README.md"
+IDENTITIES = HERE / "SHA256SUMS"
 IDENTITY = b"JUKURAVI-D0-NOSERIAL-1\0"
 ROM_VERSION = 10
 ENTRY_OFFSET = ROM_CHECKSUM_START
@@ -55,8 +55,8 @@ def main() -> int:
     if args.check:
         if not OUTPUT.exists() or OUTPUT.read_bytes() != image:
             raise SystemExit("diag-d0-noserial.bin is missing or stale")
-        if not README.exists() or digest not in README.read_text():
-            raise SystemExit("firmware README does not pin the no-serial SHA256")
+        if not IDENTITIES.exists() or digest not in IDENTITIES.read_text():
+            raise SystemExit("firmware SHA256SUMS does not pin the no-serial SHA256")
         action = "checked"
     else:
         OUTPUT.write_bytes(image)

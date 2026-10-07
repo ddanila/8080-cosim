@@ -31,7 +31,7 @@ sys.path.insert(0, str(HERE.parent))
 import protocol  # noqa: E402
 
 OUTPUT = HERE / "diag-d0-robust.bin"
-README = HERE / "README.md"
+IDENTITIES = HERE / "SHA256SUMS"
 IDENTITY_OFFSET = 0x1F00
 IDENTITY = b"JUKURAVI-D0-ROBUST-SERIAL-1\0"
 ROM_VERSION = 15
@@ -410,8 +410,8 @@ def main() -> int:
     if args.check:
         if not OUTPUT.exists() or OUTPUT.read_bytes() != image:
             raise SystemExit("diag-d0-robust.bin is missing or stale")
-        if not README.exists() or digest not in README.read_text():
-            raise SystemExit("firmware README does not pin robust-full SHA256")
+        if not IDENTITIES.exists() or digest not in IDENTITIES.read_text():
+            raise SystemExit("firmware SHA256SUMS does not pin robust-full SHA256")
         action = "checked"
     else:
         OUTPUT.write_bytes(image); action = "wrote"

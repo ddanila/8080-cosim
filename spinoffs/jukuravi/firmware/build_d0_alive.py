@@ -10,7 +10,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 OUTPUT = HERE / "diag-d0-alive.bin"
-README = HERE / "README.md"
+IDENTITIES = HERE / "SHA256SUMS"
 ROM_SIZE = 8192
 IDENTITY_OFFSET = 0x0100
 IDENTITY = b"JUKURAVI-D0-ALIVE-1\0"
@@ -123,8 +123,8 @@ def main() -> int:
             raise SystemExit(f"missing generated image: {OUTPUT.relative_to(HERE.parents[2])}")
         if OUTPUT.read_bytes() != image:
             raise SystemExit("diag-d0-alive.bin is stale; run build_d0_alive.py")
-        if not README.exists() or digest not in README.read_text():
-            raise SystemExit("firmware README does not pin the generated image SHA256")
+        if not IDENTITIES.exists() or digest not in IDENTITIES.read_text():
+            raise SystemExit("firmware SHA256SUMS does not pin the generated image SHA256")
         action = "checked"
     else:
         OUTPUT.write_bytes(image)

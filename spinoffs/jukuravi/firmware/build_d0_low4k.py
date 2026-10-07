@@ -12,7 +12,7 @@ from build_d5_loader_v5 import emit_loader as emit_loader_v5
 
 OUTPUT = base.HERE / "diag-d0-low4k.bin"
 DOS_OUTPUT = base.HERE / "dos" / "T31HOST.BIN"
-README = base.HERE / "README.md"
+IDENTITIES = base.HERE / "SHA256SUMS"
 ROM_VERSION = 0x1A
 IDENTITY = b"JUKURAVI-D0-LOW4K-MONITOR-2400-1\0"
 LOADER_EMITTER = emit_loader_v5
@@ -84,8 +84,8 @@ def main() -> int:
         for output in (OUTPUT, DOS_OUTPUT):
             if not output.exists() or output.read_bytes() != image:
                 raise SystemExit(f"{output.name} is missing or stale")
-        if not README.exists() or digest not in README.read_text():
-            raise SystemExit("firmware README does not pin the T31 image SHA256")
+        if not IDENTITIES.exists() or digest not in IDENTITIES.read_text():
+            raise SystemExit("firmware SHA256SUMS does not pin the T31 image SHA256")
         action = "checked"
     else:
         OUTPUT.write_bytes(image)
