@@ -57,9 +57,14 @@ thermal/load and surge qualification remain separate.
 6. Regenerate Gerber/drill and assembly outputs from the accepted source; rerun
    package integrity/render checks, record new hashes, and complete independent
    review and vendor DFM/preview.
-7. Perform staged physical acceptance using [the Rev A bench procedure](phase4-bench-bringup.md).
-
 Follow [fabrication notes](../kicad/fab-notes.md) for the export workflow and
 [the sourcing policy](rev-a-sourcing-plan.md) for assembly responsibilities.
 Until the functional and review gates are closed: **do not upload, order, or
 pay for this board**.
+
+## Acceptance after fabrication
+
+After an authorized order is received and the board is assembled, perform
+staged physical acceptance using [the Rev A bench procedure](phase4-bench-bringup.md).
+Design/package release permits ordering; it does not establish physical
+boot, signal integrity or acceptance of the assembled unit.
