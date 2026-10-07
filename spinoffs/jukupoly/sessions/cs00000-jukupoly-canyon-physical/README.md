@@ -6,29 +6,20 @@ played the credited seven-second reduction of George Stone's “Trip Through the
 Grand Canyon” through the unmodified internal speaker, then returned cleanly
 to CP/M Plus 3.1.
 
-The board remained powered after the preceding experiment.  `jukuhost` used
-`--resume-disk` to reattach to the resident C10 JukuNet/NetDisk session; no
-hardware reset or cold boot was needed.  The operator sent `WBOOT` once to
-relog drive A: after substituting the private volume, then ran `JUKUPOLY`.
-The console transcript normalizes to:
+## Qualification
 
-```text
-A>WBOOT
-A>JUKUPOLY
-A>
-```
+| Evidence | Result |
+|---|---|
+| Delivery | Reattached with `--resume-disk` to resident C10 JukuNet/NetDisk; `WBOOT` relogged the substituted private drive A: |
+| Console | `JUKUPOLY` returned to a fresh `A>` prompt 13.152 seconds after the command |
+| Listening | Operator assessment: “not bad; player ok” |
+| Host log | 20 successful reads; zero writes, retries, boot restarts or target resets |
+| Cycle regression | 7.440-second music interval; concurrent three-tone and percussion execution |
 
-The fresh prompt arrived 13.152 seconds after the program command.  That host
-interval includes CP/M directory lookup, COM loading, and CCP reload; the
-cycle-qualified music interval is 7.440 seconds and is not inferred from the
-host timing.  The host log records 20 successful reads, zero writes, zero
-retries, zero boot restarts, and zero target resets.
-
-The operator's listening assessment was “not bad; player ok.”  This qualifies
-physical playback and clean return of the compiled-pattern engine.  The
-cycle regression remains the evidence that all three tone accumulators and
-percussion were concurrent; no multitrack electrical or acoustic capture was
-taken during this session.
+The prompt interval includes file lookup, loading and CCP reload; it is not
+an audio-duration measurement. Physical evidence qualifies playback and clean
+return of this exact image. Tone/percussion concurrency is established by
+the cycle regression; no multitrack electrical or acoustic capture was taken.
 
 | File | Contents |
 |---|---|
