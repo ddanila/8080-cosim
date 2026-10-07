@@ -1,332 +1,83 @@
-# T31/T34/T35/T36 physical sessions on CS00024
+# CS00024 physical evidence
 
 Board: Arvutimuuseum Juku `CS00024`.
 
-Current diagnosis and bench actions are in the
-[T36 diagnosis](../../docs/cs00024-t36-diagnosis.md). The captures below
-record how the refresh and timing interpretations were established; historical
-diagnostic bits are not current component diagnoses.
+The [current diagnosis](../../docs/cs00024-t36-diagnosis.md) owns conclusions
+and next bench actions. This record identifies the captures supporting those
+conclusions and preserves their measurement limits. Earlier diagnostic bits
+and superseded interpretations are not current component diagnoses.
 
-## Initial T31 result (2026-08-08; `1A/72EF`)
+## T31 and D55 supersession
 
-Two cold boots decoded the exact T31 identity and repeated diagnostic bitmap
-`18`: historical D55 and D57 bits. PIC, PPI and D54 passed. Compact RAM bitmap
-`83` proved both `4000h..4FFFh` and `C000h..CFFFh` windows. Loader API v2
-reached READY.
+Two cold T31 `1A/72EF` boots returned peripheral bitmap `18` and compact RAM
+bitmap `83`. The D55 bit is invalid as a fault discriminator: exact T31 also
+produces it on the clean clock-faithful model because it latches the new Mode-0
+counts before their required clocks. See the
+[D55 audit](../../docs/jukuravi-d55-diagnostic-audit.md).
 
-PROBE did not complete. With the corrected host retry path, three attempts
-returned the same strong-parser-CRC error payload
-`0006373F000000000034`. No RAM upload occurred. A later resident attach sent
-three solicited RESYNC attempts but received no framed response.
-
-Primary retained captures are:
-
-- `sessions/cs00024-t31-initial/20260808T213309.146201Z.*`
-- `sessions/cs00024-t31-default/20260808T213454.577423Z.*`
-- `sessions/cs00024-t31-retryfix/20260808T213825.856067Z.*`
-- `sessions/cs00024-t31-attach-resync/20260808T214255.525497Z.*`
-
-## D55 supersession
-
-The 2026-08-09 desk audit proves that exact T31 produces a D55 bit on a clean
-clock-faithful structural board: all four D55 latch commands occur before the
-new Mode-0 counts receive their required D54/D56 clocks. Therefore bitmap
-`18` is valid evidence for a T31 D57-path failure but **not** evidence that
-CS00024 D55, or even its complete functional path, is bad.
-
-Any future clock-safe T34 `1C/A637` result of `08` must be interpreted as a
-path result covering D55, D9 select, local bus/strobes, socket/power and
-D54/D56 clock sources. See
-[`../../docs/jukuravi-d55-diagnostic-audit.md`](../../docs/jukuravi-d55-diagnostic-audit.md).
+All capture paths below are relative to this directory. T31 captures are in
+`sessions/cs00024-t31-initial/`, `sessions/cs00024-t31-default/`,
+`sessions/cs00024-t31-retryfix/` and `sessions/cs00024-t31-attach-resync/`. They preserve the failed PROBE/RESYNC attempts;
+no upload occurred.
 
 ## T34 cold boots and loader discriminator, 2026-08-09
 
-The exact programmed T34 `1C/A637` image completed four cold boots. Corrected
-D55 passed on all four, so CS00024 now has four valid clean D55 functional-path
-results. PIC, PPI, D54 and both compact RAM windows also passed every time.
-D57 was intermittent: the first boot returned peripheral bitmap `00`; the
-next three returned `10`. Therefore neither the earlier T31 D57 indication nor
-the first clean T34 result alone describes a stable state.
+Exact T34 `1C/A637` passed corrected D55, PIC, PPI, D54 and both compact RAM
+windows on four cold boots. Peripheral bitmaps were `00`, then `10` three
+times; the historical D57 indication was intermittent.
 
-Evidence:
+Seven-vote PROBE failed with strong-parser CRC errors at both 6 and 12 ms
+host guards. CONFIG-first followed by a one-vote exact-cookie PROBE passed.
+These captures establish a length/time boundary rather than a dead USART:
 
-- `sessions/cs00024-t34-20260809/20260809T055628.869126Z.*` — bitmap `00`,
-  zero handshake mismatches;
-- `sessions/cs00024-t34-full/cold-loader-probe/20260809T060236.505488Z.*` —
-  bitmap `10`, three identical strong-CRC results;
-- `sessions/cs00024-t34-full/cold-loader-probe-g12/20260809T060417.872163Z.*`
-  — bitmap `10`, 12 ms guard discriminator;
-- `sessions/cs00024-t34-full/config-first-v1/20260809T060703.043231Z.*` —
-  bitmap `10`, successful CONFIG-first/one-vote exact-cookie PROBE.
+- `sessions/cs00024-t34-20260809/20260809T055628.869126Z.*`;
+- `sessions/cs00024-t34-full/cold-loader-probe/20260809T060236.505488Z.*`;
+- `sessions/cs00024-t34-full/cold-loader-probe-g12/20260809T060417.872163Z.*`;
+- `sessions/cs00024-t34-full/config-first-v1/20260809T060703.043231Z.*`.
 
-At the normal ordering, all three seven-vote PROBE attempts repeated exact
-detail payload `0006373F000000000034`. Doubling the host guard from 6 to 12 ms
-did not help; it returned `0006373F0000000000B4`. No upload occurred in either
-case. A short CONFIG command at the same seven-vote bootstrap width succeeded,
-then the complete eight-byte PROBE cookie passed at one vote. Both directions
-of the USART link and the loader command surface are therefore operational;
-the failure is length/time dependent rather than a dead serial interface.
+T34 retention tests kept a verified 32-byte marker at `4D00h` exact through
+30.912 seconds when read about every 5.15 seconds. Sparse tests instead lost
+CONFIG after untouched intervals: an exact read at 5.158 seconds preceded the
+45-second target timeout; a zero-guard exact read at 3.423 seconds preceded
+the 20-second target timeout. The short boot RAM test therefore does not
+qualify idle retention. Captures:
 
-The later host-driven work below proves this is a destructive elapsed-time/RAM
-boundary. It does not yet identify a DRAM package or refresh-source component.
+- `sessions/cs00024-t34-retention-cold-physical/20260809T181947.593033Z.*`;
+- `sessions/cs00024-t34-retention-sparse-cold-physical/20260809T182357.819924Z.*`;
+- `sessions/cs00024-t34-retention-midpoint-g0-cold-physical/20260809T202332.467525Z.*`.
 
-## Host-driven timing and retention result, 2026-08-09
+## T35 refresh correction
 
-The first full-batch attempt verified a 29-byte CALL/RET fixture, then lost the
-link after a D57-touching CPU/PIT ratio snippet. The revised batch moved every
-D57 operation last and replaced that measurement with a peripheral-free paired
-CPU loop. On a fresh boot it measured **1.714065 MHz** effective execution
-speed: 1,200,000 additional nominal T-states took 0.700090 s. This predicts a
-nominal 500 ms CPU-timed tone near 583 ms and explains the owner's approximate
-600 ms observation. It does not explain the separate near-990 Hz PIT tone,
-whose clock remains close to nominal.
-
-The next 386-byte write-map image uploaded with exact per-chunk readback, but
-did not return after RUN. Shorter probes then exposed non-repeatable result
-corruption. The same 81-byte INX/DAD image produced three different outcomes:
-
-- a wholly malformed result and returned `A=0A`;
-- a valid header/completion and correct BC/DE/HL/DAD-D values, but `0000` for
-  the SP-derived result plus one changed fill byte; and
-- in-place, valid header/completion and DE/HL/DAD-D, but changing BC/SP/fill
-  bytes.
-
-A later control-only re-read, with no upload or execution, changed the existing
-`4D00h` block from
-`58313243A5FF00000000011A015A0000011AFFFFFFFF0000` to
-`0000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF0000`. This invalidates a
-deterministic CPU-INX interpretation of those malformed runs and directly
-proves unstable retained RAM contents over the reattach interval.
-
-The dedicated [`retention.py`](retention.py) runner then wrote one exact
-32-byte marker at `4D00h` and kept one serial process open:
-
-- verified write and read at 5.147 s: exact;
-- reads approximately every 5.15 s: exact through 30.912 s;
-- fresh sparse run: exact at 5.158 s, then after leaving RAM/loader untouched
-  until the 45 s target, the next CONFIG timed out after three attempts;
-- warm-board 6 ms bootstrap: two cold RESETs repeated CONFIG `strong_crc`;
-  raw replies first corrupted echoed command `24->34`, then echoed `24`
-  correctly but retained `strong_crc` status; and
-- zero host guard restored bootstrap, marker verification and an exact read at
-  3.423 s, but the next CONFIG still timed out after an untouched interval to
-  the 20 s target (about 16.6 s since the preceding read).
-
-This proves an **idle RAM/refresh failure** under T34: regular RAM-touching
-loader operations preserve the tested rows, while an untouched interval
-between roughly 5 and 17 seconds is sufficient to destroy mutable loader state
-on the warm board. USART traffic continues during the failure, so this is not
-a dead serial link. T34's compact 20 ms RAM result remains valid only for that
-short interval and cannot clear long-term retention. Long verified uploads can
-also decay at their early target addresses before RUN, explaining why payload
-length changes execution behavior.
-
-Primary new captures are:
-
-- `sessions/cs00024-t34-batch-physical/20260809T071631.782572Z.*` — 1.714 MHz
-  measurement followed by verified write-map upload and no RETURN;
-- `sessions/cs00024-t34-increment-repeat-physical/20260809T180730.412858Z.*`
-  and `sessions/cs00024-t34-increment-inplace-physical/20260809T180936.570451Z.*`
-  — non-repeatable 81-byte probe results;
-- `sessions/cs00024-t34-increment-reread-v1-physical/20260809T181240.980761Z.*`
-  — control-only changed result block;
-- `sessions/cs00024-t34-retention-cold-physical/20260809T181947.593033Z.*` —
-  repeated-access exact pass through 30.912 s;
-- `sessions/cs00024-t34-retention-sparse-cold-physical/20260809T182357.819924Z.*`
-  — exact 5.158 s sample then post-idle CONFIG timeout; and
-- `sessions/cs00024-t34-retention-midpoint-g0-cold-physical/20260809T202332.467525Z.*`
-  — zero-guard exact 3.423 s sample then 20 s target CONFIG timeout.
-
-## T35 burn and initial apparent refresh proof, 2026-08-10
-
-The exact T35 image was programmed into the AT28C64 with Willem verification
-and one complete post-write readback. The programmed and read-back bytes both
-equal `1D/45C4`, SHA256
+T35 `1D/45C4` was programmed and read back exactly, SHA256
 `ceb55556f11318dea5ef8c36b81f931813a139ce6ba6e07b607318571c6e1274`.
-The programmer record is in the sibling `dosravi` repository at
+The sibling `dosravi` record is
 `sessions/at28c64-t35-write-20260810/session.json`.
 
-The first CS00024 cold boot decoded that exact identity. PIC, PPI, corrected
-D54/D55/D57, and both compact RAM windows passed. The loader reported refresh
-enabled, configured geometry 128, public API `07A9h`, and 1,752 receive-wait
-refresh calls. That telemetry described the intended loop count, not verified
-physical-row coverage.
-A resident attach more than 20 seconds later completed normally and reported
-40,414 calls. This crosses the destructive T34 5-to-17-second idle interval
-and proved that frequently touched T35 loader state survived on this physical
-board; it is no longer only a simulation claim.
+T35 initially preserved loader state across an idle reattach, but its reported
+128-row geometry was not proof of physical coverage. The six-second lane
+capture found 14/32 bad zero bytes, 3/32 bad one bytes and 28/32 bad alternating
+bytes after exact immediate verification. Errors spanned the data lanes;
+this did not identify an individual D84--D91 package.
 
-Evidence:
-
-- `sessions/cs00024-t35-first-physical/20260810T061734.589060Z.*`;
-- `sessions/cs00024-t35-idle-reattach-physical/20260810T061834.464961Z.*`.
-
-This remains a workaround and discriminator, not a DRAM-package diagnosis.
-
-## T35 batch stop after RUN, 2026-08-10
-
-Four later cold sessions passed verified upload/readback/CALL/RET at `4000h`
-and the refresh-aware paired CPU-timebase test. They measured 1.702803,
-1.702746, 1.708031, and 1.702367 MHz. Each then uploaded a target at `4000h`,
-uploaded and read back the same 12-byte cooperative-refresh wrapper, and
-received the valid RUN acknowledgement for that wrapper. None received RETURN.
-
-The first three runs varied the target; the fourth repeated the shortest target
-at an A12-low wrapper address:
-
-| Capture | Cold D57 | Wrapped target | Last valid frame |
-| --- | --- | --- | --- |
-| `20260810T063013.783535Z` | fail, bit `10` | 386-byte all-RAM write map | RUN ACK `7F00` |
-| `20260810T150610.267813Z` | **pass**, bitmap `00` | LHLD address classes | RUN ACK `7F00` |
-| `20260810T151126.497325Z` | fail, bit `10` | register-only INX/DAD | RUN ACK `7F00` |
-| `20260810T154931.444912Z` | **pass**, bitmap `00` | register-only INX/DAD | RUN ACK `6F00` |
-
-The third and fourth runs deliberately skipped every all-RAM probe. Their
-short target saves and restores SP, performs no I/O, does not select all-RAM
-mode, and returns in clean simulation. Therefore an all-RAM side effect,
-target length, and the individual target algorithm are excluded as the common
-immediate cause. The common new operation is execution through the
-pre/post-refresh wrapper. The fourth run moved it from `7F00h` to `6F00h`,
-keeping the same D2 always-wait class while clearing A12, and failed
-identically. This physically falsifies an A12-specific wrapper-location
-explanation.
-
-The raw receive streams end in a complete CRC-valid RUN ACK. The first two
-contain no later byte. The operator-interrupted third and fourth have only
-`F8 00` and `09 00`, respectively, after the ACK. Neither pair is a valid frame;
-both were captured around operator power-off and may be serial corruption or
-power-off noise. During both stops the board emitted a continuous low-frequency
-tone. This is useful path evidence, but without a frequency or the preceding
-grouped-pulse cadence it cannot distinguish the ROM's nominal 250 Hz
-CPU-failure tone from the nominal 125 Hz UART terminal tone.
-
-## Why this is not the proven CS00015 D1 fault
-
-The initial similarity was A12-related: `7F00h` has A12 high, and the exact
-CS00015 D1 defect loses an already-high A12 in the shared 16-bit increment
-path. Full comparison excludes that exact mechanism on CS00024:
-
-1. T35's public refresh primitive at `07A9h` is in low ROM, but its host QUERY
-   command handler is at `1070h..1118h`. Every physical T35 session returned
-   valid QUERY telemetry after executing that upper-ROM handler, whose ordinary
-   multi-byte instructions increment a PC with A12 already high. The larger
-   reported counters and the 501 timebase calls separately prove the low-ROM
-   refresh primitive, not repeated execution of the upper handler.
-2. The wrapper's 12 bytes at `7F00h` were independently read back exactly.
-   That readback increments a high-A12 HL address; the CS00015 defect affects
-   INX/paired reads as well as PC and would not preserve this operation.
-3. Injecting `JUKU_CPU_A12_INCREMENT_FAULT=1` into exact T35 simulation does
-   **not** reproduce the physical trace. It loses execution in the upper-ROM
-   refresh handler immediately after READY, before PROBE or any RUN ACK.
-   `tests/jukuravi_t35_wrapper_a12_test.py` guards this negative result.
-
-It remains logically possible that CS00024 has a different, RAM-cycle- or
-address-combination-dependent CPU/timing fault. It is not correct to call the
-present result a second instance of CS00015's rare internal D1 defect.
-
-## T35 simulation boundary
-
-An execution-only corruption injection reproduced RUN ACK without RETURN
-and a CPU-failure tone. This established a possible misexecution mechanism,
-not a component diagnosis. The later physical row-lane test found inadequate
-T35 refresh, and the complete T36 test passed the CPU/address probes and RAM
-patterns. Use the [current diagnosis](../../docs/cs00024-t36-diagnosis.md)
-for remaining D57, normal-raster refresh and serial-margin work.
-
-## Direct `4000h` register result, 2026-08-10
-
-The next cold run removed the refresh wrapper entirely. All boot predicates,
-including D57, passed; verified-return passed; and the paired timebase measured
-1.703357 MHz. The 81-byte target was uploaded in three independently exact
-readback-verified chunks. A direct RUN at `4000h` acknowledged and returned in
-47.981 ms with no replay. This rules out the wrapper as a prerequisite for the
-fault.
-
-The result marker and completion byte were intact, but three of five words
-were wrong:
-
-| Operation | Expected | Observed |
-| --- | --- | --- |
-| `INX B`, `0FFFh` | `1000h` | `5555h` (result slot unchanged) |
-| `INX D`, `1A00h` | `1A01h` | `1A01h` |
-| `INX H`, `5A00h` | `5A01h` | `5555h` (result slot unchanged) |
-| `INX SP`, `9A00h` | `9A01h` | `2020h` |
-| `DAD D`, `1A00h+1` | `1A01h` | `1A01h` |
-
-This is not the exact CS00015 D1 signature, which is
-`1000,0A01,4A01,8A01,1A01`. It is also not evidence for one DRAM data package:
-comparing the six wrong result bytes produces aggregate XOR mask `FF`, with
-both 1-to-0 and 0-to-1 differences. Some bad words may represent skipped or
-misexecuted `SHLD`, rather than individual corrupt data bits.
-
-The drawing closes the populated bank's bit-lane mapping:
-
-| Data bit | DRAM |
+| Retained evidence | Scope |
 | --- | --- |
-| DB0 | D84 |
-| DB1 | D85 |
-| DB2 | D86 |
-| DB3 | D87 |
-| DB4 | D88 |
-| DB5 | D89 |
-| DB6 | D90 |
-| DB7 | D91 |
+| `sessions/cs00024-t35-first-physical/20260810T061734.589060Z.*` and `sessions/cs00024-t35-idle-reattach-physical/20260810T061834.464961Z.*` | Initial boot and surviving loader state, not full-row refresh |
+| `tests/jukuravi_t35_physical_sessions_test.py` and its named captures | Four wrapper RUN-ACK/no-RETURN stops, direct `4000h` wrong-register result, and delayed lane corruption |
+| `sessions/cs00024-t35-ram-lanes-physical/20260810T161602.033997Z.json` | Delayed known-pattern corruption after immediate verification |
 
-This mapping permits a package candidate only when repeated known-pattern
-readbacks show a stable single-bit mask. Alternating `00/FF/AA/55`, walking-one,
-and walking-zero patterns can distinguish stuck-low, stuck-high, and
-intermittent lanes. Errors spanning many bits or whole bytes instead implicate
-shared RAS/CAS/write/refresh/address timing and must not be blamed on eight
-packages at once.
+The physical row uses CPU A0..A6: D48/D49 select the low address byte during
+RAS, and the [MK4564 contract](../../ref/datasheets/mk4564-64kx1-dram.pdf)
+requires 128 rows inside 2 ms. T35's `INR H` sweep held those bits at zero.
+T36 changes the sweep to `4000h..407Fh` with `INR L`; the corrected decay
+model uses `address & 7Fh`. The old high-byte-row cosim pass does not prove
+physical refresh. The [diagnosis](../../docs/cs00024-t36-diagnosis.md#refresh-interpretation)
+contains the source and model interpretation.
 
-The subsequent direct-register and host-driven lane tests are recorded below.
-The original T35 cosim pass used the now-corrected high-byte row model and
-is not valid evidence of physical refresh coverage.
-
-Evidence:
-`sessions/cs00024-t35-increment-direct-physical/20260810T155952.521638Z.*`.
-
-## T35 row-lane capture and T36 correction, 2026-08-10
-
-The completed six-second lane capture is
-`sessions/cs00024-t35-ram-lanes-physical/20260810T161602.033997Z.json`.
-Immediate write verification passed for zero, one, and alternating patterns.
-The CRC-valid delayed reads then showed:
-
-- zeros: 14/32 bad bytes, predominantly `00 -> FF`, across every data lane;
-- ones: three bad bytes, XOR `15`, affecting DB0/DB2/DB4 once each;
-- alternating: 28/32 bad bytes, predominantly whole-byte inversions, across
-  every data lane;
-- the loader stopped before the walking pattern could begin.
-
-This is a shared row-refresh failure, not evidence that all eight DRAM packages
-failed independently. The row structure is particularly decisive: scratch
-offset is also CPU A0..A6, and offset zero survived while many other offsets
-decayed.
-
-The drawings and manufacturer contract explain it. D48/D49 select CPU
-BA0..BA7 onto MA0..MA7 during the populated-bank D53 Y0 `/RAS` phase; later
-`/CAS` selects the upper address byte. MK4564-class DRAM requires 128 refresh
-cycles per 2 ms and does not use pin 9/MA7 for refresh. Thus physical row is
-CPU address bits A0..A6. T35's `INR H` loop holds those bits at zero and
-refreshes one row 128 times.
-
-Sources: [`kicad/juku.board.json`](../../kicad/juku.board.json), the vendored
-[`MK4564 datasheet`](../../ref/datasheets/mk4564-64kx1-dram.pdf), and the
-[1984 Mostek data book](https://www.bitsavers.org/components/mostek/_dataBooks/1984_Mostek.pdf).
-
-T36 (`1E/C617`, SHA256
-`32264641836ce914a0fc706c916e2847d542d83b05d6737f1d6272b76d78dedb`)
-changes only the physical sweep axis: `4000h..407Fh` via `INR L`. Corrected
-cosim models row as `address & 7Fh`; T36 covers all 128 rows inside the decay
-window while exact T35, armed at the same `07A9h` entry, decays without full
-coverage. T36 was subsequently programmed and physically exercised as recorded
-below.
-
-The measured 1.70–1.71 MHz values are effective RAM-loop throughput including
-READY waits. They do not establish a low CPU oscillator; the measured
-approximately 990 Hz startup tone is consistent with the nominal 1 kHz PIT
-programming.
+The earlier wrong-register results and wrapper stops are superseded as
+persistent CPU findings by the complete T36 probes below. The measured
+1.70–1.71 MHz rates are effective RAM-loop throughput including READY waits,
+not CPU oscillator measurements. Detailed session chronology remains in Git
+and the retained JSON/raw streams.
 
 ## T36 programming and first physical run, 2026-08-10
 
