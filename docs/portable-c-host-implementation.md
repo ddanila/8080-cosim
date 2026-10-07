@@ -10,7 +10,9 @@ runtime contract and remaining physical qualification.
 
 - Janet bootstrap with learned station identities and checked frames.
 - Stock/JF17 reset-safe boot at 9,600/8O1; CRC-checked C8/C11/C12 Fastboot
-  profiles, including bounded recovery when readiness markers are lost.
+  profiles, including recovery when readiness markers are lost. Boot attempts
+  have deadlines; passive recovery can rediscover and retry until stopped.
+  See [C11 recovery limits](c11-session-recovery.md#waiting-and-retry-limits).
 - N3 A:/B: disk service and N4 console, clock, report and capability traffic.
 - Duplicate request suppression, snapshot media, transaction journaling,
   clean shutdown, serial reopen and target-reset recovery.
@@ -87,6 +89,8 @@ as evidence from that invocation.
 | POSIX integration, named PTY loss/reopen and retirement boundary | `sync/jukuhost_linux_check.sh` |
 | C8 boot, missed-ready recovery, N4 and writable media | `sync/jukuhost_c8_cosim_check.sh` |
 | C9 bounded transport and host replacement | `sync/jukuhost_c9_cosim_check.sh` |
+| C10 video-enable telemetry and host replacement | `sync/jukuhost_c10_cosim_check.sh` |
+| C11 passive discovery, late host, replacement and NetDisk reset | `sync/jukuhost_c11_cosim_check.sh` |
 | Stock target reset with the same host process | `tests/jukuhost_stock_recovery_cosim_test.py` |
 | DOS reproducibility and serial emulator | `sync/jukuhost_dos_check.sh` |
 | Windows payload/config/API/PE/package checks | `sync/jukuhost_win32_check.sh` |
