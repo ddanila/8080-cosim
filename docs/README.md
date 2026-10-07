@@ -33,7 +33,7 @@ navigation and status definitions; superseded experiments remain in Git history.
 - [July 2026 photo registration](photo-registration.md)
 - [Git LFS policy](git-lfs-policy.md)
 - [Source coverage audit](source-coverage-audit.md)
-- [2026-07-18 factory-drawing legibility audit](factory-drawing-legibility.md)
+- [Factory-drawing legibility audit](factory-drawing-legibility.md)
 - [`ДГШ5.109.009 Э3` reviewed transcription and divergence audit](../ref/schematics/dgsh5-109-009-e3-notes.md)
 - [D30 section-B clock and output connections](d30-section-b-scan-chase.md)
 - [8286 transceiver pinout audit](8286-pinout-audit.md)
@@ -63,6 +63,8 @@ Each result applies only to the inputs and scope named by its report.
 - [D40/D59/D92/D95 1 MHz route review](d40-d59-d92-d95-1mhz-route.md)
 - [Unmodeled footprint inventory](unmodeled-footprint-inventory.md)
 - [D93 pin-40 power-trace chase](d93-pin40-photo-chase.md)
+- [FDC hardware handoff](fdc-hardware-handoff.md)
+- [D93 reset and static-pin model boundary](../ref/schematics/fdc-controller-static-map.md)
 - [Owner measurement shortlist](owner-measurement-shortlist.md)
 - [Owner-measured facts](owner-measured-facts.md) — check before requesting measurements
 - [Next bench checklist](next-bench-session-checklist.md)
