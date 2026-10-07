@@ -74,17 +74,22 @@ control panel.
 The capture inputs, dependencies, and regeneration commands are documented in
 [`media/demos/README.md`](media/demos/README.md).
 
-Downstream projects can consume the digest-pinned
-`ghcr.io/ddanila/8080-cosim-smoke-kit` OCI image instead of cloning this whole
-repository. This Linux amd64 artifact image contains the simulator, static
-`jukuhost`, frozen non-runnable Python test fixtures, and the three ROMs listed
-in [its manifest](.github/smoke-kit/smoke-kit.json), installed at
-`/opt/8080-cosim/smoke-kit.json`. Its `scratch` image supplies no shell or
-simulator shared libraries. Copy the artifacts into a Linux amd64 runtime
-providing the simulator's dynamic loader and shared libraries; the
-[Dockerfile](.github/smoke-kit/Dockerfile) builds it on Ubuntu 24.04. Selected input changes
-on `master` and manual dispatch publish `v2` and a source-SHA tag. Pin a digest
-for a fixed artifact; `v2` is a moving tag.
+## Downstream smoke kit
+
+Use `ghcr.io/ddanila/8080-cosim-smoke-kit` to obtain simulator artifacts
+without cloning the repository. The Linux amd64 kit contains the simulator,
+static `jukuhost`, frozen Python test fixtures and three ROMs, listed in
+[its manifest](.github/smoke-kit/smoke-kit.json) at
+`/opt/8080-cosim/smoke-kit.json`.
+
+The `scratch` image has no shell or simulator shared libraries. Copy its
+artifacts into a Linux amd64 runtime with the required dynamic loader and
+libraries; the [Dockerfile](.github/smoke-kit/Dockerfile) uses Ubuntu 24.04.
+The Python fixtures are not standalone executables.
+
+[Publishing](.github/workflows/smoke-kit.yml) runs for selected input changes
+on `master` or manual dispatch. It produces the moving `v2` tag and a
+`sha-<source commit>` tag. Pin an image digest for reproducible inputs.
 
 ## Evidence and source hierarchy
 
