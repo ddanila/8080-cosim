@@ -180,7 +180,7 @@ def main() -> int:
         (
             "Bracket-mounted S1 is distinguished from PCB wire landings А:17/А:18",
             marker(bodge_text, "S1 itself is mounted on the top connector bracket", "two-pin PCB header", "А:17", "А:18")
-            and marker(read(WIRE_TABLE_MD), "S1 is bracket-mounted", "D98.7", "S1 remains an off-board schematic/mechanical part", "`A17` is a one-pad PCB footprint"),
+            and marker(read(WIRE_TABLE_MD), "S1 is bracket-mounted", "D98.7", "S1 remains", "an off-board schematic/mechanical part", "`A17` is a one-pad PCB footprint"),
             "sheet-1 top-bracket view; owner photo 200402344; sheets 2-5 rows 11/12",
         ),
         (
