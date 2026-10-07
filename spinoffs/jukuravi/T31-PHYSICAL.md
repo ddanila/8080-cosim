@@ -109,22 +109,14 @@ were available, but none beyond the first was needed.
 | 1 | 8 ms | 10 | 10/10 | 0 | 7.628 s | 3.802 B/s |
 | 1 | 6 ms | 10 | 10/10 | 0 | 6.847 s | 4.235 B/s |
 
-All 30 passes also had zero parser-buffer store retries and zero handshake
-mismatches. In particular, all 20 single-vote passes succeeded on their first
-LOAD and first CRC command. Single-vote/6-ms was 6.62 times faster than the
-first 5-vote/12-ms setting in this experiment.
+All 30 passes had zero parser-buffer store retries and zero handshake
+mismatches; every LOAD and RAM CRC completed on its first attempt.
 
 These runs support single-vote operation on the recorded CS00015 link under
 the tested conditions; they do not establish reliability on another setup.
-CRC-8 framing, the command CRC-16 over the parser buffer, the LOAD result's data
-CRC, and an independent CRC over target RAM retain detection. LOAD is idempotent,
-so the simpler operational policy is to let the host resend the complete command
-when any layer rejects it or times out. Exact READ remains available for a final
-high-assurance comparison.
-
-The host now defaults to the proven 1-vote / 6 ms setting. CRC-protected
-whole-command retries remain enabled, while `--loader-guard-ms` and
-`--loader-votes` can add margin for another physical link. Raw evidence:
+The host defaults to one vote / 6 ms. The checksum layers, bounded retries and
+configuration options are defined by [loader API v2](LOADER-API-V2.md).
+Raw evidence:
 
 - `sessions/speed-v5-g12/20260803T152950.248602Z.*`
 - `sessions/speed-v3-g8/20260803T153445.958908Z.*`
