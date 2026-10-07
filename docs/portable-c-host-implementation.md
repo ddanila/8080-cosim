@@ -29,9 +29,10 @@ number of records already read, possibly zero. An invalid read-ahead selection
 instead returns status `1`. A successful host exit is therefore not proof that
 every disk request succeeded; inspect request statuses and returned counts.
 
-Media setup, journal recovery, and persistent A: transaction failures stop the
-runner with its media-error exit. These differ from ordinary read replies and
-do not enter serial rediscovery.
+Startup media validation or file-open failures stop the runner with its
+artifact-error exit. Service media initialization, journal recovery, and
+persistent A: transaction failures use its media-error exit. These differ
+from ordinary read replies and do not enter serial rediscovery.
 
 ## Capture conversion
 
