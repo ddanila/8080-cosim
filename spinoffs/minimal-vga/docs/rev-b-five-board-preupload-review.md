@@ -124,8 +124,11 @@ point where dimensions and layers are automatically analysed.
 | Backplane | 220,515 | `c6d15a55cd56c5f1114bb831fbf57868b0c37204fab162ca6ace45322fe4456d` |
 | Video | 589,084 | `44b3a8df5d3e5d1ebb3258ed6151151502c898ec342761c041381842a8483b44` |
 
-R5.J3 is therefore complete. The next gate is R5.R1: present this evidence to
-the owner and retain `ORDER HOLD` unless the owner explicitly releases these
-exact hashes for upload. The hash-bound state and authorization schema are frozen
-in `rev-b-five-board-release-gate.json` and enforced by
+This records the completed dated R5.J3 review of the hashes above. The later
+keyboard pinout finding requires correcting the I/O source, regenerating its
+package and repeating the affected qualification and package review before
+R5.R1. Keep `ORDER HOLD`; owner authorization must bind the corrected,
+requalified candidate. The release record and checker preserve hash-bound
+authorization but do not detect the pinout error themselves:
+`rev-b-five-board-release-gate.json` and
 `kicad/revb/check_revb_release_gate.py`.
