@@ -15,6 +15,10 @@ Only the exact five-archive candidate identified by the release record may
 proceed through the gates below. **Do not upload or order superseded packages.**
 No PCB design work or purchase is authorized merely by recording this plan.
 
+The [keyboard encoder pinout mismatch](rev-b-io-parts.md#keyboard-pinout-mismatch--release-blocker)
+must be corrected and the I/O package requalified before this candidate can be
+released for upload.
+
 ## Fixed scope and first-article decisions
 
 - Deliver five independent bare-PCB designs, not a panel: CPU, memory, I/O and

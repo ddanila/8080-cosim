@@ -6,7 +6,12 @@ Memory, expanded I/O, Backplane and Video. The
 [the release record](rev-b-five-board-release-gate.json) binds its exact sources,
 archives and qualification evidence. Owner upload authorization is absent.
 
-## Implemented and desk-qualified
+The [keyboard encoder pinout mismatch](rev-b-io-parts.md#keyboard-pinout-mismatch--release-blocker)
+also blocks release: correct and requalify the I/O design and package before
+seeking upload authorization. Existing technical PASS records do not cover this
+manufacturer-pinout error.
+
+## Implementation and desk results
 
 | Area | Current implementation | Evidence |
 | --- | --- | --- |

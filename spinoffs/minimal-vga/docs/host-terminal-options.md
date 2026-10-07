@@ -5,7 +5,8 @@
 The [Rev B five-board design](rev-b-five-board-order-plan.md) includes CPU,
 Memory, I/O, Backplane and Video cards. Display output comes from the autonomous
 VGA card, with local SRAM for the 9640-byte, 40×241 bitmap at `0xD800`.
-The I/O card provides the keyboard interface. See the
+The I/O card includes a keyboard interface, with an unresolved
+[encoder pinout mismatch](rev-b-io-parts.md#keyboard-pinout-mismatch--release-blocker). See the
 [Video adoption note](rev-b-video-adoption.md) for the scanout design and provenance.
 Physical board acceptance remains pending; desk verification does not establish
 adapter interoperability or working assembled hardware.

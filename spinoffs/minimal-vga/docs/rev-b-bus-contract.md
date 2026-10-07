@@ -114,7 +114,7 @@ Low 8 address bits. Each card decodes only its own ports.
 |---|---|---|---|
 | 0x00 | 8259-class PIC | I/O | A0=0: ICW1 / OCW2 / OCW3 |
 | 0x01 | 8259-class PIC | I/O | A0=1: ICW2 / OCW1 (mask) |
-| 0x04 | 8255 Port A | I/O | keyboard column select (low nibble) |
+| 0x04 | 8255 Port A | I/O | keyboard columns PA0–PA7 |
 | 0x05 | 8255 Port B | I/O | keyboard read (74148) |
 | 0x06 | 8255 Port C | I/O | memory-overlay mode bits[1:0] → MODE0/1 |
 | 0x07 | 8255 control | I/O | mode-set / Port C bit set-reset |
@@ -146,7 +146,8 @@ These are hardware assignments. The current `revb_backplane_top.v` behavioral
 twin holds `INT_N`, `NMI_N` and `BUSRQ_N` inactive and leaves the TTL video's
 frame-tick output unconnected. `revb_io_card.v` models PIC reads as last-written
 port values; it does not implement interrupt arbitration or acknowledge cycles.
-Its PPI model covers the overlay latch, not keyboard scanning. Boot comparisons
+Its PPI model covers the overlay latch, not keyboard scanning. The physical
+keyboard path also has an unresolved [encoder pinout mismatch](rev-b-io-parts.md#keyboard-pinout-mismatch--release-blocker). Boot comparisons
 therefore do not qualify PIC interrupt service or the keyboard input path.
 
 ## Timing anchors

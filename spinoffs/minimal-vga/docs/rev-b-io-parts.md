@@ -18,6 +18,20 @@ role (for example `U8 82C54 D57` and `D_POST0 GREEN`) so every fitted part is
 identified without turning the assembly face into an unreadable distributor
 label.
 
+## Keyboard pinout mismatch — release blocker
+
+The retained I/O design does not yet match the selected SN74LS148N.
+[TI's DIP pinout](https://www.ti.com/lit/ds/symlink/sn74ls148.pdf) assigns
+pin 5 to enable input `EI` and pin 14 to group-select output `GS`. The generator,
+`io.board.json`, `revb_io_map.json`, and routed `io.kicad_pcb` instead connect
+U5.5 to `KBD_ENC_GS` and U5.14 to GND. The intended connections are U5.5 to GND
+and U5.14 to `KBD_ENC_GS`.
+
+Correct the pin map and regenerate/requalify the I/O source, route and fabrication
+package before release. Existing LVS uses the same incorrect map, and the
+assembled behavioral twin does not model keyboard scanning; their passing
+results do not qualify this path.
+
 ## Verification
 
 Run from the repository root:

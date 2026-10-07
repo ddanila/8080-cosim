@@ -56,7 +56,7 @@ Existing identifiers remain for references in source and qualification reports.
 | C4 | Double pixels horizontally and vertically; crop the final source row under the current video-timing contract. |
 | C5 | Monochrome RGB uses independent drivers and resistor outputs into monitor-side terminations. Exact parts and levels belong to the Video power contract. |
 | C6 | 8251-compatible UART preserves the firmware interface. |
-| C7 | 8255 matrix scan and mode outputs preserve the accepted keyboard/overlay interface. |
+| C7 | 8255 provides matrix and mode connections; keyboard acceptance is blocked by the [encoder pinout mismatch](rev-b-io-parts.md#keyboard-pinout-mismatch--release-blocker). |
 
 ## Construction and verification decisions
 
@@ -86,7 +86,7 @@ Existing identifiers remain for references in source and qualification reports.
 | D1.23 | Memory outline is 100×60 mm; connector positions and package orientation are machine-checked. |
 | D1.24 | Route through the repository-pinned freerouting DSN/SES flow, then fill zones and check DRC. |
 | D1.25 | Generated PCB equivalence is checked semantically; UUID/timestamp differences are not circuit differences. Release records bind exact routed artifacts. |
-| D1.26 | PPI/PIC and keyboard paths are fully wired on the shared I/O design; the expanded design also includes PIT/POST. |
+| D1.26 | The I/O design includes PPI/PIC, keyboard, PIT and POST connections; the keyboard encoder pinout requires correction before release. |
 | D1.27 | Before routing, reject placement-class errors. After routing, require zero total violations and unconnected items; review assembly renders too. |
 | D1.28 | Use a bounded placement sweep for persistent routing failures; any manual exception must be generator-emitted and independently checked. |
 | D1.29, D1.30, D1.33, D1.34 | Production uses mate-compatible socket pairs and routes from scratch. |
