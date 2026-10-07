@@ -48,4 +48,18 @@ source because this historical bring-up ROM does not program D57. Byte-stream
 agreement does not establish exact UART timing or the normal PIT-clocked
 NETC10/DIAG path.
 
-Verified by `spinoffs/minimal-vga/sim/revb_bringup_check.sh` (T1.2).
+## Run the startup comparison
+
+From the repository root:
+
+```sh
+spinoffs/minimal-vga/sim/revb_bringup_check.sh
+```
+
+This requires Python 3, a C compiler (`CC`, default `cc`), Icarus Verilog
+(`iverilog` and `vvp`), and the initialized
+`spinoffs/minimal-vga/external/tv80` submodule.
+A missing tv80 checkout prints `SKIP` and exits zero without testing.
+The wrapper builds its fast ROM and simulator files in a temporary directory,
+but the C oracle overwrites `cosim/vram.bin`; preserve an earlier dump before
+running it. The retained full-range ROM is unchanged.
