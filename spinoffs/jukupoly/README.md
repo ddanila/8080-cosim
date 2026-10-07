@@ -143,12 +143,12 @@ interrupt-disabled hot loop above; only the menu and disk loader are new.
 After the finite VGM pass ends, the engine silences D57 and returns to the
 menu.  A bare Return selects track 01, `L` advances through 11-track catalog
 pages, and `Q` returns to CP/M.  During playback, physical Escape is sampled
-once per approximately 20 ms frame and returns immediately to the menu.  This
+once per approximately 20 ms frame. It silences playback, waits for Escape to
+be released, then returns to the menu. This
 single-column matrix read costs 48 idle-path 8080 cycles at the existing frame
 boundary; it adds nothing to the audio-sample hot loop and deliberately avoids
-the much slower CP/M/N4 console-status path.  This path was physically
-qualified on CS00000 on 2026-08-31: Escape stopped “At Doom's Gate,” the menu
-reported `Track stopped.`, and the operator confirmed that Escape worked.
+the much slower CP/M/N4 console-status path. Recorded playback, Escape and
+quit results are linked under [physical qualification](#physical-qualification).
 
 `build_doom_library.py` converts all 23 DOOM and 21 DOOM II VGZ files from the
 two vgmrips archives into fixed-address ABI-v1 `.JPS` files.  The resulting
@@ -162,10 +162,7 @@ Juku media store side 0 and side 1 of each cylinder next to one another, while
 CP/M and cpmtools view the sides as 160 side-major logical tracks.  The builder
 uses the period full-disk DPB (two reserved tracks, 197 4 KiB blocks, and the
 known final unallocated half-block), applies the ten-sector skew, then converts
-the completed logical image to Juku's cylinder-interleaved native order.  The
-result was booted through CPMish NetDisk mode 2 on 2026-08-31: `B:JUKEBOX`
-listed the catalog, loaded and played track 01 from B:, returned to the menu,
-and quit cleanly to CP/M.
+the completed logical image to Juku's cylinder-interleaved native order.
 
 The optional [normalization A/B trial](NORMALIZATION-AB.md) provides original
 and component-peak-normalized versions of three DOOM tracks on a separate
