@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""R5.I7 assembled-card envelope and orientation report. Run under FreeCAD:
+"""R5.I7 assembled-card envelope and orientation report.
 
-    freecadcmd mate_check.py
+Run in FreeCAD console mode with runpy; see the generated report's command.
 
 The STEP models prove the populated component envelopes normal to each PCB. The
 exact Video VGA footprint/datasheet contract separately proves cable access;
@@ -81,7 +81,10 @@ def main():
         "",
         "```sh",
         ". spinoffs/minimal-vga/kicad/revb/env.sh",
-        '"$FREECADCMD" spinoffs/minimal-vga/kicad/revb/mate_check.py',
+        '\"$FREECADCMD\" -c <<\'PY\'',
+        'import runpy',
+        'runpy.run_path("spinoffs/minimal-vga/kicad/revb/mate_check.py", run_name="__main__")',
+        'PY',
         "```",
         "",
         "Missing FreeCAD `Part` returns 0 with `SKIP` and leaves this report unchanged.",

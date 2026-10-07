@@ -10,7 +10,10 @@ Regenerate from the repository root with FreeCAD's Python environment:
 
 ```sh
 . spinoffs/minimal-vga/kicad/revb/env.sh
-"$FREECADCMD" spinoffs/minimal-vga/kicad/revb/mate_check.py
+"$FREECADCMD" -c <<'PY'
+import runpy
+runpy.run_path("spinoffs/minimal-vga/kicad/revb/mate_check.py", run_name="__main__")
+PY
 ```
 
 Missing FreeCAD `Part` returns 0 with `SKIP` and leaves this report unchanged.
