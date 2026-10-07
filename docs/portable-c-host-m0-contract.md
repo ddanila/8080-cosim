@@ -18,36 +18,17 @@ inputs and their identities are maintained in the
 [system binary catalog](../media/system/README.md).
 
 `tests/fixtures/jukuhost/python-era-v1.txt` is the compact, standalone wire
-oracle. `tests/jukuhost_contract_test.py` proves that it still agrees with the
-non-runnable archived Python implementation. C tests consume the same fixture
+oracle. `tests/jukuhost_contract_test.py` checks selected wire and checksum vectors
+against the non-runnable archived Python implementation. C tests consume the same fixture
 directly; it remains the wire baseline after Python host retirement.
 
-## Required production parity
+## Production contract
 
-The C host must reproduce all behavior used by the accepted operational path:
-
-- stock Janet discovery at 9,600 baud, including learned client/server station
-  identities, rejected frames, bounded retries, and all five archived system
-  images;
-- plain 0100h executables, JUKUSYS resident images, and the self-describing
-  `JUKURM1` RAM-system container;
-- C8/JR16 direct readiness and Fastboot V16 at 19,200 baud, including the
-  missed-ready probe path, metadata and CRC validation, compressed streaming,
-  acknowledgement handling, and the accepted no-resend timing policy;
-- the exact JF15 stock-assisted compatibility path: one 128-byte Janet record
-  at 9,600/8O1, followed by the checked extension and compressed system at
-  19,200/8N1;
-- N3 raw, compact, read-ahead, legacy write, and V3 write operations, duplicate
-  request handling, 80-track A: and native 160-track B: geometry, and B:
-  read-only enforcement;
-- N4 console polling, single and block output, time get/set, status, diagnostic
-  and boot reports, and capability negotiation;
-- boot-slot manifests and fallback/recovery policy, writable A: working-copy
-  safety, host replacement and reconnect, clean shutdown, human-readable logs,
-  counters, and optional raw byte capture.
-
-Current admitted Fastboot versions and artifact validation are documented in
-the [stock recovery guide](janet-fastboot.md).
+Current protocol support, artifact admission, recovery policy and platform
+acceptance are maintained in the [portable C host contract](portable-c-host-plan.md)
+and [stock recovery guide](janet-fastboot.md). The frozen vectors below
+preserve the selected Python compatibility baseline; they do not define the
+complete current feature or acceptance matrix.
 
 ## Observable result contract
 
