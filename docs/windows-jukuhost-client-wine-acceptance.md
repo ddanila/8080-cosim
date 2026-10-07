@@ -54,7 +54,22 @@ An optional EXE path tests that existing artifact without rebuilding it.
 The recorded command above assumes that artifact already exists.
 
 The wrapper requires `wine`, `wineboot`, `xvfb-run`, and `socat` on `PATH`.
-It prints `SKIP` and exits zero if any is missing, before building or checking
+The protocol harness also requires a C compiler and generated artifacts in
+the sibling `../cpm-plus-juku/out/` directory (override the checkout with
+`CPM_PLUS_JUKU_ROOT`). It does not build those artifacts:
+
+- Stock: `cpm-plus-juku.img`, `cpm-plus-juku-stock-recovery-system.bin`,
+  and `cpm-plus-juku-stock-recovery-fastboot-v17.bin`.
+- C11 and C12: `cpm-plus-juku-{c11,c12}-full.img`,
+  `cpm-plus-juku-network-rom-{c11,c12}-system.bin`, and
+  `cpm-plus-juku-network-rom-{c11,c12}-fastboot-v16.bin`.
+- Shared B: image: `cpm-plus-juku-apps.juk`.
+
+Use that checkout's build instructions to generate the files before running
+the harness. The ROM images come from this repository.
+
+The wrapper prints `SKIP` and exits zero if any of its four runtime tools is
+missing, before building or checking
 the EXE path. Exit zero alone therefore does not prove a protocol run.
 The ordinary desk gate requires only the first three for its Wine self-test;
 its build, API-shim, PE and package checks still run without Wine.
