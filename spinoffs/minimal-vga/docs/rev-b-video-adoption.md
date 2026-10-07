@@ -1,9 +1,7 @@
 # VJUGA rev B — Video card adoption note (TI.1 / D2.1)
 
-The rev B **Video card** re-uses the VGA *timing chain* from an external project. This
-note records exactly what is adopted, its license, and where the line is between the
-adopted work and VJUGA-original design — so the provenance is auditable and the license
-obligation is met.
+The rev B **Video card** adopts the VGA counter topology from TTL640x480.
+This note records the adopted scope, VJUGA additions, and required license notice.
 
 ## Adopted work
 
@@ -19,8 +17,8 @@ The **640×480 @ 60 Hz VGA counter topology and decode terms**:
 
 - 3 × pin-compatible ST M74HC393B1R dual counters — horizontal dot and vertical line
   counters (the exact faster family is our real-silicon correction)
-- the original counter-bit terms that define sync, blanking and terminal counts; these
-  are re-expressed in two ATF22V10s rather than copying the original NAND/diode circuit
+- sync, blanking and terminal-count decode functions, implemented in two ATF22V10s
+  using the count ranges frozen in `video-timing.json`
 - a **25.175 MHz** dot-clock reference (a canned oscillator on our card)
 
 We adopt those **counter/decode concepts**, not the Eagle gate-level circuit or layout.
