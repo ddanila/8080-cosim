@@ -69,10 +69,11 @@ to qualify that path before attributing a retention failure to it.
 Snippet construction, exact-byte extraction, and the row accounting live in
 [`raster.py`](raster.py) and are guarded by
 [`../../tests/jukuravi_raster_retention_test.py`](../../tests/jukuravi_raster_retention_test.py).
-Deterministic cosim proves the staged flow end to end and proves the
-negative control (a hold crossing the modeled decay deadline must fail with
-`no_return` or `decayed`). The flat model implements no video-slot refresh, so
-simulation deliberately cannot pass the armed long hold; only hardware can.
+The cosim guard checks the short-hold staged flow through both entry paths.
+Its short-decay-deadline control requires `no_return` or `decayed`, but does
+not separately establish that the hold executed: `no_return` also covers
+upload and verification failures. The flat model implements no video-slot
+refresh and cannot qualify the physical raster's effect on retention.
 
 ## Stages
 
@@ -121,8 +122,9 @@ On macOS select the adapter's actual `cu.*` node with `--port`; see
 [the macOS acceptance record](MACOS-BENCH.md). The default 25 s hold exceeds
 the recorded 5–17 s CS00024 decay interval; `--hold-seconds` adjusts it, and the
 loop is sized from the measured effective rate (`--effective-mhz`,
-default 1.702). The JSON's `hold_seconds_estimated` describes that modeled
-loop duration. `hold_seconds_measured` also includes host upload, verification
+default 1.702). Duration is rounded to the nearest outer-loop count and
+clamped to 1–65535 outer loops. The JSON's `hold_seconds_estimated` describes
+the sized duration, which can differ from the request. `hold_seconds_measured` also includes host upload, verification
 and RUN/RETURN transport; it is not a direct measurement of the unrefreshed
 interval.
 
