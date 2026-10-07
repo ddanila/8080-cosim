@@ -34,11 +34,11 @@ rate, load, state schedule, model hash, and sample hash.
 | D34_SIG endpoint contract | PASS | D34.11, R63.1 |
 | VT2_BASE endpoint contract | PASS | R62.2, R63.2, R64.1, VT2.3 |
 | VIDEO_OUT endpoint contract | PASS | R65.1, VT2.1 |
-| R64 and R65 fitted returns are grounded | PASS | R64.2 + R65.2 on GND |
+| Board model assigns R64 and R65 returns to ground | PASS | R64.2 + R65.2 on GND |
 | VT2 collector is on +5 V | PASS | VT2.2 on P5V |
 | VT2 device and E-C-B mapping are guarded | PASS | VT2 = КТ315; 1=E, 2=C, 3=B |
 | Exact-revision D34 identity is К555ЛП5 | PASS | ДГШ5.109.009 ПЭЗ census D34 + board LP5_XOR type |
-| Fitted resistor identities and model values agree | PASS | R62=2 kΩ, R63=1 kΩ, R64=5.1 kΩ, R65=430 Ω |
+| Board-JSON resistor values and static model agree | PASS | R62=2 kΩ, R63=1 kΩ, R64=5.1 kΩ, R65=430 Ω |
 | C94 is absent from the nominal model | PASS | unresolved population/value/endpoints retained as a boundary |
 | Preserved exact-device К555ЛП5 datasheet hash and limits match | PASS | К555ЛП5: VOH >=2.7 V, VOL <=0.5 V; fanout-derived 0.4 mA source/8 mA sink; no output I/V curve |
 | Preserved SN74LS86A current-comparison datasheet hash matches | PASS | TI SDLS124 page 4; current threshold only, not К555ЛП5 equivalence |
@@ -102,7 +102,7 @@ the supply, external load, beta and VBE values in the
 [model configuration](../ref/video/x7-output-stage-model.json). Driver
 resistance is interpolated from supply voltage, not varied independently.
 The unterminated diagnostic evaluates **432**
-corners per state with only fitted R65 loading the emitter.
+corners per state with only modeled R65 loading the emitter.
 
 The two final columns count corners that exceed the exact sheet's
 fanout-derived loads. The comparison driver predicts resistive

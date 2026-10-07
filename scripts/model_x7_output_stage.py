@@ -160,7 +160,7 @@ def topology_checks(
         })
     checks.extend([
         {
-            "name": "R64 and R65 fitted returns are grounded",
+            "name": "Board model assigns R64 and R65 returns to ground",
             "pass": {("R64", "2"), ("R65", "2")} <= nodes(board, "GND"),
             "evidence": "R64.2 + R65.2 on GND",
         },
@@ -192,7 +192,7 @@ def topology_checks(
     board_values = {ref: find_chip(board, ref).get("value") for ref in expected_values}
     config_values = model["nominal"]["resistance_ohm"]
     checks.append({
-        "name": "Fitted resistor identities and model values agree",
+        "name": "Board-JSON resistor values and static model agree",
         "pass": board_values == expected_values and config_values == {
             "R62": 2000.0, "R63": 1000.0, "R64": 5100.0, "R65": 430.0
         },
@@ -651,7 +651,7 @@ def write_report(model: dict[str, Any], summary: dict[str, Any]) -> None:
         "[model configuration](../ref/video/x7-output-stage-model.json). Driver",
         "resistance is interpolated from supply voltage, not varied independently.",
         f"The unterminated diagnostic evaluates **{summary['sweep']['unterminated']['corner_count_per_state']:,}**",
-        "corners per state with only fitted R65 loading the emitter.",
+        "corners per state with only modeled R65 loading the emitter.",
         "",
         "The two final columns count corners that exceed the exact sheet's",
         "fanout-derived loads. The comparison driver predicts resistive",

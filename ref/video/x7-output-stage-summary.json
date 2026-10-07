@@ -22,7 +22,7 @@
     },
     {
       "evidence": "R64.2 + R65.2 on GND",
-      "name": "R64 and R65 fitted returns are grounded",
+      "name": "Board model assigns R64 and R65 returns to ground",
       "pass": true
     },
     {
@@ -42,7 +42,7 @@
     },
     {
       "evidence": "R62=2 k\u03a9, R63=1 k\u03a9, R64=5.1 k\u03a9, R65=430 \u03a9",
-      "name": "Fitted resistor identities and model values agree",
+      "name": "Board-JSON resistor values and static model agree",
       "pass": true
     },
     {
