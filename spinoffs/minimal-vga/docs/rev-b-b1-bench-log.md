@@ -33,6 +33,10 @@ Socket all programmed devices. Fit only the parts required by the active stage.
 
 Verify the committed GAL and ROM programming artifacts from the repository root:
 
+These checks require Bash, Python 3, and Galette 0.3.0. Install Galette with
+[`bootstrap_galette.sh`](../pld/revb/bootstrap_galette.sh), or set `GALETTE`
+to an existing 0.3.0 executable.
+
 ```sh
 spinoffs/minimal-vga/pld/revb/build_revb_gals.sh
 python3 spinoffs/minimal-vga/roms/build_revb_rom.py --check
