@@ -39,6 +39,12 @@ handler addresses vary:
 that takes a command code in `A` — the same dispatcher the EKDOS30.ASM
 monitor contract reaches through the `FF50h+` vectors.
 
+In ekta37, `D`, `F`, `K`, `M`, and `C` process the start address before
+comparing it with the end address, so the end is inclusive. `M` copies bytes
+forward in ascending source-address order; an overlapping destination above
+the source can overwrite bytes that have not yet been copied. These details
+are decoded from the handlers, not independently exercised on hardware.
+
 ## The T command and the boot-source prompt
 
 `T` prints `System from <D>isk, <N>et ?` (or `<T>ape` on the 2.43 line)
