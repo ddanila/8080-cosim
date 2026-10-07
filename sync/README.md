@@ -171,19 +171,17 @@ The checks above cover these boundaries:
 `sync/cosim_check.sh` uses a default 30 ms simulated-time window and
 130,000-event limit; a successful event verdict can stop it earlier. See
 [the cosim reference](../docs/cosim-runtime-reference.md). Activate the tracked
-hooks once per checkout with `git config core.hooksPath .githooks`. Before a
-push, the hook checks the latest 15 `master` workflow runs and blocks on a
-workflow whose newest conclusive result in that sample is `failure`. Unavailable
-or unauthenticated `gh` skips that remote check with a warning. It then runs
-the deep cosim guard when `hdl/`, `cosim/`, or `roms/` changed and both `cc`
-and Icarus Verilog are available; missing tools produce a skip warning. `CI_GATE=off`
-overrides only the remote-CI check; `git push --no-verify` bypasses the complete
-hook and should be reserved for a deliberate, documented exception.
+hooks once per checkout with `git config core.hooksPath .githooks`. The pre-push
+hook requires Git LFS and runs `git lfs pre-push` before the remote-CI gate;
+missing Git LFS or a failed upload blocks the push. It then runs the deep cosim
+guard for changes under `hdl/`, `cosim/`, or `roms/` when `cc` and Icarus
+Verilog are available; missing tools produce a skip warning.
 
-The remote-CI query uses GitHub CLI's selected repository. Set
-`GH_REPO=ddanila/8080-cosim` when pushing so the hook checks the user's fork;
-see [the local CI gate](../docs/development-workflow.md#local-ci-gate) for
-its sampling limits.
+Set `GH_REPO=ddanila/8080-cosim` when pushing so the remote-CI gate checks the
+user's fork. See [the local CI gate](../docs/development-workflow.md#local-ci-gate)
+for sampling limits and its `CI_GATE=off` override. `git push --no-verify`
+bypasses the complete hook and should be reserved for a deliberate, documented
+exception.
 
 See [CI budgets and local-only coverage](../ci/README.md) for workflow
 selectors, bounded profiles, and checks that require a local run.
