@@ -41,10 +41,10 @@ pinout until the target hardware or a stronger factory source resolves it.
 
 ## Source-PCB package-pad screen
 
-The current source PCB has 19 numeric-D footprints
-with 14 pads and 58 with 16 pads. For the 14-pad group, both pads 7/14 have
-net names; for the 16-pad group, both pads 8/16 have net names except
-`D104.16`. This screen checks pad ownership, not supply voltage, actual copper,
+The checker selects numeric-D footprints with 14 or 16 distinct pad numbers
+and checks positions 7/14 or 8/16 respectively. These positions have net
+names in the source PCB except `D104.16`.
+This screen checks pad ownership, not supply voltage, actual copper,
 or whether these generic positions are the supply pins on every device.
 The exact sheet-1 and sheet-2 power-table audits check the represented
 device-specific rail assignments separately. D104.16 remains the one
@@ -53,8 +53,7 @@ and owner-continuity requirement above.
 
 The checker also looks for a same-net track endpoint exactly at each pad
 centre in both routed variants. Each variant has five named supply pads without
-such an endpoint: both pins of D2 and D52, plus D8.16. The source PCB
-remains unrouted at the newly connected routed-board pads too.
+such an endpoint: both pins of D2 and D52, plus D8.16.
 This is an endpoint screen, not a geometric proof of all copper connectivity;
 KiCad DRC still holds the boards for other gaps.
 
