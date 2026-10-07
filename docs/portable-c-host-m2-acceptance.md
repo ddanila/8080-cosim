@@ -37,18 +37,6 @@ belongs to their separate acceptance records, indexed by
 The comparison covers observable bytes, state transitions, media outcomes
 and recovery behavior.
 
-## Subsequent stock-ROM compatibility
-
-Version `0.3.0-m6` added the exact JF15 stock-assisted path to the same C
-executable. A retained 2026-08-22 CS00000/EK37 run qualified that native C
-path through `A>` with zero retries or UART errors;
-see [the service record](cs00000-service-record.md) for artifact identities
-and capture evidence. The five-second core-delay regression remains in
-`tests/jukuhost_v15_delayed_pty_test.py`.
-
-JF1–JF14 stages are not admitted production inputs. Current recoverable stock
-sessions use JF17; see [stock bootstrap and recovery](janet-fastboot.md).
-
 ## Reproducible gate
 
 Run from the repository root on Linux with Bash, Python 3/Unix PTY support,
