@@ -15,8 +15,9 @@ numbers close the drawing path D26.38 → D101.1. They do not prove
 original-board continuity.
 
 The source model has `FDC_IMDRG` at both pins. Structural HDL uses
-PPI0 PA6 for D101's section-A active-low enable; the runnable model still
-holds D101's unmeasured first-half input joins outside its active precomp
-behavior. The source and routed PCB pad nets agree, while the routed PCB
+PPI0 PA6 for D101's section-A active-low enable. D101 and the D97/D102
+precompensation chain are instantiated only for the structural build
+(`YOSYS`); the runnable HDL omits them pending installed timing measurements.
+The source and routed PCB pad nets agree, while the routed PCB
 has no copper connecting these pads. Check D26.38↔D101.1 with both chips
 removed before routing or using the original board for runtime interpretation.
