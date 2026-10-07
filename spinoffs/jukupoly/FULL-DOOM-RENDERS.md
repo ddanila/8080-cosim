@@ -62,7 +62,9 @@ FFmpeg with `libmp3lame`, and `ffprobe`. Initialize the Nuked OPL3 submodule
 and follow the [assembler setup](README.md#reproduce) for zmac.
 
 These commands write rerun artifacts and reports under `out/`, preserving
-both tracked snapshot reports. Use a new output directory for each comparison.
+both tracked snapshot reports. The enhanced library uses its own directory;
+the baseline library used by the normalization trial stays in
+`out/jukupoly-doom-library`. Use a new output directory for each comparison.
 The renderer does not clear old files; failures can leave partial audio, and
 aggregate checks occur after writing `manifest.json` and `--report`.
 Check the exit status and report gates before accepting a set.
@@ -90,10 +92,10 @@ python3 spinoffs/jukupoly/firmware/build_doom_library.py \
   --replacement-manifest \
     out/jukupoly-doom-enhanced-generic/replacement-manifest.json \
   --replacement-dir out/jukupoly-doom-enhanced-generic/payloads \
-  --output-dir out/jukupoly-doom-library
+  --output-dir out/jukupoly-doom-generic-library
 
 python3 spinoffs/jukupoly/tools/render_jukupoly_library.py \
-  --library out/jukupoly-doom-library \
+  --library out/jukupoly-doom-generic-library \
   --output-dir out/jukupoly-doom-full-renders \
   --minimum-enhanced-tracks 23 \
   --report out/jukupoly-doom-full-renders/report.json
