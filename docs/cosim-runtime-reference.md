@@ -93,7 +93,11 @@ and bus-trace files are temporary and removed when the script exits.
 
 `WINDOW` (ns) and `TRACE_LIMIT` (events) bound the run. Their defaults are
 30,000,000 ns and 130,000 events; the event verdict may stop the simulation
-earlier. Wall runtime depends on the simulator and host, not a full-banner run. The default boot
+earlier. `BTRACE-END` means the generated trace was consumed; `BTRACE-OK`
+means only the events reached within `WINDOW` matched. The guard accepts either
+verdict and does not require a minimum compared-event count at the time cap.
+Reducing `WINDOW` can therefore reduce coverage without failing the guard.
+Wall runtime depends on the simulator and host, not a full-banner run. The default boot
 necessarily covers `MR`, `MW`, `IR`, and `IW`; separate interrupt guards exercise the interrupt
 path. `sync/inta_bus_check.sh` runs a focused synthetic PIC/EI loop through both
 CPUs and requires the typed `IA` sequence `CD D4 FE` end-to-end.
