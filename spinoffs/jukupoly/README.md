@@ -217,48 +217,25 @@ where possible, and key-on retriggers retain the riff's gating.  The current
 boundary intentionally rejects OPL3 four-operator and hardware-rhythm modes
 rather than pretending to convert them.
 
-For OPL-aware development, `--opl-trace-output TRACE.json` additionally emits
-a lossless ordered record of every register write without changing the score.
-The host-only `opl_trace.py` model retains the complete raw register file and
-decodes both operators' AM, vibrato, EGT, KSR, multiplier, KSL, TL, AR, DR, SL,
-RR, and waveform fields; channel frequency, block, key, feedback, connection,
-and four stereo routes; key/pitch transitions; and global depth, rhythm,
-OPL3-new-mode, and four-operator state.  Writes at the same VGM timestamp keep
-their source order.  This trace is analysis evidence, not an OPL synthesizer
-and not target-side code.
+For host analysis, the importer can emit two additional evidence files without
+changing the generated score or target player:
 
-The behavioral oracle is unmodified [Nuked OPL3][nuked-opl3], pinned as the
-`external/Nuked-OPL3` submodule at commit
-`765ec962e473aeb767e4cba74ffdc8f588ffbfe8` and used under its
-LGPL-2.1-or-later license.  `tools/jukupoly_opl_oracle.c` accepts the compact
-timed stream emitted by `opl_oracle.py`, renders signed 16-bit stereo PCM at
-the VGM 44.1 kHz clock, and records 50 Hz probes of channel pitch/key,
-operator attenuation/stage, and the shared LFO phases.  The synthetic
-agreement guard checks key and live-pitch timing, envelope attack/release
-direction, an audible release tail, LFO progression, modulation changing the
-PCM, and isolated two-operator rendering.  The oracle is compiled and run only
-on the host; neither it nor its state structures enter `JUKEBOX.COM`.
+- `--opl-trace-output TRACE.json` records every register write in source order,
+  including writes at the same timestamp, with decoded operator/channel state.
+- `--opl-voice-output VOICES.json` records keyed spans, held-note pitch changes,
+  strict same-pitch layers, provisional continuation chains and three-voice
+  allocation. Its `melodic_eligibility` entries explain sustained-layer decisions.
 
-`--opl-voice-output VOICES.json` emits host-only logical-voice evidence:
-key spans, held-note pitch writes, strict same-pitch layers, and provisional
-continuation chains formed by global one-to-one boundary matching. It also
-reports a provisional three-voice allocation on the 50 Hz grid, preserving
-source onsets retained by the v1 reducer. These decisions do not change the
-generated score or target player.
+`tools/report_opl_voices.py` accepts source ZIP packs and reports per-track
+counts and deterministic fingerprints. It fails if the provisional allocator
+loses a protected v1 source onset.
 
-Tone eligibility uses the v1 melodic classifier plus sustained layers with
-at least two members, a keyed span of at least one second, finite pitch, and
-OPL sustained-envelope evidence. The reasons appear in `melodic_eligibility`;
-short layered percussion and single-channel effects do not qualify through
-this additional rule.
-
-Run `tools/report_opl_voices.py` on one or more source ZIP packs for current
-per-track counts and deterministic assignment/pack fingerprints. It fails if
-the provisional allocator loses a protected v1 source onset. Use the
-[voice differential workflow](OPL-VOICE-DIFFERENTIAL.md) to investigate an
-individual source-to-target discrepancy before physical listening.
-
-[nuked-opl3]: https://github.com/nukeykt/Nuked-OPL3
+The pinned [Nuked OPL3](https://github.com/nukeykt/Nuked-OPL3) submodule
+(`external/Nuked-OPL3`, LGPL-2.1-or-later) provides the host-only behavioral
+oracle and reference renderer. See the [reduction contract](OPL-REDUCTION-PLAN.md#host-side-opl-analysis)
+for register/probe scope and the [voice differential guide](OPL-VOICE-DIFFERENTIAL.md)
+for isolated source-to-target diagnosis, generated evidence and acceptance limits.
+Neither the oracle nor its state structures enter `JUKEBOX.COM`.
 
 The reducer preserves each source note's octave whenever its phase increment
 fits the player's 15-bit tone word; only an unencodable note is moved down by
