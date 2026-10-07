@@ -10,7 +10,7 @@ The board remained powered after the preceding experiment.  `jukuhost` used
 `--resume-disk` to reattach to the resident C10 JukuNet/NetDisk session; no
 hardware reset or cold boot was needed.  The operator sent `WBOOT` once to
 relog drive A: after substituting the private volume, then ran `JUKUPOLY`.
-The console transcript is exactly:
+The console transcript normalizes to:
 
 ```text
 A>WBOOT
