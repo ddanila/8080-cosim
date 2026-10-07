@@ -70,7 +70,11 @@ def main() -> int:
         "sheet-3 entries use a fixed reference list. This check imports those",
         "transcriptions without running the individual sheet audits. It does not",
         "validate JSON rail nodes, enforce the full chip census, or hash the images.", "",
-        "This checks adopted table entries against pad net names in the saved PCB files. Sheet-1 D104.16 and sheet-2 ИР16/РУ4 conflicts remain outside the adopted entry sets. The reports for each sheet document those limits. Pad names do not establish track contact or original-board continuity.", "",
+        "The [sheet-1 audit](sheet1-power-table-audit.md) documents the excluded",
+        "D104.16 conflict; the [sheet-2 audit](sheet2-power-table-audit.md) documents",
+        "the excluded ИР16/РУ4 columns. The [sheet-3 audit](sheet3-power-table-audit.md)",
+        "also checks its fixed endpoints against JSON rail nodes. Pad net names",
+        "do not establish track contact or original-board continuity.", "",
     ]
     if conflicts or any(mismatches for _, mismatches in board_results):
         lines += ["## Mismatches", "", *[f"- source {item}" for item in conflicts]]
