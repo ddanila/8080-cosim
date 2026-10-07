@@ -211,5 +211,7 @@ python3 spinoffs/jukuravi/batch.py --port /dev/ttyUSB0 --rom t36 \
   --only-d57 --log-dir spinoffs/jukuravi/sessions/cs00024-t36-d57-followup
 ```
 
-The full physical claims are pinned by
-[`jukuravi_t36_physical_sessions_test.py`](../tests/jukuravi_t36_physical_sessions_test.py).
+[`jukuravi_t36_physical_sessions_test.py`](../tests/jukuravi_t36_physical_sessions_test.py)
+checks the retained CS00024 session results, RAM-pattern coverage, parser-aging
+results, legacy D57 bytes, and raw-stream file sizes. It does not rerun the
+physical measurements or validate the corrected CS00015 D57 control.
