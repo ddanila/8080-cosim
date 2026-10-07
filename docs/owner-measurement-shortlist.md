@@ -47,8 +47,10 @@ python3 scripts/report_owner_measurement_shortlist.py
 ## Highest-value physical asks
 
 P0 tasks block design release; P1 tasks resolve remaining physical details.
-P2 tasks are optional preservation follow-up. Use the linked evidence
-for photo coordinates and source interpretation; record measurements separately.
+P2 includes preservation and authenticity follow-up; only tasks explicitly
+described as optional may be skipped. Priority does not waive a release hold
+in the owning evidence report. Use the linked evidence for photo coordinates
+and source interpretation; record measurements separately.
 
 ### P0: D94 .092 D0 closure
 

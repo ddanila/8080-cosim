@@ -619,8 +619,10 @@ def main() -> int:
             "## Highest-value physical asks",
             "",
             "P0 tasks block design release; P1 tasks resolve remaining physical details.",
-            "P2 tasks are optional preservation follow-up. Use the linked evidence",
-            "for photo coordinates and source interpretation; record measurements separately.",
+            "P2 includes preservation and authenticity follow-up; only tasks explicitly",
+            "described as optional may be skipped. Priority does not waive a release hold",
+            "in the owning evidence report. Use the linked evidence for photo coordinates",
+            "and source interpretation; record measurements separately.",
         ]
     )
     for priority, ask, deliverable, source, why in sorted(priority_rows, key=lambda row: row[0]):
