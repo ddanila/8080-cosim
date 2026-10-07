@@ -158,7 +158,7 @@
     },
     "Bring-up coverage": {
       "path": "docs/replica-bringup-verification-points.md",
-      "sha256": "0e3c9564b98e01752e5d65b0b699d7881f8b254aa19b5f3eabcbd4c3f4c2c682",
+      "sha256": "4f8fd1e85d2b9c6152af1378d83bacbc648c1be9540ad4f7dc9637eb2f592f24",
       "status": "ENDPOINT COVERAGE FAILED / RISKS UNRESOLVED"
     },
     "Order readiness": {

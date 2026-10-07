@@ -54,14 +54,15 @@ behind a risk note.
 
 Every PCB-scoped `kicad/juku.board.json` endpoint is also checked against
 the generated source PCB and the routed fabrication PCB. Bracket-mounted
-`S1`, `X3`, `X4`, `X6`, `X8`, and `X9` are intentionally excluded because their cable
-landings are separate `A*` PCB footprints. Assembly-DNP C63 remains in scope
+`S1`, `S4`, `X3`, `X4`, `X6`, `X8`, and `X9` are excluded, as are all
+components marked `pcb_dnp` or `pcb_placement_pending` in the board JSON.
+Assembly-DNP C63 remains in scope
 because its provisional footprint is retained in the modeled PCB grid. Registered
 photo features are DRAM contacts, not proof of independent capacitor holes;
 C63 pad identity remains held and is distinct from the absent `.009` C83 callout
-between D41/D40. See [capacitor fidelity](decap-value-fidelity.md). C51-C53 and C70-C72 are
-also excluded until evidence fixes their target placement and population;
-their former fit-to-space coordinates are not fabrication evidence. This is a
+between D41/D40. See [capacitor fidelity](decap-value-fidelity.md). Pending
+placements require evidence of their target location and population;
+fit-to-space coordinates are not fabrication evidence. This is a
 fabrication-source coverage gate, not a historical-source proof.
 
 | PCB | Present | Matching net names | Result |
