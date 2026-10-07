@@ -353,22 +353,13 @@ image and its supported loader and refresh operations.
 
 ## Verification
 
-Run the exact-image checks from the repository root:
+Run the current physical-row monitor gate from the repository root:
 
 ```sh
-bash sync/jukuravi_t28_check.sh
-bash sync/jukuravi_t31_check.sh
-bash sync/jukuravi_t32_check.sh
-bash sync/jukuravi_t35_check.sh
 bash sync/jukuravi_t36_check.sh
 ```
 
-The gates bind their named firmware revisions and test the host/cosim path;
-they do not establish physical acceptance. T35 remains the one-row refresh
-negative control. Use T36 for the corrected 128-row software-refresh contract.
-The legacy D57 cosim result does not establish a physical channel-2 fault.
-
-See [the firmware guide](firmware/README.md) for gate scopes, exact-image
-hashes, probe selection and hardware boundaries. Historical revision names
-identify archived binaries and regressions, rather than additional steps in
-the normal bench workflow.
+This checks exact T35/T36 images, row addressing, host/cosim behavior and
+retained physical-record identities; it does not establish new physical
+acceptance. See [the firmware guide](firmware/README.md#build-and-verify) for
+other revision gates, hashes, probe selection and qualification limits.
