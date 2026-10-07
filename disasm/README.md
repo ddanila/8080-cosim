@@ -73,7 +73,8 @@ discovery. The Monitor family boots differently from EktaSoft: only ~200
 bytes of boot code run in place (checksum verifier over the stored table at
 `0003h-000Ah`, PIT init, PPI init), then `3F40h-3FFFh` is copied to
 `FF40h-FFFFh` for the relocated vector table. Static seeding is deliberately
-minimal here, and the shared BASIC body (`03C8h..`) is documented by title rather than decoded.
+minimal here. Most of the shared BASIC body (`03C8h..`) remains data;
+a small code block at `17F9h..1810h` is also seeded.
 It differs from jmon33 at the proven repair byte `1EFCh`; the vendored
 disassembly preserves that mismatch.
 
