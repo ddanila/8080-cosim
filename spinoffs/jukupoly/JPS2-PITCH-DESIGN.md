@@ -107,8 +107,10 @@ off, preserving absolute source-LFO alignment.
 A legato pitch packet replaces the base step and current precomputed vibrato
 delta together.  It does not reset the shared LFO, sample phase accumulator,
 or envelope.  Key-off retains vibrato through the release tail, matching the
-OPL phase generator; release completion clears the channel mode/delta when it
-clears the base step.  A new non-legato note replaces mode and delta.
+OPL phase generator. Release completion clears the base step, volume and
+envelope stage; the vibrato preparation routine returns a zero step for that
+inactive channel. Mode and delta remain stored until the next tone packet
+replaces them.
 
 Global depth or operator VIB changes made while a key is held must become a
 legato update at the next representable 50 Hz frame, or be reported as
