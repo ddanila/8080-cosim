@@ -4,8 +4,11 @@ Status: **DESIGN HOLD / FDC FUNCTIONAL PINS UNTRACED**
 
 This generated report catches both IC footprints absent from the board
 model and selected FDC devices whose declared pins remain untraced or on
-explicit continuity-boundary nets. Closing either class requires source-model
-and endpoint-coverage proof, followed by complete route/package regeneration.
+explicit continuity-boundary nets. It compares `D`-numbered references
+(for example, `D105`); it does not inspect HDL behavior, complete pin maps,
+or copper connectivity, or flag modeled ICs missing from PCB/DSN artifacts.
+Closing an inventory hold requires source-model and endpoint-coverage proof,
+followed by complete route/package regeneration.
 
 ## Command
 
@@ -114,10 +117,6 @@ no-connects are excluded.
 1. Keep every unread functional pin explicit until continuity is proved.
 2. After any board-JSON net promotion, regenerate PCB/DSN/BOM reports
    and route the affected pads before claiming endpoint coverage.
-3. D105 is modeled in board JSON, the source PCB, HDL, and the promoted
-   exact-source route. X1.107B/R1 close `H`;
-   remaining priority belongs to D94 and the FDC (D30.8/.11 are owner-closed)
-   support cluster. Physical D2 truth and its measured D0 path are adopted.
-4. `ENDPOINT INVENTORY CLOSED` requires no footprint-only ICs or
+3. `ENDPOINT INVENTORY CLOSED` requires no footprint-only ICs or
    untraced declared pins on the selected FDC devices, with evidence
    markers present. It does not establish whole-board design release.
