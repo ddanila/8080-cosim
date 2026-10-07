@@ -6,7 +6,7 @@ Status: **EXACT D1 CANDIDATE GUARDED / SURGE AND FIRST-ARTICLE CHECK OPEN**.
 
 This report guards Littelfuse P4KE6.8A-B as the exact Rev-A D1
 candidate. It checks the preserved manufacturer datasheet, fused-rail
-polarity, corrected DO-41 geometry, local routed clearance, and ordering
+polarity, corrected DO-41 geometry, local straight-track clearance, and ordering
 identifiers. It is not a surge qualification, live-stock claim, or
 fabrication authorization.
 
@@ -14,7 +14,9 @@ fabrication authorization.
 
 Run from the repository root with Python 3. The checker reads the retained
 PDF hash and interpretation text, board JSON, PCB text and ordering files;
-it does not parse the PDF drawing or run KiCad DRC. A completed check
+it does not parse the PDF drawing or run KiCad DRC. Clearance is measured
+against unrelated straight track segments on all layers; vias, zones,
+arcs, and other pads are excluded. A completed check
 overwrites this report even when a guarded check fails (exit 1). Supply a
 report path as the first argument to write elsewhere.
 
@@ -32,7 +34,7 @@ python3 spinoffs/minimal-vga/kicad/report_rev_a_tvs_candidate.py
 | Committed PCB embeds the corrected DO-41 footprint and pad contract | PASS | DO-41/SOD81 P7.62; 2.20 mm pads and 1.10 mm drills; pad centers unchanged |
 | PCB generator preserves the exact D1 footprint and value | PASS | regeneration maps D_TVS_THT to DO-41/SOD81 P7.62 and silk P4KE6.8A |
 | Fabrication and courtyard envelopes carry the DO-41 maximum body | PASS | F.Fab=5.20 x 2.70 mm; F.CrtYd=10.32 x 3.20 mm |
-| Larger DO-41 pads retain routed-copper clearance | PASS | nearest unrelated track is VCC_RAW with 0.230 mm edge clearance |
+| Larger DO-41 pads retain clearance to unrelated straight tracks | PASS | nearest unrelated track is VCC_RAW with 0.230 mm edge clearance |
 | Bounded VCC_RAW detour preserves the replaced segment endpoints | PASS | five connected F.Cu segments join (47.7212,43.2554) to (23.9117,19.4458) |
 | Engineering BOM and assembly checklist name the exact catalogued part | PASS | D1 = Littelfuse P4KE6.8A-B / C1666224 in both ordering artifacts |
 
@@ -45,8 +47,8 @@ python3 spinoffs/minimal-vga/kicad/report_rev_a_tvs_candidate.py
 - The corrected standard DO-41 footprint keeps the original 7.62 mm
   centers, expands the holes for the 0.86 mm maximum leads, and
   represents the full 5.20 x 2.70 mm maximum body.
-- A bounded local `VCC_RAW` detour preserves at least the board's
-  0.20 mm copper-clearance contract around the larger pad.
+- A bounded local `VCC_RAW` detour leaves at least 0.20 mm between
+  the D1 pads and unrelated straight track segments.
 - 5.80 V stand-off is above the nominal 5.0 V rail. Breakdown begins
   at 6.45 V minimum; the rated 39 A pulse clamps at 10.5 V maximum.
 
@@ -56,7 +58,7 @@ python3 spinoffs/minimal-vga/kicad/report_rev_a_tvs_candidate.py
 - D1 is not sustained wrong-supply or USB-C source-fault protection. Use a current-limited bench supply for bring-up and never infer USB-PD behavior from this shunt.
 - Verify the 7.62 mm lead forming, cathode-band orientation, body seating, nearby clearance, and rail waveform on the first assembled article.
 - C1666224 was out of stock during this static review. Recheck live stock, exact manufacturer identity, and manual/factory through-hole assembly capability immediately before ordering.
-- This closes the exact D1 variant and copper-fit contract only. Socketed-part pin-1 orientation and the existing F1/J3 first-article gates remain separate.
+- The guard covers the exact D1 variant and local straight-track clearance. KiCad DRC, socketed-part pin-1 orientation, and the existing F1/J3 first-article gates remain separate.
 
 ## Primary evidence
 
