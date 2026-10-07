@@ -131,4 +131,7 @@ peak-memory observations are not guarantees for a new source or machine.
 
 Use [the sourcing policy](../docs/rev-a-sourcing-plan.md) for socket insertion,
 manual placements, selected-part checks and order-time stock/process review.
+The assembly exporter writes its CSVs and readiness report before rejecting
+footprints missing engineering BOM rows. Require a successful exporter exit;
+an existing `assembly-readiness.md`, even with `READY`, is insufficient.
 Never reuse an exported ZIP after schematic, footprint, net or routing changes.
