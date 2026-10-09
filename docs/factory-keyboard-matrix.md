@@ -8,7 +8,7 @@ an electrical coordinate map; host-key placement and physical fit need separate
 checks.
 
 Run from the repository root with Python 3 (standard library only).
-The writer requires `cosim/trace.c` and the three source photos under
+The writer requires `third_party/dac-emulation/machines/juku/juku.c` and the three source photos under
 `ref/photos/dgsh5-104-015-e3/`, materialized through [Git LFS](git-lfs-policy.md#local-use).
 `python3 scripts/report_keyboard_matrix.py` replaces this report after its
 hash and tuple checks pass; a mismatch exits before writing it.

@@ -13,6 +13,8 @@ on:
   workflow_dispatch:
   push:
     paths:
+      - 'third_party/dac-emulation'
+      - '.gitmodules'
       - 'scripts/**'
       - '!scripts/check_documentation_consistency.py'
       - 'tools/**'
@@ -46,6 +48,8 @@ on:
       - '.github/workflows/reports.yml'
   pull_request:
     paths:
+      - 'third_party/dac-emulation'
+      - '.gitmodules'
       - 'scripts/**'
       - '!scripts/check_documentation_consistency.py'
       - 'tools/**'
@@ -88,6 +92,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
+      - name: Initialize pinned emulator
+        timeout-minutes: 5
+        run: git submodule update --init third_party/dac-emulation
 
       - name: Restore required Git LFS objects
         uses: actions/cache@v6

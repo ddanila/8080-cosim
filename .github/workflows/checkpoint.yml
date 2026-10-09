@@ -8,12 +8,16 @@ on:
     - cron: '43 4 * * 1'
   push:
     paths:
+      - 'third_party/dac-emulation'
+      - '.gitmodules'
       - 'cosim/**'
       - 'tests/cosim_watch_checkpoint_test.py'
       - 'ci/**'
       - '.github/**'
   pull_request:
     paths:
+      - 'third_party/dac-emulation'
+      - '.gitmodules'
       - 'cosim/**'
       - 'tests/cosim_watch_checkpoint_test.py'
       - 'ci/**'
@@ -40,8 +44,13 @@ jobs:
         with:
           sparse-checkout: |
             cosim
+            .gitmodules
+            third_party/dac-emulation
             tests/cosim_watch_checkpoint_test.py
           sparse-checkout-cone-mode: false
+      - name: Initialize pinned emulator
+        timeout-minutes: 5
+        run: git submodule update --init third_party/dac-emulation
       - name: Build cosim trace
         timeout-minutes: 5
         run: >-

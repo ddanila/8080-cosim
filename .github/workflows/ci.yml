@@ -20,6 +20,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
+      - name: Initialize pinned emulator
+        timeout-minutes: 5
+        run: git submodule update --init third_party/dac-emulation
 
       - name: Check CI coverage and time budgets
         timeout-minutes: 5
@@ -27,6 +30,10 @@ jobs:
           python3 ci/check_hdl_ci.py
           python3 -m ci.check_timeouts
           python3 -m unittest -v ci.test_select_hdl_jobs ci.test_timeouts ci.test_smoke_profiles
+
+      - name: Check pinned native emulator consumer
+        timeout-minutes: 5
+        run: bash sync/emulation_check.sh
 
       - name: Check script syntax
         timeout-minutes: 5

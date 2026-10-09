@@ -103,7 +103,7 @@ def main() -> int:
     if new_rows != set(range(128)):
         fail(f"T36 covers only {len(new_rows)} physical rows")
 
-    trace_source = (ROOT / "cosim" / "trace.c").read_text()
+    trace_source = (ROOT / "third_party/dac-emulation/machines/juku/juku.c").read_text()
     if "return (uint8_t)(address & 0x7F);" not in trace_source:
         fail("cosim does not group retention by physical CPU A0..A6 row")
 

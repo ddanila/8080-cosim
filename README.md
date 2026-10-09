@@ -4,6 +4,16 @@ Reconstruction of the Soviet/Estonian Juku E5104 processor board as a physical
 PCB and a runnable digital model. Structural Verilog connectivity is checked
 against the machine-readable board model with LVS.
 
+## Emulator dependency
+
+The portable C emulator is maintained in [dac-emulation](https://github.com/ddanila/dac-emulation), pinned here as a submodule. After cloning or pulling, run:
+
+```sh
+git submodule update --init third_party/dac-emulation
+```
+
+Existing `cosim/*.c` build commands still work through forwarding files. Hardware models and their verification stay here. See [the consumer guide](cosim/README.md) for ownership and updating the pin. `bash sync/emulation_check.sh` runs fast native checks without Verilog.
+
 ## Current state
 
 The C emulator and structural `juku_top` have ROM-boot and framebuffer

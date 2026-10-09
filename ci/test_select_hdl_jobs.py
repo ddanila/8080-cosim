@@ -30,6 +30,9 @@ class SelectorTest(unittest.TestCase):
         result = select_jobs(paths, self.manifest)
         return {job for job, enabled in result["jobs"].items() if enabled}
 
+    def test_emulator_pin_selects_all_consumers(self) -> None:
+        self.assertEqual(self.selected("third_party/dac-emulation"), self.all_jobs)
+
     def test_empty_diff_fails_open(self) -> None:
         result = select_jobs([], self.manifest)
         self.assertTrue(result["full"])

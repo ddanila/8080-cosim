@@ -136,7 +136,9 @@
         "roms/"
       ],
       "exact": [
-        "ref/juku-machine-facts.json"
+        "ref/juku-machine-facts.json",
+        "third_party/dac-emulation",
+        ".gitmodules"
       ],
       "jobs": ["*"]
     },

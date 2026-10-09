@@ -17,3 +17,6 @@
 [submodule "spinoffs/jukupoly/external/Nuked-OPL3"]
 	path = spinoffs/jukupoly/external/Nuked-OPL3
 	url = https://github.com/nukeykt/Nuked-OPL3.git
+[submodule "third_party/dac-emulation"]
+	path = third_party/dac-emulation
+	url = https://github.com/ddanila/dac-emulation.git

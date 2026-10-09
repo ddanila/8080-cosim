@@ -94,3 +94,7 @@ When a bounded check outgrows its budget, inspect step timings first. Split
 independent checks or add a meaningful, explicitly labelled smoke profile;
 keep the full local command and assertions intact. Do not raise the deadline
 or accept a timed-out simulation as successful.
+
+## Extracted emulator dependency
+
+Native jobs initialize only `third_party/dac-emulation` before compiling the compatibility sources. Its gitlink is a shared-model input for lane selection and the checkpoint, reports, and smoke-kit workflows. Generic CI runs `sync/emulation_check.sh`, a fast native check with no HDL or external images. Smoke-kit context preparation exports the pinned dependency and retains its license notices.

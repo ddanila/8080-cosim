@@ -5,6 +5,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY cosim /src/cosim
+COPY third_party/dac-emulation /src/third_party/dac-emulation
+COPY licenses /opt/8080-cosim/licenses
+COPY dac-emulation-revision /opt/8080-cosim/dac-emulation-revision
 COPY host /src/host
 
 RUN mkdir -p /opt/8080-cosim/bin \
