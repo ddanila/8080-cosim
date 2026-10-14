@@ -314,6 +314,15 @@
       "jobs": ["jukuravi-d0", "network-rom", "jukuravi-regression", "jukuravi-current"]
     },
     {
+      "name": "revb-monitor-protocol",
+      "exact": [
+        "third_party/ravi",
+        "spinoffs/jukuravi/ravi_bootstrap.py",
+        "spinoffs/jukuravi/protocol.py"
+      ],
+      "jobs": ["minimal-vga"]
+    },
+    {
       "name": "outside-hdl-suite",
       "prefixes": [
         "fab/",

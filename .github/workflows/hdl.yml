@@ -652,9 +652,9 @@ jobs:
       REVB_CI_GROUP: ${{ matrix.group }}
     steps:
       - uses: actions/checkout@v7
-      - name: Initialize pinned emulator
+      - name: Initialize pinned runtime dependencies
         timeout-minutes: 5
-        run: git submodule update --init third_party/dac-emulation
+        run: git submodule update --init third_party/dac-emulation third_party/ravi
 
       - name: Install Icarus Verilog
         timeout-minutes: 5

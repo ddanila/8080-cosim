@@ -70,6 +70,11 @@ and [new-target guide](https://github.com/ddanila/ravi/blob/main/docs/adding-tar
 A future 1715 port needs its own bootstrap, memory/IO profile and qualification;
 this extraction does not change or newly qualify the existing physical setups.
 
+Extraction validation on 2026-10-14 passed T28, T34 and all T36 groups locally
+(contract, the full RAM sweep and raster retention). The shared-library CI also
+passed its pinned real-ROM T28/T34 compatibility job. These are emulator and
+recorded-evidence regression checks, not new board runs.
+
 ## Current machine configuration
 
 The CS00015 profile records fitted JukuNet C8 / ABI 1.3.

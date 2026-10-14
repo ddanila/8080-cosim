@@ -37,7 +37,7 @@ class SelectorTest(unittest.TestCase):
     def test_ravi_pin_selects_only_juku_consumers(self) -> None:
         for path in ("third_party/ravi", "spinoffs/jukuravi/ravi_bootstrap.py"):
             self.assertEqual(self.selected(path), {
-                "jukuravi-d0", "network-rom", "jukuravi-regression", "jukuravi-current"
+                "jukuravi-d0", "network-rom", "jukuravi-regression", "jukuravi-current", "minimal-vga"
             })
 
     def test_empty_diff_fails_open(self) -> None:
@@ -173,7 +173,7 @@ class SelectorTest(unittest.TestCase):
     def test_jukuravi_shared_change_selects_all_jukuravi_lanes(self) -> None:
         self.assertEqual(
             self.selected("spinoffs/jukuravi/protocol.py"),
-            {"jukuravi-d0", "network-rom", "jukuravi-regression", "jukuravi-current"},
+            {"jukuravi-d0", "network-rom", "jukuravi-regression", "jukuravi-current", "minimal-vga"},
         )
 
     def test_revb_change_selects_both_video_lanes(self) -> None:
