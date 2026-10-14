@@ -6,8 +6,8 @@ D54/D55 boot programming bytes, exclude every D57 write that could disturb
 the live link, and the marker/hold layout must account for all 128 physical
 MK4564 rows. PTY section (Linux CI): a short hold under a generous decay
 deadline must PASS end to end, and a hold crossing the deadline must produce
-the runner's no-return decay classification — the deterministic negative
-control proving the experiment can observe missing refresh at all. The flat
+the runner's no-return classification. This is a failure-path guard, not
+proof that an unacknowledged hold executed or that hardware suffered decay. The flat
 cosim model implements no video-slot refresh, so simulation cannot and must
 not pass the armed long hold; only the physical boards answer that question.
 
@@ -227,6 +227,8 @@ def run_stage(
             "0",
             "--run-timeout",
             str(run_timeout),
+            "--loader-timeout",
+            "3" if name == "control-decayed-hold" else "30",
             "--log-dir",
             str(logs),
         ]
@@ -329,8 +331,8 @@ def main() -> int:
             fail("Ekta4401 run did not record resident-loader attach entry")
 
         # Same hold across a short decay deadline: the runner must classify
-        # the decayed board (no RETURN, or decayed readback) — the negative
-        # control proving the experiment observes missing refresh. The flat
+        # failure (no RETURN, or decayed readback). A missing RETURN alone
+        # does not prove that the hold ran or establish hardware decay. The flat
         # model has no video-slot refresh, so arming cannot rescue it here.
         code, experiment = run_stage(
             trace,
@@ -339,13 +341,17 @@ def main() -> int:
             "control-decayed-hold",
             retention_cycles=350_000,
             arm="none",
-            run_timeout=60.0,
+            run_timeout=3.0,
         )
         if code == 0 or experiment["verdict"] not in ("no_return", "decayed"):
             fail(
                 "decay-deadline control did not produce a decay verdict "
                 f"(exit={code}, verdict={experiment['verdict']})"
             )
+        if experiment["verdict"] == "no_return" and "RUN" not in str(
+            experiment.get("no_return_error", "")
+        ):
+            fail("negative control failed before reaching the RUN exchange")
     print("JUKURAVI-RASTER-TEST: PASS", flush=True)
     return 0
 

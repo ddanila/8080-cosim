@@ -42,6 +42,9 @@ on:
       - 'spinoffs/jukuravi/network-rom/**'
       - 'spinoffs/jukuravi/host.py'
       - 'spinoffs/jukuravi/protocol.py'
+      - 'spinoffs/jukuravi/batch.py'
+      - 'spinoffs/jukuravi/local_ram.py'
+      - 'scripts/analyze_jukuravi_partial_full_ram.py'
       - 'spinoffs/jukuravi/raster.py'
       - 'spinoffs/jukuravi/raster_retention.py'
       - 'spinoffs/jukuravi/remix/**'
@@ -101,6 +104,9 @@ on:
       - 'spinoffs/jukuravi/network-rom/**'
       - 'spinoffs/jukuravi/host.py'
       - 'spinoffs/jukuravi/protocol.py'
+      - 'spinoffs/jukuravi/batch.py'
+      - 'spinoffs/jukuravi/local_ram.py'
+      - 'scripts/analyze_jukuravi_partial_full_ram.py'
       - 'spinoffs/jukuravi/raster.py'
       - 'spinoffs/jukuravi/raster_retention.py'
       - 'spinoffs/jukuravi/remix/**'
@@ -173,6 +179,7 @@ jobs:
       run_jukuravi_d0: ${{ steps.selector.outputs.run_jukuravi_d0 }}
       run_network_rom: ${{ steps.selector.outputs.run_network_rom }}
       run_jukuravi_regression: ${{ steps.selector.outputs.run_jukuravi_regression }}
+      run_jukuravi_current: ${{ steps.selector.outputs.run_jukuravi_current }}
       run_jukupoly: ${{ steps.selector.outputs.run_jukupoly }}
       run_subsystems: ${{ steps.selector.outputs.run_subsystems }}
       run_minimal_vga: ${{ steps.selector.outputs.run_minimal_vga }}
@@ -475,14 +482,40 @@ jobs:
         timeout-minutes: 5
         run: ./sync/jukuravi_t32_check.sh
 
-      # T33-T36 checks remain hand-run (they were never wired). The remix
-      # guard is wired from the start: it rebuilds ekta4401.bin from pinned
+      # T34/T36 run in the independently selected current-monitor lane below.
+      # The remix guard rebuilds ekta4401.bin from pinned
       # ekta37, checks the bounded patch set and all eight ROM chunk
       # checksums, and boots it in cosim to prove the relocated command
       # table and the H command execute.
       - name: Run ekta4401 remix guards
         timeout-minutes: 5
         run: ./sync/ekta4401_check.sh
+
+  jukuravi-current:
+    needs: changes
+    if: needs.changes.outputs.run_jukuravi_current == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Initialize pinned emulator
+        timeout-minutes: 5
+        run: git submodule update --init third_party/dac-emulation
+      - name: Install monitor test tools
+        timeout-minutes: 5
+        run: sudo apt-get update && sudo apt-get install -y gcc nasm
+      - name: Clock-safe peripheral diagnostic
+        timeout-minutes: 5
+        run: ./sync/jukuravi_t34_check.sh
+      - name: Current monitor contracts and host integration
+        timeout-minutes: 5
+        run: ./sync/jukuravi_t36_check.sh contract
+      - name: Full RAM coverage and injected fault attribution
+        timeout-minutes: 5
+        run: ./sync/jukuravi_t36_check.sh ram
+      - name: Raster and bounded missing-return recovery
+        timeout-minutes: 5
+        run: ./sync/jukuravi_t36_check.sh raster
 
   jukupoly:
     needs: changes
@@ -707,6 +740,7 @@ jobs:
       - jukuravi-d0
       - network-rom
       - jukuravi-regression
+      - jukuravi-current
       - jukupoly
       - subsystems
       - minimal-vga
@@ -741,6 +775,7 @@ jobs:
               "jukuravi-d0",
               "network-rom",
               "jukuravi-regression",
+              "jukuravi-current",
               "jukupoly",
               "subsystems",
               "minimal-vga",

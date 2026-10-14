@@ -98,3 +98,52 @@ or accept a timed-out simulation as successful.
 ## Extracted emulator dependency
 
 Native jobs initialize only `third_party/dac-emulation` before compiling the compatibility sources. Its gitlink is a shared-model input for lane selection and the checkpoint, reports, and smoke-kit workflows. Generic CI runs `sync/emulation_check.sh`, a fast native check with no HDL or external images. Smoke-kit context preparation exports the pinned dependency and retains its license notices.
+
+## RAVI refactor baseline
+
+The `jukuravi-current` lane runs the clock-safe T34 diagnostic and the complete
+T36 suite in three bounded steps: `sync/jukuravi_t36_check.sh contract`, `ram`,
+and `raster`. Running the script without arguments still runs all three.
+The contract group rebuilds and checks pinned ROM bytes, tests the host stream
+boundary and protocol, verifies saved physical evidence, and executes the
+current monitor through real host/PTY co-simulation with DRAM decay. The RAM
+group retains the complete local sweep and injected bad-bit attribution. The
+raster group retains both successful entry paths and the missing-return
+negative control, using short test-only deadlines for the intentionally dead
+target. Firmware, production timeouts, and qualified ROM bytes are unchanged.
+
+The lane is selected for its actual host, builder, batch, RAM and raster inputs;
+its dedicated test changes do not start the old diagnostic or network lanes.
+Shared firmware/model changes remain conservative. Batch/local-RAM sources are
+included in the workflow trigger as well as the selector. Documentation-only
+changes select no lane. T28-T32 compatibility checks remain in the existing
+regression lane; historical experiments beyond those need not all execute for
+every refactor. T35's falsified refresh image is still a required negative
+control within the T36 tests.
+
+Before extracting shared RAVI components, preserve exact ROM builds, the
+loader's reserved/load ranges, CALL return/state restoration, CRC-protected
+stored commands, lost-RETURN replay without duplicate side effects, and idle
+reattachment. The fast transport contract pins a wire fixture, every split of
+that frame, corruption recovery, partial writes, bounded deadlines, descriptor
+ownership, and the absence of an explicit DTR reset during normal open. This
+does not prove that every USB driver leaves electrical DTR unchanged on open.
+
+A new target needs its own ABI/ROM-map and bootstrap integration tests. In
+particular, a 1715 backend must separately prove stackless early feedback,
+2 KiB ROM fit, SIO/CTC initialization, and workspace verification before CALL.
+Do not make the existing 8080 CPU/refresh expectations into Z80 requirements.
+Saved physical evidence guards are not fresh bench runs, and emulator success
+does not qualify new wiring or analog timing. The DOSRAVI repository owns its
+separate DOS execution and file-transfer gates; neither wire protocol changes
+as part of this preparation.
+
+Local validation on 2026-10-14 passed T28, T34 and all three T36 groups, the
+fast transport/DTR/heartbeat/liveness guards, 36 CI selector and timeout tests,
+the manifest validator, and actionlint. The T36 groups took approximately
+94 seconds (contract), 171 seconds (RAM), and 18 seconds (raster) on the local
+machine; these measurements are not hosted-runner timing guarantees.
+
+T28, T34 and all T36 groups were rerun successfully after rebasing onto the
+pinned DAC Emulation 0.1.1 dependency. The current-monitor CI lane initializes
+that submodule explicitly before compiling its emulator harness.

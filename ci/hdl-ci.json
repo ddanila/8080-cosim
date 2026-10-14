@@ -113,9 +113,52 @@
       "entrypoints": [
         "sync/boot_check.sh"
       ]
+    },
+    "jukuravi-current": {
+      "entrypoints": [
+        "sync/jukuravi_t34_check.sh",
+        "sync/jukuravi_t36_check.sh"
+      ]
     }
   },
   "rules": [
+    {
+      "name": "jukuravi-current-guards",
+      "exclusive": true,
+      "prefixes": [
+        "tests/jukuravi_t36",
+        "sync/jukuravi_t36"
+      ],
+      "exact": [
+        "sync/jukuravi_t34_check.sh",
+        "tests/jukuravi_t34_clocked_pit_test.py",
+        "tests/jukuravi_t35_physical_sessions_test.py",
+        "tests/jukuravi_transport_contract_test.py",
+        "tests/jukuravi_refresh_row_address_test.py",
+        "tests/jukuravi_full_ram_sweep_test.py",
+        "tests/jukuravi_local_full_ram_test.py",
+        "tests/jukuravi_raster_retention_test.py"
+      ],
+      "jobs": ["jukuravi-current"]
+    },
+    {
+      "name": "jukuravi-current",
+      "prefixes": [
+        "spinoffs/jukuravi/firmware/",
+        "spinoffs/jukuravi/remix/"
+      ],
+      "exact": [
+        "spinoffs/jukuravi/batch.py",
+        "spinoffs/jukuravi/local_ram.py",
+        "tests/jukuravi_transport_contract_test.py",
+        "tests/jukuravi_refresh_row_address_test.py",
+        "tests/jukuravi_full_ram_sweep_test.py",
+        "tests/jukuravi_local_full_ram_test.py",
+        "tests/jukuravi_raster_retention_test.py",
+        "scripts/analyze_jukuravi_partial_full_ram.py"
+      ],
+      "jobs": ["jukuravi-current"]
+    },
     {
       "name": "ci-control",
       "exact": [
@@ -256,7 +299,7 @@
         "third_party/juku-common",
         "third_party/zmac"
       ],
-      "jobs": ["jukuravi-d0", "network-rom", "jukuravi-regression", "jukupoly"]
+      "jobs": ["jukuravi-d0", "network-rom", "jukuravi-regression", "jukupoly", "jukuravi-current"]
     },
     {
       "name": "jukuravi-shared",
@@ -266,7 +309,7 @@
         "spinoffs/jukuravi/raster.py",
         "spinoffs/jukuravi/raster_retention.py"
       ],
-      "jobs": ["jukuravi-d0", "network-rom", "jukuravi-regression"]
+      "jobs": ["jukuravi-d0", "network-rom", "jukuravi-regression", "jukuravi-current"]
     },
     {
       "name": "outside-hdl-suite",

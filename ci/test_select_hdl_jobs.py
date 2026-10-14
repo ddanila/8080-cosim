@@ -6,6 +6,7 @@ from __future__ import annotations
 import unittest
 import contextlib
 import io
+from pathlib import Path
 
 from ci.select_hdl_jobs import load_manifest, select_jobs
 from ci.check_hdl_ci import main as validate_manifest
@@ -103,8 +104,31 @@ class SelectorTest(unittest.TestCase):
     def test_shared_jukuravi_submodule_selects_all_jukuravi_lanes(self) -> None:
         self.assertEqual(
             self.selected("third_party/juku-common"),
-            {"jukuravi-d0", "network-rom", "jukuravi-regression", "jukupoly"},
+            {"jukuravi-d0", "network-rom", "jukuravi-regression", "jukuravi-current", "jukupoly"},
         )
+
+    def test_current_monitor_inputs_are_scoped(self) -> None:
+        for path in (
+            "spinoffs/jukuravi/batch.py",
+            "spinoffs/jukuravi/local_ram.py",
+            "tests/jukuravi_transport_contract_test.py",
+            "tests/jukuravi_t36_refresh_test.py",
+            "sync/jukuravi_t36_check.sh",
+            "tests/jukuravi_local_full_ram_test.py",
+        ):
+            with self.subTest(path=path):
+                self.assertEqual(self.selected(path), {"jukuravi-current"})
+
+    def test_current_input_paths_reach_workflow(self) -> None:
+        workflow = (
+            Path(__file__).resolve().parents[1] / ".github/workflows/hdl.yml"
+        ).read_text()
+        for path in (
+            "spinoffs/jukuravi/batch.py",
+            "spinoffs/jukuravi/local_ram.py",
+            "scripts/analyze_jukuravi_partial_full_ram.py",
+        ):
+            self.assertEqual(workflow.count(f"- '{path}'"), 2)
 
     def test_main_board_change_is_full(self) -> None:
         self.assertEqual(self.selected("kicad/juku.board.json"), self.all_jobs)
@@ -125,7 +149,7 @@ class SelectorTest(unittest.TestCase):
     def test_jukuravi_product_change_runs_all_jukuravi_lanes(self) -> None:
         self.assertEqual(
             self.selected("spinoffs/jukuravi/firmware/build_d0_alive.py"),
-            {"jukuravi-d0", "network-rom", "jukuravi-regression"},
+            {"jukuravi-d0", "network-rom", "jukuravi-regression", "jukuravi-current"},
         )
 
     def test_jukupoly_change_selects_only_jukupoly(self) -> None:
@@ -143,7 +167,7 @@ class SelectorTest(unittest.TestCase):
     def test_jukuravi_shared_change_selects_all_jukuravi_lanes(self) -> None:
         self.assertEqual(
             self.selected("spinoffs/jukuravi/protocol.py"),
-            {"jukuravi-d0", "network-rom", "jukuravi-regression"},
+            {"jukuravi-d0", "network-rom", "jukuravi-regression", "jukuravi-current"},
         )
 
     def test_revb_change_selects_both_video_lanes(self) -> None:

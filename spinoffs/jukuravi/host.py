@@ -289,14 +289,16 @@ def write_all(fd: int, data: bytes, deadline: float, description: str = "data") 
         remaining = deadline - time.monotonic()
         if remaining <= 0:
             raise SessionError(f"timeout while sending {description}")
-        if not select.select([], [fd], [], min(remaining, 0.25))[1]:
-            continue
         try:
+            if not select.select([], [fd], [], min(remaining, 0.25))[1]:
+                continue
             written = os.write(fd, view)
-        except BlockingIOError:
+        except (BlockingIOError, InterruptedError):
             continue
         except OSError as error:
             raise SessionError(f"serial write failed: {error}") from error
+        if written == 0:
+            raise SessionError(f"serial disconnected while sending {description}")
         view = view[written:]
 
 
