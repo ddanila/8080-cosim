@@ -39,6 +39,37 @@ CS00015 nor CS00024 currently has valid evidence that its D55 package is bad;
 see
 [`../../docs/jukuravi-d55-diagnostic-audit.md`](../../docs/jukuravi-d55-diagnostic-audit.md).
 
+## Shared RAVI host dependency
+
+The host, monitor wire codec and transaction engine are supplied by the pinned
+[`third_party/ravi`](../../third_party/ravi) submodule. Initialize it after
+cloning, alongside the emulator/build dependencies required by the test gate:
+
+```sh
+git submodule update --init third_party/ravi third_party/dac-emulation
+```
+
+`host.py` and `protocol.py` preserve the existing CLI/import paths and log
+locations. Firmware, ROM build checks, physical evidence and product scripts
+stay here. The extracted Juku backend retains Nano solicitation, symbol coding,
+reset/bootstrap, diagnostics and refresh policy. Memory-map constants live in
+its Juku profile; generic transports and monitor transactions have no Juku RAM
+address assumptions.
+
+After attaching a loader-v2 `HostSession`, `read_memory`, `write_memory` and
+`call` implement the shared capability interface; `as_target(timeout=...)`
+provides an explicit adapter. CALL returns the accumulator and existing session
+evidence. An uncertain CALL invalidates that capability session; do not
+reconnect and automatically repeat the operation. Execution replay remains
+bounded by the resident firmware's volatile cache, with no remote boot identity.
+The T28 attach test exercises the public API against the actual ROM in cosim.
+
+See RAVI's [architecture](https://github.com/ddanila/ravi/blob/main/docs/architecture.md),
+[protocol compatibility](https://github.com/ddanila/ravi/blob/main/docs/protocols.md)
+and [new-target guide](https://github.com/ddanila/ravi/blob/main/docs/adding-targets.md).
+A future 1715 port needs its own bootstrap, memory/IO profile and qualification;
+this extraction does not change or newly qualify the existing physical setups.
+
 ## Current machine configuration
 
 The CS00015 profile records fitted JukuNet C8 / ABI 1.3.

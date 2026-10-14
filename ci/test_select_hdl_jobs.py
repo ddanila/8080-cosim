@@ -34,6 +34,12 @@ class SelectorTest(unittest.TestCase):
     def test_emulator_pin_selects_all_consumers(self) -> None:
         self.assertEqual(self.selected("third_party/dac-emulation"), self.all_jobs)
 
+    def test_ravi_pin_selects_only_juku_consumers(self) -> None:
+        for path in ("third_party/ravi", "spinoffs/jukuravi/ravi_bootstrap.py"):
+            self.assertEqual(self.selected(path), {
+                "jukuravi-d0", "network-rom", "jukuravi-regression", "jukuravi-current"
+            })
+
     def test_empty_diff_fails_open(self) -> None:
         result = select_jobs([], self.manifest)
         self.assertTrue(result["full"])

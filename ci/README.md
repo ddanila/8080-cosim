@@ -147,3 +147,12 @@ machine; these measurements are not hosted-runner timing guarantees.
 T28, T34 and all T36 groups were rerun successfully after rebasing onto the
 pinned DAC Emulation 0.1.1 dependency. The current-monitor CI lane initializes
 that submodule explicitly before compiling its emulator harness.
+
+
+The pinned `third_party/ravi` library supplies Jukuravi's Python host and
+protocol code. Generic and HDL jobs initialize it explicitly. A library pin or
+bootstrap change selects the four Jukuravi consumers (D0, network ROM, retained
+regressions and current monitor); it does not select unrelated LVS/HDL lanes.
+The current monitor lane retains all T36 groups; T28 also exercises the public
+memory API through the real ROM. The separate compiled jukuhost smoke kit and
+checkpoint-only emulator job do not import RAVI and need no additional package.

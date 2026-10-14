@@ -18,6 +18,7 @@ HOST = ROOT / "spinoffs" / "jukuravi" / "host.py"
 FIRMWARE = ROOT / "spinoffs" / "jukuravi" / "firmware"
 sys.path[:0] = [str(FIRMWARE), str(FIRMWARE.parent)]
 import build_d0_buffer_verified as firmware  # noqa: E402
+import host  # noqa: E402
 
 
 def fail(message: str) -> None:
@@ -119,6 +120,27 @@ def main() -> int:
                     "--log-dir", str(resident_logs),
                 ],
             )
+            if resident.returncode:
+                fail(f"resident CALL failed: {resident.stderr}")
+            # Exercise the public RAVI memory interface on the actual ROM.
+            fd, _ = host.open_transport(None, master, 2400)
+            api_logs = host.SessionLogs(temp / "api", "cosim")
+            try:
+                session = host.HostSession(fd, api_logs, 60, 15, None, None, False,
+                                           loader_guard_seconds=0)
+                session.begin_attempt(1)
+                session.attach_loader_v2(b"", "<api>", 0x4000, None, 30, 0, 5)
+                session.write_memory(0x4800, b"RAVI API")
+                if session.read_memory(0x4800, 8) != b"RAVI API":
+                    fail("RAVI memory interface readback differs")
+                if session.call(0x4000).accumulator != 0x42:
+                    fail("RAVI CALL interface result differs")
+                if session.nano_dtr_sequences_completed:
+                    fail("RAVI memory interface unexpectedly reset the target")
+                session.finish_attempt("ok")
+                api_logs.finish(session.summary("ok"))
+            finally:
+                os.close(fd)
         finally:
             cosim.terminate()
             try:

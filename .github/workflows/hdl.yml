@@ -34,6 +34,7 @@ on:
       - '*'
     paths:
       - 'third_party/dac-emulation'
+      - 'third_party/ravi'
       - '.gitmodules'
       - 'hdl/**'
       - 'cosim/**'
@@ -42,6 +43,7 @@ on:
       - 'spinoffs/jukuravi/network-rom/**'
       - 'spinoffs/jukuravi/host.py'
       - 'spinoffs/jukuravi/protocol.py'
+      - 'spinoffs/jukuravi/ravi_bootstrap.py'
       - 'spinoffs/jukuravi/batch.py'
       - 'spinoffs/jukuravi/local_ram.py'
       - 'scripts/analyze_jukuravi_partial_full_ram.py'
@@ -96,6 +98,7 @@ on:
   pull_request:
     paths:
       - 'third_party/dac-emulation'
+      - 'third_party/ravi'
       - '.gitmodules'
       - 'hdl/**'
       - 'cosim/**'
@@ -104,6 +107,7 @@ on:
       - 'spinoffs/jukuravi/network-rom/**'
       - 'spinoffs/jukuravi/host.py'
       - 'spinoffs/jukuravi/protocol.py'
+      - 'spinoffs/jukuravi/ravi_bootstrap.py'
       - 'spinoffs/jukuravi/batch.py'
       - 'spinoffs/jukuravi/local_ram.py'
       - 'scripts/analyze_jukuravi_partial_full_ram.py'
@@ -382,9 +386,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
-      - name: Initialize pinned emulator
+      - name: Initialize pinned runtime dependencies
         timeout-minutes: 5
-        run: git submodule update --init third_party/dac-emulation
+        run: git submodule update --init third_party/dac-emulation third_party/ravi
 
       - name: Install Icarus Verilog
         timeout-minutes: 5
@@ -411,9 +415,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
-      - name: Initialize pinned emulator
+      - name: Initialize pinned runtime dependencies
         timeout-minutes: 5
-        run: git submodule update --init third_party/dac-emulation
+        run: git submodule update --init third_party/dac-emulation third_party/ravi
 
       - name: Install ROM/HDL toolchain
         timeout-minutes: 5
@@ -443,9 +447,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
-      - name: Initialize pinned emulator
+      - name: Initialize pinned runtime dependencies
         timeout-minutes: 5
-        run: git submodule update --init third_party/dac-emulation
+        run: git submodule update --init third_party/dac-emulation third_party/ravi
 
       # nasm reassembles the committed loader snippets to prove the .bin files
       # still match their sources. iverilog is required because the T32 guard
@@ -498,9 +502,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
-      - name: Initialize pinned emulator
+      - name: Initialize pinned runtime dependencies
         timeout-minutes: 5
-        run: git submodule update --init third_party/dac-emulation
+        run: git submodule update --init third_party/dac-emulation third_party/ravi
       - name: Install monitor test tools
         timeout-minutes: 5
         run: sudo apt-get update && sudo apt-get install -y gcc nasm

@@ -20,3 +20,6 @@
 [submodule "third_party/dac-emulation"]
 	path = third_party/dac-emulation
 	url = https://github.com/ddanila/dac-emulation.git
+[submodule "third_party/ravi"]
+	path = third_party/ravi
+	url = https://github.com/ddanila/ravi.git

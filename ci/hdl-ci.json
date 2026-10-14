@@ -304,6 +304,8 @@
     {
       "name": "jukuravi-shared",
       "exact": [
+        "third_party/ravi",
+        "spinoffs/jukuravi/ravi_bootstrap.py",
         "spinoffs/jukuravi/host.py",
         "spinoffs/jukuravi/protocol.py",
         "spinoffs/jukuravi/raster.py",
