@@ -14,15 +14,30 @@ CC=${CC:-cc}
 
 TRACE_LIMIT=${TRACE_LIMIT:-130000}
 WINDOW=${WINDOW:-30000000}    # ns; covers the complete default 130k-event trace
-TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
+# Optional evidence export is a new directory, never a reused capture.
+if [[ -n ${COSIM_ARTIFACT_DIR:-} ]]; then
+  mkdir "$COSIM_ARTIFACT_DIR"
+  COSIM_ARTIFACT_DIR=$(cd "$COSIM_ARTIFACT_DIR" && pwd)
+fi
+TMP=$(mktemp -d)
+finish() {
+  if [[ -n ${COSIM_ARTIFACT_DIR:-} ]]; then
+    for artifact in bus-events.txt hdl-events.txt bus.jsonl hdl.jsonl comparison.json out; do
+      if [[ -f "$TMP/$artifact" ]]; then cp "$TMP/$artifact" "$COSIM_ARTIFACT_DIR/"; fi
+    done
+  fi
+  rm -rf "$TMP"
+}
+trap finish EXIT
 
 echo "== generate ROM hex from vendored ROM =="
 python3 -c "open('hdl/sim/ekta37.hex','w').write(chr(10).join('%02x'%b for b in open('roms/ekta37.bin','rb').read())+chr(10))"
 
 echo "== build cosim and dump its unified CPU-bus trace (first $TRACE_LIMIT events) =="
 $CC -O2 -I cosim -o "$TMP/trace" cosim/trace.c cosim/i8080.c cosim/juk_disk.c cosim/juku_fdc.c
-( cd cosim && JUKU_BUS_TRACE="$TMP/bus-events.txt" JUKU_BUS_TRACE_LIMIT="$TRACE_LIMIT" \
-    "$TMP/trace" ../roms/ekta37.bin 200000000 0 >/dev/null 2>&1 )
+rom_path="$PWD/roms/ekta37.bin"
+( cd "$TMP" && JUKU_BUS_TRACE="$TMP/bus-events.txt" JUKU_BUS_TRACE_LIMIT="$TRACE_LIMIT" \
+    "$TMP/trace" "$rom_path" 200000000 0 >/dev/null 2>&1 )
 echo "   trace events: $(wc -l < "$TMP/bus-events.txt")"
 awk '{ count[$1]++ } END { for (kind in count) printf "   %-2s %d\n", kind, count[kind] }' \
   "$TMP/bus-events.txt" | sort
@@ -45,9 +60,16 @@ awk '
 
 echo "== build + run juku_top against the cosim bus trace (window=${WINDOW}ns) =="
 iverilog -g2012 -o "$TMP/ctrace" hdl/vendor/vm80a.v hdl/devices.v hdl/juku_top.v hdl/sim/cosim_ctrace_tb.v
-vvp "$TMP/ctrace" +trace="$TMP/bus-events.txt" +timecap="$WINDOW" 2>&1 | tee "$TMP/out"
+vvp "$TMP/ctrace" +trace="$TMP/bus-events.txt" +observed="$TMP/hdl-events.txt" +timecap="$WINDOW" 2>&1 | tee "$TMP/out"
 
 if grep -qE "BTRACE-OK|BTRACE-END" "$TMP/out"; then
+  # Normalize two independently produced captures; require the full requested
+  # event window rather than accepting a timecap with only partial coverage.
+  for side in bus hdl; do
+    python3 scripts/import_cosim_trace.py "$TMP/$side-events.txt" "$TMP/$side.jsonl" \
+      --rom roms/ekta37.bin --events "$TRACE_LIMIT"
+  done
+  python3 third_party/dac-emulation/verification/compare.py "$TMP/bus.jsonl" "$TMP/hdl.jsonl" | tee "$TMP/comparison.json"
   echo "COSIM-CHECK: PASS (juku_top CPU-bus events match cosim across the window)"
   exit 0
 fi

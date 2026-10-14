@@ -26,6 +26,8 @@ module cosim_ctrace_tb;
     phi1=0; phi2=1; force dtop.phi1=0; force dtop.phi2=1; osc=0; #10; osc=1; #10;
     phi2=0; force dtop.phi2=0;
   end
+  integer observed_fd=0;
+  reg [4095:0] observed_file;
   integer fd, nevent=0, timecap=1600000000, code, ea, ed, irq_after=0;
   reg [15:0] ekind;
   reg [4095:0] tracefile;
@@ -35,6 +37,10 @@ module cosim_ctrace_tb;
     if (!$value$plusargs("timecap=%d", timecap)) ;
     if (!$value$plusargs("irq_after=%d", irq_after)) ;
     if (!$value$plusargs("trace=%s", tracefile)) tracefile="bus-events.txt";
+    if ($value$plusargs("observed=%s", observed_file)) begin
+      observed_fd = $fopen(observed_file, "w");
+      if (observed_fd == 0) $fatal(1, "cannot open observed bus trace");
+    end
     fd = $fopen(tracefile, "r");
     if (fd==0) begin $display("BTRACE: cannot open trace file"); $finish; end
   end
@@ -44,6 +50,8 @@ module cosim_ctrace_tb;
     if (!done) begin
       nevent = nevent + 1;
       code = $fscanf(fd, "%s %h %h\n", ekind, ea, ed);
+      if (code == 3 && observed_fd != 0)
+        $fdisplay(observed_fd, "%0s %04h %02h", actual_kind, actual_addr, actual_data);
       if (code != 3) begin
         $display("BTRACE-END: trace exhausted after %0d events; juku_top matched cosim throughout", nevent-1);
         done=1; #1 $finish;

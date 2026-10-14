@@ -23,3 +23,6 @@ trap 'rm -rf "$work"' EXIT
 "$work/fdc"
 python3 tests/cosim_watch_checkpoint_test.py "$work/trace"
 python3 tests/cosim_pit_latch_test.py "$work/trace"
+# The same portable scenario contracts cover Juku and the 1715M target.
+make -C third_party/dac-emulation test-verification
+python3 tests/cosim_trace_adapter_test.py

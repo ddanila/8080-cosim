@@ -400,3 +400,35 @@ is ready. `JUKU_DISK=... tools/juku_run.py` then `T`, `D`, `D` reaches a CP/M
 that system expects a drive. `tests/cosim_console_test.py` checks the console
 with the committed `ekta4401` remix: it reads the banner and sends `H`, then
 requires the help response. It does not exercise this disk-boot sequence.
+
+## Shared comparison artifacts
+
+The DAC dependency now owns the portable session/observation API and generic
+scenario/comparison tools; this repository owns the Juku HDL adapter and its
+hardware expectations. The repository name and legacy compile/CLI paths remain
+unchanged. Robotron 1715M is a second scenario target, not a substitute profile
+for a plain 1715 board.
+
+`cosim_ctrace_tb.v` accepts optional `+observed=PATH` and writes the actual
+`juku_top` events used for comparison. `scripts/import_cosim_trace.py` validates
+both native and HDL captures against an explicit event count and adapts them
+to `dac-trace-1` with the ROM hash. Its profile deliberately has no clock
+frequency: these old text captures cannot support timed comparison.
+
+`sync/cosim_check.sh` retains its immediate HDL mismatch diagnostics and also
+runs the shared ordered comparator. A timecap message with fewer than the
+requested events now fails, rather than passing partial coverage. The comparison
+covers only the declared event window and is not a physical timing claim.
+
+```sh
+COSIM_ARTIFACT_DIR=/tmp/juku-cosim-new-run sync/cosim_check.sh
+```
+
+The directory must not already exist. Raw traces, normalized traces, simulation
+log and comparison JSON are retained when available, including on failure.
+Without this setting the temporary files are removed. The native runner now
+runs inside the temporary directory, so this guard does not replace an existing
+`cosim/vram.bin`. The ROM hex generation and existing HDL model are unchanged.
+
+For portable scenarios, profiles and Robotron trace coverage, see
+[the pinned verification contract](../third_party/dac-emulation/docs/verification.md).
