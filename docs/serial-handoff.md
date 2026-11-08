@@ -182,3 +182,10 @@ opens the existing session image without booting or resetting the guest.
 PTY tests exercise pending-byte preservation and CSTOPB, but cannot validate
 physical parity, wiring, or baud-clock accuracy. The Linux gate includes
 `host/tests/serial_format_test.c` as well as existing Juku integration tests.
+
+The opt-in `--test-corrupt-read-reply-once` flag is restricted to the Robotron
+runtime profile. It flips one checksum bit in the first successful NetDisk-v3
+read reply, leaving the service's cached reply intact. The injection and the
+first matching duplicate request are logged separately; subsequent replies are
+valid. This supports real-target retry testing without a second protocol
+implementation. The default path never injects faults.

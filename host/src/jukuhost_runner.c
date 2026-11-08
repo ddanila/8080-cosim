@@ -74,6 +74,9 @@ struct host_context {
     uint8_t pending[HOST_PENDING_CAPACITY];
     size_t pending_length;
     size_t pending_offset;
+    int test_reply_corrupted;
+    int test_reply_retried;
+    uint8_t test_reply_sequence;
 };
 
 static const char *operation_name(uint8_t operation)
@@ -110,6 +113,7 @@ static void usage(FILE *file)
         "  --config FILE           explicit INI configuration\n"
         "  --serial-fd FD          inherited serial descriptor\n"
         "  --machine robotron1715  9600 8O2, raw 800 KiB A:, runtime attach only\n"
+        "  --test-corrupt-read-reply-once  Robotron test: corrupt one read CRC\n"
         "  --fast-stage FILE       stock-assisted JF15/JF17 or network-ROM JF16\n"
         "  --network-rom           C8/C9 automatic/direct Fastboot V16\n"
         "  --direct-fastboot       synonym for --network-rom\n"
@@ -206,6 +210,8 @@ static int parse_options(int argc, char **argv,
             if (require_value(argc, argv, &index, &value) != 0 ||
                     parse_unsigned(value, 0u, 65535u, &descriptor) != 0) return -1;
             options->serial_fd = (int)descriptor;
+        } else if (strcmp(argument, "--test-corrupt-read-reply-once") == 0) {
+            options->test_corrupt_read_reply_once = 1;
         } else if (strcmp(argument, "--machine") == 0) {
             if (require_value(argc, argv, &index, &value) != 0 ||
                     strcmp(value, "robotron1715") != 0) return -1;
@@ -278,6 +284,7 @@ static int parse_options(int argc, char **argv,
             return -1;
         }
     }
+    if (options->test_corrupt_read_reply_once && !options->robotron1715) return -1;
     if (options->selftest) return argc == 2 ? 0 : -1;
     if (options->config_path != NULL) {
         if (options->robotron1715 || options->serial != NULL || options->serial_fd >= 0 ||
@@ -838,10 +845,24 @@ static int capture_request(struct host_context *host,
 
 static int host_write_disk_reply(struct host_context *host,
                                  const struct jh_n3_request *request,
-                                 const struct jh_service_event *event)
+                                 struct jh_service_event *event)
 {
     size_t position;
     size_t record_index;
+    if (host->test_reply_corrupted && !host->test_reply_retried && event->duplicate &&
+            request->operation == JH_N3_READ_AHEAD && request->sequence == host->test_reply_sequence) {
+        host->test_reply_retried = 1;
+        host_log(host, "INFO", "test-fault=read-crc seq=%u duplicate-valid-reply=1", (unsigned)request->sequence);
+    }
+    if (host->options.test_corrupt_read_reply_once && !host->test_reply_corrupted &&
+            request->operation == JH_N3_READ_AHEAD && event->reply_length >= 7u &&
+            event->reply[3] == 0u) {
+        /* event is a transmitted copy; service.last_reply stays valid for retry. */
+        event->reply[event->reply_length - 1u] ^= 1u;
+        host->test_reply_corrupted = 1;
+        host->test_reply_sequence = request->sequence;
+        host_log(host, "WARN", "test-fault=read-crc injected=1 seq=%u", (unsigned)request->sequence);
+    }
     if (request->operation != JH_N3_READ_AHEAD || event->reply_length < 7u ||
             event->reply[3] != 0u) {
         return host_write(host, event->reply, event->reply_length);
@@ -2098,6 +2119,7 @@ int jh_host_run(const struct jh_host_options *options,
     uint8_t capture_header[JH_CAPTURE_HEADER_SIZE];
     int result = EXIT_CLEAN;
     if (options == NULL) return EXIT_COMMAND;
+    if (options->test_corrupt_read_reply_once && !options->robotron1715) return EXIT_COMMAND;
     if (options->robotron1715) {
 #if defined(_WIN32) || defined(JH_DOS)
         return EXIT_COMMAND;
