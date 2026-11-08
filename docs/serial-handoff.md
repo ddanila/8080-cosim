@@ -162,3 +162,23 @@ after the USART simulation passes.
 - This guard does not qualify external X3 loopback, electrical levels,
   or the complete 8251 synchronous and parity-mode behavior. Physical
   session qualifications belong to their machine-specific records.
+
+## Robotron PC1715 runtime profile (POSIX)
+
+`jukuhost --machine robotron1715 --resume-disk --serial DEVICE --volume disk.img
+--console-pty PTY [--writable]` serves one raw 800 KiB A: image using NetDisk-v3
+and N4. It selects 9600 baud, eight data bits, odd parity, two stop bits, 160
+tracks and one-record reads. Juku's media reordering is not applied. B:, Juku
+bootstrap/recovery and fast stages are rejected. The default Juku profile is
+unchanged; Windows/DOS do not expose this Robotron profile.
+
+A bootstrap owner can additionally pass `--serial-fd FD` with an inherited
+open descriptor. This profile applies 8O2 without flushing queued guest bytes;
+`--serial DEVICE` supplies the path for reconnect. Ownership stays with the
+caller until the host returns. Bootstrapping itself lives in the Robotron CP/M
+repository and uses Ravi's verified upload plus exact GO handoff. Normal attach
+opens the existing session image without booting or resetting the guest.
+
+PTY tests exercise pending-byte preservation and CSTOPB, but cannot validate
+physical parity, wiring, or baud-clock accuracy. The Linux gate includes
+`host/tests/serial_format_test.c` as well as existing Juku integration tests.

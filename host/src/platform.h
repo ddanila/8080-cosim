@@ -14,6 +14,8 @@ struct jh_platform_serial {
     char path[512];
     unsigned baud;
     char parity;
+    unsigned stop_bits;
+    int preserve_input;
     unsigned base_port;
     unsigned fifo_depth;
     unsigned line_errors;
@@ -51,6 +53,9 @@ int jh_platform_serial_adopt(struct jh_platform_serial *serial, int fd,
                           const char *description, unsigned baud, char parity);
 int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned baud,
                               char parity);
+/* POSIX framing-aware entry points; adoption can preserve a boot handoff. */
+int jh_platform_serial_open_format(struct jh_platform_serial *, const char *, unsigned, char, unsigned);
+int jh_platform_serial_adopt_format(struct jh_platform_serial *, int, const char *, unsigned, char, unsigned, int);
 void jh_platform_serial_close(struct jh_platform_serial *serial);
 int jh_platform_serial_read(struct jh_platform_serial *serial, uint8_t *output,
                          size_t capacity, unsigned timeout_ms);

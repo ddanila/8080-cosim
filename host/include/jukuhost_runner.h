@@ -44,6 +44,7 @@ struct jh_host_options {
     const struct jh_config_artifact *fallback_fast_stage_identity;
     const struct jh_config_disk *volume_identity;
     const struct jh_config_disk *drive_b_identity;
+    int robotron1715;
     int serial_fd;
     uint32_t timeout_seconds;
     uint32_t disk_timeout_seconds;

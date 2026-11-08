@@ -108,7 +108,8 @@ static void usage(FILE *file)
         "\n"
         "Boot options:\n"
         "  --config FILE           explicit INI configuration\n"
-        "  --serial-fd FD          inherited PTY (integration tests only)\n"
+        "  --serial-fd FD          inherited serial descriptor\n"
+        "  --machine robotron1715  9600 8O2, raw 800 KiB A:, runtime attach only\n"
         "  --fast-stage FILE       stock-assisted JF15/JF17 or network-ROM JF16\n"
         "  --network-rom           C8/C9 automatic/direct Fastboot V16\n"
         "  --direct-fastboot       synonym for --network-rom\n"
@@ -205,6 +206,10 @@ static int parse_options(int argc, char **argv,
             if (require_value(argc, argv, &index, &value) != 0 ||
                     parse_unsigned(value, 0u, 65535u, &descriptor) != 0) return -1;
             options->serial_fd = (int)descriptor;
+        } else if (strcmp(argument, "--machine") == 0) {
+            if (require_value(argc, argv, &index, &value) != 0 ||
+                    strcmp(value, "robotron1715") != 0) return -1;
+            options->robotron1715 = 1;
         } else if (strcmp(argument, "--system") == 0) {
             if (require_value(argc, argv, &index, &options->system) != 0) return -1;
         } else if (strcmp(argument, "--fast-stage") == 0 ||
@@ -275,7 +280,7 @@ static int parse_options(int argc, char **argv,
     }
     if (options->selftest) return argc == 2 ? 0 : -1;
     if (options->config_path != NULL) {
-        if (options->serial != NULL || options->serial_fd >= 0 ||
+        if (options->robotron1715 || options->serial != NULL || options->serial_fd >= 0 ||
                 options->system != NULL || options->fast_stage != NULL ||
                 options->volume != NULL || options->drive_b != NULL ||
                 options->console_pty != NULL || options->log != NULL ||
@@ -287,7 +292,18 @@ static int parse_options(int argc, char **argv,
         }
         return 0;
     }
-    if ((options->serial != NULL) == (options->serial_fd >= 0) ||
+    if (options->robotron1715) {
+#if defined(_WIN32) || defined(JH_DOS)
+        return -1;
+#endif
+        if (!options->resume_disk || options->drive_b || options->system ||
+                options->fast_stage || options->direct_fastboot || options->recover_session ||
+                options->boot_only || options->disk_protocol != 3u) return -1;
+        options->disk_baud = 9600u;
+        options->read_ahead = 1u;
+    }
+    if ((options->serial == NULL && options->serial_fd < 0) ||
+            (!options->robotron1715 && options->serial != NULL && options->serial_fd >= 0) ||
             (options->volume == NULL && !options->boot_only) ||
             (!options->resume_disk && options->system == NULL)) return -1;
     if (options->resume_disk && options->boot_only) return -1;
@@ -746,8 +762,8 @@ static int reconnect_serial(struct host_context *host, unsigned baud,
         errno = original_error;
         return -1;
     }
-    host_log(host, "WARN", "serial link lost (%s); reopening %s for %u 8%c1",
-             strerror(original_error), host->options.serial, baud, parity);
+    host_log(host, "WARN", "serial link lost (%s); reopening %s for %u 8%c%u",
+             strerror(original_error), host->options.serial, baud, parity, host->options.robotron1715 ? 2u : 1u);
     host_log(host, "INFO", "phase=reconnect");
     host->serial_line_errors += host->serial.line_errors;
     /* Anything pushed back belongs to the link that just died; the caller
@@ -761,13 +777,21 @@ static int reconnect_serial(struct host_context *host, unsigned baud,
     while (!host_stop_requested(host) &&
             jh_platform_milliseconds() < deadline) {
         const char *path = host_serial_path(host);
-        if (path != NULL && jh_platform_serial_open(
-                &host->serial, path, baud, parity) == 0) {
+        int opened = -1;
+        if (path != NULL) {
+#if !defined(_WIN32) && !defined(JH_DOS)
+            if (host->options.robotron1715)
+                opened = jh_platform_serial_open_format(&host->serial, path, baud, parity, 2u);
+            else
+#endif
+                opened = jh_platform_serial_open(&host->serial, path, baud, parity);
+        }
+        if (opened == 0) {
             ++host->reconnect_count;
             host_activity(host);
-            host_log(host, "INFO", "serial reconnected count=%lu applied=%u 8%c1",
+            host_log(host, "INFO", "serial reconnected count=%lu applied=%u 8%c%u",
                      host->reconnect_count, host->serial.baud,
-                     host->serial.parity);
+                     host->serial.parity, host->options.robotron1715 ? 2u : 1u);
             host_log(host, "INFO", "phase=netdisk");
             return 0;
         }
@@ -1652,8 +1676,8 @@ static int run_disk(struct host_context *host,
     if (host_console_enabled(host)) ready_marker[3] = '4';
     else if (host->options.disk_protocol == 2u) ready_marker[3] = '2';
     else if (host->options.disk_protocol == 1u) ready_marker[2] = 0u;
-    if (jh_media_init_backend(&drive_a, volume, JH_N3_VOLUME_SIZE,
-            JH_N3_TRACKS, host->options.writable, jh_platform_media_read,
+    if (jh_media_init_backend(&drive_a, volume, volume->size,
+            host->options.robotron1715 ? JH_N3_NATIVE_TRACKS : JH_N3_TRACKS, host->options.writable, jh_platform_media_read,
             jh_platform_media_write) != JH_OK) return EXIT_MEDIA;
     if (drive_b_file != NULL && jh_media_init_backend(
             &drive_b, drive_b_file, JH_N3_NATIVE_VOLUME_SIZE,
@@ -1690,9 +1714,10 @@ static int run_disk(struct host_context *host,
     if (host->disk_started_ms == 0u) {
         host->disk_started_ms = jh_platform_milliseconds();
     }
-    host_log(host, "INFO", "serving A: %s, %lu baud 8O1, N%lu%s",
+    host_log(host, "INFO", "serving A: %s, %lu baud 8O%u, N%lu%s",
         host->options.writable ? "writable+journal" : "read-only",
         (unsigned long)host->options.disk_baud,
+        host->options.robotron1715 ? 2u : 1u,
         (unsigned long)host->options.disk_protocol,
         drive_b_file != NULL ? ", read-only native B:" : "");
     while (!host_stop_requested(host) &&
@@ -2005,6 +2030,7 @@ static int open_disk_media(struct host_context *host,
     const struct jh_config_disk *identity = host->options.volume_identity;
     uint8_t ignored_digest[JH_SHA256_SIZE];
     uint32_t size;
+    uint32_t volume_size = host->options.robotron1715 ? JH_N3_NATIVE_VOLUME_SIZE : JH_N3_VOLUME_SIZE;
     *have_drive_b = 0;
     if (identity != NULL && identity->mode == JH_CONFIG_MEDIA_SNAPSHOT) {
         int saved;
@@ -2015,7 +2041,7 @@ static int open_disk_media(struct host_context *host,
         }
         if (jh_platform_file_identity(identity->file, &size,
                                       ignored_digest) == 0) {
-            if (size != JH_N3_VOLUME_SIZE) {
+            if (size != volume_size) {
                 host_log(host, "ERROR", "A: snapshot working copy has wrong size");
                 return -1;
             }
@@ -2038,9 +2064,9 @@ static int open_disk_media(struct host_context *host,
         return -1;
     }
     if (jh_platform_media_open(volume, host->options.volume,
-            JH_N3_VOLUME_SIZE, host->options.writable, 0) != 0) {
+            volume_size, host->options.writable, 0) != 0) {
         host_log(host, "ERROR", "A: must be a valid %lu-byte image",
-                 (unsigned long)JH_N3_VOLUME_SIZE);
+                 (unsigned long)volume_size);
         return -1;
     }
     if (host->options.drive_b == NULL) return 0;
@@ -2072,6 +2098,16 @@ int jh_host_run(const struct jh_host_options *options,
     uint8_t capture_header[JH_CAPTURE_HEADER_SIZE];
     int result = EXIT_CLEAN;
     if (options == NULL) return EXIT_COMMAND;
+    if (options->robotron1715) {
+#if defined(_WIN32) || defined(JH_DOS)
+        return EXIT_COMMAND;
+#endif
+        if (!options->resume_disk || options->drive_b || options->system ||
+                options->fast_stage || options->direct_fastboot || options->recover_session ||
+                options->boot_only || options->disk_protocol != 3u ||
+                options->disk_baud != 9600u || options->read_ahead != 1u)
+            return EXIT_COMMAND;
+    }
     memset(&host, 0, sizeof(host));
     memset(&volume, 0, sizeof(volume));
     memset(&drive_b, 0, sizeof(drive_b));
@@ -2153,11 +2189,21 @@ int jh_host_run(const struct jh_host_options *options,
             host.options.direct_fastboot ? 19200u : 9600u;
         char initial_parity = host.options.recover_session ? 'O' :
             host.options.direct_fastboot ? 'N' : 'O';
-        host_log(&host, "INFO", "phase=serial-open requested=%u 8%c1 flow=none",
-                 initial_baud, initial_parity);
+        host_log(&host, "INFO", "phase=serial-open requested=%u 8%c%u flow=none",
+                 initial_baud, initial_parity, host.options.robotron1715 ? 2u : 1u);
         const char *serial_path = host.options.serial_fd >= 0 ? NULL :
             host_serial_path(&host);
-        int opened = host.options.serial_fd >= 0 ?
+        int opened;
+#if !defined(_WIN32) && !defined(JH_DOS)
+        if (host.options.robotron1715) {
+            opened = host.options.serial_fd >= 0 ?
+                jh_platform_serial_adopt_format(&host.serial, host.options.serial_fd,
+                    host.options.serial ? host.options.serial : "/dev/pts/inherited",
+                    9600u, 'O', 2u, 1) :
+                jh_platform_serial_open_format(&host.serial, serial_path, 9600u, 'O', 2u);
+        } else
+#endif
+        opened = host.options.serial_fd >= 0 ?
             jh_platform_serial_adopt(&host.serial, host.options.serial_fd,
                                   "/dev/pts/inherited", initial_baud,
                                   initial_parity) :
@@ -2176,8 +2222,8 @@ int jh_host_run(const struct jh_host_options *options,
             }
         }
     }
-    host_log(&host, "INFO", "serial applied=%u 8%c1 flow=none",
-             host.serial.baud, host.serial.parity);
+    host_log(&host, "INFO", "serial applied=%u 8%c%u flow=none",
+             host.serial.baud, host.serial.parity, host.options.robotron1715 ? 2u : 1u);
     if (host.serial.base_port != 0u) {
         host_log(&host, "INFO", "serial hardware base=%04X fifo-depth=%u",
                  host.serial.base_port, host.serial.fifo_depth);

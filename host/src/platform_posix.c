@@ -99,7 +99,8 @@ static speed_t baud_value(unsigned baud)
 
 static int is_pseudo_terminal_path(const char *path)
 {
-    return strncmp(path, "/dev/pts/", 9u) == 0 ||
+    return strcmp(path, "/dev/ptmx") == 0 ||
+        strncmp(path, "/dev/pts/", 9u) == 0 ||
         strncmp(path, "/dev/ttys", 9u) == 0 ||
         strncmp(path, "/dev/pty", 8u) == 0;
 }
@@ -126,6 +127,7 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
 #endif
     );
     attributes.c_cflag |= CS8 | CLOCAL | CREAD;
+    if (serial->stop_bits == 2u) attributes.c_cflag |= CSTOPB;
     /* POSIX PTYs neither generate nor validate parity.  Some kernels accept
      * the first PARENB request, silently clear it, and reject an identical
      * request when the same PTY is adopted by a replacement process.  Keep
@@ -140,7 +142,7 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
             tcsetattr(serial->fd, TCSANOW, &attributes) != 0) {
         return -1;
     }
-    if (tcflush(serial->fd, TCIOFLUSH) != 0 &&
+    if (!serial->preserve_input && tcflush(serial->fd, TCIOFLUSH) != 0 &&
             !(pseudo_terminal && errno == EINVAL)) {
         return -1;
     }
@@ -153,7 +155,7 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
             (applied.c_cflag & required) != required ||
             (!pseudo_terminal && parity == 'N' &&
              (applied.c_cflag & (PARENB | PARODD)) != 0u) ||
-            (applied.c_cflag & CSTOPB) != 0u) {
+            !!(applied.c_cflag & CSTOPB) != (serial->stop_bits == 2u)) {
         errno = EINVAL;
         return -1;
     }
@@ -163,14 +165,15 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
     return 0;
 }
 
-int jh_platform_serial_open(struct jh_platform_serial *serial, const char *path,
-                         unsigned baud, char parity)
+int jh_platform_serial_open_format(struct jh_platform_serial *serial, const char *path,
+                         unsigned baud, char parity, unsigned stop_bits)
 {
     char actual[512];
     size_t length;
-    if (serial == NULL || path == NULL) return -1;
+    if (serial == NULL || path == NULL || (stop_bits != 1u && stop_bits != 2u)) return -1;
     memset(serial, 0, sizeof(*serial));
     serial->fd = -1;
+    serial->stop_bits = stop_bits;
     length = strlen(path);
     if (length == 0u || length >= sizeof(serial->path)) {
         errno = ENAMETOOLONG;
@@ -192,23 +195,27 @@ int jh_platform_serial_open(struct jh_platform_serial *serial, const char *path,
     return 0;
 }
 
-int jh_platform_serial_adopt(struct jh_platform_serial *serial, int fd,
-                          const char *description, unsigned baud, char parity)
+int jh_platform_serial_adopt_format(struct jh_platform_serial *serial, int fd,
+                          const char *description, unsigned baud, char parity,
+                          unsigned stop_bits, int preserve_input)
 {
+    char actual[512];
     int flags;
     size_t length;
-    if (serial == NULL || fd < 0 || description == NULL) return -1;
+    if (serial == NULL || fd < 0 || description == NULL ||
+            (stop_bits != 1u && stop_bits != 2u)) return -1;
     memset(serial, 0, sizeof(*serial));
     serial->fd = fd;
+    serial->stop_bits = stop_bits;
+    serial->preserve_input = preserve_input;
     length = strlen(description);
     if (length == 0u || length >= sizeof(serial->path)) {
         errno = ENAMETOOLONG;
         return -1;
     }
     memcpy(serial->path, description, length + 1u);
-    /* Descriptor adoption is deliberately an integration-test-only PTY path;
-     * production devices are always opened by name and remain strict. */
-    serial->pseudo_terminal = 1;
+    serial->pseudo_terminal =
+        ttyname_r(fd, actual, sizeof(actual)) == 0 && is_pseudo_terminal_path(actual);
     flags = fcntl(fd, F_GETFL);
     if (flags < 0 || fcntl(fd, F_SETFL, flags | O_NONBLOCK) != 0 ||
             jh_platform_serial_configure(serial, baud, parity) != 0) {
@@ -216,6 +223,17 @@ int jh_platform_serial_adopt(struct jh_platform_serial *serial, int fd,
         return -1;
     }
     return 0;
+}
+
+int jh_platform_serial_open(struct jh_platform_serial *serial, const char *path,
+                            unsigned baud, char parity)
+{
+    return jh_platform_serial_open_format(serial, path, baud, parity, 1u);
+}
+int jh_platform_serial_adopt(struct jh_platform_serial *serial, int fd,
+                             const char *description, unsigned baud, char parity)
+{
+    return jh_platform_serial_adopt_format(serial, fd, description, baud, parity, 1u, 0);
 }
 
 void jh_platform_serial_close(struct jh_platform_serial *serial)
@@ -304,7 +322,8 @@ int jh_platform_serial_write(struct jh_platform_serial *serial, const uint8_t *d
     }
     if (written_total == length && serial->pseudo_terminal && length != 0u) {
         uint64_t now = jh_platform_milliseconds();
-        uint64_t bits_per_byte = serial->parity == 'O' ? 11u : 10u;
+        uint64_t bits_per_byte = 9u + (serial->parity == 'O' ? 1u : 0u) +
+                (serial->stop_bits == 2u ? 2u : 1u);
         uint64_t bits = (uint64_t)length * bits_per_byte;
         uint64_t milliseconds =
             (bits * 1000u + serial->baud - 1u) / serial->baud;
