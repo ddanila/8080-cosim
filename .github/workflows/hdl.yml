@@ -9,7 +9,7 @@ name: CI (HDL — LVS + behavioral boot)
 # The behavioral guards are split across independent jobs that run in parallel.
 # A fail-open dependency selector runs only lanes affected by an isolated change;
 # shared, unknown, CI-control, scheduled, and tag changes run the complete suite.
-# A nightly full sentinel preserves coverage independently of path selection.
+# A weekly full sentinel preserves coverage independently of path selection.
 #
 # Jukuravi paths are listed individually rather than as spinoffs/jukuravi/**:
 # that glob also covered sessions/ (captured serial-log bytes) and the prose docs,
@@ -26,7 +26,7 @@ on:
           - changed
         default: full
   schedule:
-    - cron: '23 3 * * *'
+    - cron: '23 3 * * 1'
   push:
     branches:
       - '**'
