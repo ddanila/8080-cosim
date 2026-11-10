@@ -70,6 +70,23 @@ int main(void)
         fprintf(stderr, "runner accepted null options\n");
         return 1;
     }
+    /* Native-media profiles share disk services, but not framing/speed. */
+    jh_host_options_init(&options);
+    options.robotron1715 = 1;
+    options.kaypro2 = 1;
+    options.resume_disk = 1;
+    options.read_ahead = 1u;
+    options.disk_baud = 9600u;
+    if (jh_host_run(&options, &hooks, &summary) != JH_HOST_EXIT_COMMAND) {
+        fprintf(stderr, "Kaypro accepted Robotron baud rate\n");
+        return 1;
+    }
+    options.kaypro2 = 0;
+    options.disk_baud = 19200u;
+    if (jh_host_run(&options, &hooks, &summary) != JH_HOST_EXIT_COMMAND) {
+        fprintf(stderr, "Robotron accepted Kaypro baud rate\n");
+        return 1;
+    }
     puts("JUKUHOST-RUNNER-TEST: PASS");
     return 0;
 }
