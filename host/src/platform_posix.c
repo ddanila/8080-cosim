@@ -112,6 +112,8 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
 {
     struct termios attributes;
     struct termios applied;
+    struct termios inherited;
+    int keep_configuration;
     speed_t speed;
     tcflag_t required;
     int pseudo_terminal;
@@ -120,6 +122,7 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
     speed = baud_value(baud);
     pseudo_terminal = serial->pseudo_terminal;
     if (speed == (speed_t)0 || tcgetattr(serial->fd, &attributes) != 0) return -1;
+    inherited = attributes;
     attributes.c_iflag = IGNPAR;
     attributes.c_oflag = 0;
     attributes.c_lflag = 0;
@@ -139,9 +142,19 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
     }
     attributes.c_cc[VMIN] = 0;
     attributes.c_cc[VTIME] = 0;
+    /* Reprogramming a live USB UART can damage bytes already arriving,
+     * even at the same baud. An adopted raw descriptor is already usable;
+     * VMIN 0/1 and IGNPAR do not require a line reconfiguration here. */
+    keep_configuration = serial->preserve_input &&
+        cfgetispeed(&inherited) == speed && cfgetospeed(&inherited) == speed &&
+        inherited.c_cflag == attributes.c_cflag &&
+        (inherited.c_iflag & (tcflag_t)~IGNPAR) == 0u &&
+        inherited.c_oflag == 0u && inherited.c_lflag == 0u &&
+        inherited.c_cc[VMIN] <= 1u && inherited.c_cc[VTIME] == 0u;
     if (cfsetispeed(&attributes, speed) != 0 ||
             cfsetospeed(&attributes, speed) != 0 ||
-            tcsetattr(serial->fd, TCSANOW, &attributes) != 0) {
+            (!keep_configuration &&
+             tcsetattr(serial->fd, TCSANOW, &attributes) != 0)) {
         return -1;
     }
     if (!serial->preserve_input && tcflush(serial->fd, TCIOFLUSH) != 0 &&

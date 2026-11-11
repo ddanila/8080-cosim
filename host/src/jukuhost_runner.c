@@ -2522,13 +2522,14 @@ int jh_host_run(const struct jh_host_options *options,
             result = EXIT_SERIAL;
             goto cleanup;
         }
-    } else if (host.serial.parity != 'O' &&
+    } else if (host.serial.parity != (host.options.robotron1715w ? 'N' : 'O') &&
             jh_platform_serial_configure(&host.serial, host.options.disk_baud,
-                                      'O') != 0) {
+                                      host.options.robotron1715w ? 'N' : 'O') != 0) {
         result = EXIT_SERIAL;
         goto cleanup;
     }
-    host_log(&host, "INFO", "phase=netdisk");
+    host_log(&host, "INFO", "phase=netdisk serial=%u 8%c%u",
+             host.serial.baud, host.serial.parity, host.serial.stop_bits);
     result = run_disk(&host, &volume, have_drive_b ? &drive_b : NULL,
                       host.options.resume_disk, RECOVERY_NONE);
 cleanup:
