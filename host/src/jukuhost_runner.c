@@ -113,7 +113,7 @@ static void usage(FILE *file)
         "  --config FILE           explicit INI configuration\n"
         "  --serial-fd FD          inherited serial descriptor\n"
         "  --machine kaypro2       19200 8O1, raw 800 KiB A:, runtime attach only\n"
-        "  --machine robotron1715w 1200 8N1 default; 41600/62400 with prepared --serial-fd\n"
+        "  --machine robotron1715w 1200 8N1 default; 9600/41600/62400 with prepared --serial-fd\n"
         "  --machine robotron1715  9600 8O2, raw 800 KiB A:, runtime attach only\n"
         "  --test-corrupt-read-reply-once  Robotron test: corrupt one read CRC\n"
         "  --fast-stage FILE       stock-assisted JF15/JF17 or network-ROM JF16\n"
@@ -313,8 +313,8 @@ static int parse_options(int argc, char **argv,
                 options->fast_stage || options->direct_fastboot || options->recover_session ||
                 options->boot_only || options->disk_protocol != 3u) return -1;
         if (options->robotron1715w && disk_baud_explicit) {
-            if (options->disk_baud != 1200u && options->disk_baud != 41600u && options->disk_baud != 62400u) return -1;
-            if ((options->disk_baud == 41600u || options->disk_baud == 62400u) && options->serial_fd < 0) return -1;
+            if (options->disk_baud != 1200u && options->disk_baud != 9600u && options->disk_baud != 41600u && options->disk_baud != 62400u) return -1;
+            if ((options->disk_baud == 9600u || options->disk_baud == 41600u || options->disk_baud == 62400u) && options->serial_fd < 0) return -1;
         } else {
             options->disk_baud = options->robotron1715w ? 1200u : options->kaypro2 ? 19200u : 9600u;
         }
@@ -2148,7 +2148,7 @@ int jh_host_run(const struct jh_host_options *options,
                 options->boot_only || options->disk_protocol != 3u ||
                 (options->robotron1715w ?
                     (options->disk_baud != 1200u &&
-                     !((options->disk_baud == 41600u || options->disk_baud == 62400u) && options->serial_fd >= 0)) :
+                     !((options->disk_baud == 9600u || options->disk_baud == 41600u || options->disk_baud == 62400u) && options->serial_fd >= 0)) :
                     options->disk_baud != (options->kaypro2 ? 19200u : 9600u)) || options->read_ahead != 1u)
             return EXIT_COMMAND;
     }
