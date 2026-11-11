@@ -46,6 +46,7 @@ struct jh_host_options {
     const struct jh_config_disk *drive_b_identity;
     int robotron1715; /* native 800 KiB media contract (also Kaypro) */
     int kaypro2;
+    int robotron1715w;
     int test_corrupt_read_reply_once;
     int serial_fd;
     uint32_t timeout_seconds;

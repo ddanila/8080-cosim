@@ -87,6 +87,16 @@ int main(void)
         fprintf(stderr, "Robotron accepted Kaypro baud rate\n");
         return 1;
     }
+    options.robotron1715w = 1;
+    if (jh_host_run(&options, &hooks, &summary) != JH_HOST_EXIT_COMMAND) {
+        fprintf(stderr, "W/M accepted 19200 instead of 1200\n");
+        return 1;
+    }
+    options.disk_baud = 1200u;
+    if (jh_host_run(&options, &hooks, &summary) != JH_HOST_EXIT_CLEAN) {
+        fprintf(stderr, "W/M rejected its 1200 baud profile\n");
+        return 1;
+    }
     puts("JUKUHOST-RUNNER-TEST: PASS");
     return 0;
 }

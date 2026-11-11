@@ -10,6 +10,7 @@
 #include <poll.h>
 #include <signal.h>
 #include <string.h>
+#include <stdlib.h>
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
@@ -88,6 +89,7 @@ uint32_t jh_platform_available_memory(void)
 static speed_t baud_value(unsigned baud)
 {
     switch (baud) {
+    case 1200u: return B1200;
     case 2400u: return B2400;
     case 4800u: return B4800;
     case 9600u: return B9600;
@@ -337,6 +339,9 @@ int jh_platform_serial_drain(struct jh_platform_serial *serial)
 {
     if (serial == NULL || serial->fd < 0) return -1;
     if (serial->pseudo_terminal) {
+        /* Explicit test harness: the peer clocks every bit itself, possibly
+         * faster than wall time. Never bypass physical-device tcdrain. */
+        if (getenv("JH_TEST_PTY_UNPACED") != NULL) return 0;
         uint64_t now = jh_platform_milliseconds();
         if (serial->tx_ready_ms > now) {
             uint64_t remaining = serial->tx_ready_ms - now;
