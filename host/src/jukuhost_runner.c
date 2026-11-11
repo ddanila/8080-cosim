@@ -113,7 +113,7 @@ static void usage(FILE *file)
         "  --config FILE           explicit INI configuration\n"
         "  --serial-fd FD          inherited serial descriptor\n"
         "  --machine kaypro2       19200 8O1, raw 800 KiB A:, runtime attach only\n"
-        "  --machine robotron1715w 1200 8N1, headless W/M, runtime attach only\n"
+        "  --machine robotron1715w 1200 8N1 default; 41600/62400 with prepared --serial-fd\n"
         "  --machine robotron1715  9600 8O2, raw 800 KiB A:, runtime attach only\n"
         "  --test-corrupt-read-reply-once  Robotron test: corrupt one read CRC\n"
         "  --fast-stage FILE       stock-assisted JF15/JF17 or network-ROM JF16\n"
@@ -182,6 +182,7 @@ static int parse_options(int argc, char **argv,
                          struct jh_host_options *options)
 {
     int index;
+    int disk_baud_explicit = 0;
     jh_host_options_init(options);
 #ifdef JH_DOS
     if (argc == 1) {
@@ -272,8 +273,9 @@ static int parse_options(int argc, char **argv,
                                    &options->disk_protocol) != 0) return -1;
         } else if (strcmp(argument, "--disk-baud") == 0) {
             if (require_value(argc, argv, &index, &value) != 0 ||
-                    parse_unsigned(value, 1200u, 38400u,
+                    parse_unsigned(value, 1200u, 62400u,
                                    &options->disk_baud) != 0) return -1;
+            disk_baud_explicit = 1;
         } else if (strcmp(argument, "--read-ahead") == 0 ||
                 strcmp(argument, "--disk-read-ahead-records") == 0) {
             if (require_value(argc, argv, &index, &value) != 0 ||
@@ -310,7 +312,12 @@ static int parse_options(int argc, char **argv,
         if (!options->resume_disk || options->drive_b || options->system ||
                 options->fast_stage || options->direct_fastboot || options->recover_session ||
                 options->boot_only || options->disk_protocol != 3u) return -1;
-        options->disk_baud = options->robotron1715w ? 1200u : options->kaypro2 ? 19200u : 9600u;
+        if (options->robotron1715w && disk_baud_explicit) {
+            if (options->disk_baud != 1200u && options->disk_baud != 41600u && options->disk_baud != 62400u) return -1;
+            if ((options->disk_baud == 41600u || options->disk_baud == 62400u) && options->serial_fd < 0) return -1;
+        } else {
+            options->disk_baud = options->robotron1715w ? 1200u : options->kaypro2 ? 19200u : 9600u;
+        }
         options->read_ahead = 1u;
     }
     if ((options->serial == NULL && options->serial_fd < 0) ||
@@ -2139,7 +2146,10 @@ int jh_host_run(const struct jh_host_options *options,
         if (!options->resume_disk || options->drive_b || options->system ||
                 options->fast_stage || options->direct_fastboot || options->recover_session ||
                 options->boot_only || options->disk_protocol != 3u ||
-                options->disk_baud != (options->robotron1715w ? 1200u : options->kaypro2 ? 19200u : 9600u) || options->read_ahead != 1u)
+                (options->robotron1715w ?
+                    (options->disk_baud != 1200u &&
+                     !((options->disk_baud == 41600u || options->disk_baud == 62400u) && options->serial_fd >= 0)) :
+                    options->disk_baud != (options->kaypro2 ? 19200u : 9600u)) || options->read_ahead != 1u)
             return EXIT_COMMAND;
     }
     memset(&host, 0, sizeof(host));

@@ -95,6 +95,11 @@ static speed_t baud_value(unsigned baud)
     case 9600u: return B9600;
     case 19200u: return B19200;
     case 38400u: return B38400;
+#ifdef __APPLE__
+    /* Only adopt a preconfigured custom-rate descriptor; never synthesize it. */
+    case 41600u: return (speed_t)41600;
+    case 62400u: return (speed_t)62400;
+#endif
     default: return (speed_t)0;
     }
 }
@@ -151,10 +156,11 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
         (inherited.c_iflag & (tcflag_t)~IGNPAR) == 0u &&
         inherited.c_oflag == 0u && inherited.c_lflag == 0u &&
         inherited.c_cc[VMIN] <= 1u && inherited.c_cc[VTIME] == 0u;
-    if (cfsetispeed(&attributes, speed) != 0 ||
-            cfsetospeed(&attributes, speed) != 0 ||
+    if (((baud == 41600u || baud == 62400u) && !keep_configuration) ||
             (!keep_configuration &&
-             tcsetattr(serial->fd, TCSANOW, &attributes) != 0)) {
+             (cfsetispeed(&attributes, speed) != 0 ||
+              cfsetospeed(&attributes, speed) != 0 ||
+              tcsetattr(serial->fd, TCSANOW, &attributes) != 0))) {
         return -1;
     }
     if (!serial->preserve_input && tcflush(serial->fd, TCIOFLUSH) != 0 &&
