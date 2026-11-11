@@ -14,6 +14,13 @@
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
+#ifdef __APPLE__
+#include <IOKit/serial/ioss.h>
+#endif
+#ifdef __linux__
+struct jh_termios2 { unsigned iflag, oflag, cflag, lflag; unsigned char line, cc[19]; unsigned ispeed, ospeed; };
+#endif
 
 static volatile sig_atomic_t stop_requested;
 
@@ -89,6 +96,10 @@ uint32_t jh_platform_available_memory(void)
 static speed_t baud_value(unsigned baud)
 {
     switch (baud) {
+    case 75u: return B75;
+    case 150u: return B150;
+    case 300u: return B300;
+    case 600u: return B600;
     case 1200u: return B1200;
     case 2400u: return B2400;
     case 4800u: return B4800;
@@ -123,10 +134,12 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
     tcflag_t required;
     int pseudo_terminal;
     if (serial == NULL || serial->fd < 0 ||
-            (parity != 'N' && parity != 'O')) return -1;
+            (parity != 'N' && parity != 'O' && parity != 'E')) return -1;
     speed = baud_value(baud);
     pseudo_terminal = serial->pseudo_terminal;
-    if (speed == (speed_t)0 || tcgetattr(serial->fd, &attributes) != 0) return -1;
+    int custom = speed == (speed_t)0;
+    if (baud<75u || baud>115200u || tcgetattr(serial->fd, &attributes) != 0) return -1;
+    if (custom) speed=B38400;
     inherited = attributes;
     attributes.c_iflag = IGNPAR;
     attributes.c_oflag = 0;
@@ -142,16 +155,28 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
      * the first PARENB request, silently clear it, and reject an identical
      * request when the same PTY is adopted by a replacement process.  Keep
      * PTY framing logical for simulator tests; physical ports remain strict. */
-    if (parity == 'O' && !pseudo_terminal) {
-        attributes.c_cflag |= PARENB | PARODD;
+    if (parity != 'N' && !pseudo_terminal) {
+        attributes.c_cflag |= PARENB;
+        if (parity=='O') attributes.c_cflag |= PARODD;
     }
     attributes.c_cc[VMIN] = 0;
     attributes.c_cc[VTIME] = 0;
     /* Reprogramming a live USB UART can damage bytes already arriving,
      * even at the same baud. An adopted raw descriptor is already usable;
      * VMIN 0/1 and IGNPAR do not require a line reconfiguration here. */
-    keep_configuration = serial->preserve_input &&
-        cfgetispeed(&inherited) == speed && cfgetospeed(&inherited) == speed &&
+    int matching_speed = cfgetispeed(&inherited) == speed && cfgetospeed(&inherited) == speed;
+    if (custom && !pseudo_terminal) {
+#ifdef __APPLE__
+        matching_speed = cfgetispeed(&inherited) == (speed_t)baud && cfgetospeed(&inherited) == (speed_t)baud;
+#elif defined(__linux__)
+        struct jh_termios2 current;
+        matching_speed = ioctl(serial->fd,_IOR('T',0x2a,struct jh_termios2),&current)==0 &&
+            current.ispeed==baud && current.ospeed==baud;
+#else
+        matching_speed = 0;
+#endif
+    }
+    keep_configuration = serial->preserve_input && matching_speed &&
         inherited.c_cflag == attributes.c_cflag &&
         (inherited.c_iflag & (tcflag_t)~IGNPAR) == 0u &&
         inherited.c_oflag == 0u && inherited.c_lflag == 0u &&
@@ -163,6 +188,22 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
               tcsetattr(serial->fd, TCSANOW, &attributes) != 0))) {
         return -1;
     }
+    if (custom && !pseudo_terminal && !keep_configuration) {
+#ifdef __APPLE__
+        speed_t requested=(speed_t)baud;
+        if (ioctl(serial->fd,IOSSIOSPEED,&requested)<0) return -1;
+#elif defined(__linux__)
+        struct jh_termios2 t;
+        if (ioctl(serial->fd,_IOR('T',0x2a,struct jh_termios2),&t)<0) return -1;
+        t.cflag=(t.cflag & ~0x100f100fu)|0x1000u;
+        t.ispeed=t.ospeed=baud;
+        if (ioctl(serial->fd,_IOW('T',0x2b,struct jh_termios2),&t)<0 ||
+            ioctl(serial->fd,_IOR('T',0x2a,struct jh_termios2),&t)<0 ||
+            t.ispeed!=baud || t.ospeed!=baud) return -1;
+#else
+        errno=EINVAL; return -1;
+#endif
+    }
     if (!serial->preserve_input && tcflush(serial->fd, TCIOFLUSH) != 0 &&
             !(pseudo_terminal && errno == EINVAL)) {
         return -1;
@@ -171,9 +212,11 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
         return -1;
     }
     required = CS8 | CLOCAL | CREAD;
-    if (parity == 'O' && !pseudo_terminal) required |= PARENB | PARODD;
-    if (cfgetispeed(&applied) != speed || cfgetospeed(&applied) != speed ||
+    if (parity != 'N' && !pseudo_terminal) required |= PARENB;
+    if (parity == 'O' && !pseudo_terminal) required |= PARODD;
+    if ((!custom && (cfgetispeed(&applied) != speed || cfgetospeed(&applied) != speed)) ||
             (applied.c_cflag & required) != required ||
+            (!pseudo_terminal && parity == 'E' && (applied.c_cflag & PARODD)!=0u) ||
             (!pseudo_terminal && parity == 'N' &&
              (applied.c_cflag & (PARENB | PARODD)) != 0u) ||
             !!(applied.c_cflag & CSTOPB) != (serial->stop_bits == 2u)) {

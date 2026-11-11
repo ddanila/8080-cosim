@@ -112,7 +112,7 @@ static void usage(FILE *file)
         "Boot options:\n"
         "  --config FILE           explicit INI configuration\n"
         "  --serial-fd FD          inherited serial descriptor\n"
-        "  --machine kaypro2       19200 8O1, raw 800 KiB A:, runtime attach only\n"
+        "  --machine kaypro2       configurable serial, raw 800 KiB A:, runtime attach only\n"
         "  --machine robotron1715w 1200 8N1 default; 9600/41600/62400 with prepared --serial-fd\n"
         "  --machine robotron1715  9600 8O2, raw 800 KiB A:, runtime attach only\n"
         "  --test-corrupt-read-reply-once  Robotron test: corrupt one read CRC\n"
@@ -173,6 +173,8 @@ void jh_host_options_init(struct jh_host_options *options)
     options->reconnect_timeout_seconds = 30u;
     options->disk_protocol = 3u;
     options->disk_baud = 19200u;
+    options->serial_parity = 'O';
+    options->serial_stop_bits = 1u;
     options->read_ahead = 3u;
     options->reply_guard_ms = 2u;
     options->serial_fd = -1;
@@ -271,9 +273,16 @@ static int parse_options(int argc, char **argv,
             if (require_value(argc, argv, &index, &value) != 0 ||
                     parse_unsigned(value, 1u, 3u,
                                    &options->disk_protocol) != 0) return -1;
+        } else if (strcmp(argument, "--serial-parity") == 0) {
+            if (require_value(argc, argv, &index, &value) != 0 || strlen(value)!=1 ||
+                (value[0]!='N' && value[0]!='O' && value[0]!='E')) return -1;
+            options->serial_parity=value[0];
+        } else if (strcmp(argument, "--serial-stop-bits") == 0) {
+            if (require_value(argc, argv, &index, &value) != 0 ||
+                parse_unsigned(value,1u,2u,&options->serial_stop_bits)!=0) return -1;
         } else if (strcmp(argument, "--disk-baud") == 0) {
             if (require_value(argc, argv, &index, &value) != 0 ||
-                    parse_unsigned(value, 1200u, 62400u,
+                    parse_unsigned(value, 75u, 62400u,
                                    &options->disk_baud) != 0) return -1;
             disk_baud_explicit = 1;
         } else if (strcmp(argument, "--read-ahead") == 0 ||
@@ -290,6 +299,8 @@ static int parse_options(int argc, char **argv,
             return -1;
         }
     }
+    if (!options->kaypro2 && (options->serial_parity!='O' || options->serial_stop_bits!=1u)) return -1;
+    if (options->kaypro2 && options->disk_baud>19800u) return -1;
     if (options->test_corrupt_read_reply_once && !options->robotron1715) return -1;
     if (options->selftest) return argc == 2 ? 0 : -1;
     if (options->config_path != NULL) {
@@ -315,8 +326,8 @@ static int parse_options(int argc, char **argv,
         if (options->robotron1715w && disk_baud_explicit) {
             if (options->disk_baud != 1200u && options->disk_baud != 9600u && options->disk_baud != 41600u && options->disk_baud != 62400u) return -1;
             if ((options->disk_baud == 9600u || options->disk_baud == 41600u || options->disk_baud == 62400u) && options->serial_fd < 0) return -1;
-        } else {
-            options->disk_baud = options->robotron1715w ? 1200u : options->kaypro2 ? 19200u : 9600u;
+        } else if (!options->kaypro2) {
+            options->disk_baud = options->robotron1715w ? 1200u : 9600u;
         }
         options->read_ahead = 1u;
     }
@@ -799,7 +810,7 @@ static int reconnect_serial(struct host_context *host, unsigned baud,
         if (path != NULL) {
 #if !defined(_WIN32) && !defined(JH_DOS)
             if (host->options.robotron1715)
-                opened = jh_platform_serial_open_format(&host->serial, path, baud, parity, (host->options.kaypro2 || host->options.robotron1715w) ? 1u : 2u);
+                opened = jh_platform_serial_open_format(&host->serial, path, baud, parity, host->options.kaypro2 ? host->options.serial_stop_bits : host->options.robotron1715w ? 1u : 2u);
             else
 #endif
                 opened = jh_platform_serial_open(&host->serial, path, baud, parity);
@@ -1756,7 +1767,7 @@ static int run_disk(struct host_context *host,
     host_log(host, "INFO", "serving A: %s, %lu baud 8%c%u, N%lu%s",
         host->options.writable ? "writable+journal" : "read-only",
         (unsigned long)host->options.disk_baud,
-        host->options.robotron1715w ? 'N' : 'O',
+        host->options.kaypro2 ? host->options.serial_parity : host->options.robotron1715w ? 'N' : 'O',
         (host->options.robotron1715 && !host->options.kaypro2 && !host->options.robotron1715w) ? 2u : 1u,
         (unsigned long)host->options.disk_protocol,
         drive_b_file != NULL ? ", read-only native B:" : "");
@@ -1775,7 +1786,7 @@ static int run_disk(struct host_context *host,
                     result = EXIT_CLEAN;
                     goto done;
                 }
-                if (reconnect_serial(host, host->options.disk_baud, host->options.robotron1715w ? 'N' : 'O') != 0) {
+                if (reconnect_serial(host, host->options.disk_baud, host->options.kaypro2 ? host->options.serial_parity : host->options.robotron1715w ? 'N' : 'O') != 0) {
                     result = EXIT_SERIAL;
                     goto done;
                 }
@@ -1821,7 +1832,7 @@ static int run_disk(struct host_context *host,
         }
         received = host_read(host, incoming, sizeof(incoming), 50u);
         if (received < 0) {
-            if (reconnect_serial(host, host->options.disk_baud, host->options.robotron1715w ? 'N' : 'O') != 0) {
+            if (reconnect_serial(host, host->options.disk_baud, host->options.kaypro2 ? host->options.serial_parity : host->options.robotron1715w ? 'N' : 'O') != 0) {
                 host_log(host, "ERROR", "disk serial read: %s",
                          strerror(errno));
                 result = EXIT_SERIAL;
@@ -1916,7 +1927,7 @@ static int run_disk(struct host_context *host,
                     result = EXIT_CLEAN;
                     goto done;
                 }
-                if (reconnect_serial(host, host->options.disk_baud, host->options.robotron1715w ? 'N' : 'O') != 0) {
+                if (reconnect_serial(host, host->options.disk_baud, host->options.kaypro2 ? host->options.serial_parity : host->options.robotron1715w ? 'N' : 'O') != 0) {
                     result = EXIT_SERIAL;
                     goto done;
                 }
@@ -2138,6 +2149,9 @@ int jh_host_run(const struct jh_host_options *options,
     uint8_t capture_header[JH_CAPTURE_HEADER_SIZE];
     int result = EXIT_CLEAN;
     if (options == NULL) return EXIT_COMMAND;
+    if (options->kaypro2 && (options->disk_baud<75u || options->disk_baud>19800u ||
+        (options->serial_parity!='N' && options->serial_parity!='O' && options->serial_parity!='E') ||
+        (options->serial_stop_bits!=1u && options->serial_stop_bits!=2u))) return EXIT_COMMAND;
     if (options->test_corrupt_read_reply_once && !options->robotron1715) return EXIT_COMMAND;
     if (options->robotron1715) {
 #if defined(_WIN32) || defined(JH_DOS)
@@ -2149,7 +2163,7 @@ int jh_host_run(const struct jh_host_options *options,
                 (options->robotron1715w ?
                     (options->disk_baud != 1200u &&
                      !((options->disk_baud == 9600u || options->disk_baud == 41600u || options->disk_baud == 62400u) && options->serial_fd >= 0)) :
-                    options->disk_baud != (options->kaypro2 ? 19200u : 9600u)) || options->read_ahead != 1u)
+                    (!options->kaypro2 && options->disk_baud != 9600u)) || options->read_ahead != 1u)
             return EXIT_COMMAND;
     }
     memset(&host, 0, sizeof(host));
@@ -2243,8 +2257,8 @@ int jh_host_run(const struct jh_host_options *options,
             opened = host.options.serial_fd >= 0 ?
                 jh_platform_serial_adopt_format(&host.serial, host.options.serial_fd,
                     host.options.serial ? host.options.serial : "/dev/pts/inherited",
-                    host.options.disk_baud, host.options.robotron1715w ? 'N' : 'O', (host.options.kaypro2 || host.options.robotron1715w) ? 1u : 2u, 1) :
-                jh_platform_serial_open_format(&host.serial, serial_path, host.options.disk_baud, host.options.robotron1715w ? 'N' : 'O', (host.options.kaypro2 || host.options.robotron1715w) ? 1u : 2u);
+                    host.options.disk_baud, host.options.kaypro2 ? host.options.serial_parity : host.options.robotron1715w ? 'N' : 'O', host.options.kaypro2 ? host.options.serial_stop_bits : host.options.robotron1715w ? 1u : 2u, 1) :
+                jh_platform_serial_open_format(&host.serial, serial_path, host.options.disk_baud, host.options.kaypro2 ? host.options.serial_parity : host.options.robotron1715w ? 'N' : 'O', host.options.kaypro2 ? host.options.serial_stop_bits : host.options.robotron1715w ? 1u : 2u);
         } else
 #endif
         opened = host.options.serial_fd >= 0 ?
@@ -2532,9 +2546,9 @@ int jh_host_run(const struct jh_host_options *options,
             result = EXIT_SERIAL;
             goto cleanup;
         }
-    } else if (host.serial.parity != (host.options.robotron1715w ? 'N' : 'O') &&
+    } else if (host.serial.parity != (host.options.kaypro2 ? host.options.serial_parity : host.options.robotron1715w ? 'N' : 'O') &&
             jh_platform_serial_configure(&host.serial, host.options.disk_baud,
-                                      host.options.robotron1715w ? 'N' : 'O') != 0) {
+                                      host.options.kaypro2 ? host.options.serial_parity : host.options.robotron1715w ? 'N' : 'O') != 0) {
         result = EXIT_SERIAL;
         goto cleanup;
     }

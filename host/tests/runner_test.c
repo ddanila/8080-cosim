@@ -76,9 +76,9 @@ int main(void)
     options.kaypro2 = 1;
     options.resume_disk = 1;
     options.read_ahead = 1u;
-    options.disk_baud = 9600u;
+    options.disk_baud = 50000u;
     if (jh_host_run(&options, &hooks, &summary) != JH_HOST_EXIT_COMMAND) {
-        fprintf(stderr, "Kaypro accepted Robotron baud rate\n");
+        fprintf(stderr, "Kaypro accepted unsupported baud rate\n");
         return 1;
     }
     options.kaypro2 = 0;

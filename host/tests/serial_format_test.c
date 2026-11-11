@@ -33,6 +33,12 @@ int main(void){
  assert(!tcgetattr(slave,&raw) && raw.c_cc[VMIN]==1 && raw.c_iflag==0);
  n=jh_platform_serial_read(&serial,bytes,sizeof bytes,100);
  assert(n==3 && !memcmp(bytes,"W/M",3));
+ for (unsigned stop=1;stop<=2;stop++) for (unsigned baud=75;baud<=19800;baud+=19725) {
+  serial.stop_bits=stop;
+  assert(!jh_platform_serial_configure(&serial,baud,'E'));
+  assert(serial.baud==baud && serial.parity=='E');
+  assert(!tcgetattr(slave,&raw) && !!(raw.c_cflag&CSTOPB)==(stop==2));
+ }
  jh_platform_serial_close(&serial);close(master);
  return 0;
 }
