@@ -1,3 +1,4 @@
+#define _DARWIN_C_SOURCE
 #define _XOPEN_SOURCE 600
 #include "platform.h"
 #include <assert.h>
