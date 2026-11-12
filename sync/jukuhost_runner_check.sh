@@ -24,3 +24,9 @@ mkdir -p "$output_dir"
   "$project_root/host/tests/runner_test.c" \
   -o "$output_dir/runner_test"
 "$output_dir/runner_test"
+
+# Compile the portable runner's Windows branch even on a POSIX workstation.
+# Helper subprocess support must remain absent and warning-clean there.
+"$cc_bin" -std=c99 -Wall -Wextra -Werror -D_WIN32 -fsyntax-only \
+  -I"$project_root/host/include" -I"$project_root/host/src" \
+  "$project_root/host/src/jukuhost_runner.c"

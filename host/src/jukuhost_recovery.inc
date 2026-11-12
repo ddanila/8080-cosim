@@ -108,6 +108,7 @@ static int profile_helper(struct host_context *host, const char *operation)
     return RUN_REDISCOVER;
 #else
     (void)host;
+    (void)operation;
     return EXIT_COMMAND;
 #endif
 }
