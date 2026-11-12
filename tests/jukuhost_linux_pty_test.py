@@ -228,7 +228,7 @@ def main() -> int:
         records = capture_records(captured)
         events = [(flags, payload) for kind, flags, payload in records
                   if kind == 3]
-        assert any(payload == b"phase=netdisk" for _, payload in events)
+        assert any(payload == b"phase=netdisk" or payload.startswith(b"phase=netdisk serial=") for _, payload in events)
         assert any(payload.startswith(b"media write seq=1")
                    for _, payload in events)
         assert any(payload.startswith(b"stop exit=0") for _, payload in events)

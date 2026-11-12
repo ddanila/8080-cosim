@@ -284,10 +284,20 @@ int jh_service_handle(struct jh_service *service,
         break;
     case JH_N4_CAPABILITY_QUERY:
         status = (uint8_t)(service->protocol_version == 3u ? 0u : 1u);
+        /* Optional epoch query retains the existing four-byte CAPS reply.
+         * Only clients observing capability bit 7 may issue EPOC. */
+        if (service->session_generation != 0u &&
+                memcmp(request->arguments, "EPOC", 4u) == 0) {
+            unsigned i;
+            for (i = 0; i < 4; ++i)
+                capabilities[i] = (uint8_t)(service->session_generation >> (8u*i));
+            result = raw_reply(event, request->sequence, status, capabilities, 4u);
+            break;
+        }
         capabilities[0] = (uint8_t)service->protocol_version;
         capabilities[1] = (uint8_t)service->read_ahead_records;
         capabilities[2] = (uint8_t)((service->console_enabled ? 0x41u : 0u) |
-            0x02u | 0x04u | 0x08u |
+            0x02u | 0x04u | 0x08u | (service->session_generation ? 0x80u : 0u) |
             (service->drive_b != NULL ? 0x10u : 0u) |
             (service->drive_a->writable ? 0x20u : 0u));
         capabilities[3] = service->drive_b != NULL ? 2u : 1u;

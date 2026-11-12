@@ -58,6 +58,7 @@ struct jh_host_options {
     uint32_t disk_protocol;
     uint32_t disk_baud;
     uint32_t read_ahead;
+    uint32_t session_generation;
     uint32_t reply_guard_ms;
     int direct_fastboot;
     int recover_session;

@@ -214,6 +214,7 @@ struct jh_service {
     struct jh_media *drive_b;
     unsigned protocol_version;
     unsigned read_ahead_records;
+    uint32_t session_generation;
     int console_enabled;
     uint8_t console_input[JH_SERVICE_CONSOLE_QUEUE];
     size_t console_input_length;

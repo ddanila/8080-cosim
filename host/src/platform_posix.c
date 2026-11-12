@@ -181,7 +181,8 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
         (inherited.c_iflag & (tcflag_t)~IGNPAR) == 0u &&
         inherited.c_oflag == 0u && inherited.c_lflag == 0u &&
         inherited.c_cc[VMIN] <= 1u && inherited.c_cc[VTIME] == 0u;
-    if (((baud == 41600u || baud == 62400u) && !keep_configuration) ||
+    if (((baud == 41600u || baud == 62400u ||
+            (baud == 19800u && serial->preserve_input && !pseudo_terminal)) && !keep_configuration) ||
             (!keep_configuration &&
              (cfsetispeed(&attributes, speed) != 0 ||
               cfsetospeed(&attributes, speed) != 0 ||

@@ -189,3 +189,19 @@ read reply, leaving the service's cached reply intact. The injection and the
 first matching duplicate request are logged separately; subsequent replies are
 valid. This supports real-target retry testing without a second protocol
 implementation. The default path never injects faults.
+# Kaypro cache generations
+
+Kaypro defaults to one read-ahead record for compatibility; an explicit
+`--read-ahead 1..8` enables a larger client-qualified batch. Robotron defaults
+and limits are unchanged. `--session-generation N` accepts a nonzero 32-bit
+generation allocated monotonically by the owner of an exclusively locked
+session image. Increment it before every host start; never wrap or reuse it.
+
+When a generation is supplied, N4 CAPS feature bit 7 is set. CAPS with the
+four argument bytes `EPOC` returns the generation as four little-endian bytes,
+using the existing checked CAPS envelope. Clients must first discover bit 7;
+without it they must not interpret a normal capability reply as an epoch.
+Clients validate the generation before serving cached records and invalidate
+on errors, epoch changes, writes and warm boots. Out-of-band disk edits while
+the owner is running are unsupported. Existing callers omitting the option
+retain their original capabilities and response format.

@@ -131,6 +131,7 @@ static void usage(FILE *file)
         "  --disk-protocol 1|2|3  default 3\n"
         "  --disk-baud RATE        default 19200\n"
         "  --read-ahead 1..8       default 3\n"
+        "  --session-generation N nonzero persistent owner epoch for cache validation\n"
         "  --console-pty DEVICE    enable N4 remote console\n"
         "  --disk-timeout SECONDS  zero means run until stopped\n"
         "  --reconnect-timeout SEC named-device reopen deadline (default 30)\n"
@@ -185,6 +186,7 @@ static int parse_options(int argc, char **argv,
 {
     int index;
     int disk_baud_explicit = 0;
+    int read_ahead_explicit = 0;
     jh_host_options_init(options);
 #ifdef JH_DOS
     if (argc == 1) {
@@ -285,11 +287,15 @@ static int parse_options(int argc, char **argv,
                     parse_unsigned(value, 75u, 62400u,
                                    &options->disk_baud) != 0) return -1;
             disk_baud_explicit = 1;
+        } else if (strcmp(argument, "--session-generation") == 0) {
+            if (require_value(argc, argv, &index, &value) != 0 ||
+                parse_unsigned(value, 1u, 0xffffffffu, &options->session_generation) != 0) return -1;
         } else if (strcmp(argument, "--read-ahead") == 0 ||
                 strcmp(argument, "--disk-read-ahead-records") == 0) {
             if (require_value(argc, argv, &index, &value) != 0 ||
                     parse_unsigned(value, 1u, 8u,
                                    &options->read_ahead) != 0) return -1;
+            read_ahead_explicit = 1;
         } else if (strcmp(argument, "--disk-reply-guard-ms") == 0) {
             if (require_value(argc, argv, &index, &value) != 0 ||
                     parse_unsigned(value, 0u, 1000u,
@@ -329,7 +335,7 @@ static int parse_options(int argc, char **argv,
         } else if (!options->kaypro2) {
             options->disk_baud = options->robotron1715w ? 1200u : 9600u;
         }
-        options->read_ahead = 1u;
+        if (!options->kaypro2 || !read_ahead_explicit) options->read_ahead = 1u;
     }
     if ((options->serial == NULL && options->serial_fd < 0) ||
             (!options->robotron1715 && options->serial != NULL && options->serial_fd >= 0) ||
@@ -1746,6 +1752,7 @@ static int run_disk(struct host_context *host,
             drive_b_file == NULL ? NULL : &drive_b,
             host->options.disk_protocol, host->options.read_ahead,
             host_console_enabled(host)) != JH_OK) return EXIT_COMMAND;
+    service.session_generation = host->options.session_generation;
     console.fd = -1;
     console.file = NULL;
     console.ready_ms = 0u;
@@ -2163,7 +2170,8 @@ int jh_host_run(const struct jh_host_options *options,
                 (options->robotron1715w ?
                     (options->disk_baud != 1200u &&
                      !((options->disk_baud == 9600u || options->disk_baud == 41600u || options->disk_baud == 62400u) && options->serial_fd >= 0)) :
-                    (!options->kaypro2 && options->disk_baud != 9600u)) || options->read_ahead != 1u)
+                    (!options->kaypro2 && options->disk_baud != 9600u)) ||
+                (options->kaypro2 ? (options->read_ahead < 1u || options->read_ahead > 8u) : options->read_ahead != 1u))
             return EXIT_COMMAND;
     }
     memset(&host, 0, sizeof(host));
