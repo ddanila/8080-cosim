@@ -2288,14 +2288,14 @@ int jh_host_run(const struct jh_host_options *options,
         goto cleanup;
     }
     {
-        unsigned initial_baud = host.options.recover_session ?
+        unsigned initial_baud = host.options.robotron1715 ? host.options.disk_baud : host.options.recover_session ?
             (host.options.direct_fastboot ? 19200u : 9600u) :
             host.options.resume_disk ? host.options.disk_baud :
             host.options.direct_fastboot ? 19200u : 9600u;
-        char initial_parity = host.options.robotron1715w ? 'N' : host.options.recover_session ? 'O' :
+        char initial_parity = host.options.kaypro2 ? host.options.serial_parity : host.options.robotron1715w ? 'N' : host.options.recover_session ? 'O' :
             host.options.direct_fastboot ? 'N' : 'O';
         host_log(&host, "INFO", "phase=serial-open requested=%u 8%c%u flow=none",
-                 initial_baud, initial_parity, (host.options.robotron1715 && !host.options.kaypro2 && !host.options.robotron1715w) ? 2u : 1u);
+                 initial_baud, initial_parity, host.options.kaypro2 ? host.options.serial_stop_bits : (host.options.robotron1715 && !host.options.robotron1715w) ? 2u : 1u);
         const char *serial_path = host.options.serial_fd >= 0 ? NULL :
             host_serial_path(&host);
         int opened;
@@ -2328,7 +2328,7 @@ int jh_host_run(const struct jh_host_options *options,
         }
     }
     host_log(&host, "INFO", "serial applied=%u 8%c%u flow=none",
-             host.serial.baud, host.serial.parity, (host.options.robotron1715 && !host.options.kaypro2 && !host.options.robotron1715w) ? 2u : 1u);
+             host.serial.baud, host.serial.parity, host.options.kaypro2 ? host.options.serial_stop_bits : (host.options.robotron1715 && !host.options.robotron1715w) ? 2u : 1u);
     if (host.serial.base_port != 0u) {
         host_log(&host, "INFO", "serial hardware base=%04X fifo-depth=%u",
                  host.serial.base_port, host.serial.fifo_depth);
