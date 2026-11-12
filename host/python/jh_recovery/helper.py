@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """MIT. One supervised profile operation; never starts a disk server."""
+import errno
 import argparse,hashlib,importlib.util,json,os,select,struct,sys,time,traceback
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parent.parent))
@@ -63,6 +64,14 @@ def main():
         atomic_json(Path(config['session'])/'recovery-state.json',report)
         config['settings']=settings;atomic_json(a.config,config)
         os.write(a.result_fd,b'JHR1'+bytes([int(report['status']=='booted'),ord(settings['parity']),settings['stop_bits'],0])+struct.pack('<II',settings['baud'],next_generation(Path(config['session']))))
+    except OSError as error:
+        report['error']=str(error)
+        if not isinstance(error,ConnectionError) and error.errno not in (errno.EIO,errno.ENODEV,errno.ENXIO,errno.EBADF,errno.EPIPE,errno.ECONNRESET,errno.ENOTCONN):
+            traceback.print_exc();return 1
+        report['status']='disconnected'
+        settings=port.settings if port else config['settings']
+        os.write(a.result_fd,b'JHR1'+bytes([3,ord(settings['parity']),settings['stop_bits'],0])+struct.pack('<II',settings['baud'],0))
+        return 0
     except Exception as error:
         report['error']=str(error);traceback.print_exc()
         atomic_json(Path(config['session'])/'recovery-state.json',report)

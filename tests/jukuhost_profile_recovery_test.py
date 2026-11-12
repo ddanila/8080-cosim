@@ -7,19 +7,23 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'host/python'))
 from jh_recovery import next_generation
 
-HELPER='''import argparse,os,struct,time
+HELPER='''import argparse,os,struct,time,termios
 p=argparse.ArgumentParser();p.add_argument('--config');p.add_argument('--operation');p.add_argument('--serial-fd',type=int);p.add_argument('--result-fd',type=int);a,_=p.parse_known_args()
 mode=open(a.config).read()
+if a.operation=='prepare':
+ attrs=termios.tcgetattr(a.serial_fd);attrs[4]=attrs[5]=termios.B19200;termios.tcsetattr(a.serial_fd,termios.TCSANOW,attrs)
 if a.operation=='discover' and mode=='hang':
  open(a.config+'.pid','w').write(str(os.getpid()));time.sleep(60)
 status=2 if a.operation=='discover' and mode=='uncertain' else 0
+if a.operation=='discover' and mode=='disconnect':
+ status=3;open(a.config,'w').write('unknown')
 os.write(a.result_fd,b'JHR1'+bytes([status,ord('O'),1,0])+struct.pack('<II',19200,123))
 '''
 
 def main():
  with tempfile.TemporaryDirectory() as tmp:
   root=Path(tmp);helper=root/'helper.py';helper.write_text(HELPER);config=root/'config';disk=root/'disk.img';disk.write_bytes(bytes(range(128))*6400)
-  for mode in ['runtime','unknown','uncertain','hang']:
+  for mode in ['runtime','unknown','uncertain','disconnect','hang']:
    config.write_text(mode);master,slave=pty.openpty();tty.setraw(master);tty.setraw(slave)
    proc=subprocess.Popen([str(HOST),'--machine','kaypro2','--resume-disk','--recover-session','--serial',os.ttyname(slave),'--volume',str(disk),'--recovery-python',sys.executable,'--recovery-helper',str(helper),'--recovery-config',str(config)],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
    try:
@@ -34,6 +38,11 @@ def main():
     elif mode=='unknown':
      assert not select.select([master],[],[],7)[0],'unknown state transmitted data'
      assert proc.poll() is None
+    elif mode=='disconnect':
+     wait_log(proc,'serial reconnected')
+     wait_log(proc,'phase=discover')
+     os.write(master,request(0x14,9,0,159,40));response=read_exact(master,139)
+     assert response[9:137]==bytes(range(128))
     elif mode=='uncertain':
      assert proc.wait(timeout=8)==5
      assert not select.select([master],[],[],.1)[0]

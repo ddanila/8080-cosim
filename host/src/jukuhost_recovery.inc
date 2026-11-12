@@ -58,6 +58,11 @@ static int profile_helper(struct host_context *host, const char *operation)
         if (count > 0) used += (size_t)count;
     }
     (void)close(pipes[0]);
+    if (WIFEXITED(status) && WEXITSTATUS(status) == 0 && used == sizeof(reply) &&
+        memcmp(reply, "JHR1", 4u) == 0 && reply[4] == 3u) {
+        host_log(host, "WARN", "serial connection lost during profile operation; reopening before rediscovery");
+        return EXIT_SERIAL;
+    }
     if (!WIFEXITED(status) || WEXITSTATUS(status) != 0 || used != sizeof(reply) ||
         memcmp(reply, "JHR1", 4u) != 0 || reply[4] > 1u ||
         (reply[5] != 'N' && reply[5] != 'O' && reply[5] != 'E') ||

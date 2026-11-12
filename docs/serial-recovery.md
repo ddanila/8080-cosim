@@ -49,9 +49,12 @@ result; `recovery-state.json` is the last helper result, while native `phase=`
 logs are authoritative for current service state. ROM identity is retained as
 `last_rom`, not misrepresented as a new response during CP/M attachment.
 
-The 16-byte result is `JHR1`, status byte (0 unknown, 1 booted), parity ASCII,
+The 16-byte result is `JHR1`, status byte (0 unknown, 1 booted, 3 serial disconnected), parity ASCII,
 stop bits, reserved zero, little-endian uint32 baud and epoch. Invalid results,
-helper failure and uncertain execution stop recovery. There is no automatic
+helper failure and unsafe execution stop recovery. Serial loss returns to the
+shared reopen/discovery path. W4 execution-acknowledgement loss returns to
+discovery without replay; a Kaypro CRC NAK requires fresh ROM identification
+before another upload. There is no automatic
 LOAD/EXEC replay after an uncertain stock 1715 transfer. That loader has no
 checksum/acknowledgement; operator reset is required before another attempt.
 
