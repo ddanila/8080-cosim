@@ -132,6 +132,7 @@ static void usage(FILE *file)
         "  --disk-baud RATE        default 19200\n"
         "  --read-ahead 1..8       default 3\n"
         "  --session-generation N nonzero persistent owner epoch for cache validation\n"
+        "  --serial-verified      adopt parent-verified custom UART rate without reprogramming\n"
         "  --console-pty DEVICE    enable N4 remote console\n"
         "  --disk-timeout SECONDS  zero means run until stopped\n"
         "  --reconnect-timeout SEC named-device reopen deadline (default 30)\n"
@@ -279,6 +280,8 @@ static int parse_options(int argc, char **argv,
             if (require_value(argc, argv, &index, &value) != 0 || strlen(value)!=1 ||
                 (value[0]!='N' && value[0]!='O' && value[0]!='E')) return -1;
             options->serial_parity=value[0];
+        } else if (strcmp(argument, "--serial-verified") == 0) {
+            options->serial_verified = 1;
         } else if (strcmp(argument, "--serial-stop-bits") == 0) {
             if (require_value(argc, argv, &index, &value) != 0 ||
                 parse_unsigned(value,1u,2u,&options->serial_stop_bits)!=0) return -1;
@@ -305,6 +308,7 @@ static int parse_options(int argc, char **argv,
             return -1;
         }
     }
+    if (options->serial_verified && (!options->kaypro2 || options->serial_fd < 0)) return -1;
     if (!options->kaypro2 && (options->serial_parity!='O' || options->serial_stop_bits!=1u)) return -1;
     if (options->kaypro2 && options->disk_baud>19800u) return -1;
     if (options->test_corrupt_read_reply_once && !options->robotron1715) return -1;
@@ -2156,6 +2160,7 @@ int jh_host_run(const struct jh_host_options *options,
     uint8_t capture_header[JH_CAPTURE_HEADER_SIZE];
     int result = EXIT_CLEAN;
     if (options == NULL) return EXIT_COMMAND;
+    if (options->serial_verified && (!options->kaypro2 || options->serial_fd < 0)) return EXIT_COMMAND;
     if (options->kaypro2 && (options->disk_baud<75u || options->disk_baud>19800u ||
         (options->serial_parity!='N' && options->serial_parity!='O' && options->serial_parity!='E') ||
         (options->serial_stop_bits!=1u && options->serial_stop_bits!=2u))) return EXIT_COMMAND;
@@ -2265,7 +2270,7 @@ int jh_host_run(const struct jh_host_options *options,
             opened = host.options.serial_fd >= 0 ?
                 jh_platform_serial_adopt_format(&host.serial, host.options.serial_fd,
                     host.options.serial ? host.options.serial : "/dev/pts/inherited",
-                    host.options.disk_baud, host.options.kaypro2 ? host.options.serial_parity : host.options.robotron1715w ? 'N' : 'O', host.options.kaypro2 ? host.options.serial_stop_bits : host.options.robotron1715w ? 1u : 2u, 1) :
+                    host.options.disk_baud, host.options.kaypro2 ? host.options.serial_parity : host.options.robotron1715w ? 'N' : 'O', host.options.kaypro2 ? host.options.serial_stop_bits : host.options.robotron1715w ? 1u : 2u, host.options.serial_verified ? 2 : 1) :
                 jh_platform_serial_open_format(&host.serial, serial_path, host.options.disk_baud, host.options.kaypro2 ? host.options.serial_parity : host.options.robotron1715w ? 'N' : 'O', host.options.kaypro2 ? host.options.serial_stop_bits : host.options.robotron1715w ? 1u : 2u);
         } else
 #endif

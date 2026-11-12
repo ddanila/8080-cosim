@@ -176,12 +176,13 @@ int jh_platform_serial_configure(struct jh_platform_serial *serial, unsigned bau
         matching_speed = 0;
 #endif
     }
-    keep_configuration = serial->preserve_input && matching_speed &&
+    keep_configuration = serial->preserve_input && (matching_speed || serial->preserve_input == 2) &&
         inherited.c_cflag == attributes.c_cflag &&
         (inherited.c_iflag & (tcflag_t)~IGNPAR) == 0u &&
         inherited.c_oflag == 0u && inherited.c_lflag == 0u &&
         inherited.c_cc[VMIN] <= 1u && inherited.c_cc[VTIME] == 0u;
-    if (((baud == 41600u || baud == 62400u ||
+    if ((serial->preserve_input == 2 && !keep_configuration) ||
+            ((baud == 41600u || baud == 62400u ||
             (baud == 19800u && serial->preserve_input && !pseudo_terminal)) && !keep_configuration) ||
             (!keep_configuration &&
              (cfsetispeed(&attributes, speed) != 0 ||

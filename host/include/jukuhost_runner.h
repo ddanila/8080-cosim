@@ -51,6 +51,7 @@ struct jh_host_options {
     unsigned serial_stop_bits;
     int test_corrupt_read_reply_once;
     int serial_fd;
+    int serial_verified;
     uint32_t timeout_seconds;
     uint32_t disk_timeout_seconds;
     uint32_t boot_restarts;

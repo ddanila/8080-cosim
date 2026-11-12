@@ -191,6 +191,12 @@ valid. This supports real-target retry testing without a second protocol
 implementation. The default path never injects faults.
 # Kaypro cache generations
 
+`--serial-verified` is restricted to Kaypro with an inherited descriptor. The
+parent must first verify the physical adapter's custom divisor and framing.
+The host then treats that rate as authoritative despite stale termios speed
+fields, retains raw framing/input without reprogramming, and rejects a framing
+mismatch. This opt-in contract is used by the checked macOS PL2303HXD backend.
+
 Kaypro defaults to one read-ahead record for compatibility; an explicit
 `--read-ahead 1..8` enables a larger client-qualified batch. Robotron defaults
 and limits are unchanged. `--session-generation N` accepts a nonzero 32-bit

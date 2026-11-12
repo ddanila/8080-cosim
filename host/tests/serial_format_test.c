@@ -39,6 +39,19 @@ int main(void){
   assert(serial.baud==baud && serial.parity=='E');
   assert(!tcgetattr(slave,&raw) && !!(raw.c_cflag&CSTOPB)==(stop==2));
  }
+ /* A checked USB divisor need not be reflected in termios speed fields.
+  * Explicit verified adoption preserves the fields and pending bytes. */
+ assert(!tcgetattr(slave,&raw));
+ assert(!cfsetispeed(&raw,B9600)&&!cfsetospeed(&raw,B9600));
+ assert(!tcsetattr(slave,TCSANOW,&raw));
+ serial.preserve_input=2;
+ assert(write(master,"USB",3)==3);usleep(10000);
+ assert(!jh_platform_serial_configure(&serial,19800,'E'));
+ assert(!tcgetattr(slave,&raw)&&cfgetispeed(&raw)==B9600);
+ n=jh_platform_serial_read(&serial,bytes,sizeof bytes,100);
+ assert(n==3&&!memcmp(bytes,"USB",3));
+ serial.stop_bits=1;
+ assert(jh_platform_serial_configure(&serial,19800,'E')!=0);
  jh_platform_serial_close(&serial);close(master);
  return 0;
 }
