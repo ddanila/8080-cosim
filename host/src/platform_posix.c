@@ -106,11 +106,7 @@ static speed_t baud_value(unsigned baud)
     case 9600u: return B9600;
     case 19200u: return B19200;
     case 38400u: return B38400;
-#ifdef __APPLE__
-    /* Only adopt a preconfigured custom-rate descriptor; never synthesize it. */
-    case 41600u: return (speed_t)41600;
-    case 62400u: return (speed_t)62400;
-#endif
+
     default: return (speed_t)0;
     }
 }

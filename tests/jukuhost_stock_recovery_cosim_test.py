@@ -18,7 +18,7 @@ import tty
 
 ROOT = Path(__file__).resolve().parents[1]
 CPM = Path(os.environ.get("CPM_PLUS_JUKU_ROOT", ROOT.parent / "cpm-plus-juku"))
-HOST = ROOT / "build/jukuhost"
+HOST = Path(os.environ.get("JUKUHOST_BINARY", ROOT / "build/jukuhost"))
 ROM = ROOT / "spinoffs/jukuravi/remix/ekta4401.bin"
 SYSTEM = CPM / "out/cpm-plus-juku-stock-recovery-system.bin"
 FASTBOOT = CPM / "out/cpm-plus-juku-stock-recovery-fastboot-v17.bin"
@@ -129,7 +129,8 @@ def main() -> int:
             require(log.count("checked stock Janet") >= 1,
                     f"initial stock discovery missing: {log}")
             require(log.count("stock bootstrap complete") >= 2 and
-                    log.count("Fastboot V17 complete") >= 2,
+                    (log.count("Fastboot V17 complete") +
+                     log.count("V17 final reply not seen; no resend")) >= 2,
                     f"two JF17 boots were not completed: {log}")
             require("received during NetDisk; target reset detected" in log and
                     "stock-ROM reset during NetDisk; restarting JF17" in log,

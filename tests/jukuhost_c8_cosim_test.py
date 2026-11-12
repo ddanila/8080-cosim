@@ -27,7 +27,7 @@ VOLUME = CPM / (f"out/cpm-plus-juku-{RELEASE}-full.img"
                 if RELEASE in ("c9", "c10", "c11") else
                 "out/cpm-plus-juku-full.img")
 DRIVE_B = CPM / "out/cpm-plus-juku-apps.juk"
-HOST = ROOT / "build/jukuhost"
+HOST = Path(os.environ.get("JUKUHOST_BINARY", ROOT / "build/jukuhost"))
 EVIDENCE = ROOT / "tools/jukuhost_evidence.py"
 
 
@@ -147,6 +147,7 @@ def main() -> int:
     discard_ready = os.environ.get("JUKUHOST_C8_DISCARD_READY") == "1"
     replace_host = os.environ.get("JUKUHOST_C8_REPLACE_HOST") == "1"
     reset_during_stream = os.environ.get("JUKUHOST_C8_TARGET_RESET") == "1"
+    recovery_only = os.environ.get("JUKUHOST_RECOVERY_ONLY") == "1"
     recover_session = os.environ.get("JUKUHOST_C11_RECOVER") == "1"
     netdisk_reset = os.environ.get("JUKUHOST_C11_NETDISK_RESET") == "1"
     late_host = os.environ.get("JUKUHOST_C11_LATE_HOST") == "1"
@@ -156,7 +157,9 @@ def main() -> int:
             "NetDisk reset fixture requires C11 session recovery")
     require(not late_host or recover_session,
             "late-host fixture requires C11 session recovery")
-    disk_timeout = "240" if netdisk_reset else "120"
+    # Per-command deadlines already bound stalls. The full paced workload
+    # can exceed two minutes on macOS before reaching its warm-boot step.
+    disk_timeout = "600"
     with tempfile.TemporaryDirectory(prefix="jukuhost-c8-cosim.") as name:
         temp = Path(name)
         trace = temp / "trace"
@@ -256,7 +259,7 @@ def main() -> int:
                 ) from error
             require(b"DIR" in directory or b"COM" in directory,
                     f"DIR produced no directory text: {directory!r}")
-            if RELEASE in ("c9", "c10", "c11"):
+            if RELEASE in ("c9", "c10", "c11") and not recovery_only:
                 os.write(console_master, b"STATUS\r")
                 # STATUS 1.4 is deliberately verbose and C9 sends it through
                 # the bounded, per-character production N4 path. Keep enough
@@ -333,7 +336,7 @@ def main() -> int:
                 host.wait(timeout=5.0)
                 require(host.returncode == 0,
                         f"first host exit={host.returncode}")
-                if RELEASE in ("c9", "c10", "c11"):
+                if RELEASE in ("c9", "c10", "c11") and not recovery_only:
                     # Ensure at least one bounded target poll observes host
                     # loss before the stateless replacement appears.
                     time.sleep(0.5)
@@ -374,7 +377,7 @@ def main() -> int:
                 resumed = read_until(console_master, b"A>", 30.0)
                 require(b"VER" in resumed,
                         f"replacement host did not resume console: {resumed!r}")
-                if RELEASE in ("c9", "c10", "c11"):
+                if RELEASE in ("c9", "c10", "c11") and not recovery_only:
                     os.write(console_master, b"STATUS\r")
                     recovered = read_until(console_master, b"A>", 60.0)
                     require(
@@ -428,7 +431,7 @@ def main() -> int:
                     "request evidence contains no disk read")
             require(any(record["operation"] == 0x21 for record in requests),
                     "request evidence contains no N4 console output")
-            if RELEASE in ("c9", "c10", "c11"):
+            if RELEASE in ("c9", "c10", "c11") and not recovery_only:
                 for operation, description in (
                     (0x15, "NetDisk-v3 write"), (0x22, "time fetch"),
                     (0x24, "status publication"),
@@ -457,7 +460,7 @@ def main() -> int:
             os.close(serial_master)
             os.close(serial_slave)
             simulator_stderr.close()
-    additions = []
+    additions = ["recovery-only workload; warm boot not exercised"] if recovery_only else []
     if discard_ready:
         additions.append("missed-ready recovery")
     if replace_host:

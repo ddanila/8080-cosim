@@ -10,6 +10,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#if !defined(_WIN32) && !defined(JH_DOS)
+#include <unistd.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <sys/wait.h>
+#endif
 
 #define STOCK_TURN_GUARD_MS 10u
 #define V15_EXTENSION_GUARD_MS 20u
@@ -34,7 +40,8 @@ enum run_result {
 enum recovery_mode {
     RECOVERY_NONE = 0,
     RECOVERY_NETWORK_ROM = 1,
-    RECOVERY_STOCK_ROM = 2
+    RECOVERY_STOCK_ROM = 2,
+    RECOVERY_PROFILE = 3
 };
 
 /* Large enough for a complete stock bootstrap frame plus the largest serial
@@ -74,6 +81,7 @@ struct host_context {
     uint8_t pending[HOST_PENDING_CAPACITY];
     size_t pending_length;
     size_t pending_offset;
+    int profile_booted;
     int test_reply_corrupted;
     int test_reply_retried;
     uint8_t test_reply_sequence;
@@ -119,8 +127,11 @@ static void usage(FILE *file)
         "  --fast-stage FILE       stock-assisted JF15/JF17 or network-ROM JF16\n"
         "  --network-rom           C8/C9 automatic/direct Fastboot V16\n"
         "  --direct-fastboot       synonym for --network-rom\n"
-        "  --recover-session       passive stock/C11/C12 boot and reset recovery\n"
+        "  --recover-session       continuous profile-aware boot and reset recovery\n"
         "  --resume-disk           attach to an already running system\n"
+        "  --recovery-python PATH helper interpreter (POSIX machine profiles)\n"
+        "  --recovery-helper PATH supervised protocol helper\n"
+        "  --recovery-config PATH validated session recovery configuration\n"
         "  --boot-only             stop after a successful bootstrap\n"
         "  --timeout SECONDS       boot deadline (default 120)\n"
         "  --boot-restarts COUNT   target-reset retries (default 3)\n"
@@ -244,6 +255,12 @@ static int parse_options(int argc, char **argv,
         } else if (strcmp(argument, "--network-rom") == 0 ||
                 strcmp(argument, "--direct-fastboot") == 0) {
             options->direct_fastboot = 1;
+        } else if (strcmp(argument, "--recovery-python") == 0) {
+            if (require_value(argc, argv, &index, &options->recovery_python) != 0) return -1;
+        } else if (strcmp(argument, "--recovery-helper") == 0) {
+            if (require_value(argc, argv, &index, &options->recovery_helper) != 0) return -1;
+        } else if (strcmp(argument, "--recovery-config") == 0) {
+            if (require_value(argc, argv, &index, &options->recovery_config) != 0) return -1;
         } else if (strcmp(argument, "--recover-session") == 0) {
             options->recover_session = 1;
         } else if (strcmp(argument, "--resume-disk") == 0) {
@@ -308,7 +325,11 @@ static int parse_options(int argc, char **argv,
             return -1;
         }
     }
-    if (options->serial_verified && (!options->kaypro2 || options->serial_fd < 0)) return -1;
+    if ((options->recovery_helper || options->recovery_config || options->recovery_python) &&
+        (!options->recover_session || !options->robotron1715 || !options->recovery_helper ||
+         !options->recovery_config || !options->recovery_python)) return EXIT_COMMAND;
+    if (options->recover_session && options->robotron1715 && !options->recovery_helper) return EXIT_COMMAND;
+    if (options->serial_verified && (!(options->kaypro2 || options->robotron1715w) || options->serial_fd < 0)) return -1;
     if (!options->kaypro2 && (options->serial_parity!='O' || options->serial_stop_bits!=1u)) return -1;
     if (options->kaypro2 && options->disk_baud>19800u) return -1;
     if (options->test_corrupt_read_reply_once && !options->robotron1715) return -1;
@@ -331,7 +352,7 @@ static int parse_options(int argc, char **argv,
         return -1;
 #endif
         if (!options->resume_disk || options->drive_b || options->system ||
-                options->fast_stage || options->direct_fastboot || options->recover_session ||
+                options->fast_stage || options->direct_fastboot ||
                 options->boot_only || options->disk_protocol != 3u) return -1;
         if (options->robotron1715w && disk_baud_explicit) {
             if (options->disk_baud != 1200u && options->disk_baud != 9600u && options->disk_baud != 41600u && options->disk_baud != 62400u) return -1;
@@ -347,7 +368,7 @@ static int parse_options(int argc, char **argv,
             (!options->resume_disk && options->system == NULL)) return -1;
     if (options->resume_disk && options->boot_only) return -1;
     if (options->direct_fastboot && options->fast_stage == NULL) return -1;
-    if (options->recover_session && (options->fast_stage == NULL ||
+    if (options->recover_session && !options->robotron1715 && (options->fast_stage == NULL ||
             options->resume_disk || options->boot_only ||
             options->disk_baud !=
                 (options->direct_fastboot ? 19200u : 9600u))) return -1;
@@ -820,7 +841,7 @@ static int reconnect_serial(struct host_context *host, unsigned baud,
         if (path != NULL) {
 #if !defined(_WIN32) && !defined(JH_DOS)
             if (host->options.robotron1715)
-                opened = jh_platform_serial_open_format(&host->serial, path, baud, parity, host->options.kaypro2 ? host->options.serial_stop_bits : host->options.robotron1715w ? 1u : 2u);
+                opened = jh_platform_serial_open_format(&host->serial, path, host->options.recovery_helper ? 9600u : baud, parity, host->options.kaypro2 ? host->options.serial_stop_bits : host->options.robotron1715w ? 1u : 2u);
             else
 #endif
                 opened = jh_platform_serial_open(&host->serial, path, baud, parity);
@@ -1728,6 +1749,7 @@ static int run_disk(struct host_context *host,
     uint8_t ready_marker[4] = {'N', 'R', 'N', '3'};
     char journal_path[1024];
     uint64_t next_ready = jh_platform_milliseconds();
+    uint64_t last_valid = next_ready;
     time_t clock_offset = 0;
     struct jh_platform_console console;
     int console_open = 0;
@@ -1789,6 +1811,11 @@ static int run_disk(struct host_context *host,
         uint64_t now = jh_platform_milliseconds();
         int received;
         int recovered = 0;
+        if (recovery == RECOVERY_PROFILE && now - last_valid >= 15000u) {
+            host_log(host, "INFO", "phase=rediscover reason=no-valid-runtime-traffic");
+            result = RUN_REDISCOVER;
+            goto done;
+        }
         size_t index;
         if (!synchronized && now >= next_ready) {
             size_t marker_length = host->options.disk_protocol == 1u ? 2u : 4u;
@@ -1909,6 +1936,7 @@ static int run_disk(struct host_context *host,
             }
             if (parsed != JH_FRAME) continue;
             synchronized = 1;
+            last_valid = now;
             ++host->requests;
             if (!jh_service_is_duplicate(&service, &request) &&
                     (request.operation == JH_N3_WRITE ||
@@ -2144,6 +2172,8 @@ static int open_disk_media(struct host_context *host,
     return 0;
 }
 
+#include "jukuhost_recovery.inc"
+
 int jh_host_run(const struct jh_host_options *options,
                 const struct jh_host_hooks *hooks,
                 struct jh_host_summary *summary)
@@ -2160,7 +2190,11 @@ int jh_host_run(const struct jh_host_options *options,
     uint8_t capture_header[JH_CAPTURE_HEADER_SIZE];
     int result = EXIT_CLEAN;
     if (options == NULL) return EXIT_COMMAND;
-    if (options->serial_verified && (!options->kaypro2 || options->serial_fd < 0)) return EXIT_COMMAND;
+    if ((options->recovery_helper || options->recovery_config || options->recovery_python) &&
+        (!options->recover_session || !options->robotron1715 || !options->recovery_helper ||
+         !options->recovery_config || !options->recovery_python)) return EXIT_COMMAND;
+    if (options->recover_session && options->robotron1715 && !options->recovery_helper) return EXIT_COMMAND;
+    if (options->serial_verified && (!(options->kaypro2 || options->robotron1715w) || options->serial_fd < 0)) return EXIT_COMMAND;
     if (options->kaypro2 && (options->disk_baud<75u || options->disk_baud>19800u ||
         (options->serial_parity!='N' && options->serial_parity!='O' && options->serial_parity!='E') ||
         (options->serial_stop_bits!=1u && options->serial_stop_bits!=2u))) return EXIT_COMMAND;
@@ -2170,7 +2204,7 @@ int jh_host_run(const struct jh_host_options *options,
         return EXIT_COMMAND;
 #endif
         if (!options->resume_disk || options->drive_b || options->system ||
-                options->fast_stage || options->direct_fastboot || options->recover_session ||
+                options->fast_stage || options->direct_fastboot ||
                 options->boot_only || options->disk_protocol != 3u ||
                 (options->robotron1715w ?
                     (options->disk_baud != 1200u &&
@@ -2283,9 +2317,9 @@ int jh_host_run(const struct jh_host_options *options,
                                     initial_baud, initial_parity);
         if (opened != 0) {
             if (!host.options.recover_session ||
-                    (host.options.direct_fastboot ?
-                        recover_c11_serial(&host) :
-                        recover_stock_serial(&host)) != 0) {
+                    (host.options.recovery_helper ? reconnect_serial(&host, host.options.disk_baud,
+                        host.options.kaypro2 ? host.options.serial_parity : host.options.robotron1715w ? 'N' : 'O') :
+                     host.options.direct_fastboot ? recover_c11_serial(&host) : recover_stock_serial(&host)) != 0) {
                 host_log(&host, "ERROR", "cannot configure serial: %s",
                          strerror(errno));
                 result = EXIT_SERIAL;
@@ -2299,218 +2333,88 @@ int jh_host_run(const struct jh_host_options *options,
         host_log(&host, "INFO", "serial hardware base=%04X fifo-depth=%u",
                  host.serial.base_port, host.serial.fifo_depth);
     }
-    if (host.options.recover_session && host.options.direct_fastboot) {
+    if (host.options.recover_session) {
         int state = RUN_REDISCOVER;
         int disk_synchronized = 0;
+        unsigned discovery_baud = host.options.direct_fastboot ? 19200u : 9600u;
+        enum recovery_mode recovery = host.options.recovery_helper ? RECOVERY_PROFILE : host.options.direct_fastboot ?
+            RECOVERY_NETWORK_ROM : RECOVERY_STOCK_ROM;
         for (;;) {
             if (host_stop_requested(&host)) {
                 result = EXIT_CLEAN;
                 goto cleanup;
             }
             if (state == RUN_REDISCOVER) {
-                if (host.serial.baud != 19200u || host.serial.parity != 'O') {
-                    if (jh_platform_serial_configure(
-                            &host.serial, 19200u, 'O') != 0) {
-                        result = EXIT_SERIAL;
-                    } else {
-                        result = discover_c11_target(&host);
-                    }
-                } else {
-                    result = discover_c11_target(&host);
-                }
-                if (result == EXIT_SERIAL) {
-                    if (recover_c11_serial(&host) != 0) goto cleanup;
-                    state = RUN_REDISCOVER;
-                    continue;
-                }
-                if (result == EXIT_CLEAN) goto cleanup;
-                if (result == RUN_DISCOVER_DISK) {
-                    state = RUN_DISCOVER_DISK;
-                    disk_synchronized = 1;
-                    continue;
-                }
-                if (result != RUN_DISCOVER_BOOT) goto cleanup;
-                state = RUN_DISCOVER_BOOT;
-            }
-            if (state == RUN_DISCOVER_BOOT) {
-                if (jh_platform_serial_configure(
-                        &host.serial, 19200u, 'N') != 0) {
+                if (host.options.recovery_helper) {
+                    result = discover_profile_target(&host);
+                } else if ((host.serial.baud != discovery_baud || host.serial.parity != 'O') &&
+                    jh_platform_serial_configure(&host.serial, discovery_baud, 'O') != 0) {
                     result = EXIT_SERIAL;
                 } else {
-                    host_log(&host, "INFO", "phase=fastboot");
-                    result = run_fastboot(
-                        &host, fast_stage, fast_stage_length,
-                        system, system_length);
+                    result = host.options.direct_fastboot ? discover_c11_target(&host) :
+                        discover_stock_target(&host);
                 }
-                if (result == EXIT_CLEAN) {
-                    if (jh_platform_serial_configure(
-                            &host.serial, 19200u, 'O') != 0) {
-                        result = EXIT_SERIAL;
-                    } else {
-                        state = RUN_DISCOVER_DISK;
-                        disk_synchronized = 0;
-                        continue;
-                    }
-                }
-                if (result == RUN_TARGET_RESET || result == EXIT_PROTOCOL) {
-                    ++host.target_reset_count;
-                    ++host.boot_restart_count;
-                    host_log(&host, "WARN",
-                        "C11/C12 bootstrap did not reach NetDisk; rediscovering "
-                        "without a restart limit (attempt %lu)",
-                        host.boot_restart_count);
-                    if (jh_platform_serial_configure(
-                            &host.serial, 19200u, 'O') != 0) {
-                        result = EXIT_SERIAL;
-                    } else {
-                        state = RUN_REDISCOVER;
-                        continue;
-                    }
-                }
-                if (result == EXIT_SERIAL) {
-                    if (recover_c11_serial(&host) != 0) goto cleanup;
-                    state = RUN_REDISCOVER;
-                    continue;
-                }
-                goto cleanup;
-            }
-            if (state == RUN_DISCOVER_DISK) {
-                host_log(&host, "INFO", "phase=netdisk");
-                result = run_disk(
-                    &host, &volume, have_drive_b ? &drive_b : NULL,
-                    disk_synchronized, RECOVERY_NETWORK_ROM);
-                if (result == RUN_TARGET_RESET) {
-                    ++host.target_reset_count;
-                    ++host.boot_restart_count;
-                    host_log(&host, "WARN",
-                             "target reset during NetDisk; restarting V16");
-                    state = RUN_DISCOVER_BOOT;
-                    continue;
-                }
-                if (result == RUN_REDISCOVER) {
-                    state = RUN_REDISCOVER;
-                    continue;
-                }
-                if (result == RUN_REOPEN_CONSOLE) {
-                    if (wait_c11_console(&host) != 0) {
-                        result = EXIT_SERIAL;
-                        goto cleanup;
-                    }
-                    state = RUN_REDISCOVER;
-                    continue;
-                }
-                if (result == EXIT_SERIAL) {
-                    if (recover_c11_serial(&host) != 0) goto cleanup;
-                    state = RUN_REDISCOVER;
-                    continue;
-                }
-                goto cleanup;
-            }
-        }
-    }
-    if (host.options.recover_session && !host.options.direct_fastboot) {
-        int state = RUN_REDISCOVER;
-        int disk_synchronized = 0;
-        for (;;) {
-            if (host_stop_requested(&host)) {
-                result = EXIT_CLEAN;
-                goto cleanup;
-            }
-            if (state == RUN_REDISCOVER) {
-                if (host.serial.baud != 9600u || host.serial.parity != 'O') {
-                    if (jh_platform_serial_configure(
-                            &host.serial, 9600u, 'O') != 0) {
-                        result = EXIT_SERIAL;
-                    } else {
-                        result = discover_stock_target(&host);
-                    }
+                disk_synchronized = result == RUN_DISCOVER_DISK && !host.profile_booted;
+            } else if (state == RUN_DISCOVER_BOOT) {
+                host_log(&host, "INFO", "phase=%s", host.options.direct_fastboot ?
+                    "fastboot" : "stock-fastboot");
+                if (host.options.direct_fastboot &&
+                    jh_platform_serial_configure(&host.serial, 19200u, 'N') != 0) {
+                    result = EXIT_SERIAL;
                 } else {
-                    result = discover_stock_target(&host);
+                    result = host.options.direct_fastboot ?
+                        run_fastboot(&host, fast_stage, fast_stage_length, system, system_length) :
+                        run_stock_fastboot(&host, fast_stage, fast_stage_length, system, system_length);
                 }
-                if (result == EXIT_SERIAL) {
-                    if (recover_stock_serial(&host) != 0) goto cleanup;
-                    state = RUN_REDISCOVER;
-                    continue;
-                }
-                if (result == EXIT_CLEAN) goto cleanup;
-                if (result == RUN_DISCOVER_DISK) {
-                    state = RUN_DISCOVER_DISK;
-                    disk_synchronized = 1;
-                    continue;
-                }
-                if (result != RUN_DISCOVER_BOOT) goto cleanup;
-                state = RUN_DISCOVER_BOOT;
-            }
-            if (state == RUN_DISCOVER_BOOT) {
-                host_log(&host, "INFO", "phase=stock-fastboot");
-                result = run_stock_fastboot(
-                    &host, fast_stage, fast_stage_length,
-                    system, system_length);
-                if (result == EXIT_CLEAN) {
-                    if (jh_platform_serial_configure(
-                            &host.serial, 9600u, 'O') != 0) {
+                if (result == EXIT_CLEAN && !host_stop_requested(&host)) {
+                    if (jh_platform_serial_configure(&host.serial, discovery_baud, 'O') != 0) {
                         result = EXIT_SERIAL;
                     } else {
-                        state = RUN_DISCOVER_DISK;
                         disk_synchronized = 0;
+                        state = RUN_DISCOVER_DISK;
                         continue;
                     }
                 }
-                if (result == RUN_TARGET_RESET || result == EXIT_PROTOCOL) {
+                if (result == EXIT_PROTOCOL || result == RUN_TARGET_RESET) {
                     ++host.target_reset_count;
                     ++host.boot_restart_count;
-                    host_log(&host, "WARN",
-                        "stock bootstrap did not reach NetDisk; rediscovering "
-                        "without a restart limit (attempt %lu)",
+                    host_log(&host, "WARN", "bootstrap did not reach NetDisk; rediscovering (attempt %lu)",
                         host.boot_restart_count);
-                    if (jh_platform_serial_configure(
-                            &host.serial, 9600u, 'O') != 0) {
-                        result = EXIT_SERIAL;
-                    } else {
-                        state = RUN_REDISCOVER;
-                        continue;
-                    }
-                }
-                if (result == EXIT_SERIAL) {
-                    if (recover_stock_serial(&host) != 0) goto cleanup;
                     state = RUN_REDISCOVER;
                     continue;
                 }
-                goto cleanup;
-            }
-            if (state == RUN_DISCOVER_DISK) {
+            } else {
                 host_log(&host, "INFO", "phase=netdisk");
-                result = run_disk(
-                    &host, &volume, have_drive_b ? &drive_b : NULL,
-                    disk_synchronized, RECOVERY_STOCK_ROM);
+                result = run_disk(&host, &volume, have_drive_b ? &drive_b : NULL,
+                    disk_synchronized, recovery);
                 if (result == RUN_TARGET_RESET) {
                     ++host.target_reset_count;
                     ++host.boot_restart_count;
-                    host_log(&host, "WARN",
-                             "stock-ROM reset during NetDisk; restarting JF17");
-                    state = RUN_DISCOVER_BOOT;
+                    host_log(&host, "WARN", "%s reset during NetDisk; restarting %s",
+                        host.options.direct_fastboot ? "target" : "stock-ROM",
+                        host.options.direct_fastboot ? "V16" : "JF17");
                     disk_synchronized = 0;
+                    state = RUN_DISCOVER_BOOT;
                     continue;
                 }
-                if (result == RUN_REDISCOVER) {
-                    state = RUN_REDISCOVER;
-                    continue;
-                }
-                if (result == RUN_REOPEN_CONSOLE) {
-                    if (wait_c11_console(&host) != 0) {
-                        result = EXIT_SERIAL;
-                        goto cleanup;
-                    }
-                    state = RUN_REDISCOVER;
-                    continue;
-                }
-                if (result == EXIT_SERIAL) {
-                    if (recover_stock_serial(&host) != 0) goto cleanup;
-                    state = RUN_REDISCOVER;
-                    continue;
-                }
-                goto cleanup;
             }
+            if (result == RUN_DISCOVER_BOOT || result == RUN_DISCOVER_DISK || result == RUN_REDISCOVER) {
+                state = result;
+                continue;
+            }
+            if (result == RUN_REOPEN_CONSOLE) {
+                if (wait_c11_console(&host) != 0) { result = EXIT_SERIAL; goto cleanup; }
+                state = RUN_REDISCOVER;
+                continue;
+            }
+            if (result == EXIT_SERIAL) {
+                if ((host.options.recovery_helper ? reconnect_serial(&host, host.options.disk_baud,
+                     host.options.kaypro2 ? host.options.serial_parity : host.options.robotron1715w ? 'N' : 'O') :
+                     host.options.direct_fastboot ? recover_c11_serial(&host) : recover_stock_serial(&host)) != 0) goto cleanup;
+                state = RUN_REDISCOVER;
+                continue;
+            }
+            goto cleanup;
         }
     }
     if (!host.options.resume_disk) {

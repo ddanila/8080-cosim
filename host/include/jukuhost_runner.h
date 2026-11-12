@@ -63,6 +63,9 @@ struct jh_host_options {
     uint32_t reply_guard_ms;
     int direct_fastboot;
     int recover_session;
+    const char *recovery_python;
+    const char *recovery_helper;
+    const char *recovery_config;
     int resume_disk;
     int boot_only;
     int writable;

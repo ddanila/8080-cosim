@@ -15,3 +15,5 @@ python3 tests/jukuhost_v15_delayed_pty_test.py
 python3 tests/jukuhost_stock_v15_cosim_test.py
 python3 tests/jukuhost_serial_reconnect_test.py
 python3 tests/python_host_retirement_test.py
+
+python3 tests/jukuhost_profile_recovery_test.py
