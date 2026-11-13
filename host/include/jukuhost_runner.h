@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-#define JH_HOST_VERSION "0.4.0-m8"
+#define JH_HOST_VERSION "0.4.0-m9"
 
 enum jh_host_exit {
     JH_HOST_EXIT_CLEAN = 0,
@@ -44,6 +44,7 @@ struct jh_host_options {
     const struct jh_config_artifact *fallback_fast_stage_identity;
     const struct jh_config_disk *volume_identity;
     const struct jh_config_disk *drive_b_identity;
+    int drive_b_writable;
     int robotron1715; /* native 800 KiB media contract (also Kaypro) */
     int kaypro2;
     int robotron1715w;

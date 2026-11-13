@@ -137,7 +137,8 @@ static void usage(FILE *file)
         "  --boot-restarts COUNT   target-reset retries (default 3)\n"
         "\n"
         "Disk and console:\n"
-        "  --drive-b FILE          read-only native 800 KiB .JUK image\n"
+        "  --drive-b FILE          native 800 KiB image (read-only by default)\n"
+        "  --drive-b-writable      persist B: through its own crash journal\n"
         "  --writable              persist A: through the crash journal\n"
         "  --disk-protocol 1|2|3  default 3\n"
         "  --disk-baud RATE        default 19200\n"
@@ -267,6 +268,8 @@ static int parse_options(int argc, char **argv,
             options->resume_disk = 1;
         } else if (strcmp(argument, "--boot-only") == 0) {
             options->boot_only = 1;
+        } else if (strcmp(argument, "--drive-b-writable") == 0) {
+            options->drive_b_writable = 1;
         } else if (strcmp(argument, "--writable") == 0) {
             options->writable = 1;
         } else if (strcmp(argument, "--verbose") == 0) {
@@ -333,6 +336,7 @@ static int parse_options(int argc, char **argv,
     if (!options->kaypro2 && (options->serial_parity!='O' || options->serial_stop_bits!=1u)) return -1;
     if (options->kaypro2 && options->disk_baud>19800u) return -1;
     if (options->test_corrupt_read_reply_once && !options->robotron1715) return -1;
+    if (options->drive_b_writable && !options->drive_b) return -1;
     if (options->selftest) return argc == 2 ? 0 : -1;
     if (options->config_path != NULL) {
         if (options->robotron1715 || options->serial != NULL || options->serial_fd >= 0 ||
@@ -342,7 +346,7 @@ static int parse_options(int argc, char **argv,
                 options->capture != NULL || options->direct_fastboot ||
                 options->recover_session ||
                 options->resume_disk || options->boot_only ||
-                options->writable || options->verbose) {
+                options->writable || options->drive_b_writable || options->verbose) {
             return -1;
         }
         return 0;
@@ -351,7 +355,7 @@ static int parse_options(int argc, char **argv,
 #if defined(_WIN32) || defined(JH_DOS)
         return -1;
 #endif
-        if (!options->resume_disk || options->drive_b || options->system ||
+        if (!options->resume_disk || (options->drive_b && !options->kaypro2) || options->system ||
                 options->fast_stage || options->direct_fastboot ||
                 options->boot_only || options->disk_protocol != 3u) return -1;
         if (options->robotron1715w && disk_baud_explicit) {
@@ -1747,7 +1751,7 @@ static int run_disk(struct host_context *host,
     uint8_t incoming[4096];
     uint8_t time_encoded[5];
     uint8_t ready_marker[4] = {'N', 'R', 'N', '3'};
-    char journal_path[1024];
+    char journal_path[1024], journal_b_path[1024];
     uint64_t next_ready = jh_platform_milliseconds();
     uint64_t last_valid = next_ready;
     time_t clock_offset = 0;
@@ -1763,7 +1767,7 @@ static int run_disk(struct host_context *host,
             jh_platform_media_write) != JH_OK) return EXIT_MEDIA;
     if (drive_b_file != NULL && jh_media_init_backend(
             &drive_b, drive_b_file, JH_N3_NATIVE_VOLUME_SIZE,
-            JH_N3_NATIVE_TRACKS, 0, jh_platform_media_read,
+            JH_N3_NATIVE_TRACKS, host->options.drive_b_writable, jh_platform_media_read,
             jh_platform_media_write) != JH_OK) return EXIT_MEDIA;
     if (snprintf(journal_path, sizeof(journal_path), "%s.jhj",
                  host->options.volume) >= (int)sizeof(journal_path)) {
@@ -1774,6 +1778,9 @@ static int run_disk(struct host_context *host,
         host_log(host, "ERROR", "unsafe or unreadable media journal");
         return EXIT_MEDIA;
     }
+    if (drive_b_file && (snprintf(journal_b_path, sizeof(journal_b_path), "%s.jhj",
+            host->options.drive_b) >= (int)sizeof(journal_b_path) ||
+            (host->options.drive_b_writable && recover_journal(host, &drive_b, journal_b_path) != 0))) return EXIT_MEDIA;
     if (jh_service_init(&service, &drive_a,
             drive_b_file == NULL ? NULL : &drive_b,
             host->options.disk_protocol, host->options.read_ahead,
@@ -1803,7 +1810,7 @@ static int run_disk(struct host_context *host,
         host->options.kaypro2 ? host->options.serial_parity : host->options.robotron1715w ? 'N' : 'O',
         (host->options.robotron1715 && !host->options.kaypro2 && !host->options.robotron1715w) ? 2u : 1u,
         (unsigned long)host->options.disk_protocol,
-        drive_b_file != NULL ? ", read-only native B:" : "");
+        drive_b_file != NULL ? (host->options.drive_b_writable ? ", writable+journal native B:" : ", read-only native B:") : "");
     while (!host_stop_requested(host) &&
             (host->options.disk_timeout_seconds == 0u ||
              jh_platform_milliseconds() - host->disk_started_ms <
@@ -1941,10 +1948,12 @@ static int run_disk(struct host_context *host,
             if (!jh_service_is_duplicate(&service, &request) &&
                     (request.operation == JH_N3_WRITE ||
                      request.operation == JH_N3_WRITE_V3) &&
-                    request.drive == 0u && host->options.writable) {
-                if (persist_write(host, &drive_a, &request, journal_path,
+                    ((request.drive == 0u && host->options.writable) ||
+                     (request.drive == 1u && drive_b_file && host->options.drive_b_writable))) {
+                if (persist_write(host, request.drive ? &drive_b : &drive_a, &request,
+                                  request.drive ? journal_b_path : journal_path,
                                   write_sequence++) != 0) {
-                    host_log(host, "ERROR", "persistent A: transaction failed");
+                    host_log(host, "ERROR", "persistent disk transaction failed");
                     result = EXIT_MEDIA;
                     goto done;
                 }
@@ -2160,10 +2169,14 @@ static int open_disk_media(struct host_context *host,
         return -1;
     }
     if (host->options.drive_b == NULL) return 0;
+    if (strcmp(host->options.volume, host->options.drive_b) == 0) {
+        host_log(host, "ERROR", "A: and B: must be independent images");
+        jh_platform_media_close(volume); return -1;
+    }
     if (verify_disk_path(host, "B:", host->options.drive_b,
                          host->options.drive_b_identity) != 0 ||
             jh_platform_media_open(drive_b, host->options.drive_b,
-                JH_N3_NATIVE_VOLUME_SIZE, 0, 1) != 0) {
+                JH_N3_NATIVE_VOLUME_SIZE, host->options.drive_b_writable, !host->options.robotron1715) != 0) {
         host_log(host, "ERROR", "B: must be a valid native 800 KiB image");
         jh_platform_media_close(volume);
         return -1;
@@ -2203,7 +2216,7 @@ int jh_host_run(const struct jh_host_options *options,
 #if defined(_WIN32) || defined(JH_DOS)
         return EXIT_COMMAND;
 #endif
-        if (!options->resume_disk || options->drive_b || options->system ||
+        if (!options->resume_disk || (options->drive_b && !options->kaypro2) || options->system ||
                 options->fast_stage || options->direct_fastboot ||
                 options->boot_only || options->disk_protocol != 3u ||
                 (options->robotron1715w ?

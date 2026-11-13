@@ -1,3 +1,6 @@
+#if defined(__unix__) || defined(__APPLE__)
+#include <sys/file.h>
+#endif
 #include "platform.h"
 
 #include <errno.h>
@@ -179,6 +182,11 @@ int jh_platform_media_open(struct jh_platform_media *media, const char *path,
     media->file = fopen(path, writable ? "r+b" : "rb");
 #endif
     if (media->file == NULL) return -1;
+#if defined(__unix__) || defined(__APPLE__)
+    if (flock(fileno(media->file), (writable ? LOCK_EX : LOCK_SH) | LOCK_NB) != 0) {
+        int saved=errno; fclose(media->file); media->file=NULL; errno=saved; return -1;
+    }
+#endif
     if (fseek(media->file, 0L, SEEK_END) != 0 ||
             (size = ftell(media->file)) < 0L ||
             (uint32_t)size != expected_size ||
