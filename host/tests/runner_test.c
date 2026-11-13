@@ -97,6 +97,12 @@ int main(void)
         fprintf(stderr, "W/M rejected its 1200 baud profile\n");
         return 1;
     }
+    options.drive_b = "unused-native-b.img";
+    options.drive_b_writable = 1;
+    if (jh_host_run(&options, &hooks, &summary) != JH_HOST_EXIT_CLEAN) {
+        fprintf(stderr, "W/M rejected shared native B disk service\n");
+        return 1;
+    }
     puts("JUKUHOST-RUNNER-TEST: PASS");
     return 0;
 }

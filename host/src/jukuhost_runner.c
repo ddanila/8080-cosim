@@ -355,7 +355,7 @@ static int parse_options(int argc, char **argv,
 #if defined(_WIN32) || defined(JH_DOS)
         return -1;
 #endif
-        if (!options->resume_disk || (options->drive_b && !options->kaypro2) || options->system ||
+        if (!options->resume_disk || options->system ||
                 options->fast_stage || options->direct_fastboot ||
                 options->boot_only || options->disk_protocol != 3u) return -1;
         if (options->robotron1715w && disk_baud_explicit) {
@@ -2216,7 +2216,7 @@ int jh_host_run(const struct jh_host_options *options,
 #if defined(_WIN32) || defined(JH_DOS)
         return EXIT_COMMAND;
 #endif
-        if (!options->resume_disk || (options->drive_b && !options->kaypro2) || options->system ||
+        if (!options->resume_disk || options->system ||
                 options->fast_stage || options->direct_fastboot ||
                 options->boot_only || options->disk_protocol != 3u ||
                 (options->robotron1715w ?
