@@ -13,7 +13,7 @@ for the Pocket8086 DOS and Windows 95 executables.
 The DOS and Windows build scripts invoke `tools/bootstrap-open-watcom.sh`.
 On first use the bootstrap downloads the dated asset with curl, checks its
 SHA-256, and extracts it under `.tools/open-watcom-v2-20260801/`. Later
-builds verify the archive in `.tools/downloads/open-watcom-20260801` and
+builds verify the archive in `${XDG_CACHE_HOME:-$HOME/.cache}/open-watcom/<sha256>/open-watcom-2_0-c-linux-x64` and
 reuse the extraction offline. An offline builder can prepopulate that archive.
 An invalid cached archive stops the build. Move it aside to fetch a fresh
 copy. To refresh an extraction, move its directory aside and rerun the build.
