@@ -4,12 +4,8 @@ Original reference photographs under `ref/photos/**/*.jpg` are preserved with
 Git LFS. They are evidence inputs: keep the original bytes immutable, add new
 files for new captures, and do not recompress or replace an existing path.
 
-The exact Open Watcom V2 distribution under `third_party/open-watcom-v2/` is
-also an immutable LFS object. Unlike the photographs it is a build dependency,
-so a DOS/Win32 host job must pull that one exact path before invoking
-`tools/bootstrap-open-watcom.sh`. Do not update the object in place when a new
-nightly is adopted: add a dated filename, update its provenance and bootstrap
-hash, migrate the build, then remove the old path in a normal forward commit.
+DOS and Win32 builds fetch their pinned compiler from the dated upstream
+release and cache it locally. See the [toolchain guide](../third_party/open-watcom-v2/README.md).
 
 The repository intentionally does not materialize every LFS object in routine
 CI. Each Actions download counts toward the repository owner's LFS bandwidth
@@ -62,12 +58,6 @@ To obtain every original photograph later, run:
 
 ```sh
 git lfs pull --include="ref/photos/**/*.jpg" --exclude=""
-```
-
-To materialize only the vendored compiler:
-
-```sh
-git lfs pull --include="third_party/open-watcom-v2/open-watcom-v2-c-linux-x64-20260820" --exclude=""
 ```
 
 The explicit `--exclude=""` prevents a local LFS exclusion setting from omitting

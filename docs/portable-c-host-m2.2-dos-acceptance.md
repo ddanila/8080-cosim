@@ -8,16 +8,15 @@ core builds and runs as an 8086 DOS executable through the recorded stock
 Janet and C8 boot paths. It does not claim Pocket8086 performance or physical CS00015 behavior;
 those are the next M2.3 gate.
 
-## Locally owned toolchain
+## Build toolchain
 
 DOS builds use the pinned Open Watcom V2 distribution. The
-[vendor guide](../third_party/open-watcom-v2/README.md) owns its identity,
+[toolchain guide](../third_party/open-watcom-v2/README.md) owns its identity,
 provenance, bootstrap verification and extraction-cache limits.
 
 Run the commands below from the repository root on a Linux x86-64 build host
-with Bash, Python 3, `unzip`, `sha256sum`, and GNU `stat`. Materialize the
-vendored archive with Git LFS before building; the bootstrap rejects an LFS
-pointer in its place.
+with Bash, Python 3, curl, unzip, flock and GNU coreutils. The bootstrap
+fetches and verifies the pinned archive on the first build.
 
 ## Accepted executable
 
@@ -33,7 +32,7 @@ sync/jukuhost_dos_build.sh
 ```
 
 It selects the 8086 instruction set, large memory model, C99 parsing,
-optimization, a 24 KiB stack, warning level 4, and warnings as errors. The
+optimization, a 32 KiB stack, warning level 4, and warnings as errors. The
 optional first argument selects the output directory (default `build/dos/`).
 Each build replaces its `.o` files, `JUKUHOST.EXE`, `JUKUHOST.MAP`, and
 `BUILD.LOG`. The complete gate below compares two separate build directories

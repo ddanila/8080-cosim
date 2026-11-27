@@ -303,8 +303,10 @@ static int parse_options(int argc, char **argv,
         } else if (strcmp(argument, "--serial-verified") == 0) {
             options->serial_verified = 1;
         } else if (strcmp(argument, "--serial-stop-bits") == 0) {
+            uint32_t bits;
             if (require_value(argc, argv, &index, &value) != 0 ||
-                parse_unsigned(value,1u,2u,&options->serial_stop_bits)!=0) return -1;
+                    parse_unsigned(value, 1u, 2u, &bits) != 0) return -1;
+            options->serial_stop_bits = (unsigned)bits;
         } else if (strcmp(argument, "--disk-baud") == 0) {
             if (require_value(argc, argv, &index, &value) != 0 ||
                     parse_unsigned(value, 75u, 62400u,

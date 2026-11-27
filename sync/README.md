@@ -96,7 +96,7 @@ The complete Pocket8086/DOS desk gate is:
 sync/jukuhost_dos_check.sh
 ```
 
-It verifies the locally vendored Open Watcom toolchain, builds the 16-bit host
+It verifies the pinned upstream Open Watcom toolchain, builds the 16-bit host
 twice byte-identically, runs its self-test under DOSBox-X, and exercises the
 actual EXE through emulated COM1 against stock 9,600-baud Janet and retained C8
 19,200-baud Fastboot/NetDisk/N4. See

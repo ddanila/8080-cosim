@@ -58,11 +58,11 @@ def wait_for(paths: tuple[Path, ...], process: subprocess.Popen[bytes],
     raise AssertionError("socat did not create its PTY links")
 
 
-def wait_for_output(path: Path, marker: bytes,
+def wait_for_session_log(directory: Path, marker: bytes,
                     process: subprocess.Popen[bytes], timeout: float) -> None:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
-        if path.exists() and marker in path.read_bytes():
+        if any(marker in path.read_bytes() for path in directory.glob("*/JUKUHOST.LOG")):
             return
         if process.poll() is not None:
             raise AssertionError(
@@ -239,7 +239,7 @@ def run_case(case: str, executable: Path, prefix: Path, trace: Path,
         host = subprocess.Popen(host_command, cwd=case_dir,
            env=wine_environment, stdout=host_output,
            stderr=subprocess.STDOUT)
-        wait_for_output(case_dir / "wine-host.output", b"serial applied=",
+        wait_for_session_log(logs, b"serial applied=",
                         host, 15.0)
         simulator = subprocess.Popen([
             str(trace), str(rom), "1000000000000", "0", "100000",

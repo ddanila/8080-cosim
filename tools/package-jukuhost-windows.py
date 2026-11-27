@@ -64,7 +64,7 @@ def main() -> int:
     manifest = {
         "schema": "jukuwin-package-v1",
         "source_revision": source_revision,
-        "compiler": "Open Watcom V2 2026-08-20",
+        "compiler": "Open Watcom V2 2026-08-01",
         "target": "PE32/i386 Windows GUI subsystem 4.0",
         "qualification": {
             "desk": "see docs/windows-jukuhost-client-implementation.md",

@@ -2,40 +2,39 @@
 set -euo pipefail
 
 project_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-archive="$project_root/third_party/open-watcom-v2/open-watcom-v2-c-linux-x64-20260820"
-destination="$project_root/.tools/open-watcom-v2-20260820"
-expected_sha="f83c158176f740ec656394a1ec531e2e6d8b78ebdfa4496460f9a0e457475e85"
-expected_size=129055748
-
+source "$project_root/tools/open-watcom-env.sh"
+cache="$project_root/.tools/downloads"
+archive="$cache/open-watcom-20260801"
+url="https://github.com/open-watcom/open-watcom-v2/releases/download/2026-08-01-Build/open-watcom-2_0-c-linux-x64"
+expected_sha=e1bc4e88fa47191118f29e53731e7f4542803c7f4c503e15d72f1f571ac0832f
+mkdir -p "$cache"
+exec 9>"$cache/open-watcom-20260801.lock"
+flock 9
+scratch=$(mktemp -d "$project_root/.tools/.watcom.XXXXXXXX")
+trap 'rm -r -- "$scratch"' EXIT
+verify() {
+    echo "$expected_sha  $1" | sha256sum --check --status
+}
 if [[ ! -f "$archive" ]]; then
-    echo "Vendored Open Watcom archive is missing: $archive" >&2
+    curl --fail --location --silent --show-error --retry 3 "$url" -o "$scratch/download"
+    verify "$scratch/download" || { echo "Upstream compiler checksum mismatch" >&2; exit 1; }
+    mv "$scratch/download" "$archive"
+elif ! verify "$archive"; then
+    echo "Invalid cached compiler archive: $archive" >&2
     exit 1
 fi
-if head -n 1 "$archive" | grep -q '^version https://git-lfs.github.com/spec/v1$'; then
-    echo "Open Watcom is an unmaterialized Git LFS pointer." >&2
-    echo "Run: git lfs pull --include=third_party/open-watcom-v2/open-watcom-v2-c-linux-x64-20260820" >&2
-    exit 1
-fi
-actual_size=$(stat -c %s "$archive")
-actual_sha=$(sha256sum "$archive" | awk '{print $1}')
-if [[ "$actual_size" != "$expected_size" || "$actual_sha" != "$expected_sha" ]]; then
-    echo "Vendored Open Watcom identity mismatch" >&2
-    echo "  expected $expected_size bytes $expected_sha" >&2
-    echo "  actual   $actual_size bytes $actual_sha" >&2
-    exit 1
-fi
-
-if [[ ! -x "$destination/binl64/wcl" ]]; then
-    mkdir -p "$destination"
-    unzip -q -o "$archive" -d "$destination"
-    chmod +x "$destination/binl64"/* 2>/dev/null || true
+destination=$WATCOM
+if [[ ! -d "$destination" ]]; then
+    unzip -q "$archive" -d "$scratch/compiler"
+    chmod +x "$scratch/compiler/binl64/"*
+    mv "$scratch/compiler" "$destination"
 fi
 
 banner=$("$destination/binl64/wcl" 2>&1 || true)
 if ! grep -q 'Open Watcom C/C++ x86 16-bit Compile and Link Utility' <<<"$banner" ||
-        ! grep -q 'Aug 20 2026 02:25:10' <<<"$banner"; then
+        ! grep -q 'Aug  1 2026 04:25:00' <<<"$banner"; then
     echo "Extracted Open Watcom compiler identity differs" >&2
     printf '%s\n' "$banner" >&2
     exit 1
 fi
-echo "Open Watcom V2: PASS ($actual_sha, source cf43271464fdd57065d3d72de8ca917c55c6a887)"
+echo "Open Watcom V2: PASS (2026-08-01-Build, $expected_sha)"

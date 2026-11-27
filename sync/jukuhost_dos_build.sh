@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Reproducibly build the 16-bit 8086 DOS Juku host with the vendored OW2.
+# Reproducibly build the 16-bit 8086 DOS Juku host with the pinned OW2.
 set -euo pipefail
 
 project_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
@@ -43,7 +43,7 @@ compile_flags=(
         echo "system dos"
         echo "name $output_dir/JUKUHOST.EXE"
         echo "option map=$output_dir/JUKUHOST.MAP"
-        echo "option stack=24576"
+        echo "option stack=32768"
         echo "option quiet"
         for object in "$output_dir"/*.o; do
             echo "file $object"

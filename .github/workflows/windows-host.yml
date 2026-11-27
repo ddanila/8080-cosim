@@ -46,10 +46,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Fetch only the pinned compiler archive
-        timeout-minutes: 5
-        run: git lfs pull --include=third_party/open-watcom-v2/open-watcom-v2-c-linux-x64-20260820 --exclude=""
-
       - name: Install build and floppy tools
         timeout-minutes: 5
         run: |
